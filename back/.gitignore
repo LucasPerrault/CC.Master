@@ -1,0 +1,12 @@
+
+/.idea/
+
+/src/CloudControl.Web/bin/
+/src/CloudControl.Web/obj/
+
+/src/CloudControl.Shared.Infra/bin/
+/src/CloudControl.Shared.Infra/obj/
+
+/src/CloudControl.Web/appsettings.json
+
+/logs/

@@ -1,0 +1,13 @@
+{
+  "LuccaLoggerOptions": {
+    "ApplicationName": "CloudControl",
+    "ConnectionString": "{{ shared:LuccaLogsConnectionString }}",
+    "LogFilePath": "{{ CloudControl:LogFilePath }}",
+    "EventIdSeparator": "eventId",
+    "IgnoreEmptyEventId": "false"
+  },
+  "LegacyCloudControl": {
+    "HttpRedirectionUrl": "https://cc.ilucca.local:443",
+    "WebSocketRedirectionUrl": "ws://cc.ilucca.local:80"
+  }
+}
