@@ -5,6 +5,7 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <PackageReference Include="Lucca.Core.Authentication" Version="5.1.3" />
       <PackageReference Include="Lucca.Core.Shared.Domain" Version="2.0.12" />
       <PackageReference Include="Lucca.Logs.AspnetCore" Version="0.7.0" />
       <PackageReference Include="Microsoft.AspNetCore.SpaServices" Version="3.1.5" />
@@ -13,6 +14,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\CloudControl.Shared.Domain\CloudControl.Shared.Domain.csproj" />
       <ProjectReference Include="..\CloudControl.Shared.Infra\CloudControl.Shared.Infra.csproj" />
     </ItemGroup>
 

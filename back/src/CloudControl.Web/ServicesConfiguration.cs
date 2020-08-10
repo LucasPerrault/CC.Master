@@ -1,13 +1,17 @@
-﻿using CloudControl.Shared.Infra.Configuration;
+﻿using CloudControl.Shared.Infra.Authentication;
+using CloudControl.Shared.Infra.Configuration;
 using CloudControl.Web.Exceptions;
 using CloudControl.Web.Spa;
+using Lucca.Core.Authentication;
 using Lucca.Logs.AspnetCore;
 using Lucca.Logs.Shared;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using ProxyKit;
 using System;
+using System.Security.Claims;
 
 namespace CloudControl.Web
 {
@@ -26,8 +30,10 @@ namespace CloudControl.Web
 		{
 			ConfigureConfiguration(services);
 			ConfigureLogs(services);
+			ConfigureAuthentication(services);
 			ConfigureProxy(services);
 			ConfigureSpa(services);
+			ConfigureRemoteServices(services);
 		}
 
 		public virtual void ConfigureConfiguration(IServiceCollection services)
@@ -48,6 +54,16 @@ namespace CloudControl.Web
 				});
 		}
 
+		public virtual void ConfigureAuthentication(IServiceCollection services)
+		{
+			services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+			services.AddTransient<ClaimsPrincipal>
+			(
+				provider => provider.GetService<IHttpContextAccessor>().HttpContext.User
+			);
+			services.AddLuccaAuthentication<PrincipalStore>();
+		}
+
 		public virtual void ConfigureProxy(IServiceCollection services)
 		{
 			services.AddProxy();
@@ -56,6 +72,12 @@ namespace CloudControl.Web
 		public virtual void ConfigureSpa(IServiceCollection services)
 		{
 			services.RegisterFrontApplication(_hostingEnvironment);
+		}
+
+		public virtual void ConfigureRemoteServices(IServiceCollection services)
+		{
+			var config = _configuration.Get<Configuration>();
+			InfraServicesConfigurer.ConfigureRemoteServices(services, config);
 		}
 	}
 }
