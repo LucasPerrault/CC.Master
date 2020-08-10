@@ -16,6 +16,8 @@ namespace CloudControl.Shared.Infra.Configuration
 
             services.WithHostConfiguration(new PartenairesAuthServiceConfiguration())
                 .AddRemoteServiceHttpClient<AuthenticationRemoteService>(new Uri(config.Authentication.ServerUri, config.Authentication.EndpointPath));
+
+            services.AddSingleton<PrincipalStore>();
         }
 
         private static void ConfigureConfiguration(IServiceCollection services, Configuration config)

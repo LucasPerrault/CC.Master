@@ -26,5 +26,46 @@ namespace CloudControl.Shared.Infra.Authentication
             _authConfig = authConfig;
             _apiKeysConfig = apiKeysConfig;
         }
+
+        public async Task<Principal> GetUserPrincipalAsync(Guid token)
+        {
+            var partenairesAuthConfig = new PartenairesAuthServiceConfiguration();
+            partenairesAuthConfig.Authenticate(_httpClient, _authScheme, _authType, token);
+
+            var queryParams = new Dictionary<string, string>() 
+            { 
+                { "fields", LuccaUser.ApiFields } 
+            };
+            var luccaUser = await GetObjectResponseAsync<LuccaUser>(queryParams);
+
+            var user = luccaUser.Data.ToUser();
+            return new Principal
+            {
+                Token = token,
+                UserId = user.Id,
+                User = user
+            };
+        }
+
+        public ApiKey GetApiKeyPrincipal(Guid token)
+        {
+            var config = _apiKeysConfig.SingleOrDefault(c => c.Token == token);
+            if (config == null)
+            {
+                return null;
+            }
+
+            return ToApiKey(config);
+        }
+
+        private ApiKey ToApiKey(ApiKeyConfiguration config)
+        {
+            return new ApiKey
+            {
+                Id = config.Id,
+                Name = config.Name,
+                Token = config.Token
+            };
+        }
     }
 }
