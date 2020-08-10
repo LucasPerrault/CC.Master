@@ -37,10 +37,10 @@ namespace CloudControl.Web
 
 			app.UseHttpsRedirection();
 
-			app.UseAuthentication();
-
 			app.UseLegacyCloudControlWebSocketProxy();
 			app.UseLegacyCloudControlHttpProxy();
+
+			app.UseAuthentication();
 
 			app.UseFrontApplication(env);
 		}
