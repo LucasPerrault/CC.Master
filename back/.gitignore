@@ -1,12 +1,17 @@
 
-/.idea/
+.idea/
+.vs/
+logs/
 
-/src/CloudControl.Web/bin/
-/src/CloudControl.Web/obj/
+src/*/bin/
+src/*/obj/
 
-/src/CloudControl.Shared.Infra/bin/
-/src/CloudControl.Shared.Infra/obj/
+src/*/Resources
+src/*/*.csproj.user
+src/*/Properties/launchSettings.json
 
-/src/CloudControl.Web/appsettings.json
-
-/logs/
+src/CloudControl.Web/Properties/PublishProfiles/*.pubxml
+src/CloudControl.Web/Properties/PublishProfiles/*.user
+src/publish
+src/CloudControl.Web/appsettings.json
+src/CloudControl.Web/web.config
