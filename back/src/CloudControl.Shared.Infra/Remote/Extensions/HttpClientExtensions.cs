@@ -1,0 +1,19 @@
+﻿using System;
+using System.Net.Http;
+
+namespace CloudControl.Shared.Infra.Remote.Extensions
+{
+    public static class HttpClientExtensions
+    {
+        public static void SetSafeBaseAddress(this HttpClient httpClient, Uri endpoint)
+        {
+            httpClient.SetSafeBaseAddress(endpoint.OriginalString);
+        }
+
+        public static void SetSafeBaseAddress(this HttpClient httpClient, string endpointPath)
+        {
+            var fixedPath = endpointPath.EndsWith("/") ? endpointPath : $"{endpointPath}/";
+            httpClient.BaseAddress = new Uri(fixedPath);
+        }
+    }
+}
