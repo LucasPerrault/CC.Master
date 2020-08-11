@@ -14,6 +14,7 @@ namespace CloudControl.Shared.Infra.Configuration
             services.AddSingleton<JsonSerializer>();
             ConfigureConfiguration(services, config);
 
+            services.AddSingleton<AuthRedirectionRemoteService>();
             services.WithHostConfiguration(new PartenairesAuthServiceConfiguration())
                 .AddRemoteServiceHttpClient<AuthenticationRemoteService>(new Uri(config.Authentication.ServerUri, config.Authentication.EndpointPath));
 

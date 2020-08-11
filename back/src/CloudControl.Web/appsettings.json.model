@@ -1,7 +1,8 @@
 ﻿{
     "Authentication": {
         "ServerUri": "https://partenaires.ilucca.net",
-        "EndpointPath": "/api/v3/users/me"
+        "EndpointPath": "/api/v3/users/me",
+        "RedirectEndpointPath": "/auth/userlogin"
     },
     "ApiKeys": [
         { "id": 1, "name": "Github incoming webhook", "token": "00000000-****-****-****-********" },

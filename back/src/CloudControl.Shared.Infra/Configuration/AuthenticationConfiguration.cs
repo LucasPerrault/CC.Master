@@ -7,5 +7,7 @@ namespace CloudControl.Shared.Infra.Configuration
         public Uri ServerUri { get; set; }
 
         public string EndpointPath { get; set; }
+
+        public string RedirectEndpointPath { get; set; }
     }
 }

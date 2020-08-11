@@ -1,3 +1,4 @@
+using CloudControl.Web.Middlewares;
 using CloudControl.Web.Proxy;
 using CloudControl.Web.Spa;
 using Microsoft.AspNetCore.Builder;
@@ -40,7 +41,11 @@ namespace CloudControl.Web
 			app.UseLegacyCloudControlWebSocketProxy();
 			app.UseLegacyCloudControlHttpProxy();
 
+			app.UseMiddleware<SessionKeyAuthMiddleware>();
+
 			app.UseAuthentication();
+
+			app.UseMiddleware<UnauthorizedAccessMiddleware>();
 
 			app.UseFrontApplication(env);
 		}
