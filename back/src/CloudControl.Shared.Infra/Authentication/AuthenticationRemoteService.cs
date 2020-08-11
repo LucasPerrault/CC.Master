@@ -36,15 +36,24 @@ namespace CloudControl.Shared.Infra.Authentication
             { 
                 { "fields", LuccaUser.ApiFields } 
             };
-            var luccaUser = await GetObjectResponseAsync<LuccaUser>(queryParams);
 
-            var user = luccaUser.Data.ToUser();
-            return new Principal
+            try
             {
-                Token = token,
-                UserId = user.Id,
-                User = user
-            };
+                var luccaUser = await GetObjectResponseAsync<LuccaUser>(queryParams);
+
+                var user = luccaUser.Data.ToUser();
+                return new Principal
+                {
+                    Token = token,
+                    UserId = user.Id,
+                    User = user
+                };
+            }
+            catch
+            {
+                return null;
+            }
+
         }
 
         public ApiKey GetApiKeyPrincipal(Guid token)
