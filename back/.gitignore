@@ -3,8 +3,8 @@
 .vs/
 logs/
 
-src/*/bin/
-src/*/obj/
+src/**/bin/
+src/**/obj/
 
 src/*/Resources
 src/*/*.csproj.user

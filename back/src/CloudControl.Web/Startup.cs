@@ -1,6 +1,6 @@
-using CloudControl.Web.Middlewares;
-using CloudControl.Web.Proxy;
 using CloudControl.Web.Spa;
+using Core.Authentication.Web;
+using Core.Proxy.Infra.Extensions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
