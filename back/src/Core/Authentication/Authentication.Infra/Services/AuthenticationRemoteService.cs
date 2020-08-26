@@ -19,10 +19,10 @@ namespace Authentication.Infra.Services
         private const string _authType = "user";
         protected override string RemoteAppName => "Partenaires";
 
-        public AuthenticationRemoteService(HttpClient httpClient, JsonSerializer jsonSerializer, ApiKeysConfiguration apiKeysConfig)
+        public AuthenticationRemoteService(HttpClient httpClient, JsonSerializer jsonSerializer, AuthenticationConfiguration configuration)
             : base(httpClient, jsonSerializer)
         {
-            _apiKeysConfig = apiKeysConfig;
+            _apiKeysConfig = configuration.ApiKeys;
         }
 
         public async Task<Principal> GetUserPrincipalAsync(Guid token)

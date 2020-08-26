@@ -2,16 +2,16 @@
     "Authentication": {
         "ServerUri": "https://partenaires.ilucca.net",
         "EndpointPath": "/api/v3/users/me",
-        "RedirectEndpointPath": "/auth/userlogin"
+        "RedirectEndpointPath": "/auth/userlogin",
+        "ApiKeys": [
+            { "id": 1, "name": "Github incoming webhook", "token": "00000000-****-****-****-********" },
+            { "id": 3, "name": "QA - Recette", "token": "00000000-****-****-****-********" },
+            { "id": 4, "name": "Scripts de déploiement en prod", "token": "00000000-****-****-****-********" },
+            { "id": 6, "name": "Poplee - Comm In App", "token": "00000000-****-****-****-********" },
+            { "id": 7, "name": "Lucca - Infos sur les environnements", "token": "00000000-****-****-****-********" },
+            { "id": 12, "name": "Espace Client", "token": "00000000-****-****-****-********" }
+        ],
     },
-    "ApiKeys": [
-        { "id": 1, "name": "Github incoming webhook", "token": "00000000-****-****-****-********" },
-        { "id": 3, "name": "QA - Recette", "token": "00000000-****-****-****-********" },
-        { "id": 4, "name": "Scripts de déploiement en prod", "token": "00000000-****-****-****-********" },
-        { "id": 6, "name": "Poplee - Comm In App", "token": "00000000-****-****-****-********" },
-        { "id": 7, "name": "Lucca - Infos sur les environnements", "token": "00000000-****-****-****-********" },
-        { "id": 12, "name": "Espace Client", "token": "00000000-****-****-****-********" }
-    ],
     "LuccaLoggerOptions": {
         "ApplicationName": "CloudControl",
         "ConnectionString": "{{ shared:LuccaLogsConnectionString }}",

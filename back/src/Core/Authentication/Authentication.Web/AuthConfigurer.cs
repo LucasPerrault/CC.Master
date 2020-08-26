@@ -15,6 +15,7 @@ namespace Authentication.Web
 		public static void ConfigureServices(IServiceCollection services, AuthenticationConfiguration config)
 		{
 			services.AddSingleton(config);
+			services.AddSingleton(config.ApiKeys);
 			services.AddTransient
 			(
 				provider => provider.GetService<IHttpContextAccessor>().HttpContext.User
