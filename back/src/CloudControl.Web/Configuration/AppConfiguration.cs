@@ -1,4 +1,4 @@
-﻿using Core.Authentication.Infra.Configurations;
+﻿using Authentication.Infra.Configurations;
 using Core.Proxy.Infra.Configuration;
 
 namespace CloudControl.Web.Configuration

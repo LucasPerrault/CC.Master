@@ -2,14 +2,11 @@
 
     <PropertyGroup>
         <TargetFramework>netcoreapp3.1</TargetFramework>
+        <RootNamespace>Core.Proxy.Infra</RootNamespace>
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="Lucca.Core.Rights.Abstractions" Version="6.1.1" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <Folder Include="Models" />
+      <PackageReference Include="ProxyKit" Version="2.3.3" />
     </ItemGroup>
 
 </Project>

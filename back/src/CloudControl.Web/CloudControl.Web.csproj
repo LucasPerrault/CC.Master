@@ -11,8 +11,9 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Core\Authentication\Core.Authentication.Web\Core.Authentication.Web.csproj" />
-      <ProjectReference Include="..\Core\Proxy\Core.Proxy.Web\Core.Proxy.Web.csproj" />
+      <ProjectReference Include="..\Core\Authentication\Authentication.Web\Authentication.Web.csproj" />
+      <ProjectReference Include="..\Core\Proxy\Proxy.Web\Proxy.Web.csproj" />
+      <ProjectReference Include="..\Core\Rights\Rights.Web\Rights.Web.csproj" />
     </ItemGroup>
 
 </Project>

@@ -1,8 +1,7 @@
-﻿using CloudControl.Web.Configuration;
+﻿using Authentication.Web;
+using CloudControl.Web.Configuration;
 using CloudControl.Web.Exceptions;
 using CloudControl.Web.Spa;
-using Core.Authentication.Web;
-using Core.Proxy.Web;
 using Lucca.Logs.AspnetCore;
 using Lucca.Logs.Shared;
 using Microsoft.AspNetCore.Hosting;
@@ -10,6 +9,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
+using Proxy.Web;
+using Rights.Web;
 using System;
 
 namespace CloudControl.Web
@@ -33,6 +34,7 @@ namespace CloudControl.Web
 			ConfigureSpa(services);
 			ConfigureProxy(services);
 			ConfigureAuthentication(services, configuration);
+			ConfigureRights(services);
 		}
 
 		public virtual AppConfiguration ConfigureConfiguration(IServiceCollection services)
@@ -59,6 +61,11 @@ namespace CloudControl.Web
 		public virtual void ConfigureAuthentication(IServiceCollection services, AppConfiguration configuration)
 		{
 			AuthConfigurer.ConfigureServices(services, configuration.Authentication);
+		}
+
+		public virtual void ConfigureRights(IServiceCollection services)
+		{
+			RightsConfigurer.ConfigureServices(services);
 		}
 
 		public virtual void ConfigureLogs(IServiceCollection services)

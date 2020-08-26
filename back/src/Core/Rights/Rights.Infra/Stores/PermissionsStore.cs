@@ -1,0 +1,40 @@
+﻿using Lucca.Core.Rights.Abstractions.Permissions;
+using Lucca.Core.Rights.Abstractions.Stores;
+using Rights.Infra.Remote;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+
+namespace Rights.Infra.Stores
+{
+	public class PermissionsStore : IPermissionsStore
+	{
+		private readonly ApiKeyPermissionsRemoteService _apiKeyPermissionsService;
+		private readonly UserPermissionsRemoteService _userPermissionsService;
+
+		public PermissionsStore(ApiKeyPermissionsRemoteService apiKeyPermissionsService, UserPermissionsRemoteService userPermissionsService)
+		{
+			_apiKeyPermissionsService = apiKeyPermissionsService;
+			_userPermissionsService = userPermissionsService;
+		}
+
+		public async Task<List<IApiKeyPermission>> GetApiKeyPermissionsAsync(int apiKeyId, int appInstanceId, ISet<int> operations)
+		{
+			return new List<IApiKeyPermission>(await _apiKeyPermissionsService.GetApiKeyPermissionsAsync(apiKeyId, operations));
+		}
+
+		public async Task<List<IUserPermission>> GetUserPermissionsAsync(int principalId, int appInstanceId)
+		{
+			return new List<IUserPermission>(await _userPermissionsService.GetUserPermissionsAsync(principalId));
+		}
+
+		public async Task<List<IUserPermission>> GetUserPermissionsAsync(int principalId, int appInstanceId, ISet<int> operations)
+		{
+			return new List<IUserPermission>(await _userPermissionsService.GetUserPermissionsAsync(principalId, operations));
+		}
+
+		public Task<List<IWebServicePermission>> GetWebServicesPermissionsAsync(string webServiceId, int appInstanceId, ISet<int> operations)
+		{
+			return null;
+		}
+	}
+}

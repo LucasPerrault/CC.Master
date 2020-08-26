@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>netcoreapp3.1</TargetFramework>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <PackageReference Include="Lucca.Core.Authentication.Abstractions" Version="5.1.3" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\..\Partenaires\Partenaires.Infra\Partenaires.Infra.csproj" />
+      <ProjectReference Include="..\Authentication.Domain\Authentication.Domain.csproj" />
+    </ItemGroup>
+
+</Project>

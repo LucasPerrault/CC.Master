@@ -1,5 +1,5 @@
+using Authentication.Web;
 using CloudControl.Web.Spa;
-using Core.Authentication.Web;
 using Core.Proxy.Infra.Extensions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
