@@ -1,4 +1,5 @@
 using Authentication.Web;
+using CloudControl.Web.Middlewares;
 using CloudControl.Web.Spa;
 using Core.Proxy.Infra.Extensions;
 using Microsoft.AspNetCore.Builder;
@@ -47,6 +48,7 @@ namespace CloudControl.Web
 
 			app.UseMiddleware<UnauthorizedAccessMiddleware>();
 
+			app.UseMiddleware<FrontRequestFilterMiddleware>();
 			app.UseFrontApplication(env);
 		}
 	}
