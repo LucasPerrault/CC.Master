@@ -1,6 +1,6 @@
-﻿using CloudControl.Shared.Infra.Remote.Configurations;
-using CloudControl.Shared.Infra.Remote.DTOs;
-using CloudControl.Shared.Infra.Remote.Exceptions;
+﻿using Shared.Infra.Remote.Configurations;
+using Shared.Infra.Remote.DTOs;
+using Shared.Infra.Remote.Exceptions;
 using Microsoft.AspNetCore.WebUtilities;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -11,7 +11,7 @@ using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CloudControl.Shared.Infra.Remote.Services
+namespace Shared.Infra.Remote.Services
 {
     public abstract class HostRemoteService<TC> : BaseRemoteService<HostHttpClientConfiguration>
         where TC : RemoteServiceConfiguration<HostHttpClientConfiguration>
@@ -20,7 +20,7 @@ namespace CloudControl.Shared.Infra.Remote.Services
 
         protected abstract string RemoteAppName { get; }
 
-        protected HostRemoteService(HttpClient httpClient, JsonSerializer jsonSerializer) 
+        protected HostRemoteService(HttpClient httpClient, JsonSerializer jsonSerializer)
             : base(httpClient)
         {
             _jsonSerializer = jsonSerializer ?? throw new ArgumentNullException(nameof(jsonSerializer));

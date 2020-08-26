@@ -1,4 +1,4 @@
-﻿using CloudControl.Shared.Infra.Remote.Configurations;
+﻿using Shared.Infra.Remote.Configurations;
 
 namespace Partenaires.Infra.Configuration
 {

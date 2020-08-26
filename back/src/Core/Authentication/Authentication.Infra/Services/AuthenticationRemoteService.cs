@@ -1,7 +1,7 @@
 ﻿using Authentication.Domain;
 using Authentication.Infra.Configurations;
 using Authentication.Infra.DTOs;
-using CloudControl.Shared.Infra.Remote.Services;
+using Shared.Infra.Remote.Services;
 using Newtonsoft.Json;
 using Partenaires.Infra.Configuration;
 using System;

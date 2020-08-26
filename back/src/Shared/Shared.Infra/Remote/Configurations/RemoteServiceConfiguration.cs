@@ -1,9 +1,9 @@
-﻿using CloudControl.Shared.Infra.Remote.Extensions;
+﻿using Shared.Infra.Remote.Extensions;
 using System;
 using System.Net.Http;
 using System.Net.Http.Headers;
 
-namespace CloudControl.Shared.Infra.Remote.Configurations
+namespace Shared.Infra.Remote.Configurations
 {
     public abstract class RemoteServiceConfiguration<T> where T : IHttpClientConfiguration
     {
@@ -50,7 +50,7 @@ namespace CloudControl.Shared.Infra.Remote.Configurations
 
         public override void Authenticate(HttpClient client, string authScheme, string authType, Guid authToken)
         {
-            client.DefaultRequestHeaders.Authorization = 
+            client.DefaultRequestHeaders.Authorization =
                 new AuthenticationHeaderValue
                 (
                     authScheme,

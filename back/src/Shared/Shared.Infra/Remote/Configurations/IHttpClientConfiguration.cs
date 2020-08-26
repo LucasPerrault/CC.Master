@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace CloudControl.Shared.Infra.Remote.Configurations
+namespace Shared.Infra.Remote.Configurations
 {
     public interface IHttpClientConfiguration
     { }

@@ -1,7 +1,7 @@
 ﻿using Authentication.Infra.Configurations;
 using Authentication.Infra.Services;
 using Authentication.Infra.Storage;
-using CloudControl.Shared.Infra.Remote.Configurations;
+using Shared.Infra.Remote.Configurations;
 using Lucca.Core.Authentication;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;

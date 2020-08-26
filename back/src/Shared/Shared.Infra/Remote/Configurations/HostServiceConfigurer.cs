@@ -1,8 +1,8 @@
-﻿using CloudControl.Shared.Infra.Remote.Services;
+﻿using Shared.Infra.Remote.Services;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 
-namespace CloudControl.Shared.Infra.Remote.Configurations
+namespace Shared.Infra.Remote.Configurations
 {
     public class HostServiceConfigurer<TConfiguration> where TConfiguration : RemoteServiceConfiguration<HostHttpClientConfiguration>
     {

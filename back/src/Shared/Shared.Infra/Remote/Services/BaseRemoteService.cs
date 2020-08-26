@@ -1,8 +1,8 @@
-﻿using CloudControl.Shared.Infra.Remote.Configurations;
+﻿using Shared.Infra.Remote.Configurations;
 using System;
 using System.Net.Http;
 
-namespace CloudControl.Shared.Infra.Remote.Services
+namespace Shared.Infra.Remote.Services
 {
     public abstract class BaseRemoteService<T> where T : IHttpClientConfiguration
     {

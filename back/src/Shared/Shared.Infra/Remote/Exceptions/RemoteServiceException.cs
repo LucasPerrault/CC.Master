@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Net;
 
-namespace CloudControl.Shared.Infra.Remote.Exceptions
+namespace Shared.Infra.Remote.Exceptions
 {
     public class RemoteServiceException : ApplicationException
     {

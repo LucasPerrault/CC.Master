@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Net.Http;
 
-namespace CloudControl.Shared.Infra.Remote.Extensions
+namespace Shared.Infra.Remote.Extensions
 {
     public static class HttpClientExtensions
     {
