@@ -34,7 +34,7 @@ namespace CloudControl.Web
 			ConfigureSpa(services);
 			ConfigureProxy(services);
 			ConfigureAuthentication(services, configuration);
-			ConfigureRights(services);
+			ConfigureRights(services, configuration);
 		}
 
 		public virtual AppConfiguration ConfigureConfiguration(IServiceCollection services)
@@ -63,9 +63,9 @@ namespace CloudControl.Web
 			AuthConfigurer.ConfigureServices(services, configuration.Authentication);
 		}
 
-		public virtual void ConfigureRights(IServiceCollection services)
+		public virtual void ConfigureRights(IServiceCollection services, AppConfiguration configuration)
 		{
-			RightsConfigurer.ConfigureServices(services);
+			RightsConfigurer.ConfigureServices(services, configuration.Rights);
 		}
 
 		public virtual void ConfigureLogs(IServiceCollection services)

@@ -22,12 +22,6 @@ namespace Rights.Infra.Remote
 			return allPermissions.ToList();
 		}
 
-		internal async Task<IReadOnlyCollection<Permission>> GetUserPermissionsAsync(int principalId, ISet<int> operations)
-		{
-			var allPermissions = await GetAllUserPermissionsAsync(principalId);
-			return allPermissions.Where(p => operations.Contains(p.OperationId)).ToList();
-		}
-
 		private async Task<IEnumerable<Permission>> GetAllUserPermissionsAsync(int principalId)
 		{
 			var queryParams = new Dictionary<string, string>

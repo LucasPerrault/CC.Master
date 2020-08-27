@@ -1,6 +1,6 @@
 ﻿using Lucca.Core.Rights.Abstractions.Permissions;
 using Lucca.Core.Rights.Abstractions.Stores;
-using Rights.Infra.Remote;
+using Rights.Domain.Services;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -8,10 +8,10 @@ namespace Rights.Infra.Stores
 {
 	public class PermissionsStore : IPermissionsStore
 	{
-		private readonly ApiKeyPermissionsRemoteService _apiKeyPermissionsService;
-		private readonly UserPermissionsRemoteService _userPermissionsService;
+		private readonly ApiKeyPermissionsService _apiKeyPermissionsService;
+		private readonly UserPermissionsService _userPermissionsService;
 
-		public PermissionsStore(ApiKeyPermissionsRemoteService apiKeyPermissionsService, UserPermissionsRemoteService userPermissionsService)
+		public PermissionsStore(ApiKeyPermissionsService apiKeyPermissionsService, UserPermissionsService userPermissionsService)
 		{
 			_apiKeyPermissionsService = apiKeyPermissionsService;
 			_userPermissionsService = userPermissionsService;

@@ -16,7 +16,7 @@ namespace Rights.Infra.Remote
 			: base(httpClient, jsonSerializer, claimsPrincipal)
 		{ }
 
-		internal async Task<IReadOnlyCollection<ApiKeyPermission>> GetApiKeyPermissionsAsync(int apiKeyId, ISet<int> operations)
+		internal async Task<IReadOnlyCollection<ApiKeyPermission>> GetApiKeyPermissionsAsync(int apiKeyId)
 		{
 			var queryParams = new Dictionary<string, string>
 			{
@@ -29,7 +29,7 @@ namespace Rights.Infra.Remote
 
 			var allApiKeyPermissions = apiKeyPermissionsReponse.Data.Items;
 
-			return allApiKeyPermissions.Where(p => operations.Contains(p.OperationId)).ToList();
+			return allApiKeyPermissions.ToList();
 		}
 	}
 }
