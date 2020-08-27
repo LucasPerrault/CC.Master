@@ -11,16 +11,19 @@ namespace Core.Proxy.Infra.Extensions
 {
 	public static class LegacyCloudControlProxyExtensions
 	{
-		private static readonly List<string> _redirectableApiPrefixes = new List<string>
+		private static readonly HashSet<string> _redirectableSegments = new HashSet<string>
+		(
+			StringComparer.InvariantCultureIgnoreCase
+		)
 		{
-			"/api/v3",
-			"/ping",
-			"/content",
-			"/signalR",
-			"/environments",
-			"/contractsv2",
-			"/errors"
+			"content",
+			"signalR",
+			"environments",
+			"contractsv2",
+			"errors"
 		};
+
+		private static readonly string _redirectableApiPrefix = "api/v3";
 
 		public static IApplicationBuilder UseLegacyCloudControlHttpProxy(this IApplicationBuilder app)
 		{
@@ -52,10 +55,18 @@ namespace Core.Proxy.Infra.Extensions
 
 		private static bool IsRedirectableCall(this HttpContext httpContext)
 		{
-			return httpContext != null &&
-					httpContext.Request.Path.HasValue &&
-					_redirectableApiPrefixes.Any(prefix =>
-						httpContext.Request.Path.StartsWithSegments(prefix, StringComparison.OrdinalIgnoreCase));
+			if (httpContext == null || !httpContext.Request.Path.HasValue)
+			{
+				return false;
+			}
+
+			if (httpContext.Request.Path.StartsWithSegments(_redirectableApiPrefix))
+			{
+				return true;
+			}
+
+			var firstSegment = httpContext.Request.Path.Value.Split('/').First();
+			return _redirectableSegments.Contains(firstSegment);
 		}
 	}
 }
