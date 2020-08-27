@@ -15,10 +15,19 @@ namespace Shared.Infra.Remote.Configurations
             _services = services;
         }
 
-        public void AddRemoteServiceHttpClient<T>(Uri endpoint)
+        public HostServiceConfigurer<TConfiguration> AddRemoteServiceHttpClient<T>(Uri endpoint)
             where T : HostRemoteService<TConfiguration>
         {
             _services.AddRemoteServiceHttpClient<T, TConfiguration>(_configuration, endpoint);
+            return this;
+        }
+
+        public HostServiceConfigurer<TConfiguration> AddRemoteServiceHttpClient<I, T>(Uri endpoint)
+            where T : HostRemoteService<TConfiguration>, I
+            where I : class
+        {
+            _services.AddRemoteServiceHttpClient<I, T, TConfiguration>(_configuration, endpoint);
+            return this;
         }
     }
 

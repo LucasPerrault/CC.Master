@@ -4,13 +4,43 @@
         "EndpointPath": "/api/v3/users/me",
         "RedirectEndpointPath": "/auth/userlogin",
         "ApiKeys": [
-            { "id": 1, "name": "Github incoming webhook", "token": "00000000-****-****-****-********" },
-            { "id": 3, "name": "QA - Recette", "token": "00000000-****-****-****-********" },
-            { "id": 4, "name": "Scripts de déploiement en prod", "token": "00000000-****-****-****-********" },
-            { "id": 6, "name": "Poplee - Comm In App", "token": "00000000-****-****-****-********" },
-            { "id": 7, "name": "Lucca - Infos sur les environnements", "token": "00000000-****-****-****-********" },
-            { "id": 12, "name": "Espace Client", "token": "00000000-****-****-****-********" }
+            {
+                "id": 1,
+                "name": "Github incoming webhook",
+                "token": "00000000-****-****-****-********"
+            },
+            {
+                "id": 3,
+                "name": "QA - Recette",
+                "token": "00000000-****-****-****-********"
+            },
+            {
+                "id": 4,
+                "name": "Scripts de déploiement en prod",
+                "token": "00000000-****-****-****-********"
+            },
+            {
+                "id": 6,
+                "name": "Poplee - Comm In App",
+                "token": "00000000-****-****-****-********"
+            },
+            {
+                "id": 7,
+                "name": "Lucca - Infos sur les environnements",
+                "token": "00000000-****-****-****-********"
+            },
+            {
+                "id": 12,
+                "name": "Espace Client",
+                "token": "00000000-****-****-****-********"
+            }
         ],
+    },
+    "Rights": {
+        "ServerUri": "https://partenaires.ilucca.net",
+        "DepartmentsEndpointPath": "/api/v3/departments",
+        "ForeignAppEndpointPath": "/api/v3/foreignapppermissionslookups",
+        "UsersEndpointPath": "/api/v3/userpermissionslookups"
     },
     "LuccaLoggerOptions": {
         "ApplicationName": "CloudControl",

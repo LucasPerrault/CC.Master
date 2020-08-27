@@ -5,7 +5,7 @@ using System.Net.Http;
 
 namespace Shared.Infra.Remote.Configurations
 {
-    public static class RemoteServicesHttpConfigurer
+    internal static class RemoteServicesHttpConfigurer
     {
         public static void AddRemoteServiceHttpClient<T, TConfiguration>(this IServiceCollection service, TConfiguration httpConfiguration, Uri endpoint)
             where T : HostRemoteService<TConfiguration>

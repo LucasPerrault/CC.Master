@@ -6,9 +6,9 @@ logs/
 src/**/bin/
 src/**/obj/
 
-src/*/Resources
-src/*/*.csproj.user
-src/*/Properties/launchSettings.json
+src/**/Resources
+src/**/*.csproj.user
+src/**/Properties/launchSettings.json
 
 src/CloudControl.Web/Properties/PublishProfiles/*.pubxml
 src/CloudControl.Web/Properties/PublishProfiles/*.user
