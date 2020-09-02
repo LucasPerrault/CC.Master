@@ -1,4 +1,4 @@
-﻿using Authentication.Web;
+using Authentication.Web;
 using CloudControl.Web.Configuration;
 using CloudControl.Web.Exceptions;
 using CloudControl.Web.Spa;
@@ -12,6 +12,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
 using Proxy.Web;
 using Rights.Web;
+using Storage.Web;
 using System;
 
 namespace CloudControl.Web
@@ -35,6 +36,7 @@ namespace CloudControl.Web
 			ConfigureLogs(services);
 			ConfigureSpa(services);
 			ConfigureProxy(services);
+			ConfigureStorage(services);
 			ConfigureAuthentication(services, configuration);
 			ConfigureRights(services, configuration);
 		}
@@ -72,6 +74,11 @@ namespace CloudControl.Web
 		public virtual void ConfigureProxy(IServiceCollection services)
 		{
 			ProxyConfigurer.ConfigureServices(services);
+		}
+
+		public virtual void ConfigureStorage(IServiceCollection services)
+		{
+			StorageConfigurer.ConfigureServices(services, _configuration);
 		}
 
 		public virtual void ConfigureAuthentication(IServiceCollection services, AppConfiguration configuration)
