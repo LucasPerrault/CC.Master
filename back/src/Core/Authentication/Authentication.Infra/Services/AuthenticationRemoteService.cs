@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace Authentication.Infra.Services
 {
-    public class AuthenticationRemoteService : HostRemoteService<PartenairesAuthServiceConfiguration>
+    public class AuthenticationRemoteService : RestApiV3HostRemoteService<PartenairesAuthServiceConfiguration>
     {
         private readonly ApiKeysConfiguration _apiKeysConfig;
         private const string _authScheme = "Lucca";

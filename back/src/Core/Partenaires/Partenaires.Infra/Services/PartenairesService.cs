@@ -8,7 +8,7 @@ using System.Security.Claims;
 
 namespace Partenaires.Infra.Services
 {
-	public abstract class PartenairesService : HostRemoteService<PartenairesAuthServiceConfiguration>
+	public abstract class PartenairesService : RestApiV3HostRemoteService<PartenairesAuthServiceConfiguration>
 	{
 		protected const string _authScheme = "Lucca";
 
@@ -38,7 +38,7 @@ namespace Partenaires.Infra.Services
 					token = ak.Token;
 					break;
 				default:
-					throw new ApplicationException("Can't get departments with unrecognized principal");
+					throw new ApplicationException("Can't authenticate to Lucca service with unrecognized principal");
 			}
 
 			partenairesAuthConfig.Authenticate(_httpClient, _authScheme, authType, token);

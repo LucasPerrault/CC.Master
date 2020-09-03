@@ -10,6 +10,7 @@ using System.IO;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+using System.Net;
 
 namespace Shared.Infra.Remote.Services
 {
@@ -26,33 +27,18 @@ namespace Shared.Infra.Remote.Services
             _jsonSerializer = jsonSerializer ?? throw new ArgumentNullException(nameof(jsonSerializer));
         }
 
-        protected async Task<RestApiV3Response<T>> GetObjectResponseAsync<T>(Dictionary<string, string> queryParams)
+        protected Task<TResult> GetGenericObjectResponseAsync<TResult>(Dictionary<string, string> queryParams)
         {
-            var response = await GetResponseMessageAsync("", queryParams);
-            return await ParseResponseAsync<RestApiV3Response<T>, T>(response);
+            return GetGenericObjectResponseAsync<TResult>(string.Empty, queryParams);
         }
 
-        protected async Task<RestApiV3Response<T>> GetObjectResponseAsync<T>(string id, Dictionary<string, string> queryParams)
+        protected async Task<TResult> GetGenericObjectResponseAsync<TResult>(string id, Dictionary<string, string> queryParams)
         {
             var response = await GetResponseMessageAsync(id, queryParams);
-            return await ParseResponseAsync<RestApiV3Response<T>, T>(response);
+            return await ParseResponseAsync<TResult>(response);
         }
 
-        protected Task<RestApiV3CollectionResponse<T>> GetObjectCollectionResponseAsync<T>(Dictionary<string, string> queryParams)
-        {
-            return GetObjectCollectionResponseAsync<T>(string.Empty, queryParams);
-        }
-
-        protected async Task<RestApiV3CollectionResponse<T>> GetObjectCollectionResponseAsync<T>(string subRoute, Dictionary<string, string> queryParams)
-        {
-            var response = await GetResponseMessageAsync(subRoute, queryParams);
-            return await ParseResponseAsync<RestApiV3CollectionResponse<T>, RestApiV3Collection<T>>(response);
-        }
-
-        protected async Task<RestApiV3Response<TResult>> PutObjectResponseAsync<Tform, TResult>(
-            string id,
-            Tform content,
-            Dictionary<string, string> queryParams)
+        protected async Task<TResult> PutGenericObjectResponseAsync<TForm, TResult>(string id, TForm content, Dictionary<string, string> queryParams)
         {
             var requestUri = QueryHelpers.AddQueryString(id, queryParams);
             var requestMessage = new HttpRequestMessage(HttpMethod.Put, requestUri);
@@ -62,8 +48,10 @@ namespace Shared.Infra.Remote.Services
             requestMessage.Content = httpContent;
 
             var response = await _httpClient.SendAsync(requestMessage);
-            return await ParseResponseAsync<RestApiV3Response<TResult>, TResult>(response);
+            return await ParseResponseAsync<TResult>(response);
         }
+
+        protected abstract string GetErrorMessage(JsonTextReader jsonTextReader);
 
         private Task<HttpResponseMessage> GetResponseMessageAsync(string subRoute, Dictionary<string, string> queryParams)
         {
@@ -73,8 +61,7 @@ namespace Shared.Infra.Remote.Services
             return _httpClient.SendAsync(requestMessage);
         }
 
-        private async Task<TResponse> ParseResponseAsync<TResponse, U>(HttpResponseMessage response)
-            where TResponse : RestApiV3Response<U>
+        private async Task<TResponse> ParseResponseAsync<TResponse>(HttpResponseMessage response)
         {
             await using var responseStream = await response.Content.ReadAsStreamAsync();
             using var streamReader = new StreamReader(responseStream);
@@ -82,8 +69,8 @@ namespace Shared.Infra.Remote.Services
 
             if (!response.IsSuccessStatusCode)
             {
-                var error = _jsonSerializer.Deserialize<RestApiV3Error>(jsonTextReader);
-                throw new RemoteServiceException(RemoteAppName, response.StatusCode, error.Message);
+                var msg = GetErrorMessage(jsonTextReader);
+                throw new RemoteServiceException(RemoteAppName, response.StatusCode, msg);
             }
 
             return _jsonSerializer.Deserialize<TResponse>(jsonTextReader);
