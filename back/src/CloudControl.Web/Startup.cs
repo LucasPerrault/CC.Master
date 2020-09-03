@@ -2,6 +2,7 @@ using Authentication.Web;
 using CloudControl.Web.Middlewares;
 using CloudControl.Web.Spa;
 using Core.Proxy.Infra.Extensions;
+using Lucca.Core.AspNetCore.Healthz;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
@@ -33,6 +34,8 @@ namespace CloudControl.Web
 			}
 
 			app.UseHsts();
+
+			app.UseHealthChecks();
 
 			app.UseCertificateForwarding();
 			app.UseRouting();

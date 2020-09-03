@@ -2,6 +2,7 @@
 using CloudControl.Web.Configuration;
 using CloudControl.Web.Exceptions;
 using CloudControl.Web.Spa;
+using Lucca.Core.AspNetCore.Healthz;
 using Lucca.Logs.AspnetCore;
 using Lucca.Logs.Shared;
 using Microsoft.AspNetCore.Hosting;
@@ -30,6 +31,7 @@ namespace CloudControl.Web
 		{
 			var configuration = ConfigureConfiguration(services);
 			ConfigureHttpContext(services);
+			ConfigureHealthCheck(services, configuration);
 			ConfigureLogs(services);
 			ConfigureSpa(services);
 			ConfigureProxy(services);
@@ -51,6 +53,20 @@ namespace CloudControl.Web
 		{
 			services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 			services.AddSingleton<JsonSerializer>();
+		}
+
+		public virtual void ConfigureHealthCheck(IServiceCollection services, AppConfiguration configuration)
+		{
+			ProxyConfigurer.ConfigureLegacyHealthzServices(services, configuration.LegacyCloudControl);
+
+			services
+				.AddHealthCheck(o =>
+					{
+						o.ServiceGuid = new Guid("101DFDBD-2438-43D1-9D22-63D1C46B3412");// TODO
+						o.ServiceName = AppConfiguration.AppName;
+					}
+				)
+				.AddLegacyCheck();
 		}
 
 		public virtual void ConfigureProxy(IServiceCollection services)

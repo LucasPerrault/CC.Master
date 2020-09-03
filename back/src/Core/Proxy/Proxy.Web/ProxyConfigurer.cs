@@ -1,4 +1,5 @@
 ﻿using Core.Proxy.Infra.Configuration;
+using Core.Proxy.Infra.Healthz;
 using Core.Proxy.Infra.Services;
 using Microsoft.Extensions.DependencyInjection;
 using ProxyKit;
@@ -18,6 +19,12 @@ namespace Proxy.Web
 		{
 			services.WithHostConfiguration(new LegacyCloudControlServiceConfiguration())
 				.AddRemoteServiceHttpClient<LegacyHealthzService>(new Uri(config.HttpRedirectionUrl));
+		}
+
+		public static IHealthChecksBuilder AddLegacyCheck(this IHealthChecksBuilder builder)
+		{
+			builder.AddCheck<LegacyHealthCheck>("legacy_check");
+			return builder;
 		}
 	}
 }

@@ -5,6 +5,7 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <PackageReference Include="Lucca.Core.AspNetCore.Healthz" Version="3.1.8" />
       <PackageReference Include="Lucca.Logs.AspnetCore" Version="0.7.0" />
       <PackageReference Include="Microsoft.AspNetCore.SpaServices" Version="3.1.5" />
       <PackageReference Include="Microsoft.AspNetCore.SpaServices.Extensions" Version="3.1.5" />
