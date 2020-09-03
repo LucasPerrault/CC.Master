@@ -9,4 +9,8 @@
       <PackageReference Include="ProxyKit" Version="2.3.3" />
     </ItemGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\..\..\Shared\Shared.Infra\Shared.Infra.csproj" />
+    </ItemGroup>
+
 </Project>
