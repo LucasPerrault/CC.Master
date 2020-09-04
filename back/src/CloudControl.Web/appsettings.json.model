@@ -37,7 +37,7 @@
                 "name": "Espace Client",
                 "token": "00000000-****-****-****-********"
             }
-        ],
+        ]
     },
     "Rights": {
         "ServerUri": "https://partenaires.ilucca.net",
@@ -55,5 +55,8 @@
     "LegacyCloudControl": {
         "HttpRedirectionUrl": "https://cc.ilucca.local:443",
         "WebSocketRedirectionUrl": "ws://cc.ilucca.local:80"
+    },
+    "Events": {
+        "Host": "rabbitmq://{{ shared:RabbitMqClusterUsername }}:{{ shared:RabbitMqClusterPassword }}@{{ shared:RabbitMqClusterHost }}/{{ shared:ClusterName }}"
     }
 }
