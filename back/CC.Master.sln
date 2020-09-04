@@ -9,19 +9,19 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Shared", "Shared", "{94CEAD
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core", "Core", "{D2E2B97F-F64D-42B1-B5E0-42EE97C53944}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Authentication.Infra", "src\Core\Authentication\Authentication.Infra\Authentication.Infra.csproj", "{FC47436F-5405-4863-9B76-BB1C4DB7341B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Authentication.Infra", "src\Core\Authentication\Authentication.Infra\Authentication.Infra.csproj", "{FC47436F-5405-4863-9B76-BB1C4DB7341B}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Authentication", "Authentication", "{617940DE-5945-42BD-BD65-9CF79142234E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Authentication.Domain", "src\Core\Authentication\Authentication.Domain\Authentication.Domain.csproj", "{D70D97F5-E54C-4FE8-A815-A1ACBB82E30D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Authentication.Domain", "src\Core\Authentication\Authentication.Domain\Authentication.Domain.csproj", "{D70D97F5-E54C-4FE8-A815-A1ACBB82E30D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Authentication.Web", "src\Core\Authentication\Authentication.Web\Authentication.Web.csproj", "{7FC25DAF-276C-4B8A-8060-B7BD03F48D26}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Authentication.Web", "src\Core\Authentication\Authentication.Web\Authentication.Web.csproj", "{7FC25DAF-276C-4B8A-8060-B7BD03F48D26}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Proxy", "Proxy", "{FB5D1253-3895-41D2-A460-61E2DEEAA44C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Proxy.Infra", "src\Core\Proxy\Proxy.Infra\Proxy.Infra.csproj", "{6C79B2D0-D418-448C-A9B4-834B1C3E0D96}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Proxy.Infra", "src\Core\Proxy\Proxy.Infra\Proxy.Infra.csproj", "{6C79B2D0-D418-448C-A9B4-834B1C3E0D96}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Proxy.Web", "src\Core\Proxy\Proxy.Web\Proxy.Web.csproj", "{AC60C079-0A42-428F-BF7E-B463A12413FF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Proxy.Web", "src\Core\Proxy\Proxy.Web\Proxy.Web.csproj", "{AC60C079-0A42-428F-BF7E-B463A12413FF}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Remote", "Remote", "{1CE323C2-E98D-4054-851B-4E6F833441AE}"
 EndProject
@@ -29,15 +29,21 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Remote.Infra", "src\Shared\
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Rights", "Rights", "{71AE2200-9AB3-4975-AFBD-D5869358CDFB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rights.Infra", "src\Core\Rights\Rights.Infra\Rights.Infra.csproj", "{AE948DE9-D23E-4D9B-A07D-37061B9B3F27}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Rights.Infra", "src\Core\Rights\Rights.Infra\Rights.Infra.csproj", "{AE948DE9-D23E-4D9B-A07D-37061B9B3F27}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rights.Web", "src\Core\Rights\Rights.Web\Rights.Web.csproj", "{D990195A-2D03-4418-B810-DD2EED9EBF79}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Rights.Web", "src\Core\Rights\Rights.Web\Rights.Web.csproj", "{D990195A-2D03-4418-B810-DD2EED9EBF79}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rights.Domain", "src\Core\Rights\Rights.Domain\Rights.Domain.csproj", "{FB7AAC68-9DF7-480B-B04C-42B493B6FA4C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Rights.Domain", "src\Core\Rights\Rights.Domain\Rights.Domain.csproj", "{FB7AAC68-9DF7-480B-B04C-42B493B6FA4C}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Partenaires", "Partenaires", "{39841DFA-7A67-4F43-BB42-B5B6E7657294}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Partenaires.Infra", "src\Core\Partenaires\Partenaires.Infra\Partenaires.Infra.csproj", "{72F322BD-F129-4B01-8E70-DC54F3D1ECBF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Partenaires.Infra", "src\Core\Partenaires\Partenaires.Infra\Partenaires.Infra.csproj", "{72F322BD-F129-4B01-8E70-DC54F3D1ECBF}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Events", "Events", "{D77F0EE6-5E68-47E1-BCA0-97EC47E5A264}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Events.Infra", "src\Core\Events\Events.Infra\Events.Infra.csproj", "{B00912BD-5AE4-4429-8ECD-C64B93E3B5D6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Events.Web", "src\Core\Events\Events.Web\Events.Web.csproj", "{43FE51EC-7F3B-4BCF-B351-A4A931FC85DD}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Storage", "Storage", "{05C34518-C820-43BC-9BBB-168CB42D8F03}"
 EndProject
@@ -128,8 +134,8 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{617940DE-5945-42BD-BD65-9CF79142234E} = {D2E2B97F-F64D-42B1-B5E0-42EE97C53944}
 		{FC47436F-5405-4863-9B76-BB1C4DB7341B} = {617940DE-5945-42BD-BD65-9CF79142234E}
+		{617940DE-5945-42BD-BD65-9CF79142234E} = {D2E2B97F-F64D-42B1-B5E0-42EE97C53944}
 		{D70D97F5-E54C-4FE8-A815-A1ACBB82E30D} = {617940DE-5945-42BD-BD65-9CF79142234E}
 		{7FC25DAF-276C-4B8A-8060-B7BD03F48D26} = {617940DE-5945-42BD-BD65-9CF79142234E}
 		{FB5D1253-3895-41D2-A460-61E2DEEAA44C} = {D2E2B97F-F64D-42B1-B5E0-42EE97C53944}
