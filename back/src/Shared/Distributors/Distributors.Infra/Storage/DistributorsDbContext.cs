@@ -13,6 +13,7 @@ namespace Distributors.Infra.Storage
 		protected override void ApplyConfiguration(ModelBuilder modelBuilder)
 		{
 			modelBuilder.ApplyConfiguration(new DistributorsConfiguration());
+			modelBuilder.ApplyConfiguration(new DistributorDomainsConfiguration());
 		}
 	}
 }
