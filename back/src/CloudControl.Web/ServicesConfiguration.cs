@@ -3,6 +3,7 @@ using CloudControl.Web.Configuration;
 using CloudControl.Web.Exceptions;
 using CloudControl.Web.Spa;
 using Distributors.Infra.Storage;
+using Distributors.Web;
 using Lucca.Core.AspNetCore.Healthz;
 using Lucca.Logs.AspnetCore;
 using Lucca.Logs.Shared;
@@ -39,6 +40,7 @@ namespace CloudControl.Web
 			ConfigureSpa(services);
 			ConfigureProxy(services);
 			ConfigureStorage(services);
+			ConfigureSharedDomains(services);
 			ConfigureAuthentication(services, configuration);
 			ConfigureRights(services, configuration);
 		}
@@ -82,6 +84,11 @@ namespace CloudControl.Web
 		{
 			StorageConfigurer.ConfigureServices(services, _configuration);
 			services.ConfigureContext<DistributorsDbContext>(_hostingEnvironment);
+		}
+
+		public virtual void ConfigureSharedDomains(IServiceCollection services)
+		{
+			DistributorsConfigurer.ConfigureServices(services);
 		}
 
 		public virtual void ConfigureAuthentication(IServiceCollection services, AppConfiguration configuration)
