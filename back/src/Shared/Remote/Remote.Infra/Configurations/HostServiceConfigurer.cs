@@ -1,8 +1,8 @@
-﻿using Shared.Infra.Remote.Services;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
+using Remote.Infra.Services;
 using System;
 
-namespace Shared.Infra.Remote.Configurations
+namespace Remote.Infra.Configurations
 {
     public class HostServiceConfigurer<TConfiguration> where TConfiguration : RemoteServiceConfiguration<HostHttpClientConfiguration>
     {

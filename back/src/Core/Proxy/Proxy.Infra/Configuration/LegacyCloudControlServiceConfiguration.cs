@@ -1,7 +1,4 @@
-﻿using Shared.Infra.Remote.Configurations;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using Remote.Infra.Configurations;
 
 namespace Core.Proxy.Infra.Configuration
 {

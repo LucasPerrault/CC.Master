@@ -1,9 +1,9 @@
-﻿using Shared.Infra.Remote.Services;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
+using Remote.Infra.Services;
 using System;
 using System.Net.Http;
 
-namespace Shared.Infra.Remote.Configurations
+namespace Remote.Infra.Configurations
 {
     internal static class RemoteServicesHttpConfigurer
     {

@@ -1,4 +1,4 @@
-﻿using Shared.Infra.Remote.Configurations;
+﻿using Remote.Infra.Configurations;
 
 namespace Partenaires.Infra.Configuration
 {

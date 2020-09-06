@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Partenaires.Infra.Configuration;
-using Shared.Infra.Remote.Configurations;
+using Remote.Infra.Configurations;
 using System;
 using System.Collections.Generic;
 using System.Linq;

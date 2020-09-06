@@ -1,7 +1,7 @@
 ﻿using Authentication.Domain;
-using Shared.Infra.Remote.Services;
 using Newtonsoft.Json;
 using Partenaires.Infra.Configuration;
+using Remote.Infra.Services;
 using System;
 using System.Net.Http;
 using System.Security.Claims;

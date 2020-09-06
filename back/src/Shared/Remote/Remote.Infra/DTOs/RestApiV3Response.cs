@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Shared.Infra.Remote.DTOs
+namespace Remote.Infra.DTOs
 {
     public class RestApiV3Error
     {

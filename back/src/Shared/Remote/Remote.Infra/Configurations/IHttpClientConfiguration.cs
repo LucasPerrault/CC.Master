@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Shared.Infra.Remote.Configurations
+namespace Remote.Infra.Configurations
 {
     public interface IHttpClientConfiguration
     { }

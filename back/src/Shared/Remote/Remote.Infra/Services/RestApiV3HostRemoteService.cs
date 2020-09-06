@@ -1,9 +1,8 @@
 ﻿using Microsoft.AspNetCore.WebUtilities;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using Shared.Infra.Remote.Configurations;
-using Shared.Infra.Remote.DTOs;
-using Shared.Infra.Remote.Exceptions;
+using Remote.Infra.Configurations;
+using Remote.Infra.DTOs;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -12,7 +11,7 @@ using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Shared.Infra.Remote.Services
+namespace Remote.Infra.Services
 {
     public abstract class RestApiV3HostRemoteService<TC> : HostRemoteService<TC>
         where TC : RemoteServiceConfiguration<HostHttpClientConfiguration>

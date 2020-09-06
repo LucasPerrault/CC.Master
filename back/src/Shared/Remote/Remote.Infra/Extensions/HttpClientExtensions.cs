@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Net.Http;
 
-namespace Shared.Infra.Remote.Extensions
+namespace Remote.Infra.Extensions
 {
     public static class HttpClientExtensions
     {

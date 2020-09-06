@@ -1,9 +1,9 @@
-﻿using Shared.Infra.Remote.Extensions;
+﻿using Remote.Infra.Extensions;
 using System;
 using System.Net.Http;
 using System.Net.Http.Headers;
 
-namespace Shared.Infra.Remote.Configurations
+namespace Remote.Infra.Configurations
 {
     public abstract class RemoteServiceConfiguration<T> where T : IHttpClientConfiguration
     {

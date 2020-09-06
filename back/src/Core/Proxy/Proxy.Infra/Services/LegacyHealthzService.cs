@@ -1,11 +1,10 @@
 ﻿using Core.Proxy.Infra.Configuration;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Newtonsoft.Json;
-using Shared.Infra.Remote.Services;
+using Remote.Infra.Services;
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Core.Proxy.Infra.Services
@@ -16,7 +15,7 @@ namespace Core.Proxy.Infra.Services
 
         protected override string RemoteAppName => "LegacyCloudControl";
 
-        public LegacyHealthzService(HttpClient httpClient, JsonSerializer jsonSerializer) 
+        public LegacyHealthzService(HttpClient httpClient, JsonSerializer jsonSerializer)
             : base(httpClient, jsonSerializer)
         { }
 
@@ -54,7 +53,7 @@ namespace Core.Proxy.Infra.Services
                 {
                     "Healthy" => HealthCheckResult.Healthy(),
                     _ => HealthCheckResult.Unhealthy()
-                };   
+                };
             }
         }
     }

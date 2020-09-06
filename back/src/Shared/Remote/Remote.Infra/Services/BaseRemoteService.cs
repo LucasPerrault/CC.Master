@@ -1,8 +1,8 @@
-﻿using Shared.Infra.Remote.Configurations;
+﻿using Remote.Infra.Configurations;
 using System;
 using System.Net.Http;
 
-namespace Shared.Infra.Remote.Services
+namespace Remote.Infra.Services
 {
     public abstract class BaseRemoteService<T> where T : IHttpClientConfiguration
     {

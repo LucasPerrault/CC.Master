@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Net;
 
-namespace Shared.Infra.Remote.Exceptions
+namespace Remote.Infra.Exceptions
 {
     public class RemoteServiceException : ApplicationException
     {

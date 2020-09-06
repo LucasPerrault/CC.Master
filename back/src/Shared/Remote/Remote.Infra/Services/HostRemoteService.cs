@@ -1,18 +1,16 @@
-﻿using Shared.Infra.Remote.Configurations;
-using Shared.Infra.Remote.DTOs;
-using Shared.Infra.Remote.Exceptions;
-using Microsoft.AspNetCore.WebUtilities;
+﻿using Microsoft.AspNetCore.WebUtilities;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using Remote.Infra.Configurations;
+using Remote.Infra.Exceptions;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
-using System.Net;
 
-namespace Shared.Infra.Remote.Services
+namespace Remote.Infra.Services
 {
     public abstract class HostRemoteService<TC> : BaseRemoteService<HostHttpClientConfiguration>
         where TC : RemoteServiceConfiguration<HostHttpClientConfiguration>

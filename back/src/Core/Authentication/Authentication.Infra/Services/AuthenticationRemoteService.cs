@@ -1,9 +1,9 @@
 ﻿using Authentication.Domain;
 using Authentication.Infra.Configurations;
 using Authentication.Infra.DTOs;
-using Shared.Infra.Remote.Services;
 using Newtonsoft.Json;
 using Partenaires.Infra.Configuration;
+using Remote.Infra.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;

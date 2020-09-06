@@ -3,7 +3,7 @@ using Core.Proxy.Infra.Healthz;
 using Core.Proxy.Infra.Services;
 using Microsoft.Extensions.DependencyInjection;
 using ProxyKit;
-using Shared.Infra.Remote.Configurations;
+using Remote.Infra.Configurations;
 using System;
 
 namespace Proxy.Web
