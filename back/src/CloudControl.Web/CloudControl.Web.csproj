@@ -16,6 +16,7 @@
       <ProjectReference Include="..\Core\Proxy\Proxy.Web\Proxy.Web.csproj" />
       <ProjectReference Include="..\Core\Rights\Rights.Web\Rights.Web.csproj" />
       <ProjectReference Include="..\Core\Storage\Storage.Web\Storage.Web.csproj" />
+      <ProjectReference Include="..\Shared\Distributors\Distributors.Web\Distributors.Web.csproj" />
     </ItemGroup>
 
 </Project>

@@ -1,7 +1,8 @@
-using Authentication.Web;
+﻿using Authentication.Web;
 using CloudControl.Web.Configuration;
 using CloudControl.Web.Exceptions;
 using CloudControl.Web.Spa;
+using Distributors.Infra.Storage;
 using Lucca.Core.AspNetCore.Healthz;
 using Lucca.Logs.AspnetCore;
 using Lucca.Logs.Shared;
@@ -12,6 +13,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
 using Proxy.Web;
 using Rights.Web;
+using Storage.Infra.Context;
 using Storage.Web;
 using System;
 
@@ -79,6 +81,7 @@ namespace CloudControl.Web
 		public virtual void ConfigureStorage(IServiceCollection services)
 		{
 			StorageConfigurer.ConfigureServices(services, _configuration);
+			services.ConfigureContext<DistributorsDbContext>(_hostingEnvironment);
 		}
 
 		public virtual void ConfigureAuthentication(IServiceCollection services, AppConfiguration configuration)
