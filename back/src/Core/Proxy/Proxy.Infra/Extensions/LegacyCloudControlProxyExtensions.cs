@@ -16,6 +16,7 @@ namespace Core.Proxy.Infra.Extensions
 			StringComparer.InvariantCultureIgnoreCase
 		)
 		{
+			"pingAll",
 			"content",
 			"signalR",
 			"environments",
