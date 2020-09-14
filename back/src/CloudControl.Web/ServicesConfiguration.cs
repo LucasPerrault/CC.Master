@@ -5,6 +5,7 @@ using CloudControl.Web.Spa;
 using Distributors.Infra.Storage;
 using Distributors.Web;
 using Lucca.Core.AspNetCore.Healthz;
+using Lucca.Core.AspNetCore.Tenancy;
 using Lucca.Logs.AspnetCore;
 using Lucca.Logs.Shared;
 using Microsoft.AspNetCore.Hosting;
@@ -39,6 +40,7 @@ namespace CloudControl.Web
 			ConfigureLogs(services);
 			ConfigureSpa(services);
 			ConfigureProxy(services);
+			ConfigureTenancy(services);
 			ConfigureStorage(services);
 			ConfigureSharedDomains(services);
 			ConfigureAuthentication(services, configuration);
@@ -78,6 +80,11 @@ namespace CloudControl.Web
 		public virtual void ConfigureProxy(IServiceCollection services)
 		{
 			ProxyConfigurer.ConfigureServices(services);
+		}
+
+		public virtual void ConfigureTenancy(IServiceCollection services)
+		{
+			services.AddTenancy(t => { }, DatabaseMode.MultiTenant);
 		}
 
 		public virtual void ConfigureStorage(IServiceCollection services)

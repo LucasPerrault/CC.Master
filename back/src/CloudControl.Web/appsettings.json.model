@@ -1,11 +1,6 @@
 ﻿{
   "SqlInfos": {
-    "Default": "Data Source=localhost;Initial Catalog=CloudControl;user=cloudcontrol;Password=cloudcontrol;MultipleActiveResultSets=True;App=CloudControl",
-    "Name": "CloudControl",
-    "IsSqlUserByTenantActive": "false",
-    "DatabasePrefix": "",
-    "ServerName": "localhost",
-    "PasswordSuffix": "xxx"
+    "Default": "Data Source=localhost;Initial Catalog=CloudControl;user=cloudcontrol;Password=cloudcontrol;MultipleActiveResultSets=True;App=CloudControl"
     },
     "Authentication": {
         "ServerUri": "https://partenaires.ilucca.net",
