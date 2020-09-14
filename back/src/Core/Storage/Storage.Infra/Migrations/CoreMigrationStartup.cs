@@ -11,7 +11,7 @@ namespace Storage.Infra.Migrations
 
 		public override void ConfigureMigration(IServiceCollection services, IConfiguration configuration)
 		{
-			services.Configure<ConnectionStringOptions>(configuration.GetSection("SqlInfos"));
+			SqlConfigurer.Configure(services, configuration);
 		}
 
 		public override DatabaseMode DatabaseMode => DatabaseMode.MultiTenant;
