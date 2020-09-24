@@ -5,6 +5,8 @@ using CloudControl.Web.Spa;
 using Distributors.Infra.Storage;
 using Distributors.Web;
 using Events.Web;
+using Lucca.Core.Api.Abstractions;
+using Lucca.Core.Api.Web;
 using Lucca.Core.AspNetCore.Healthz;
 using Lucca.Core.AspNetCore.Tenancy;
 using Lucca.Logs.AspnetCore;
@@ -13,6 +15,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Newtonsoft.Json;
 using Proxy.Web;
 using Rights.Web;
@@ -39,6 +42,7 @@ namespace CloudControl.Web
 			ConfigureHttpContext(services);
 			ConfigureEvents(services, configuration);
 			ConfigureHealthCheck(services, configuration);
+			ConfigureApi(services);
 			ConfigureLogs(services);
 			ConfigureSpa(services);
 			ConfigureProxy(services);
@@ -81,6 +85,22 @@ namespace CloudControl.Web
 					}
 				)
 				.AddLegacyCheck();
+		}
+
+		private void ConfigureApi(IServiceCollection services)
+		{
+			services.AddControllers();
+
+			services.AddLuccaApi(luccaApiBuilder =>
+			{
+				luccaApiBuilder
+					.SetPagingDefaultLimit(100)
+					.AddModelBinding();
+			});
+			services.AddMvc().AddLuccaApi(o =>
+			{
+				o.ShouldIncludeFullExceptionDetails = _hostingEnvironment.IsDevelopment();
+			});
 		}
 
 		public virtual void ConfigureProxy(IServiceCollection services)

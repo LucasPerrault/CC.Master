@@ -44,6 +44,8 @@ namespace CloudControl.Web
 
 			app.UseMiddleware<SessionKeyAuthMiddleware>();
 
+			app.UseEndpoints(e => e.MapControllers());
+
 			app.UseLegacyCloudControlWebSocketProxy();
 			app.UseLegacyCloudControlHttpProxy();
 
