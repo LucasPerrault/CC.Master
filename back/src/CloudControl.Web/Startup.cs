@@ -53,8 +53,8 @@ namespace CloudControl.Web
 
 			app.UseMiddleware<UnauthorizedAccessMiddleware>();
 
-			app.UseMiddleware<FrontRequestFilterMiddleware>();
-			app.UseFrontApplication(env);
+			// app.UseMiddleware<FrontRequestFilterMiddleware>();
+			// app.UseFrontApplication(env);
 		}
 	}
 }
