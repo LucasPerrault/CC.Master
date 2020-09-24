@@ -35,6 +35,7 @@ namespace Authentication.Web
 				.AddRemoteServiceHttpClient<AuthenticationRemoteService>(new Uri(config.ServerUri, config.EndpointPath));
 
 			services.AddSingleton<PrincipalStore>();
+			services.AddSingleton<SessionKeyService>();
 		}
 
 		private static void ConfigureCustomTokensReaders(IServiceCollection services)
