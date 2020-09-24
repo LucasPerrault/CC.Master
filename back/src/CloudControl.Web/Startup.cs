@@ -42,10 +42,10 @@ namespace CloudControl.Web
 
 			app.UseHttpsRedirection();
 
+			app.UseMiddleware<SessionKeyAuthMiddleware>();
+
 			app.UseLegacyCloudControlWebSocketProxy();
 			app.UseLegacyCloudControlHttpProxy();
-
-			app.UseMiddleware<SessionKeyAuthMiddleware>();
 
 			app.UseAuthentication();
 
