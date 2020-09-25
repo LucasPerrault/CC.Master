@@ -5,7 +5,7 @@
 			"name": "CC.Master",
 			"friendlyName": "CC Master",
 			"jenkinsProjectName": "CC.Master",
-			"projectType": "no-monolith",
+			"projectType": "internalTool",
 			"deployType": ["config", "back", "maj"],
 			"slackChannel": "#mises-en-prod",
 			"path": "C:\\d\\sites\\CC.Master",
