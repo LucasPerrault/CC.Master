@@ -1,0 +1,30 @@
+{
+	"schemaVersion": "9",
+	"apps": [
+		{
+			"name": "CC.Master",
+			"friendlyName": "CC Master",
+			"jenkinsProjectName": "CC.Master",
+			"projectType": "no-monolith",
+			"deployType": ["config", "back", "maj"],
+			"slackChannel": "#mises-en-prod",
+			"path": "C:\\d\\sites\\CC.Master",
+			"appPath": "",
+			"isPrivate": false,
+			"config": {
+				"files": [
+					{
+						"type": "fromNas",
+						"location": "appsettings.json",
+						"compare": true
+					}
+				]
+			},
+			"maj": {
+				"isMultitenant": true,
+				"entryDll": "Cloudcontrol.Web.dll",
+				"isMultithread": true
+			}
+		}
+	]
+}
