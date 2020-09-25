@@ -1,14 +1,12 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Authentication.Infra.Services;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Extensions;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace Authentication.Web
 {
     public class SessionKeyAuthMiddleware
     {
-        private const string _sessionKeyKey = "sessionKey";
-        private const string _authTokenCookieKey = "authToken";
         private readonly RequestDelegate _next;
 
         public SessionKeyAuthMiddleware(RequestDelegate next)
@@ -16,25 +14,40 @@ namespace Authentication.Web
             _next = next;
         }
 
-        public async Task Invoke(HttpContext httpContext)
+        public async Task Invoke
+        (
+            HttpContext httpContext,
+            SessionKeyService sessionKeyService,
+            AuthTokenCookieService cookieService
+        )
         {
-            var hasSessionKeyParam = httpContext.Request.Query.ContainsKey(_sessionKeyKey);
-            if (hasSessionKeyParam)
+            if (sessionKeyService.ContainsSessionKey(httpContext.Request.Query))
             {
-                AuthenticateResponse(httpContext);
+                AuthenticateResponse(httpContext, sessionKeyService, cookieService);
                 return;
             }
 
             await _next.Invoke(httpContext);
         }
 
-        private void AuthenticateResponse(HttpContext httpContext)
+        private void AuthenticateResponse
+        (
+            HttpContext httpContext,
+            SessionKeyService sessionKeyService,
+            AuthTokenCookieService cookieService
+        )
         {
-            var token = httpContext.Request.Query[_sessionKeyKey].Single();
+            var token = sessionKeyService.GetSessionKey(httpContext.Request.Query);
 
-            httpContext.Response.Cookies.Append(_authTokenCookieKey, token);
+            cookieService.SetAuthTokenCookie(httpContext, token);
 
-            var redirectionUri = UriHelper.BuildAbsolute(httpContext.Request.Scheme, httpContext.Request.Host, httpContext.Request.PathBase, httpContext.Request.Path);
+            var redirectionUri = UriHelper.BuildAbsolute
+            (
+                httpContext.Request.Scheme,
+                httpContext.Request.Host,
+                httpContext.Request.PathBase,
+                httpContext.Request.Path
+            );
             httpContext.Response.Redirect(redirectionUri, false);
         }
     }

@@ -42,17 +42,19 @@ namespace CloudControl.Web
 
 			app.UseHttpsRedirection();
 
+			app.UseMiddleware<SessionKeyAuthMiddleware>();
+
+			app.UseEndpoints(e => e.MapControllers());
+
 			app.UseLegacyCloudControlWebSocketProxy();
 			app.UseLegacyCloudControlHttpProxy();
-
-			app.UseMiddleware<SessionKeyAuthMiddleware>();
 
 			app.UseAuthentication();
 
 			app.UseMiddleware<UnauthorizedAccessMiddleware>();
 
-			app.UseMiddleware<FrontRequestFilterMiddleware>();
-			app.UseFrontApplication(env);
+			// app.UseMiddleware<FrontRequestFilterMiddleware>();
+			// app.UseFrontApplication(env);
 		}
 	}
 }
