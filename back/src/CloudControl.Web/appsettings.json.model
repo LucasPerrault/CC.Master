@@ -6,6 +6,7 @@
         "ServerUri": "https://partenaires.ilucca.net",
         "EndpointPath": "/api/v3/users/me",
         "RedirectEndpointPath": "/auth/userlogin",
+        "LogoutEndpointPath": "/logout",
         "ApiKeys": [
             {
                 "id": 1,

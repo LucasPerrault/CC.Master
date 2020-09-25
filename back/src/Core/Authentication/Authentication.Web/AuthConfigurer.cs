@@ -36,6 +36,7 @@ namespace Authentication.Web
 
 			services.AddSingleton<PrincipalStore>();
 			services.AddSingleton<SessionKeyService>();
+			services.AddSingleton<AuthTokenCookieService>();
 		}
 
 		private static void ConfigureCustomTokensReaders(IServiceCollection services)

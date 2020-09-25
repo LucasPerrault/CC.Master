@@ -8,7 +8,10 @@ namespace Authentication.Web.Controllers
     {
         private readonly AuthRedirectionRemoteService _authRedirectionRemoteService;
 
-        public AccountController(AuthRedirectionRemoteService authRedirectionRemoteService)
+        public AccountController
+        (
+            AuthRedirectionRemoteService authRedirectionRemoteService
+        )
         {
             _authRedirectionRemoteService = authRedirectionRemoteService;
         }
@@ -17,11 +20,9 @@ namespace Authentication.Web.Controllers
         public RedirectResult Login([FromQuery] string returnUrl)
         {
             var redirectionCallback = $"{Request.Host.Value}{returnUrl}";
-
             var authUrl = _authRedirectionRemoteService.GetAuthRedirectionUri(redirectionCallback);
 
             return Redirect(authUrl.ToString());
-
-         }
+        }
     }
 }
