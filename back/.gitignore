@@ -6,6 +6,9 @@ logs/
 src/**/bin/
 src/**/obj/
 
+tests/**/bin/
+tests/**/obj/
+
 src/**/Resources
 src/**/*.csproj.user
 src/**/Properties/launchSettings.json

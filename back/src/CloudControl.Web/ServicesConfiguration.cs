@@ -87,7 +87,7 @@ namespace CloudControl.Web
 				.AddLegacyCheck();
 		}
 
-		private void ConfigureApi(IServiceCollection services)
+		public virtual void ConfigureApi(IServiceCollection services)
 		{
 			services.AddControllers();
 
