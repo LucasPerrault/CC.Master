@@ -9,6 +9,7 @@
 			"deployType": ["config", "back", "maj"],
 			"slackChannel": "#mises-en-prod",
 			"path": "C:\\d\\sites\\CC.Master",
+			"wsTenant": "cc",
 			"appPath": "",
 			"isPrivate": false,
 			"config": {
@@ -24,6 +25,13 @@
 				"isMultitenant": true,
 				"entryDll": "Cloudcontrol.Web.dll",
 				"isMultithread": true
+			},
+			"internalToolSpecifications": {
+				"featureTarget": "cloudcontrol",
+				"hasBetaVersion": true,
+				"betaSpecifications": {
+					"slackChannel": "#cc-notifications"
+				}
 			}
 		}
 	]
