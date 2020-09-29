@@ -32,7 +32,7 @@ namespace CloudControl.Web.Tests.Authentication
             var response = await _client.GetAsync("/account/login?returnUrl=%2fdemos");
             Assert.Equal(HttpStatusCode.Redirect, response.StatusCode);
             Assert.Contains(
-                "https://mocked-partenaires.local/login?callback=localhost/demos",
+                "https://mocked-partenaires.local/login?callback=https://localhost/demos",
                 response.Headers.GetValues("Location")
             );
         }
@@ -43,7 +43,7 @@ namespace CloudControl.Web.Tests.Authentication
             var response = await _client.GetAsync("/logout");
             Assert.Equal(HttpStatusCode.Redirect, response.StatusCode);
             Assert.Contains(
-                "https://mocked-partenaires.local/logout?callback=localhost",
+                "https://mocked-partenaires.local/logout?callback=https://localhost",
                 response.Headers.GetValues("Location")
             );
         }

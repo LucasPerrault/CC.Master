@@ -23,7 +23,7 @@ namespace Authentication.Web.Controllers
         public RedirectResult Logout()
         {
             _cookieService.InvalidateAuthTokenCookie(HttpContext);
-            var redirectionCallback = Request.Host.Value;
+            var redirectionCallback = $"https://{Request.Host.Value}";
             var authUrl = _authRedirectionRemoteService.GetLogoutRedirectionUri(redirectionCallback);
 
             return Redirect(authUrl.ToString());
