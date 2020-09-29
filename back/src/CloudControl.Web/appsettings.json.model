@@ -1,61 +1,30 @@
 ﻿{
   "SqlInfos": {
-    "Default": "Data Source=localhost;Initial Catalog=CloudControl;user=cloudcontrol;Password=cloudcontrol;MultipleActiveResultSets=True;App=CloudControl"
+    "Default": "{{ CC.Master:SqlConnectionString }}"
     },
     "Authentication": {
-        "ServerUri": "https://partenaires.ilucca.net",
-        "EndpointPath": "/api/v3/users/me",
-        "RedirectEndpointPath": "/auth/userlogin",
-        "LogoutEndpointPath": "/logout",
-        "ApiKeys": [
-            {
-                "id": 1,
-                "name": "Github incoming webhook",
-                "token": "00000000-****-****-****-********"
-            },
-            {
-                "id": 3,
-                "name": "QA - Recette",
-                "token": "00000000-****-****-****-********"
-            },
-            {
-                "id": 4,
-                "name": "Scripts de déploiement en prod",
-                "token": "00000000-****-****-****-********"
-            },
-            {
-                "id": 6,
-                "name": "Poplee - Comm In App",
-                "token": "00000000-****-****-****-********"
-            },
-            {
-                "id": 7,
-                "name": "Lucca - Infos sur les environnements",
-                "token": "00000000-****-****-****-********"
-            },
-            {
-                "id": 12,
-                "name": "Espace Client",
-                "token": "00000000-****-****-****-********"
-            }
-        ]
+        "ServerUri": "{{ CC.Master:AuthenticationTenantUri }}",
+        "EndpointPath": "{{ CC.Master:AuthEndpointPath }}",
+        "RedirectEndpointPath": "{{ CC.Master:AuthRedirectEndpointPath }}",
+        "LogoutEndpointPath": "{{ CC.Master:AuthLogoutEndpointPath }}",
+        "ApiKeys": [ ]
     },
     "Rights": {
-        "ServerUri": "https://partenaires.ilucca.net",
-        "DepartmentsEndpointPath": "/api/v3/departments",
-        "ForeignAppEndpointPath": "/api/v3/foreignapppermissionslookups",
-        "UsersEndpointPath": "/api/v3/userpermissionslookups"
+        "ServerUri": "{{ CC.Master:RightsTenantUri }}",
+        "DepartmentsEndpointPath": "{{ CC.Master:RightsDepartmentEndpointPath }}",
+        "ForeignAppEndpointPath": "{{ CC.Master:RightsForeignAppEndpointPath }}",
+        "UsersEndpointPath": "{{ CC.Master:RightsUsersEndpointPath }}"
     },
     "LuccaLoggerOptions": {
         "ApplicationName": "CloudControl",
         "ConnectionString": "{{ shared:LuccaLogsConnectionString }}",
-        "LogFilePath": "{{ CloudControl:LogFilePath }}",
+        "LogFilePath": "{{ CC.Master:LogFilePath }}",
         "EventIdSeparator": "eventId",
         "IgnoreEmptyEventId": "false"
     },
     "LegacyCloudControl": {
-        "HttpRedirectionUrl": "https://cc.ilucca.local:443",
-        "WebSocketRedirectionUrl": "ws://cc.ilucca.local:80"
+        "HttpRedirectionUrl": "{{ CC.Master:LegacyHttpRedirection }}",
+        "WebSocketRedirectionUrl": "{{ CC.Master:LegacyWSRedirection }}"
     },
     "Events": {
         "Host": "rabbitmq://{{ shared:RabbitMqClusterUsername }}:{{ shared:RabbitMqClusterPassword }}@{{ shared:RabbitMqClusterHost }}/{{ shared:ClusterName }}"
