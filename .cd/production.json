@@ -1,5 +1,5 @@
 {
-	"schemaVersion": "9",
+	"schemaVersion": "10",
 	"apps": [
 		{
 			"name": "CC.Master",
@@ -30,7 +30,8 @@
 				"featureTarget": "cloudcontrol",
 				"hasBetaVersion": true,
 				"betaSpecifications": {
-					"slackChannel": "#cc-notifications"
+					"slackChannel": "#cc-notifications",
+					"configEnvironment": "PREVIEW"
 				}
 			}
 		}
