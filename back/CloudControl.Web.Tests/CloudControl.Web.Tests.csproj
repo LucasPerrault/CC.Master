@@ -17,8 +17,8 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\src\CloudControl.Web\CloudControl.Web.csproj" />
-      <ProjectReference Include="..\..\src\Core\Authentication\Authentication.Domain\Authentication.Domain.csproj" />
+      <ProjectReference Include="..\CloudControl.Web\CloudControl.Web.csproj" />
+      <ProjectReference Include="..\Core\Authentication\Authentication.Domain\Authentication.Domain.csproj" />
     </ItemGroup>
 
 </Project>
