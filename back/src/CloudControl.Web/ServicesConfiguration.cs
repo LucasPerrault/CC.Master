@@ -44,7 +44,7 @@ namespace CloudControl.Web
 			ConfigureHealthCheck(services, configuration);
 			ConfigureApi(services);
 			ConfigureLogs(services);
-			ConfigureSpa(services);
+			// ConfigureSpa(services);
 			ConfigureProxy(services);
 			ConfigureTenancy(services);
 			ConfigureStorage(services);
