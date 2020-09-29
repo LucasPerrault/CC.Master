@@ -23,7 +23,7 @@
 			},
 			"maj": {
 				"isMultitenant": true,
-				"entryDll": "Cloudcontrol.Web.dll",
+				"entryDll": "CloudControl.Web.dll",
 				"isMultithread": true
 			},
 			"internalToolSpecifications": {
