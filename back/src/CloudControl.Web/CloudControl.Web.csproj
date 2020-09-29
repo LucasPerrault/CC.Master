@@ -22,4 +22,10 @@
       <ProjectReference Include="..\Shared\Distributors\Distributors.Web\Distributors.Web.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+        <Content Include="app_offline.htm.tpl">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </Content>
+    </ItemGroup>
+
 </Project>
