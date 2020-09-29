@@ -61,6 +61,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Distributors.Web", "Shared\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CloudControl.Web.Tests", "CloudControl.Web.Tests\CloudControl.Web.Tests.csproj", "{39BE3AAF-C5AC-4653-A3D2-61DF15CC7D2F}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{90D93B9D-512D-4086-87A6-9D15AE8C6D9B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Authentication.Web.Tests", "Core\Authentication\Tests\Authentication.Web.Tests\Authentication.Web.Tests.csproj", "{E9589197-D428-490C-B055-304A7732BA40}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -143,6 +147,10 @@ Global
 		{39BE3AAF-C5AC-4653-A3D2-61DF15CC7D2F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{39BE3AAF-C5AC-4653-A3D2-61DF15CC7D2F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{39BE3AAF-C5AC-4653-A3D2-61DF15CC7D2F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E9589197-D428-490C-B055-304A7732BA40}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E9589197-D428-490C-B055-304A7732BA40}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E9589197-D428-490C-B055-304A7732BA40}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E9589197-D428-490C-B055-304A7732BA40}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -173,6 +181,8 @@ Global
 		{FE58AA9D-0951-4764-9226-2F84AF086AB7} = {66118C4B-C4E5-48E0-8787-54E1D7181ED5}
 		{600B9E59-DC6F-4B2E-8501-C7DC1785A2F6} = {66118C4B-C4E5-48E0-8787-54E1D7181ED5}
 		{5980A55F-7D14-4680-9DCC-5FBD0582B017} = {66118C4B-C4E5-48E0-8787-54E1D7181ED5}
+		{90D93B9D-512D-4086-87A6-9D15AE8C6D9B} = {617940DE-5945-42BD-BD65-9CF79142234E}
+		{E9589197-D428-490C-B055-304A7732BA40} = {90D93B9D-512D-4086-87A6-9D15AE8C6D9B}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {EBA79BF7-490F-4B8F-8162-771B77F6C73B}

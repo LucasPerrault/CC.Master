@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Extensions;
 using System.Threading.Tasks;
 
-namespace Authentication.Web
+namespace Authentication.Web.Middlewares
 {
     public class SessionKeyAuthMiddleware
     {
