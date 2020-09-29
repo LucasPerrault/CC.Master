@@ -34,7 +34,7 @@ namespace Rights.Infra.Stores
 
 		public Task<List<IWebServicePermission>> GetWebServicesPermissionsAsync(string webServiceId, int appInstanceId, ISet<int> operations)
 		{
-			return null;
+			return Task.FromResult(new List<IWebServicePermission>());
 		}
 	}
 }

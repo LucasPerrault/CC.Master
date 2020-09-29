@@ -1,5 +1,5 @@
 {
-	"schemaVersion": "9",
+	"schemaVersion": "10",
 	"apps": [
 		{
 			"name": "CC.Master",
@@ -9,6 +9,7 @@
 			"deployType": ["config", "back", "maj"],
 			"slackChannel": "#mises-en-prod",
 			"path": "C:\\d\\sites\\CC.Master",
+			"wsTenant": "cc",
 			"appPath": "",
 			"isPrivate": false,
 			"config": {
@@ -22,8 +23,16 @@
 			},
 			"maj": {
 				"isMultitenant": true,
-				"entryDll": "Cloudcontrol.Web.dll",
+				"entryDll": "CloudControl.Web.dll",
 				"isMultithread": true
+			},
+			"internalToolSpecifications": {
+				"featureTarget": "cloudcontrol",
+				"hasBetaVersion": true,
+				"betaSpecifications": {
+					"slackChannel": "#cc-notifications",
+					"configEnvironment": "PREVIEW"
+				}
 			}
 		}
 	]

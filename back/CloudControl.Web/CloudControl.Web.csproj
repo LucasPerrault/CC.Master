@@ -2,6 +2,7 @@
 
     <PropertyGroup>
         <TargetFramework>netcoreapp3.1</TargetFramework>
+        <AspNetCoreHostingModel>OutOfProcess</AspNetCoreHostingModel>
     </PropertyGroup>
 
     <ItemGroup>
@@ -20,6 +21,15 @@
       <ProjectReference Include="..\Core\Rights\Rights.Web\Rights.Web.csproj" />
       <ProjectReference Include="..\Core\Storage\Storage.Web\Storage.Web.csproj" />
       <ProjectReference Include="..\Shared\Distributors\Distributors.Web\Distributors.Web.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <Content Include="app_offline.htm.tpl">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </Content>
+        <Content Include="appsettings.json.model">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </Content>
     </ItemGroup>
 
 </Project>

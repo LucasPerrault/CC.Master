@@ -1,0 +1,32 @@
+﻿{
+  "SqlInfos": {
+    "Default": "{{ CC.Master:SqlConnectionString }}"
+    },
+    "Authentication": {
+        "ServerUri": "{{ CC.Master:AuthenticationTenantUri }}",
+        "EndpointPath": "{{ CC.Master:AuthEndpointPath }}",
+        "RedirectEndpointPath": "{{ CC.Master:AuthRedirectEndpointPath }}",
+        "LogoutEndpointPath": "{{ CC.Master:AuthLogoutEndpointPath }}",
+        "ApiKeys": [ ]
+    },
+    "Rights": {
+        "ServerUri": "{{ CC.Master:RightsTenantUri }}",
+        "DepartmentsEndpointPath": "{{ CC.Master:RightsDepartmentEndpointPath }}",
+        "ForeignAppEndpointPath": "{{ CC.Master:RightsForeignAppEndpointPath }}",
+        "UsersEndpointPath": "{{ CC.Master:RightsUsersEndpointPath }}"
+    },
+    "LuccaLoggerOptions": {
+        "ApplicationName": "CloudControl",
+        "ConnectionString": "{{ shared:LuccaLogsConnectionString }}",
+        "LogFilePath": "{{ CC.Master:LogFilePath }}",
+        "EventIdSeparator": "eventId",
+        "IgnoreEmptyEventId": "false"
+    },
+    "LegacyCloudControl": {
+        "HttpRedirectionUrl": "{{ CC.Master:LegacyHttpRedirection }}",
+        "WebSocketRedirectionUrl": "{{ CC.Master:LegacyWSRedirection }}"
+    },
+    "Events": {
+        "Host": "rabbitmq://{{ shared:RabbitMqClusterUsername }}:{{ shared:RabbitMqClusterPassword }}@{{ shared:RabbitMqClusterHost }}/{{ shared:ClusterName }}"
+    }
+}

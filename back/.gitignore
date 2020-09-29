@@ -3,19 +3,16 @@
 .vs/
 logs/
 
-src/**/bin/
-src/**/obj/
+**/bin/
+**/obj/
 
-tests/**/bin/
-tests/**/obj/
+**/Resources
+**/*.csproj.user
+**/Properties/launchSettings.json
 
-src/**/Resources
-src/**/*.csproj.user
-src/**/Properties/launchSettings.json
-
-src/CloudControl.Web/Properties/PublishProfiles/*.pubxml
-src/CloudControl.Web/Properties/PublishProfiles/*.user
-src/publish
-src/CloudControl.Web/appsettings.json
-src/CloudControl.Web/web.config
-src/CloudControl.Web/migration.log
+CloudControl.Web/Properties/PublishProfiles/*.pubxml
+CloudControl.Web/Properties/PublishProfiles/*.user
+publish
+CloudControl.Web/appsettings.json
+CloudControl.Web/web.config
+CloudControl.Web/migration.log

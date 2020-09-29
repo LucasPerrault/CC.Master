@@ -19,7 +19,7 @@ namespace Authentication.Web.Controllers
         [HttpGet, Route("Login")]
         public RedirectResult Login([FromQuery] string returnUrl)
         {
-            var redirectionCallback = $"{Request.Host.Value}{returnUrl}";
+            var redirectionCallback = $"https://{Request.Host.Value}{returnUrl}";
             var authUrl = _authRedirectionRemoteService.GetAuthRedirectionUri(redirectionCallback);
 
             return Redirect(authUrl.ToString());
