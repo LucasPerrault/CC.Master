@@ -1,4 +1,5 @@
-﻿using Authentication.Infra.Configurations;
+﻿using Authentication.Domain;
+using Authentication.Infra.Configurations;
 using Authentication.Infra.Services;
 using Authentication.Infra.Storage;
 using Lucca.Core.Authentication;
@@ -20,7 +21,6 @@ namespace Authentication.Web
 		public static void ConfigureServices(IServiceCollection services, AuthenticationConfiguration config)
 		{
 			services.AddSingleton(config);
-			services.AddSingleton(config.ApiKeys);
 			services.AddTransient
 			(
 				provider => provider.GetService<IHttpContextAccessor>().HttpContext.User
@@ -32,7 +32,11 @@ namespace Authentication.Web
 			services.AddSingleton<AuthRedirectionRemoteService>();
 
 			services.WithHostConfiguration(new PartenairesAuthServiceConfiguration())
-				.AddRemoteServiceHttpClient<AuthenticationRemoteService>(new Uri(config.ServerUri, config.EndpointPath));
+				.AddRemoteServiceHttpClient<UserAuthenticationRemoteService>(new Uri(config.ServerUri, config.UsersEndpointPath));
+
+			var authApiKey = new ApiKey { Name = "Api keys fetcher" , Token = config.ApiKeysFetcherToken };
+			services.WithHostConfiguration(new ApiKeyPartenairesServiceConfiguration(authApiKey))
+				.AddRemoteServiceHttpClient<ApiKeyAuthenticationRemoteService>(new Uri(config.ServerUri, config.ApiKeysEndpointPath));
 
 			services.AddSingleton<PrincipalStore>();
 			services.AddSingleton<SessionKeyService>();

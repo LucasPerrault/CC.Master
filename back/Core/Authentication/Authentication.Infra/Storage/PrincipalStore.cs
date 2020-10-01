@@ -10,11 +10,13 @@ namespace Authentication.Infra.Storage
 {
     public class PrincipalStore : IPrincipalStore<ClaimsPrincipal>
     {
-        private readonly AuthenticationRemoteService _authService;
+        private readonly UserAuthenticationRemoteService _userAuthService;
+        private readonly ApiKeyAuthenticationRemoteService _apiKeyAuthService;
 
-        public PrincipalStore(AuthenticationRemoteService authService)
+        public PrincipalStore(UserAuthenticationRemoteService userAuthService, ApiKeyAuthenticationRemoteService apiKeyAuthService)
         {
-            _authService = authService;
+            _userAuthService = userAuthService;
+            _apiKeyAuthService = apiKeyAuthService;
         }
 
         public ClaimsPrincipal GetPrincipal(PrincipalType type, Guid token)
@@ -27,9 +29,9 @@ namespace Authentication.Infra.Storage
             switch (type)
             {
                 case PrincipalType.User:
-                    return SetupUserPrincipal(await _authService.GetUserPrincipalAsync(token));
+                    return SetupUserPrincipal(await _userAuthService.GetUserPrincipalAsync(token));
                 case PrincipalType.ApiKey:
-                    return SetupApiKeyPrincipal(_authService.GetApiKeyPrincipal(token));
+                    return SetupApiKeyPrincipal(await _apiKeyAuthService.GetApiKeyPrincipalAsync(token));
                 default:
                     throw new NotImplementedException(type.ToString());
             }

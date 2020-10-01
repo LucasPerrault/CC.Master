@@ -1,5 +1,4 @@
 ﻿using Authentication.Infra.Configurations;
-using CloudControl.Web;
 using CloudControl.Web.Configuration;
 using Lucca.Core.AspNetCore.Healthz;
 using Microsoft.AspNetCore.Authentication;
@@ -34,10 +33,6 @@ namespace CloudControl.Web.Tests.Mocks
 			{
 				Authentication = new AuthenticationConfiguration
 				{
-					ApiKeys = new ApiKeysConfiguration
-					{
-						new ApiKeyConfiguration { Id = 1, Name = "Mocked api key", Token = new Guid("deadbeef-0000-0000-0000-000000000000")}
-					},
 					ServerUri = new Uri("https://mocked-partenaires.local"),
 					LogoutEndpointPath = "/logout",
 					RedirectEndpointPath = "/login"
