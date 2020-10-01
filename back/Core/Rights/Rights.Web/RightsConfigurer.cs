@@ -4,7 +4,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Partenaires.Infra.Configuration;
 using Remote.Infra.Configurations;
 using Rights.Domain.Abstractions;
-using Rights.Domain.Services;
 using Rights.Infra.Configuration;
 using Rights.Infra.Remote;
 using Rights.Infra.Services;

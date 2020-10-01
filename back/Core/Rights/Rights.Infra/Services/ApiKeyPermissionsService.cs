@@ -1,10 +1,10 @@
-﻿using Rights.Infra.Models;
+using Rights.Infra.Models;
 using Rights.Infra.Remote;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Rights.Domain.Services
+namespace Rights.Infra.Services
 {
 	public class ApiKeyPermissionsService
 	{
