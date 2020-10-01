@@ -1,6 +1,6 @@
 ﻿using Lucca.Core.Rights.Abstractions.Permissions;
 using Lucca.Core.Rights.Abstractions.Stores;
-using Rights.Domain.Services;
+using Rights.Infra.Services;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 

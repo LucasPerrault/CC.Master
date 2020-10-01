@@ -6,7 +6,7 @@ namespace Authentication.Domain
 {
     public class ApiKey : IApiKey
     {
-        public int Id { get; set; }
+        public int Id => 0;  // api key ids cannot be known by design ; we'll always assume "lucca user"
         public PrincipalType Type => PrincipalType.ApiKey;
         public Guid Token { get; set; }
         public string Name { get; set; }

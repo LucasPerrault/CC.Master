@@ -11,13 +11,15 @@ namespace Partenaires.Infra.Services
 	public abstract class PartenairesService : RestApiV3HostRemoteService<PartenairesAuthServiceConfiguration>
 	{
 		protected const string _authScheme = "Lucca";
-
 		protected override string RemoteAppName => "Partenaires";
+
+		protected readonly ClaimsPrincipal _claimsPrincipal;
 
 		public PartenairesService(HttpClient httpClient, JsonSerializer jsonSerializer, ClaimsPrincipal claimsPrincipal)
 			: base(httpClient, jsonSerializer)
 		{
-			Authenticate(claimsPrincipal);
+			_claimsPrincipal = claimsPrincipal;
+			Authenticate(_claimsPrincipal);
 		}
 
 		private void Authenticate(ClaimsPrincipal claimsPrincipal)

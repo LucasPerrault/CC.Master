@@ -4,10 +4,11 @@
     },
     "Authentication": {
         "ServerUri": "{{ CC.Master:AuthenticationTenantUri }}",
-        "EndpointPath": "{{ CC.Master:AuthEndpointPath }}",
+        "UsersEndpointPath": "{{ CC.Master:AuthUsersEndpointPath }}",
+        "ApiKeysEndpointPath": "{{ CC.Master:AuthApiKeysEndpointPath }}",
         "RedirectEndpointPath": "{{ CC.Master:AuthRedirectEndpointPath }}",
         "LogoutEndpointPath": "{{ CC.Master:AuthLogoutEndpointPath }}",
-        "ApiKeys": [ ]
+        "ApiKeysFetcherToken": "{{ CC.Master:AuthApiKeysFetcherToken }}"
     },
     "Rights": {
         "ServerUri": "{{ CC.Master:RightsTenantUri }}",
