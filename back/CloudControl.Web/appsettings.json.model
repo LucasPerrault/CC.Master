@@ -1,6 +1,6 @@
 ﻿{
   "SqlInfos": {
-    "Default": "Data Source=localhost;Initial Catalog=CloudControl;user={{ CC.Master:SqlLogin }};Password={{ CC.Master:SqlPassword }};MultipleActiveResultSets=True;App=CloudControl"
+    "Default": "Data Source={{ CC.Master:SqlServer }};Initial Catalog=CloudControl;user={{ CC.Master:SqlLogin }};Password={{ CC.Master:SqlPassword }};MultipleActiveResultSets=True;App=CloudControl"
     },
     "Authentication": {
         "ServerUri": "{{ CC.Master:AuthenticationTenantUri }}",
