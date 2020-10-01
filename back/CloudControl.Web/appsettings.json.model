@@ -4,7 +4,8 @@
     },
     "Authentication": {
         "ServerUri": "{{ CC.Master:AuthenticationTenantUri }}",
-        "EndpointPath": "{{ CC.Master:AuthEndpointPath }}",
+        "UsersEndpointPath": "{{ CC.Master:AuthUsersEndpointPath }}",
+        "ApiKeysEndpointPath": "{{ CC.Master:AuthApiKeysEndpointPath }}",
         "RedirectEndpointPath": "{{ CC.Master:AuthRedirectEndpointPath }}",
         "LogoutEndpointPath": "{{ CC.Master:AuthLogoutEndpointPath }}",
         "ApiKeysFetcherToken": "{{ CC.Master:AuthApiKeysFetcherToken }}"
