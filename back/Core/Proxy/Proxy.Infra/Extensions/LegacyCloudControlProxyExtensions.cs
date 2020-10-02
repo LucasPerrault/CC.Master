@@ -1,4 +1,4 @@
-﻿using Core.Proxy.Infra.Configuration;
+using Core.Proxy.Infra.Configuration;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
@@ -19,6 +19,7 @@ namespace Core.Proxy.Infra.Extensions
 				context  => context.IsRedirectableCall(),
 				app => app.RunProxy(context => context
 					.ForwardTo(proxyConfiguration.HttpRedirectionUrl)
+					.CopyXForwardedHeaders()
 					.AddXForwardedHeaders()
 					.Send()
 			));
