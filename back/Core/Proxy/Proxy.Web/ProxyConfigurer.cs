@@ -10,9 +10,12 @@ namespace Proxy.Web
 {
 	public static class ProxyConfigurer
 	{
+		private const int CloudControlTimeoutInSeconds = 120;
 		public static void ConfigureServices(IServiceCollection services)
 		{
-			services.AddProxy();
+			services.AddProxy(httpClientBuilder =>
+				httpClientBuilder.ConfigureHttpClient(client => client.Timeout = TimeSpan.FromSeconds(CloudControlTimeoutInSeconds))
+			);
 		}
 
 		public static void ConfigureLegacyHealthzServices(IServiceCollection services, LegacyCloudControlConfiguration config)
