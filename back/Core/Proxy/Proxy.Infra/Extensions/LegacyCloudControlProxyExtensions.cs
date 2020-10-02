@@ -11,6 +11,8 @@ namespace Core.Proxy.Infra.Extensions
 {
 	public static class LegacyCloudControlProxyExtensions
 	{
+		private const string FORWARDED_BY_CC_MASTER_HEADER = "X-Forwarded-By-CC-Master";
+
 		public static IApplicationBuilder UseLegacyCloudControlHttpProxy(this IApplicationBuilder app)
 		{
 			var proxyConfiguration = app.ApplicationServices.GetService<LegacyCloudControlConfiguration>();
@@ -21,6 +23,7 @@ namespace Core.Proxy.Infra.Extensions
 					.ForwardTo(proxyConfiguration.HttpRedirectionUrl)
 					.CopyXForwardedHeaders()
 					.AddXForwardedHeaders()
+					.AddXForwardedCustomHeaders(context)
 					.Send()
 			));
 
@@ -43,6 +46,12 @@ namespace Core.Proxy.Infra.Extensions
 		private static bool IsRedirectableCall(this HttpContext httpContext)
 		{
 			return true;
+		}
+
+		private static ForwardContext AddXForwardedCustomHeaders(this ForwardContext forwardContext, HttpContext context)
+		{
+			forwardContext.UpstreamRequest.Headers.Add(FORWARDED_BY_CC_MASTER_HEADER, new [] { true.ToString()});
+			return forwardContext;
 		}
 	}
 }
