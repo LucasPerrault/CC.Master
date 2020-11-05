@@ -55,7 +55,7 @@ namespace Core.Proxy.Infra.Extensions
 			{
 				forwardContext.UpstreamRequest.Headers.Add(FORWARDED_BY_LUCCA_HEADER, new [] { true.ToString()});
 			}
-			forwardContext.UpstreamRequest.Headers.Add(FORWARDED_BY_CC_MASTER_HEADER, new [] { true.ToString()});
+			forwardContext.UpstreamRequest.Headers.Add(FORWARDED_BY_CC_MASTER_HEADER, new [] { context.Request.Host.Host });
 			return forwardContext;
 		}
 	}
