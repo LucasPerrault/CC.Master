@@ -62,9 +62,6 @@ namespace CloudControl.Web.Tests.Mocks
 			});
 		}
 
-		public override void ConfigureEvents(IServiceCollection services, AppConfiguration configuration)
-		{ }
-
 		public override void ConfigureHealthCheck(IServiceCollection services, AppConfiguration c)
 		{
 			services

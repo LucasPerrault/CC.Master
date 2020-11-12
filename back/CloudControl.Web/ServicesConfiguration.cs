@@ -4,7 +4,6 @@ using CloudControl.Web.Exceptions;
 using CloudControl.Web.Spa;
 using Distributors.Infra.Storage;
 using Distributors.Web;
-using Events.Web;
 using Lucca.Core.Api.Abstractions;
 using Lucca.Core.Api.Web;
 using Lucca.Core.AspNetCore.Healthz;
@@ -40,7 +39,6 @@ namespace CloudControl.Web
 		{
 			var configuration = ConfigureConfiguration(services);
 			ConfigureHttpContext(services);
-			ConfigureEvents(services, configuration);
 			ConfigureHealthCheck(services, configuration);
 			ConfigureApi(services);
 			ConfigureLogs(services);
@@ -67,10 +65,6 @@ namespace CloudControl.Web
 		{
 			services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 			services.AddSingleton<JsonSerializer>();
-		}
-		public virtual void ConfigureEvents(IServiceCollection services, AppConfiguration configuration)
-		{
-			EventsConfigurer.ConfigureServices(services, AppConfiguration.AppName, configuration.Events);
 		}
 
 		public virtual void ConfigureHealthCheck(IServiceCollection services, AppConfiguration configuration)

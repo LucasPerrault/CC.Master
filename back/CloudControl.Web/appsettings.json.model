@@ -26,8 +26,5 @@
     "LegacyCloudControl": {
         "HttpRedirectionUrl": "{{ CC.Master:LegacyHttpRedirection }}",
         "WebSocketRedirectionUrl": "{{ CC.Master:LegacyWSRedirection }}"
-    },
-    "Events": {
-        "Host": "rabbitmq://{{ shared:RabbitMqClusterUsername }}:{{ shared:RabbitMqClusterPassword }}@{{ shared:RabbitMqClusterHost }}/{{ shared:ClusterName }}"
     }
 }
