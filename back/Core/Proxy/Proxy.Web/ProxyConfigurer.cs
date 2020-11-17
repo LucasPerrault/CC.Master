@@ -10,7 +10,7 @@ namespace Proxy.Web
 {
 	public static class ProxyConfigurer
 	{
-		private const int CloudControlTimeoutInMinutes = 15;
+		public const int CloudControlTimeoutInMinutes = 15;
 		public static void ConfigureServices(IServiceCollection services)
 		{
 			services.AddProxy(httpClientBuilder =>

@@ -1,8 +1,11 @@
 using Lucca.Core.AspNetCore.EfMigration;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.Extensions.DependencyInjection;
+using Proxy.Web;
 using Storage.Infra.Migrations;
+using System;
 using System.Threading.Tasks;
 
 namespace CloudControl.Web
@@ -21,6 +24,12 @@ namespace CloudControl.Web
 				{
 					s.AddSingleton<ServicesConfiguration>();
 				})
-				.UseStartup<Startup>();
+				.UseStartup<Startup>()
+				.ConfigureKestrel(ConfigureKestrel);
+
+		private static void ConfigureKestrel(KestrelServerOptions kestrelServerOptions)
+		{
+			kestrelServerOptions.Limits.KeepAliveTimeout = TimeSpan.FromMinutes(ProxyConfigurer.CloudControlTimeoutInMinutes);
+		}
 	}
 }
