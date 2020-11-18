@@ -1,6 +1,7 @@
 ﻿using IpFilter.Infra.Storage.Configurations;
 using Microsoft.EntityFrameworkCore;
 using Storage.Infra.Context;
+using Storage.Infra.Migrations;
 
 namespace IpFilter.Infra.Storage
 {
@@ -14,5 +15,11 @@ namespace IpFilter.Infra.Storage
         {
             modelBuilder.ApplyConfiguration(new IpFilterAuthorizationConfiguration());
         }
+    }
+
+    public class IpFilterMigrationDefinition : CloudControlDbContextMigrationDefinition<IpFilterDbContext>
+    {
+        public override string SchemaName => StorageSchemas.Shared.Value;
+        public override int Order => 2;
     }
 }
