@@ -4,8 +4,6 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using ProxyKit;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace Core.Proxy.Infra.Extensions
 {
@@ -46,7 +44,8 @@ namespace Core.Proxy.Infra.Extensions
 
 		private static bool IsRedirectableCall(this HttpContext httpContext)
 		{
-			return true;
+			return !httpContext.Request.Path.StartsWithSegments("/api")
+				|| httpContext.Request.Path.StartsWithSegments("/api/v3");
 		}
 
 		private static ForwardContext AddXForwardedCustomHeaders(this ForwardContext forwardContext, HttpContext context)
