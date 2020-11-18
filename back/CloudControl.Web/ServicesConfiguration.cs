@@ -9,6 +9,7 @@ using IpFilter.Infra.Storage;
 using Lucca.Core.Api.Abstractions;
 using Lucca.Core.Api.Web;
 using Lucca.Core.AspNetCore.Healthz;
+using Lucca.Core.AspNetCore.Middlewares;
 using Lucca.Core.AspNetCore.Tenancy;
 using Lucca.Logs.AspnetCore;
 using Lucca.Logs.Shared;
@@ -107,6 +108,7 @@ namespace CloudControl.Web
 
 		public virtual void ConfigureIpFilter(IServiceCollection services)
 		{
+			services.Configure<LuccaSecuritySettings>(_configuration.GetSection("LuccaSecurity"));
 			IpFilterConfigurer.ConfigureServices(services);
 		}
 

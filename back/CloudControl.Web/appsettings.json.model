@@ -23,6 +23,12 @@
         "EventIdSeparator": "eventId",
         "IgnoreEmptyEventId": "false"
     },
+    "LuccaSecurity": {
+        "IpWhitelist": {
+            "ResponseStatusCode": 401,
+            "AuthorizedIPAddresses": [ ]
+        }
+    },
     "LegacyCloudControl": {
         "HttpRedirectionUrl": "{{ CC.Master:LegacyHttpRedirection }}",
         "WebSocketRedirectionUrl": "{{ CC.Master:LegacyWSRedirection }}"

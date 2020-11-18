@@ -1,5 +1,7 @@
 ﻿using IpFilter.Domain;
 using IpFilter.Infra;
+using IpFilter.Infra.Storage.Stores;
+using Lucca.Core.AspNetCore.Middlewares;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace IpFilter.Web
@@ -9,7 +11,8 @@ namespace IpFilter.Web
         public static void ConfigureServices(IServiceCollection services)
         {
             services.AddSingleton<IIpFilterService, IpFilterService>();
-            services.AddSingleton<IIpFilterAuthorizationStore, IIpFilterAuthorizationStore>();
+            services.AddSingleton<IIpFilterAuthorizationStore, IpFilterAuthorizationStore>();
+            services.AddLuccaIpWhitelist<CurrentUserIpAccessor>();
         }
     }
 }

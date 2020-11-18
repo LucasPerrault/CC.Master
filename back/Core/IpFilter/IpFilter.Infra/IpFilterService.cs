@@ -1,5 +1,6 @@
 ﻿using IpFilter.Domain;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -14,10 +15,10 @@ namespace IpFilter.Infra
             _store = store;
         }
 
-        public async Task<bool> HasCurrentlyValidAccess(IpFilterUser user)
+        public async Task<IEnumerable<IpFilterAuthorization>> GetValid(IpFilterUser user)
         {
             var authorizations = await _store.GetByUserAsync(user);
-            return authorizations.Any(IsCurrentlyValid);
+            return authorizations.Where(IsCurrentlyValid);
         }
 
         public bool IsCurrentlyValid(IpFilterAuthorization ipFilterAuthorization)

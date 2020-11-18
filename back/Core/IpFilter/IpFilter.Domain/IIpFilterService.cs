@@ -1,10 +1,11 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace IpFilter.Domain
 {
     public interface IIpFilterService
     {
-        Task<bool> HasCurrentlyValidAccess(IpFilterUser user);
+        Task<IEnumerable<IpFilterAuthorization>> GetValid(IpFilterUser user);
         bool IsCurrentlyValid(IpFilterAuthorization ipFilterAuthorization);
     }
 }
