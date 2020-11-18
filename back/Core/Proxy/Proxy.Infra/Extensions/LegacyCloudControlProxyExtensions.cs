@@ -42,13 +42,13 @@ namespace Core.Proxy.Infra.Extensions
 			return app;
 		}
 
-		private static bool IsRedirectableCall(this HttpContext httpContext)
+		internal static bool IsRedirectableCall(this HttpContext httpContext)
 		{
 			return !httpContext.Request.Path.StartsWithSegments("/api")
 				|| httpContext.Request.Path.StartsWithSegments("/api/v3");
 		}
 
-		private static ForwardContext AddXForwardedCustomHeaders(this ForwardContext forwardContext, HttpContext context)
+		internal static ForwardContext AddXForwardedCustomHeaders(this ForwardContext forwardContext, HttpContext context)
 		{
 			if (context.Request.Headers.TryGetValue(FORWARDED_BY_LUCCA_HEADER, out var forwardedByLuccaHeader))
 			{

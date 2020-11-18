@@ -67,6 +67,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IpFilter.Infra", "Core\IpFi
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IpFilter.Web", "Core\IpFilter\IpFilter.Web\IpFilter.Web.csproj", "{A6D4EA22-F0A9-43E6-854E-8FF5125E7ECF}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Proxy.Tests", "Core\Proxy\Proxy.Tests\Proxy.Tests.csproj", "{3FCDAE31-D862-44AE-92E2-51A3A354EDC3}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -157,6 +159,10 @@ Global
 		{A6D4EA22-F0A9-43E6-854E-8FF5125E7ECF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A6D4EA22-F0A9-43E6-854E-8FF5125E7ECF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A6D4EA22-F0A9-43E6-854E-8FF5125E7ECF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3FCDAE31-D862-44AE-92E2-51A3A354EDC3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3FCDAE31-D862-44AE-92E2-51A3A354EDC3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3FCDAE31-D862-44AE-92E2-51A3A354EDC3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3FCDAE31-D862-44AE-92E2-51A3A354EDC3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -190,6 +196,7 @@ Global
 		{B519B984-5C8E-4078-9403-C3CF872E1621} = {195CF408-250E-42C0-AEE1-003CF830ED2D}
 		{6A64D106-8934-4AA9-B99E-2E5824BB0AFA} = {195CF408-250E-42C0-AEE1-003CF830ED2D}
 		{A6D4EA22-F0A9-43E6-854E-8FF5125E7ECF} = {195CF408-250E-42C0-AEE1-003CF830ED2D}
+		{3FCDAE31-D862-44AE-92E2-51A3A354EDC3} = {FB5D1253-3895-41D2-A460-61E2DEEAA44C}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {EBA79BF7-490F-4B8F-8162-771B77F6C73B}
