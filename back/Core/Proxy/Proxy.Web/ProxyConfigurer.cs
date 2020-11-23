@@ -20,8 +20,10 @@ namespace Proxy.Web
 
 		public static void ConfigureLegacyHealthzServices(IServiceCollection services, LegacyCloudControlConfiguration config)
 		{
+			var uri = new UriBuilder { Host = config.Host, Scheme = "http"}.Uri;
+
 			services.WithHostConfiguration(new LegacyCloudControlServiceConfiguration())
-				.AddRemoteServiceHttpClient<LegacyHealthzService>(new Uri(config.HttpRedirectionUrl));
+				.AddRemoteServiceHttpClient<LegacyHealthzService>(uri);
 		}
 
 		public static IHealthChecksBuilder AddLegacyCheck(this IHealthChecksBuilder builder)
