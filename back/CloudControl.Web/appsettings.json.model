@@ -24,7 +24,6 @@
         "IgnoreEmptyEventId": "false"
     },
     "LegacyCloudControl": {
-        "HttpRedirectionUrl": "{{ CC.Master:LegacyHttpRedirection }}",
-        "WebSocketRedirectionUrl": "{{ CC.Master:LegacyWSRedirection }}"
+        "Host": "{{ CC.Master:LegacyCloudControlHost }}"
     }
 }

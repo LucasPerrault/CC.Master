@@ -4,8 +4,6 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using ProxyKit;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace Core.Proxy.Infra.Extensions
 {
@@ -13,6 +11,10 @@ namespace Core.Proxy.Infra.Extensions
 	{
 		private const string FORWARDED_BY_LUCCA_HEADER = "X-Forwarded-By-Lucca";
 		private const string FORWARDED_BY_CC_MASTER_HEADER = "X-Forwarded-By-CC-Master";
+		private const string HOST_HEADER = "Host";
+
+		private const string HTTP_REDIRECTION_ADDRESS = "http://127.0.0.1";
+		private const string WS_REDIRECTION_ADDRESS = "ws://127.0.0.1";
 
 		public static IApplicationBuilder UseLegacyCloudControlHttpProxy(this IApplicationBuilder app)
 		{
@@ -21,9 +23,10 @@ namespace Core.Proxy.Infra.Extensions
 			(
 				context  => context.IsRedirectableCall(),
 				app => app.RunProxy(context => context
-					.ForwardTo(proxyConfiguration.HttpRedirectionUrl)
+					.ForwardTo(HTTP_REDIRECTION_ADDRESS)
 					.CopyXForwardedHeaders()
 					.AddXForwardedHeaders()
+					.AddRedirectionHeader(proxyConfiguration.Host)
 					.AddXForwardedCustomHeaders(context)
 					.Send()
 			));
@@ -37,8 +40,10 @@ namespace Core.Proxy.Infra.Extensions
 			app.UseWebSockets();
 			app.UseWebSocketProxy
 			(
-				context => new Uri(proxyConfiguration.WebSocketRedirectionUrl),
-				options => options.AddXForwardedHeaders()
+				context => new Uri(WS_REDIRECTION_ADDRESS),
+				options => options
+					.AddRedirectionHeader(proxyConfiguration.Host)
+					.AddXForwardedHeaders()
 			);
 
 			return app;
@@ -49,7 +54,22 @@ namespace Core.Proxy.Infra.Extensions
 			return true;
 		}
 
-		private static ForwardContext AddXForwardedCustomHeaders(this ForwardContext forwardContext, HttpContext context)
+		private static ForwardContext AddRedirectionHeader(this ForwardContext forwardContext, string redirectionUrl)
+		{
+			forwardContext.UpstreamRequest.Headers.Remove(HOST_HEADER);
+			forwardContext.UpstreamRequest.Headers.Add(HOST_HEADER, new [] { redirectionUrl });
+			return forwardContext;
+		}
+
+		private static WebSocketClientOptions AddRedirectionHeader(this WebSocketClientOptions options, string redirectionUrl)
+		{
+			options.HttpContext.Request.Headers.Remove(HOST_HEADER);
+			options.HttpContext.Request.Headers.Add(HOST_HEADER, new [] { redirectionUrl });
+			return options;
+		}
+
+		private static ForwardContext AddXForwardedCustomHeaders
+			(this ForwardContext forwardContext, HttpContext context)
 		{
 			if (context.Request.Headers.TryGetValue(FORWARDED_BY_LUCCA_HEADER, out var forwardedByLuccaHeader))
 			{
