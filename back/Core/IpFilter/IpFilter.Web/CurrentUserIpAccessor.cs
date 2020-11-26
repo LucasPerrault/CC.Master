@@ -53,7 +53,7 @@ namespace IpFilter.Web
                 UserId = userPrincipal.UserId.Value
             };
 
-            var validAuthorizations = await _ipFilterService.GetValid(user);
+            var validAuthorizations = await _ipFilterService.GetValidAsync(user);
             return validAuthorizations.Select(a => IPAddress.Parse(a.IpAddress)).ToHashSet();
         }
     }

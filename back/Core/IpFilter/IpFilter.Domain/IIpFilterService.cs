@@ -5,7 +5,7 @@ namespace IpFilter.Domain
 {
     public interface IIpFilterService
     {
-        Task<IEnumerable<IpFilterAuthorization>> GetValid(IpFilterUser user);
+        Task<IEnumerable<IpFilterAuthorization>> GetValidAsync(IpFilterUser user);
         bool IsCurrentlyValid(IpFilterAuthorization ipFilterAuthorization);
     }
 }

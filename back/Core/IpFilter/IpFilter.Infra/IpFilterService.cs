@@ -15,7 +15,7 @@ namespace IpFilter.Infra
             _store = store;
         }
 
-        public async Task<IEnumerable<IpFilterAuthorization>> GetValid(IpFilterUser user)
+        public async Task<IEnumerable<IpFilterAuthorization>> GetValidAsync(IpFilterUser user)
         {
             var authorizations = await _store.GetByUserAsync(user);
             return authorizations.Where(IsCurrentlyValid);
