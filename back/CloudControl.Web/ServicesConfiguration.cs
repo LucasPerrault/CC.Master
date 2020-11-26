@@ -4,9 +4,12 @@ using CloudControl.Web.Exceptions;
 using CloudControl.Web.Spa;
 using Distributors.Infra.Storage;
 using Distributors.Web;
+using IpFilter.Web;
+using IpFilter.Infra.Storage;
 using Lucca.Core.Api.Abstractions;
 using Lucca.Core.Api.Web;
 using Lucca.Core.AspNetCore.Healthz;
+using Lucca.Core.AspNetCore.Middlewares;
 using Lucca.Core.AspNetCore.Tenancy;
 using Lucca.Logs.AspnetCore;
 using Lucca.Logs.Shared;
@@ -44,6 +47,7 @@ namespace CloudControl.Web
 			ConfigureLogs(services);
 			// ConfigureSpa(services);
 			ConfigureProxy(services);
+			ConfigureIpFilter(services);
 			ConfigureTenancy(services);
 			ConfigureStorage(services);
 			ConfigureSharedDomains(services);
@@ -102,6 +106,12 @@ namespace CloudControl.Web
 			ProxyConfigurer.ConfigureServices(services);
 		}
 
+		public virtual void ConfigureIpFilter(IServiceCollection services)
+		{
+			services.Configure<LuccaSecuritySettings>(_configuration.GetSection("LuccaSecurity"));
+			IpFilterConfigurer.ConfigureServices(services);
+		}
+
 		public virtual void ConfigureTenancy(IServiceCollection services)
 		{
 			services.AddTenancy(t => { }, DatabaseMode.MultiTenant);
@@ -111,6 +121,7 @@ namespace CloudControl.Web
 		{
 			StorageConfigurer.ConfigureServices(services, _configuration);
 			services.ConfigureContext<DistributorsDbContext>(_hostingEnvironment);
+			services.ConfigureContext<IpFilterDbContext>(_hostingEnvironment);
 		}
 
 		public virtual void ConfigureSharedDomains(IServiceCollection services)

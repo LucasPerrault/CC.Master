@@ -15,6 +15,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\Core\Authentication\Authentication.Web\Authentication.Web.csproj" />
+      <ProjectReference Include="..\Core\IpFilter\IpFilter.Web\IpFilter.Web.csproj" />
       <ProjectReference Include="..\Core\Proxy\Proxy.Web\Proxy.Web.csproj" />
       <ProjectReference Include="..\Core\Rights\Rights.Web\Rights.Web.csproj" />
       <ProjectReference Include="..\Core\Storage\Storage.Web\Storage.Web.csproj" />

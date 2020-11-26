@@ -23,6 +23,12 @@
         "EventIdSeparator": "eventId",
         "IgnoreEmptyEventId": "false"
     },
+    "LuccaSecurity": {
+        "IpWhitelist": {
+            "ResponseStatusCode": 401,
+            "AuthorizedIPAddresses": "{{ CC.Master:WhitelistedIps }}"
+        }
+    },
     "LegacyCloudControl": {
         "Host": "{{ CC.Master:LegacyCloudControlHost }}"
     }

@@ -1,6 +1,6 @@
-using Authentication.Web;
 using Authentication.Web.Middlewares;
 using Core.Proxy.Infra.Extensions;
+using IpFilter.Web;
 using Lucca.Core.AspNetCore.Healthz;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -51,6 +51,7 @@ namespace CloudControl.Web
 			app.UseAuthentication();
 
 			app.UseMiddleware<UnauthorizedAccessMiddleware>();
+			app.UseIpFilter(env);
 
 			// app.UseMiddleware<FrontRequestFilterMiddleware>();
 			// app.UseFrontApplication(env);
