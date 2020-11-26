@@ -5,10 +5,6 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <Reference Include="Microsoft.Extensions.DependencyInjection.Abstractions, Version=3.1.9, Culture=neutral, PublicKeyToken=adb9793829ddae60"/>
-    </ItemGroup>
-
-    <ItemGroup>
       <ProjectReference Include="..\..\Authentication\Authentication.Domain\Authentication.Domain.csproj" />
       <ProjectReference Include="..\IpFilter.Domain\IpFilter.Domain.csproj" />
       <ProjectReference Include="..\IpFilter.Infra\IpFilter.Infra.csproj" />
