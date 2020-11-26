@@ -10,6 +10,7 @@ namespace Proxy.Tests
         [Theory]
         [InlineData("/api/v3/contracts")]
         [InlineData("/billing")]
+        [InlineData("/api/workerprocesses/blablabla")]
         [InlineData("/")]
         [InlineData("")]
         public void ShouldRedirectApiCalls(string url)
@@ -20,7 +21,7 @@ namespace Proxy.Tests
         }
 
         [Theory]
-        [InlineData("/api/contracts")]
+        [InlineData("/api/notALegacyV3Segment")]
         [InlineData("/api")]
         public void ShouldNotRedirectApiCalls(string url)
         {

@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using ProxyKit;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Core.Proxy.Infra.Extensions
 {
@@ -15,6 +17,13 @@ namespace Core.Proxy.Infra.Extensions
 
 		private const string HTTP_REDIRECTION_ADDRESS = "http://127.0.0.1";
 		private const string WS_REDIRECTION_ADDRESS = "ws://127.0.0.1";
+
+		private static readonly HashSet<string> NonV3LegacyApiSegments = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+		{
+			"workerprocesses",
+			"hangfire",
+			"backoffice",
+		};
 
 		public static IApplicationBuilder UseLegacyCloudControlHttpProxy(this IApplicationBuilder app)
 		{
@@ -51,8 +60,25 @@ namespace Core.Proxy.Infra.Extensions
 
 		internal static bool IsRedirectableCall(this HttpContext httpContext)
 		{
-			return !httpContext.Request.Path.StartsWithSegments("/api")
-				|| httpContext.Request.Path.StartsWithSegments("/api/v3");
+			return httpContext.Request.Path.StartsWithSegments("/api/v3")
+				|| httpContext.Request.Path.IsNonV3LegacyApiPath()
+				|| !httpContext.Request.Path.StartsWithSegments("/api");
+		}
+
+		private static bool IsNonV3LegacyApiPath(this PathString pathString)
+		{
+			if (!pathString.HasValue)
+			{
+				return false;
+			}
+
+			if (!pathString.StartsWithSegments("/api"))
+			{
+				return false;
+			}
+
+			var secondSegment = pathString.Value.Split('/').Skip(2).FirstOrDefault();
+			return !string.IsNullOrEmpty(secondSegment) && NonV3LegacyApiSegments.Contains(secondSegment);
 		}
 
 		private static ForwardContext AddRedirectionHeader(this ForwardContext forwardContext, string redirectionUrl)
