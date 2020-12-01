@@ -1,13 +1,7 @@
 ﻿using Lucca.Core.Authentication.Abstractions.Methods;
-using Lucca.Core.Authentication.Abstractions.Tokens;
 using Lucca.Core.Authentication.Tokens;
-using Lucca.Core.Shared.Domain.Contracts;
 using Microsoft.AspNetCore.Http;
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Net.Http;
-using System.Text;
 
 namespace Authentication.Infra.Services
 {
