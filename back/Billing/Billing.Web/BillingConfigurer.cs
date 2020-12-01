@@ -12,6 +12,8 @@ namespace Billing.Web
 		{
 			services.AddScoped<IClientsStore, ClientsStore>();
 			services.AddScoped<IContractsStore, ContractsStore>();
+
+			services.AddScoped<IClientVisibilityService, ClientVisibilityService>();
 		}
 	}
 }
