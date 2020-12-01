@@ -31,6 +31,10 @@
     },
     "LegacyCloudControl": {
         "Host": "{{ CC.Master:LegacyCloudControlHost }}"
+    },
+    "BillingContracts": {
+        "LegacyClientsEndpointPath": "{{ CC.Master:LegacyClientsEndpointPath }}"
+    },
     "Salesforce": {
         "ServerUri": "{{ CC.Master:SalesforceUri }}",
         "AccountsEndpointPath": "/salesforce/accounts",
