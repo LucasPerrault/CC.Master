@@ -24,6 +24,7 @@ using Rights.Web;
 using Storage.Infra.Context;
 using Storage.Web;
 using System;
+using Salesforce.Web;
 
 namespace CloudControl.Web
 {
@@ -53,6 +54,7 @@ namespace CloudControl.Web
 			ConfigureSharedDomains(services);
 			ConfigureAuthentication(services, configuration);
 			ConfigureRights(services, configuration);
+			ConfigureSalesforce(services, configuration);
 		}
 
 		public virtual AppConfiguration ConfigureConfiguration(IServiceCollection services)
@@ -152,6 +154,11 @@ namespace CloudControl.Web
 		public virtual void ConfigureSpa(IServiceCollection services)
 		{
 			services.RegisterFrontApplication(_hostingEnvironment);
+		}
+
+		public virtual void ConfigureSalesforce(IServiceCollection services, AppConfiguration configuration)
+		{
+			SalesforceConfigurer.ConfigureServices(services, configuration.Salesforce);
 		}
 	}
 }

@@ -1,6 +1,6 @@
 ﻿{
-  "SqlInfos": {
-    "Default": "Data Source={{ CC.Master:SqlServer }};Initial Catalog=CloudControl;user={{ CC.Master:SqlLogin }};Password={{ CC.Master:SqlPassword }};MultipleActiveResultSets=True;App=CloudControl"
+    "SqlInfos": {
+        "Default": "Data Source={{ CC.Master:SqlServer }};Initial Catalog=CloudControl;user={{ CC.Master:SqlLogin }};Password={{ CC.Master:SqlPassword }};MultipleActiveResultSets=True;App=CloudControl"
     },
     "Authentication": {
         "ServerUri": "{{ CC.Master:AuthenticationTenantUri }}",
@@ -31,5 +31,9 @@
     },
     "LegacyCloudControl": {
         "Host": "{{ CC.Master:LegacyCloudControlHost }}"
+    "Salesforce": {
+        "ServerUri": "{{ CC.Master:SalesforceUri }}",
+        "AccountsEndpointPath": "/salesforce/accounts",
+        "Token": "{{ CC.Master:LegacySalesforceToken }}"
     }
 }
