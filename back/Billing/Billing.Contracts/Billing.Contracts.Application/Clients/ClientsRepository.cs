@@ -54,7 +54,7 @@ namespace Billing.Contracts.Application.Clients
                 BillingPostalCode = client.BillingPostalCode,
                 BillingState = client.BillingState,
                 BillingCountry = client.BillingCountry,
-                BillingMail = client.BillingMail,
+                Email_de_facturation__c = client.BillingMail,
                 Phone = client.Phone
             };
         }
