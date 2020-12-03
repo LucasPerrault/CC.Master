@@ -3,16 +3,20 @@ using Billing.Contracts.Infra.Configurations;
 using CloudControl.Web.Configuration;
 using Core.Proxy.Infra.Configuration;
 using IpFilter.Infra.Storage;
+using IpFilter.Web;
 using Lucca.Core.AspNetCore.Healthz;
+using Lucca.Core.AspNetCore.Middlewares;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Rights.Infra.Configuration;
 using Salesforce.Infra.Configurations;
 using System;
+using System.Collections.Generic;
 
 namespace CloudControl.Web.Tests.Mocks
 {
@@ -71,6 +75,22 @@ namespace CloudControl.Web.Tests.Mocks
 					ForeignAppEndpointPath = "/api/mocked/ForeignApp"
 				}
 			});
+		}
+
+		public override void ConfigureIpFilter(IServiceCollection services)
+		{
+			var settings = new LuccaSecuritySettings
+			{
+				IpWhiteList = new IpWhiteList
+				{
+					ResponseStatusCode = 401,
+					AuthorizedIpAddresses = new List<string> { "127.0.0.1", "::1" }
+				}
+			};
+			var options = Options.Create(settings);
+			services.AddSingleton(options);
+
+			IpFilterConfigurer.ConfigureServices(services);
 		}
 
 		public override void ConfigureBilling(IServiceCollection services, AppConfiguration configuration)
