@@ -24,6 +24,11 @@ namespace Core.Proxy.Infra.Extensions
 			"hangfire",
 			"backoffice",
 		};
+		private static readonly HashSet<string> NonRedirectableSegments = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+		{
+			"/account/login",
+			"/logout",
+		};
 
 		public static IApplicationBuilder UseLegacyCloudControlHttpProxy(this IApplicationBuilder app)
 		{
@@ -60,9 +65,12 @@ namespace Core.Proxy.Infra.Extensions
 
 		internal static bool IsRedirectableCall(this HttpContext httpContext)
 		{
-			return httpContext.Request.Path.StartsWithSegments("/api/v3")
-				|| httpContext.Request.Path.IsNonV3LegacyApiPath()
-				|| !httpContext.Request.Path.StartsWithSegments("/api");
+			return !httpContext.Request.Path.IsNonRedirectablePath()
+				&& (
+					httpContext.Request.Path.StartsWithSegments("/api/v3")
+					|| httpContext.Request.Path.IsNonV3LegacyApiPath()
+					|| !httpContext.Request.Path.StartsWithSegments("/api")
+				);
 		}
 
 		private static bool IsNonV3LegacyApiPath(this PathString pathString)
@@ -79,6 +87,16 @@ namespace Core.Proxy.Infra.Extensions
 
 			var secondSegment = pathString.Value.Split('/').Skip(2).FirstOrDefault();
 			return !string.IsNullOrEmpty(secondSegment) && NonV3LegacyApiSegments.Contains(secondSegment);
+		}
+
+		private static bool IsNonRedirectablePath(this PathString pathString)
+		{
+			if (!pathString.HasValue)
+			{
+				return false;
+			}
+
+			return NonRedirectableSegments.Any(s => pathString.StartsWithSegments(s));
 		}
 
 		private static ForwardContext AddRedirectionHeader(this ForwardContext forwardContext, string redirectionUrl)
