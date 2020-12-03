@@ -1,12 +1,17 @@
 ﻿using Authentication.Infra.Configurations;
+using Billing.Contracts.Infra.Configurations;
 using CloudControl.Web.Configuration;
+using Core.Proxy.Infra.Configuration;
+using IpFilter.Infra.Storage;
 using Lucca.Core.AspNetCore.Healthz;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Rights.Infra.Configuration;
+using Salesforce.Infra.Configurations;
 using System;
 
 namespace CloudControl.Web.Tests.Mocks
@@ -17,7 +22,11 @@ namespace CloudControl.Web.Tests.Mocks
 		: base(configuration, env)
 		{ }
 
-		public override AppConfiguration ConfigureConfiguration(IServiceCollection services) => null;
+		public override AppConfiguration ConfigureConfiguration(IServiceCollection services)
+		{
+			services.AddSingleton(new LegacyCloudControlConfiguration { Host = "un.truc.bidon" });
+			return null;
+		}
 
 		public override void ConfigureLogs(IServiceCollection services)
 		{
@@ -46,7 +55,9 @@ namespace CloudControl.Web.Tests.Mocks
 		}
 
 		public override void ConfigureStorage(IServiceCollection services)
-		{ }
+		{
+			services.AddMockDbContext<IpFilterDbContext>("IpFilters", o => new IpFilterDbContext(o));
+		}
 
 		public override void ConfigureRights(IServiceCollection services, AppConfiguration configuration)
 		{
@@ -62,6 +73,21 @@ namespace CloudControl.Web.Tests.Mocks
 			});
 		}
 
+		public override void ConfigureBilling(IServiceCollection services, AppConfiguration configuration)
+		{
+			base.ConfigureBilling(services, new AppConfiguration
+			{
+				LegacyCloudControl = new LegacyCloudControlConfiguration
+				{
+					Host = "mocked-cc.local"
+				},
+				BillingContracts = new BillingContractsConfiguration
+				{
+					LegacyClientsEndpointPath = "/api/mocked/clients"
+				}
+			});
+		}
+
 		public override void ConfigureHealthCheck(IServiceCollection services, AppConfiguration c)
 		{
 			services
@@ -71,6 +97,29 @@ namespace CloudControl.Web.Tests.Mocks
 						o.ServiceName = "MOCK";
 					}
 				);
+		}
+
+		public override void ConfigureSalesforce(IServiceCollection services, AppConfiguration configuration)
+		{
+			base.ConfigureSalesforce(services, new AppConfiguration
+			{
+				Salesforce = new SalesforceConfiguration
+				{
+					ServerUri = new Uri("https://mocked-salesforce.local"),
+					AccountsEndpointPath = "/api/mocked/accounts",
+					Token = new Guid("00000000-0000-0000-0000-000000000000")
+				}
+			});
+		}
+	}
+
+	internal static class ServiceCollectionExtensions
+	{
+		public static void AddMockDbContext<TDbContext>(this IServiceCollection services, string dbName, Func<DbContextOptions<TDbContext>, TDbContext> createDbContext)
+			where TDbContext : DbContext
+		{
+			var dbOptions = new DbContextOptionsBuilder<TDbContext>().UseInMemoryDatabase(dbName).Options;
+			services.AddSingleton(createDbContext(dbOptions));
 		}
 	}
 }

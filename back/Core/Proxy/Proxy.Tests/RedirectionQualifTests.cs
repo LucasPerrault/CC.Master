@@ -21,6 +21,8 @@ namespace Proxy.Tests
         }
 
         [Theory]
+        [InlineData("/account/login")]
+        [InlineData("/logout")]
         [InlineData("/api/notALegacyV3Segment")]
         [InlineData("/api")]
         public void ShouldNotRedirectApiCalls(string url)
