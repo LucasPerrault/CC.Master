@@ -38,6 +38,6 @@
     "Salesforce": {
         "ServerUri": "{{ CC.Master:SalesforceUri }}",
         "AccountsEndpointPath": "/salesforce/accounts",
-        "Token": "{{ CC.Master:LegacySalesforceToken }}"
+        "Token": "{{ CC.Master:SalesforceToken }}"
     }
 }

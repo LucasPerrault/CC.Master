@@ -127,7 +127,7 @@ namespace CloudControl.Web.Tests.Mocks
 				{
 					ServerUri = new Uri("https://mocked-salesforce.local"),
 					AccountsEndpointPath = "/api/mocked/accounts",
-					Token = new Guid("00000000-0000-0000-0000-000000000000")
+					Token = new Guid("deadbeef-0000-0000-0000-000000000000")
 				}
 			});
 		}
