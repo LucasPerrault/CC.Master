@@ -13,7 +13,7 @@ namespace Core.Proxy.Infra.Services
     {
         private const string HealthzSubroute = "healthz";
 
-        protected override string RemoteAppName => "LegacyCloudControl";
+        protected override string RemoteAppName => LegacyCloudControlServiceConfiguration.RemoteAppName;
 
         public LegacyHealthzService(HttpClient httpClient, JsonSerializer jsonSerializer)
             : base(httpClient, jsonSerializer)

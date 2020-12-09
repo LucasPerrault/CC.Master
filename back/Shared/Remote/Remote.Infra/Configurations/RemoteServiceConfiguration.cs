@@ -29,7 +29,7 @@ namespace Remote.Infra.Configurations
             _userAgent = userAgent;
         }
 
-        public RemoteServiceConfiguration(Guid authToken, string userAgent, string authScheme, string authType = "application")
+        public RemoteServiceConfiguration(Guid authToken, string userAgent, string authScheme, string authType)
             : this(userAgent)
         {
             _authScheme = authScheme;
@@ -42,7 +42,7 @@ namespace Remote.Infra.Configurations
             client.SetSafeBaseAddress(httpClientConfiguration.Endpoint);
             client.DefaultRequestHeaders.Add(_userAgentKey, GetUserAgent(_userAgent));
 
-            if (_authToken.HasValue && !string.IsNullOrEmpty(_authScheme) && !string.IsNullOrEmpty(_authType))
+            if (_authToken.HasValue && !string.IsNullOrEmpty(_authScheme))
             {
                 Authenticate(client, _authScheme, _authType, _authToken.Value);
             }

@@ -43,8 +43,6 @@ namespace CloudControl.Web
 
 			app.UseMiddleware<SessionKeyAuthMiddleware>();
 
-			app.UseEndpoints(e => e.MapControllers());
-
 			app.UseLegacyCloudControlWebSocketProxy();
 			app.UseLegacyCloudControlHttpProxy();
 
@@ -52,6 +50,8 @@ namespace CloudControl.Web
 
 			app.UseMiddleware<UnauthorizedAccessMiddleware>();
 			app.UseIpFilter(env);
+
+			app.UseEndpoints(e => e.MapControllers());
 
 			// app.UseMiddleware<FrontRequestFilterMiddleware>();
 			// app.UseFrontApplication(env);

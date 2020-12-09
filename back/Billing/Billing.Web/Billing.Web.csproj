@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Core" Version="2.2.5" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Core\Proxy\Proxy.Infra\Proxy.Infra.csproj" />
+    <ProjectReference Include="..\..\Shared\Remote\Remote.Infra\Remote.Infra.csproj" />
+    <ProjectReference Include="..\Billing.Contracts\Billing.Contracts.Application\Billing.Contracts.Application.csproj" />
+    <ProjectReference Include="..\Billing.Contracts\Billing.Contracts.Domain\Billing.Contracts.Domain.csproj" />
+    <ProjectReference Include="..\Billing.Contracts\Billing.Contracts.Infra\Billing.Contracts.Infra.csproj" />
+  </ItemGroup>
+
+</Project>

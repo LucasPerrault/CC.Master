@@ -11,6 +11,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\..\..\Shared\Remote\Remote.Infra\Remote.Infra.csproj" />
+      <ProjectReference Include="..\..\Authentication\Authentication.Domain\Authentication.Domain.csproj" />
     </ItemGroup>
 
     <ItemGroup>

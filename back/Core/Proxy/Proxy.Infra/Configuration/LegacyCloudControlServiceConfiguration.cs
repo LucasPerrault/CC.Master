@@ -4,6 +4,8 @@ namespace Core.Proxy.Infra.Configuration
 {
     public class LegacyCloudControlServiceConfiguration : RemoteServiceConfiguration
     {
+        public const string RemoteAppName = "LegacyCloudControl";
+
         private const string _userAgent = "LegacyCloudControlService";
 
         public LegacyCloudControlServiceConfiguration()

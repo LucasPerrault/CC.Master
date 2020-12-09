@@ -1,9 +1,11 @@
 ﻿using Authentication.Infra.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Authentication.Web.Controllers
 {
     [Route("Account")]
+    [AllowAnonymous]
     public class AccountController : Controller
     {
         private readonly AuthRedirectionRemoteService _authRedirectionRemoteService;

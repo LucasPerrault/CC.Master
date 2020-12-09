@@ -10,8 +10,8 @@ namespace IpFilter.Web
     {
         public static void ConfigureServices(IServiceCollection services)
         {
-            services.AddSingleton<IIpFilterService, IpFilterService>();
-            services.AddSingleton<IIpFilterAuthorizationStore, IpFilterAuthorizationStore>();
+            services.AddScoped<IIpFilterService, IpFilterService>();
+            services.AddScoped<IIpFilterAuthorizationStore, IpFilterAuthorizationStore>();
             services.AddLuccaIpWhitelist<CurrentUserIpAccessor>();
         }
     }
