@@ -25,6 +25,8 @@ namespace Proxy.Tests
         [InlineData("/logout")]
         [InlineData("/api/notALegacyV3Segment")]
         [InlineData("/api")]
+        [InlineData("/ping")]
+        [InlineData("/healthz")]
         public void ShouldNotRedirectApiCalls(string url)
         {
             var context = new DefaultHttpContext();
