@@ -28,6 +28,11 @@ namespace Core.Proxy.Infra.Extensions
 		{
 			"/account/login",
 			"/logout",
+			"/ping",
+			"/healthz",
+			"/health/ready",
+			"/health/live",
+			"/warmup"
 		};
 
 		public static IApplicationBuilder UseLegacyCloudControlHttpProxy(this IApplicationBuilder app)
