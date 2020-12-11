@@ -22,8 +22,7 @@ export class PrincipalInitializer {
 		const principalUrl = `/api/v3/principals/me?fields=${fields}`;
 
 
-		// return this._http.get<{ data: IPrincipal }>(principalUrl).pipe(
-		return of({ data: { id: 1, name: 'lulu', departmentCode: 'asd', isLuccaUser: true }}).pipe(
+		return this._http.get<{ data: IPrincipal }>(principalUrl).pipe(
 			map(res => res.data),
 			tap(principal => {
 				this.principal = principal;
@@ -34,6 +33,6 @@ export class PrincipalInitializer {
 	}
 
 	public reconnect(): void {
-		window.location.href = '/account/login?returnUrl=' + encodeURIComponent(window.location.pathname);
+		// window.location.href = '/account/login?returnUrl=' + encodeURIComponent(window.location.pathname);
 	}
 }
