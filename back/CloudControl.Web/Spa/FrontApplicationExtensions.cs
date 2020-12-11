@@ -6,6 +6,7 @@ using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
 using System;
 using System.IO;
+using Microsoft.AspNetCore.SpaServices.AngularCli;
 
 namespace CloudControl.Web.Spa
 {
@@ -61,7 +62,7 @@ namespace CloudControl.Web.Spa
 
         private static string GetFrontAppRootPath(this IWebHostEnvironment environment) =>
             environment.IsDevelopment()
-                ? "../../../front/dist"
+                ? "../../front/cc-master/dist"
                 : "./wwwroot";
     }
 }
