@@ -30,7 +30,15 @@
             "styles": [
               "src/styles.scss"
             ],
-            "scripts": []
+            "scripts": [],
+            "stylePreprocessorOptions": {
+              "includePaths": [
+                "./src/scss/overrides",
+                "node_modules/@lucca-front/scss/src/overrides",
+                "node_modules/@lucca-front/ng/style/overrides",
+                "node_modules/@lucca-front/ng/style"
+              ]
+            }
           },
           "configurations": {
             "production": {
@@ -43,7 +51,6 @@
               "optimization": true,
               "outputHashing": "all",
               "sourceMap": false,
-              "extractCss": true,
               "namedChunks": false,
               "extractLicenses": true,
               "vendorChunk": false,
