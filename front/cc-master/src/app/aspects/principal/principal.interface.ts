@@ -3,5 +3,4 @@ export interface IPrincipal {
 	name: string;
 	isLuccaUser: boolean;
 	departmentCode: string;
-	// permissions: IPermission[];
 }
