@@ -6,12 +6,23 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.Extensions.Hosting;
+using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace IpFilter.Web
 {
     public static class ApplicationBuilderExtensions
     {
+        private static HashSet<string> WhitelistedRoutes = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+        {
+            "/ping",
+            "/healthz",
+            "/health/ready",
+            "/health/live",
+            "/warmup"
+        };
+
         public static void UseIpFilter(this IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsProduction())
@@ -30,7 +41,8 @@ namespace IpFilter.Web
 
         internal static bool IsAccessibleForAllIps(this HttpContext httpContext)
         {
-            return HasAttribute<AllowAllIpsAttribute>(httpContext);
+            return WhitelistedRoutes.Contains(httpContext.Request.Path)
+                || HasAttribute<AllowAllIpsAttribute>(httpContext);
         }
 
         private static bool HasAttribute<T>(HttpContext context)
