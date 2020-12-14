@@ -130,7 +130,7 @@ node(label: CI.getSelectedNode(script: this)) {
 				loggableStage('5. Build') {
 					// back
 					def config = "Release"
-					def webProjFile = findFiles(glob: "**/*.Web.csproj").first().path
+					def webProjFile = findFiles(glob: "**/CloudControl.Web.csproj").first().path
 					bat "dotnet publish ${webProjFile} -p:VersionPrefix=${prefix} -p:VersionSuffix=${suffix} -p:AssemblyVersion=${semver} -o ${WORKSPACE}\\${buildDirectory}\\back -c ${config} -f netcoreapp3.1 -r win10-x64 /nodereuse:false --verbosity m"
 
 					withCredentials([file(credentialsId: '86b37cd3-224e-4c64-b90d-843764ba9d30', variable: 'devops_config')]) {
