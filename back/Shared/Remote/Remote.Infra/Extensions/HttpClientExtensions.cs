@@ -81,6 +81,17 @@ namespace Remote.Infra.Extensions
                 return Authenticate($"application={appToken}");
             }
 
+            public HttpClient TryAuthenticateCurrentPrincipal(IServiceProvider provider)
+            {
+                var claimsPrincipal = provider.GetRequiredService<ClaimsPrincipal>();
+                return claimsPrincipal switch
+                {
+                    CloudControlUserClaimsPrincipal u => AuthenticateAsUser(u.Token),
+                    CloudControlApiKeyClaimsPrincipal ak => AuthenticateAsApplication(ak.Token),
+                    _ => null
+                };
+            }
+
             public HttpClient AuthenticateCurrentPrincipal(IServiceProvider provider)
             {
                 var claimsPrincipal = provider.GetRequiredService<ClaimsPrincipal>();

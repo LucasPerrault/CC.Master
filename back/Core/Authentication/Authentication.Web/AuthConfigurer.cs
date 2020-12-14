@@ -33,7 +33,7 @@ namespace Authentication.Web
 			{
 				client.WithUserAgent(nameof(UserAuthenticationRemoteService))
 					.WithBaseAddress(config.ServerUri, config.UsersEndpointPath)
-					.WithAuthScheme("Lucca").AuthenticateCurrentPrincipal(provider);
+					.WithAuthScheme("Lucca").TryAuthenticateCurrentPrincipal(provider);
 			});
 
 			services.AddScoped<ApiKeyAuthenticationRemoteService>();
