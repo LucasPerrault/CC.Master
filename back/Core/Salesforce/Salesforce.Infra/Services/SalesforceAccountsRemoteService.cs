@@ -27,7 +27,7 @@ namespace Salesforce.Infra.Services
         protected override string GetErrorMessage(JsonTextReader jsonTextReader)
         {
             var error = _jsonSerializer.Deserialize<SalesforceErrorDto>(jsonTextReader);
-            return error.Message;
+            return error?.Message;
         }
     }
 }
