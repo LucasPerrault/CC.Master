@@ -9,9 +9,9 @@ namespace Remote.Infra.Configurations
     {
         protected const string _userAgentKey = "User-Agent";
         private const string _cloudControlUserAgent = "CloudControl";
-
-        protected static string AuthorizationHeaderParam(Guid token, string type) => $"{type}={token.ToString()}";
         protected static string GetUserAgent(string suffix) => $"{_cloudControlUserAgent} {suffix}";
+
+        protected virtual string AuthorizationHeaderParam(Guid token, string type) => $"{type}={token.ToString()}";
 
         public abstract void Configure(HttpClient client, T httpClientConfiguration);
         public abstract void Authenticate(HttpClient client, string authorizationScheme, string authorizationType, Guid authToken);
