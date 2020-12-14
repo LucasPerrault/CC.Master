@@ -1,5 +1,4 @@
 ﻿using Newtonsoft.Json;
-using Remote.Infra.Configurations;
 using Remote.Infra.DTOs;
 using System.Collections.Generic;
 using System.Net.Http;

@@ -14,21 +14,6 @@ namespace Remote.Infra.Configurations
             _configuration = configuration;
             _services = services;
         }
-
-        public HostServiceConfigurer<TConfiguration> AddRemoteServiceHttpClient<T>(Uri endpoint)
-            where T : HostRemoteService<TConfiguration>
-        {
-            _services.AddRemoteServiceHttpClient<T, TConfiguration>(_configuration, endpoint);
-            return this;
-        }
-
-        public HostServiceConfigurer<TConfiguration> AddRemoteServiceHttpClient<I, T>(Uri endpoint)
-            where T : HostRemoteService<TConfiguration>, I
-            where I : class
-        {
-            _services.AddRemoteServiceHttpClient<I, T, TConfiguration>(_configuration, endpoint);
-            return this;
-        }
     }
 
     public static class ChainableConfigurerExtensions
