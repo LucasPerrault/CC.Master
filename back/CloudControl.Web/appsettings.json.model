@@ -33,7 +33,7 @@
         "Host": "{{ CC.Master:LegacyCloudControlHost }}"
     },
     "BillingContracts": {
-        "LegacyClientsEndpointPath": "{{ CC.Master:LegacyClientsEndpointPath }}"
+        "LegacyClientsEndpointPath": "/api/v3/clients"
     },
     "Salesforce": {
         "ServerUri": "{{ CC.Master:SalesforceUri }}",
