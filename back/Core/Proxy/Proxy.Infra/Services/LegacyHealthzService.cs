@@ -1,5 +1,4 @@
-﻿using Core.Proxy.Infra.Configuration;
-using Microsoft.Extensions.Diagnostics.HealthChecks;
+﻿using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Newtonsoft.Json;
 using Remote.Infra.Services;
 using System;
@@ -13,7 +12,7 @@ namespace Core.Proxy.Infra.Services
     {
         private const string HealthzSubroute = "healthz";
 
-        protected override string RemoteApiDescription => LegacyCloudControlServiceConfiguration.RemoteAppName;
+        protected override string RemoteApiDescription => "Legacy Healthz";
 
         public LegacyHealthzService(HttpClient httpClient, JsonSerializer jsonSerializer)
             : base(httpClient, jsonSerializer)
