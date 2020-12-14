@@ -12,7 +12,7 @@ namespace Salesforce.Infra.Services
 {
     public class SalesforceAccountsRemoteService : HostRemoteService<SalesforceServiceConfiguration>, ISalesforceAccountsRemoteService
     {
-        protected override string RemoteAppName => "Salesforce Service";
+        protected override string RemoteApiDescription => "Salesforce Service";
 
         public SalesforceAccountsRemoteService(HttpClient httpClient, JsonSerializer jsonSerializer)
             : base(httpClient, jsonSerializer)

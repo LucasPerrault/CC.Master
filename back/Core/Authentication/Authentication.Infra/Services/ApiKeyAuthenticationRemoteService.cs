@@ -12,7 +12,7 @@ namespace Authentication.Infra.Services
 {
     public class ApiKeyAuthenticationRemoteService : RestApiV3HostRemoteService<ApiKeyPartenairesServiceConfiguration>
     {
-        protected override string RemoteAppName => "Partenaires";
+        protected override string RemoteApiDescription => "Partenaires";
 
         public ApiKeyAuthenticationRemoteService(HttpClient httpClient, JsonSerializer jsonSerializer)
             : base(httpClient, jsonSerializer)

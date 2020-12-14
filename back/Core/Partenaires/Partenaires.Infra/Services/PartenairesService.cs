@@ -11,7 +11,7 @@ namespace Partenaires.Infra.Services
 	public abstract class PartenairesService : RestApiV3HostRemoteService<PartenairesAuthServiceConfiguration>
 	{
 		protected const string _authScheme = "Lucca";
-		protected override string RemoteAppName => "Partenaires";
+		protected override string RemoteApiDescription => "Partenaires";
 
 		protected readonly ClaimsPrincipal _claimsPrincipal;
 

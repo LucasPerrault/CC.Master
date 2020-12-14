@@ -22,9 +22,20 @@ namespace Billing.Web
 
 			services.AddScoped<IClientVisibilityService, ClientVisibilityService>();
 
-			var legacyClientsUri = new UriBuilder { Host = legacyConfig.Host, Scheme = "https", Path = config.LegacyClientsEndpointPath }.Uri;
-			services.WithHostConfiguration(new LegacyCloudControlServiceConfiguration())
-				.AddRemoteServiceHttpClient<ILegacyClientsRemoteService, LegacyClientsRemoteService>(legacyClientsUri);
+			var legacyClientsUriBuilder = new UriBuilder
+			{
+				Host = legacyConfig.Host,
+				Scheme = "https",
+				Path = config.LegacyClientsEndpointPath
+			};
+
+			services.AddScoped<ILegacyClientsRemoteService, LegacyClientsRemoteService>();
+			services.AddHttpClient<ILegacyClientsRemoteService, LegacyClientsRemoteService>((provider, client) =>
+			{
+				client.WithUserAgent(nameof(LegacyClientsRemoteService))
+					.WithBaseAddress(legacyClientsUriBuilder.Uri)
+					.WithAuthScheme("CloudControl").AuthenticateCurrentPrincipal(provider);
+			});
 
 			services.AddScoped<ClientsRepository>();
 		}

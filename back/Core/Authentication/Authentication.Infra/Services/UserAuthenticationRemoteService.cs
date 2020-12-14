@@ -14,7 +14,7 @@ namespace Authentication.Infra.Services
     {
         private const string _authScheme = "Lucca";
         private const string _authType = "user";
-        protected override string RemoteAppName => "Partenaires";
+        protected override string RemoteApiDescription => "Partenaires";
 
         public UserAuthenticationRemoteService(HttpClient httpClient, JsonSerializer jsonSerializer)
             : base(httpClient, jsonSerializer)

@@ -7,8 +7,7 @@ using System.Threading.Tasks;
 
 namespace Remote.Infra.Services
 {
-    public abstract class RestApiV3HostRemoteService<TC> : HostRemoteService<TC>
-        where TC : RemoteServiceConfiguration<HostHttpClientConfiguration>
+    public abstract class RestApiV3HostRemoteService : HostRemoteService
     {
         protected RestApiV3HostRemoteService(HttpClient httpClient, JsonSerializer jsonSerializer)
             : base(httpClient, jsonSerializer)
