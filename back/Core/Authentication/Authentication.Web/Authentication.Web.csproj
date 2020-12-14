@@ -10,6 +10,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\..\IpFilter\IpFilter.Domain\IpFilter.Domain.csproj" />
       <ProjectReference Include="..\Authentication.Infra\Authentication.Infra.csproj" />
     </ItemGroup>
 

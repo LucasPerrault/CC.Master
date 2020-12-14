@@ -1,4 +1,5 @@
 ﻿using Authentication.Infra.Services;
+using IpFilter.Domain;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -19,6 +20,8 @@ namespace Authentication.Web.Controllers
         }
 
         [HttpGet, Route("Login")]
+        [AllowAnonymous]
+        [AllowAllIps]
         public RedirectResult Login([FromQuery] string returnUrl)
         {
             var redirectionCallback = $"https://{Request.Host.Value}{returnUrl}";
