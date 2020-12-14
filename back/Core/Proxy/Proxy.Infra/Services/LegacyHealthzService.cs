@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Core.Proxy.Infra.Services
 {
-    public class LegacyHealthzService : HostRemoteService<LegacyCloudControlServiceConfiguration>
+    public class LegacyHealthzService : HostRemoteService
     {
         private const string HealthzSubroute = "healthz";
 
