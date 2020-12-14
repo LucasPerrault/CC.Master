@@ -1,14 +1,12 @@
 ﻿using Lucca.Core.Rights;
 using Lucca.Core.Rights.RightsHelper;
 using Microsoft.Extensions.DependencyInjection;
-using Partenaires.Infra.Configuration;
 using Remote.Infra.Configurations;
 using Rights.Domain.Abstractions;
 using Rights.Infra.Configuration;
 using Rights.Infra.Remote;
 using Rights.Infra.Services;
 using Rights.Infra.Stores;
-using System;
 
 namespace Rights.Web
 {
@@ -16,10 +14,29 @@ namespace Rights.Web
 	{
 		public static void ConfigureServices(this IServiceCollection services, RightsConfiguration config)
 		{
-			services.WithHostConfiguration(new PartenairesAuthServiceConfiguration())
-				.AddRemoteServiceHttpClient<DepartmentsRemoteService>(new Uri(config.ServerUri, config.DepartmentsEndpointPath))
-				.AddRemoteServiceHttpClient<ApiKeyPermissionsRemoteService>(new Uri(config.ServerUri, config.ForeignAppEndpointPath))
-				.AddRemoteServiceHttpClient<UserPermissionsRemoteService>(new Uri(config.ServerUri, config.UsersEndpointPath));
+			services.AddScoped<DepartmentsRemoteService>();
+			services.AddHttpClient<DepartmentsRemoteService>((provider, client) =>
+			{
+				client.WithUserAgent(nameof(DepartmentsRemoteService))
+					.WithBaseAddress(config.ServerUri, config.DepartmentsEndpointPath)
+					.WithAuthScheme("Lucca").AuthenticateCurrentPrincipal(provider);
+			});
+
+			services.AddScoped<ApiKeyPermissionsRemoteService>();
+			services.AddHttpClient<ApiKeyPermissionsRemoteService>((provider, client) =>
+			{
+				client.WithUserAgent(nameof(ApiKeyPermissionsRemoteService))
+					.WithBaseAddress(config.ServerUri, config.ForeignAppEndpointPath)
+					.WithAuthScheme("Lucca").AuthenticateCurrentPrincipal(provider);
+			});
+
+			services.AddScoped<UserPermissionsRemoteService>();
+			services.AddHttpClient<UserPermissionsRemoteService>((provider, client) =>
+			{
+				client.WithUserAgent(nameof(UserPermissionsRemoteService))
+					.WithBaseAddress(config.ServerUri, config.UsersEndpointPath)
+					.WithAuthScheme("Lucca").AuthenticateCurrentPrincipal(provider);
+			});
 
 			services.AddScoped<ApiKeyPermissionsService>();
 			services.AddScoped<UserPermissionsService>();

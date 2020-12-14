@@ -14,10 +14,15 @@ namespace Rights.Infra.Remote
 {
 	public class ApiKeyPermissionsRemoteService : PartenairesService
 	{
+		private readonly ClaimsPrincipal _claimsPrincipal;
+		protected override string RemoteApiDescription => "Partenaires api keys";
+
 		public ApiKeyPermissionsRemoteService
 			(HttpClient httpClient, JsonSerializer jsonSerializer, ClaimsPrincipal claimsPrincipal)
-			: base(httpClient, jsonSerializer, claimsPrincipal)
-		{ }
+			: base(httpClient, jsonSerializer)
+		{
+			_claimsPrincipal = claimsPrincipal;
+		}
 
 		internal async Task<IReadOnlyCollection<ApiKeyPermission>> GetApiKeyPermissionsAsync(int apiKeyId)
 		{
