@@ -3,7 +3,6 @@ using Remote.Infra.Configurations;
 using Salesforce.Domain.Interfaces;
 using Salesforce.Infra.Configurations;
 using Salesforce.Infra.Services;
-using System;
 
 namespace Salesforce.Web
 {
@@ -11,8 +10,13 @@ namespace Salesforce.Web
 	{
 		public static void ConfigureServices(IServiceCollection services, SalesforceConfiguration config)
 		{
-			services.WithHostConfiguration(new SalesforceServiceConfiguration(config.Token))
-				.AddRemoteServiceHttpClient<ISalesforceAccountsRemoteService, SalesforceAccountsRemoteService>(new Uri(config.ServerUri, config.AccountsEndpointPath));
+			services.AddScoped<ISalesforceAccountsRemoteService, SalesforceAccountsRemoteService>();
+			services.AddHttpClient<ISalesforceAccountsRemoteService, SalesforceAccountsRemoteService>(client =>
+			{
+				client.WithUserAgent(nameof(SalesforceAccountsRemoteService))
+					.WithBaseAddress(config.ServerUri, config.AccountsEndpointPath)
+					.WithAuthScheme("Bearer").Authenticate(config.Token);
+			});
 		}
 	}
 }

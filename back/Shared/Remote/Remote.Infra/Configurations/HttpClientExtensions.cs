@@ -54,6 +54,11 @@ namespace Remote.Infra.Configurations
                 return _httpClient;
             }
 
+            public HttpClient Authenticate(Guid parameter)
+            {
+                return Authenticate(parameter.ToString());
+            }
+
             public HttpClient AuthenticateAsUser(Guid appToken)
             {
                 return Authenticate($"user={appToken}");
