@@ -8,7 +8,7 @@ using Billing.Contracts.Infra.Services;
 using Billing.Contracts.Infra.Storage.Stores;
 using Core.Proxy.Infra.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Remote.Infra.Configurations;
+using Remote.Infra.Extensions;
 using System;
 
 namespace Billing.Web

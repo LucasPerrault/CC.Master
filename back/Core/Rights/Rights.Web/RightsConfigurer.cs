@@ -1,7 +1,7 @@
 ﻿using Lucca.Core.Rights;
 using Lucca.Core.Rights.RightsHelper;
 using Microsoft.Extensions.DependencyInjection;
-using Remote.Infra.Configurations;
+using Remote.Infra.Extensions;
 using Rights.Domain.Abstractions;
 using Rights.Infra.Configuration;
 using Rights.Infra.Remote;

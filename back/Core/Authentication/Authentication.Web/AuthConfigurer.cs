@@ -7,7 +7,7 @@ using Lucca.Core.Authentication.Tokens;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
-using Remote.Infra.Configurations;
+using Remote.Infra.Extensions;
 using System.Collections.Generic;
 using System.Linq;
 

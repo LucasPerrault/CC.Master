@@ -1,5 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using Remote.Infra.Configurations;
+using Remote.Infra.Extensions;
 using Salesforce.Domain.Interfaces;
 using Salesforce.Infra.Configurations;
 using Salesforce.Infra.Services;
