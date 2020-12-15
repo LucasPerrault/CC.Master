@@ -13,16 +13,6 @@ namespace Remote.Infra.Extensions
         private const string _userAgentKey = "User-Agent";
         private const string _cloudControlUserAgent = "CloudControl";
 
-        private static string AsSafeEndpoint(this string endpoint)
-        {
-            if (endpoint == null)
-            {
-                return null;
-            }
-
-            return endpoint.EndsWith('/') ? endpoint : $"{endpoint}/";
-        }
-
         private static string GetFullUserAgent(string suffix) => $"{_cloudControlUserAgent} {suffix}";
 
         public static HttpClient WithUserAgent(this HttpClient httpClient, string userAgent)
