@@ -20,12 +20,10 @@ namespace Proxy.Web
 
 		public static void ConfigureLegacyHealthzServices(IServiceCollection services, LegacyCloudControlConfiguration config)
 		{
-			var uri = config.LegacyEndpoint();
-
 			services.AddHttpClient<LegacyHealthzService>(client =>
 			{
 				client.WithUserAgent(nameof(LegacyHealthzService))
-					.WithBaseAddress(uri);
+					.WithBaseAddress(config.Uri);
 			});
 		}
 
