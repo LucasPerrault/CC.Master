@@ -9,7 +9,6 @@ using Billing.Contracts.Infra.Storage.Stores;
 using Core.Proxy.Infra.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Remote.Infra.Extensions;
-using System;
 
 namespace Billing.Web
 {
@@ -22,17 +21,12 @@ namespace Billing.Web
 
 			services.AddScoped<IClientVisibilityService, ClientVisibilityService>();
 
-			var legacyClientsUriBuilder = new UriBuilder
-			{
-				Host = legacyConfig.Host,
-				Scheme = "https",
-				Path = config.LegacyClientsEndpointPath
-			};
+			var uri = legacyConfig.LegacyEndpoint(config.LegacyClientsEndpointPath);
 
 			services.AddHttpClient<ILegacyClientsRemoteService, LegacyClientsRemoteService>((provider, client) =>
 			{
 				client.WithUserAgent(nameof(LegacyClientsRemoteService))
-					.WithBaseAddress(legacyClientsUriBuilder.Uri)
+					.WithBaseAddress(uri)
 					.WithAuthScheme("CloudControl").AuthenticateCurrentPrincipal(provider);
 			});
 
