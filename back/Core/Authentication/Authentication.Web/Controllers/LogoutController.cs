@@ -1,4 +1,5 @@
 ﻿using Authentication.Infra.Services;
+using IpFilter.Domain;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -6,6 +7,7 @@ namespace Authentication.Web.Controllers
 {
     [Route("Logout")]
     [AllowAnonymous]
+    [AllowAllIps]
     public class LogoutController : Controller
     {
         private readonly AuthRedirectionRemoteService _authRedirectionRemoteService;

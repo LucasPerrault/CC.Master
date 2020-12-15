@@ -6,6 +6,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\..\Authentication\Authentication.Domain\Authentication.Domain.csproj" />
+      <ProjectReference Include="..\..\Tools\Tools.Web\Tools.Web.csproj" />
       <ProjectReference Include="..\IpFilter.Domain\IpFilter.Domain.csproj" />
       <ProjectReference Include="..\IpFilter.Infra\IpFilter.Infra.csproj" />
     </ItemGroup>

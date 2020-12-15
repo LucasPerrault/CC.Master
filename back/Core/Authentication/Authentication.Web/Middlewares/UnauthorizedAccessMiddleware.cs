@@ -3,11 +3,10 @@ using Authentication.Infra.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Extensions;
-using Microsoft.AspNetCore.Http.Features;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
+using Tools.Web;
 
 namespace Authentication.Web.Middlewares
 {
@@ -38,7 +37,7 @@ namespace Authentication.Web.Middlewares
             var isAnonymousRoute = httpContext.Request.Path.HasValue
                                    && _anonymousRoutes.Contains(httpContext.Request.Path.Value);
 
-            if (isAnonymousRoute || HasAttribute<IAllowAnonymous>(httpContext))
+            if (isAnonymousRoute || httpContext.HasAttribute<IAllowAnonymous>())
             {
                 await _next.Invoke(httpContext);
                 return;
@@ -68,15 +67,6 @@ namespace Authentication.Web.Middlewares
             {
                 httpContext.Response.StatusCode = 401;
             }
-        }
-
-        private static bool HasAttribute<T>(HttpContext context)
-        {
-            var endpoint = context.Features?
-                .Get<IEndpointFeature>()?
-                .Endpoint;
-
-            return endpoint != null && endpoint.Metadata.Any(m => m is T);
         }
     }
 }

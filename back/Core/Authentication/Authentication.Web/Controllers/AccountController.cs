@@ -1,4 +1,5 @@
 ﻿using Authentication.Infra.Services;
+using IpFilter.Domain;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -6,6 +7,7 @@ namespace Authentication.Web.Controllers
 {
     [Route("Account")]
     [AllowAnonymous]
+    [AllowAllIps]
     public class AccountController : Controller
     {
         private readonly AuthRedirectionRemoteService _authRedirectionRemoteService;
