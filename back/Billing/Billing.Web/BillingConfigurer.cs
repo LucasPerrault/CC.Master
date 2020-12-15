@@ -21,12 +21,10 @@ namespace Billing.Web
 
 			services.AddScoped<IClientVisibilityService, ClientVisibilityService>();
 
-			var uri = legacyConfig.LegacyEndpoint(config.LegacyClientsEndpointPath);
-
 			services.AddHttpClient<ILegacyClientsRemoteService, LegacyClientsRemoteService>((provider, client) =>
 			{
 				client.WithUserAgent(nameof(LegacyClientsRemoteService))
-					.WithBaseAddress(uri)
+					.WithBaseAddress(legacyConfig.Uri, config.LegacyClientsEndpointPath)
 					.WithAuthScheme("CloudControl").AuthenticateCurrentPrincipal(provider);
 			});
 
