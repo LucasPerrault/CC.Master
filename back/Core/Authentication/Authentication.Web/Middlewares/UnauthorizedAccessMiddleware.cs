@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Http.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Tools;
+using Tools.Web;
 
 namespace Authentication.Web.Middlewares
 {

@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.Extensions.Hosting;
 using System;
 using System.Collections.Generic;
-using Tools;
+using Tools.Web;
 
 namespace IpFilter.Web
 {

@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Http.Features;
 using System.Linq;
 
-namespace Tools
+namespace Tools.Web
 {
     public static class HttpContextExtensions
     {
