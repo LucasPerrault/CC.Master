@@ -31,8 +31,7 @@ namespace Authentication.Web
 			services.AddHttpClient<UserAuthenticationRemoteService>((provider, client) =>
 			{
 				client.WithUserAgent(nameof(UserAuthenticationRemoteService))
-					.WithBaseAddress(config.ServerUri, config.UsersEndpointPath)
-					.WithAuthScheme("Lucca").TryAuthenticateCurrentPrincipal(provider);
+					.WithBaseAddress(config.ServerUri, config.UsersEndpointPath);
 			});
 
 			services.AddHttpClient<ApiKeyAuthenticationRemoteService>(client =>

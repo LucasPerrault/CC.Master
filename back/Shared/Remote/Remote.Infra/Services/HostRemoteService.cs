@@ -2,6 +2,7 @@
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Remote.Infra.Exceptions;
+using Remote.Infra.Extensions;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -56,6 +57,15 @@ namespace Remote.Infra.Services
             var requestMessage = new HttpRequestMessage(HttpMethod.Get, requestUri);
 
             return _httpClient.SendAsync(requestMessage);
+        }
+
+        protected void ApplyLateHttpClientAuthentication
+        (
+            string scheme,
+            Action<HttpClientExtensions.HttpClientAuthenticator> authAction
+        )
+        {
+            authAction(_httpClient.WithAuthScheme(scheme));
         }
 
         private async Task<TResponse> ParseResponseAsync<TResponse>(HttpResponseMessage response)

@@ -21,6 +21,8 @@ namespace Authentication.Infra.Services
         public async Task<Principal> GetUserPrincipalAsync(Guid token)
         {
 
+            ApplyLateHttpClientAuthentication("Lucca", a => a.AuthenticateAsUser(token));
+
             var queryParams = new Dictionary<string, string> { { "fields", LuccaUser.ApiFields } };
 
             try
