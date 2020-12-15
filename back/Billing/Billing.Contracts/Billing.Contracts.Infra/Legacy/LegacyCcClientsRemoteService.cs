@@ -1,17 +1,17 @@
 ﻿using Billing.Contracts.Domain.Clients.Interfaces;
-using Core.Proxy.Infra.Services;
 using Newtonsoft.Json;
+using Remote.Infra.Services;
 using System.Collections.Generic;
 using System.Net.Http;
-using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace Billing.Contracts.Infra.Legacy
 {
-    public class LegacyClientsRemoteService : LegacyCcAuthenticatedRemoteService, ILegacyClientsRemoteService
+    public class LegacyClientsRemoteService : RestApiV3HostRemoteService, ILegacyClientsRemoteService
     {
-        public LegacyClientsRemoteService(HttpClient httpClient, JsonSerializer jsonSerializer, ClaimsPrincipal principal)
-            : base(httpClient, jsonSerializer, principal)
+        protected override string RemoteApiDescription => "Legacy clients api";
+        public LegacyClientsRemoteService(HttpClient httpClient, JsonSerializer jsonSerializer)
+            : base(httpClient, jsonSerializer)
         { }
 
         public Task SyncAsync()

@@ -1,7 +1,6 @@
 ﻿using Authentication.Domain;
 using Authentication.Infra.DTOs;
 using Newtonsoft.Json;
-using Partenaires.Infra.Configuration;
 using Remote.Infra.Services;
 using System;
 using System.Collections.Generic;
@@ -10,9 +9,9 @@ using System.Threading.Tasks;
 
 namespace Authentication.Infra.Services
 {
-    public class ApiKeyAuthenticationRemoteService : RestApiV3HostRemoteService<ApiKeyPartenairesServiceConfiguration>
+    public class ApiKeyAuthenticationRemoteService : RestApiV3HostRemoteService
     {
-        protected override string RemoteAppName => "Partenaires";
+        protected override string RemoteApiDescription => "Partenaires";
 
         public ApiKeyAuthenticationRemoteService(HttpClient httpClient, JsonSerializer jsonSerializer)
             : base(httpClient, jsonSerializer)

@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.WebUtilities;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using Remote.Infra.Configurations;
 using Remote.Infra.Exceptions;
+using Remote.Infra.Extensions;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -12,16 +12,16 @@ using System.Threading.Tasks;
 
 namespace Remote.Infra.Services
 {
-    public abstract class HostRemoteService<TC> : BaseRemoteService<HostHttpClientConfiguration>
-        where TC : RemoteServiceConfiguration<HostHttpClientConfiguration>
+    public abstract class HostRemoteService
     {
+        private readonly HttpClient _httpClient;
         protected readonly JsonSerializer _jsonSerializer;
 
-        protected abstract string RemoteAppName { get; }
+        protected abstract string RemoteApiDescription { get; }
 
         protected HostRemoteService(HttpClient httpClient, JsonSerializer jsonSerializer)
-            : base(httpClient)
         {
+            _httpClient = httpClient;
             _jsonSerializer = jsonSerializer ?? throw new ArgumentNullException(nameof(jsonSerializer));
         }
 
@@ -59,6 +59,15 @@ namespace Remote.Infra.Services
             return _httpClient.SendAsync(requestMessage);
         }
 
+        protected void ApplyLateHttpClientAuthentication
+        (
+            string scheme,
+            Action<HttpClientExtensions.HttpClientAuthenticator> authAction
+        )
+        {
+            authAction(_httpClient.WithAuthScheme(scheme));
+        }
+
         private async Task<TResponse> ParseResponseAsync<TResponse>(HttpResponseMessage response)
         {
             await using var responseStream = await response.Content.ReadAsStreamAsync();
@@ -68,7 +77,7 @@ namespace Remote.Infra.Services
             if (!response.IsSuccessStatusCode)
             {
                 var msg = GetErrorMessage(jsonTextReader);
-                throw new RemoteServiceException(RemoteAppName, response.StatusCode, msg);
+                throw new RemoteServiceException(RemoteApiDescription, response.StatusCode, msg);
             }
 
             return _jsonSerializer.Deserialize<TResponse>(jsonTextReader);

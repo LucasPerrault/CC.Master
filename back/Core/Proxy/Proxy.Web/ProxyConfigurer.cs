@@ -3,7 +3,7 @@ using Core.Proxy.Infra.Healthz;
 using Core.Proxy.Infra.Services;
 using Microsoft.Extensions.DependencyInjection;
 using ProxyKit;
-using Remote.Infra.Configurations;
+using Remote.Infra.Extensions;
 using System;
 
 namespace Proxy.Web
@@ -20,10 +20,13 @@ namespace Proxy.Web
 
 		public static void ConfigureLegacyHealthzServices(IServiceCollection services, LegacyCloudControlConfiguration config)
 		{
-			var uri = new UriBuilder { Host = config.Host, Scheme = "http"}.Uri;
+			var uri = config.LegacyEndpoint();
 
-			services.WithHostConfiguration(new LegacyCloudControlServiceConfiguration())
-				.AddRemoteServiceHttpClient<LegacyHealthzService>(uri);
+			services.AddHttpClient<LegacyHealthzService>(client =>
+			{
+				client.WithUserAgent(nameof(LegacyHealthzService))
+					.WithBaseAddress(uri);
+			});
 		}
 
 		public static IHealthChecksBuilder AddLegacyCheck(this IHealthChecksBuilder builder)

@@ -4,16 +4,17 @@ using Rights.Infra.Models;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
-using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace Rights.Infra.Remote
 {
 	public class DepartmentsRemoteService : PartenairesService
 	{
-		public DepartmentsRemoteService(HttpClient httpClient, JsonSerializer jsonSerializer, ClaimsPrincipal claimsPrincipal)
-			: base(httpClient, jsonSerializer, claimsPrincipal)
+		public DepartmentsRemoteService(HttpClient httpClient, JsonSerializer jsonSerializer)
+			: base(httpClient, jsonSerializer)
 		{ }
+
+		protected override string RemoteApiDescription => "Partenaires departments";
 
 		internal async Task<IReadOnlyCollection<Department>> GetDepartmentsAsync()
 		{

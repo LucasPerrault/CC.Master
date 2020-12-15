@@ -26,15 +26,12 @@ namespace Authentication.Infra.Storage
 
         public async Task<ClaimsPrincipal> GetPrincipalAsync(PrincipalType type, Guid token)
         {
-            switch (type)
+            return type switch
             {
-                case PrincipalType.User:
-                    return SetupUserPrincipal(await _userAuthService.GetUserPrincipalAsync(token));
-                case PrincipalType.ApiKey:
-                    return SetupApiKeyPrincipal(await _apiKeyAuthService.GetApiKeyPrincipalAsync(token));
-                default:
-                    throw new NotImplementedException(type.ToString());
-            }
+                PrincipalType.User => SetupUserPrincipal(await _userAuthService.GetUserPrincipalAsync(token)),
+                PrincipalType.ApiKey => SetupApiKeyPrincipal(await _apiKeyAuthService.GetApiKeyPrincipalAsync(token)),
+                _ => throw new NotImplementedException(type.ToString())
+            };
         }
 
         private CloudControlUserClaimsPrincipal SetupUserPrincipal(Principal principal)

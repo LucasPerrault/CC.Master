@@ -1,7 +1,6 @@
 ﻿using Authentication.Domain;
 using Authentication.Infra.DTOs;
 using Newtonsoft.Json;
-using Partenaires.Infra.Configuration;
 using Remote.Infra.Services;
 using System;
 using System.Collections.Generic;
@@ -10,20 +9,19 @@ using System.Threading.Tasks;
 
 namespace Authentication.Infra.Services
 {
-    public class UserAuthenticationRemoteService : RestApiV3HostRemoteService<PartenairesAuthServiceConfiguration>
+    public class UserAuthenticationRemoteService : RestApiV3HostRemoteService
     {
-        private const string _authScheme = "Lucca";
-        private const string _authType = "user";
-        protected override string RemoteAppName => "Partenaires";
+        protected override string RemoteApiDescription => "Partenaires users";
 
         public UserAuthenticationRemoteService(HttpClient httpClient, JsonSerializer jsonSerializer)
             : base(httpClient, jsonSerializer)
         { }
 
+        // will be called with token of current principal
         public async Task<Principal> GetUserPrincipalAsync(Guid token)
         {
-            var partenairesAuthConfig = new PartenairesAuthServiceConfiguration();
-            partenairesAuthConfig.Authenticate(_httpClient, _authScheme, _authType, token);
+
+            ApplyLateHttpClientAuthentication("Lucca", a => a.AuthenticateAsUser(token));
 
             var queryParams = new Dictionary<string, string> { { "fields", LuccaUser.ApiFields } };
 

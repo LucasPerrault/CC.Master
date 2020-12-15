@@ -1,5 +1,4 @@
-﻿using Authentication.Domain;
-using Authentication.Infra.Configurations;
+﻿using Authentication.Infra.Configurations;
 using Authentication.Infra.Services;
 using Authentication.Infra.Storage;
 using Lucca.Core.Authentication;
@@ -8,9 +7,7 @@ using Lucca.Core.Authentication.Tokens;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
-using Partenaires.Infra.Configuration;
-using Remote.Infra.Configurations;
-using System;
+using Remote.Infra.Extensions;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -31,12 +28,18 @@ namespace Authentication.Web
 
 			services.AddSingleton<AuthRedirectionRemoteService>();
 
-			services.WithHostConfiguration(new PartenairesAuthServiceConfiguration())
-				.AddRemoteServiceHttpClient<UserAuthenticationRemoteService>(new Uri(config.ServerUri, config.UsersEndpointPath));
+			services.AddHttpClient<UserAuthenticationRemoteService>((provider, client) =>
+			{
+				client.WithUserAgent(nameof(UserAuthenticationRemoteService))
+					.WithBaseAddress(config.ServerUri, config.UsersEndpointPath);
+			});
 
-			var authApiKey = new ApiKey { Name = "Api keys fetcher" , Token = config.ApiKeysFetcherToken };
-			services.WithHostConfiguration(new ApiKeyPartenairesServiceConfiguration(authApiKey))
-				.AddRemoteServiceHttpClient<ApiKeyAuthenticationRemoteService>(new Uri(config.ServerUri, config.ApiKeysEndpointPath));
+			services.AddHttpClient<ApiKeyAuthenticationRemoteService>(client =>
+			{
+				client.WithUserAgent(nameof(ApiKeyAuthenticationRemoteService))
+					.WithBaseAddress(config.ServerUri, config.ApiKeysEndpointPath)
+					.WithAuthScheme("Lucca").AuthenticateAsApplication(config.ApiKeysFetcherToken);
+			});
 
 			services.AddSingleton<PrincipalStore>();
 			services.AddSingleton<SessionKeyService>();

@@ -2,7 +2,6 @@
 using Remote.Infra.Services;
 using Salesforce.Domain.Interfaces;
 using Salesforce.Domain.Models;
-using Salesforce.Infra.Configurations;
 using Salesforce.Infra.DTOs;
 using System.Collections.Generic;
 using System.Net.Http;
@@ -10,9 +9,9 @@ using System.Threading.Tasks;
 
 namespace Salesforce.Infra.Services
 {
-    public class SalesforceAccountsRemoteService : HostRemoteService<SalesforceServiceConfiguration>, ISalesforceAccountsRemoteService
+    public class SalesforceAccountsRemoteService : HostRemoteService, ISalesforceAccountsRemoteService
     {
-        protected override string RemoteAppName => "Salesforce Service";
+        protected override string RemoteApiDescription => "Salesforce Service";
 
         public SalesforceAccountsRemoteService(HttpClient httpClient, JsonSerializer jsonSerializer)
             : base(httpClient, jsonSerializer)

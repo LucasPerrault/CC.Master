@@ -5,15 +5,15 @@ using Rights.Infra.Services;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
-using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace Rights.Infra.Remote
 {
 	public class UserPermissionsRemoteService : PartenairesService
 	{
-		public UserPermissionsRemoteService(HttpClient httpClient, JsonSerializer jsonSerializer, ClaimsPrincipal claimsPrincipal)
-			: base(httpClient, jsonSerializer, claimsPrincipal)
+		protected override string RemoteApiDescription => "Partenaires users permissions";
+		public UserPermissionsRemoteService(HttpClient httpClient, JsonSerializer jsonSerializer)
+			: base(httpClient, jsonSerializer)
 		{ }
 
 		internal async Task<IReadOnlyCollection<Permission>> GetUserPermissionsAsync(int principalId)
