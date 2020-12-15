@@ -43,7 +43,7 @@ namespace Authentication.Web.Middlewares
 
             var redirectionUri = UriHelper.BuildAbsolute
             (
-                httpContext.Request.Scheme,
+                "https",
                 httpContext.Request.Host,
                 httpContext.Request.PathBase,
                 httpContext.Request.Path

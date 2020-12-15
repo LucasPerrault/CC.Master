@@ -23,7 +23,7 @@ namespace Authentication.Web.Tests.Middlewares
             var response = await _client.GetAsync($"/route?sessionKey={token}");
             Assert.Equal(HttpStatusCode.Redirect, response.StatusCode);
             Assert.Contains($"authToken={token}; path=/", response.Headers.GetValues("Set-Cookie"));
-            Assert.Contains("http://localhost/route", response.Headers.GetValues("Location"));
+            Assert.Contains("https://localhost/route", response.Headers.GetValues("Location"));
         }
     }
 }
