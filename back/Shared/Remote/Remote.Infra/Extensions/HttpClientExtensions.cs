@@ -13,15 +13,14 @@ namespace Remote.Infra.Extensions
         private const string _userAgentKey = "User-Agent";
         private const string _cloudControlUserAgent = "CloudControl";
 
-        public static void SetSafeBaseAddress(this HttpClient httpClient, Uri endpoint)
+        private static string AsSafeEndpoint(this string endpoint)
         {
-            httpClient.SetSafeBaseAddress(endpoint.OriginalString);
-        }
+            if (endpoint == null)
+            {
+                return null;
+            }
 
-        public static void SetSafeBaseAddress(this HttpClient httpClient, string endpointPath)
-        {
-            var fixedPath = endpointPath.EndsWith("/") ? endpointPath : $"{endpointPath}/";
-            httpClient.BaseAddress = new Uri(fixedPath);
+            return endpoint.EndsWith('/') ? endpoint : $"{endpoint}/";
         }
 
         private static string GetFullUserAgent(string suffix) => $"{_cloudControlUserAgent} {suffix}";
@@ -34,7 +33,7 @@ namespace Remote.Infra.Extensions
 
         public static HttpClient WithBaseAddress(this HttpClient httpClient, Uri host, string endpoint)
         {
-            httpClient.BaseAddress = new Uri(host, endpoint);
+            httpClient.BaseAddress = new Uri(host, endpoint.AsSafeEndpoint());
             return httpClient;
         }
 
