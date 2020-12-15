@@ -34,7 +34,8 @@ namespace Remote.Infra.Extensions
 
         public static HttpClient WithBaseAddress(this HttpClient httpClient, Uri host, string endpoint)
         {
-            httpClient.BaseAddress = new Uri(host, endpoint);
+            var endpointWithSlash = endpoint.EndsWith('/') ? endpoint : $"{endpoint}/";
+            httpClient.BaseAddress = new Uri(host, endpointWithSlash);
             return httpClient;
         }
 
