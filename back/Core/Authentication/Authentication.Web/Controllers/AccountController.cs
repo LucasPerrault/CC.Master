@@ -7,6 +7,7 @@ namespace Authentication.Web.Controllers
 {
     [Route("Account")]
     [AllowAnonymous]
+    [AllowAllIps]
     public class AccountController : Controller
     {
         private readonly AuthRedirectionRemoteService _authRedirectionRemoteService;
@@ -20,8 +21,6 @@ namespace Authentication.Web.Controllers
         }
 
         [HttpGet, Route("Login")]
-        [AllowAnonymous]
-        [AllowAllIps]
         public RedirectResult Login([FromQuery] string returnUrl)
         {
             var redirectionCallback = $"https://{Request.Host.Value}{returnUrl}";
