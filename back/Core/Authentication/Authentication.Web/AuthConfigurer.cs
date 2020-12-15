@@ -28,7 +28,6 @@ namespace Authentication.Web
 
 			services.AddSingleton<AuthRedirectionRemoteService>();
 
-			services.AddScoped<UserAuthenticationRemoteService>();
 			services.AddHttpClient<UserAuthenticationRemoteService>((provider, client) =>
 			{
 				client.WithUserAgent(nameof(UserAuthenticationRemoteService))
@@ -36,7 +35,6 @@ namespace Authentication.Web
 					.WithAuthScheme("Lucca").TryAuthenticateCurrentPrincipal(provider);
 			});
 
-			services.AddScoped<ApiKeyAuthenticationRemoteService>();
 			services.AddHttpClient<ApiKeyAuthenticationRemoteService>(client =>
 			{
 				client.WithUserAgent(nameof(ApiKeyAuthenticationRemoteService))

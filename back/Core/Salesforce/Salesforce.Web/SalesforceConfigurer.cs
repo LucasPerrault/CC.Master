@@ -10,7 +10,6 @@ namespace Salesforce.Web
 	{
 		public static void ConfigureServices(IServiceCollection services, SalesforceConfiguration config)
 		{
-			services.AddScoped<ISalesforceAccountsRemoteService, SalesforceAccountsRemoteService>();
 			services.AddHttpClient<ISalesforceAccountsRemoteService, SalesforceAccountsRemoteService>(client =>
 			{
 				client.WithUserAgent(nameof(SalesforceAccountsRemoteService))

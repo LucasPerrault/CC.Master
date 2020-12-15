@@ -22,7 +22,6 @@ namespace Proxy.Web
 		{
 			var uri = new UriBuilder { Host = config.Host, Scheme = "http"}.Uri;
 
-			services.AddSingleton<LegacyHealthzService>();
 			services.AddHttpClient<LegacyHealthzService>(client =>
 			{
 				client.WithUserAgent(nameof(LegacyHealthzService))

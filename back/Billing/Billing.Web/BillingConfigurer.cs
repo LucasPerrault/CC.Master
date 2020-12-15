@@ -29,7 +29,6 @@ namespace Billing.Web
 				Path = config.LegacyClientsEndpointPath
 			};
 
-			services.AddScoped<ILegacyClientsRemoteService, LegacyClientsRemoteService>();
 			services.AddHttpClient<ILegacyClientsRemoteService, LegacyClientsRemoteService>((provider, client) =>
 			{
 				client.WithUserAgent(nameof(LegacyClientsRemoteService))

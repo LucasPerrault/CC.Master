@@ -14,7 +14,6 @@ namespace Rights.Web
 	{
 		public static void ConfigureServices(this IServiceCollection services, RightsConfiguration config)
 		{
-			services.AddScoped<DepartmentsRemoteService>();
 			services.AddHttpClient<DepartmentsRemoteService>((provider, client) =>
 			{
 				client.WithUserAgent(nameof(DepartmentsRemoteService))
@@ -22,7 +21,6 @@ namespace Rights.Web
 					.WithAuthScheme("Lucca").AuthenticateCurrentPrincipal(provider);
 			});
 
-			services.AddScoped<ApiKeyPermissionsRemoteService>();
 			services.AddHttpClient<ApiKeyPermissionsRemoteService>((provider, client) =>
 			{
 				client.WithUserAgent(nameof(ApiKeyPermissionsRemoteService))
@@ -30,7 +28,6 @@ namespace Rights.Web
 					.WithAuthScheme("Lucca").AuthenticateCurrentPrincipal(provider);
 			});
 
-			services.AddScoped<UserPermissionsRemoteService>();
 			services.AddHttpClient<UserPermissionsRemoteService>((provider, client) =>
 			{
 				client.WithUserAgent(nameof(UserPermissionsRemoteService))
