@@ -11,5 +11,7 @@ namespace Salesforce.Infra.Configurations
         public SalesforceServiceConfiguration(Guid authToken)
             : base(authToken, _userAgent, _authScheme, string.Empty)
         { }
+
+        protected override string AuthorizationHeaderParam(Guid token, string type) => token.ToString();
     }
 }
