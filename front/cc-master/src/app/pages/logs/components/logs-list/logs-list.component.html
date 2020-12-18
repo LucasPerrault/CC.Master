@@ -38,6 +38,14 @@
         </div>
       </td>
     </tr>
+    <tr class="table-body-row" *ngIf="!logs.length && !isShownMoreDataLoading && !isRefreshedDataLoading">
+      <td class="table-body-row-cell" colspan="6">
+        <section class="emptyState">
+          <h3 class="emptyState-title">Shhh, c'est calme ici</h3>
+          <p class="emptyState-description">Aucun log à afficher</p>
+        </section>
+      </td>
+    </tr>
     </tbody>
   </table>
 </cdk-virtual-scroll-viewport>
