@@ -4,7 +4,7 @@ import { LogsComponent } from './logs.component';
 
 const routes: Routes = [
 	{ path: '', component: LogsComponent }
-]
+];
 
 @NgModule({
 	declarations: [
@@ -14,4 +14,4 @@ const routes: Routes = [
 		RouterModule.forChild(routes),
 	]
 })
-export class LogsModule {}
+export class LogsModule {};
