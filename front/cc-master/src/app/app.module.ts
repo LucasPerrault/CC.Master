@@ -12,6 +12,7 @@ registerLocaleData(localeFr);
 
 const routes: Routes = [
   { path: 'logs', loadChildren: () => import('./pages/logs').then(m => m.LogsModule)},
+  {path: forbiddenUrl, component: ForbiddenComponent},
   {path: '**', redirectTo: 'logs', pathMatch: 'full'},
 ];
 
