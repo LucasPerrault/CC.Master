@@ -15,6 +15,8 @@ export class LogsListComponent implements OnInit {
 
   @Input() public logs: IEnvironmentLog[];
   @Input() public defaultSortParams: IApiV3SortParams;
+  @Input() public isRefreshedDataLoading: boolean;
+  @Input() public isShownMoreDataLoading: boolean;
   @Output() public sortByParams: EventEmitter<IApiV3SortParams> = new EventEmitter<IApiV3SortParams>();
   @Output() public showMoreData: EventEmitter<void> = new EventEmitter<void>();
 

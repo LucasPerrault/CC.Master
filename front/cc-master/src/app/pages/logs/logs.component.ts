@@ -52,4 +52,12 @@ export class LogsComponent implements OnInit, OnDestroy {
   public get logs$(): Observable<IEnvironmentLog[]> {
     return this._logsService.logs$;
   }
+
+  public get isShownMoreDataLoading$(): Observable<boolean> {
+    return this._logsService.isShownMoreDataLoading$;
+  }
+
+  public get isRefreshedDataLoading$(): Observable<boolean> {
+    return this._logsService.isRefreshedDataLoading$;
+  }
 }

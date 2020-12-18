@@ -18,12 +18,12 @@ export class LogsService {
   private _numberOfTotalLogs$: BehaviorSubject<number> = new BehaviorSubject<number>(0);
 
   private _isShownMoreDataLoading$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
-  private _isLoading$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+  private _isRefreshedDataLoading$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
   constructor(private _httpClient: HttpClient) {}
 
   public async refreshLogsAsync(sortParams: IApiV3SortParams, params?: IHttpQueryParams): Promise<void> {
-    this._isLoading$.next(true);
+    this._isRefreshedDataLoading$.next(true);
 
     await this.updateLogsAsync(
       defaultPagingParams,
@@ -31,7 +31,7 @@ export class LogsService {
       params
     );
 
-    this._isLoading$.next(false);
+    this._isRefreshedDataLoading$.next(false);
   }
 
   public async showMoreDataAsync(sortParam: IApiV3SortParams, params?: IHttpQueryParams): Promise<void> {
@@ -90,7 +90,11 @@ export class LogsService {
     return this._logs$.asObservable();
   }
 
-  public get isLoading$(): Observable<boolean> {
-    return this._isLoading$.asObservable();
+  public get isShownMoreDataLoading$(): Observable<boolean> {
+    return this._isShownMoreDataLoading$.asObservable();
+  }
+
+  public get isRefreshedDataLoading$(): Observable<boolean> {
+    return this._isRefreshedDataLoading$.asObservable();
   }
 }

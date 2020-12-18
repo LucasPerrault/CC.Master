@@ -2,4 +2,7 @@
               (sortByParams)="sortBy($event)"
               (showMoreData)="showMoreDataAsync()"
               [logs]="logs$ | async"
-              [defaultSortParams]="defaultSortParams"></cc-logs-list>
+              [defaultSortParams]="defaultSortParams"
+              [isShownMoreDataLoading]="isShownMoreDataLoading$ | async"
+              [isRefreshedDataLoading]="isRefreshedDataLoading$ | async">
+</cc-logs-list>

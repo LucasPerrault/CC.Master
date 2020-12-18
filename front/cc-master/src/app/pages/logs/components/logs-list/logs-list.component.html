@@ -32,6 +32,12 @@
       </td>
       <td class="table-body-row-cell column-xl">{{ getNonAnonymizedActionExplanation(log) }}</td>
     </tr>
+    <tr class="table-body-row" *ngIf="isShownMoreDataLoading || isRefreshedDataLoading">
+      <td class="table-body-row-cell" colspan="6">
+        <div class="loading" [ngClass]="{'mod-dialog': isRefreshedDataLoading, 'u-right': isShownMoreDataLoading}">
+        </div>
+      </td>
+    </tr>
     </tbody>
   </table>
 </cdk-virtual-scroll-viewport>

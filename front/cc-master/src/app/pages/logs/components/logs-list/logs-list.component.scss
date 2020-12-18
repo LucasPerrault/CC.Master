@@ -5,6 +5,8 @@
   height: calc(100vh - 5rem);
 }
 
+.table { min-height: calc(100vh - 10rem); }
+
 .mod-scroll-viewport { height: 100%; }
 .mod-scroll-viewport .table .table-head-row .table-head-row-cell {
   position: sticky;
