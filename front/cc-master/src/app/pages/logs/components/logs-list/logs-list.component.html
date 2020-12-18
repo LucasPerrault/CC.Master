@@ -34,7 +34,7 @@
     </tr>
     <tr class="table-body-row" *ngIf="isShownMoreDataLoading || isRefreshedDataLoading">
       <td class="table-body-row-cell" colspan="6">
-        <div class="loading" [ngClass]="{'mod-dialog': isRefreshedDataLoading, 'u-right': isShownMoreDataLoading}">
+        <div class="loading" [ngClass]="{'mod-dialog': isRefreshedDataLoading, 'u-right': isShownMoreDataLoading && !isRefreshedDataLoading}">
         </div>
       </td>
     </tr>
