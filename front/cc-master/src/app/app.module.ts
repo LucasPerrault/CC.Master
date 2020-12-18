@@ -1,9 +1,12 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
-
-import { AppComponent } from './app.component';
 import { RouterModule, Routes } from '@angular/router';
+import {LOCALE_ID, NgModule} from '@angular/core';
+import localeFr from '@angular/common/locales/fr';
+import {registerLocaleData} from '@angular/common';
+import { AppComponent } from './app.component';
 import { PrincipalModule } from './aspects/principal';
+
+registerLocaleData(localeFr);
 
 const routes: Routes = [
 	{ path: 'logs', loadChildren: () => import('./pages/logs').then(m => m.LogsModule) },
@@ -19,7 +22,9 @@ const routes: Routes = [
 		RouterModule.forRoot(routes),
 		PrincipalModule.forRoot(),
 	],
-	providers: [],
+	providers: [
+    { provide: LOCALE_ID, useValue: 'fr-FR' },
+  ],
 	bootstrap: [AppComponent]
 })
 export class AppModule { }
