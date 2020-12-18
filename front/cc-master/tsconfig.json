@@ -19,6 +19,9 @@
     "paths": {
       "@cc/aspects/*": [
         "./src/app/aspects/*"
+      ],
+      "@cc/common/*": [
+        "./src/app/common/*"
       ]
     }
   }
