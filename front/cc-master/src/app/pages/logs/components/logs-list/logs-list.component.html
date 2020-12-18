@@ -1,0 +1,37 @@
+<cdk-virtual-scroll-viewport class="mod-scroll-viewport" [itemSize]="rowHeightFixed" (scroll)="scroll()">
+  <table class="table card">
+    <thead class="table-head">
+    <tr class="table-head-row">
+      <th class="table-head-row-cell mod-sortable"
+          [class.is-sorted-descending]="activeAscOrDescIcon('userId', 'desc')"
+          [class.is-sorted-ascending]="activeAscOrDescIcon('userId', 'asc')"
+          (click)="sortBy('userId')">
+        Collaborateur
+      </th>
+      <th class="table-head-row-cell">Action</th>
+      <th class="table-head-row-cell">Instance</th>
+      <th class="table-head-row-cell mod-sortable "
+          [class.is-sorted-descending]="activeAscOrDescIcon('createdOn', 'desc')"
+          [class.is-sorted-ascending]="activeAscOrDescIcon('createdOn', 'asc')"
+          (click)="sortBy('createdOn')">Date</th>
+      <th class="table-head-row-cell column-xs">Anonymisé</th>
+      <th class="table-head-row-cell column-xl">Justification</th>
+    </tr>
+    </thead>
+    <tbody class="table-body">
+    <tr *ngFor="let log of logs" class="table-body-row">
+      <td class="table-body-row-cell">{{ log.user.name }}</td>
+      <td class="table-body-row-cell">{{ log.activity }}</td>
+      <td class="table-body-row-cell">{{ getInstanceName(log.environment) }}</td>
+      <td class="table-body-row-cell">{{ log.createdOn | date: 'dd/MM/yyyy HH:mm:ss' }}</td>
+      <td class="table-body-row-cell column-xs">
+        <div class="checkbox">
+          <input class="checkbox-input" type="checkbox" id="isAnonymizedData" [checked]="log.isAnonymizedData" disabled>
+          <label class="checkbox-label" for="isAnonymizedData"></label>
+        </div>
+      </td>
+      <td class="table-body-row-cell column-xl">{{ getNonAnonymizedActionExplanation(log) }}</td>
+    </tr>
+    </tbody>
+  </table>
+</cdk-virtual-scroll-viewport>
