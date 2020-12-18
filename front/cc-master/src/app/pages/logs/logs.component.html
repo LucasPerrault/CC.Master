@@ -1,0 +1,5 @@
+<cc-logs-list class="u-marginSmall"
+              (sortByParams)="sortBy($event)"
+              (showMoreData)="showMoreDataAsync()"
+              [logs]="logs$ | async"
+              [defaultSortParams]="defaultSortParams"></cc-logs-list>
