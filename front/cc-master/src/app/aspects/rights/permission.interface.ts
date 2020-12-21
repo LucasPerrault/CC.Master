@@ -2,6 +2,6 @@ export interface IPermission {
   operation: IOperation;
 }
 
-export interface IOperation {
+interface IOperation {
   id: number;
 }
