@@ -1,7 +1,7 @@
 import {Inject, Injectable} from '@angular/core';
 import {IPrincipal, PRINCIPAL} from '@cc/aspects/principal';
-import {Operation} from '@cc/aspects/rights';
-import {IPermission} from '@cc/aspects/rights';
+import {Operation} from '@cc/aspects/rights/index';
+import {IPermission} from '@cc/aspects/rights/index';
 
 @Injectable()
 export class RightsService {

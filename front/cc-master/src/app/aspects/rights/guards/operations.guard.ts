@@ -1,8 +1,9 @@
 import {Injectable} from '@angular/core';
 import {ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot, UrlTree} from '@angular/router';
-import {Operation} from '@cc/aspects/rights';
-import { RightsService } from '@cc/aspects/rights';
 import {forbiddenUrl} from '@cc/common/errors';
+import {RightsService} from '../rights.service';
+import {Operation} from '../operation.enum';
+
 
 @Injectable()
 export class OperationsGuard implements CanActivate {
