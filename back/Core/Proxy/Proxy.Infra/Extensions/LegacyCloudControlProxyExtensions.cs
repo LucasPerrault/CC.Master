@@ -37,7 +37,7 @@ namespace Core.Proxy.Infra.Extensions
 
 		private static readonly HashSet<string> SpaSegments = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
 		{
-			"/static",
+			"/logs",
 		};
 
 		public static IApplicationBuilder UseLegacyCloudControlHttpProxy(this IApplicationBuilder app)
