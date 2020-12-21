@@ -38,6 +38,9 @@ namespace CloudControl.Web
 
 			app.UseHealthChecks();
 
+			app.UseSpaStaticFiles();
+			app.UseFileServer();
+			
 			app.UseCertificateForwarding();
 			app.UseRouting();
 
