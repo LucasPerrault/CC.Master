@@ -1,7 +1,11 @@
-import { Component } from '@angular/core';
+import {Component} from '@angular/core';
 
 @Component({
 	selector: 'cc-logs',
-	template: 'logs logs logs all day long',
+	templateUrl: './logs.component.html'
 })
-export class LogsComponent {}
+export class LogsComponent {
+  public get testCount(): number {
+    return 10;
+  }
+}
