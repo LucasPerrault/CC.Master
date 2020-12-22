@@ -1,11 +1,9 @@
-import { registerLocaleData } from '@angular/common';
-import localeFr from '@angular/common/locales/fr';
-import { LOCALE_ID, NgModule } from '@angular/core';
+import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { RouterModule, Routes } from '@angular/router';
-import {NgModule} from '@angular/core';
-import {PrincipalModule} from '@cc/aspects/principal';
-import {TranslateModule} from '@cc/aspects/translate';
+import { PrincipalModule } from '@cc/aspects/principal';
+import { TranslateModule } from '@cc/aspects/translate';
+
 import { AppComponent } from './app.component';
 
 const routes: Routes = [

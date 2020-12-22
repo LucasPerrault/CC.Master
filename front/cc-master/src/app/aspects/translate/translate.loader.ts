@@ -1,6 +1,7 @@
-import {TranslateLoader as NgxTranslateLoader} from '@ngx-translate/core';
-import {Observable, of} from 'rxjs';
-import {Translations} from '../../../translations/translations';
+import { TranslateLoader as NgxTranslateLoader } from '@ngx-translate/core';
+import { Observable, of } from 'rxjs';
+
+import { Translations } from '../../../translations/translations';
 
 export class TranslateLoader implements NgxTranslateLoader {
 

@@ -1,8 +1,8 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { TranslateModule } from '@cc/aspects/translate';
 
 import { LogsComponent } from './logs.component';
-import {TranslateModule} from '@cc/aspects/translate';
 
 const routes: Routes = [
 	{ path: '', component: LogsComponent },
@@ -15,6 +15,6 @@ const routes: Routes = [
     imports: [
         RouterModule.forChild(routes),
         TranslateModule,
-    ]
+    ],
 })
 export class LogsModule {}

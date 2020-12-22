@@ -1,7 +1,7 @@
-import {Pipe, PipeTransform} from '@angular/core';
-import {TranslatePipe as NgxTranslatePipe} from '@ngx-translate/core';
+import { Pipe, PipeTransform } from '@angular/core';
+import { TranslatePipe as NgxTranslatePipe } from '@ngx-translate/core';
 
-@Pipe({name: 'translate'})
+@Pipe({ name: 'translate' })
 export class TranslatePipe extends NgxTranslatePipe implements PipeTransform {
 
   transform(queryString: string, ...args: any[]): string {

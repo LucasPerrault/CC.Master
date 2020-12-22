@@ -1,8 +1,8 @@
-import {Component} from '@angular/core';
+import { Component } from '@angular/core';
 
 @Component({
 	selector: 'cc-logs',
-	templateUrl: './logs.component.html'
+	templateUrl: './logs.component.html',
 })
 export class LogsComponent {
   public get testCount(): number {
