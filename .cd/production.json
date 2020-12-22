@@ -28,10 +28,10 @@
 			},
 			"internalToolSpecifications": {
 				"featureTarget": "cloudcontrol",
+				"appLikeHaproxyBackend": false,
 				"hasBetaVersion": true,
 				"betaSpecifications": {
-					"slackChannel": "#cc-notifications",
-					"configEnvironment": "PREVIEW"
+					"slackChannel": "#cc-notifications"
 				}
 			}
 		}
