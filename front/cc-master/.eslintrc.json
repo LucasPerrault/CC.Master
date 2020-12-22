@@ -19,7 +19,9 @@
         "plugin:@angular-eslint/ng-cli-compat--formatting-add-on",
         "plugin:@angular-eslint/template/process-inline-templates"
       ],
+      "plugins": ["simple-import-sort", "unused-imports"],
       "rules": {
+        "@angular-eslint/component-class-suffix": "off",
         "@angular-eslint/component-selector": [
           "error",
           {
@@ -35,7 +37,38 @@
             "prefix": "cc",
             "style": "camelCase"
           }
-        ]
+        ],
+        "@angular-eslint/no-host-metadata-property": "off",
+        "prefer-arrow/prefer-arrow-functions": [
+          "error",
+          {
+            "allowStandaloneDeclarations": true
+          }
+        ],
+        "no-shadow": "off",
+        "@typescript-eslint/no-shadow": "error",
+        "@typescript-eslint/naming-convention": [
+          "error",
+          {
+            "selector": "default",
+            "format": ["camelCase"]
+          },
+          {
+            "selector": "variable",
+            "format": ["camelCase", "UPPER_CASE"]
+          },
+          {
+            "selector": ["typeLike", "enumMember"],
+            "format": ["PascalCase"]
+          }
+        ],
+        "no-underscore-dangle": 0,
+        "comma-dangle": ["error", "always-multiline"],
+        "simple-import-sort/imports": "error",
+        "simple-import-sort/exports": "error",
+        "unused-imports/no-unused-imports-ts": "error",
+        "array-bracket-spacing": "error",
+        "object-curly-spacing": ["error", "always"]
       }
     },
     {
