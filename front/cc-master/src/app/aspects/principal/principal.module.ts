@@ -1,12 +1,13 @@
 import { HttpClientModule } from '@angular/common/http';
 import { APP_INITIALIZER, ModuleWithProviders, NgModule } from '@angular/core';
+
 import { getPrincipal, initPrincipal, PrincipalInitializer } from './principal.initializer';
 import { PRINCIPAL } from './principal.token';
 
 @NgModule({
 	imports: [
 		HttpClientModule,
-	]
+	],
 })
 export class PrincipalModule {
 	public static forRoot(): ModuleWithProviders<PrincipalModule> {
@@ -18,12 +19,12 @@ export class PrincipalModule {
 					provide: APP_INITIALIZER,
 					useFactory: initPrincipal,
 					deps: [PrincipalInitializer],
-					multi: true
+					multi: true,
 				},
 				{
 					provide: PRINCIPAL,
 					useFactory: getPrincipal,
-					deps: [PrincipalInitializer]
+					deps: [PrincipalInitializer],
 				},
 			],
 		};
