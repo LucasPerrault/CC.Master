@@ -1,4 +1,4 @@
-import {IPermission} from '../rights';
+import { IPermission } from '../rights';
 
 export interface IPrincipal {
 	id: number;
