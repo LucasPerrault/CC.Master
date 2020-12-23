@@ -4,9 +4,9 @@ import { RouterModule, Routes } from '@angular/router';
 import { ErrorsModule } from '@cc/aspects/errors';
 import { PrincipalModule } from '@cc/aspects/principal';
 import { RightsModule } from '@cc/aspects/rights/rights.module';
+import { TranslateModule } from '@cc/aspects/translate';
 import { ForbiddenComponent, forbiddenUrl } from '@cc/common/errors';
 import { ToastsModule } from '@cc/common/toasts';
-import { TranslateModule } from '@cc/aspects/translate';
 
 import { AppComponent } from './app.component';
 

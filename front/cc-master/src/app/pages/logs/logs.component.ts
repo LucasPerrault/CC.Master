@@ -8,7 +8,7 @@ import { Component } from '@angular/core';
 export class LogsComponent {
   constructor(private httpClient: HttpClient) {
   }
-  
+
   public getFakeLocaleError(): void {
     throw new Error('Locale Erreur de test');
   }
