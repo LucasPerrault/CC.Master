@@ -3,6 +3,7 @@ import localeFr from '@angular/common/locales/fr';
 import { LOCALE_ID, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { RouterModule, Routes } from '@angular/router';
+import { HttpErrorModule } from '@cc/aspects/http-error';
 
 import { AppComponent } from './app.component';
 import { PrincipalModule } from './aspects/principal';
@@ -23,6 +24,7 @@ const routes: Routes = [
 		BrowserModule,
 		RouterModule.forRoot(routes),
 		PrincipalModule.forRoot(),
+    HttpErrorModule.forRoot(),
     ToastsModule,
 	],
 	providers: [
