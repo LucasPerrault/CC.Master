@@ -14,7 +14,7 @@ export class PrincipalInitializer {
 	constructor(private http: HttpClient) {}
 
 	public initPrincipal(): Promise<IPrincipal> {
-		const fields = 'id,name';
+		const fields = 'id,name,permissions[scope,operation[id]]';
 		const principalUrl = `/api/v3/principals/me?fields=${fields}`;
 
 		return this.http.get<{ data: IPrincipal }>(principalUrl).pipe(

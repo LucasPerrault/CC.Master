@@ -55,6 +55,7 @@
               "extractLicenses": true,
               "vendorChunk": false,
               "buildOptimizer": true,
+              "deployUrl": "/cc-master/",
               "budgets": [
                 {
                   "type": "initial",
