@@ -1,6 +1,6 @@
 export enum Operation {
   ReadEnvironments = 1000,
-  RisplayEnvTab = 1001,
+  DisplayEnvTab = 1001,
   RestoreInstances = 1002,
   ImpersonationOnTrainingAndPreview = 1003,
   ImpersonationOnProd = 1004,
