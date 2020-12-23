@@ -6,4 +6,9 @@ export interface IPrincipal {
 	isLuccaUser: boolean;
 	departmentCode: string;
 	permissions: IPermission[];
+	culture: ICulture;
+}
+
+export interface ICulture {
+  code: string;
 }

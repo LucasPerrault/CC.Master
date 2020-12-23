@@ -1,7 +1,7 @@
 import { HttpClientModule } from '@angular/common/http';
-import { APP_INITIALIZER, ModuleWithProviders, NgModule } from '@angular/core';
+import { APP_INITIALIZER, LOCALE_ID, ModuleWithProviders, NgModule } from '@angular/core';
 
-import { getPrincipal, initPrincipal, PrincipalInitializer } from './principal.initializer';
+import { getCultureCode, getPrincipal, initPrincipal, PrincipalInitializer } from './principal.initializer';
 import { PRINCIPAL } from './principal.token';
 
 @NgModule({
@@ -26,6 +26,11 @@ export class PrincipalModule {
 					useFactory: getPrincipal,
 					deps: [PrincipalInitializer],
 				},
+        {
+          provide: LOCALE_ID,
+          useFactory: getCultureCode,
+          deps: [PrincipalInitializer],
+        },
 			],
 		};
 	}
