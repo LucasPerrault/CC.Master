@@ -3,14 +3,13 @@ import localeFr from '@angular/common/locales/fr';
 import { LOCALE_ID, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { RouterModule, Routes } from '@angular/router';
-
+import { ErrorsModule } from '@cc/aspects/errors';
+import { PrincipalModule } from '@cc/aspects/principal';
 import { RightsModule } from '@cc/aspects/rights/rights.module';
 import { ForbiddenComponent, forbiddenUrl } from '@cc/common/errors';
-import { ErrorsModule } from '@cc/aspects/errors';
+import { ToastsModule } from '@cc/common/toasts';
 
 import { AppComponent } from './app.component';
-import { PrincipalModule } from './aspects/principal';
-import { ToastsModule } from './common/toasts';
 
 registerLocaleData(localeFr);
 
@@ -30,7 +29,7 @@ const routes: Routes = [
 		PrincipalModule.forRoot(),
     ErrorsModule.forRoot(),
     ToastsModule,
-    RightsModule
+    RightsModule,
 	],
 	providers: [
     { provide: LOCALE_ID, useValue: 'fr-FR' },
