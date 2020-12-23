@@ -1,6 +1,5 @@
 import { ErrorHandler, Injectable } from '@angular/core';
-
-import { ToastsService, ToastType } from '../../common/toasts';
+import { ToastsService, ToastType } from '@cc/common/toasts';
 
 
 @Injectable()

@@ -2,8 +2,7 @@ import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { ErrorHandler, ModuleWithProviders, NgModule } from '@angular/core';
 import { CcErrorHandler } from '@cc/aspects/errors/error.handler';
 import { HttpErrorInterceptor } from '@cc/aspects/errors/http-error.interceptor';
-
-import { ToastsService } from '../../common/toasts';
+import { ToastsService } from '@cc/common/toasts';
 
 @NgModule({})
 export class ErrorsModule {
