@@ -6,6 +6,7 @@ import { RouterModule, Routes } from '@angular/router';
 
 import { AppComponent } from './app.component';
 import { PrincipalModule } from './aspects/principal';
+import { ToastsModule } from './common/toasts';
 
 registerLocaleData(localeFr);
 
@@ -22,6 +23,7 @@ const routes: Routes = [
 		BrowserModule,
 		RouterModule.forRoot(routes),
 		PrincipalModule.forRoot(),
+    ToastsModule,
 	],
 	providers: [
     { provide: LOCALE_ID, useValue: 'fr-FR' },

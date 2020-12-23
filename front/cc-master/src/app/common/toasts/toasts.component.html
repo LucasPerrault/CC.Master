@@ -1,0 +1,7 @@
+<div class="toasts">
+    <div class="toasts-item" *ngFor="let toast of toasts$ | async">
+        <i class="lucca-icon u-marginRightSmall">{{getIconId(toast)}}</i>
+        <span [innerHtml]="toast.message"> </span>
+        <button class="toasts-item-kill" (click)="remove(toast.id)"></button>
+    </div>
+</div>
