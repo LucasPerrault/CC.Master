@@ -29,13 +29,13 @@ export class HttpErrorInterceptor implements HttpInterceptor {
   }
 
   private getClientSideErrorMessage(httpErrorResponse: HttpErrorResponse): string {
-    return `Erreur : ${httpErrorResponse.error.message}`;
+    return `${httpErrorResponse.error.message}`;
   }
 
   private getServerSideErrorMessage(httpErrorResponse: HttpErrorResponse): string {
     const message = httpErrorResponse.error.Message;
     const status = httpErrorResponse.status;
     const statusText = httpErrorResponse.statusText;
-    return `Erreur ${status} ${statusText} : ${message}`;
+    return `${status} ${statusText} : ${message}`;
   }
 }

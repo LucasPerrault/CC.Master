@@ -8,7 +8,7 @@ export class CcErrorHandler implements ErrorHandler {
 
   handleError(error: Error) {
     this.toastsService.addToast({
-      message: `Erreur : ${error.message}`,
+      message: `${error.message}`,
       type: ToastType.Error,
     });
   }
