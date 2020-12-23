@@ -6,6 +6,7 @@ import { IPrincipal } from './principal.interface';
 
 export const initPrincipal = (initializer: PrincipalInitializer): () => Promise<IPrincipal> => () => initializer.initPrincipal();
 export const getPrincipal = (initializer: PrincipalInitializer): IPrincipal => initializer.principal;
+export const getCultureCode = (initializer: PrincipalInitializer): string => initializer.principal.culture.code;
 
 @Injectable()
 export class PrincipalInitializer {
@@ -14,7 +15,7 @@ export class PrincipalInitializer {
 	constructor(private http: HttpClient) {}
 
 	public initPrincipal(): Promise<IPrincipal> {
-		const fields = 'id,name,permissions[scope,operation[id]]';
+		const fields = 'id,name,permissions[scope,operation[id]],culture[code]';
 		const principalUrl = `/api/v3/principals/me?fields=${fields}`;
 
 		return this.http.get<{ data: IPrincipal }>(principalUrl).pipe(
