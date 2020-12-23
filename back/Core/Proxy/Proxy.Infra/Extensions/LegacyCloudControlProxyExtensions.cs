@@ -35,6 +35,11 @@ namespace Core.Proxy.Infra.Extensions
 			"/warmup"
 		};
 
+		private static readonly HashSet<string> SpaSegments = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+		{
+			"/logs",
+		};
+
 		public static IApplicationBuilder UseLegacyCloudControlHttpProxy(this IApplicationBuilder app)
 		{
 			var proxyConfiguration = app.ApplicationServices.GetService<LegacyCloudControlConfiguration>();
@@ -101,7 +106,7 @@ namespace Core.Proxy.Infra.Extensions
 				return false;
 			}
 
-			return NonRedirectableSegments.Any(s => pathString.StartsWithSegments(s));
+			return NonRedirectableSegments.Any(s => pathString.StartsWithSegments(s)) || SpaSegments.Any(s => pathString.StartsWithSegments(s));
 		}
 
 		private static ForwardContext AddRedirectionHeader(this ForwardContext forwardContext, string redirectionUrl)

@@ -1,0 +1,80 @@
+$palettes: (
+	"primary": (
+		"darker": #C5273D,
+		"dark": #ED3F5C,
+		"color": #F35A79,
+		"light": #FB839B,
+		"lighter": lighten(#f35a79, 20%),
+		"lightest": #FFB2C2,
+		"text": #FFFFFF,
+		"see-through": #FFE0E7,
+		"50": #FFE0E7,
+		"100": #FFCED9,
+		"200": #FEBECC,
+		"300": #FFB2C2,
+		"400": #FF9CB0,
+		"500": #FB839B,
+		"600": #F6718C,
+		"700": #F35A79,
+		"800": #ED3F5C,
+		"900": #C5273D,
+	),
+	'secondary': (
+		'color': #ffb900,
+		'text': white,
+		'see-through': #fff8e5,
+		'dark': #faa200,
+		'darker': #eb7900,
+		'light': #fad36b,
+		'lighter': #fdefc9,
+		'lightest': #fff4d6,
+		'50': #fff8e5,
+		'100': #fff4d6,
+		'200': #fdefc9,
+		'300': #fde9b4,
+		'400': #fbda83,
+		'500': #fad36b,
+		'600': #ffca3d,
+		'700': #ffb900,
+		'800': #faa200,
+		'900': #eb7900,
+	),
+	'grey': (
+		'color': #405777,
+		'text': #fff,
+		'see-through': #EAF1FB,
+		'dark': #2A3E5A,
+		'darker': #112036,
+		'light': #88A0C3,
+		'lighter': #BACDE8,
+		'lightest': #DDE8F8,
+		'50': #EAF1FB,
+		'100': #DDE8F8,
+		'200': #CEDDF3,
+		'300': #BACDE8,
+		'400': #A6BDDD,
+		'500': #88A0C3,
+		'600': #7189AD,
+		'700': #405777,
+		'800': #2A3E5A,
+		'900': #112036,
+	)
+);
+$color: (
+	text: (
+		dark: (
+			color: #112036
+		),
+		default: (
+			color: #2A3E5A
+		),
+		light: (
+			color: #88A0C3
+		),
+		placeholder: (
+			color: #CEDDF3
+		)
+	),
+);
+$theme: _set($theme, "palettes", $palettes);
+$theme: _set($theme, "colors", $colors);

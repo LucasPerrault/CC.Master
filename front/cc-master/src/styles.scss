@@ -1,0 +1,13 @@
+/* You can add global styles to this file, and also import other style files */
+$noCssVar: false;
+
+@import "~@lucca-front/scss/src/main.overridable";
+@import "~@lucca-front/ng/style/main.overridable";
+
+// Google Fonts
+// ====
+@import url("https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,300italic,400italic,600italic");
+
+:root {
+	@include generateCSSVarsFromTheme($theme);
+}
