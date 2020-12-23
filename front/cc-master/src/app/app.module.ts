@@ -9,6 +9,11 @@ import { ToastsModule } from '@cc/common/toasts';
 import { TranslateModule } from '@cc/aspects/translate';
 
 import { AppComponent } from './app.component';
+import localeFr from '@angular/common/locales/fr';
+import { registerLocaleData } from '@angular/common';
+
+registerLocaleData(localeFr);
+
 
 const routes: Routes = [
   { path: 'logs', loadChildren: () => import('./pages/logs').then(m => m.LogsModule) },
