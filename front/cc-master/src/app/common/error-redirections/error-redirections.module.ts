@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { TranslateModule } from '@cc/aspects/translate';
-import { ForbiddenComponent } from '@cc/common/errors/forbidden/forbidden.component';
+import { ForbiddenComponent } from '@cc/common/error-redirections/forbidden/forbidden.component';
 
 @NgModule({
   declarations: [ForbiddenComponent],
@@ -11,4 +11,4 @@ import { ForbiddenComponent } from '@cc/common/errors/forbidden/forbidden.compon
   ],
   providers: [],
 })
-export class ErrorsModule { }
+export class ErrorRedirectionsModule { }
