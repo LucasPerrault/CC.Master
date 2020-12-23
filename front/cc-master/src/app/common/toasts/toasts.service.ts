@@ -29,7 +29,7 @@ export class ToastsService {
     }
 
     private generateId(): string {
-        const randomString = Math.random().toString(36).substr(2, 9);
+        const randomString = Math.random().toString(36).substr(2);
         return `_${randomString}`;
     }
 }
