@@ -1,9 +1,8 @@
 import { Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot, UrlTree } from '@angular/router';
+import { Operation } from '@cc/aspects/rights/operation.enum';
+import { RightsService } from '@cc/aspects/rights/rights.service';
 import { forbiddenUrl } from '@cc/common/errors';
-
-import { Operation } from '../operation.enum';
-import { RightsService } from '../rights.service';
 
 
 @Injectable()
