@@ -11,9 +11,8 @@ import { ToastsModule } from '@cc/common/toasts';
 import { AppComponent } from './app.component';
 
 const routes: Routes = [
-  { path: 'logs', loadChildren: () => import('./pages/logs').then(m => m.LogsModule) },
   { path: forbiddenUrl, component: ForbiddenComponent },
-  { path: '*', redirectTo: 'logs', pathMatch: 'full' },
+  { path: '*', redirectTo: forbiddenUrl, pathMatch: 'full' },
 ];
 
 @NgModule({
