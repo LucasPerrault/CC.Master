@@ -3,9 +3,11 @@ import localeFr from '@angular/common/locales/fr';
 import { LOCALE_ID, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { RouterModule, Routes } from '@angular/router';
+import { ErrorsModule } from '@cc/aspects/errors';
 
 import { AppComponent } from './app.component';
 import { PrincipalModule } from './aspects/principal';
+import { ToastsModule } from './common/toasts';
 
 registerLocaleData(localeFr);
 
@@ -22,6 +24,8 @@ const routes: Routes = [
 		BrowserModule,
 		RouterModule.forRoot(routes),
 		PrincipalModule.forRoot(),
+    ErrorsModule.forRoot(),
+    ToastsModule,
 	],
 	providers: [
     { provide: LOCALE_ID, useValue: 'fr-FR' },
