@@ -19,7 +19,7 @@ namespace CloudControl.Web.Spa
         {
             app.UseSpaStaticFiles(new StaticFileOptions
             {
-                RequestPath = "/cc-static"
+                RequestPath = "/cc-master"
             });
 
             return app;
