@@ -1,15 +1,8 @@
-import {ChangeDetectionStrategy, Component, EventEmitter, Output} from '@angular/core';
-import {BehaviorSubject} from 'rxjs';
-import {IHttpQueryParams} from '../../queries';
+import { ChangeDetectionStrategy, Component, EventEmitter, Output } from '@angular/core';
+import { BehaviorSubject } from 'rxjs';
 
-enum LogsQueryParamsKeys {
-  UserId = 'userId',
-  ActivityId = 'activityId',
-  EnvironmentDomain = 'environment.domain',
-  EnvironmentSubDomain = 'environment.subdomain',
-  CreatedOn = 'createdOn',
-  IsAnonymizedData = 'isAnonymizedData'
-}
+import { EnvironmentLogFilterKeyEnum } from '../../enums';
+import { IHttpQueryParams } from '../../queries';
 
 @Component({
   selector: 'cc-logs-filter',
@@ -19,7 +12,7 @@ enum LogsQueryParamsKeys {
 export class LogsFiltersComponent {
   @Output() public updateQueryFilters: EventEmitter<IHttpQueryParams> = new EventEmitter<IHttpQueryParams>();
 
-  public logsQueryParamsKeys = LogsQueryParamsKeys;
+  public logsQueryParamsKeys = EnvironmentLogFilterKeyEnum;
 
   public isAnonymizedData: string = '';
 
