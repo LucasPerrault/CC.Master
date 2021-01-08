@@ -1,0 +1,21 @@
+<label class="textfield palette-grey">
+  <lu-select [(ngModel)]="userIds"
+             (ngModelChange)="updateUserIdsSelected(userIds)"
+             class="textfield-input"
+             placeholder="Collaborateurs"
+             multiple>
+    <ng-container *luDisplayer="let users; multiple: true" [ngPlural]="users.length">
+      <span class="label">{{users.length}}</span>
+      <ng-template ngPluralCase="one">collaborateur sélectionné</ng-template>
+      <ng-template ngPluralCase="other">collaborateurs sélectionnés</ng-template>
+    </ng-container>
+    <lu-option-picker-advanced>
+      <header class="lu-picker-header">
+        <lu-api-paged-searcher api="api/v3/principals"></lu-api-paged-searcher>
+      </header>
+      <lu-option-pager></lu-option-pager>
+      <lu-option *luForOptions="let user; trackBy: trackBy" [value]="user.id">{{user.name}}</lu-option>
+    </lu-option-picker-advanced>
+    <lu-input-clearer></lu-input-clearer>
+  </lu-select>
+</label>
