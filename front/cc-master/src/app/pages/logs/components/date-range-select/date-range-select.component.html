@@ -1,0 +1,21 @@
+<div class="u-displayInlineFlex u-alignItemsCenter">
+  <label class="textfield mod-short palette-grey u-marginRightSmaller">
+    <lu-date-select class="textfield-input"
+                    [(ngModel)]="startDate"
+                    (ngModelChange)="updateDatesSelected(startDate, endDate)"
+                    [max]="endDate || todayDate"
+                    placeholder="Date de début">
+    </lu-date-select>
+  </label>
+
+  <label class="textfield mod-short palette-grey">
+    <lu-date-select class="textfield-input"
+                    [(ngModel)]="endDate"
+                    (ngModelChange)="updateDatesSelected(startDate, endDate)"
+                    [min]="startDate"
+                    [max]="todayDate"
+                    placeholder="Date de fin">
+    </lu-date-select>
+  </label>
+</div>
+
