@@ -1,0 +1,22 @@
+<label class="textfield palette-grey">
+  <lu-select [(ngModel)]="environmentDomainIds"
+             (ngModelChange)="updateEnvironmentDomainIdsSelected(environmentDomainIds)"
+             class="textfield-input"
+             placeholder="Nom de domaine"
+             multiple>
+    <ng-container *luDisplayer="let domains; multiple: true" [ngPlural]="domains.length">
+      <span class="label">{{domains.length}}</span>
+      <ng-template ngPluralCase="one">nom de domaine sélectionné</ng-template>
+      <ng-template ngPluralCase="other">nom de domaine sélectionnés</ng-template>
+    </ng-container>
+    <lu-option-picker-advanced>
+      <lu-option-feeder [options]="environmentDomains"></lu-option-feeder>
+      <header class="lu-picker-header">
+        <lu-option-searcher [searchFn]="searchFn"></lu-option-searcher>
+      </header>
+      <lu-option-pager></lu-option-pager>
+      <lu-option *luForOptions="let domain; trackBy: trackBy" [value]="domain.id">{{domain.name}}</lu-option>
+    </lu-option-picker-advanced>
+    <lu-input-clearer (onClear)="updateEnvironmentDomainIdsSelected([])"></lu-input-clearer>
+  </lu-select>
+</label>
