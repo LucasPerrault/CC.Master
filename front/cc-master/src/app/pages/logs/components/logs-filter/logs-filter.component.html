@@ -1,21 +1,21 @@
-<div class="u-displayInlineFlex u-alignItemsFlexEnd u-flexWrapWrap">
-  <cc-user-api-select class="u-marginRightSmaller"
+<div class="u-paddingSmall u-displayInlineFlex u-alignItemsFlexCenter u-flexWrapWrap u-marginTopSmall">
+  <cc-user-api-select class="u-marginRightSmaller u-marginBottomSmaller"
                       (userIdsToString)="updateFilters(logsQueryParamsKeys.UserId, $event)">
   </cc-user-api-select>
 
-  <cc-environment-action-select class="u-marginRightSmaller"
+  <cc-environment-action-select class="u-marginRightSmaller u-marginBottomSmaller"
                                 (actionIdsToString)="updateFilters(logsQueryParamsKeys.ActivityId, $event)">
   </cc-environment-action-select>
 
-  <cc-environment-domain-select class="u-marginRightSmaller"
+  <cc-environment-domain-select class="u-marginRightSmaller u-marginBottomSmaller"
                                 (domainIdsToString)="updateFilters(logsQueryParamsKeys.EnvironmentDomain, $event)">
   </cc-environment-domain-select>
 
-  <cc-environment-api-select class="u-marginRightSmaller"
+  <cc-environment-api-select class="u-marginRightSmaller u-marginBottomSmaller"
                              (environmentIdsToString)="updateFilters(logsQueryParamsKeys.EnvironmentSubDomain, $event)">
   </cc-environment-api-select>
 
-  <cc-date-range-select class="u-marginRightSmaller"
+  <cc-date-range-select class="u-marginRightSmaller u-marginBottomSmaller"
                         (dateRangeToString)="updateFilters(logsQueryParamsKeys.CreatedOn, $event)">
   </cc-date-range-select>
 
