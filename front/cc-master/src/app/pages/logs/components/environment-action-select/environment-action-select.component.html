@@ -1,0 +1,22 @@
+<label class="textfield palette-grey">
+  <lu-select [(ngModel)]="actionIds"
+             (ngModelChange)="updateActionIdsSelected(actionIds)"
+             class="textfield-input"
+             placeholder="Actions"
+             multiple>
+    <ng-container *luDisplayer="let actions; multiple: true" [ngPlural]="actions.length">
+      <span class="label">{{actions.length}}</span>
+      <ng-template ngPluralCase="one">action sélectionnée</ng-template>
+      <ng-template ngPluralCase="other">actions sélectionnées</ng-template>
+    </ng-container>
+    <lu-option-picker-advanced>
+      <lu-option-feeder [options]="actions"></lu-option-feeder>
+      <header class="lu-picker-header">
+        <lu-option-searcher [searchFn]="searchFn"></lu-option-searcher>
+      </header>
+      <lu-option-pager></lu-option-pager>
+      <lu-option *luForOptions="let activity; trackBy: trackBy" [value]="activity.id">{{activity.name}}</lu-option>
+    </lu-option-picker-advanced>
+    <lu-input-clearer (onClear)="updateActionIdsSelected([])"></lu-input-clearer>
+  </lu-select>
+</label>
