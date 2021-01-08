@@ -1,0 +1,21 @@
+<label class="textfield palette-grey">
+  <lu-select [(ngModel)]="environmentIds"
+             (ngModelChange)="updateEnvironmentIdsSelected(environmentIds)"
+             class="textfield-input"
+             placeholder="Sous-domaine"
+             multiple>
+    <ng-container *luDisplayer="let subDomains; multiple: true" [ngPlural]="subDomains.length">
+      <span class="label">{{subDomains.length}}</span>
+      <ng-template ngPluralCase="one">sous-domaine sélectionné</ng-template>
+      <ng-template ngPluralCase="other">sous-domaine sélectionnés</ng-template>
+    </ng-container>
+    <lu-option-picker-advanced>
+      <header class="lu-picker-header">
+        <lu-api-paged-searcher [api]="apiUrl" [fields]="apiFields" [orderBy]="apiOrderBy"></lu-api-paged-searcher>
+      </header>
+      <lu-option-pager></lu-option-pager>
+      <lu-option *luForOptions="let environment; trackBy: trackBy" [value]="environment.subDomain">{{environment.subDomain}}</lu-option>
+    </lu-option-picker-advanced>
+    <lu-input-clearer></lu-input-clearer>
+  </lu-select>
+</label>
