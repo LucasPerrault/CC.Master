@@ -2,12 +2,11 @@
   <lu-select [(ngModel)]="environmentIds"
              (ngModelChange)="updateEnvironmentIdsSelected(environmentIds)"
              class="textfield-input"
-             placeholder="Sous-domaine"
+             [placeholder]="'front_filterLabel_subdomain' | translate"
              multiple>
-    <ng-container *luDisplayer="let subDomains; multiple: true" [ngPlural]="subDomains.length">
+    <ng-container *luDisplayer="let subDomains; multiple: true">
       <span class="label">{{subDomains.length}}</span>
-      <ng-template ngPluralCase="one">sous-domaine sélectionné</ng-template>
-      <ng-template ngPluralCase="other">sous-domaine sélectionnés</ng-template>
+      {{ 'front_filterSelection_subdomain' | translate: { count: subDomains.length } }}
     </ng-container>
     <lu-option-picker-advanced>
       <header class="lu-picker-header">

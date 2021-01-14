@@ -4,7 +4,7 @@
                     [(ngModel)]="startDate"
                     (ngModelChange)="updateDatesSelected(startDate, endDate)"
                     [max]="endDate || todayDate"
-                    placeholder="Date de début">
+                    [placeholder]="'front_filterLabel_startDate' | translate">
     </lu-date-select>
   </label>
 
@@ -14,7 +14,7 @@
                     (ngModelChange)="updateDatesSelected(startDate, endDate)"
                     [min]="startDate"
                     [max]="todayDate"
-                    placeholder="Date de fin">
+                    [placeholder]="'front_filterLabel_endDate' | translate">
     </lu-date-select>
   </label>
 </div>

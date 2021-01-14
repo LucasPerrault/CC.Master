@@ -6,16 +6,16 @@
           [class.is-sorted-descending]="activeAscOrDescIcon('userId', 'desc')"
           [class.is-sorted-ascending]="activeAscOrDescIcon('userId', 'asc')"
           (click)="sortBy('userId')">
-        Collaborateur
+        {{ 'front_logPage_columnTable_collaborator' | translate }}
       </th>
-      <th class="table-head-row-cell">Action</th>
-      <th class="table-head-row-cell">Instance</th>
+      <th class="table-head-row-cell">{{ 'front_logPage_columnTable_action' | translate }}</th>
+      <th class="table-head-row-cell">{{ 'front_logPage_columnTable_instance' | translate }}</th>
       <th class="table-head-row-cell mod-sortable "
           [class.is-sorted-descending]="activeAscOrDescIcon('createdOn', 'desc')"
           [class.is-sorted-ascending]="activeAscOrDescIcon('createdOn', 'asc')"
-          (click)="sortBy('createdOn')">Date</th>
-      <th class="table-head-row-cell column-xs">Anonymisé</th>
-      <th class="table-head-row-cell column-xl">Justification</th>
+          (click)="sortBy('createdOn')">{{ 'front_logPage_columnTable_date' | translate }}</th>
+      <th class="table-head-row-cell column-xs">{{ 'front_logPage_columnTable_anonymized' | translate }}</th>
+      <th class="table-head-row-cell column-xl">{{ 'front_logPage_columnTable_justification' | translate }}</th>
     </tr>
     </thead>
     <tbody class="table-body">

@@ -2,12 +2,11 @@
   <lu-select [(ngModel)]="actionIds"
              (ngModelChange)="updateActionIdsSelected(actionIds)"
              class="textfield-input"
-             placeholder="Actions"
+             [placeholder]="'front_filterLabel_action' | translate"
              multiple>
-    <ng-container *luDisplayer="let actions; multiple: true" [ngPlural]="actions.length">
+    <ng-container *luDisplayer="let actions; multiple: true">
       <span class="label">{{actions.length}}</span>
-      <ng-template ngPluralCase="one">action sélectionnée</ng-template>
-      <ng-template ngPluralCase="other">actions sélectionnées</ng-template>
+      {{ 'front_filterSelection_action' | translate: { count: actions.length } }}
     </ng-container>
     <lu-option-picker-advanced>
       <lu-option-feeder [options]="actions"></lu-option-feeder>

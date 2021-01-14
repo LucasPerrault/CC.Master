@@ -28,7 +28,9 @@
              (ngModelChange)="updateFilters(logsQueryParamsKeys.IsAnonymizedData, isAnonymizedData)"
              value=""
              checked>
-      <label class="radioButtons-item-label palette-grey" for="all">Tous</label>
+      <label class="radioButtons-item-label palette-grey" for="all">
+        {{ 'front_filterLabel_all' | translate }}
+      </label>
     </div>
     <div class="radioButtons-item">
       <input type="radio"
@@ -37,7 +39,9 @@
              [(ngModel)]="isAnonymizedData"
              (ngModelChange)="updateFilters(logsQueryParamsKeys.IsAnonymizedData, isAnonymizedData)"
              value="true">
-      <label class="radioButtons-item-label palette-grey" for="anonymized">Anonymisé</label>
+      <label class="radioButtons-item-label palette-grey" for="anonymized">
+        {{ 'front_filterLabel_anonymized' | translate }}
+      </label>
     </div>
     <div class="radioButtons-item">
       <input type="radio"
@@ -46,7 +50,9 @@
              [(ngModel)]="isAnonymizedData"
              (ngModelChange)="updateFilters(logsQueryParamsKeys.IsAnonymizedData, isAnonymizedData)"
              value="false">
-      <label class="radioButtons-item-label palette-grey" for="non-anonymized">Non Anonymisé</label>
+      <label class="radioButtons-item-label palette-grey" for="non-anonymized">
+        {{ 'front_filterLabel_nonAnonymized' | translate }}
+      </label>
     </div>
   </div>
 </div>

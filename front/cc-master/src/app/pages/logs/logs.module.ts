@@ -24,6 +24,7 @@ import {ALuDateAdapter, LuNativeDateAdapter} from '@lucca-front/ng/core';
 import { EnvironmentApiSelectComponent } from './components/environment-api-select/environment-api-select.component';
 import {LuApiModule} from '@lucca-front/ng/api';
 import { UserApiSelectComponent } from './components/user-api-select/user-api-select.component';
+import {TranslateModule} from '@cc/aspects/translate';
 
 const routes: Routes = [
 	{ path: '', component: LogsComponent }
@@ -54,6 +55,7 @@ const routes: Routes = [
     LuInputModule,
     LuDateModule,
     LuApiModule,
+    TranslateModule,
   ],
   providers: [
     LogsService,
