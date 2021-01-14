@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, EventEmitter, Output } from '@angul
 import { BehaviorSubject } from 'rxjs';
 
 import { EnvironmentLogFilterKeyEnum } from '../../enums';
-import { IHttpQueryParams } from '../../queries';
+import { IHttpQueryParams } from '../../../../common/queries';
 
 @Component({
   selector: 'cc-logs-filter',

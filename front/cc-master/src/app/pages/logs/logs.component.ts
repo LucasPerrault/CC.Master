@@ -1,7 +1,7 @@
 import {BehaviorSubject, combineLatest, Observable, Subject} from 'rxjs';
 import {takeUntil} from 'rxjs/operators';
 import {Component, OnDestroy, OnInit} from '@angular/core';
-import {IApiV3SortParams, IHttpQueryParams} from './queries';
+import {IApiV3SortParams, IHttpQueryParams} from '../../common/queries';
 import {LogsService} from './services';
 import {IEnvironmentLog} from './models';
 

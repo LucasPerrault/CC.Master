@@ -1,6 +1,6 @@
 import { Component, EventEmitter, HostBinding, Input, OnInit, Output, ViewChild} from '@angular/core';
 import {CdkVirtualScrollViewport} from '@angular/cdk/scrolling';
-import {ApiV3Order, IApiV3SortParams} from '../../queries';
+import {ApiV3Order, IApiV3SortParams} from '../../../../common/queries';
 import {EnvironmentLogMessageType} from '../../enums';
 import {IEnvironment, IEnvironmentLog} from '../../models';
 

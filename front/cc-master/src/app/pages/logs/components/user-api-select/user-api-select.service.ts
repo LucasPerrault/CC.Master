@@ -3,7 +3,7 @@ import { LuApiV3Service } from '@lucca-front/ng/api';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
-import { defaultPagingParams } from '../../queries';
+import { defaultPagingParams } from '../../../../common/queries';
 
 export class UserApiSelectService extends LuApiV3Service<IPrincipal> {
   private defaultOption = {

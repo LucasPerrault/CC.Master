@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Output } from '@angular/core';
 import { LuNativeDateAdapter } from '@lucca-front/ng/core';
 
-import { ApiDateFormat } from '../../queries';
+import { ApiDateFormat } from '../../../../common/queries';
 
 @Component({
   selector: 'cc-date-range-select',

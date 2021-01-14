@@ -2,7 +2,7 @@ import { LuApiV3Service } from '@lucca-front/ng/api';
 import { Observable } from 'rxjs';
 
 import { IEnvironment } from '../../models';
-import { defaultPagingParams } from '../../queries';
+import { defaultPagingParams } from '../../../../common/queries';
 
 export class EnvironmentApiSelectService extends LuApiV3Service<IEnvironment> {
 

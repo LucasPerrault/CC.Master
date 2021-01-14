@@ -9,7 +9,7 @@ import {
   IHttpApiV3CollectionCountResponse,
   IHttpApiV3Response,
   IHttpQueryParams
-} from '../queries';
+} from '../../../common/queries';
 import {IEnvironmentLog} from '../models';
 
 @Injectable()
