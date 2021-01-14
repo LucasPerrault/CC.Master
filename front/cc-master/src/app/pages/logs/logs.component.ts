@@ -1,9 +1,10 @@
-import {BehaviorSubject, combineLatest, Observable, Subject} from 'rxjs';
-import {takeUntil} from 'rxjs/operators';
-import {Component, OnDestroy, OnInit} from '@angular/core';
-import {IApiV3SortParams, IHttpQueryParams} from '../../common/queries';
-import {LogsService} from './services';
-import {IEnvironmentLog} from './models';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { IApiV3SortParams, IHttpQueryParams } from '@cc/common/queries';
+import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
+
+import { IEnvironmentLog } from './models';
+import { LogsService } from './services';
 
 @Component({
   selector: 'cc-logs',
@@ -12,52 +13,52 @@ import {IEnvironmentLog} from './models';
 export class LogsComponent implements OnInit, OnDestroy {
   public defaultSortParams: IApiV3SortParams = {
     field: 'createdOn',
-    order: 'desc'
-  }
-  private _queryFilterParams$: BehaviorSubject<IHttpQueryParams> = new BehaviorSubject<IHttpQueryParams>(null);
-  private _sortParams$: BehaviorSubject<IApiV3SortParams> = new BehaviorSubject<IApiV3SortParams>(this.defaultSortParams);
-  private _destroySubscription$: Subject<void> = new Subject<void>();
+    order: 'desc',
+  };
+  private queryFilterParams$: BehaviorSubject<IHttpQueryParams> = new BehaviorSubject<IHttpQueryParams>(null);
+  private sortParams$: BehaviorSubject<IApiV3SortParams> = new BehaviorSubject<IApiV3SortParams>(this.defaultSortParams);
+  private destroySubscription$: Subject<void> = new Subject<void>();
 
-  constructor(private _logsService: LogsService) {}
+  constructor(private logsService: LogsService) {}
 
   public ngOnInit(): void {
     this.refreshLogsWhenQueryParamsChange();
   }
 
   public ngOnDestroy(): void {
-    this._destroySubscription$.next();
-    this._destroySubscription$.complete();
+    this.destroySubscription$.next();
+    this.destroySubscription$.complete();
   }
 
   public updateQueryFilters(queryFiltersParams: IHttpQueryParams): void {
-    this._queryFilterParams$.next(queryFiltersParams);
+    this.queryFilterParams$.next(queryFiltersParams);
   }
 
   public sortBy(sortParams: IApiV3SortParams) {
-    this._sortParams$.next(sortParams);
+    this.sortParams$.next(sortParams);
   }
 
   public async showMoreDataAsync(): Promise<void> {
-    await this._logsService.showMoreDataAsync(this._sortParams$.value, this._queryFilterParams$.value);
+    await this.logsService.showMoreDataAsync(this.sortParams$.value, this.queryFilterParams$.value);
   }
 
   private refreshLogsWhenQueryParamsChange(): void {
-    combineLatest([ this._queryFilterParams$, this._sortParams$])
-      .pipe(takeUntil(this._destroySubscription$))
+    combineLatest([this.queryFilterParams$, this.sortParams$])
+      .pipe(takeUntil(this.destroySubscription$))
       .subscribe(async ([queryFilterParams, sortParams]) =>
-        await this._logsService.refreshLogsAsync(sortParams, queryFilterParams)
+        await this.logsService.refreshLogsAsync(sortParams, queryFilterParams),
       );
   }
 
   public get logs$(): Observable<IEnvironmentLog[]> {
-    return this._logsService.logs$;
+    return this.logsService.logs$;
   }
 
   public get isShownMoreDataLoading$(): Observable<boolean> {
-    return this._logsService.isShownMoreDataLoading$;
+    return this.logsService.isShownMoreDataLoading$;
   }
 
   public get isRefreshedDataLoading$(): Observable<boolean> {
-    return this._logsService.isRefreshedDataLoading$;
+    return this.logsService.isRefreshedDataLoading$;
   }
 }

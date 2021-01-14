@@ -1,71 +1,72 @@
-import {BehaviorSubject, Observable} from 'rxjs';
-import {map} from 'rxjs/operators';
-import {Injectable} from '@angular/core';
-import {HttpClient} from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
+import { Injectable } from '@angular/core';
+import { BehaviorSubject, Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
+
 import {
   defaultPagingParams,
   IApiV3PagingParams,
   IApiV3SortParams,
   IHttpApiV3CollectionCountResponse,
   IHttpApiV3Response,
-  IHttpQueryParams
+  IHttpQueryParams,
 } from '../../../common/queries';
-import {IEnvironmentLog} from '../models';
+import { IEnvironmentLog } from '../models';
 
 @Injectable()
 export class LogsService {
-  private _logs$: BehaviorSubject<IEnvironmentLog[]> = new BehaviorSubject<IEnvironmentLog[]>([]);
-  private _numberOfTotalLogs$: BehaviorSubject<number> = new BehaviorSubject<number>(0);
+  private logs: BehaviorSubject<IEnvironmentLog[]> = new BehaviorSubject<IEnvironmentLog[]>([]);
+  private numberOfTotalLogs: BehaviorSubject<number> = new BehaviorSubject<number>(0);
 
-  private _isShownMoreDataLoading$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
-  private _isRefreshedDataLoading$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+  private isShownMoreDataLoading: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+  private isRefreshedDataLoading: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
-  constructor(private _httpClient: HttpClient) {}
+  constructor(private httpClient: HttpClient) {}
 
   public async refreshLogsAsync(sortParams: IApiV3SortParams, params?: IHttpQueryParams): Promise<void> {
-    this._isRefreshedDataLoading$.next(true);
+    this.isRefreshedDataLoading.next(true);
 
     await this.updateLogsAsync(
       defaultPagingParams,
       sortParams,
-      params
+      params,
     );
 
-    this._isRefreshedDataLoading$.next(false);
+    this.isRefreshedDataLoading.next(false);
   }
 
   public async showMoreDataAsync(sortParam: IApiV3SortParams, params?: IHttpQueryParams): Promise<void> {
-    if (this._isShownMoreDataLoading$.value) {
+    if (this.isShownMoreDataLoading.value) {
       return;
     }
 
-    if (this._logs$.value.length >= this._numberOfTotalLogs$.value) {
+    if (this.logs.value.length >= this.numberOfTotalLogs.value) {
       return;
     }
 
     const pagingParams = {
       limit: defaultPagingParams.limit,
-      skip: this._logs$.value.length,
-    }
+      skip: this.logs.value.length,
+    };
 
-    this._isShownMoreDataLoading$.next(true);
+    this.isShownMoreDataLoading.next(true);
     await this.updateLogsAsync(pagingParams, sortParam, params);
-    this._isShownMoreDataLoading$.next(false);
+    this.isShownMoreDataLoading.next(false);
   }
 
   private async updateLogsAsync(
     paginationParams: IApiV3PagingParams,
     sortParams: IApiV3SortParams,
-    params?: IHttpQueryParams
+    params?: IHttpQueryParams,
   ): Promise<void> {
     if (!paginationParams.skip) {
-      this._logs$.next([]);
+      this.logs.next([]);
     }
 
     const response = await this.getLogs$(paginationParams, sortParams, params).toPromise();
 
-    this._logs$.next([...this._logs$.value, ...response.items]);
-    this._numberOfTotalLogs$.next(response.count);
+    this.logs.next([...this.logs.value, ...response.items]);
+    this.numberOfTotalLogs.next(response.count);
   }
 
   private getLogs$(
@@ -73,28 +74,29 @@ export class LogsService {
     sortParams: IApiV3SortParams,
     queryParams?: IHttpQueryParams,
   ): Observable<IHttpApiV3CollectionCountResponse<IEnvironmentLog>> {
-    const fields = 'collection.count,id,name,user,isAnonymizedData,activity,createdOn,environment[subDomain,domainName],messages[id,message,type]';
+    const fields = 'collection.count,id,name,user,isAnonymizedData,activity,createdOn,environment[subDomain,domainName],' +
+      'messages[id,message,type]';
     const environmentLogUrl = `/api/v3/environmentLogs`;
 
-    return this._httpClient.get<IHttpApiV3Response<IHttpApiV3CollectionCountResponse<IEnvironmentLog>>>(environmentLogUrl, {
+    return this.httpClient.get<IHttpApiV3Response<IHttpApiV3CollectionCountResponse<IEnvironmentLog>>>(environmentLogUrl, {
       params: {
         ...queryParams,
-        fields: fields,
+        fields,
         paging: `${pagingParams.skip},${pagingParams.limit}`,
-        orderBy: `${sortParams.field},${sortParams.order}`
-      }
+        orderBy: `${sortParams.field},${sortParams.order}`,
+      },
     }).pipe(map(response => response.data));
   }
 
   public get logs$(): Observable<IEnvironmentLog[]> {
-    return this._logs$.asObservable();
+    return this.logs.asObservable();
   }
 
   public get isShownMoreDataLoading$(): Observable<boolean> {
-    return this._isShownMoreDataLoading$.asObservable();
+    return this.isShownMoreDataLoading.asObservable();
   }
 
   public get isRefreshedDataLoading$(): Observable<boolean> {
-    return this._isRefreshedDataLoading$.asObservable();
+    return this.isRefreshedDataLoading.asObservable();
   }
 }

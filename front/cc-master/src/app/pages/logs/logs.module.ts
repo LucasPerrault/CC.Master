@@ -1,33 +1,34 @@
+import { ScrollingModule } from '@angular/cdk/scrolling';
+import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
-import {CommonModule} from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { RouterModule, Routes } from '@angular/router';
-import {ScrollingModule} from '@angular/cdk/scrolling';
-import {LogsService} from './services';
-import { LogsComponent } from './logs.component';
-import {LogsListComponent} from './components/logs-list/logs-list.component';
-import { EnvironmentDomainSelectComponent } from './components/environment-domain-select/environment-domain-select.component';
-import {LuSelectInputModule} from '@lucca-front/ng/select';
-import {FormsModule} from '@angular/forms';
+import { TranslateModule } from '@cc/aspects/translate';
+import { LuApiModule } from '@lucca-front/ng/api';
+import { ALuDateAdapter, LuNativeDateAdapter } from '@lucca-front/ng/core';
+import { LuDateModule } from '@lucca-front/ng/date';
+import { LuInputModule } from '@lucca-front/ng/input';
 import {
   LuOptionFeederModule,
   LuOptionModule,
   LuOptionPagerModule,
   LuOptionPickerModule,
-  LuOptionSearcherModule
+  LuOptionSearcherModule,
 } from '@lucca-front/ng/option';
-import {LuInputModule} from '@lucca-front/ng/input';
-import {LogsFiltersComponent} from './components/logs-filter/logs-filter.component';
-import { EnvironmentActionSelectComponent } from './components/environment-action-select/environment-action-select.component';
+import { LuSelectInputModule } from '@lucca-front/ng/select';
+
 import { DateRangeSelectComponent } from './components/date-range-select/date-range-select.component';
-import {LuDateModule} from '@lucca-front/ng/date';
-import {ALuDateAdapter, LuNativeDateAdapter} from '@lucca-front/ng/core';
+import { EnvironmentActionSelectComponent } from './components/environment-action-select/environment-action-select.component';
 import { EnvironmentApiSelectComponent } from './components/environment-api-select/environment-api-select.component';
-import {LuApiModule} from '@lucca-front/ng/api';
+import { EnvironmentDomainSelectComponent } from './components/environment-domain-select/environment-domain-select.component';
+import { LogsFiltersComponent } from './components/logs-filter/logs-filter.component';
+import { LogsListComponent } from './components/logs-list/logs-list.component';
 import { UserApiSelectComponent } from './components/user-api-select/user-api-select.component';
-import {TranslateModule} from '@cc/aspects/translate';
+import { LogsComponent } from './logs.component';
+import { LogsService } from './services';
 
 const routes: Routes = [
-	{ path: '', component: LogsComponent }
+	{ path: '', component: LogsComponent },
 ];
 
 @NgModule({
@@ -60,7 +61,7 @@ const routes: Routes = [
   providers: [
     LogsService,
     LuNativeDateAdapter,
-    {provide: ALuDateAdapter, useClass: LuNativeDateAdapter}
-  ]
+    { provide: ALuDateAdapter, useClass: LuNativeDateAdapter },
+  ],
 })
 export class LogsModule {};

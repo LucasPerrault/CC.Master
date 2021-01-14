@@ -3,5 +3,5 @@ export interface IApiV3SortParams {
   order: ApiV3Order;
 }
 
-export type ApiV3Order = 'asc' | 'desc'
+export type ApiV3Order = 'asc' | 'desc';
 

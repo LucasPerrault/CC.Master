@@ -1,6 +1,7 @@
-import {IPrincipal} from '@cc/aspects/principal';
-import {IEnvironment} from './environment.interface';
-import {IEnvironmentLogMessage} from './environment-log-message.interface';
+import { IPrincipal } from '@cc/aspects/principal';
+
+import { IEnvironment } from './environment.interface';
+import { IEnvironmentLogMessage } from './environment-log-message.interface';
 
 export interface IEnvironmentLog {
   id: number;

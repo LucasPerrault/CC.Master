@@ -1,4 +1,4 @@
-import {IEnvironmentDomain} from '../models';
+import { IEnvironmentDomain } from '../models';
 
 export enum EnvironmentDomain {
   ILuccaDotNet,
@@ -18,51 +18,51 @@ export enum EnvironmentDomain {
 export const environmentDomains: IEnvironmentDomain[] = [
   {
     id: EnvironmentDomain.ILuccaDotNet,
-    name: 'ilucca.net'
+    name: 'ilucca.net',
   },
   {
     id: EnvironmentDomain.EpayeCpDotCom,
-    name: 'e-payecp.com'
+    name: 'e-payecp.com',
   },
   {
     id: EnvironmentDomain.ILuccaDotCh,
-    name: 'ilucca.ch'
+    name: 'ilucca.ch',
   },
   {
     id: EnvironmentDomain.MesCongesDotNet,
-    name: 'mesconges.net'
+    name: 'mesconges.net',
   },
   {
     id: EnvironmentDomain.UgoOnLineDotNet,
-    name: 'ugo-online.net'
+    name: 'ugo-online.net',
   },
   {
     id: EnvironmentDomain.DauphineDotFr,
-    name: 'dauphine.fr'
+    name: 'dauphine.fr',
   },
   {
     id: EnvironmentDomain.ILuccaPreviewDotNet,
-    name: 'ilucca-preview.net'
+    name: 'ilucca-preview.net',
   },
   {
     id: EnvironmentDomain.FastobookDotCom,
-    name: 'fastobook.com'
+    name: 'fastobook.com',
   },
   {
     id: EnvironmentDomain.UrbaOnlineDotCom,
-    name: 'urbaonline.com'
+    name: 'urbaonline.com',
   },
   {
     id: EnvironmentDomain.Local,
-    name: 'local.dev'
+    name: 'local.dev',
   },
   {
     id: EnvironmentDomain.Training,
-    name: 'ilucca-test.net'
+    name: 'ilucca-test.net',
   },
   {
     id: EnvironmentDomain.Demo,
-    name: 'ilucca-demo.net'
+    name: 'ilucca-demo.net',
   },
 ];
 

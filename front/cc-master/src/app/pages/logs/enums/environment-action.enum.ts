@@ -1,4 +1,4 @@
-import {IEnvironmentAction} from '../models';
+import { IEnvironmentAction } from '../models';
 
 export enum EnvironmentAction {
   EnvironmentCreation = 1,
@@ -27,87 +27,87 @@ export enum EnvironmentAction {
 export const environmentActions: IEnvironmentAction[] = [
   {
     id: EnvironmentAction.EnvironmentCreation,
-    name: 'Création d’un environnement'
+    name: 'Création d’un environnement',
   },
   {
     id: EnvironmentAction.EnvironmentDeletion,
-    name: 'Suppression d’un environnement'
+    name: 'Suppression d’un environnement',
   },
   {
     id: EnvironmentAction.EnvironmentBlockage,
-    name: 'Blocage d’un environnement'
+    name: 'Blocage d’un environnement',
   },
   {
     id: EnvironmentAction.TrainingRestorationSuccessed,
-    name: 'Restauration de formation en succès'
+    name: 'Restauration de formation en succès',
   },
   {
     id: EnvironmentAction.TrainingRestorationFailed,
-    name: 'Restauration de formation en erreur'
+    name: 'Restauration de formation en erreur',
   },
   {
     id: EnvironmentAction.TrainingLock,
-    name: 'Protection de formation'
+    name: 'Protection de formation',
   },
   {
     id: EnvironmentAction.TrainingUnlock,
-    name: 'Déprotection de formation'
+    name: 'Déprotection de formation',
   },
   {
     id: EnvironmentAction.TrainingPasswordChange,
-    name: 'Changement du mot de passe de formation'
+    name: 'Changement du mot de passe de formation',
   },
   {
     id: EnvironmentAction.TrainingPasswordAutoChange,
-    name: 'Suppression automatique de formation'
+    name: 'Suppression automatique de formation',
   },
   {
     id: EnvironmentAction.PreviewRestorationSuccessed,
-    name: 'Restauration de preview en succès'
+    name: 'Restauration de preview en succès',
   },
   {
     id: EnvironmentAction.PreviewRestorationFailed,
-    name: 'Restauration de preview en échec'
+    name: 'Restauration de preview en échec',
   },
   {
     id: EnvironmentAction.PreviewLock,
-    name: 'Protection de preview'
+    name: 'Protection de preview',
   },
   {
     id: EnvironmentAction.PreviewUnlock,
-    name: 'Déprotection de preview'
+    name: 'Déprotection de preview',
   },
   {
     id: EnvironmentAction.PreviewAutomaticDeletion,
-    name: 'Suppression automatique de preview'
+    name: 'Suppression automatique de preview',
   },
   {
     id: EnvironmentAction.PreviewPasswordChanged,
-    name: 'Changement mot de passe de preview'
+    name: 'Changement mot de passe de preview',
   },
   {
     id: EnvironmentAction.ConnectAsProduction,
-    name: 'Connexion sur la production'
+    name: 'Connexion sur la production',
   },
   {
     id: EnvironmentAction.ConnectAsTraining,
-    name: 'Connexion sur la formation'
+    name: 'Connexion sur la formation',
   },
   {
     id: EnvironmentAction.ConnectAsPreview,
-    name: 'Connexion sur la preview'
+    name: 'Connexion sur la preview',
   },
   {
     id: EnvironmentAction.EnvironmentDeletionIntent,
-    name: 'Tentative de suppression d’un environnement'
+    name: 'Tentative de suppression d’un environnement',
   },
   {
     id: EnvironmentAction.PreviewAutomaticRestorationSuccessed,
-    name: 'Restauration automatique de preview en succès'
+    name: 'Restauration automatique de preview en succès',
   },
   {
     id: EnvironmentAction.PreviewAutomaticRestorationFailed,
-    name: 'Restauration automatique de preview en échec'
+    name: 'Restauration automatique de preview en échec',
   },
 ];
 

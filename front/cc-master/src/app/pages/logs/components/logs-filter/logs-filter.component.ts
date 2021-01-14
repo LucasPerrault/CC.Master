@@ -1,8 +1,8 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Output } from '@angular/core';
+import { IHttpQueryParams } from '@cc/common/queries';
 import { BehaviorSubject } from 'rxjs';
 
 import { EnvironmentLogFilterKeyEnum } from '../../enums';
-import { IHttpQueryParams } from '../../../../common/queries';
 
 @Component({
   selector: 'cc-logs-filter',
@@ -14,34 +14,37 @@ export class LogsFiltersComponent {
 
   public logsQueryParamsKeys = EnvironmentLogFilterKeyEnum;
 
-  public isAnonymizedData: string = '';
+  public isAnonymizedData = '';
 
-  private _queryFilters$: BehaviorSubject<IHttpQueryParams> = new BehaviorSubject<IHttpQueryParams>({});
+  private queryFilters$: BehaviorSubject<IHttpQueryParams> = new BehaviorSubject<IHttpQueryParams>({});
 
   public updateFilters(key: string, value: string): void {
-    const queryParamsKeys = Object.keys(this._queryFilters$.value);
+    const queryParamsKeys = Object.keys(this.queryFilters$.value);
 
     if (!value && !queryParamsKeys.includes(key)) {
       return;
     }
 
-    !value && queryParamsKeys.includes(key)
-      ? this.removeQueryParams(key, value)
-      : this.addQueryParams(key, value)
+    if (!value && queryParamsKeys.includes(key)) {
+      this.removeQueryParams(key);
+      this.updateQueryFilters.emit(this.queryFilters$.value);
+      return;
+    }
 
-    this.updateQueryFilters.emit(this._queryFilters$.value);
+    this.addQueryParams(key, value);
+    this.updateQueryFilters.emit(this.queryFilters$.value);
   }
 
   private addQueryParams(key: string, value: string) {
-    this._queryFilters$.next({
-      ...this._queryFilters$.value,
-      [key]: value
+    this.queryFilters$.next({
+      ...this.queryFilters$.value,
+      [key]: value,
     });
   }
 
-  private removeQueryParams(key: string, value: string) {
-    const currentQueryFilters = this._queryFilters$.value;
+  private removeQueryParams(key: string) {
+    const currentQueryFilters = this.queryFilters$.value;
     delete currentQueryFilters[key];
-    this._queryFilters$.next(currentQueryFilters);
+    this.queryFilters$.next(currentQueryFilters);
   }
 }

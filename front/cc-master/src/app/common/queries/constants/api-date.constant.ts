@@ -1,1 +1,1 @@
-export const ApiDateFormat = 'yyyy-MM-dd';
+export const apiDateFormat = 'yyyy-MM-dd';
