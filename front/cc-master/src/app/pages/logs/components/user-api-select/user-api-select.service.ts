@@ -1,9 +1,11 @@
+import { Injectable } from '@angular/core';
 import { IPrincipal } from '@cc/aspects/principal';
 import { defaultPagingParams } from '@cc/common/queries';
 import { LuApiV3Service } from '@lucca-front/ng/api';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
+@Injectable()
 export class UserApiSelectService extends LuApiV3Service<IPrincipal> {
   private defaultOption = {
     id: 0,
