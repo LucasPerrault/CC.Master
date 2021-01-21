@@ -26,6 +26,7 @@ using Storage.Web;
 using System;
 using Billing.Contracts.Infra.Storage;
 using Billing.Web;
+using Environments.Infra.Storage;
 using Salesforce.Web;
 
 namespace CloudControl.Web
@@ -125,6 +126,7 @@ namespace CloudControl.Web
 		public virtual void ConfigureStorage(IServiceCollection services)
 		{
 			StorageConfigurer.ConfigureServices(services, _configuration);
+			services.ConfigureContext<EnvironmentsDbContext>(_hostingEnvironment);
 			services.ConfigureContext<DistributorsDbContext>(_hostingEnvironment);
 			services.ConfigureContext<IpFilterDbContext>(_hostingEnvironment);
 			services.ConfigureContext<ContractsDbContext>(_hostingEnvironment);

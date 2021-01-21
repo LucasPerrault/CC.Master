@@ -24,6 +24,7 @@
       <ProjectReference Include="..\Core\Salesforce\Salesforce.Web\Salesforce.Web.csproj" />
       <ProjectReference Include="..\Core\Storage\Storage.Web\Storage.Web.csproj" />
       <ProjectReference Include="..\Shared\Distributors\Distributors.Web\Distributors.Web.csproj" />
+      <ProjectReference Include="..\Shared\Environments\Environments.Infra\Environments.Infra.csproj" />
     </ItemGroup>
 
     <ItemGroup>
