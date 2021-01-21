@@ -109,6 +109,9 @@ node(label: CI.getSelectedNode(script: this)) {
 
 				// front
 				bat "npm ci --prefix ${frontDirectory}";
+
+				// lokalise
+				bat "lucca translate lokalise";
 			}
 
 			if(CI.isSonarEnabled(script:this, extraCondition: isPr || isMainBranch)) {
