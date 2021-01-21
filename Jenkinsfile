@@ -100,6 +100,9 @@ node(label: CI.getSelectedNode(script: this)) {
 				// back
 				bat "dotnet clean ${slnFilepath}"
 				bat "dotnet restore ${slnFilepath}"
+
+				// front
+				bat "npm ci --prefix ${frontDirectory}";
 			}
 
 			if(CI.isSonarEnabled(script:this, extraCondition: isPr || isMainBranch)) {
