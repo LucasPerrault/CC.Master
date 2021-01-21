@@ -18,7 +18,7 @@ node(label: CI.getSelectedNode(script: this)) {
 	def slnFilepath = "back\\CC.Master.sln"
 	def repoName = "CC.Master"
 	def frontDirectory = "front/cc-master"
-	// def nodeJsVersion = "Node LTS v12.x.y"    -- uncomment when front is migrated
+	def nodeJsVersion = "Node LTS v12.x.y"
 
 	/////////////////////////////////////////////////
 	// Fin des variables à ajuster pour le projet //
@@ -89,6 +89,12 @@ node(label: CI.getSelectedNode(script: this)) {
 				suffix = gitVersionProps["GitVersion_NuGetPreReleaseTagV2"]
 				semver = gitVersionProps["GitVersion_AssemblySemVer"]
 				echo "Version calculated : ---------> prefix: ${prefix}  suffix: ${suffix}  semver: ${semver} "
+
+				// node
+				env.NODEJS_HOME = "${tool 'Node LTS v10.13.x'}";
+				env.PATH="${env.NODEJS_HOME};${env.PATH}";
+				bat "node --version";
+				bat "npm --version";
 
 				// lucca
 				bat "dotnet tool install --no-cache --tool-path=${WORKSPACE}\\${prepareDirectory} --add-source http://nuget.lucca.local/nuget devtools"
