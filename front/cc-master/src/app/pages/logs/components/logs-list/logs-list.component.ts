@@ -24,6 +24,7 @@ export class LogsListComponent implements OnInit {
   @HostBinding('style.--row-height-in-px')
   public readonly rowHeightFixedInPixel = `42px`;
   public readonly rowHeightFixed = 42;
+  private rowNumberBeforeBottomToShowMore = 15;
 
   private sortParams: IApiV3SortParams;
 
@@ -44,8 +45,7 @@ export class LogsListComponent implements OnInit {
   }
 
   public scroll(): void {
-    const rowNumberBeforeBottomToShowMore = 15;
-    const rowsHeightStepToShowMore = this.rowHeightFixed * rowNumberBeforeBottomToShowMore;
+    const rowsHeightStepToShowMore = this.rowHeightFixed * this.rowNumberBeforeBottomToShowMore;
     if (this.scrollViewport.measureScrollOffset('bottom') <= rowsHeightStepToShowMore) {
       this.showMoreData.emit();
     }
