@@ -27,7 +27,6 @@ const routes: Routes = [
 		PrincipalModule.forRoot(),
     ErrorsModule.forRoot(),
     TranslateModule.forRoot(),
-    LuSentryModule.forRoot({ config: environment.sentry }),
     ToastsModule,
     RightsModule,
 	],
