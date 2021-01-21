@@ -17,6 +17,7 @@ node(label: CI.getSelectedNode(script: this)) {
 	def projectTechnicalName = "CC.Master"
 	def slnFilepath = "back\\CC.Master.sln"
 	def repoName = "CC.Master"
+	def frontDirectory = "front/cc-master"
 	// def nodeJsVersion = "Node LTS v12.x.y"    -- uncomment when front is migrated
 
 	/////////////////////////////////////////////////
@@ -133,8 +134,17 @@ node(label: CI.getSelectedNode(script: this)) {
 					def webProjFile = findFiles(glob: "**/CloudControl.Web.csproj").first().path
 					bat "dotnet publish ${webProjFile} -p:VersionPrefix=${prefix} -p:VersionSuffix=${suffix} -p:AssemblyVersion=${semver} -o ${WORKSPACE}\\${buildDirectory}\\back -c ${config} -f netcoreapp3.1 -r win10-x64 /nodereuse:false --verbosity m"
 
+					// front
+					bat "npm run sentry-generate --prefix ${frontDirectory}"
+
+					bat "npm run build --prefix ${frontDirectory} -- --outputPath ..\\..\\${buildDirectory}\\front\\wwwroot"
+
 					withCredentials([file(credentialsId: '86b37cd3-224e-4c64-b90d-843764ba9d30', variable: 'devops_config')]) {
+						def devops_config = readJSON file: env.devops_config
+						def versionContent = "SENTRY_AUTH_TOKEN=${devops_config['sentry-token']}"
+						writeFile file:"${frontDirectory}/.env", text: versionContent
 					}
+					bat "npm run sentry-post --prefix ${frontDirectory} -- --distPath ..\\..\\${buildDirectory}\\front\\wwwroot"
 				}
 
 				loggableStage('6. Archive') {
