@@ -6,7 +6,9 @@
     "start": "ng serve",
     "build": "ng build --prod",
     "test": "ng test",
-    "lint": "ng lint"
+    "lint": "ng lint",
+    "sentry-generate": "lu-sentry generate",
+    "sentry-post": "lu-sentry post"
   },
   "private": true,
   "dependencies": {
