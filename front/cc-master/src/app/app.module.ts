@@ -7,7 +7,9 @@ import { RightsModule } from '@cc/aspects/rights/rights.module';
 import { TranslateModule } from '@cc/aspects/translate';
 import { ForbiddenComponent, forbiddenUrl } from '@cc/common/error-redirections';
 import { ToastsModule } from '@cc/common/toasts';
+import { LuSentryModule } from '@lucca/sentry/ng';
 
+import { environment } from '../environments/environment';
 import { AppComponent } from './app.component';
 
 const routes: Routes = [
@@ -25,6 +27,7 @@ const routes: Routes = [
 		PrincipalModule.forRoot(),
     ErrorsModule.forRoot(),
     TranslateModule.forRoot(),
+    LuSentryModule.forRoot({ config: environment.sentry }),
     ToastsModule,
     RightsModule,
 	],
