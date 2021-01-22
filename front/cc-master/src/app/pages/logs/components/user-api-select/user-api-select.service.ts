@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { IPrincipal } from '@cc/aspects/principal';
-import { defaultPagingParams } from '@cc/common/queries';
+import { defaultPagingParams } from '@cc/common/paging';
 import { LuApiV3Service } from '@lucca-front/ng/api';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
