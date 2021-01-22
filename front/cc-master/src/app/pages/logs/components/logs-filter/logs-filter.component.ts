@@ -1,6 +1,5 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Output } from '@angular/core';
-import { IFilterParams } from '@cc/common/filter';
-import { BehaviorSubject } from 'rxjs';
+import { FiltersService, IFilterParams } from '@cc/common/filter';
 
 import { EnvironmentLogFilterKeyEnum } from '../../enums';
 
@@ -12,39 +11,16 @@ import { EnvironmentLogFilterKeyEnum } from '../../enums';
 export class LogsFiltersComponent {
   @Output() public updateFilters: EventEmitter<IFilterParams> = new EventEmitter<IFilterParams>();
 
-  public logsQueryParamsKeys = EnvironmentLogFilterKeyEnum;
-
   public isAnonymizedData = '';
+  public logsFilterParamsKeys = EnvironmentLogFilterKeyEnum;
 
-  private queryFilters$: BehaviorSubject<IFilterParams> = new BehaviorSubject<IFilterParams>({});
+  private filters: IFilterParams;
+
+  constructor(private filterService: FiltersService) {
+  }
 
   public update(key: string, value: string): void {
-    const queryParamsKeys = Object.keys(this.queryFilters$.value);
-
-    if (!value && !queryParamsKeys.includes(key)) {
-      return;
-    }
-
-    if (!value && queryParamsKeys.includes(key)) {
-      this.removeQueryParams(key);
-      this.updateFilters.emit(this.queryFilters$.value);
-      return;
-    }
-
-    this.addQueryParams(key, value);
-    this.updateFilters.emit(this.queryFilters$.value);
-  }
-
-  private addQueryParams(key: string, value: string) {
-    this.queryFilters$.next({
-      ...this.queryFilters$.value,
-      [key]: value,
-    });
-  }
-
-  private removeQueryParams(key: string) {
-    const currentQueryFilters = this.queryFilters$.value;
-    delete currentQueryFilters[key];
-    this.queryFilters$.next(currentQueryFilters);
+    const filtersUpdated = this.filterService.updateParams(this.filters, key, value);
+    this.updateFilters.emit(filtersUpdated);
   }
 }

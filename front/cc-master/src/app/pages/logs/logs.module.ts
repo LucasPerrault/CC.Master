@@ -4,6 +4,7 @@ import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterModule, Routes } from '@angular/router';
 import { TranslateModule } from '@cc/aspects/translate';
+import { FilterModule } from '@cc/common/filter';
 import { PagingModule } from '@cc/common/paging';
 import { LuApiModule } from '@lucca-front/ng/api';
 import { ALuDateAdapter, LuNativeDateAdapter } from '@lucca-front/ng/core';
@@ -60,6 +61,7 @@ const routes: Routes = [
     TranslateModule,
     EnvironmentsModule,
     PagingModule,
+    FilterModule,
   ],
   providers: [
     LuNativeDateAdapter,
