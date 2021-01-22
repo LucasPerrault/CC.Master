@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, Output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { FiltersService, IFilterParams } from '@cc/common/filters';
 
 import { EnvironmentLogFilterKeyEnum } from '../../enums';
@@ -8,14 +8,18 @@ import { EnvironmentLogFilterKeyEnum } from '../../enums';
   templateUrl: './logs-filter.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class LogsFiltersComponent {
+export class LogsFiltersComponent implements OnInit {
   @Output() public updateFilters: EventEmitter<IFilterParams> = new EventEmitter<IFilterParams>();
 
   public logsFilterParamsKeys = EnvironmentLogFilterKeyEnum;
 
-  private filters: IFilterParams;
+  private filters: IFilterParams = {};
 
   constructor(private filterService: FiltersService) {
+  }
+
+  public ngOnInit(): void {
+    this.updateFilters.emit(this.filters);
   }
 
   public update(key: string, value: string): void {

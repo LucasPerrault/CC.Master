@@ -1,5 +1,5 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { IFilterParams } from '@cc/common/filter';
+import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
+import { IFilterParams } from '@cc/common/filters';
 import { IPaginatedResult, IPagingParams, PaginatedList, PagingService } from '@cc/common/paging';
 import { ISortParams } from '@cc/common/sort';
 import { LogsService } from '@cc/domain/environments';
@@ -11,6 +11,7 @@ import { IEnvironmentLog } from './models';
 @Component({
   selector: 'cc-logs',
   templateUrl: './logs.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class LogsComponent implements OnInit, OnDestroy {
   public defaultSortParams: ISortParams = {
@@ -40,7 +41,6 @@ export class LogsComponent implements OnInit, OnDestroy {
     this.paginatedLogs = this.pagingService.paginate<IEnvironmentLog>(
       (paging, sort, filter) => this.getPaginatedLogs$(paging, sort, filter),
     );
-    this.paginatedLogs.updateSort(this.defaultSortParams);
   }
 
   public ngOnDestroy(): void {
@@ -48,8 +48,8 @@ export class LogsComponent implements OnInit, OnDestroy {
     this.destroySubscription$.complete();
   }
 
-  public updateFilters(queryFiltersParams: IFilterParams): void {
-    this.paginatedLogs.updateFilters(queryFiltersParams);
+  public updateFilters(filterParams: IFilterParams): void {
+    this.paginatedLogs.updateFilters(filterParams);
   }
 
   public updateSort(sortParams: ISortParams) {
@@ -65,7 +65,8 @@ export class LogsComponent implements OnInit, OnDestroy {
     sort: ISortParams,
     filter: IFilterParams,
   ): Observable<IPaginatedResult<IEnvironmentLog>> {
-    return this.logsService.getLogs$(paging, sort, filter).pipe(
+    const sortParams = !!sort ? sort : this.defaultSortParams;
+    return this.logsService.getLogs$(paging, sortParams, filter).pipe(
       map(response => ({ items: response.items, totalCount: response.count })),
     );
   }
