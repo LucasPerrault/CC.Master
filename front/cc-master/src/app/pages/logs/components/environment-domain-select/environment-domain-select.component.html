@@ -1,6 +1,6 @@
 <label class="textfield palette-grey">
   <lu-select [(ngModel)]="environmentDomainIds"
-             (ngModelChange)="updateEnvironmentDomainIdsSelected(environmentDomainIds)"
+             (ngModelChange)="updateEnvironmentDomainIdsSelectedAsync(environmentDomainIds)"
              class="textfield-input"
              [placeholder]="'front_filterLabel_domainName' | translate"
              multiple>
@@ -16,6 +16,6 @@
       <lu-option-pager></lu-option-pager>
       <lu-option *luForOptions="let domain; trackBy: trackBy" [value]="domain.id">{{domain.name}}</lu-option>
     </lu-option-picker-advanced>
-    <lu-input-clearer (onClear)="updateEnvironmentDomainIdsSelected([])"></lu-input-clearer>
+    <lu-input-clearer (onClear)="updateEnvironmentDomainIdsSelectedAsync([])"></lu-input-clearer>
   </lu-select>
 </label>

@@ -1,6 +1,6 @@
 <label class="textfield palette-grey">
   <lu-select [(ngModel)]="actionIds"
-             (ngModelChange)="updateActionIdsSelected(actionIds)"
+             (ngModelChange)="updateActionIdsSelectedAsync(actionIds)"
              class="textfield-input"
              [placeholder]="'front_filterLabel_action' | translate"
              multiple>
@@ -16,6 +16,6 @@
       <lu-option-pager></lu-option-pager>
       <lu-option *luForOptions="let activity; trackBy: trackBy" [value]="activity.id">{{activity.name}}</lu-option>
     </lu-option-picker-advanced>
-    <lu-input-clearer (onClear)="updateActionIdsSelected([])"></lu-input-clearer>
+    <lu-input-clearer (onClear)="updateActionIdsSelectedAsync([])"></lu-input-clearer>
   </lu-select>
 </label>

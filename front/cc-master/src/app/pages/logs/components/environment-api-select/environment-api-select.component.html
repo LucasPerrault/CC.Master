@@ -1,6 +1,6 @@
 <label class="textfield palette-grey">
-  <lu-select [(ngModel)]="environmentIds"
-             (ngModelChange)="updateEnvironmentIdsSelected(environmentIds)"
+  <lu-select [(ngModel)]="environmentSubDomains"
+             (ngModelChange)="updateEnvironmentIdsSelectedAsync(environmentSubDomains)"
              class="textfield-input"
              [placeholder]="'front_filterLabel_subdomain' | translate"
              multiple>
@@ -18,3 +18,4 @@
     <lu-input-clearer></lu-input-clearer>
   </lu-select>
 </label>
+

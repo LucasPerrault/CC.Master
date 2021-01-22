@@ -1,6 +1,6 @@
 <label class="textfield palette-grey">
   <lu-select [(ngModel)]="userIds"
-             (ngModelChange)="updateUserIdsSelected(userIds)"
+             (ngModelChange)="updateUserIdsSelectedAsync(userIds)"
              class="textfield-input"
              [placeholder]="'front_filterLabel_collaborators' | translate"
              multiple>

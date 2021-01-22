@@ -1,4 +1,5 @@
-import { Component, EventEmitter, Output } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 import { ALuApiService } from '@lucca-front/ng/api';
 
 import { IEnvironment } from '../../models';
@@ -11,24 +12,45 @@ import { EnvironmentApiSelectService } from './environment-api-select.service';
     provide: ALuApiService, useClass: EnvironmentApiSelectService,
   }],
 })
-export class EnvironmentApiSelectComponent {
+export class EnvironmentApiSelectComponent implements OnInit {
   @Output() public environmentIdsToString: EventEmitter<string> = new EventEmitter<string>();
-  public environmentIds: number[];
+  public environmentSubDomains: string[];
   public apiUrl = 'api/v3/environments';
-  public apiFields = 'subdomain';
+  public apiFields = 'id,subdomain';
   public apiOrderBy = 'subdomain,asc';
+  private routerParamKey = 'subDomains';
+
+  constructor(private router: Router, private activatedRoute: ActivatedRoute) {
+  }
+
+  public ngOnInit(): void {
+    const routerParamValue = this.activatedRoute.snapshot.queryParamMap.get(this.routerParamKey);
+    if (!routerParamValue) {
+      return;
+    }
+
+    this.environmentIdsToString.emit(routerParamValue);
+    this.environmentSubDomains = routerParamValue.split(',');
+  }
 
   public trackBy(index: number, domain: IEnvironment): string {
     return domain.subDomain;
   }
 
-  public updateEnvironmentIdsSelected(environmentIds: number[]): void {
-    if (!environmentIds) {
-      this.environmentIdsToString.emit('');
-      return;
-    }
+  public async updateEnvironmentIdsSelectedAsync(environmentSubDomains: string[]): Promise<void> {
+    const environmentSubDomainsToQuery = !!environmentSubDomains ? environmentSubDomains.join(',') : '';
+    this.environmentIdsToString.emit(environmentSubDomainsToQuery);
 
-    const environmentIdsToString = environmentIds.join(',');
-    this.environmentIdsToString.emit(environmentIdsToString);
+    await this.updateRouterAsync(environmentSubDomainsToQuery);
+  }
+
+  private async updateRouterAsync(value: string): Promise<void> {
+    const queryParams = { [this.routerParamKey]: !!value ? value : null };
+
+    await this.router.navigate([], {
+      relativeTo: this.activatedRoute,
+      queryParams,
+      queryParamsHandling: 'merge',
+    });
   }
 }
