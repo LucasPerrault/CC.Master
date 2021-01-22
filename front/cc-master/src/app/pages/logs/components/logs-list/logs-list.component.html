@@ -32,13 +32,13 @@
       </td>
       <td class="table-body-row-cell column-xl">{{ getNonAnonymizedActionExplanation(log) }}</td>
     </tr>
-    <tr class="table-body-row" *ngIf="isShownMoreDataLoading || isRefreshedDataLoading">
+    <tr class="table-body-row" *ngIf="isLoadMore || isUpdateData">
       <td class="table-body-row-cell" colspan="6">
-        <div class="loading" [ngClass]="{'mod-dialog': isRefreshedDataLoading, 'u-right': isShownMoreDataLoading && !isRefreshedDataLoading}">
+        <div class="loading" [ngClass]="{'mod-dialog': isUpdateData, 'u-right': isLoadMore && !isUpdateData}">
         </div>
       </td>
     </tr>
-    <tr class="table-body-row" *ngIf="!logs.length && !isShownMoreDataLoading && !isRefreshedDataLoading">
+    <tr class="table-body-row" *ngIf="!logs.length && !isLoadMore && !isUpdateData">
       <td class="table-body-row-cell" colspan="6">
         <section class="emptyState">
           <h3 class="emptyState-title">Shhh, c'est calme ici</h3>

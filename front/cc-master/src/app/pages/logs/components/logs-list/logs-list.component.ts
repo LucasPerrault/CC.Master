@@ -1,7 +1,7 @@
 import { CdkVirtualScrollViewport } from '@angular/cdk/scrolling';
 import { Component, EventEmitter, HostBinding, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { ISortParams, SortOrder } from '@cc/common/sort';
 
-import { ApiV3Order, IApiV3SortParams } from '../../../../common/queries';
 import { EnvironmentLogMessageType } from '../../enums';
 import { IEnvironment, IEnvironmentLog } from '../../models';
 
@@ -15,18 +15,18 @@ export class LogsListComponent implements OnInit {
   public scrollViewport: CdkVirtualScrollViewport;
 
   @Input() public logs: IEnvironmentLog[];
-  @Input() public defaultSortParams: IApiV3SortParams;
-  @Input() public isRefreshedDataLoading: boolean;
-  @Input() public isShownMoreDataLoading: boolean;
-  @Output() public sortByParams: EventEmitter<IApiV3SortParams> = new EventEmitter<IApiV3SortParams>();
-  @Output() public showMoreData: EventEmitter<void> = new EventEmitter<void>();
+  @Input() public defaultSortParams: ISortParams;
+  @Input() public isUpdateData: boolean;
+  @Input() public isLoadMore: boolean;
+  @Output() public updateSort: EventEmitter<ISortParams> = new EventEmitter<ISortParams>();
+  @Output() public showMore: EventEmitter<void> = new EventEmitter<void>();
 
   @HostBinding('style.--row-height-in-px')
   public readonly rowHeightFixedInPixel = `42px`;
   public readonly rowHeightFixed = 42;
   private rowNumberBeforeBottomToShowMore = 15;
 
-  private sortParams: IApiV3SortParams;
+  private sortParams: ISortParams;
 
   public ngOnInit(): void {
     this.sortParams = this.defaultSortParams;
@@ -47,7 +47,7 @@ export class LogsListComponent implements OnInit {
   public scroll(): void {
     const rowsHeightStepToShowMore = this.rowHeightFixed * this.rowNumberBeforeBottomToShowMore;
     if (this.scrollViewport.measureScrollOffset('bottom') <= rowsHeightStepToShowMore) {
-      this.showMoreData.emit();
+      this.showMore.emit();
     }
   }
 
@@ -58,16 +58,16 @@ export class LogsListComponent implements OnInit {
     return this.sortParams.field === field && this.sortParams.order === order;
   }
 
-  public sortBy(field: string, order: ApiV3Order = 'asc'): void {
+  public sortBy(field: string, order: SortOrder = 'asc'): void {
     this.sortParams = {
       field,
       order: this.getOrderToSort(field, order),
     };
 
-    this.sortByParams.emit(this.sortParams);
+    this.updateSort.emit(this.sortParams);
   }
 
-  private getOrderToSort(fieldToSort: string, orderToSort: ApiV3Order): ApiV3Order {
+  private getOrderToSort(fieldToSort: string, orderToSort: SortOrder): SortOrder {
     if (fieldToSort === this.sortParams.field) {
       return this.sortParams.order === 'asc' ? 'desc' : 'asc';
     }

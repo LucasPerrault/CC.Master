@@ -1,22 +1,22 @@
 <div class="u-paddingSmall u-displayInlineFlex u-alignItemsFlexCenter u-flexWrapWrap u-marginTopSmall">
   <cc-user-api-select class="u-marginRightSmaller u-marginBottomSmaller"
-                      (userIdsToString)="updateFilters(logsQueryParamsKeys.UserId, $event)">
+                      (userIdsToString)="update(logsQueryParamsKeys.UserId, $event)">
   </cc-user-api-select>
 
   <cc-environment-action-select class="u-marginRightSmaller u-marginBottomSmaller"
-                                (actionIdsToString)="updateFilters(logsQueryParamsKeys.ActivityId, $event)">
+                                (actionIdsToString)="update(logsQueryParamsKeys.ActivityId, $event)">
   </cc-environment-action-select>
 
   <cc-environment-domain-select class="u-marginRightSmaller u-marginBottomSmaller"
-                                (domainIdsToString)="updateFilters(logsQueryParamsKeys.EnvironmentDomain, $event)">
+                                (domainIdsToString)="update(logsQueryParamsKeys.EnvironmentDomain, $event)">
   </cc-environment-domain-select>
 
   <cc-environment-api-select class="u-marginRightSmaller u-marginBottomSmaller"
-                             (environmentIdsToString)="updateFilters(logsQueryParamsKeys.EnvironmentSubDomain, $event)">
+                             (environmentIdsToString)="update(logsQueryParamsKeys.EnvironmentSubDomain, $event)">
   </cc-environment-api-select>
 
   <cc-date-range-select class="u-marginRightSmaller u-marginBottomSmaller"
-                        (dateRangeToString)="updateFilters(logsQueryParamsKeys.CreatedOn, $event)">
+                        (dateRangeToString)="update(logsQueryParamsKeys.CreatedOn, $event)">
   </cc-date-range-select>
 
   <div class="radioButtons">
@@ -25,7 +25,7 @@
              class="radioButtons-item-input palette-grey"
              id="all"
              [(ngModel)]="isAnonymizedData"
-             (ngModelChange)="updateFilters(logsQueryParamsKeys.IsAnonymizedData, isAnonymizedData)"
+             (ngModelChange)="update(logsQueryParamsKeys.IsAnonymizedData, isAnonymizedData)"
              value=""
              checked>
       <label class="radioButtons-item-label palette-grey" for="all">
@@ -37,7 +37,7 @@
              class="radioButtons-item-input palette-grey"
              id="anonymized"
              [(ngModel)]="isAnonymizedData"
-             (ngModelChange)="updateFilters(logsQueryParamsKeys.IsAnonymizedData, isAnonymizedData)"
+             (ngModelChange)="update(logsQueryParamsKeys.IsAnonymizedData, isAnonymizedData)"
              value="true">
       <label class="radioButtons-item-label palette-grey" for="anonymized">
         {{ 'front_filterLabel_anonymized' | translate }}
@@ -48,7 +48,7 @@
              class="radioButtons-item-input palette-grey"
              id="non-anonymized"
              [(ngModel)]="isAnonymizedData"
-             (ngModelChange)="updateFilters(logsQueryParamsKeys.IsAnonymizedData, isAnonymizedData)"
+             (ngModelChange)="update(logsQueryParamsKeys.IsAnonymizedData, isAnonymizedData)"
              value="false">
       <label class="radioButtons-item-label palette-grey" for="non-anonymized">
         {{ 'front_filterLabel_nonAnonymized' | translate }}

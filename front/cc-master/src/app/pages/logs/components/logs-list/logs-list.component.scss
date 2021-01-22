@@ -5,10 +5,10 @@
   height: calc(100vh - 10rem);
 }
 
-.table { min-height: calc(100vh - 10rem); }
+.table { min-height: calc(100vh - 12rem); }
 
 .mod-scroll-viewport { height: 100%; }
-.mod-scroll-viewport .table .table-head-row .table-head-row-cell {
+.mod-scroll-viewport .table .table-head-row .table-head-row-cell, .table .table-head {
   position: sticky;
   top: 0;
   z-index: 99;

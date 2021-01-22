@@ -1,9 +1,9 @@
-<cc-logs-filter (updateQueryFilters)="updateQueryFilters($event)"></cc-logs-filter>
+<cc-logs-filter (updateFilters)="updateFilters($event)"></cc-logs-filter>
 <cc-logs-list class="u-paddingSmall"
-              (sortByParams)="sortBy($event)"
-              (showMoreData)="showMoreDataAsync()"
+              (updateSort)="updateSort($event)"
+              (showMore)="showMore()"
               [logs]="logs$ | async"
               [defaultSortParams]="defaultSortParams"
-              [isShownMoreDataLoading]="isShownMoreDataLoading$ | async"
-              [isRefreshedDataLoading]="isRefreshedDataLoading$ | async">
+              [isLoadMore]="isLoadMore$ | async"
+              [isUpdateData]="isUpdateData$ | async">
 </cc-logs-list>

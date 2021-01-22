@@ -1,28 +1,46 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { IApiV3SortParams, IHttpQueryParams } from '@cc/common/queries';
-import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { IFilterParams } from '@cc/common/filter';
+import { IPaginatedResult, IPagingParams, PaginatedList, PagingService } from '@cc/common/paging';
+import { ISortParams } from '@cc/common/sort';
+import { Observable, Subject } from 'rxjs';
+import { map } from 'rxjs/operators';
 
+import { LogsService } from '../../domain/environments';
 import { IEnvironmentLog } from './models';
-import { LogsService } from './services';
 
 @Component({
   selector: 'cc-logs',
   templateUrl: './logs.component.html',
 })
 export class LogsComponent implements OnInit, OnDestroy {
-  public defaultSortParams: IApiV3SortParams = {
+  public defaultSortParams: ISortParams = {
     field: 'createdOn',
     order: 'desc',
   };
-  private queryFilterParams$: BehaviorSubject<IHttpQueryParams> = new BehaviorSubject<IHttpQueryParams>(null);
-  private sortParams$: BehaviorSubject<IApiV3SortParams> = new BehaviorSubject<IApiV3SortParams>(this.defaultSortParams);
-  private destroySubscription$: Subject<void> = new Subject<void>();
 
-  constructor(private logsService: LogsService) {}
+  private destroySubscription$: Subject<void> = new Subject<void>();
+  private paginatedLogs: PaginatedList<IEnvironmentLog>;
+
+  public get logs$(): Observable<IEnvironmentLog[]> {
+    return this.paginatedLogs.items$;
+  }
+
+  public get isLoadMore$(): Observable<boolean> {
+    return this.paginatedLogs.isLoadMore$;
+  }
+
+  public get isUpdateData$(): Observable<boolean> {
+    return this.paginatedLogs.isUpdateData$;
+  }
+
+  constructor(private logsService: LogsService, private pagingService: PagingService) {
+  }
 
   public ngOnInit(): void {
-    this.refreshLogsWhenQueryParamsChange();
+    this.paginatedLogs = this.pagingService.paginate<IEnvironmentLog>(
+      (paging, sort, filter) => this.getPaginatedLogs$(paging, sort, filter),
+    );
+    this.paginatedLogs.updateSort(this.defaultSortParams);
   }
 
   public ngOnDestroy(): void {
@@ -30,35 +48,25 @@ export class LogsComponent implements OnInit, OnDestroy {
     this.destroySubscription$.complete();
   }
 
-  public updateQueryFilters(queryFiltersParams: IHttpQueryParams): void {
-    this.queryFilterParams$.next(queryFiltersParams);
+  public updateFilters(queryFiltersParams: IFilterParams): void {
+    this.paginatedLogs.updateFilters(queryFiltersParams);
   }
 
-  public sortBy(sortParams: IApiV3SortParams) {
-    this.sortParams$.next(sortParams);
+  public updateSort(sortParams: ISortParams) {
+    this.paginatedLogs.updateSort(sortParams);
   }
 
-  public async showMoreDataAsync(): Promise<void> {
-    await this.logsService.showMoreDataAsync(this.sortParams$.value, this.queryFilterParams$.value);
+  public showMore(): void {
+    this.paginatedLogs.showMore();
   }
 
-  private refreshLogsWhenQueryParamsChange(): void {
-    combineLatest([this.queryFilterParams$, this.sortParams$])
-      .pipe(takeUntil(this.destroySubscription$))
-      .subscribe(async ([queryFilterParams, sortParams]) =>
-        await this.logsService.refreshLogsAsync(sortParams, queryFilterParams),
-      );
-  }
-
-  public get logs$(): Observable<IEnvironmentLog[]> {
-    return this.logsService.logs$;
-  }
-
-  public get isShownMoreDataLoading$(): Observable<boolean> {
-    return this.logsService.isShownMoreDataLoading$;
-  }
-
-  public get isRefreshedDataLoading$(): Observable<boolean> {
-    return this.logsService.isRefreshedDataLoading$;
+  private getPaginatedLogs$(
+    paging: IPagingParams,
+    sort: ISortParams,
+    filter: IFilterParams,
+  ): Observable<IPaginatedResult<IEnvironmentLog>> {
+    return this.logsService.getLogs$(paging, sort, filter).pipe(
+      map(response => ({ items: response.items, totalCount: response.count })),
+    );
   }
 }
