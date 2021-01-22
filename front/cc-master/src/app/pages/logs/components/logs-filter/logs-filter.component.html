@@ -19,40 +19,7 @@
                         (dateRangeToString)="update(logsFilterParamsKeys.CreatedOn, $event)">
   </cc-date-range-select>
 
-  <div class="radioButtons">
-    <div class="radioButtons-item">
-      <input type="radio"
-             class="radioButtons-item-input palette-grey"
-             id="all"
-             [(ngModel)]="logsFilterParamsKeys"
-             (ngModelChange)="update(logsFilterParamsKeys.IsAnonymizedData, isAnonymizedData)"
-             value=""
-             checked>
-      <label class="radioButtons-item-label palette-grey" for="all">
-        {{ 'front_filterLabel_all' | translate }}
-      </label>
-    </div>
-    <div class="radioButtons-item">
-      <input type="radio"
-             class="radioButtons-item-input palette-grey"
-             id="anonymized"
-             [(ngModel)]="logsFilterParamsKeys"
-             (ngModelChange)="update(logsFilterParamsKeys.IsAnonymizedData, isAnonymizedData)"
-             value="true">
-      <label class="radioButtons-item-label palette-grey" for="anonymized">
-        {{ 'front_filterLabel_anonymized' | translate }}
-      </label>
-    </div>
-    <div class="radioButtons-item">
-      <input type="radio"
-             class="radioButtons-item-input palette-grey"
-             id="non-anonymized"
-             [(ngModel)]="isAnonymizedData"
-             (ngModelChange)="update(logsFilterParamsKeys.IsAnonymizedData, isAnonymizedData)"
-             value="false">
-      <label class="radioButtons-item-label palette-grey" for="non-anonymized">
-        {{ 'front_filterLabel_nonAnonymized' | translate }}
-      </label>
-    </div>
-  </div>
+  <cc-anonymization-button-group class="u-marginRightSmaller u-marginBottomSmaller"
+                                 (isAnonymizedToString)="update(logsFilterParamsKeys.IsAnonymizedData, $event)">
+  </cc-anonymization-button-group>
 </div>

@@ -20,6 +20,7 @@ import {
 import { LuSelectInputModule } from '@lucca-front/ng/select';
 
 import { EnvironmentsModule } from '../../domain/environments';
+import { AnonymizationButtonGroupComponent } from './components/anonymization-button-group/anonymization-button-group.component';
 import { DateRangeSelectComponent } from './components/date-range-select/date-range-select.component';
 import { EnvironmentActionSelectComponent } from './components/environment-action-select/environment-action-select.component';
 import { EnvironmentApiSelectComponent } from './components/environment-api-select/environment-api-select.component';
@@ -43,6 +44,7 @@ const routes: Routes = [
     DateRangeSelectComponent,
     EnvironmentApiSelectComponent,
     UserApiSelectComponent,
+    AnonymizationButtonGroupComponent,
 	],
   imports: [
     RouterModule.forChild(routes),
