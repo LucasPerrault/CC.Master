@@ -11,7 +11,6 @@ import { EnvironmentLogFilterKeyEnum } from '../../enums';
 export class LogsFiltersComponent {
   @Output() public updateFilters: EventEmitter<IFilterParams> = new EventEmitter<IFilterParams>();
 
-  public isAnonymizedData = '';
   public logsFilterParamsKeys = EnvironmentLogFilterKeyEnum;
 
   private filters: IFilterParams;
