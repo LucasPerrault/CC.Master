@@ -2,7 +2,7 @@
   <label class="textfield mod-short palette-grey u-marginRightSmaller">
     <lu-date-select class="textfield-input"
                     [(ngModel)]="startDate"
-                    (ngModelChange)="updateDatesSelected(startDate, endDate)"
+                    (ngModelChange)="updateDatesSelectedAsync(startDate, endDate)"
                     [max]="endDate || todayDate"
                     [placeholder]="'front_filterLabel_startDate' | translate">
     </lu-date-select>
@@ -11,7 +11,7 @@
   <label class="textfield mod-short palette-grey">
     <lu-date-select class="textfield-input"
                     [(ngModel)]="endDate"
-                    (ngModelChange)="updateDatesSelected(startDate, endDate)"
+                    (ngModelChange)="updateDatesSelectedAsync(startDate, endDate)"
                     [min]="startDate"
                     [max]="todayDate"
                     [placeholder]="'front_filterLabel_endDate' | translate">
