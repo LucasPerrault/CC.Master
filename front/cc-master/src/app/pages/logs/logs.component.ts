@@ -2,10 +2,10 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { IFilterParams } from '@cc/common/filter';
 import { IPaginatedResult, IPagingParams, PaginatedList, PagingService } from '@cc/common/paging';
 import { ISortParams } from '@cc/common/sort';
+import { LogsService } from '@cc/domain/environments';
 import { Observable, Subject } from 'rxjs';
 import { map } from 'rxjs/operators';
 
-import { LogsService } from '../../domain/environments';
 import { IEnvironmentLog } from './models';
 
 @Component({

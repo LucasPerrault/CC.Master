@@ -22,6 +22,9 @@
       ],
       "@cc/common/*": [
         "./src/app/common/*"
+      ],
+      "@cc/domain/*": [
+        "./src/app/domain/*"
       ]
     }
   }
