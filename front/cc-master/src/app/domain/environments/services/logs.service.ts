@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { IFilterParams } from '@cc/common/filter';
+import { IFilterParams } from '@cc/common/filters';
 import { IPagingParams } from '@cc/common/paging';
 import { IHttpApiV3CollectionCountResponse, IHttpApiV3Response } from '@cc/common/queries';
 import { ISortParams } from '@cc/common/sort';

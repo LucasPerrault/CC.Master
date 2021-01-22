@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Output } from '@angular/core';
-import { FiltersService, IFilterParams } from '@cc/common/filter';
+import { FiltersService, IFilterParams } from '@cc/common/filters';
 
 import { EnvironmentLogFilterKeyEnum } from '../../enums';
 

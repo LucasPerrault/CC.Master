@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
-import { FiltersService } from '@cc/common/filter/services/filters.service';
+import { FiltersService } from '@cc/common/filters/services/filters.service';
 
 @NgModule({
   declarations: [],
@@ -9,4 +9,4 @@ import { FiltersService } from '@cc/common/filter/services/filters.service';
   ],
   providers: [FiltersService],
 })
-export class FilterModule { }
+export class FiltersModule { }

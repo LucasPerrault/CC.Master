@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { IFilterParams } from '@cc/common/filter';
+import { IFilterParams } from '@cc/common/filters';
 
 @Injectable()
 export class FiltersService {

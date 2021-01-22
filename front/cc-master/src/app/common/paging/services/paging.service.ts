@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { IFilterParams } from '@cc/common/filter';
+import { IFilterParams } from '@cc/common/filters';
 import { PaginatedListState } from '@cc/common/paging/enums/paginated-list-state.enum';
 import { ISortParams } from '@cc/common/sort';
 import { BehaviorSubject, Observable } from 'rxjs';
