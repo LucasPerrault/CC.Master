@@ -1,4 +1,5 @@
-﻿using Environments.Infra.Storage.Configurations;
+﻿using Distributors.Infra.Storage.Configurations;
+using Environments.Infra.Storage.Configurations;
 using Microsoft.EntityFrameworkCore;
 using Storage.Infra.Context;
 using Storage.Infra.Migrations;
@@ -14,6 +15,7 @@ namespace Environments.Infra.Storage
         protected override void ApplyConfiguration(ModelBuilder modelBuilder)
         {
             modelBuilder.ApplyConfiguration(new EnvironmentsConfiguration());
+            modelBuilder.ApplyConfiguration(new DistributorsConfiguration());
         }
 
         public class EnvironmentsMigrationDefinition : CloudControlDbContextMigrationDefinition<EnvironmentsDbContext>
