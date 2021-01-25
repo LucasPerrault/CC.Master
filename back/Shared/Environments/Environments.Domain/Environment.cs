@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using System.Collections.Generic;
+using System.ComponentModel;
 
 namespace Environments.Domain
 {
@@ -11,6 +12,8 @@ namespace Environments.Domain
         public bool IsActive { get; set; }
 
         public string Host => $"https://{Subdomain}.{GetDomainAsString(Domain)}";
+
+        public ICollection<EnvironmentSharedAccess> ActiveAccesses { get; set; }
 
         private static string GetDomainAsString(EnvironmentDomain domain)
         {

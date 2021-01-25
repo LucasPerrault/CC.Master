@@ -14,6 +14,9 @@ namespace Environments.Infra.Storage.Configurations
 			builder.Property(d => d.Domain).HasColumnName("Domain");
 			builder.Property(d => d.Purpose).HasColumnName("Purpose");
 			builder.Property(d => d.IsActive).HasColumnName("IsActive");
+
+			builder.HasMany(d => d.ActiveAccesses).WithOne().HasForeignKey(d => d.EnvironmentId);
+
 			builder.Ignore(d => d.Host);
 		}
 	}

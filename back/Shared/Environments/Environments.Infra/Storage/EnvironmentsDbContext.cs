@@ -16,6 +16,8 @@ namespace Environments.Infra.Storage
         {
             modelBuilder.ApplyConfiguration(new EnvironmentsConfiguration());
             modelBuilder.ApplyConfiguration(new DistributorsConfiguration());
+            modelBuilder.ApplyConfiguration(new EnvironmentAccessesConfiguration());
+            modelBuilder.ApplyConfiguration(new EnvironmentSharedAccessesConfiguration());
         }
 
         public class EnvironmentsMigrationDefinition : CloudControlDbContextMigrationDefinition<EnvironmentsDbContext>
