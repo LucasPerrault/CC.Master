@@ -1,4 +1,4 @@
-import { IEnvironmentAction } from '../models';
+import { IEnvironmentAction } from '@cc/domain/environments';
 
 export enum EnvironmentAction {
   EnvironmentCreation = 1,
