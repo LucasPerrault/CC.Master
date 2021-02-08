@@ -1,7 +1,14 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { FiltersService, IFilterParams } from '@cc/common/filters';
 
-import { EnvironmentLogFilterKeyEnum } from '../../enums';
+enum EnvironmentLogFilterKeyEnum {
+  UserId = 'userId',
+  ActivityId = 'activityId',
+  EnvironmentDomain = 'environment.domain',
+  EnvironmentSubDomain = 'environment.subdomain',
+  CreatedOn = 'createdOn',
+  IsAnonymizedData = 'isAnonymizedData'
+}
 
 @Component({
   selector: 'cc-logs-filter',
