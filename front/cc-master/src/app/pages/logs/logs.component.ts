@@ -2,11 +2,9 @@ import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/
 import { IFilterParams } from '@cc/common/filters';
 import { IPaginatedResult, IPagingParams, PaginatedList, PagingService } from '@cc/common/paging';
 import { ISortParams } from '@cc/common/sort';
-import { LogsService } from '@cc/domain/environments';
+import { IEnvironmentLog, LogsService } from '@cc/domain/environments';
 import { Observable, Subject } from 'rxjs';
 import { map } from 'rxjs/operators';
-
-import { IEnvironmentLog } from './models';
 
 @Component({
   selector: 'cc-logs',

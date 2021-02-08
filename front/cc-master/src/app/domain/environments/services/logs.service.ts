@@ -4,10 +4,10 @@ import { IFilterParams } from '@cc/common/filters';
 import { IPagingParams } from '@cc/common/paging';
 import { IHttpApiV3CollectionCountResponse, IHttpApiV3Response } from '@cc/common/queries';
 import { ISortParams } from '@cc/common/sort';
+import { IEnvironmentLog } from '@cc/domain/environments';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
-import { IEnvironmentLog } from '../../../pages/logs/models';
 
 @Injectable()
 export class LogsService {
