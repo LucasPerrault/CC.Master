@@ -5,7 +5,7 @@ import { FormsModule } from '@angular/forms';
 import { RouterModule, Routes } from '@angular/router';
 import { TranslateModule } from '@cc/aspects/translate';
 import { FiltersModule } from '@cc/common/filters';
-import { EnvironmentApiSelectModule, EnvironmentDomainSelectModule } from '@cc/common/forms';
+import {EnvironmentApiSelectModule, EnvironmentDomainSelectModule, UserApiSelectModule} from '@cc/common/forms';
 import { PagingModule } from '@cc/common/paging';
 import { LuApiModule } from '@lucca-front/ng/api';
 import { ALuDateAdapter, LuNativeDateAdapter } from '@lucca-front/ng/core';
@@ -26,7 +26,6 @@ import { DateRangeSelectComponent } from './components/date-range-select/date-ra
 import { EnvironmentActionSelectComponent } from './components/environment-action-select/environment-action-select.component';
 import { LogsFiltersComponent } from './components/logs-filter/logs-filter.component';
 import { LogsListComponent } from './components/logs-list/logs-list.component';
-import { UserApiSelectComponent } from './components/user-api-select/user-api-select.component';
 import { LogsComponent } from './logs.component';
 
 const routes: Routes = [
@@ -40,7 +39,6 @@ const routes: Routes = [
     LogsFiltersComponent,
     EnvironmentActionSelectComponent,
     DateRangeSelectComponent,
-    UserApiSelectComponent,
     AnonymizationButtonGroupComponent,
 	],
   imports: [
@@ -63,6 +61,7 @@ const routes: Routes = [
     FiltersModule,
     EnvironmentApiSelectModule,
     EnvironmentDomainSelectModule,
+    UserApiSelectModule,
   ],
   providers: [
     LuNativeDateAdapter,
