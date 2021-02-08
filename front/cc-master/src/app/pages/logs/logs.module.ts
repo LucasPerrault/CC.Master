@@ -6,6 +6,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { TranslateModule } from '@cc/aspects/translate';
 import { FiltersModule } from '@cc/common/filters';
 import {
+  DateRangeSelectModule,
   EnvironmentActionSelectModule,
   EnvironmentApiSelectModule,
   EnvironmentDomainSelectModule,
@@ -13,7 +14,6 @@ import {
 } from '@cc/common/forms';
 import { PagingModule } from '@cc/common/paging';
 import { LuApiModule } from '@lucca-front/ng/api';
-import { ALuDateAdapter, LuNativeDateAdapter } from '@lucca-front/ng/core';
 import { LuDateModule } from '@lucca-front/ng/date';
 import { LuInputModule } from '@lucca-front/ng/input';
 import {
@@ -27,7 +27,6 @@ import { LuSelectInputModule } from '@lucca-front/ng/select';
 
 import { EnvironmentsModule } from '../../domain/environments';
 import { AnonymizationButtonGroupComponent } from './components/anonymization-button-group/anonymization-button-group.component';
-import { DateRangeSelectComponent } from './components/date-range-select/date-range-select.component';
 import { LogsFiltersComponent } from './components/logs-filter/logs-filter.component';
 import { LogsListComponent } from './components/logs-list/logs-list.component';
 import { LogsComponent } from './logs.component';
@@ -41,7 +40,6 @@ const routes: Routes = [
 		LogsComponent,
     LogsListComponent,
     LogsFiltersComponent,
-    DateRangeSelectComponent,
     AnonymizationButtonGroupComponent,
 	],
   imports: [
@@ -66,10 +64,7 @@ const routes: Routes = [
     EnvironmentDomainSelectModule,
     UserApiSelectModule,
     EnvironmentActionSelectModule,
-  ],
-  providers: [
-    LuNativeDateAdapter,
-    { provide: ALuDateAdapter, useClass: LuNativeDateAdapter },
+    DateRangeSelectModule,
   ],
 })
 export class LogsModule {};
