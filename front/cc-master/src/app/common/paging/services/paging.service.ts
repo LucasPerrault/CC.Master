@@ -80,7 +80,7 @@ export class PaginatedList<T> {
   }
 
   private resetPaging(): void {
-    this.paging.skip = defaultPagingParams.skip;
+    this.paging.skip = 0;
   }
 
   private update(state: PaginatedListState): void {
