@@ -1,5 +1,7 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, OnDestroy, OnInit, Output } from '@angular/core';
 import { FiltersService, IFilterParams } from '@cc/common/filters';
+import { BehaviorSubject, Subject } from 'rxjs';
+import { debounceTime, takeUntil } from 'rxjs/operators';
 
 enum EnvironmentLogFilterKeyEnum {
   UserId = 'userId',
@@ -15,22 +17,29 @@ enum EnvironmentLogFilterKeyEnum {
   templateUrl: './logs-filter.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class LogsFiltersComponent implements OnInit {
+export class LogsFiltersComponent implements OnInit, OnDestroy {
   @Output() public updateFilters: EventEmitter<IFilterParams> = new EventEmitter<IFilterParams>();
 
   public logsFilterParamsKeys = EnvironmentLogFilterKeyEnum;
 
-  private filters: IFilterParams = {};
+  private filters: BehaviorSubject<IFilterParams> = new BehaviorSubject<IFilterParams>({});
+  private destroy: Subject<void> = new Subject<void>();
 
   constructor(private filterService: FiltersService) {
   }
 
   public ngOnInit(): void {
-    this.updateFilters.emit(this.filters);
+    this.filters.pipe(debounceTime(300), takeUntil(this.destroy))
+      .subscribe(f => this.updateFilters.emit(f));
+  }
+
+  public ngOnDestroy(): void {
+    this.destroy.next();
+    this.destroy.complete();
   }
 
   public update(key: string, value: string): void {
-    const filtersUpdated = this.filterService.updateParams(this.filters, key, value);
-    this.updateFilters.emit(filtersUpdated);
+    const filtersUpdated = this.filterService.updateParams(this.filters.value, key, value);
+    this.filters.next(filtersUpdated);
   }
 }
