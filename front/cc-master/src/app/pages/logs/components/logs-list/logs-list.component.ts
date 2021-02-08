@@ -1,10 +1,9 @@
 import { CdkVirtualScrollViewport } from '@angular/cdk/scrolling';
 import { Component, EventEmitter, HostBinding, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { ISortParams, SortOrder } from '@cc/common/sort';
-import { IEnvironmentLog } from '@cc/domain/environments';
+import { IEnvironment, IEnvironmentLog } from '@cc/domain/environments';
 
 import { EnvironmentLogMessageType } from '../../enums';
-import { IEnvironment } from '../../models';
 
 @Component({
   selector: 'cc-logs-list',

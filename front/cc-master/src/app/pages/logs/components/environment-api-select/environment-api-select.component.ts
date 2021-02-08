@@ -1,8 +1,8 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { IEnvironment } from '@cc/domain/environments';
 import { ALuApiService } from '@lucca-front/ng/api';
 
-import { IEnvironment } from '../../models';
 import { EnvironmentApiSelectService } from './environment-api-select.service';
 
 @Component({
