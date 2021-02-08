@@ -1,4 +1,4 @@
-import { IEnvironmentDomain } from '../models';
+import { IEnvironmentDomain } from '@cc/domain/environments';
 
 export enum EnvironmentDomain {
   ILuccaDotNet,

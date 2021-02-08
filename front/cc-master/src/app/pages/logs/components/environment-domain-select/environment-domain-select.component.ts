@@ -1,8 +1,6 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-
-import { environmentDomains } from '../../enums';
-import { IEnvironmentDomain } from '../../models';
+import { environmentDomains, IEnvironmentDomain } from '@cc/domain/environments';
 
 @Component({
   selector: 'cc-environment-domain-select',
