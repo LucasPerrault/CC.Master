@@ -12,7 +12,8 @@ import { AppComponent } from './app.component';
 
 const routes: Routes = [
   { path: forbiddenUrl, component: ForbiddenComponent },
-  { path: '*', redirectTo: forbiddenUrl, pathMatch: 'full' },
+  { path: 'logs', loadChildren: () => import('./pages/logs/logs.module').then(m => m.LogsModule) },
+  { path: '**', redirectTo: forbiddenUrl, pathMatch: 'full' },
 ];
 
 @NgModule({
