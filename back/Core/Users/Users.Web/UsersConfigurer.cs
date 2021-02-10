@@ -2,6 +2,7 @@
 using Remote.Infra.Extensions;
 using Users.Domain;
 using Users.Infra;
+using Users.Infra.Storage.Stores;
 
 namespace Users.Web
 {
@@ -14,6 +15,8 @@ namespace Users.Web
                 client.WithUserAgent(nameof(UsersService))
                     .WithBaseAddress(config.ServerUri, config.UsersEndpointPath);
             });
+
+            services.AddScoped<UsersStore>();
         }
     }
 }
