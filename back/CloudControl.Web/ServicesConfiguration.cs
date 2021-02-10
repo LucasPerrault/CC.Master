@@ -26,6 +26,8 @@ using Storage.Web;
 using System;
 using Billing.Contracts.Infra.Storage;
 using Billing.Web;
+using Environments.Infra.Storage;
+using Environments.Web;
 using Salesforce.Web;
 
 namespace CloudControl.Web
@@ -56,6 +58,7 @@ namespace CloudControl.Web
 			ConfigureSharedDomains(services);
 			ConfigureAuthentication(services, configuration);
 			ConfigureRights(services, configuration);
+			ConfigureEnvironments(services, configuration);
 			ConfigureSalesforce(services, configuration);
 			ConfigureBilling(services, configuration);
 		}
@@ -125,6 +128,7 @@ namespace CloudControl.Web
 		public virtual void ConfigureStorage(IServiceCollection services)
 		{
 			StorageConfigurer.ConfigureServices(services, _configuration);
+			services.ConfigureContext<EnvironmentsDbContext>(_hostingEnvironment);
 			services.ConfigureContext<DistributorsDbContext>(_hostingEnvironment);
 			services.ConfigureContext<IpFilterDbContext>(_hostingEnvironment);
 			services.ConfigureContext<ContractsDbContext>(_hostingEnvironment);
@@ -163,6 +167,11 @@ namespace CloudControl.Web
 		public virtual void ConfigureSpa(IServiceCollection services)
 		{
 			services.RegisterFrontApplication(_hostingEnvironment);
+		}
+
+		public virtual void ConfigureEnvironments(IServiceCollection services, AppConfiguration configuration)
+		{
+			EnvironmentsConfigurer.ConfigureEnvironments(services);
 		}
 
 		public virtual void ConfigureSalesforce(IServiceCollection services, AppConfiguration configuration)
