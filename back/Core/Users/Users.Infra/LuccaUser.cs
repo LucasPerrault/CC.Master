@@ -1,6 +1,6 @@
 ﻿using Users.Domain;
 
-namespace Authentication.Infra.DTOs
+namespace Users.Infra
 {
     internal class LuccaUser
     {

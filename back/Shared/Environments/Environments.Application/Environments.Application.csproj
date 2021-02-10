@@ -5,6 +5,7 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\..\..\Core\Authentication\Authentication.Domain\Authentication.Domain.csproj" />
       <ProjectReference Include="..\Environments.Infra\Environments.Infra.csproj" />
     </ItemGroup>
 

@@ -28,6 +28,8 @@ namespace Authentication.Web
 
             services.AddSingleton<AuthRedirectionRemoteService>();
 
+			services.AddScoped<UserAuthenticationRemoteService>();
+
             services.AddHttpClient<UserAuthenticationRemoteService>((provider, client) =>
             {
                 client.WithUserAgent(nameof(UserAuthenticationRemoteService))

@@ -29,6 +29,7 @@ using Billing.Web;
 using Environments.Infra.Storage;
 using Environments.Web;
 using Salesforce.Web;
+using Users.Web;
 
 namespace CloudControl.Web
 {
@@ -43,25 +44,25 @@ namespace CloudControl.Web
             _hostingEnvironment = env ?? throw new ArgumentNullException(nameof(env));
         }
 
-        public void ConfigureServices(IServiceCollection services)
-        {
-            var configuration = ConfigureConfiguration(services);
-            ConfigureHttpContext(services);
-            ConfigureHealthCheck(services, configuration);
-            ConfigureApi(services);
-            ConfigureLogs(services);
-            // ConfigureSpa(services);
-            ConfigureProxy(services);
-            ConfigureIpFilter(services);
-            ConfigureTenancy(services);
-            ConfigureStorage(services);
-            ConfigureSharedDomains(services);
-            ConfigureAuthentication(services, configuration);
-            ConfigureRights(services, configuration);
-            ConfigureEnvironments(services, configuration);
-            ConfigureSalesforce(services, configuration);
-            ConfigureBilling(services, configuration);
-        }
+		public void ConfigureServices(IServiceCollection services)
+		{
+			var configuration = ConfigureConfiguration(services);
+			ConfigureHttpContext(services);
+			ConfigureHealthCheck(services, configuration);
+			ConfigureApi(services);
+			ConfigureLogs(services);
+			// ConfigureSpa(services);
+			ConfigureProxy(services);
+			ConfigureIpFilter(services);
+			ConfigureTenancy(services);
+			ConfigureStorage(services);
+			ConfigureSharedDomains(services, configuration);
+			ConfigureAuthentication(services, configuration);
+			ConfigureRights(services, configuration);
+			ConfigureEnvironments(services, configuration);
+			ConfigureSalesforce(services, configuration);
+			ConfigureBilling(services, configuration);
+		}
 
         public virtual AppConfiguration ConfigureConfiguration(IServiceCollection services)
         {
@@ -134,10 +135,11 @@ namespace CloudControl.Web
             services.ConfigureContext<ContractsDbContext>(_hostingEnvironment);
         }
 
-        public virtual void ConfigureSharedDomains(IServiceCollection services)
-        {
-            DistributorsConfigurer.ConfigureServices(services);
-        }
+		public virtual void ConfigureSharedDomains(IServiceCollection services, AppConfiguration configuration)
+		{
+			DistributorsConfigurer.ConfigureServices(services);
+			UsersConfigurer.ConfigureServices(services, configuration.Users);
+		}
 
         public virtual void ConfigureAuthentication(IServiceCollection services, AppConfiguration configuration)
         {
