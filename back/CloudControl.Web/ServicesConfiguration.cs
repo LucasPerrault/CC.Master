@@ -29,6 +29,7 @@ using Billing.Web;
 using Environments.Infra.Storage;
 using Environments.Web;
 using Salesforce.Web;
+using Users.Infra.Storage;
 using Users.Web;
 
 namespace CloudControl.Web
@@ -126,14 +127,15 @@ namespace CloudControl.Web
             services.AddTenancy(t => { }, DatabaseMode.MultiTenant);
         }
 
-        public virtual void ConfigureStorage(IServiceCollection services)
-        {
-            StorageConfigurer.ConfigureServices(services, _configuration);
-            services.ConfigureContext<EnvironmentsDbContext>(_hostingEnvironment);
-            services.ConfigureContext<DistributorsDbContext>(_hostingEnvironment);
-            services.ConfigureContext<IpFilterDbContext>(_hostingEnvironment);
-            services.ConfigureContext<ContractsDbContext>(_hostingEnvironment);
-        }
+		public virtual void ConfigureStorage(IServiceCollection services)
+		{
+			StorageConfigurer.ConfigureServices(services, _configuration);
+			services.ConfigureContext<EnvironmentsDbContext>(_hostingEnvironment);
+			services.ConfigureContext<DistributorsDbContext>(_hostingEnvironment);
+			services.ConfigureContext<IpFilterDbContext>(_hostingEnvironment);
+			services.ConfigureContext<ContractsDbContext>(_hostingEnvironment);
+			services.ConfigureContext<UsersDbContext>(_hostingEnvironment);
+		}
 
 		public virtual void ConfigureSharedDomains(IServiceCollection services, AppConfiguration configuration)
 		{
