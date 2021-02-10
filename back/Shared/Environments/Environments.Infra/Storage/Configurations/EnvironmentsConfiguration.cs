@@ -17,7 +17,7 @@ namespace Environments.Infra.Storage.Configurations
 
 			builder.HasMany(d => d.ActiveAccesses).WithOne().HasForeignKey(d => d.EnvironmentId);
 
-			builder.Ignore(d => d.Host);
+			builder.Ignore(d => d.ProductionHost);
 		}
 	}
 }

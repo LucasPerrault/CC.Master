@@ -11,7 +11,7 @@ namespace Environments.Domain
         public EnvironmentPurpose Purpose { get; set; }
         public bool IsActive { get; set; }
 
-        public string Host => $"https://{Subdomain}.{GetDomainAsString(Domain)}";
+        public string ProductionHost => $"https://{Subdomain}.{GetDomainAsString(Domain)}";
 
         public ICollection<EnvironmentSharedAccess> ActiveAccesses { get; set; }
 
