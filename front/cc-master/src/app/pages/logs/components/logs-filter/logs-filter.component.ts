@@ -39,7 +39,11 @@ export class LogsFiltersComponent implements OnInit, OnDestroy {
   }
 
   public update(key: string, value: string): void {
-    const filtersUpdated = this.filterService.updateParams(this.filters.value, key, value);
+    const hasEmptyValueAndExistingKey = !value && Object.keys(this.filters.value);
+    const filtersUpdated = hasEmptyValueAndExistingKey
+      ? this.filterService.removeKey(this.filters.value, key)
+      : this.filterService.updateParam(this.filters.value, key, value);
+
     this.filters.next(filtersUpdated);
   }
 }
