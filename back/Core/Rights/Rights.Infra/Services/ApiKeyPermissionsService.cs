@@ -6,23 +6,23 @@ using System.Threading.Tasks;
 
 namespace Rights.Infra.Services
 {
-	public class ApiKeyPermissionsService
-	{
-		private readonly ApiKeyPermissionsRemoteService _remoteService;
-		private List<ApiKeyPermission> _cache;
+    public class ApiKeyPermissionsService
+    {
+        private readonly ApiKeyPermissionsRemoteService _remoteService;
+        private List<ApiKeyPermission> _cache;
 
-		public ApiKeyPermissionsService(ApiKeyPermissionsRemoteService remoteService)
-		{
-			_remoteService = remoteService;
-		}
+        public ApiKeyPermissionsService(ApiKeyPermissionsRemoteService remoteService)
+        {
+            _remoteService = remoteService;
+        }
 
-		internal async Task<IReadOnlyCollection<ApiKeyPermission>> GetApiKeyPermissionsAsync(int apiKeyId, ISet<int> operations)
-		{
-			if (_cache == null)
-			{
-				_cache = (await _remoteService.GetApiKeyPermissionsAsync(apiKeyId)).ToList();
-			}
-			return _cache.Where(p => operations.Contains(p.OperationId)).ToList();
-		}
-	}
+        internal async Task<IReadOnlyCollection<ApiKeyPermission>> GetApiKeyPermissionsAsync(int apiKeyId, ISet<int> operations)
+        {
+            if (_cache == null)
+            {
+                _cache = (await _remoteService.GetApiKeyPermissionsAsync(apiKeyId)).ToList();
+            }
+            return _cache.Where(p => operations.Contains(p.OperationId)).ToList();
+        }
+    }
 }
