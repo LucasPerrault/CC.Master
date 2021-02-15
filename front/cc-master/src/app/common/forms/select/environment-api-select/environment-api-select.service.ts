@@ -12,8 +12,7 @@ export class EnvironmentApiSelectService extends LuApiV3Service<IEnvironment> {
   }
 
   public getPaged(page: number, filters: string[] = []): Observable<IEnvironment[]> {
-    const paging = `paging=${page * defaultPagingParams.limit},${defaultPagingParams.limit}`;
-    const url = [this.url, paging, ...filters].join('&');
+    const url = [this.url, this.getPaging(page), ...filters].join('&');
     return this._get(url);
   }
 
@@ -29,13 +28,16 @@ export class EnvironmentApiSelectService extends LuApiV3Service<IEnvironment> {
     if (!clue) {
       return this.getPaged(page, filters);
     }
-    const paging = `paging=${page * defaultPagingParams.limit},${defaultPagingParams.limit}`;
-    const url = [this.url, this._clueFilter(clue), paging, ...filters].join('&');
+    const url = [this.url, this._clueFilter(clue), this.getPaging(page), ...filters].join('&');
     return this._get(url);
   }
 
   // eslint-disable-next-line @typescript-eslint/naming-convention
   protected _clueFilter(clue: string): string {
     return `subdomain=like,${clue}`;
+  }
+
+  private getPaging(page: number): string {
+    return `paging=${page * defaultPagingParams.limit},${defaultPagingParams.limit}`;
   }
 }
