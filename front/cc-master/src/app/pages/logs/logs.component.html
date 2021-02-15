@@ -4,6 +4,5 @@
               (showMore)="showMore()"
               [logs]="logs$ | async"
               [defaultSortParams]="defaultSortParams"
-              [isLoadMore]="isLoadMore$ | async"
-              [isUpdateData]="isUpdateData$ | async">
+              [state]="logsState$ | async">
 </cc-logs-list>

@@ -3,7 +3,6 @@ import { IFilterParams } from '@cc/common/filters';
 import { PaginatedListState } from '@cc/common/paging/enums/paginated-list-state.enum';
 import { ISortParams } from '@cc/common/sort';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
 
 import { IPaginatedResult } from '../models/paginated-result.interface';
 import { defaultPagingParams, IPagingParams } from '../models/paging-params.interface';
@@ -37,14 +36,6 @@ export class PaginatedList<T> {
 
   public get state$(): Observable<PaginatedListState> {
     return this.state.asObservable();
-  }
-
-  public get isLoadMore$(): Observable<boolean> {
-    return this.state$.pipe(map(s => s === PaginatedListState.LoadMore));
-  }
-
-  public get isUpdateData$(): Observable<boolean> {
-    return this.state$.pipe(map(s => s === PaginatedListState.UpdateSort || s === PaginatedListState.UpdateFilter));
   }
 
   constructor(private fetchMore: PagedFetchFunction<T>, paging: IPagingParams = defaultPagingParams) {

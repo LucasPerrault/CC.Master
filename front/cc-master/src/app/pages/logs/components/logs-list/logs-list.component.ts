@@ -1,7 +1,8 @@
-import { CdkVirtualScrollViewport } from '@angular/cdk/scrolling';
-import { Component, EventEmitter, HostBinding, Input, OnInit, Output, ViewChild } from '@angular/core';
-import { ISortParams, SortOrder } from '@cc/common/sort';
-import { EnvironmentLogMessageType, IEnvironment, IEnvironmentLog } from '@cc/domain/environments';
+import {CdkVirtualScrollViewport} from '@angular/cdk/scrolling';
+import {Component, EventEmitter, HostBinding, Input, OnInit, Output, ViewChild} from '@angular/core';
+import {PaginatedListState} from '@cc/common/paging';
+import {ISortParams, SortOrder} from '@cc/common/sort';
+import {EnvironmentLogMessageType, IEnvironment, IEnvironmentLog} from '@cc/domain/environments';
 
 @Component({
   selector: 'cc-logs-list',
@@ -14,10 +15,9 @@ export class LogsListComponent implements OnInit {
 
   @Input() public logs: IEnvironmentLog[];
   @Input() public defaultSortParams: ISortParams;
-  @Input() public isUpdateData: boolean;
-  @Input() public isLoadMore: boolean;
   @Output() public updateSort: EventEmitter<ISortParams> = new EventEmitter<ISortParams>();
   @Output() public showMore: EventEmitter<void> = new EventEmitter<void>();
+  @Input() public state: PaginatedListState;
 
   @HostBinding('style.--row-height-in-px')
   public readonly rowHeightFixedInPixel = `42px`;
@@ -72,4 +72,21 @@ export class LogsListComponent implements OnInit {
 
     return orderToSort;
   }
+
+  public get isLoading(): boolean {
+    return this.isUpdateData || this.isLoadMore;
+  }
+
+  public get isIdle(): boolean {
+    return this.state === PaginatedListState.Idle || this.state === PaginatedListState.Error;
+  }
+
+  public get isUpdateData(): boolean {
+    return this.state === PaginatedListState.UpdateFilter || this.state === PaginatedListState.UpdateSort;
+  }
+
+  public get isLoadMore(): boolean {
+    return this.state === PaginatedListState.LoadMore;
+  }
+
 }
