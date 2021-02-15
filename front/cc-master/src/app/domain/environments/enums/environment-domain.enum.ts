@@ -1,18 +1,18 @@
 import { IEnvironmentDomain } from '@cc/domain/environments';
 
 export enum EnvironmentDomain {
-  ILuccaDotNet,
-  EpayeCpDotCom,
-  ILuccaDotCh,
-  MesCongesDotNet,
-  UgoOnLineDotNet,
-  DauphineDotFr,
-  ILuccaPreviewDotNet,
-  FastobookDotCom,
-  UrbaOnlineDotCom,
-  Local,
-  Training,
-  Demo,
+  ILuccaDotNet = 0,
+  EpayeCpDotCom = 1,
+  ILuccaDotCh = 2,
+  MesCongesDotNet = 3,
+  UgoOnLineDotNet = 4,
+  DauphineDotFr = 5,
+  ILuccaPreviewDotNet = 6,
+  FastobookDotCom = 7,
+  UrbaOnlineDotCom = 8,
+  Local = 9,
+  Training = 10,
+  Demo = 11,
 }
 
 export const environmentDomains: IEnvironmentDomain[] = [
