@@ -7,30 +7,30 @@ using System.Threading.Tasks;
 
 namespace CloudControl.Web.Tests.Mocks
 {
-	public class TestUserAuthenticationHandler : AuthenticationHandler<TestAuthenticationOptions>
-	{
-		public TestUserAuthenticationHandler(
-			IOptionsMonitor<TestAuthenticationOptions> options,
-			ILoggerFactory logger,
-			UrlEncoder encoder,
-			ISystemClock clock
-		) : base(options, logger, encoder, clock)
-		{
-		}
+    public class TestUserAuthenticationHandler : AuthenticationHandler<TestAuthenticationOptions>
+    {
+        public TestUserAuthenticationHandler(
+            IOptionsMonitor<TestAuthenticationOptions> options,
+            ILoggerFactory logger,
+            UrlEncoder encoder,
+            ISystemClock clock
+        ) : base(options, logger, encoder, clock)
+        {
+        }
 
-		protected override Task<AuthenticateResult> HandleAuthenticateAsync()
-		{
-			var authenticationTicket = new AuthenticationTicket(new CloudControlUserClaimsPrincipal(new Principal
-			{
-				UserId = 23,
-				User = new User
+        protected override Task<AuthenticateResult> HandleAuthenticateAsync()
+        {
+            var authenticationTicket = new AuthenticationTicket(new CloudControlUserClaimsPrincipal(new Principal
+            {
+                UserId = 23,
+                User = new User
                 {
                     FirstName = "Bernard",
                     LastName = "Martin"
                 }
-			}), new AuthenticationProperties(), "TEST");
+            }), new AuthenticationProperties(), "TEST");
 
-			return Task.FromResult(AuthenticateResult.Success(authenticationTicket));
-		}
-	}
+            return Task.FromResult(AuthenticateResult.Success(authenticationTicket));
+        }
+    }
 }

@@ -1,4 +1,4 @@
-﻿using Newtonsoft.Json;
+using Newtonsoft.Json;
 using Partenaires.Infra.Services;
 using Rights.Infra.Models;
 using Rights.Infra.Services;
@@ -9,30 +9,30 @@ using System.Threading.Tasks;
 
 namespace Rights.Infra.Remote
 {
-	public class UserPermissionsRemoteService : PartenairesService
-	{
-		protected override string RemoteApiDescription => "Partenaires users permissions";
-		public UserPermissionsRemoteService(HttpClient httpClient, JsonSerializer jsonSerializer)
-			: base(httpClient, jsonSerializer)
-		{ }
+    public class UserPermissionsRemoteService : PartenairesService
+    {
+        protected override string RemoteApiDescription => "Partenaires users permissions";
+        public UserPermissionsRemoteService(HttpClient httpClient, JsonSerializer jsonSerializer)
+            : base(httpClient, jsonSerializer)
+        { }
 
-		internal async Task<IReadOnlyCollection<Permission>> GetUserPermissionsAsync(int principalId)
-		{
-			var allPermissions = await GetAllUserPermissionsAsync(principalId);
-			return allPermissions.ToList();
-		}
+        internal async Task<IReadOnlyCollection<Permission>> GetUserPermissionsAsync(int principalId)
+        {
+            var allPermissions = await GetAllUserPermissionsAsync(principalId);
+            return allPermissions.ToList();
+        }
 
-		private async Task<IEnumerable<Permission>> GetAllUserPermissionsAsync(int principalId)
-		{
-			var queryParams = new Dictionary<string, string>
-			{
-				{ "appInstanceId", RightsHelper.CloudControlAppInstanceId.ToString() },
-				{ "userId", principalId.ToString() },
-				{ "fields", Permission.ApiFields }
-			};
+        private async Task<IEnumerable<Permission>> GetAllUserPermissionsAsync(int principalId)
+        {
+            var queryParams = new Dictionary<string, string>
+            {
+                { "appInstanceId", RightsHelper.CloudControlAppInstanceId.ToString() },
+                { "userId", principalId.ToString() },
+                { "fields", Permission.ApiFields }
+            };
 
-			var userPermissions = await GetObjectCollectionResponseAsync<Permission>(queryParams);
-			return userPermissions.Data.Items;
-		}
-	}
+            var userPermissions = await GetObjectCollectionResponseAsync<Permission>(queryParams);
+            return userPermissions.Data.Items;
+        }
+    }
 }
