@@ -1,5 +1,5 @@
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Component, forwardRef } from '@angular/core';
+import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { IEnvironment } from '@cc/domain/environments';
 import { ALuApiService } from '@lucca-front/ng/api';
 
@@ -8,49 +8,56 @@ import { EnvironmentApiSelectService } from './environment-api-select.service';
 @Component({
   selector: 'cc-environment-api-select',
   templateUrl: './environment-api-select.component.html',
-  providers: [{
-    provide: ALuApiService, useClass: EnvironmentApiSelectService,
-  }],
+  providers: [
+    {
+      provide: ALuApiService,
+      useClass: EnvironmentApiSelectService,
+    },
+    {
+      provide: NG_VALUE_ACCESSOR,
+      useExisting: forwardRef(() => EnvironmentApiSelectComponent),
+      multi: true,
+    },
+  ],
 })
-export class EnvironmentApiSelectComponent implements OnInit {
-  @Output() public environmentIdsToString: EventEmitter<string> = new EventEmitter<string>();
-  public environmentSubDomains: string[];
-  public apiUrl = 'api/v3/environments';
+export class EnvironmentApiSelectComponent implements ControlValueAccessor {
+  public onChange: (environments: IEnvironment[]) => void;
+  public onTouch: () => void;
+
+  public apiUrl = '/api/v3/environments';
   public apiFields = 'id,subdomain';
   public apiOrderBy = 'subdomain,asc';
-  private routerParamKey = 'subDomains';
 
-  constructor(private router: Router, private activatedRoute: ActivatedRoute) {
+  public environments: IEnvironment[];
+
+  public registerOnChange(fn: () => void): void {
+    this.onChange = fn;
   }
 
-  public ngOnInit(): void {
-    const routerParamValue = this.activatedRoute.snapshot.queryParamMap.get(this.routerParamKey);
-    if (!routerParamValue) {
+  public registerOnTouched(fn: () => void): void {
+    this.onTouch = fn;
+  }
+
+  public writeValue(environmentsSelected: IEnvironment[]): void {
+    if (environmentsSelected !== this.environments) {
+      this.environments = environmentsSelected;
+    }
+  }
+
+  public safeOnChange(environmentsSelected: IEnvironment[]): void {
+    if (!environmentsSelected) {
+      this.reset();
       return;
     }
 
-    this.environmentIdsToString.emit(routerParamValue);
-    this.environmentSubDomains = routerParamValue.split(',');
+    this.onChange(environmentsSelected);
   }
 
-  public trackBy(index: number, domain: IEnvironment): string {
-    return domain.subDomain;
+  public trackBy(index: number, environment: IEnvironment): string {
+    return environment.subDomain;
   }
 
-  public async updateEnvironmentIdsSelectedAsync(environmentSubDomains: string[]): Promise<void> {
-    const environmentSubDomainsToQuery = !!environmentSubDomains ? environmentSubDomains.join(',') : '';
-    this.environmentIdsToString.emit(environmentSubDomainsToQuery);
-
-    await this.updateRouterAsync(environmentSubDomainsToQuery);
-  }
-
-  private async updateRouterAsync(value: string): Promise<void> {
-    const queryParams = { [this.routerParamKey]: !!value ? value : null };
-
-    await this.router.navigate([], {
-      relativeTo: this.activatedRoute,
-      queryParams,
-      queryParamsHandling: 'merge',
-    });
+  private reset(): void {
+    this.onChange([]);
   }
 }
