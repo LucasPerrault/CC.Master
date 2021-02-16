@@ -1,41 +1,39 @@
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import {Component, forwardRef} from '@angular/core';
+import {ControlValueAccessor, NG_VALUE_ACCESSOR} from '@angular/forms';
 
 @Component({
   selector: 'cc-anonymization-button-group',
   templateUrl: './anonymization-button-group.component.html',
+  providers: [
+    {
+      provide: NG_VALUE_ACCESSOR,
+      useExisting: forwardRef(() => AnonymizationButtonGroupComponent),
+      multi: true,
+    },
+  ],
 })
-export class AnonymizationButtonGroupComponent implements OnInit {
-  @Output() public isAnonymizedToString: EventEmitter<string> = new EventEmitter<string>();
+export class AnonymizationButtonGroupComponent implements ControlValueAccessor {
+  public isAnonymizedData: boolean;
 
-  public isAnonymizedData = '';
-  private routerParamKey = 'isAnonymized';
+  public onChange: (isAnonymizedData: boolean) => void;
+  public onTouch: () => void;
 
-  constructor(private router: Router, private activatedRoute: ActivatedRoute ) {
+  public registerOnChange(fn: () => void): void {
+    this.onChange = fn;
   }
 
-  ngOnInit() {
-    const routerParamValue = this.activatedRoute.snapshot.queryParamMap.get(this.routerParamKey);
-    if (!routerParamValue) {
-      return;
+  public registerOnTouched(fn: () => void): void {
+    this.onTouch = fn;
+  }
+
+  public writeValue(isAnonymizedSelectionUpdated: boolean): void {
+    if (isAnonymizedSelectionUpdated !== this.isAnonymizedData) {
+      this.isAnonymizedData = isAnonymizedSelectionUpdated;
     }
-
-    this.isAnonymizedToString.emit(routerParamValue);
-    this.isAnonymizedData = routerParamValue;
   }
 
-  public async updateAsync(isAnonymizedToString: string) {
-    this.isAnonymizedToString.emit(isAnonymizedToString);
-    await this.updateRouterAsync(isAnonymizedToString);
+  public safeOnChange(isAnonymizedSelectionUpdated: boolean): void {
+    this.onChange(isAnonymizedSelectionUpdated);
   }
 
-  private async updateRouterAsync(value: string): Promise<void> {
-    const queryParams = { [this.routerParamKey]: !!value ? value : null };
-
-    await this.router.navigate([], {
-      relativeTo: this.activatedRoute,
-      queryParams,
-      queryParamsHandling: 'merge',
-    });
-  }
 }
