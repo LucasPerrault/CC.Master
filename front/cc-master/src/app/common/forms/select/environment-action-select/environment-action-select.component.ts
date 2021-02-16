@@ -1,61 +1,60 @@
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Component, forwardRef } from '@angular/core';
+import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { environmentActions, IEnvironmentAction } from '@cc/domain/environments';
 
 @Component({
   selector: 'cc-environment-action-select',
   templateUrl: './environment-action-select.component.html',
+  providers: [
+    {
+      provide: NG_VALUE_ACCESSOR,
+      useExisting: forwardRef(() => EnvironmentActionSelectComponent),
+      multi: true,
+    },
+  ],
 })
-export class EnvironmentActionSelectComponent implements OnInit {
-  @Output() public actionIdsToString: EventEmitter<string> = new EventEmitter<string>();
+export class EnvironmentActionSelectComponent implements ControlValueAccessor {
+  public onChange: (actions: IEnvironmentAction[]) => void;
+  public onTouch: () => void;
 
-  public actionIds: number[];
-  private routerParamKey = 'actionIds';
+  public actionsSelected: IEnvironmentAction[];
 
-  constructor(private router: Router, private activatedRoute: ActivatedRoute) {
+  public get actions(): IEnvironmentAction[] {
+    return environmentActions;
   }
 
-  public ngOnInit(): void {
-    const routerParamValue = this.activatedRoute.snapshot.queryParamMap.get(this.routerParamKey);
-    if (!routerParamValue) {
+  public registerOnChange(fn: () => void): void {
+    this.onChange = fn;
+  }
+
+  public registerOnTouched(fn: () => void): void {
+    this.onTouch = fn;
+  }
+
+  public writeValue(actionsSelectionUpdated: IEnvironmentAction[]): void {
+    if (actionsSelectionUpdated !== this.actionsSelected) {
+      this.actionsSelected = actionsSelectionUpdated;
+    }
+  }
+
+  public safeOnChange(actionsSelectionUpdated: IEnvironmentAction[]): void {
+    if (!actionsSelectionUpdated) {
+      this.reset();
       return;
     }
 
-    this.actionIdsToString.emit(routerParamValue);
-    this.actionIds = routerParamValue.split(',').map(i => parseInt(i, 10));
+    this.onChange(actionsSelectionUpdated);
   }
 
   public searchFn(action: IEnvironmentAction, clue: string): boolean {
     return action.name.toLowerCase().includes(clue.toLowerCase());
   }
 
-  public trackBy(index: number, activity: IEnvironmentAction): string {
-    return activity.name;
+  public trackBy(index: number, action: IEnvironmentAction): string {
+    return action.name;
   }
 
-  public async updateActionIdsSelectedAsync(actionIds: number[]): Promise<void> {
-    if (!actionIds) {
-      return;
-    }
-    const actionIdsToString = actionIds.join(',');
-    this.actionIdsToString.emit(actionIdsToString);
-
-    await this.updateRouterAsync(actionIdsToString);
+  private reset(): void {
+    this.onChange([]);
   }
-
-  private async updateRouterAsync(value: string): Promise<void> {
-    const queryParams = { [this.routerParamKey]: !!value ? value : null };
-
-    await this.router.navigate([], {
-      relativeTo: this.activatedRoute,
-      queryParams,
-      queryParamsHandling: 'merge',
-    });
-  }
-
-
-  public get actions(): IEnvironmentAction[] {
-    return environmentActions;
-  }
-
 }
