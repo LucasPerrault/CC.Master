@@ -1,13 +1,14 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, OnDestroy, OnInit, Output } from '@angular/core';
-import { FiltersService, IFilterParams } from '@cc/common/filters';
-import { BehaviorSubject, Subject } from 'rxjs';
-import { debounceTime, takeUntil } from 'rxjs/operators';
+import { ChangeDetectionStrategy, Component, EventEmitter, Output } from '@angular/core';
+import { ActivatedRoute, ActivatedRouteSnapshot, ParamMap, Params, Router } from '@angular/router';
+import { apiV3ToDateRange, toApiDateRangeV3Format } from '@cc/common/queries';
 
-enum EnvironmentLogFilterKeyEnum {
-  UserId = 'userId',
-  ActivityId = 'activityId',
-  EnvironmentDomain = 'environment.domain',
-  EnvironmentSubDomain = 'environment.subdomain',
+import { ILogsFilter } from '../../models/logs-filter.interface';
+
+enum EnvironmentLogRouterKeyEnum {
+  UserId = 'user',
+  ActivityId = 'activity',
+  EnvironmentDomain = 'domains',
+  EnvironmentId = 'environmentId',
   CreatedOn = 'createdOn',
   IsAnonymizedData = 'isAnonymizedData'
 }
@@ -17,33 +18,68 @@ enum EnvironmentLogFilterKeyEnum {
   templateUrl: './logs-filter.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class LogsFiltersComponent implements OnInit, OnDestroy {
-  @Output() public updateFilters: EventEmitter<IFilterParams> = new EventEmitter<IFilterParams>();
+export class LogsFiltersComponent {
+  @Output() public updateFilters: EventEmitter<ILogsFilter> = new EventEmitter<ILogsFilter>();
 
-  public logsFilterParamsKeys = EnvironmentLogFilterKeyEnum;
+  public logsFilter: ILogsFilter;
 
-  private filters: BehaviorSubject<IFilterParams> = new BehaviorSubject<IFilterParams>({});
-  private destroy: Subject<void> = new Subject<void>();
-
-  constructor(private filterService: FiltersService) {
+  constructor(private activatedRoute: ActivatedRoute, private router: Router) {
+    this.initDefaultFilterValues(activatedRoute.snapshot);
   }
 
-  public ngOnInit(): void {
-    this.filters.pipe(debounceTime(300), takeUntil(this.destroy))
-      .subscribe(f => this.updateFilters.emit(f));
+  public async updateAsync(): Promise<void> {
+    this.updateFilters.emit(this.logsFilter);
+    await this.updateRouterAsync(this.logsFilter);
   }
 
-  public ngOnDestroy(): void {
-    this.destroy.next();
-    this.destroy.complete();
+  private initDefaultFilterValues(route: ActivatedRouteSnapshot): void {
+    this.logsFilter = this.toLogsFilter(route.queryParamMap);
+    this.updateFilters.emit(this.logsFilter);
   }
 
-  public update(key: string, value: string): void {
-    const hasEmptyValueAndExistingKey = !value && Object.keys(this.filters.value);
-    const filtersUpdated = hasEmptyValueAndExistingKey
-      ? this.filterService.removeKey(this.filters.value, key)
-      : this.filterService.updateParam(this.filters.value, key, value);
+  private async updateRouterAsync(logsFilter: ILogsFilter): Promise<void> {
+    await this.router.navigate([], {
+      relativeTo: this.activatedRoute,
+      queryParams: this.toRouterQueryParams(logsFilter),
+      queryParamsHandling: 'merge',
+    });
+  }
 
-    this.filters.next(filtersUpdated);
+  private toLogsFilter(routerParam: ParamMap): ILogsFilter {
+    const isAnonymizedData = routerParam.has(EnvironmentLogRouterKeyEnum.IsAnonymizedData)
+      ? routerParam.get(EnvironmentLogRouterKeyEnum.IsAnonymizedData)
+      : '';
+
+    return {
+      environmentIds: this.convertToNumbers(routerParam, EnvironmentLogRouterKeyEnum.EnvironmentId),
+      userIds: this.convertToNumbers(routerParam, EnvironmentLogRouterKeyEnum.UserId),
+      actionIds: this.convertToNumbers(routerParam, EnvironmentLogRouterKeyEnum.ActivityId),
+      domainIds: this.convertToNumbers(routerParam, EnvironmentLogRouterKeyEnum.EnvironmentDomain),
+      createdOn: apiV3ToDateRange(routerParam.get(EnvironmentLogRouterKeyEnum.CreatedOn)),
+      isAnonymizedData,
+    };
+  }
+
+  private toRouterQueryParams(filter: ILogsFilter): Params {
+    const createdOnRange = toApiDateRangeV3Format(filter.createdOn);
+
+    return {
+      [EnvironmentLogRouterKeyEnum.UserId]: !!filter.userIds.length ? filter.userIds.join(',') : null,
+      [EnvironmentLogRouterKeyEnum.EnvironmentId]: !!filter.environmentIds.length ? filter.environmentIds.join(',') : null,
+      [EnvironmentLogRouterKeyEnum.EnvironmentDomain]: !!filter.domainIds.length ? filter.domainIds.join(',') : null,
+      [EnvironmentLogRouterKeyEnum.ActivityId]: !!filter.actionIds.length ? filter.actionIds.join(',') : null,
+      [EnvironmentLogRouterKeyEnum.IsAnonymizedData]: !!filter.isAnonymizedData ? filter.isAnonymizedData : null,
+      [EnvironmentLogRouterKeyEnum.CreatedOn]: !!createdOnRange ? createdOnRange : null,
+    };
+  }
+
+  private convertToNumbers(param: ParamMap, key: EnvironmentLogRouterKeyEnum): number[] {
+    if (!param.has(key) || !param.get(key) || param.get(key) === '') {
+      return [];
+    }
+
+    return param.get(key)
+      .split(',')
+      .map(idToString => parseInt(idToString, 10));
   }
 }

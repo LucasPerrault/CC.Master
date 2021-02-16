@@ -1,25 +1,32 @@
 <div class="u-paddingSmall u-displayInlineFlex u-alignItemsFlexCenter u-flexWrapWrap u-marginTopSmall">
   <cc-user-api-select class="u-marginRightSmaller u-marginBottomSmaller"
-                      (userIdsToString)="update(logsFilterParamsKeys.UserId, $event)">
+                      [(ngModel)]="logsFilter.userIds"
+                      (ngModelChange)="updateAsync()">
   </cc-user-api-select>
 
   <cc-environment-action-select class="u-marginRightSmaller u-marginBottomSmaller"
-                                (actionIdsToString)="update(logsFilterParamsKeys.ActivityId, $event)">
+                                [(ngModel)]="logsFilter.actionIds"
+                                (ngModelChange)="updateAsync()">
   </cc-environment-action-select>
 
   <cc-environment-domain-select class="u-marginRightSmaller u-marginBottomSmaller"
-                                (domainIdsToString)="update(logsFilterParamsKeys.EnvironmentDomain, $event)">
+                                [(ngModel)]="logsFilter.domainIds"
+                                (ngModelChange)="updateAsync()">
   </cc-environment-domain-select>
 
   <cc-environment-api-select class="u-marginRightSmaller u-marginBottomSmaller"
-                             (environmentIdsToString)="update(logsFilterParamsKeys.EnvironmentSubDomain, $event)">
+                             [(ngModel)]="logsFilter.environmentIds"
+                             (ngModelChange)="updateAsync()">
   </cc-environment-api-select>
 
   <cc-date-range-select class="u-marginRightSmaller u-marginBottomSmaller"
-                        (dateRangeToString)="update(logsFilterParamsKeys.CreatedOn, $event)">
+                        [(ngModel)]="logsFilter.createdOn"
+                        (ngModelChange)="updateAsync()">
   </cc-date-range-select>
 
   <cc-anonymization-button-group class="u-marginRightSmaller u-marginBottomSmaller"
-                                 (isAnonymizedToString)="update(logsFilterParamsKeys.IsAnonymizedData, $event)">
+                                 [(ngModel)]="logsFilter.isAnonymizedData"
+                                 (ngModelChange)="updateAsync()">
   </cc-anonymization-button-group>
+
 </div>
