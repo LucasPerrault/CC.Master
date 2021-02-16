@@ -4,7 +4,6 @@ import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterModule, Routes } from '@angular/router';
 import { TranslateModule } from '@cc/aspects/translate';
-import { FiltersModule } from '@cc/common/filters';
 import {
   DateRangeSelectModule,
   EnvironmentActionSelectModule,
@@ -44,7 +43,6 @@ const routes: Routes = [
     ScrollingModule,
     PagingModule,
     TranslateModule,
-    FiltersModule,
   ],
 })
-export class LogsModule {};
+export class LogsModule {}
