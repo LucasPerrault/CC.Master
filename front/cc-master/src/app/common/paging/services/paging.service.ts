@@ -1,7 +1,7 @@
 import { HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { PaginatedListState } from '@cc/common/paging/enums/paginated-list-state.enum';
-import { ISortParams } from '@cc/common/sort';
+import { IApiV3SortParams, apiV3SortToHttpParams } from '@cc/common/queries';
 import { BehaviorSubject, Observable } from 'rxjs';
 
 import { IPaginatedResult } from '../models/paginated-result.interface';
@@ -19,8 +19,8 @@ export class PagingService {
 export class PaginatedList<T> {
 
   private paging: IPagingParams;
-  private sort: ISortParams;
-  private filter: HttpParams;
+  private sortParams: IApiV3SortParams[];
+  private filterParams: HttpParams;
   private state: BehaviorSubject<PaginatedListState> = new BehaviorSubject<PaginatedListState>(PaginatedListState.Idle);
 
   private items: BehaviorSubject<T[]> = new BehaviorSubject([]);
@@ -57,14 +57,14 @@ export class PaginatedList<T> {
   }
 
   public updateFilters(filter: HttpParams): void {
-    this.filter = filter;
+    this.filterParams = filter;
 
     this.resetPaging();
     this.update(PaginatedListState.UpdateFilter);
   }
 
-  public updateSort(sort: ISortParams): void {
-    this.sort = sort;
+  public updateSort(sort: IApiV3SortParams[]): void {
+    this.sortParams = sort;
 
     this.resetPaging();
     this.update(PaginatedListState.UpdateSort);
@@ -81,11 +81,11 @@ export class PaginatedList<T> {
       this.items.next([]);
     }
 
-    const params = (!!this.filter ? this.filter : new HttpParams())
-      .set('paging', `${this.paging.skip},${this.paging.limit}`)
-      .set('orderBy', `${this.sort.field},${this.sort.order}`);
+    const params = !!this.filterParams ? this.filterParams : new HttpParams();
+    const paramsWithSort = apiV3SortToHttpParams(params, this.sortParams);
+    const paramsWithPaging = paramsWithSort.set('paging', `${this.paging.skip},${this.paging.limit}`);
 
-    this.fetchMore(params).subscribe(
+    this.fetchMore(paramsWithPaging).subscribe(
       res => {
         this.items.next([...this.items.value, ...res.items]);
         this.totalCount.next(res.totalCount);

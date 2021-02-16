@@ -1,8 +1,8 @@
 import { HttpParams } from '@angular/common/http';
 import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
 import { IPaginatedResult, PaginatedList, PaginatedListState, PagingService } from '@cc/common/paging';
-import { toApiDateRangeV3Format } from '@cc/common/queries';
-import { ISortParams } from '@cc/common/sort';
+import { toApiDateRangeV3Format, toApiV3SortParams } from '@cc/common/queries';
+import { ISortParams, SortOrder } from '@cc/common/sort';
 import { IEnvironmentLog, LogsService } from '@cc/domain/environments';
 import { Observable, Subject } from 'rxjs';
 import { map } from 'rxjs/operators';
@@ -26,7 +26,7 @@ enum EnvironmentLogQueryParamKey {
 export class LogsComponent implements OnInit, OnDestroy {
   public defaultSortParams: ISortParams = {
     field: 'createdOn',
-    order: 'desc',
+    order: SortOrder.Desc,
   };
 
   private destroySubscription$: Subject<void> = new Subject<void>();
@@ -47,7 +47,6 @@ export class LogsComponent implements OnInit, OnDestroy {
     this.paginatedLogs = this.pagingService.paginate<IEnvironmentLog>(
       (httpParams) => this.getPaginatedLogs$(httpParams),
     );
-    this.paginatedLogs.updateSort(this.defaultSortParams);
   }
 
   public ngOnDestroy(): void {
@@ -60,8 +59,9 @@ export class LogsComponent implements OnInit, OnDestroy {
     this.paginatedLogs.updateFilters(httpParams);
   }
 
-  public updateSort(sortParams: ISortParams) {
-    this.paginatedLogs.updateSort(sortParams);
+  public updateSort(sortParams: ISortParams[]) {
+    const apiV3SortParams = toApiV3SortParams(sortParams);
+    this.paginatedLogs.updateSort(apiV3SortParams);
   }
 
   public showMore(): void {

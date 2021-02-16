@@ -3,16 +3,16 @@
     <thead class="table-head">
     <tr class="table-head-row">
       <th class="table-head-row-cell mod-sortable"
-          [class.is-sorted-descending]="activeAscOrDescIcon('userId', 'desc')"
-          [class.is-sorted-ascending]="activeAscOrDescIcon('userId', 'asc')"
+          [class.is-sorted-descending]="activeAscOrDescIcon('userId', sortOrder.Asc)"
+          [class.is-sorted-ascending]="activeAscOrDescIcon('userId', sortOrder.Desc)"
           (click)="sortBy('userId')">
         {{ 'front_logPage_columnTable_collaborator' | translate }}
       </th>
       <th class="table-head-row-cell">{{ 'front_logPage_columnTable_action' | translate }}</th>
       <th class="table-head-row-cell">{{ 'front_logPage_columnTable_instance' | translate }}</th>
-      <th class="table-head-row-cell mod-sortable "
-          [class.is-sorted-descending]="activeAscOrDescIcon('createdOn', 'desc')"
-          [class.is-sorted-ascending]="activeAscOrDescIcon('createdOn', 'asc')"
+      <th class="table-head-row-cell mod-sortable"
+          [class.is-sorted-descending]="activeAscOrDescIcon('createdOn', sortOrder.Asc)"
+          [class.is-sorted-ascending]="activeAscOrDescIcon('createdOn', sortOrder.Desc)"
           (click)="sortBy('createdOn')">{{ 'front_logPage_columnTable_date' | translate }}</th>
       <th class="table-head-row-cell column-xs">{{ 'front_logPage_columnTable_anonymized' | translate }}</th>
       <th class="table-head-row-cell column-xl">{{ 'front_logPage_columnTable_justification' | translate }}</th>
