@@ -1,28 +1,48 @@
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Component, forwardRef } from '@angular/core';
+import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { environmentDomains, IEnvironmentDomain } from '@cc/domain/environments';
 
 @Component({
   selector: 'cc-environment-domain-select',
   templateUrl: './environment-domain-select.component.html',
+  providers: [
+    {
+      provide: NG_VALUE_ACCESSOR,
+      useExisting: forwardRef(() => EnvironmentDomainSelectComponent),
+      multi: true,
+    },
+  ],
 })
-export class EnvironmentDomainSelectComponent implements OnInit {
-  @Output() public domainIdsToString: EventEmitter<string> = new EventEmitter<string>();
+export class EnvironmentDomainSelectComponent implements ControlValueAccessor {
+  public onChange: (domains: IEnvironmentDomain[]) => void;
+  public onTouch: () => void;
 
-  public environmentDomainIds: number[];
-  private routerParamKey = 'domainIds';
-
-  constructor(private router: Router, private activatedRoute: ActivatedRoute ) {
+  public domainsSelected: IEnvironmentDomain[];
+  public get environmentDomains(): IEnvironmentDomain[] {
+    return environmentDomains;
   }
 
-  ngOnInit() {
-    const routerParamValue = this.activatedRoute.snapshot.queryParamMap.get(this.routerParamKey);
-    if (!routerParamValue) {
+  public registerOnChange(fn: () => void): void {
+    this.onChange = fn;
+  }
+
+  public registerOnTouched(fn: () => void): void {
+    this.onTouch = fn;
+  }
+
+  public writeValue(domainsSelectionUpdated: IEnvironmentDomain[]): void {
+    if (domainsSelectionUpdated !== this.domainsSelected) {
+      this.domainsSelected = domainsSelectionUpdated;
+    }
+  }
+
+  public safeOnChange(domainsSelectionUpdated: IEnvironmentDomain[]): void {
+    if (!domainsSelectionUpdated) {
+      this.reset();
       return;
     }
 
-    this.domainIdsToString.emit(routerParamValue);
-    this.environmentDomainIds = routerParamValue.split(',').map(i => parseInt(i, 10));
+    this.onChange(domainsSelectionUpdated);
   }
 
   public searchFn(domain: IEnvironmentDomain, clue: string): boolean {
@@ -33,24 +53,7 @@ export class EnvironmentDomainSelectComponent implements OnInit {
     return domain.name;
   }
 
-  public async updateEnvironmentDomainIdsSelectedAsync(domainIds: number[]) {
-    const domainIdsToString = !!domainIds ? domainIds.join(',') : '';
-    this.domainIdsToString.emit(domainIdsToString);
-
-    await this.updateRouterAsync(domainIdsToString);
-  }
-
-  private async updateRouterAsync(value: string): Promise<void> {
-    const queryParams = { [this.routerParamKey]: !!value ? value : null };
-
-    await this.router.navigate([], {
-      relativeTo: this.activatedRoute,
-      queryParams,
-      queryParamsHandling: 'merge',
-    });
-  }
-
-  public get environmentDomains(): IEnvironmentDomain[] {
-    return environmentDomains;
+  private reset(): void {
+    this.onChange([]);
   }
 }
