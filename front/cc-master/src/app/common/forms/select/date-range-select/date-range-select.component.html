@@ -1,18 +1,18 @@
 <div class="u-displayInlineFlex u-alignItemsCenter">
   <label class="textfield mod-short palette-grey u-marginRightSmaller">
     <lu-date-select class="textfield-input"
-                    [(ngModel)]="startDate"
-                    (ngModelChange)="updateDatesSelectedAsync(startDate, endDate)"
-                    [max]="endDate || todayDate"
+                    [(ngModel)]="dateRangeSelected.startDate"
+                    (ngModelChange)="updateDateRange(dateRangeKeys.StartDate, $event)"
+                    [max]="dateRangeSelected.endDate || todayDate"
                     [placeholder]="'front_filterLabel_startDate' | translate">
     </lu-date-select>
   </label>
 
   <label class="textfield mod-short palette-grey">
     <lu-date-select class="textfield-input"
-                    [(ngModel)]="endDate"
-                    (ngModelChange)="updateDatesSelectedAsync(startDate, endDate)"
-                    [min]="startDate"
+                    [(ngModel)]="dateRangeSelected.endDate"
+                    (ngModelChange)="updateDateRange(dateRangeKeys.EndDate, $event)"
+                    [min]="dateRangeSelected.startDate"
                     [max]="todayDate"
                     [placeholder]="'front_filterLabel_endDate' | translate">
     </lu-date-select>

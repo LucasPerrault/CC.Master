@@ -1,96 +1,55 @@
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
-import { apiDateBetweenKeyword, apiDateFormat, apiDateSinceKeyword, apiDateUntilKeyword } from '@cc/common/queries';
-import { LuNativeDateAdapter } from '@lucca-front/ng/core';
+import { Component, forwardRef } from '@angular/core';
+import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
+import { IDateRange } from '@cc/common/date';
+
+export enum DateRangeKeys {
+  StartDate = 'startDate',
+  EndDate = 'endDate',
+}
 
 @Component({
   selector: 'cc-date-range-select',
   templateUrl: './date-range-select.component.html',
+  providers: [
+    {
+      provide: NG_VALUE_ACCESSOR,
+      useExisting: forwardRef(() => DateRangeSelectComponent),
+      multi: true,
+    },
+  ],
 })
-export class DateRangeSelectComponent implements OnInit {
-  @Output() public dateRangeToString: EventEmitter<string> = new EventEmitter<string>();
+export class DateRangeSelectComponent implements ControlValueAccessor {
+  public onChange: (range: IDateRange) => void;
+  public onTouch: () => void;
 
-  public startDate;
-  public endDate;
+  public dateRangeKeys = DateRangeKeys;
+  public dateRangeSelected: IDateRange = {
+    startDate: null,
+    endDate: null,
+  };
+
   public todayDate = new Date();
 
-  private routerParamKey = 'date';
-
-  constructor(private adapter: LuNativeDateAdapter, private router: Router, private activatedRoute: ActivatedRoute) {
+  public registerOnChange(fn: () => void): void {
+    this.onChange = fn;
   }
 
-  public ngOnInit() {
-    const routerParamValue = this.activatedRoute.snapshot.queryParamMap.get(this.routerParamKey);
-    if (!routerParamValue) {
-      return;
-    }
-
-    this.dateRangeToString.emit(routerParamValue);
-    this.setDatesWithQueryString(routerParamValue.split(','));
+  public registerOnTouched(fn: () => void): void {
+    this.onTouch = fn;
   }
 
-  public async updateDatesSelectedAsync(startDate: Date, endDate: Date): Promise<void> {
-    const dateRangeToApiQueryString = this.getDateRangeToQueryString(startDate, endDate);
-    this.dateRangeToString.emit(dateRangeToApiQueryString);
-
-    await this.updateRouterAsync(dateRangeToApiQueryString);
-  }
-
-  private setDatesWithQueryString(queryParams: string[]): void {
-    const dateKeyword = queryParams.shift();
-    if (!dateKeyword) {
-      return;
-    }
-
-    if (dateKeyword === apiDateBetweenKeyword) {
-      this.startDate = new Date(queryParams.shift());
-      this.endDate = new Date(queryParams.shift());
-      return;
-    }
-
-    if (dateKeyword === apiDateSinceKeyword) {
-      this.startDate = new Date(queryParams.shift());
-      return;
-    }
-
-    if (dateKeyword === apiDateUntilKeyword) {
-      this.endDate = new Date(queryParams.shift());
+  public writeValue(rangeSelectionUpdated: IDateRange): void {
+    if (rangeSelectionUpdated !== this.dateRangeSelected && rangeSelectionUpdated != null) {
+      this.dateRangeSelected = rangeSelectionUpdated;
     }
   }
 
-  private getDateRangeToQueryString(startDate: Date, endDate: Date): string {
-    if (!startDate && !endDate) {
-      return;
-    }
+  public updateDateRange(key: DateRangeKeys, date: Date): void {
+    this.dateRangeSelected = {
+      ...this.dateRangeSelected,
+      [key]: date,
+    };
 
-    const startDateFormat = this.getDateToApiQueryString(startDate);
-    const endDateFormat = this.getDateToApiQueryString(endDate);
-
-    if (!endDateFormat) {
-      return `${apiDateSinceKeyword},${startDateFormat}`;
-    }
-    if (!startDateFormat) {
-      return `${apiDateUntilKeyword},${endDateFormat}`;
-    }
-
-    return `${apiDateBetweenKeyword},${startDateFormat},${endDateFormat}`;
-  }
-
-  private getDateToApiQueryString(date: Date): string {
-    if (!date) {
-      return;
-    }
-
-    return this.adapter.format(date, apiDateFormat);
-  }
-
-  private async updateRouterAsync(value: string): Promise<void> {
-    const queryParams = { [this.routerParamKey]: !!value ? value : null };
-
-    await this.router.navigate([], {
-      relativeTo: this.activatedRoute,
-      queryParams,
-      queryParamsHandling: 'merge',
-    });
+    this.onChange(this.dateRangeSelected);
   }
 }
