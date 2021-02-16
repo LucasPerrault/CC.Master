@@ -1,10 +1,22 @@
+import { HttpParams } from '@angular/common/http';
 import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
-import { IFilterParams } from '@cc/common/filters';
-import { IPaginatedResult, IPagingParams, PaginatedList, PaginatedListState, PagingService } from '@cc/common/paging';
+import { IPaginatedResult, PaginatedList, PaginatedListState, PagingService } from '@cc/common/paging';
+import { toApiDateRangeV3Format } from '@cc/common/queries';
 import { ISortParams } from '@cc/common/sort';
 import { IEnvironmentLog, LogsService } from '@cc/domain/environments';
 import { Observable, Subject } from 'rxjs';
 import { map } from 'rxjs/operators';
+
+import { ILogsFilter } from './models/logs-filter.interface';
+
+enum EnvironmentLogQueryParamKey {
+  UserId = 'userId',
+  ActivityId = 'activityId',
+  EnvironmentDomain = 'environment.domain',
+  EnvironmentId = 'environmentId',
+  CreatedOn = 'createdOn',
+  IsAnonymizedData = 'isAnonymizedData'
+}
 
 @Component({
   selector: 'cc-logs',
@@ -33,8 +45,9 @@ export class LogsComponent implements OnInit, OnDestroy {
 
   public ngOnInit(): void {
     this.paginatedLogs = this.pagingService.paginate<IEnvironmentLog>(
-      (paging, sort, filter) => this.getPaginatedLogs$(paging, sort, filter),
+      (httpParams) => this.getPaginatedLogs$(httpParams),
     );
+    this.paginatedLogs.updateSort(this.defaultSortParams);
   }
 
   public ngOnDestroy(): void {
@@ -42,8 +55,9 @@ export class LogsComponent implements OnInit, OnDestroy {
     this.destroySubscription$.complete();
   }
 
-  public updateFilters(filterParams: IFilterParams): void {
-    this.paginatedLogs.updateFilters(filterParams);
+  public updateFilters(filters: ILogsFilter): void {
+    const httpParams = this.toHttpParams(filters);
+    this.paginatedLogs.updateFilters(httpParams);
   }
 
   public updateSort(sortParams: ISortParams) {
@@ -54,14 +68,39 @@ export class LogsComponent implements OnInit, OnDestroy {
     this.paginatedLogs.showMore();
   }
 
-  private getPaginatedLogs$(
-    paging: IPagingParams,
-    sort: ISortParams,
-    filter: IFilterParams,
-  ): Observable<IPaginatedResult<IEnvironmentLog>> {
-    const sortParams = !!sort ? sort : this.defaultSortParams;
-    return this.logsService.getLogs$(paging, sortParams, filter).pipe(
+  private getPaginatedLogs$(httpParams: HttpParams): Observable<IPaginatedResult<IEnvironmentLog>> {
+    return this.logsService.getLogs$(httpParams).pipe(
       map(response => ({ items: response.items, totalCount: response.count })),
     );
+  }
+
+  private toHttpParams(filters: ILogsFilter): HttpParams {
+    let params = new HttpParams();
+    if (!!filters.environmentIds.length) {
+      params = params.set(EnvironmentLogQueryParamKey.EnvironmentId, filters.environmentIds.join(','));
+    }
+
+    if (!!filters.userIds.length) {
+      params = params.set(EnvironmentLogQueryParamKey.UserId, filters.userIds.join(','));
+    }
+
+    if (!!filters.isAnonymizedData) {
+      params = params.set(EnvironmentLogQueryParamKey.IsAnonymizedData, filters.isAnonymizedData);
+    }
+
+    const createdOn = toApiDateRangeV3Format(filters.createdOn);
+    if (!!createdOn) {
+      params = params.set(EnvironmentLogQueryParamKey.CreatedOn, createdOn);
+    }
+
+    if (!!filters.actionIds.length) {
+      params = params.set(EnvironmentLogQueryParamKey.ActivityId, filters.actionIds.join(','));
+    }
+
+    if (!!filters.domainIds.length) {
+      params = params.set(EnvironmentLogQueryParamKey.EnvironmentDomain, filters.domainIds.join(','));
+    }
+
+    return params;
   }
 }
