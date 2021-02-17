@@ -17,7 +17,9 @@
         <lu-option-searcher [searchFn]="searchFn"></lu-option-searcher>
       </header>
       <lu-option-pager></lu-option-pager>
-      <lu-option *luForOptions="let action; trackBy: trackBy" [value]="action">{{action.name}}</lu-option>
+      <lu-option *luForOptions="let action; trackBy: trackBy" [value]="action">
+        {{ action.translationKey | translate }}
+      </lu-option>
     </lu-option-picker-advanced>
     <lu-input-clearer></lu-input-clearer>
   </lu-select>
