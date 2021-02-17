@@ -27,7 +27,7 @@ export class AnonymizationButtonGroupComponent implements ControlValueAccessor {
   }
 
   public writeValue(isAnonymizedSelectionUpdated: string): void {
-    if (isAnonymizedSelectionUpdated !== this.isAnonymizedData && !isAnonymizedSelectionUpdated) {
+    if (isAnonymizedSelectionUpdated !== this.isAnonymizedData) {
       this.isAnonymizedData = isAnonymizedSelectionUpdated;
     }
   }
