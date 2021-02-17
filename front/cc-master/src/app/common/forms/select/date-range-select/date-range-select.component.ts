@@ -1,11 +1,8 @@
-import { Component, forwardRef } from '@angular/core';
-import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
+import { Component, forwardRef, OnDestroy, OnInit } from '@angular/core';
+import { ControlValueAccessor, FormControl, FormGroup, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { IDateRange } from '@cc/common/date';
-
-export enum DateRangeKeys {
-  StartDate = 'startDate',
-  EndDate = 'endDate',
-}
+import { Subject } from 'rxjs';
+import { debounceTime, takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'cc-date-range-select',
@@ -18,17 +15,33 @@ export enum DateRangeKeys {
     },
   ],
 })
-export class DateRangeSelectComponent implements ControlValueAccessor {
+export class DateRangeSelectComponent implements ControlValueAccessor, OnInit, OnDestroy {
   public onChange: (range: IDateRange) => void;
   public onTouch: () => void;
 
-  public dateRangeKeys = DateRangeKeys;
-  public dateRangeSelected: IDateRange = {
-    startDate: null,
-    endDate: null,
-  };
-
+  public dateRangeSelected: FormGroup;
   public todayDate = new Date();
+
+  private destroySubscription$: Subject<void> = new Subject<void>();
+
+  constructor() {
+    this.dateRangeSelected = new FormGroup({
+      startDate: new FormControl(null),
+      endDate: new FormControl(null),
+    });
+  }
+
+  public ngOnInit(): void {
+    this.dateRangeSelected.valueChanges
+      .pipe(debounceTime(300), takeUntil(this.destroySubscription$))
+      .subscribe((dateRange: IDateRange) => this.onChange(dateRange));
+  }
+
+  public ngOnDestroy(): void {
+    this.destroySubscription$.next();
+    this.destroySubscription$.complete();
+  }
+
 
   public registerOnChange(fn: () => void): void {
     this.onChange = fn;
@@ -39,17 +52,17 @@ export class DateRangeSelectComponent implements ControlValueAccessor {
   }
 
   public writeValue(rangeSelectionUpdated: IDateRange): void {
-    if (rangeSelectionUpdated !== this.dateRangeSelected && rangeSelectionUpdated != null) {
-      this.dateRangeSelected = rangeSelectionUpdated;
+    if (rangeSelectionUpdated !== this.dateRangeSelected.value && rangeSelectionUpdated != null) {
+      this.dateRangeSelected.setValue(rangeSelectionUpdated);
+      this.dateRangeSelected.updateValueAndValidity();
     }
   }
 
-  public updateDateRange(key: DateRangeKeys, date: Date): void {
-    this.dateRangeSelected = {
-      ...this.dateRangeSelected,
-      [key]: date,
-    };
+  public get startDate(): Date {
+    return this.dateRangeSelected.get('startDate').value;
+  }
 
-    this.onChange(this.dateRangeSelected);
+  public get endDate(): Date {
+    return this.dateRangeSelected.get('endDate').value;
   }
 }

@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { ReactiveFormsModule } from '@angular/forms';
 import { TranslateModule } from '@cc/aspects/translate';
 import { ALuDateAdapter, LuNativeDateAdapter } from '@lucca-front/ng/core';
 import { LuDateModule } from '@lucca-front/ng/date';
@@ -10,7 +10,7 @@ import { DateRangeSelectComponent } from './date-range-select.component';
   declarations: [DateRangeSelectComponent],
   imports: [
     LuDateModule,
-    FormsModule,
+    ReactiveFormsModule,
     TranslateModule,
   ],
   exports: [DateRangeSelectComponent],
