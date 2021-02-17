@@ -11,7 +11,7 @@ export class LogsService {
 
   constructor(private httpClient: HttpClient) { }
 
-  public getLogs$(httpParams: HttpParams = new HttpParams()): Observable<IHttpApiV3CollectionCountResponse<IEnvironmentLog>> {
+  public getLogs$(httpParams: HttpParams): Observable<IHttpApiV3CollectionCountResponse<IEnvironmentLog>> {
     const fields = 'collection.count,id,name,user,isAnonymizedData,activity,createdOn,environment[subDomain,domainName],' +
       'messages[id,message,type]';
     const environmentLogUrl = `/api/v3/environmentLogs`;
