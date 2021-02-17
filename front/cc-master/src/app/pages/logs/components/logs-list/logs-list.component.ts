@@ -1,8 +1,8 @@
-import {CdkVirtualScrollViewport} from '@angular/cdk/scrolling';
-import {Component, EventEmitter, HostBinding, Input, OnInit, Output, ViewChild} from '@angular/core';
-import {PaginatedListState} from '@cc/common/paging';
-import {ISortParams, SortOrder} from '@cc/common/sort';
-import {EnvironmentLogMessageType, IEnvironment, IEnvironmentLog} from '@cc/domain/environments';
+import { CdkVirtualScrollViewport } from '@angular/cdk/scrolling';
+import { Component, EventEmitter, HostBinding, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { PaginatedListState } from '@cc/common/paging';
+import { ISortParams, SortOrder, SortService } from '@cc/common/sort';
+import { EnvironmentLogMessageType, IEnvironment, IEnvironmentLog } from '@cc/domain/environments';
 
 @Component({
   selector: 'cc-logs-list',
@@ -27,6 +27,9 @@ export class LogsListComponent implements OnInit {
   private sortParams: ISortParams[] = [];
 
   private rowNumberBeforeBottomToShowMore = 15;
+
+  constructor(private sortService: SortService) {
+  }
 
   public ngOnInit(): void {
     this.sortParams = [...this.sortParams, this.defaultSortParams];
@@ -53,30 +56,12 @@ export class LogsListComponent implements OnInit {
   }
 
   public activeAscOrDescIcon(field: string, order: SortOrder): boolean {
-    const sortParam = this.sortParams.find(s => s.field === field);
-    if (!sortParam) {
-      return false;
-    }
-    return sortParam.field === field && sortParam.order === order;
+    return this.sortService.isSorted(order, field, this.sortParams);
   }
 
   public sortBy(field: string, order: SortOrder = SortOrder.Asc): void {
-    const sortParamsFiltered = this.sortParams.filter(s => s.field !== field);
-    const sortParamToUpdate = {
-      field,
-      order: this.getOrderToSort(field, order),
-    };
-
-    this.sortParams = [...sortParamsFiltered, sortParamToUpdate];
+    this.sortParams = this.sortService.updateSortParam(field, order, this.sortParams);
     this.updateSort.emit(this.sortParams);
-  }
-
-  private getOrderToSort(fieldToSort: string, orderToSort: SortOrder): SortOrder {
-    const sortParam = this.sortParams.find(s => s.field === fieldToSort);
-    if (!sortParam) {
-      return orderToSort;
-    }
-    return sortParam.order === SortOrder.Asc ? SortOrder.Desc : SortOrder.Asc;
   }
 
   public get isLoading(): boolean {

@@ -12,6 +12,7 @@ import {
   UserApiSelectModule,
 } from '@cc/common/forms';
 import { PagingModule } from '@cc/common/paging';
+import { SortModule } from '@cc/common/sort';
 import { EnvironmentsModule } from '@cc/domain/environments';
 
 import { AnonymizationButtonGroupComponent } from './components/anonymization-button-group/anonymization-button-group.component';
@@ -43,6 +44,7 @@ const routes: Routes = [
     ScrollingModule,
     PagingModule,
     TranslateModule,
+    SortModule,
   ],
 })
 export class LogsModule {}
