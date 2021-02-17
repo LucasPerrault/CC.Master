@@ -2,6 +2,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { IPrincipal } from '@cc/aspects/principal';
 import { IHttpApiV3CollectionResponse } from '@cc/common/queries';
+import { cloudControlAdmin } from '@cc/domain/users';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
@@ -20,10 +21,14 @@ export class UsersService {
       .set('fields', fields)
       .set('id', ids.join(','));
 
-    return this.httpClient.get<IHttpApiV3CollectionResponse<IPrincipal>>(this.usersEndPoint, { params })
+    const users = this.httpClient.get<IHttpApiV3CollectionResponse<IPrincipal>>(this.usersEndPoint, { params })
       .pipe(
         map(response => response.data),
         map(data => data.items),
       );
+
+    return ids.includes(cloudControlAdmin.id)
+      ? users.pipe(map(u => [cloudControlAdmin, ...u]))
+      : users;
   }
 }
