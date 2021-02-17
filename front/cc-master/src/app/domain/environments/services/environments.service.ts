@@ -9,7 +9,7 @@ import { map } from 'rxjs/operators';
 @Injectable()
 export class EnvironmentsService {
 
-  private readonly usersEndPoint = '/api/v3/environments';
+  private readonly environmentsEndPoint = '/api/v3/environments';
 
   constructor(private httpClient: HttpClient) { }
 
@@ -20,7 +20,7 @@ export class EnvironmentsService {
       .set('fields', fields)
       .set('id', ids.join(','));
 
-    return this.httpClient.get<IHttpApiV3CollectionResponse<IEnvironment>>(this.usersEndPoint, { params })
+    return this.httpClient.get<IHttpApiV3CollectionResponse<IEnvironment>>(this.environmentsEndPoint, { params })
       .pipe(
         map(response => response.data),
         map(data => data.items),
