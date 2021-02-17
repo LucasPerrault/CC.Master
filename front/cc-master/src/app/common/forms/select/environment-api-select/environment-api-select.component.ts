@@ -21,14 +21,14 @@ import { EnvironmentApiSelectService } from './environment-api-select.service';
   ],
 })
 export class EnvironmentApiSelectComponent implements ControlValueAccessor {
-  public onChange: (environments: IEnvironment[]) => void;
+  public onChange: (environmentIds: IEnvironment[]) => void;
   public onTouch: () => void;
 
   public apiUrl = '/api/v3/environments';
   public apiFields = 'id,subdomain';
   public apiOrderBy = 'subdomain,asc';
 
-  public environments: IEnvironment[];
+  public environmentIds: IEnvironment[];
 
   public registerOnChange(fn: () => void): void {
     this.onChange = fn;
@@ -38,19 +38,19 @@ export class EnvironmentApiSelectComponent implements ControlValueAccessor {
     this.onTouch = fn;
   }
 
-  public writeValue(environmentsSelected: IEnvironment[]): void {
-    if (environmentsSelected !== this.environments) {
-      this.environments = environmentsSelected;
+  public writeValue(environmentIdsSelected: IEnvironment[]): void {
+    if (environmentIdsSelected !== this.environmentIds) {
+      this.environmentIds = environmentIdsSelected;
     }
   }
 
-  public safeOnChange(environmentsSelected: IEnvironment[]): void {
-    if (!environmentsSelected) {
+  public safeOnChange(environmentIdsSelected: IEnvironment[]): void {
+    if (!environmentIdsSelected) {
       this.reset();
       return;
     }
 
-    this.onChange(environmentsSelected);
+    this.onChange(environmentIdsSelected);
   }
 
   public trackBy(index: number, environment: IEnvironment): string {

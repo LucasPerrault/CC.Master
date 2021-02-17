@@ -20,10 +20,10 @@ import { UserApiSelectService } from './user-api-select.service';
   ],
 })
 export class UserApiSelectComponent implements ControlValueAccessor {
-  public onChange: (users: IPrincipal[]) => void;
+  public onChange: (userIds: IPrincipal[]) => void;
   public onTouch: () => void;
 
-  public users: IPrincipal[];
+  public userIds: IPrincipal[];
 
   public registerOnChange(fn: () => void): void {
     this.onChange = fn;
@@ -33,19 +33,19 @@ export class UserApiSelectComponent implements ControlValueAccessor {
     this.onTouch = fn;
   }
 
-  public writeValue(usersUpdated: IPrincipal[]): void {
-    if (usersUpdated !== this.users) {
-      this.users = usersUpdated;
+  public writeValue(userIdsUpdated: IPrincipal[]): void {
+    if (userIdsUpdated !== this.userIds) {
+      this.userIds = userIdsUpdated;
     }
   }
 
-  public safeOnChange(usersUpdated: IPrincipal[]): void {
-    if (!usersUpdated) {
+  public safeOnChange(userIdsUpdated: IPrincipal[]): void {
+    if (!userIdsUpdated) {
       this.reset();
       return;
     }
 
-    this.onChange(usersUpdated);
+    this.onChange(userIdsUpdated);
   }
 
   public trackBy(index: number, user: IPrincipal): string {

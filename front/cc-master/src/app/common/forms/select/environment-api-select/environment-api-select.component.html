@@ -1,5 +1,5 @@
 <label class="textfield palette-grey">
-  <lu-select [(ngModel)]="environments"
+  <lu-select [(ngModel)]="environmentIds"
              (ngModelChange)="safeOnChange($event)"
              class="textfield-input"
              [placeholder]="'front_filterLabel_subdomain' | translate"
@@ -13,7 +13,9 @@
         <lu-api-paged-searcher [api]="apiUrl" [fields]="apiFields" [orderBy]="apiOrderBy"></lu-api-paged-searcher>
       </header>
       <lu-option-pager></lu-option-pager>
-      <lu-option *luForOptions="let environment; trackBy: trackBy" [value]="environment">{{environment.subDomain}}</lu-option>
+      <lu-option *luForOptions="let environment; trackBy: trackBy" [value]="environment.id">
+        {{environment.subDomain}}
+      </lu-option>
     </lu-option-picker-advanced>
     <lu-input-clearer></lu-input-clearer>
   </lu-select>

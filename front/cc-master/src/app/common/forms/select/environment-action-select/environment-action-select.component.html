@@ -1,5 +1,5 @@
 <label class="textfield palette-grey">
-  <lu-select [(ngModel)]="actionsSelected"
+  <lu-select [(ngModel)]="actionIdsSelected"
              (ngModelChange)="safeOnChange($event)"
              class="textfield-input"
              [placeholder]="'front_filterLabel_action' | translate"
@@ -14,7 +14,7 @@
         <lu-option-searcher [searchFn]="searchFn"></lu-option-searcher>
       </header>
       <lu-option-pager></lu-option-pager>
-      <lu-option *luForOptions="let action; trackBy: trackBy" [value]="action">{{action.name}}</lu-option>
+      <lu-option *luForOptions="let action; trackBy: trackBy" [value]="action.id">{{action.name}}</lu-option>
     </lu-option-picker-advanced>
     <lu-input-clearer></lu-input-clearer>
   </lu-select>

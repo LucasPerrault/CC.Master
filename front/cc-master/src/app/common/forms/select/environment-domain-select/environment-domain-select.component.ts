@@ -14,10 +14,10 @@ import { environmentDomains, IEnvironmentDomain } from '@cc/domain/environments'
   ],
 })
 export class EnvironmentDomainSelectComponent implements ControlValueAccessor {
-  public onChange: (domains: IEnvironmentDomain[]) => void;
+  public onChange: (domainIds: IEnvironmentDomain[]) => void;
   public onTouch: () => void;
 
-  public domainsSelected: IEnvironmentDomain[];
+  public domainIdsSelected: IEnvironmentDomain[];
   public get environmentDomains(): IEnvironmentDomain[] {
     return environmentDomains;
   }
@@ -30,19 +30,19 @@ export class EnvironmentDomainSelectComponent implements ControlValueAccessor {
     this.onTouch = fn;
   }
 
-  public writeValue(domainsSelectionUpdated: IEnvironmentDomain[]): void {
-    if (domainsSelectionUpdated !== this.domainsSelected) {
-      this.domainsSelected = domainsSelectionUpdated;
+  public writeValue(domainIdsSelectionUpdated: IEnvironmentDomain[]): void {
+    if (domainIdsSelectionUpdated !== this.domainIdsSelected) {
+      this.domainIdsSelected = domainIdsSelectionUpdated;
     }
   }
 
-  public safeOnChange(domainsSelectionUpdated: IEnvironmentDomain[]): void {
-    if (!domainsSelectionUpdated) {
+  public safeOnChange(domainIdsSelectionUpdated: IEnvironmentDomain[]): void {
+    if (!domainIdsSelectionUpdated) {
       this.reset();
       return;
     }
 
-    this.onChange(domainsSelectionUpdated);
+    this.onChange(domainIdsSelectionUpdated);
   }
 
   public searchFn(domain: IEnvironmentDomain, clue: string): boolean {
