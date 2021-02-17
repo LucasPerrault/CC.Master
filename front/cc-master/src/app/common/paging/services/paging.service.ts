@@ -83,7 +83,7 @@ export class PaginatedList<T> {
 
     const params = !!this.filterParams ? this.filterParams : new HttpParams();
     const paramsWithSort = apiV3SortToHttpParams(params, this.sortParams);
-    const paramsWithPaging = paramsWithSort.set('paging', `${this.paging.skip},${this.paging.limit}`);
+    const paramsWithPaging = this.toApiV3PagingParams(paramsWithSort, this.paging);
 
     this.fetchMore(paramsWithPaging).subscribe(
       res => {
@@ -93,5 +93,9 @@ export class PaginatedList<T> {
       },
       e => this.state.next(PaginatedListState.Error),
     );
+  }
+
+  private toApiV3PagingParams(params: HttpParams, paging: IPagingParams): HttpParams {
+    return params.set('paging', `${this.paging.skip},${this.paging.limit}`);
   }
 }
