@@ -87,8 +87,9 @@ export class LogsComponent implements OnInit, OnDestroy {
 
   private toHttpParams(filters: ILogsFilter): HttpParams {
     let params = new HttpParams();
-    if (!!filters.environmentIds.length) {
-      params = params.set(EnvironmentLogQueryParamKey.EnvironmentId, filters.environmentIds.join(','));
+    if (!!filters.environments.length) {
+      const environmentIds = filters.environments.map(u => u.id);
+      params = params.set(EnvironmentLogQueryParamKey.EnvironmentId, environmentIds.join(','));
     }
 
     if (!!filters.users.length) {

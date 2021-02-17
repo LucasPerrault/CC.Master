@@ -1,19 +1,22 @@
 <label class="textfield palette-grey">
-  <lu-select [(ngModel)]="environmentIds"
+  <lu-select [(ngModel)]="environments"
              (ngModelChange)="safeOnChange($event)"
              class="textfield-input"
              [placeholder]="'front_filterLabel_subdomain' | translate"
              multiple>
-    <ng-container *luDisplayer="let subDomains; multiple: true">
-      <span class="label">{{ subDomains.length }}</span>
-      {{ 'front_filterSelection_subdomain' | translate: { count: subDomains.length } }}
+    <ng-container *luDisplayer="let environments; multiple: true">
+      <span [luTooltip]="getSubDomainsRawString(environments)" *ngIf="environments?.length !== 1; else: singleView">
+        <span class="label">{{ environments.length }}</span>
+        {{ 'front_filterSelection_subdomain' | translate: { count: environments.length } }}
+      </span>
+      <ng-template #singleView>{{ environments[0].subDomain }}</ng-template>
     </ng-container>
     <lu-option-picker-advanced>
       <header class="lu-picker-header">
         <lu-api-paged-searcher [api]="apiUrl" [fields]="apiFields" [orderBy]="apiOrderBy"></lu-api-paged-searcher>
       </header>
       <lu-option-pager></lu-option-pager>
-      <lu-option *luForOptions="let environment; trackBy: trackBy" [value]="environment.id">
+      <lu-option *luForOptions="let environment; trackBy: trackBy" [value]="environment">
         {{environment.subDomain}}
       </lu-option>
     </lu-option-picker-advanced>

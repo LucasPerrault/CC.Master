@@ -13,6 +13,8 @@ import {
 import { LuSelectInputModule } from '@lucca-front/ng/select';
 
 import { EnvironmentApiSelectComponent } from './environment-api-select.component';
+import {CommonModule} from '@angular/common';
+import {LuTooltipTriggerModule} from '@lucca-front/ng/tooltip';
 
 @NgModule({
   declarations: [EnvironmentApiSelectComponent],
@@ -27,6 +29,8 @@ import { EnvironmentApiSelectComponent } from './environment-api-select.componen
     LuInputModule,
     LuApiModule,
     TranslateModule,
+    CommonModule,
+    LuTooltipTriggerModule,
   ],
   exports: [EnvironmentApiSelectComponent],
 })

@@ -7,4 +7,5 @@ export * from './models/environment-action.interface';
 export * from './models/environment-domain.interface';
 export * from './models/environment-log.interface';
 export * from './models/environment-log-message.interface';
+export * from './services/environments.service';
 export * from './services/logs.service';

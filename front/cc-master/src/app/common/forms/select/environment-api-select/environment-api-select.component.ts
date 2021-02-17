@@ -1,4 +1,4 @@
-import { Component, forwardRef } from '@angular/core';
+import { ChangeDetectorRef, Component, forwardRef } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { IEnvironment } from '@cc/domain/environments';
 import { ALuApiService } from '@lucca-front/ng/api';
@@ -21,14 +21,18 @@ import { EnvironmentApiSelectService } from './environment-api-select.service';
   ],
 })
 export class EnvironmentApiSelectComponent implements ControlValueAccessor {
-  public onChange: (environmentIds: IEnvironment[]) => void;
+  public onChange: (environments: IEnvironment[]) => void;
   public onTouch: () => void;
 
   public apiUrl = '/api/v3/environments';
   public apiFields = 'id,subdomain';
   public apiOrderBy = 'subdomain,asc';
 
-  public environmentIds: IEnvironment[];
+  public environments: IEnvironment[];
+
+  constructor(private changeDetectorRef: ChangeDetectorRef) {
+  }
+
 
   public registerOnChange(fn: () => void): void {
     this.onChange = fn;
@@ -38,23 +42,28 @@ export class EnvironmentApiSelectComponent implements ControlValueAccessor {
     this.onTouch = fn;
   }
 
-  public writeValue(environmentIdsSelected: IEnvironment[]): void {
-    if (environmentIdsSelected !== this.environmentIds) {
-      this.environmentIds = environmentIdsSelected;
+  public writeValue(environmentsSelected: IEnvironment[]): void {
+    if (environmentsSelected !== this.environments) {
+      this.environments = environmentsSelected;
+      this.changeDetectorRef.detectChanges();
     }
   }
 
-  public safeOnChange(environmentIdsSelected: IEnvironment[]): void {
-    if (!environmentIdsSelected) {
+  public safeOnChange(environmentsSelected: IEnvironment[]): void {
+    if (!environmentsSelected) {
       this.reset();
       return;
     }
 
-    this.onChange(environmentIdsSelected);
+    this.onChange(environmentsSelected);
   }
 
   public trackBy(index: number, environment: IEnvironment): string {
     return environment.subDomain;
+  }
+
+  public getSubDomainsRawString(environments: IEnvironment[]): string {
+    return environments.map(e => e.subDomain).join(', ');
   }
 
   private reset(): void {

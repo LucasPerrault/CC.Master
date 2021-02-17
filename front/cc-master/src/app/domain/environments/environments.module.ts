@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 
+import { EnvironmentsService } from './services/environments.service';
 import { LogsService } from './services/logs.service';
 
 
@@ -10,6 +11,6 @@ import { LogsService } from './services/logs.service';
   imports: [
     CommonModule,
   ],
-  providers: [LogsService],
+  providers: [LogsService, EnvironmentsService],
 })
 export class EnvironmentsModule { }

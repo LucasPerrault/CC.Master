@@ -7,6 +7,7 @@ import { Observable } from 'rxjs';
 import { take } from 'rxjs/operators';
 
 import { ILogsFilter } from '../../models/logs-filter.interface';
+import {EnvironmentsService} from '@cc/domain/environments';
 
 enum EnvironmentLogRouterKeyEnum {
   UserId = 'user',
@@ -30,6 +31,7 @@ export class LogsFiltersComponent implements OnInit {
     private activatedRoute: ActivatedRoute,
     private router: Router,
     private usersService: UsersService,
+    private environmentsService: EnvironmentsService,
   ) {
   }
 
@@ -46,6 +48,7 @@ export class LogsFiltersComponent implements OnInit {
     this.logsFilter = this.toLogsFilter(route.queryParamMap);
 
     this.setUsersWithRouter(route.queryParamMap);
+    this.setEnvironmentsWithRouter(route.queryParamMap);
     this.updateFilters.emit(this.logsFilter);
   }
 
@@ -63,7 +66,7 @@ export class LogsFiltersComponent implements OnInit {
       : '';
 
     return {
-      environmentIds: this.convertToNumbers(routerParam, EnvironmentLogRouterKeyEnum.EnvironmentId),
+      environments: [],
       users: [],
       actionIds: this.convertToNumbers(routerParam, EnvironmentLogRouterKeyEnum.ActivityId),
       domainIds: this.convertToNumbers(routerParam, EnvironmentLogRouterKeyEnum.EnvironmentDomain),
@@ -83,12 +86,23 @@ export class LogsFiltersComponent implements OnInit {
       .subscribe(u => this.logsFilter.users = u);
   }
 
+  private setEnvironmentsWithRouter(routerParam: ParamMap): void {
+    const environmentIds = this.convertToNumbers(routerParam, EnvironmentLogRouterKeyEnum.EnvironmentId);
+    if (!environmentIds.length) {
+      return;
+    }
+
+    this.environmentsService.getEnvironmentsById$(environmentIds)
+      .pipe(take(1))
+      .subscribe(e => this.logsFilter.environments = e);
+  }
+
   private toRouterQueryParams(filter: ILogsFilter): Params {
     const createdOnRange = toApiDateRangeV3Format(filter.createdOn);
 
     return {
       [EnvironmentLogRouterKeyEnum.UserId]: !!filter.users.length ? filter.users.map(u => u.id).join(',') : null,
-      [EnvironmentLogRouterKeyEnum.EnvironmentId]: !!filter.environmentIds.length ? filter.environmentIds.join(',') : null,
+      [EnvironmentLogRouterKeyEnum.EnvironmentId]: !!filter.environments.length ? filter.environments.map(e => e.id).join(',') : null,
       [EnvironmentLogRouterKeyEnum.EnvironmentDomain]: !!filter.domainIds.length ? filter.domainIds.join(',') : null,
       [EnvironmentLogRouterKeyEnum.ActivityId]: !!filter.actionIds.length ? filter.actionIds.join(',') : null,
       [EnvironmentLogRouterKeyEnum.IsAnonymizedData]: !!filter.isAnonymizedData ? filter.isAnonymizedData : null,
