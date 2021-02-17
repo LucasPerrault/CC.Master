@@ -41,8 +41,8 @@
     <tr class="table-body-row" *ngIf="!logs.length && isIdle">
       <td class="table-body-row-cell" colspan="6">
         <section class="emptyState">
-          <h3 class="emptyState-title">Shhh, c'est calme ici</h3>
-          <p class="emptyState-description">Aucun log à afficher</p>
+          <h3 class="emptyState-title">{{ 'front_logPage_emptyState_title' | translate }}</h3>
+          <p class="emptyState-description">{{ 'front_logPage_emptyState_information' | translate }}</p>
         </section>
       </td>
     </tr>
