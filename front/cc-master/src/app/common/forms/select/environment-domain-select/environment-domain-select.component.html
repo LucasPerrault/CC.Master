@@ -1,12 +1,15 @@
 <label class="textfield palette-grey">
-  <lu-select [(ngModel)]="domainIdsSelected"
+  <lu-select [(ngModel)]="domainsSelected"
              (ngModelChange)="safeOnChange($event)"
              class="textfield-input"
              [placeholder]="'front_filterLabel_domainName' | translate"
              multiple>
     <ng-container *luDisplayer="let domains; multiple: true">
-      <span class="label">{{domains.length}}</span>
-      {{ 'front_filterSelection_domainName' | translate: { count: domains.length } }}
+      <span [luTooltip]="getDomainNamesRawString(domains)" *ngIf="domains?.length !== 1; else: singleView">
+        <span class="label">{{ domains.length }}</span>
+        {{ 'front_filterSelection_domainName' | translate: { count: domains.length } }}
+      </span>
+      <ng-template #singleView>{{domains[0].name }}</ng-template>
     </ng-container>
     <lu-option-picker-advanced>
       <lu-option-feeder [options]="environmentDomains"></lu-option-feeder>
@@ -14,7 +17,7 @@
         <lu-option-searcher [searchFn]="searchFn"></lu-option-searcher>
       </header>
       <lu-option-pager></lu-option-pager>
-      <lu-option *luForOptions="let domain; trackBy: trackBy" [value]="domain.id">{{domain.name}}</lu-option>
+      <lu-option *luForOptions="let domain; trackBy: trackBy" [value]="domain">{{domain.name}}</lu-option>
     </lu-option-picker-advanced>
     <lu-input-clearer></lu-input-clearer>
   </lu-select>

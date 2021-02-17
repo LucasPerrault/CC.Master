@@ -1,10 +1,10 @@
 import { IPrincipal } from '@cc/aspects/principal';
 import { IDateRange } from '@cc/common/date';
-import { IEnvironment, IEnvironmentAction } from '@cc/domain/environments';
+import { IEnvironment, IEnvironmentAction, IEnvironmentDomain } from '@cc/domain/environments';
 
 export interface ILogsFilter {
   environments: IEnvironment[];
-  domainIds: number[];
+  domains: IEnvironmentDomain[];
   users: IPrincipal[];
   actions: IEnvironmentAction[];
   createdOn: IDateRange;

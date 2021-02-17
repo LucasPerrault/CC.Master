@@ -6,6 +6,8 @@ import { LuOptionModule } from '@lucca-front/ng/option';
 import { LuSelectInputModule } from '@lucca-front/ng/select';
 
 import { EnvironmentDomainSelectComponent } from './environment-domain-select.component';
+import {LuTooltipTriggerModule} from '@lucca-front/ng/tooltip';
+import {CommonModule} from '@angular/common';
 
 @NgModule({
   declarations: [EnvironmentDomainSelectComponent],
@@ -15,6 +17,8 @@ import { EnvironmentDomainSelectComponent } from './environment-domain-select.co
     LuInputModule,
     LuOptionModule,
     TranslateModule,
+    LuTooltipTriggerModule,
+    CommonModule,
   ],
   exports: [EnvironmentDomainSelectComponent],
 })
