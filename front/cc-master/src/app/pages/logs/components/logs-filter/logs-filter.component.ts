@@ -95,16 +95,16 @@ export class LogsFiltersComponent implements OnInit {
       : '';
 
     return {
-      users: await this.getUsersWithRouterAsync(routerParam),
-      environments: await this.getEnvironmentsWithRouterAsync(routerParam),
-      actions: this.getActionsWithRouter(routerParam),
-      domains: this.getDomainsWithRouter(routerParam),
+      users: await this.getUsersAsync(routerParam),
+      environments: await this.getEnvironmentsAsync(routerParam),
+      actions: this.getEnvironmentActions(routerParam),
+      domains: this.getEnvironmentDomains(routerParam),
       createdOn: apiV3ToDateRange(routerParam.get(EnvironmentLogRouterKeyEnum.CreatedOn)),
       isAnonymizedData,
     } as ILogsFilter;
   }
 
-  private async getUsersWithRouterAsync(routerParam: ParamMap): Promise<IPrincipal[]> {
+  private async getUsersAsync(routerParam: ParamMap): Promise<IPrincipal[]> {
     const userIds = this.convertToNumbers(routerParam, EnvironmentLogRouterKeyEnum.UserId);
     if (!userIds.length) {
       return [];
@@ -115,7 +115,7 @@ export class LogsFiltersComponent implements OnInit {
       .toPromise();
   }
 
-  private async getEnvironmentsWithRouterAsync(routerParam: ParamMap): Promise<IEnvironment[]> {
+  private async getEnvironmentsAsync(routerParam: ParamMap): Promise<IEnvironment[]> {
     const environmentIds = this.convertToNumbers(routerParam, EnvironmentLogRouterKeyEnum.EnvironmentId);
     if (!environmentIds.length) {
       return [];
@@ -126,7 +126,7 @@ export class LogsFiltersComponent implements OnInit {
       .toPromise();
   }
 
-  private getActionsWithRouter(routerParam: ParamMap): IEnvironmentAction[] {
+  private getEnvironmentActions(routerParam: ParamMap): IEnvironmentAction[] {
     const actionIds = this.convertToNumbers(routerParam, EnvironmentLogRouterKeyEnum.ActivityId);
     if (!actionIds.length) {
       return [];
@@ -135,7 +135,7 @@ export class LogsFiltersComponent implements OnInit {
     return environmentActions.filter(a => actionIds.includes(a.id));
   }
 
-  private getDomainsWithRouter(routerParam: ParamMap): IEnvironmentDomain[] {
+  private getEnvironmentDomains(routerParam: ParamMap): IEnvironmentDomain[] {
     const domainIds = this.convertToNumbers(routerParam, EnvironmentLogRouterKeyEnum.EnvironmentDomain);
     if (!domainIds.length) {
       return [];
