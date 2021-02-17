@@ -1,3 +1,4 @@
+import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { TranslateModule } from '@cc/aspects/translate';
@@ -11,10 +12,9 @@ import {
   LuOptionSearcherModule,
 } from '@lucca-front/ng/option';
 import { LuSelectInputModule } from '@lucca-front/ng/select';
+import { LuTooltipTriggerModule } from '@lucca-front/ng/tooltip';
 
 import { EnvironmentApiSelectComponent } from './environment-api-select.component';
-import {CommonModule} from '@angular/common';
-import {LuTooltipTriggerModule} from '@lucca-front/ng/tooltip';
 
 @NgModule({
   declarations: [EnvironmentApiSelectComponent],

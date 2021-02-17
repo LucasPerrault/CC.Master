@@ -1,10 +1,9 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { IPrincipal } from '@cc/aspects/principal';
 import { IHttpApiV3CollectionResponse } from '@cc/common/queries';
+import { IEnvironment } from '@cc/domain/environments';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import {IEnvironment} from '@cc/domain/environments';
 
 
 @Injectable()

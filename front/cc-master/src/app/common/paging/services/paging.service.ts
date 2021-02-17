@@ -1,7 +1,7 @@
 import { HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { PaginatedListState } from '@cc/common/paging/enums/paginated-list-state.enum';
-import { IApiV3SortParams, apiV3SortToHttpParams } from '@cc/common/queries';
+import { apiV3SortToHttpParams,IApiV3SortParams } from '@cc/common/queries';
 import { BehaviorSubject, Observable } from 'rxjs';
 
 import { IPaginatedResult } from '../models/paginated-result.interface';

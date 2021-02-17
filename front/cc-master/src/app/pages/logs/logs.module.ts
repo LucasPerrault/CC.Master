@@ -14,12 +14,12 @@ import {
 import { PagingModule } from '@cc/common/paging';
 import { SortModule } from '@cc/common/sort';
 import { EnvironmentsModule } from '@cc/domain/environments';
+import { UsersModule } from '@cc/domain/users';
 
 import { AnonymizationButtonGroupComponent } from './components/anonymization-button-group/anonymization-button-group.component';
 import { LogsFiltersComponent } from './components/logs-filter/logs-filter.component';
 import { LogsListComponent } from './components/logs-list/logs-list.component';
 import { LogsComponent } from './logs.component';
-import {UsersModule} from '@cc/domain/users';
 
 const routes: Routes = [
 	{ path: '', component: LogsComponent },
