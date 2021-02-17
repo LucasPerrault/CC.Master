@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterModule, Routes } from '@angular/router';
 import { ErrorsModule } from '@cc/aspects/errors';
 import { PrincipalModule } from '@cc/aspects/principal';
@@ -22,6 +23,7 @@ const routes: Routes = [
 	],
 	imports: [
 		BrowserModule,
+    BrowserAnimationsModule,
 		RouterModule.forRoot(routes),
 		PrincipalModule.forRoot(),
     ErrorsModule.forRoot(),
