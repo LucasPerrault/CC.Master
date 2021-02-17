@@ -33,7 +33,6 @@ export class EnvironmentApiSelectComponent implements ControlValueAccessor {
   constructor(private changeDetectorRef: ChangeDetectorRef) {
   }
 
-
   public registerOnChange(fn: () => void): void {
     this.onChange = fn;
   }

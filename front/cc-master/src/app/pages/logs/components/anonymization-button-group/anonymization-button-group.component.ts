@@ -35,5 +35,4 @@ export class AnonymizationButtonGroupComponent implements ControlValueAccessor {
   public safeOnChange(isAnonymizedSelectionUpdated: string): void {
     this.onChange(isAnonymizedSelectionUpdated);
   }
-
 }
