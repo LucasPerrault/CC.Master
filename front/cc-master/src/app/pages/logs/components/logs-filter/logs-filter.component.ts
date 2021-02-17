@@ -7,7 +7,7 @@ import { Observable } from 'rxjs';
 import { take } from 'rxjs/operators';
 
 import { ILogsFilter } from '../../models/logs-filter.interface';
-import {EnvironmentsService} from '@cc/domain/environments';
+import {EnvironmentsService, IEnvironment} from '@cc/domain/environments';
 
 enum EnvironmentLogRouterKeyEnum {
   UserId = 'user',
@@ -25,7 +25,14 @@ enum EnvironmentLogRouterKeyEnum {
 export class LogsFiltersComponent implements OnInit {
   @Output() public updateFilters: EventEmitter<ILogsFilter> = new EventEmitter<ILogsFilter>();
 
-  public logsFilter: ILogsFilter;
+  public logsFilter: ILogsFilter = {
+    users: [],
+    environments: [],
+    actionIds: [],
+    createdOn: null,
+    domainIds: [],
+    isAnonymizedData: null,
+  };
 
   constructor(
     private activatedRoute: ActivatedRoute,
@@ -45,11 +52,10 @@ export class LogsFiltersComponent implements OnInit {
   }
 
   private initDefaultFilterValues(route: ActivatedRouteSnapshot): void {
-    this.logsFilter = this.toLogsFilter(route.queryParamMap);
-
-    this.setUsersWithRouter(route.queryParamMap);
-    this.setEnvironmentsWithRouter(route.queryParamMap);
-    this.updateFilters.emit(this.logsFilter);
+    this.toLogsFilterAsync(route.queryParamMap).then((l: ILogsFilter) => {
+      this.logsFilter = l;
+      this.updateFilters.emit(this.logsFilter);
+    });
   }
 
   private async updateRouterAsync(logsFilter: ILogsFilter): Promise<void> {
@@ -60,14 +66,14 @@ export class LogsFiltersComponent implements OnInit {
     });
   }
 
-  private toLogsFilter(routerParam: ParamMap): ILogsFilter {
+  private async toLogsFilterAsync(routerParam: ParamMap): Promise<ILogsFilter> {
     const isAnonymizedData = routerParam.has(EnvironmentLogRouterKeyEnum.IsAnonymizedData)
       ? routerParam.get(EnvironmentLogRouterKeyEnum.IsAnonymizedData)
       : '';
 
     return {
-      environments: [],
-      users: [],
+      users: await this.getUsersWithRouterAsync(routerParam),
+      environments: await this.getEnvironmentsWithRouterAsync(routerParam),
       actionIds: this.convertToNumbers(routerParam, EnvironmentLogRouterKeyEnum.ActivityId),
       domainIds: this.convertToNumbers(routerParam, EnvironmentLogRouterKeyEnum.EnvironmentDomain),
       createdOn: apiV3ToDateRange(routerParam.get(EnvironmentLogRouterKeyEnum.CreatedOn)),
@@ -75,26 +81,26 @@ export class LogsFiltersComponent implements OnInit {
     } as ILogsFilter;
   }
 
-  private setUsersWithRouter(routerParam: ParamMap): void {
+  private async getUsersWithRouterAsync(routerParam: ParamMap): Promise<IPrincipal[]> {
     const userIds = this.convertToNumbers(routerParam, EnvironmentLogRouterKeyEnum.UserId);
     if (!userIds.length) {
-      return;
+      return [];
     }
 
-    this.usersService.getUsersById$(userIds)
+    return await this.usersService.getUsersById$(userIds)
       .pipe(take(1))
-      .subscribe(u => this.logsFilter.users = u);
+      .toPromise();
   }
 
-  private setEnvironmentsWithRouter(routerParam: ParamMap): void {
+  private async getEnvironmentsWithRouterAsync(routerParam: ParamMap): Promise<IEnvironment[]> {
     const environmentIds = this.convertToNumbers(routerParam, EnvironmentLogRouterKeyEnum.EnvironmentId);
     if (!environmentIds.length) {
-      return;
+      return [];
     }
 
-    this.environmentsService.getEnvironmentsById$(environmentIds)
+    return await this.environmentsService.getEnvironmentsById$(environmentIds)
       .pipe(take(1))
-      .subscribe(e => this.logsFilter.environments = e);
+      .toPromise();
   }
 
   private toRouterQueryParams(filter: ILogsFilter): Params {
