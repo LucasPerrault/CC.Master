@@ -1,4 +1,4 @@
-import { Component, forwardRef } from '@angular/core';
+import { ChangeDetectorRef, Component, forwardRef } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { IPrincipal } from '@cc/aspects/principal';
 import { ALuApiService } from '@lucca-front/ng/api';
@@ -20,10 +20,14 @@ import { UserApiSelectService } from './user-api-select.service';
   ],
 })
 export class UserApiSelectComponent implements ControlValueAccessor {
-  public onChange: (userIds: IPrincipal[]) => void;
+  public onChange: (users: IPrincipal[]) => void;
   public onTouch: () => void;
 
-  public userIds: IPrincipal[];
+  public users: IPrincipal[] = [];
+
+  constructor(private changeDetectorRef: ChangeDetectorRef) {
+  }
+
 
   public registerOnChange(fn: () => void): void {
     this.onChange = fn;
@@ -33,23 +37,28 @@ export class UserApiSelectComponent implements ControlValueAccessor {
     this.onTouch = fn;
   }
 
-  public writeValue(userIdsUpdated: IPrincipal[]): void {
-    if (userIdsUpdated !== this.userIds) {
-      this.userIds = userIdsUpdated;
+  public writeValue(usersUpdated: IPrincipal[]): void {
+    if (usersUpdated !== this.users && usersUpdated !== null) {
+      this.users = usersUpdated;
+      this.changeDetectorRef.detectChanges();
     }
   }
 
-  public safeOnChange(userIdsUpdated: IPrincipal[]): void {
-    if (!userIdsUpdated) {
+  public safeOnChange(usersUpdated: IPrincipal[]): void {
+    if (!usersUpdated) {
       this.reset();
       return;
     }
 
-    this.onChange(userIdsUpdated);
+    this.onChange(usersUpdated);
   }
 
   public trackBy(index: number, user: IPrincipal): string {
     return user.name;
+  }
+
+  public getUserNamesRawString(users: IPrincipal[]): string {
+    return users.map(u => u.name).join(', ');
   }
 
   private reset(): void {

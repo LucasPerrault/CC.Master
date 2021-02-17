@@ -1,6 +1,10 @@
-import {ChangeDetectionStrategy, Component, EventEmitter, OnInit, Output} from '@angular/core';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { ActivatedRoute, ActivatedRouteSnapshot, ParamMap, Params, Router } from '@angular/router';
+import { IPrincipal } from '@cc/aspects/principal';
 import { apiV3ToDateRange, toApiDateRangeV3Format } from '@cc/common/queries';
+import { UsersService } from '@cc/domain/users';
+import { Observable } from 'rxjs';
+import { take } from 'rxjs/operators';
 
 import { ILogsFilter } from '../../models/logs-filter.interface';
 
@@ -16,14 +20,17 @@ enum EnvironmentLogRouterKeyEnum {
 @Component({
   selector: 'cc-logs-filter',
   templateUrl: './logs-filter.component.html',
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class LogsFiltersComponent implements OnInit {
   @Output() public updateFilters: EventEmitter<ILogsFilter> = new EventEmitter<ILogsFilter>();
 
   public logsFilter: ILogsFilter;
 
-  constructor(private activatedRoute: ActivatedRoute, private router: Router) {
+  constructor(
+    private activatedRoute: ActivatedRoute,
+    private router: Router,
+    private usersService: UsersService,
+  ) {
   }
 
   public ngOnInit(): void {
@@ -37,6 +44,8 @@ export class LogsFiltersComponent implements OnInit {
 
   private initDefaultFilterValues(route: ActivatedRouteSnapshot): void {
     this.logsFilter = this.toLogsFilter(route.queryParamMap);
+
+    this.setUsersWithRouter(route.queryParamMap);
     this.updateFilters.emit(this.logsFilter);
   }
 
@@ -55,19 +64,30 @@ export class LogsFiltersComponent implements OnInit {
 
     return {
       environmentIds: this.convertToNumbers(routerParam, EnvironmentLogRouterKeyEnum.EnvironmentId),
-      userIds: this.convertToNumbers(routerParam, EnvironmentLogRouterKeyEnum.UserId),
+      users: [],
       actionIds: this.convertToNumbers(routerParam, EnvironmentLogRouterKeyEnum.ActivityId),
       domainIds: this.convertToNumbers(routerParam, EnvironmentLogRouterKeyEnum.EnvironmentDomain),
       createdOn: apiV3ToDateRange(routerParam.get(EnvironmentLogRouterKeyEnum.CreatedOn)),
       isAnonymizedData,
-    };
+    } as ILogsFilter;
+  }
+
+  private setUsersWithRouter(routerParam: ParamMap): void {
+    const userIds = this.convertToNumbers(routerParam, EnvironmentLogRouterKeyEnum.UserId);
+    if (!userIds.length) {
+      return;
+    }
+
+    this.usersService.getUsersById$(userIds)
+      .pipe(take(1))
+      .subscribe(u => this.logsFilter.users = u);
   }
 
   private toRouterQueryParams(filter: ILogsFilter): Params {
     const createdOnRange = toApiDateRangeV3Format(filter.createdOn);
 
     return {
-      [EnvironmentLogRouterKeyEnum.UserId]: !!filter.userIds.length ? filter.userIds.join(',') : null,
+      [EnvironmentLogRouterKeyEnum.UserId]: !!filter.users.length ? filter.users.map(u => u.id).join(',') : null,
       [EnvironmentLogRouterKeyEnum.EnvironmentId]: !!filter.environmentIds.length ? filter.environmentIds.join(',') : null,
       [EnvironmentLogRouterKeyEnum.EnvironmentDomain]: !!filter.domainIds.length ? filter.domainIds.join(',') : null,
       [EnvironmentLogRouterKeyEnum.ActivityId]: !!filter.actionIds.length ? filter.actionIds.join(',') : null,

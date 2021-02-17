@@ -1,3 +1,4 @@
+import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { TranslateModule } from '@cc/aspects/translate';
@@ -11,12 +12,14 @@ import {
   LuOptionSearcherModule,
 } from '@lucca-front/ng/option';
 import { LuSelectInputModule } from '@lucca-front/ng/select';
+import { LuTooltipTriggerModule } from '@lucca-front/ng/tooltip';
 
 import { UserApiSelectComponent } from './user-api-select.component';
 
 @NgModule({
   declarations: [UserApiSelectComponent],
   imports: [
+    CommonModule,
     FormsModule,
     LuSelectInputModule,
     LuOptionPickerModule,
@@ -26,6 +29,7 @@ import { UserApiSelectComponent } from './user-api-select.component';
     LuOptionModule,
     LuInputModule,
     LuApiModule,
+    LuTooltipTriggerModule,
     TranslateModule,
   ],
   exports: [UserApiSelectComponent],

@@ -19,6 +19,7 @@ import { AnonymizationButtonGroupComponent } from './components/anonymization-bu
 import { LogsFiltersComponent } from './components/logs-filter/logs-filter.component';
 import { LogsListComponent } from './components/logs-list/logs-list.component';
 import { LogsComponent } from './logs.component';
+import {UsersModule} from '@cc/domain/users';
 
 const routes: Routes = [
 	{ path: '', component: LogsComponent },
@@ -45,6 +46,7 @@ const routes: Routes = [
     PagingModule,
     TranslateModule,
     SortModule,
+    UsersModule,
   ],
 })
 export class LogsModule {}
