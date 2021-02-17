@@ -2,12 +2,11 @@ import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { ActivatedRoute, ActivatedRouteSnapshot, ParamMap, Params, Router } from '@angular/router';
 import { IPrincipal } from '@cc/aspects/principal';
 import { apiV3ToDateRange, toApiDateRangeV3Format } from '@cc/common/queries';
+import { environmentActions, EnvironmentsService, IEnvironment, IEnvironmentAction } from '@cc/domain/environments';
 import { UsersService } from '@cc/domain/users';
-import { Observable } from 'rxjs';
 import { take } from 'rxjs/operators';
 
 import { ILogsFilter } from '../../models/logs-filter.interface';
-import {EnvironmentsService, IEnvironment} from '@cc/domain/environments';
 
 enum EnvironmentLogRouterKeyEnum {
   UserId = 'user',
@@ -28,7 +27,7 @@ export class LogsFiltersComponent implements OnInit {
   public logsFilter: ILogsFilter = {
     users: [],
     environments: [],
-    actionIds: [],
+    actions: [],
     createdOn: null,
     domainIds: [],
     isAnonymizedData: null,
@@ -74,7 +73,7 @@ export class LogsFiltersComponent implements OnInit {
     return {
       users: await this.getUsersWithRouterAsync(routerParam),
       environments: await this.getEnvironmentsWithRouterAsync(routerParam),
-      actionIds: this.convertToNumbers(routerParam, EnvironmentLogRouterKeyEnum.ActivityId),
+      actions: this.getActionsWithRouter(routerParam),
       domainIds: this.convertToNumbers(routerParam, EnvironmentLogRouterKeyEnum.EnvironmentDomain),
       createdOn: apiV3ToDateRange(routerParam.get(EnvironmentLogRouterKeyEnum.CreatedOn)),
       isAnonymizedData,
@@ -103,14 +102,24 @@ export class LogsFiltersComponent implements OnInit {
       .toPromise();
   }
 
+  private getActionsWithRouter(routerParam: ParamMap): IEnvironmentAction[] {
+    const actionIds = this.convertToNumbers(routerParam, EnvironmentLogRouterKeyEnum.ActivityId);
+    if (!actionIds.length) {
+      return [];
+    }
+
+    return environmentActions.filter(a => actionIds.includes(a.id));
+  }
+
   private toRouterQueryParams(filter: ILogsFilter): Params {
     const createdOnRange = toApiDateRangeV3Format(filter.createdOn);
+    const action = !!filter.actions.length ? filter.actions.map(a => a.id).join(',') : null;
 
     return {
       [EnvironmentLogRouterKeyEnum.UserId]: !!filter.users.length ? filter.users.map(u => u.id).join(',') : null,
       [EnvironmentLogRouterKeyEnum.EnvironmentId]: !!filter.environments.length ? filter.environments.map(e => e.id).join(',') : null,
       [EnvironmentLogRouterKeyEnum.EnvironmentDomain]: !!filter.domainIds.length ? filter.domainIds.join(',') : null,
-      [EnvironmentLogRouterKeyEnum.ActivityId]: !!filter.actionIds.length ? filter.actionIds.join(',') : null,
+      [EnvironmentLogRouterKeyEnum.ActivityId]: action,
       [EnvironmentLogRouterKeyEnum.IsAnonymizedData]: !!filter.isAnonymizedData ? filter.isAnonymizedData : null,
       [EnvironmentLogRouterKeyEnum.CreatedOn]: !!createdOnRange ? createdOnRange : null,
     };

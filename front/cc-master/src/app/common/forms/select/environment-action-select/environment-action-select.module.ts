@@ -6,6 +6,8 @@ import { LuOptionModule } from '@lucca-front/ng/option';
 import { LuSelectInputModule } from '@lucca-front/ng/select';
 
 import { EnvironmentActionSelectComponent } from './environment-action-select.component';
+import {CommonModule} from '@angular/common';
+import {LuTooltipTriggerModule} from '@lucca-front/ng/tooltip';
 
 @NgModule({
   declarations: [EnvironmentActionSelectComponent],
@@ -15,6 +17,8 @@ import { EnvironmentActionSelectComponent } from './environment-action-select.co
     LuInputModule,
     LuOptionModule,
     TranslateModule,
+    CommonModule,
+    LuTooltipTriggerModule,
   ],
   exports: [EnvironmentActionSelectComponent],
 })

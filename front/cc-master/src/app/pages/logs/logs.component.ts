@@ -106,8 +106,9 @@ export class LogsComponent implements OnInit, OnDestroy {
       params = params.set(EnvironmentLogQueryParamKey.CreatedOn, createdOn);
     }
 
-    if (!!filters.actionIds.length) {
-      params = params.set(EnvironmentLogQueryParamKey.ActivityId, filters.actionIds.join(','));
+    if (!!filters.actions.length) {
+      const actionIds = filters.actions.map(a => a.id);
+      params = params.set(EnvironmentLogQueryParamKey.ActivityId, actionIds.join(','));
     }
 
     if (!!filters.domainIds.length) {

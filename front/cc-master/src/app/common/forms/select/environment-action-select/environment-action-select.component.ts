@@ -17,7 +17,7 @@ export class EnvironmentActionSelectComponent implements ControlValueAccessor {
   public onChange: (actionIds: IEnvironmentAction[]) => void;
   public onTouch: () => void;
 
-  public actionIdsSelected: IEnvironmentAction[];
+  public actionsSelected: IEnvironmentAction[];
 
   public get actions(): IEnvironmentAction[] {
     return environmentActions;
@@ -31,19 +31,19 @@ export class EnvironmentActionSelectComponent implements ControlValueAccessor {
     this.onTouch = fn;
   }
 
-  public writeValue(actionIdsSelectionUpdated: IEnvironmentAction[]): void {
-    if (actionIdsSelectionUpdated !== this.actionIdsSelected) {
-      this.actionIdsSelected = actionIdsSelectionUpdated;
+  public writeValue(actionsSelectionUpdated: IEnvironmentAction[]): void {
+    if (actionsSelectionUpdated !== this.actionsSelected) {
+      this.actionsSelected = actionsSelectionUpdated;
     }
   }
 
-  public safeOnChange(actionIdsSelectionUpdated: IEnvironmentAction[]): void {
-    if (!actionIdsSelectionUpdated) {
+  public safeOnChange(actionsSelectionUpdated: IEnvironmentAction[]): void {
+    if (!actionsSelectionUpdated) {
       this.reset();
       return;
     }
 
-    this.onChange(actionIdsSelectionUpdated);
+    this.onChange(actionsSelectionUpdated);
   }
 
   public searchFn(action: IEnvironmentAction, clue: string): boolean {
@@ -52,6 +52,10 @@ export class EnvironmentActionSelectComponent implements ControlValueAccessor {
 
   public trackBy(index: number, action: IEnvironmentAction): string {
     return action.name;
+  }
+
+  public getActionNamesRawString(actions: IEnvironmentAction[]): string {
+    return actions.map(a => a.name).join(', ');
   }
 
   private reset(): void {
