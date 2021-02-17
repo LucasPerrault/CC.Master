@@ -1,7 +1,7 @@
 import { HttpParams } from '@angular/common/http';
 import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
 import { IPaginatedResult, PaginatedList, PaginatedListState, PagingService } from '@cc/common/paging';
-import { toApiDateRangeV3Format, toApiV3SortParams } from '@cc/common/queries';
+import { apiV3SortKey, apiV3SortToHttpParams, toApiDateRangeV3Format, toApiV3SortParams } from '@cc/common/queries';
 import { ISortParams, SortOrder } from '@cc/common/sort';
 import { IEnvironmentLog, LogsService } from '@cc/domain/environments';
 import { Observable, Subject } from 'rxjs';
@@ -69,9 +69,20 @@ export class LogsComponent implements OnInit, OnDestroy {
   }
 
   private getPaginatedLogs$(httpParams: HttpParams): Observable<IPaginatedResult<IEnvironmentLog>> {
-    return this.logsService.getLogs$(httpParams).pipe(
+    const params = this.getDefaultSortHttpParams(httpParams);
+    return this.logsService.getLogs$(params).pipe(
       map(response => ({ items: response.items, totalCount: response.count })),
     );
+  }
+
+  private getDefaultSortHttpParams(httpParams: HttpParams): HttpParams {
+    const isAlreadySorted = httpParams.has(apiV3SortKey);
+    if (isAlreadySorted) {
+      return httpParams;
+    }
+
+    const apiV3DefaultSortParams = toApiV3SortParams([this.defaultSortParams]);
+    return apiV3SortToHttpParams(httpParams, apiV3DefaultSortParams);
   }
 
   private toHttpParams(filters: ILogsFilter): HttpParams {

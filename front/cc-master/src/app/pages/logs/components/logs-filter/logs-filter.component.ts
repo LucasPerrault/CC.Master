@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, Output } from '@angular/core';
+import {ChangeDetectionStrategy, Component, EventEmitter, OnInit, Output} from '@angular/core';
 import { ActivatedRoute, ActivatedRouteSnapshot, ParamMap, Params, Router } from '@angular/router';
 import { apiV3ToDateRange, toApiDateRangeV3Format } from '@cc/common/queries';
 
@@ -18,13 +18,16 @@ enum EnvironmentLogRouterKeyEnum {
   templateUrl: './logs-filter.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class LogsFiltersComponent {
+export class LogsFiltersComponent implements OnInit {
   @Output() public updateFilters: EventEmitter<ILogsFilter> = new EventEmitter<ILogsFilter>();
 
   public logsFilter: ILogsFilter;
 
   constructor(private activatedRoute: ActivatedRoute, private router: Router) {
-    this.initDefaultFilterValues(activatedRoute.snapshot);
+  }
+
+  public ngOnInit(): void {
+    this.initDefaultFilterValues(this.activatedRoute.snapshot);
   }
 
   public async updateAsync(): Promise<void> {

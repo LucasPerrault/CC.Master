@@ -33,7 +33,6 @@ export class LogsListComponent implements OnInit {
 
   public ngOnInit(): void {
     this.sortParams = [...this.sortParams, this.defaultSortParams];
-    this.updateSort.emit(this.sortParams);
   }
 
   public getInstanceName(environment: IEnvironment): string {
