@@ -42,7 +42,6 @@ export class DateRangeSelectComponent implements ControlValueAccessor, OnInit, O
     this.destroySubscription$.complete();
   }
 
-
   public registerOnChange(fn: () => void): void {
     this.onChange = fn;
   }
@@ -53,8 +52,7 @@ export class DateRangeSelectComponent implements ControlValueAccessor, OnInit, O
 
   public writeValue(rangeSelectionUpdated: IDateRange): void {
     if (rangeSelectionUpdated !== this.dateRangeSelected.value && rangeSelectionUpdated != null) {
-      this.dateRangeSelected.setValue(rangeSelectionUpdated);
-      this.dateRangeSelected.updateValueAndValidity();
+      this.dateRangeSelected.setValue(rangeSelectionUpdated, { emitEvent: false });
     }
   }
 
