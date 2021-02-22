@@ -1,6 +1,7 @@
 using Environments.Domain;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using Storage.Infra.Context;
 
 namespace Environments.Infra.Storage.Configurations
 {
@@ -8,7 +9,7 @@ namespace Environments.Infra.Storage.Configurations
     {
         public void Configure(EntityTypeBuilder<EnvironmentAccess> builder)
         {
-            builder.ToView("EnvironmentAccesses");
+            builder.ToView("EnvironmentAccesses", StorageSchemas.Shared.Value);
             builder.HasKey(d => d.Id);
             builder.Property(d => d.DistributorId).HasColumnName("DistributorId");
             builder.Property(d => d.EnvironmentId).HasColumnName("EnvironmentId");
@@ -31,7 +32,7 @@ namespace Environments.Infra.Storage.Configurations
     {
         public void Configure(EntityTypeBuilder<EnvironmentSharedAccess> builder)
         {
-            builder.ToView("EnvironmentSharedAccesses");
+            builder.ToView("EnvironmentSharedAccesses", StorageSchemas.Shared.Value);
             builder.HasKey(d => d.Id);
             builder.Property(d => d.EnvironmentId).HasColumnName("EnvironmentId");
             builder.Property(d => d.ConsumerId).HasColumnName("ConsumerId");
