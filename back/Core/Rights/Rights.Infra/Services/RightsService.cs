@@ -3,6 +3,8 @@ using Rights.Domain;
 using Rights.Domain.Abstractions;
 using Rights.Domain.Exceptions;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 
@@ -19,12 +21,33 @@ namespace Rights.Infra.Services
             _principal = principal ?? throw new ArgumentNullException(nameof(principal));
         }
 
-        public async Task ThrowIfAnyOperationIsMissingAsync(Operation operation)
+        public async Task ThrowIfAnyOperationIsMissingAsync(params Operation[] operations)
         {
-            if (!await HasOperationAsync(operation))
+            var missingOps = new List<Operation>();
+            foreach (var operation in operations)
             {
-                throw new MissingOperationException(operation);
+                if (!await HasOperationAsync(operation))
+                {
+                    missingOps.Add(operation);
+                }
             }
+
+            if (missingOps.Any())
+            {
+                throw new MissingOperationsException(missingOps.ToArray());
+            }
+        }
+
+        public async Task ThrowIfAllOperationsAreMissingAsync(params Operation[] operations)
+        {
+            foreach (var operation in operations)
+            {
+                if (await HasOperationAsync(operation))
+                {
+                    return;
+                }
+            }
+            throw new MissingOperationsException(operations);
         }
 
         public async Task<bool> HasOperationAsync(Operation operation)
