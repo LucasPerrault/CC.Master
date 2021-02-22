@@ -15,7 +15,7 @@ export class LogsListComponent implements OnInit {
 
   @Input() public logs: IEnvironmentLog[];
   @Input() public defaultSortParams: ISortParams;
-  @Output() public updateSort: EventEmitter<ISortParams[]> = new EventEmitter<ISortParams[]>();
+  @Output() public updateSort: EventEmitter<ISortParams> = new EventEmitter<ISortParams>();
   @Output() public showMore: EventEmitter<void> = new EventEmitter<void>();
   @Input() public state: PaginatedListState;
 
@@ -24,7 +24,7 @@ export class LogsListComponent implements OnInit {
   public readonly rowHeightFixed = 42;
 
   public sortOrder = SortOrder;
-  private sortParams: ISortParams[] = [];
+  private sortParams: ISortParams;
 
   private rowNumberBeforeBottomToShowMore = 15;
 
@@ -32,7 +32,7 @@ export class LogsListComponent implements OnInit {
   }
 
   public ngOnInit(): void {
-    this.sortParams = [...this.sortParams, this.defaultSortParams];
+    this.sortParams = this.defaultSortParams;
   }
 
   public getInstanceName(environment: IEnvironment): string {
@@ -55,11 +55,11 @@ export class LogsListComponent implements OnInit {
   }
 
   public activeAscOrDescIcon(field: string, order: SortOrder): boolean {
-    return this.sortService.isSorted(order, field, this.sortParams);
+    return this.sortService.isSorted(order, field, [this.sortParams]);
   }
 
   public sortBy(field: string, order: SortOrder = SortOrder.Asc): void {
-    this.sortParams = this.sortService.updateSortParam(field, order, this.sortParams);
+    this.sortParams = this.sortService.updateSortParam(field, order, [this.sortParams])[0];
     this.updateSort.emit(this.sortParams);
   }
 

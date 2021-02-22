@@ -59,8 +59,8 @@ export class LogsComponent implements OnInit, OnDestroy {
     this.paginatedLogs.updateFilters(httpParams);
   }
 
-  public updateSort(sortParams: ISortParams[]) {
-    const apiV3SortParams = toApiV3SortParams(sortParams);
+  public updateSort(sortParams: ISortParams) {
+    const apiV3SortParams = toApiV3SortParams([sortParams]);
     this.paginatedLogs.updateSort(apiV3SortParams);
   }
 
