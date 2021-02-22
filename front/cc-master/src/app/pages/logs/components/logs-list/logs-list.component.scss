@@ -6,14 +6,3 @@
 }
 
 .table { min-height: calc(100vh - 12rem); }
-
-.mod-scroll-viewport { height: 100%; }
-.mod-scroll-viewport .table .table-head-row .table-head-row-cell, .table .table-head {
-  position: sticky;
-  top: 0;
-  z-index: 99;
-  background-color: _color("grey", "text");
-}
-.mod-scroll-viewport .table .table-body-row .table-body-row-cell {
-  height: var(--row-height-in-px);
-}

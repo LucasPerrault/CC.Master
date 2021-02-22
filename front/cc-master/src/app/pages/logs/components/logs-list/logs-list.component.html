@@ -1,5 +1,5 @@
-<cdk-virtual-scroll-viewport class="mod-scroll-viewport" [itemSize]="rowHeightFixed" (scroll)="scroll()">
-  <table class="table card">
+<cc-infinite-scroll-viewport (showMore)="showMoreData()">
+  <table class="table card mod-infinite-scrolling">
     <thead class="table-head">
     <tr class="table-head-row">
       <th class="table-head-row-cell mod-sortable"
@@ -48,4 +48,4 @@
     </tr>
     </tbody>
   </table>
-</cdk-virtual-scroll-viewport>
+</cc-infinite-scroll-viewport>

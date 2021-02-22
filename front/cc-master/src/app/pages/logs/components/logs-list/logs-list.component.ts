@@ -1,5 +1,4 @@
-import { CdkVirtualScrollViewport } from '@angular/cdk/scrolling';
-import { Component, EventEmitter, HostBinding, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { PaginatedListState } from '@cc/common/paging';
 import { ISortParams, SortOrder, SortService } from '@cc/common/sort';
 import { EnvironmentLogMessageType, IEnvironment, IEnvironmentLog } from '@cc/domain/environments';
@@ -10,23 +9,14 @@ import { EnvironmentLogMessageType, IEnvironment, IEnvironmentLog } from '@cc/do
   styleUrls: ['./logs-list.component.scss'],
 })
 export class LogsListComponent implements OnInit {
-  @ViewChild(CdkVirtualScrollViewport, { static: true, read: CdkVirtualScrollViewport })
-  public scrollViewport: CdkVirtualScrollViewport;
-
   @Input() public logs: IEnvironmentLog[];
   @Input() public defaultSortParams: ISortParams;
   @Output() public updateSort: EventEmitter<ISortParams> = new EventEmitter<ISortParams>();
   @Output() public showMore: EventEmitter<void> = new EventEmitter<void>();
   @Input() public state: PaginatedListState;
 
-  @HostBinding('style.--row-height-in-px')
-  public readonly rowHeightFixedInPixel = `42px`;
-  public readonly rowHeightFixed = 42;
-
   public sortOrder = SortOrder;
   private sortParams: ISortParams;
-
-  private rowNumberBeforeBottomToShowMore = 15;
 
   constructor(private sortService: SortService) {
   }
@@ -47,11 +37,8 @@ export class LogsListComponent implements OnInit {
     return !!justificationLogMessage ? justificationLogMessage.message : '';
   }
 
-  public scroll(): void {
-    const rowsHeightStepToShowMore = this.rowHeightFixed * this.rowNumberBeforeBottomToShowMore;
-    if (this.scrollViewport.measureScrollOffset('bottom') <= rowsHeightStepToShowMore) {
-      this.showMore.emit();
-    }
+  public showMoreData(): void {
+    this.showMore.emit();
   }
 
   public activeAscOrDescIcon(field: string, order: SortOrder): boolean {
