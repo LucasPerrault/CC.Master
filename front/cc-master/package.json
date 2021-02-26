@@ -6,7 +6,9 @@
     "start": "ng serve",
     "build": "ng build --prod",
     "test": "ng test",
-    "lint": "ng lint"
+    "lint": "ng lint",
+    "sentry-generate": "lu-sentry generate",
+    "sentry-post": "lu-sentry post"
   },
   "private": true,
   "dependencies": {
@@ -22,7 +24,10 @@
     "@lucca-front/icons": "^5.1.3",
     "@lucca-front/ng": "^5.1.3",
     "@lucca-front/scss": "^5.1.3",
+    "@lucca/sentry": "^0.6.0",
     "@ngx-translate/core": "~12.0.0",
+    "@sentry/browser": "^6.0.0",
+    "@sentry/cli": "^1.61.0",
     "rxjs": "~6.6.0",
     "tslib": "^2.0.0",
     "zone.js": "~0.10.2"

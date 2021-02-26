@@ -4,6 +4,11 @@
 
 export const environment = {
   production: false,
+  sentry: {
+    enabled: false,
+    dsn: '',
+    release: '',
+  },
 };
 
 /*

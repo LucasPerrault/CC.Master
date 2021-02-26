@@ -17,7 +17,8 @@ node(label: CI.getSelectedNode(script: this)) {
 	def projectTechnicalName = "CC.Master"
 	def slnFilepath = "back\\CC.Master.sln"
 	def repoName = "CC.Master"
-	// def nodeJsVersion = "Node LTS v12.x.y"    -- uncomment when front is migrated
+	def frontDirectory = "front/cc-master"
+	def nodeJsVersion = "Node LTS v12.x.y"
 
 	/////////////////////////////////////////////////
 	// Fin des variables à ajuster pour le projet //
@@ -89,6 +90,12 @@ node(label: CI.getSelectedNode(script: this)) {
 				semver = gitVersionProps["GitVersion_AssemblySemVer"]
 				echo "Version calculated : ---------> prefix: ${prefix}  suffix: ${suffix}  semver: ${semver} "
 
+				// node
+				env.NODEJS_HOME = "${tool 'Node LTS v10.13.x'}";
+				env.PATH="${env.NODEJS_HOME};${env.PATH}";
+				bat "node --version";
+				bat "npm --version";
+
 				// lucca
 				bat "dotnet tool install --no-cache --tool-path=${WORKSPACE}\\${prepareDirectory} --add-source http://nuget.lucca.local/nuget devtools"
 				env.PATH="${WORKSPACE}\\${prepareDirectory};${env.PATH}"
@@ -99,6 +106,12 @@ node(label: CI.getSelectedNode(script: this)) {
 				// back
 				bat "dotnet clean ${slnFilepath}"
 				bat "dotnet restore ${slnFilepath}"
+
+				// front
+				bat "npm ci --prefix ${frontDirectory}";
+
+				// lokalise
+				bat "lucca translate lokalise";
 			}
 
 			if(CI.isSonarEnabled(script:this, extraCondition: isPr || isMainBranch)) {
@@ -133,8 +146,17 @@ node(label: CI.getSelectedNode(script: this)) {
 					def webProjFile = findFiles(glob: "**/CloudControl.Web.csproj").first().path
 					bat "dotnet publish ${webProjFile} -p:VersionPrefix=${prefix} -p:VersionSuffix=${suffix} -p:AssemblyVersion=${semver} -o ${WORKSPACE}\\${buildDirectory}\\back -c ${config} -f netcoreapp3.1 -r win10-x64 /nodereuse:false --verbosity m"
 
+					// front
+					bat "npm run sentry-generate --prefix ${frontDirectory}"
+
+					bat "npm run build --prefix ${frontDirectory} -- --outputPath ..\\..\\${buildDirectory}\\front\\wwwroot"
+
 					withCredentials([file(credentialsId: '86b37cd3-224e-4c64-b90d-843764ba9d30', variable: 'devops_config')]) {
+						def devops_config = readJSON file: env.devops_config
+						def versionContent = "SENTRY_AUTH_TOKEN=${devops_config['sentry-token']}"
+						writeFile file:"${frontDirectory}/.env", text: versionContent
 					}
+					bat "npm run sentry-post --prefix ${frontDirectory} -- --distPath ..\\..\\${buildDirectory}\\front\\wwwroot"
 				}
 
 				loggableStage('6. Archive') {
