@@ -29,6 +29,7 @@ using Billing.Web;
 using Environments.Infra.Storage;
 using Environments.Web;
 using Salesforce.Web;
+using Lucca.Core.Api.Queryable.EntityFrameworkCore;
 using Instances.Web;
 using Instances.Infra.Storage;
 
@@ -104,7 +105,9 @@ namespace CloudControl.Web
             {
                 luccaApiBuilder
                     .SetPagingDefaultLimit(100)
-                    .AddModelBinding();
+                    .AddModelBinding()
+                    .AddEntityFrameworkQuerying()
+                    .ConfigureLuccaApiForInstances();
             });
             services.AddMvc().AddLuccaApi(o =>
             {

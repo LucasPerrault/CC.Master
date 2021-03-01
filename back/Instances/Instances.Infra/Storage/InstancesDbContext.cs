@@ -1,3 +1,4 @@
+using Distributors.Infra.Storage.Configurations;
 using Instances.Infra.Storage.Configurations;
 using Microsoft.EntityFrameworkCore;
 using Storage.Infra.Context;
@@ -14,6 +15,10 @@ namespace Instances.Infra.Storage
         protected override void ApplyConfiguration(ModelBuilder modelBuilder)
         {
             modelBuilder.ApplyConfiguration(new InstancesConfiguration());
+            modelBuilder.ApplyConfiguration(new DemosConfiguration());
+
+            // shared
+            modelBuilder.ApplyConfiguration(new DistributorsConfiguration());
 
         }
 
