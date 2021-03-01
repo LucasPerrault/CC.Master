@@ -20,6 +20,7 @@ import { AnonymizationButtonGroupComponent } from './components/anonymization-bu
 import { LogsFiltersComponent } from './components/logs-filter/logs-filter.component';
 import { LogsListComponent } from './components/logs-list/logs-list.component';
 import { LogsComponent } from './logs.component';
+import { LogsApiMappingService } from './services/logs-api-mapping.service';
 
 const routes: Routes = [
 	{ path: '', component: LogsComponent },
@@ -48,5 +49,6 @@ const routes: Routes = [
     SortModule,
     UsersModule,
   ],
+  providers:[LogsApiMappingService],
 })
 export class LogsModule {}

@@ -1,22 +1,14 @@
 import { HttpParams } from '@angular/common/http';
 import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
 import { IPaginatedResult, PaginatedList, PaginatedListState, PagingService } from '@cc/common/paging';
-import { apiV3SortKey, apiV3SortToHttpParams, toApiDateRangeV3Format, toApiV3SortParams } from '@cc/common/queries';
+import { apiV3SortKey, apiV3SortToHttpParams, toApiV3SortParams } from '@cc/common/queries';
 import { ISortParams, SortOrder } from '@cc/common/sort';
 import { IEnvironmentLog, LogsService } from '@cc/domain/environments';
 import { Observable, Subject } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 import { ILogsFilter } from './models/logs-filter.interface';
-
-enum EnvironmentLogQueryParamKey {
-  UserId = 'userId',
-  ActivityId = 'activityId',
-  EnvironmentDomain = 'environment.domain',
-  EnvironmentId = 'environmentId',
-  CreatedOn = 'createdOn',
-  IsAnonymizedData = 'isAnonymizedData'
-}
+import { LogsApiMappingService } from './services/logs-api-mapping.service';
 
 @Component({
   selector: 'cc-logs',
@@ -40,7 +32,7 @@ export class LogsComponent implements OnInit, OnDestroy {
     return this.paginatedLogs.state$;
   }
 
-  constructor(private logsService: LogsService, private pagingService: PagingService) {
+  constructor(private logsService: LogsService, private logsApiService: LogsApiMappingService, private pagingService: PagingService) {
   }
 
   public ngOnInit(): void {
@@ -55,7 +47,7 @@ export class LogsComponent implements OnInit, OnDestroy {
   }
 
   public updateFilters(filters: ILogsFilter): void {
-    const httpParams = this.toHttpParams(filters);
+    const httpParams = this.logsApiService.toHttpParams(filters);
     this.paginatedLogs.updateFilters(httpParams);
   }
 
@@ -83,39 +75,5 @@ export class LogsComponent implements OnInit, OnDestroy {
 
     const apiV3DefaultSortParams = toApiV3SortParams([this.defaultSortParams]);
     return apiV3SortToHttpParams(httpParams, apiV3DefaultSortParams);
-  }
-
-  private toHttpParams(filters: ILogsFilter): HttpParams {
-    let params = new HttpParams();
-    if (!!filters.environments.length) {
-      const environmentIds = filters.environments.map(u => u.id);
-      params = params.set(EnvironmentLogQueryParamKey.EnvironmentId, environmentIds.join(','));
-    }
-
-    if (!!filters.users.length) {
-      const userIds = filters.users.map(u => u.id);
-      params = params.set(EnvironmentLogQueryParamKey.UserId, userIds.join(','));
-    }
-
-    if (!!filters.isAnonymizedData) {
-      params = params.set(EnvironmentLogQueryParamKey.IsAnonymizedData, filters.isAnonymizedData);
-    }
-
-    const createdOn = toApiDateRangeV3Format(filters.createdOn);
-    if (!!createdOn) {
-      params = params.set(EnvironmentLogQueryParamKey.CreatedOn, createdOn);
-    }
-
-    if (!!filters.actions.length) {
-      const actionIds = filters.actions.map(a => a.id);
-      params = params.set(EnvironmentLogQueryParamKey.ActivityId, actionIds.join(','));
-    }
-
-    if (!!filters.domains.length) {
-      const domainIds = filters.domains.map(d => d.id);
-      params = params.set(EnvironmentLogQueryParamKey.EnvironmentDomain, domainIds.join(','));
-    }
-
-    return params;
   }
 }
