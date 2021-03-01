@@ -1,4 +1,5 @@
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { Component, forwardRef, OnInit } from '@angular/core';
+import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { ActivatedRoute, ActivatedRouteSnapshot, ParamMap, Params, Router } from '@angular/router';
 import { IPrincipal } from '@cc/aspects/principal';
 import { apiV3ToDateRange, toApiDateRangeV3Format } from '@cc/common/queries';
@@ -27,9 +28,17 @@ enum EnvironmentLogRouterKeyEnum {
 @Component({
   selector: 'cc-logs-filter',
   templateUrl: './logs-filter.component.html',
+  providers: [
+    {
+      provide: NG_VALUE_ACCESSOR,
+      useExisting: forwardRef(() => LogsFiltersComponent),
+      multi: true,
+    },
+  ],
 })
-export class LogsFiltersComponent implements OnInit {
-  @Output() public updateFilters: EventEmitter<ILogsFilter> = new EventEmitter<ILogsFilter>();
+export class LogsFiltersComponent implements OnInit, ControlValueAccessor {
+  public onChange: (logsFilter: ILogsFilter) => void;
+  public onTouch: () => void;
 
   public logsFilter: ILogsFilter = {
     users: [],
@@ -52,15 +61,37 @@ export class LogsFiltersComponent implements OnInit {
     this.initDefaultFilterValues(this.activatedRoute.snapshot);
   }
 
+  public registerOnChange(fn: () => void): void {
+    this.onChange = fn;
+  }
+
+  public registerOnTouched(fn: () => void): void {
+    this.onTouch = fn;
+  }
+
+  public writeValue(logsFilter: ILogsFilter): void {
+    if (!logsFilter) {
+      return;
+    }
+
+    if (!this.isEqual(this.logsFilter, logsFilter)) {
+      this.logsFilter = logsFilter;
+    }
+  }
+
   public async updateAsync(): Promise<void> {
-    this.updateFilters.emit(this.logsFilter);
+    this.onChange(this.logsFilter);
     await this.updateRouterAsync(this.logsFilter);
+  }
+
+  private isEqual(a: ILogsFilter, b: ILogsFilter): boolean {
+    return a === b;
   }
 
   private initDefaultFilterValues(route: ActivatedRouteSnapshot): void {
     this.toLogsFilterAsync(route.queryParamMap).then((l: ILogsFilter) => {
       this.logsFilter = l;
-      this.updateFilters.emit(this.logsFilter);
+      this.onChange(this.logsFilter);
     });
   }
 

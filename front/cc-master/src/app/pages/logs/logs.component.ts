@@ -16,6 +16,8 @@ import { LogsApiMappingService } from './services/logs-api-mapping.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class LogsComponent implements OnInit, OnDestroy {
+  public logsFilter: ILogsFilter;
+
   public defaultSortParams: ISortParams = {
     field: 'createdOn',
     order: SortOrder.Desc,
@@ -33,6 +35,7 @@ export class LogsComponent implements OnInit, OnDestroy {
   }
 
   constructor(private logsService: LogsService, private logsApiService: LogsApiMappingService, private pagingService: PagingService) {
+
   }
 
   public ngOnInit(): void {
