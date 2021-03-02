@@ -57,8 +57,8 @@ export class EnvironmentApiSelectComponent implements ControlValueAccessor {
     this.onChange(environmentsSelected);
   }
 
-  public trackBy(index: number, environment: IEnvironment): string {
-    return environment.subDomain;
+  public trackBy(index: number, environment: IEnvironment): number {
+    return environment.id;
   }
 
   public getSubDomainsRawString(environments: IEnvironment[]): string {

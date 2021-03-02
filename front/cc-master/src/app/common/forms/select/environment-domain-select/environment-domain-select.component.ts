@@ -45,8 +45,8 @@ export class EnvironmentDomainSelectComponent implements ControlValueAccessor {
     this.onChange(domainsSelectionUpdated);
   }
 
-  public trackBy(index: number, domain: IEnvironmentDomain): string {
-    return domain.name;
+  public trackBy(index: number, domain: IEnvironmentDomain): number {
+    return domain.id;
   }
 
   public getDomainNamesRawString(domains: IEnvironmentDomain[]): string {

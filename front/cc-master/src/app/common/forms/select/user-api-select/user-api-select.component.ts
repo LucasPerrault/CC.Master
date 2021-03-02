@@ -53,8 +53,8 @@ export class UserApiSelectComponent implements ControlValueAccessor {
     this.onChange(usersUpdated);
   }
 
-  public trackBy(index: number, user: IPrincipal): string {
-    return user.name;
+  public trackBy(index: number, user: IPrincipal): number {
+    return user.id;
   }
 
   public getUserNamesRawString(users: IPrincipal[]): string {

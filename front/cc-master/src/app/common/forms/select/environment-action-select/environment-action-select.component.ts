@@ -50,8 +50,8 @@ export class EnvironmentActionSelectComponent implements ControlValueAccessor {
     return action.name.toLowerCase().includes(clue.toLowerCase());
   }
 
-  public trackBy(index: number, action: IEnvironmentAction): string {
-    return action.name;
+  public trackBy(index: number, action: IEnvironmentAction): number {
+    return action.id;
   }
 
   public getActionNamesRawString(actions: IEnvironmentAction[]): string {
