@@ -23,7 +23,9 @@
       <td class="table-body-row-cell">{{ log.user.name }}</td>
       <td class="table-body-row-cell">{{ log.activity }}</td>
       <td class="table-body-row-cell">{{ getInstanceName(log.environment) }}</td>
-      <td class="table-body-row-cell">{{ log.createdOn | date: 'dd/MM/yyyy HH:mm:ss' }}</td>
+      <td class="table-body-row-cell">
+        {{ log.createdOn | date: 'shortDate' }} {{ log.createdOn | date: 'mediumTime' }}
+      </td>
       <td class="table-body-row-cell column-xs">
         <div class="checkbox">
           <input class="checkbox-input" type="checkbox" id="isAnonymizedData" [checked]="log.isAnonymizedData" disabled>
