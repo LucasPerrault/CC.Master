@@ -1,5 +1,6 @@
 import { Component, forwardRef } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
+import { TranslatePipe } from '@cc/aspects/translate';
 import { environmentActions, IEnvironmentAction } from '@cc/domain/environments';
 
 @Component({
@@ -20,7 +21,13 @@ export class EnvironmentActionSelectComponent implements ControlValueAccessor {
   public actionsSelected: IEnvironmentAction[];
 
   public get actions(): IEnvironmentAction[] {
-    return environmentActions;
+    return environmentActions.map(a => ({
+      ...a,
+      name: this.translatePipe.transform(a.name),
+    }));
+  }
+
+  constructor(private translatePipe: TranslatePipe) {
   }
 
   public registerOnChange(fn: () => void): void {
