@@ -3,9 +3,9 @@
     <input type="radio"
            class="radioButtons-item-input palette-grey"
            id="all"
-           [(ngModel)]="isAnonymizedData"
+           [(ngModel)]="isAnonymized"
            (ngModelChange)="safeOnChange($event)"
-           value=""
+           [value]="null"
            checked>
     <label class="radioButtons-item-label palette-grey" for="all">
       {{ 'front_filterLabel_all' | translate }}
@@ -15,9 +15,9 @@
     <input type="radio"
            class="radioButtons-item-input palette-grey"
            id="anonymized"
-           [(ngModel)]="isAnonymizedData"
+           [(ngModel)]="isAnonymized"
            (ngModelChange)="safeOnChange($event)"
-           value="true">
+           [value]="true">
     <label class="radioButtons-item-label palette-grey" for="anonymized">
       {{ 'front_filterLabel_anonymized' | translate }}
     </label>
@@ -26,9 +26,9 @@
     <input type="radio"
            class="radioButtons-item-input palette-grey"
            id="non-anonymized"
-           [(ngModel)]="isAnonymizedData"
+           [(ngModel)]="isAnonymized"
            (ngModelChange)="safeOnChange($event)"
-           value="false">
+           [value]="false">
     <label class="radioButtons-item-label palette-grey" for="non-anonymized">
       {{ 'front_filterLabel_nonAnonymized' | translate }}
     </label>

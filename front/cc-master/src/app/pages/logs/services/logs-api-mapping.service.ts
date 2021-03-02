@@ -10,7 +10,7 @@ enum EnvironmentLogQueryParamKey {
   EnvironmentDomain = 'environment.domain',
   EnvironmentId = 'environmentId',
   CreatedOn = 'createdOn',
-  IsAnonymizedData = 'isAnonymizedData'
+  IsAnonymized = 'isAnonymizedData'
 }
 
 @Injectable()
@@ -30,8 +30,8 @@ export class LogsApiMappingService {
       params = params.set(EnvironmentLogQueryParamKey.UserId, userIds.join(','));
     }
 
-    if (!!filters.isAnonymizedData) {
-      params = params.set(EnvironmentLogQueryParamKey.IsAnonymizedData, filters.isAnonymizedData);
+    if (filters.isAnonymized !== null) {
+      params = params.set(EnvironmentLogQueryParamKey.IsAnonymized, filters.isAnonymized.toString());
     }
 
     const createdOn = toApiDateRangeV3Format(filters.createdOn);

@@ -13,9 +13,9 @@ import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
   ],
 })
 export class AnonymizationButtonGroupComponent implements ControlValueAccessor {
-  public isAnonymizedData: string = null;
+  public isAnonymized?: boolean = null;
 
-  public onChange: (isAnonymizedData: string) => void;
+  public onChange: (isAnonymized: boolean) => void;
   public onTouch: () => void;
 
   public registerOnChange(fn: () => void): void {
@@ -26,13 +26,13 @@ export class AnonymizationButtonGroupComponent implements ControlValueAccessor {
     this.onTouch = fn;
   }
 
-  public writeValue(isAnonymizedSelectionUpdated: string): void {
-    if (isAnonymizedSelectionUpdated !== this.isAnonymizedData) {
-      this.isAnonymizedData = isAnonymizedSelectionUpdated;
+  public writeValue(isAnonymizedSelectionUpdated: boolean): void {
+    if (isAnonymizedSelectionUpdated !== this.isAnonymized) {
+      this.isAnonymized = isAnonymizedSelectionUpdated;
     }
   }
 
-  public safeOnChange(isAnonymizedSelectionUpdated: string): void {
+  public safeOnChange(isAnonymizedSelectionUpdated: boolean): void {
     this.onChange(isAnonymizedSelectionUpdated);
   }
 }

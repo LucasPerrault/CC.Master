@@ -8,5 +8,5 @@ export interface ILogsFilter {
   users: IPrincipal[];
   actions: IEnvironmentAction[];
   createdOn: IDateRange;
-  isAnonymizedData: string;
+  isAnonymized?: boolean;
 }

@@ -61,7 +61,7 @@ export class LogsFiltersComponent implements ControlValueAccessor {
         endDate: null,
       },
       domains: [],
-      isAnonymizedData: null,
+      isAnonymized: null,
     };
   }
 }

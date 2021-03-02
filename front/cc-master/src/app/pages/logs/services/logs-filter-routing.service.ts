@@ -32,7 +32,7 @@ export class LogsFilterRoutingService {
         actions: this.getEnvironmentActions(routingParams.actionIds),
         domains: this.getEnvironmentDomains(routingParams.domainIds),
         createdOn: apiV3ToDateRange(routingParams.createdOn),
-        isAnonymizedData: routingParams.isAnonymized,
+        isAnonymized: this.convertToNullableBoolean(routingParams.isAnonymized),
       }),
     ));
   }
@@ -44,7 +44,7 @@ export class LogsFilterRoutingService {
       userIds: this.getSafeRoutingParams(filters.users.map(u => u.id).join(',')),
       actionIds: this.getSafeRoutingParams(filters.actions.map(a => a.id).join(',')),
       createdOn: this.getSafeRoutingParams(toApiDateRangeV3Format(filters.createdOn)),
-      isAnonymized: this.getSafeRoutingParams(filters.isAnonymizedData),
+      isAnonymized: this.getSafeRoutingParams(filters.isAnonymized?.toString()),
     };
   }
 
@@ -89,5 +89,9 @@ export class LogsFilterRoutingService {
       return [];
     }
     return values.split(',').map(idToString => parseInt(idToString, 10));
+  }
+
+  private convertToNullableBoolean(value: string): boolean {
+    return JSON.parse(value);
   }
 }
