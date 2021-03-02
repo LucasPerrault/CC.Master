@@ -45,10 +45,6 @@ export class EnvironmentDomainSelectComponent implements ControlValueAccessor {
     this.onChange(domainsSelectionUpdated);
   }
 
-  public searchFn(domain: IEnvironmentDomain, clue: string): boolean {
-    return domain.name.toLowerCase().includes(clue.toLowerCase());
-  }
-
   public trackBy(index: number, domain: IEnvironmentDomain): string {
     return domain.name;
   }
