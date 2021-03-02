@@ -22,8 +22,7 @@ export class LogsListComponent implements OnInit {
   }
 
   public ngOnInit(): void {
-    this.sortParams = this.defaultSortParams;
-    this.updateSort.emit(this.sortParams);
+    this.sortBy(this.defaultSortParams.field, this.defaultSortParams.order);
   }
 
   public getInstanceName(environment: IEnvironment): string {
@@ -43,11 +42,11 @@ export class LogsListComponent implements OnInit {
   }
 
   public activeAscOrDescIcon(field: string, order: SortOrder): boolean {
-    return this.sortService.isSorted(order, field, [this.sortParams]);
+    return this.sortService.isSorted(order, field, this.sortParams);
   }
 
   public sortBy(field: string, order: SortOrder = SortOrder.Asc): void {
-    this.sortParams = this.sortService.updateSortParam(field, order, [this.sortParams])[0];
+    this.sortParams = this.sortService.updateSortParam(field, order, this.sortParams);
     this.updateSort.emit(this.sortParams);
   }
 

@@ -70,7 +70,7 @@ export class LogsComponent implements OnInit, OnDestroy {
   }
 
   public updateSort(sortParams: ISortParams) {
-    const apiV3SortParams = toApiV3SortParams([sortParams]);
+    const apiV3SortParams = toApiV3SortParams(sortParams);
     const httpParamsWithSort = apiV3SortToHttpParams(this.httpParams.value, apiV3SortParams);
     this.httpParams.next(httpParamsWithSort);
   }

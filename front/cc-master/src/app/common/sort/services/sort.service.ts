@@ -5,29 +5,24 @@ import { ISortParams } from '../models/sort-params.interface';
 
 @Injectable()
 export class SortService {
-  public isSorted(order: SortOrder, field: string, sortParams: ISortParams[]): boolean {
-    const sortParam = sortParams.find(s => s.field === field);
-    if (!sortParam) {
+  public isSorted(order: SortOrder, field: string, sortParams: ISortParams): boolean {
+    if (!sortParams) {
       return false;
     }
 
-    return sortParam.field === field && sortParam.order === order;
+    return sortParams.field === field && sortParams.order === order;
   }
 
-  public updateSortParam(field: string, order: SortOrder, sortParams: ISortParams[]): ISortParams[] {
-    const sortParamsFiltered = sortParams.filter(s => s.field !== field);
-    const orderUpdated = this.toggleSortOrder(sortParams, field, order);
-
-    const sortParamUpdated = { field, order: orderUpdated };
-    return [sortParamUpdated, ...sortParamsFiltered];
+  public updateSortParam(field: string, order: SortOrder, sortParams: ISortParams): ISortParams {
+    const orderUpdated = this.toggleSortOrder(sortParams, order);
+    return { field, order: orderUpdated };
   }
 
-  private toggleSortOrder(sortParams: ISortParams[], field: string, order: SortOrder): SortOrder {
-    const sortParam = sortParams.find(s => s.field === field);
-    if (!sortParam) {
+  private toggleSortOrder(sortParams: ISortParams, order: SortOrder): SortOrder {
+    if (!sortParams) {
       return order;
     }
 
-    return sortParam.order === SortOrder.Asc ? SortOrder.Desc : SortOrder.Asc;
+    return sortParams.order === SortOrder.Asc ? SortOrder.Desc : SortOrder.Asc;
   }
 }
