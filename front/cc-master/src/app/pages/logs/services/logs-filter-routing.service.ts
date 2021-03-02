@@ -1,0 +1,93 @@
+import { Injectable } from '@angular/core';
+import { IPrincipal } from '@cc/aspects/principal';
+import { apiV3ToDateRange, toApiDateRangeV3Format } from '@cc/common/queries';
+import {
+  environmentActions,
+  environmentDomains,
+  EnvironmentsService,
+  IEnvironment,
+  IEnvironmentAction,
+  IEnvironmentDomain,
+} from '@cc/domain/environments';
+import { UsersService } from '@cc/domain/users';
+import { forkJoin, Observable, of } from 'rxjs';
+import { map, take } from 'rxjs/operators';
+
+import { ILogsFilter } from '../models/logs-filter.interface';
+import { ILogsRoutingParams } from '../models/logs-routing-params.interface';
+
+@Injectable()
+export class LogsFilterRoutingService {
+
+  constructor(private usersService: UsersService, private environmentsService: EnvironmentsService) { }
+
+  public toLogsFilter$(routingParams: ILogsRoutingParams): Observable<ILogsFilter> {
+    return forkJoin([
+      this.getUsers$(routingParams.userIds),
+      this.getEnvironments$(routingParams.environmentIds),
+    ]).pipe(
+      map(([users, environments]) => ({
+        users,
+        environments,
+        actions: this.getEnvironmentActions(routingParams.actionIds),
+        domains: this.getEnvironmentDomains(routingParams.domainIds),
+        createdOn: apiV3ToDateRange(routingParams.createdOn),
+        isAnonymizedData: routingParams.isAnonymized,
+      }),
+    ));
+  }
+
+  public toLogsRoutingParams(filters: ILogsFilter): ILogsRoutingParams {
+    return {
+      environmentIds: this.getSafeRoutingParams(filters.environments.map(u => u.id).join(',')),
+      domainIds: this.getSafeRoutingParams(filters.domains.map(d => d.id).join(',')),
+      userIds: this.getSafeRoutingParams(filters.users.map(u => u.id).join(',')),
+      actionIds: this.getSafeRoutingParams(filters.actions.map(a => a.id).join(',')),
+      createdOn: this.getSafeRoutingParams(toApiDateRangeV3Format(filters.createdOn)),
+      isAnonymized: this.getSafeRoutingParams(filters.isAnonymizedData),
+    };
+  }
+
+  private getUsers$(userIdsToString: string): Observable<IPrincipal[]> {
+    const userIds = this.convertToNumbers(userIdsToString);
+    if (!userIds.length) {
+      return of([]);
+    }
+
+    return this.usersService.getUsersById$(userIds).pipe(take(1));
+  }
+
+  private getEnvironments$(environmentIdsToString: string): Observable<IEnvironment[]> {
+    const environmentIds = this.convertToNumbers(environmentIdsToString);
+    if (!environmentIds.length) {
+      return of([]);
+    }
+
+    return this.environmentsService.getEnvironmentsById$(environmentIds).pipe(take(1));
+  }
+
+  private getEnvironmentActions(actionIdsToString: string): IEnvironmentAction[] {
+    const actionIds = this.convertToNumbers(actionIdsToString);
+    return environmentActions.filter(a => actionIds.includes(a.id));
+  }
+
+  private getEnvironmentDomains(domainIdsToString: string): IEnvironmentDomain[] {
+    const domainIds = this.convertToNumbers(domainIdsToString);
+    return environmentDomains.filter(d => domainIds.includes(d.id));
+  }
+
+  private getSafeRoutingParams(queryParams: string): string {
+    if (!queryParams) {
+      return;
+    }
+
+    return queryParams;
+  }
+
+  private convertToNumbers(values: string): number[] {
+    if (!values) {
+      return [];
+    }
+    return values.split(',').map(idToString => parseInt(idToString, 10));
+  }
+}
