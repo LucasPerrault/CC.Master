@@ -23,6 +23,7 @@ export class LogsListComponent implements OnInit {
 
   public ngOnInit(): void {
     this.sortParams = this.defaultSortParams;
+    this.updateSort.emit(this.sortParams);
   }
 
   public getInstanceName(environment: IEnvironment): string {
@@ -59,7 +60,7 @@ export class LogsListComponent implements OnInit {
   }
 
   public get isUpdateData(): boolean {
-    return this.state === PaginatedListState.UpdateFilter || this.state === PaginatedListState.UpdateSort;
+    return this.state === PaginatedListState.Update;
   }
 
   public get isLoadMore(): boolean {

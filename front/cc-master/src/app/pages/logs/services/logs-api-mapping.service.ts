@@ -18,8 +18,7 @@ export class LogsApiMappingService {
 
   constructor(private apiV3DateService: ApiV3DateService) { }
 
-  public toHttpParams(filters: ILogsFilter): HttpParams {
-    let params = new HttpParams();
+  public toHttpParams(filters: ILogsFilter, params: HttpParams): HttpParams {
     if (!!filters.environments.length) {
       const environmentIds = filters.environments.map(u => u.id);
       params = params.set(EnvironmentLogQueryParamKey.EnvironmentId, environmentIds.join(','));

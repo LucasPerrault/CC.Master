@@ -1,7 +1,6 @@
 import { HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { PaginatedListState } from '@cc/common/paging/enums/paginated-list-state.enum';
-import { apiV3SortToHttpParams,IApiV3SortParams } from '@cc/common/queries';
 import { BehaviorSubject, Observable } from 'rxjs';
 
 import { IPaginatedResult } from '../models/paginated-result.interface';
@@ -19,8 +18,7 @@ export class PagingService {
 export class PaginatedList<T> {
 
   private paging: IPagingParams;
-  private sortParams: IApiV3SortParams[];
-  private filterParams: HttpParams;
+  private httpParams: HttpParams;
   private state: BehaviorSubject<PaginatedListState> = new BehaviorSubject<PaginatedListState>(PaginatedListState.Idle);
 
   private items: BehaviorSubject<T[]> = new BehaviorSubject([]);
@@ -56,18 +54,11 @@ export class PaginatedList<T> {
     this.update(PaginatedListState.LoadMore);
   }
 
-  public updateFilters(filter: HttpParams): void {
-    this.filterParams = filter;
+  public updateHttpParams(httpParams: HttpParams): void {
+    this.httpParams = httpParams;
 
     this.resetPaging();
-    this.update(PaginatedListState.UpdateFilter);
-  }
-
-  public updateSort(sort: IApiV3SortParams[]): void {
-    this.sortParams = sort;
-
-    this.resetPaging();
-    this.update(PaginatedListState.UpdateSort);
+    this.update(PaginatedListState.Update);
   }
 
   private resetPaging(): void {
@@ -81,9 +72,7 @@ export class PaginatedList<T> {
       this.items.next([]);
     }
 
-    const params = !!this.filterParams ? this.filterParams : new HttpParams();
-    const paramsWithSort = apiV3SortToHttpParams(params, this.sortParams);
-    const paramsWithPaging = this.toApiV3PagingParams(paramsWithSort, this.paging);
+    const paramsWithPaging = this.toApiV3PagingParams(this.httpParams, this.paging);
 
     this.fetchMore(paramsWithPaging).subscribe(
       res => {
