@@ -40,7 +40,7 @@ export class PaginatedList<T> {
     this.paging = paging;
   }
 
-  public showMore(): void {
+  public nextPage(): void {
     if (this.state.value !== PaginatedListState.Idle && this.state.value !== PaginatedListState.Error) {
       return;
     }
@@ -49,7 +49,7 @@ export class PaginatedList<T> {
       return;
     }
 
-    this.paging.skip = this.items.value.length;
+    this.paging.page = this.paging.page + 1;
 
     this.update(PaginatedListState.LoadMore);
   }
@@ -62,13 +62,13 @@ export class PaginatedList<T> {
   }
 
   private resetPaging(): void {
-    this.paging.skip = 0;
+    this.paging.page = 0;
   }
 
   private update(state: PaginatedListState): void {
     this.state.next(state);
 
-    if (!this.paging.skip) {
+    if (!this.paging.page) {
       this.items.next([]);
     }
 
@@ -85,6 +85,6 @@ export class PaginatedList<T> {
   }
 
   private toApiV3PagingParams(params: HttpParams, paging: IPagingParams): HttpParams {
-    return params.set('paging', `${paging.skip},${paging.limit}`);
+    return params.set('paging', `${paging.page * paging.limit},${paging.limit}`);
   }
 }

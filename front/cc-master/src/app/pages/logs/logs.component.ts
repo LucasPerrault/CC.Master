@@ -76,7 +76,7 @@ export class LogsComponent implements OnInit, OnDestroy {
   }
 
   public showMore(): void {
-    this.paginatedLogs.showMore();
+    this.paginatedLogs.nextPage();
   }
 
   private initLogsFilterWithRoutingParams(): void {
