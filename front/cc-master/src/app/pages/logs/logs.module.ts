@@ -21,6 +21,8 @@ import { LogsFiltersComponent } from './components/logs-filter/logs-filter.compo
 import { LogsListComponent } from './components/logs-list/logs-list.component';
 import { LogsComponent } from './logs.component';
 import { LogsApiMappingService } from './services/logs-api-mapping.service';
+import { LogsFilterRoutingService } from './services/logs-filter-routing.service';
+import { LogsRoutingService } from './services/logs-routing.service';
 
 const routes: Routes = [
 	{ path: '', component: LogsComponent },
@@ -49,6 +51,6 @@ const routes: Routes = [
     SortModule,
     UsersModule,
   ],
-  providers:[LogsApiMappingService],
+  providers:[LogsApiMappingService, LogsRoutingService, LogsFilterRoutingService],
 })
 export class LogsModule {}

@@ -1,19 +1,20 @@
 import { HttpParams } from '@angular/common/http';
-import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { IPaginatedResult, PaginatedList, PaginatedListState, PagingService } from '@cc/common/paging';
 import { apiV3SortKey, apiV3SortToHttpParams, toApiV3SortParams } from '@cc/common/queries';
 import { ISortParams, SortOrder } from '@cc/common/sort';
 import { IEnvironmentLog, LogsService } from '@cc/domain/environments';
 import { Observable, Subject } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { map, take } from 'rxjs/operators';
 
 import { ILogsFilter } from './models/logs-filter.interface';
 import { LogsApiMappingService } from './services/logs-api-mapping.service';
+import { LogsFilterRoutingService } from './services/logs-filter-routing.service';
+import { LogsRoutingService } from './services/logs-routing.service';
 
 @Component({
   selector: 'cc-logs',
   templateUrl: './logs.component.html',
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class LogsComponent implements OnInit, OnDestroy {
   public logsFilter: ILogsFilter;
@@ -34,8 +35,14 @@ export class LogsComponent implements OnInit, OnDestroy {
     return this.paginatedLogs.state$;
   }
 
-  constructor(private logsService: LogsService, private logsApiService: LogsApiMappingService, private pagingService: PagingService) {
-
+  constructor(
+    private logsService: LogsService,
+    private logsApiMappingService: LogsApiMappingService,
+    private logsRoutingService: LogsRoutingService,
+    private logsFilterRoutingService: LogsFilterRoutingService,
+    private pagingService: PagingService,
+  ) {
+    this.initLogsFilterWithRoutingParams();
   }
 
   public ngOnInit(): void {
@@ -49,9 +56,12 @@ export class LogsComponent implements OnInit, OnDestroy {
     this.destroySubscription$.complete();
   }
 
-  public updateFilters(filters: ILogsFilter): void {
-    const httpParams = this.logsApiService.toHttpParams(filters);
+  public async updateFiltersAsync(filters: ILogsFilter): Promise<void> {
+    const httpParams = this.logsApiMappingService.toHttpParams(filters);
+    const routingParams = this.logsFilterRoutingService.toLogsRoutingParams(filters);
+
     this.paginatedLogs.updateFilters(httpParams);
+    await this.logsRoutingService.updateRouterAsync(routingParams);
   }
 
   public updateSort(sortParams: ISortParams) {
@@ -61,6 +71,13 @@ export class LogsComponent implements OnInit, OnDestroy {
 
   public showMore(): void {
     this.paginatedLogs.showMore();
+  }
+
+  private initLogsFilterWithRoutingParams(): void {
+    const routingParams = this.logsRoutingService.getLogsRoutingParams();
+    this.logsFilterRoutingService.toLogsFilter$(routingParams)
+      .pipe(take(1))
+      .subscribe(f => this.logsFilter = f);
   }
 
   private getPaginatedLogs$(httpParams: HttpParams): Observable<IPaginatedResult<IEnvironmentLog>> {
