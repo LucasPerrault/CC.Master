@@ -96,6 +96,14 @@ export class LogsFilterRoutingService {
   }
 
   private convertToNullableBoolean(value: string): boolean {
-    return JSON.parse(value);
+    if (value?.toLowerCase() === 'true') {
+      return true;
+    }
+
+    if (value?.toLowerCase() === 'false') {
+      return false;
+    }
+
+    return null;
   }
 }
