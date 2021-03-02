@@ -13,7 +13,7 @@ export class EnvironmentsService {
 
   constructor(private httpClient: HttpClient) { }
 
-  public getEnvironmentsById$(ids: number[]): Observable<IEnvironment[]> {
+  public getEnvironmentsByIds$(ids: number[]): Observable<IEnvironment[]> {
     const fields = 'id,subdomain';
 
     const params = new HttpParams()

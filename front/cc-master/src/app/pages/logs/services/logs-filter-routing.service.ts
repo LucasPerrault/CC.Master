@@ -63,7 +63,7 @@ export class LogsFilterRoutingService {
       return of([]);
     }
 
-    return this.environmentsService.getEnvironmentsById$(environmentIds).pipe(take(1));
+    return this.environmentsService.getEnvironmentsByIds$(environmentIds).pipe(take(1));
   }
 
   private getEnvironmentActions(actionIdsToString: string): IEnvironmentAction[] {
