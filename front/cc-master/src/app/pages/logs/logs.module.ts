@@ -12,6 +12,7 @@ import {
   UserApiSelectModule,
 } from '@cc/common/forms';
 import { PagingModule } from '@cc/common/paging';
+import { QueriesModule } from '@cc/common/queries';
 import { SortModule } from '@cc/common/sort';
 import { EnvironmentsModule } from '@cc/domain/environments';
 import { UsersModule } from '@cc/domain/users';
@@ -23,7 +24,6 @@ import { LogsComponent } from './logs.component';
 import { LogsApiMappingService } from './services/logs-api-mapping.service';
 import { LogsFilterRoutingService } from './services/logs-filter-routing.service';
 import { LogsRoutingService } from './services/logs-routing.service';
-import {QueriesModule} from '@cc/common/queries';
 
 const routes: Routes = [
 	{ path: '', component: LogsComponent },
