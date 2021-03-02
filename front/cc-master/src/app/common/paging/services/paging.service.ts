@@ -85,6 +85,6 @@ export class PaginatedList<T> {
   }
 
   private toApiV3PagingParams(params: HttpParams, paging: IPagingParams): HttpParams {
-    return params.set('paging', `${this.paging.skip},${this.paging.limit}`);
+    return params.set('paging', `${paging.skip},${paging.limit}`);
   }
 }
