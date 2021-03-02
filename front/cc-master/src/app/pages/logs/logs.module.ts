@@ -23,6 +23,7 @@ import { LogsComponent } from './logs.component';
 import { LogsApiMappingService } from './services/logs-api-mapping.service';
 import { LogsFilterRoutingService } from './services/logs-filter-routing.service';
 import { LogsRoutingService } from './services/logs-routing.service';
+import {QueriesModule} from '@cc/common/queries';
 
 const routes: Routes = [
 	{ path: '', component: LogsComponent },
@@ -50,6 +51,7 @@ const routes: Routes = [
     TranslateModule,
     SortModule,
     UsersModule,
+    QueriesModule,
   ],
   providers:[LogsApiMappingService, LogsRoutingService, LogsFilterRoutingService],
 })

@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { IPrincipal } from '@cc/aspects/principal';
-import { apiV3ToDateRange, toApiDateRangeV3Format } from '@cc/common/queries';
+import { ApiV3DateService } from '@cc/common/queries';
 import {
   environmentActions,
   environmentDomains,
@@ -19,7 +19,11 @@ import { ILogsRoutingParams } from '../models/logs-routing-params.interface';
 @Injectable()
 export class LogsFilterRoutingService {
 
-  constructor(private usersService: UsersService, private environmentsService: EnvironmentsService) { }
+  constructor(
+    private usersService: UsersService,
+    private environmentsService: EnvironmentsService,
+    private apiV3DateService: ApiV3DateService,
+  ) { }
 
   public toLogsFilter$(routingParams: ILogsRoutingParams): Observable<ILogsFilter> {
     return forkJoin([
@@ -31,7 +35,7 @@ export class LogsFilterRoutingService {
         environments,
         actions: this.getEnvironmentActions(routingParams.actionIds),
         domains: this.getEnvironmentDomains(routingParams.domainIds),
-        createdOn: apiV3ToDateRange(routingParams.createdOn),
+        createdOn: this.apiV3DateService.toDateRange(routingParams.createdOn),
         isAnonymized: this.convertToNullableBoolean(routingParams.isAnonymized),
       }),
     ));
@@ -43,7 +47,7 @@ export class LogsFilterRoutingService {
       domainIds: this.getSafeRoutingParams(filters.domains.map(d => d.id).join(',')),
       userIds: this.getSafeRoutingParams(filters.users.map(u => u.id).join(',')),
       actionIds: this.getSafeRoutingParams(filters.actions.map(a => a.id).join(',')),
-      createdOn: this.getSafeRoutingParams(toApiDateRangeV3Format(filters.createdOn)),
+      createdOn: this.getSafeRoutingParams(this.apiV3DateService.toApiDateRangeFormat(filters.createdOn)),
       isAnonymized: this.getSafeRoutingParams(filters.isAnonymized?.toString()),
     };
   }

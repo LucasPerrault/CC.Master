@@ -1,6 +1,6 @@
 import { HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { toApiDateRangeV3Format } from '@cc/common/queries';
+import { ApiV3DateService } from '@cc/common/queries';
 
 import { ILogsFilter } from '../models/logs-filter.interface';
 
@@ -16,7 +16,7 @@ enum EnvironmentLogQueryParamKey {
 @Injectable()
 export class LogsApiMappingService {
 
-  constructor() { }
+  constructor(private apiV3DateService: ApiV3DateService) { }
 
   public toHttpParams(filters: ILogsFilter): HttpParams {
     let params = new HttpParams();
@@ -34,7 +34,7 @@ export class LogsApiMappingService {
       params = params.set(EnvironmentLogQueryParamKey.IsAnonymized, filters.isAnonymized.toString());
     }
 
-    const createdOn = toApiDateRangeV3Format(filters.createdOn);
+    const createdOn = this.apiV3DateService.toApiDateRangeFormat(filters.createdOn);
     if (!!createdOn) {
       params = params.set(EnvironmentLogQueryParamKey.CreatedOn, createdOn);
     }
