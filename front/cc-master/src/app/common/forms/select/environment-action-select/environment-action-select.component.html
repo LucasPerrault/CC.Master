@@ -16,7 +16,6 @@
       <header class="lu-picker-header">
         <lu-option-searcher [searchFn]="searchFn"></lu-option-searcher>
       </header>
-      <lu-option-pager></lu-option-pager>
       <lu-option *luForOptions="let action; trackBy: trackBy" [value]="action">
         {{ action.translationKey | translate }}
       </lu-option>
