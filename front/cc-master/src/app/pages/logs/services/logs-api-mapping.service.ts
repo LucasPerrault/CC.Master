@@ -1,6 +1,9 @@
 import { HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { IPrincipal } from '@cc/aspects/principal';
+import { IDateRange } from '@cc/common/date';
 import { ApiV3DateService } from '@cc/common/queries';
+import { IEnvironment, IEnvironmentAction, IEnvironmentDomain } from '@cc/domain/environments';
 
 import { ILogsFilter } from '../models/logs-filter.interface';
 
@@ -19,35 +22,64 @@ export class LogsApiMappingService {
   constructor(private apiV3DateService: ApiV3DateService) { }
 
   public toHttpParams(filters: ILogsFilter, params: HttpParams): HttpParams {
-    if (!!filters.environments.length) {
-      const environmentIds = filters.environments.map(u => u.id);
-      params = params.set(EnvironmentLogQueryParamKey.EnvironmentId, environmentIds.join(','));
+    params = this.setEnvironments(params, filters.environments);
+    params = this.setUsers(params, filters.users);
+    params = this.setActions(params, filters.actions);
+    params = this.setDomains(params, filters.domains);
+    params = this.setIsAnonymized(params, filters.isAnonymized);
+    return this.setCreatedOn(params, filters.createdOn);
+  }
+
+  private setEnvironments(params: HttpParams, environments: IEnvironment[]): HttpParams {
+    if (!environments.length) {
+      return params.delete(EnvironmentLogQueryParamKey.EnvironmentId);
     }
 
-    if (!!filters.users.length) {
-      const userIds = filters.users.map(u => u.id);
-      params = params.set(EnvironmentLogQueryParamKey.UserId, userIds.join(','));
+    const environmentIds = environments.map(u => u.id);
+    return params.set(EnvironmentLogQueryParamKey.EnvironmentId, environmentIds.join(','));
+  }
+
+  private setUsers(params: HttpParams, users: IPrincipal[]): HttpParams {
+    if (!users.length) {
+      return params.delete(EnvironmentLogQueryParamKey.UserId);
     }
 
-    if (filters.isAnonymized !== null) {
-      params = params.set(EnvironmentLogQueryParamKey.IsAnonymized, filters.isAnonymized.toString());
+    const usersIds = users.map(u => u.id);
+    return params.set(EnvironmentLogQueryParamKey.UserId, usersIds.join(','));
+  }
+
+  private setActions(params: HttpParams, actions: IEnvironmentAction[]): HttpParams {
+    if (!actions.length) {
+      return params.delete(EnvironmentLogQueryParamKey.ActivityId);
     }
 
-    const createdOn = this.apiV3DateService.toApiDateRangeFormat(filters.createdOn);
-    if (!!createdOn) {
-      params = params.set(EnvironmentLogQueryParamKey.CreatedOn, createdOn);
+    const actionsIds = actions.map(u => u.id);
+    return params.set(EnvironmentLogQueryParamKey.ActivityId, actionsIds.join(','));
+  }
+
+  private setDomains(params: HttpParams, domains: IEnvironmentDomain[]): HttpParams {
+    if (!domains.length) {
+      return params.delete(EnvironmentLogQueryParamKey.EnvironmentDomain);
     }
 
-    if (!!filters.actions.length) {
-      const actionIds = filters.actions.map(a => a.id);
-      params = params.set(EnvironmentLogQueryParamKey.ActivityId, actionIds.join(','));
+    const domainsIds = domains.map(u => u.id);
+    return params.set(EnvironmentLogQueryParamKey.EnvironmentDomain, domainsIds.join(','));
+  }
+
+  private setIsAnonymized(params: HttpParams, isAnonymized?: boolean): HttpParams {
+    if (isAnonymized === null) {
+      return params.delete(EnvironmentLogQueryParamKey.IsAnonymized);
     }
 
-    if (!!filters.domains.length) {
-      const domainIds = filters.domains.map(d => d.id);
-      params = params.set(EnvironmentLogQueryParamKey.EnvironmentDomain, domainIds.join(','));
+    return params.set(EnvironmentLogQueryParamKey.IsAnonymized, isAnonymized.toString());
+  }
+
+  private setCreatedOn(params: HttpParams, createdOn: IDateRange): HttpParams {
+    if (!createdOn.startDate && !createdOn.endDate) {
+      return params.delete(EnvironmentLogQueryParamKey.CreatedOn);
     }
 
-    return params;
+    const apiV3CreatedOn = this.apiV3DateService.toApiDateRangeFormat(createdOn);
+    return params.set(EnvironmentLogQueryParamKey.CreatedOn, apiV3CreatedOn);
   }
 }
