@@ -18,11 +18,17 @@ export class LogsFiltersComponent implements ControlValueAccessor {
   public onChange: (logsFilter: ILogsFilter) => void;
   public onTouch: () => void;
 
-  public logsFilter: ILogsFilter;
-
-  constructor() {
-    this.initLogsFilter();
-  }
+  public logsFilter: ILogsFilter = {
+    users: [],
+    environments: [],
+    actions: [],
+    createdOn: {
+      startDate: null,
+      endDate: null,
+    },
+    domains: [],
+    isAnonymized: null,
+  };
 
   public registerOnChange(fn: () => void): void {
     this.onChange = fn;
@@ -49,19 +55,5 @@ export class LogsFiltersComponent implements ControlValueAccessor {
 
   private isEqual(a: ILogsFilter, b: ILogsFilter): boolean {
     return JSON.stringify(a) === JSON.stringify(b);
-  }
-
-  private initLogsFilter(): void {
-    this.logsFilter = {
-      users: [],
-      environments: [],
-      actions: [],
-      createdOn: {
-        startDate: null,
-        endDate: null,
-      },
-      domains: [],
-      isAnonymized: null,
-    };
   }
 }
