@@ -43,17 +43,11 @@ export class LogsFiltersComponent implements ControlValueAccessor {
       return;
     }
 
-    if (!this.isEqual(this.logsFilter, logsFilter)) {
-      this.onChange(logsFilter);
-      this.logsFilter = logsFilter;
-    }
+    this.onChange(logsFilter);
+    this.logsFilter = logsFilter;
   }
 
   public async updateAsync(): Promise<void> {
     this.onChange(this.logsFilter);
-  }
-
-  private isEqual(a: ILogsFilter, b: ILogsFilter): boolean {
-    return JSON.stringify(a) === JSON.stringify(b);
   }
 }
