@@ -24,14 +24,21 @@ export class UserApiSelectComponent implements ControlValueAccessor {
   public onTouch: () => void;
 
   public apiUrl = 'api/v3/principals';
-  public apiFilters = [];
 
   public usersSelected: IUser[] = [];
   public usersSelectionDisplayed: IUser[];
 
-  constructor(private changeDetectorRef: ChangeDetectorRef) {
+  public get filtersToExcludeSelection(): string[] {
+    if (!this.usersSelectionDisplayed?.length) {
+      return [];
+    }
+
+    const environmentSelectedIds = this.usersSelectionDisplayed.map(e => e.id);
+    return [`id=notequal,${environmentSelectedIds.join(',')}`];
   }
 
+  constructor(private changeDetectorRef: ChangeDetectorRef) {
+  }
 
   public registerOnChange(fn: () => void): void {
     this.onChange = fn;
@@ -58,14 +65,7 @@ export class UserApiSelectComponent implements ControlValueAccessor {
   }
 
   public setUsersDisplayed(): void {
-    if (!this.usersSelected || !this.usersSelected.length) {
-      this.resetUsersDisplayed();
-      return;
-    }
-
     this.usersSelectionDisplayed = this.usersSelected;
-    const userSelectedIds = this.usersSelected.map(e => e.id);
-    this.apiFilters = [`id=notequal,${userSelectedIds.join(',')}`];
   }
 
   public trackBy(index: number, user: IUser): number {
@@ -74,10 +74,5 @@ export class UserApiSelectComponent implements ControlValueAccessor {
 
   private reset(): void {
     this.onChange([]);
-  }
-
-  private resetUsersDisplayed(): void {
-    this.usersSelectionDisplayed = [];
-    this.apiFilters = [];
   }
 }

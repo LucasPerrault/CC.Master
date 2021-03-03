@@ -14,7 +14,7 @@
     </ng-container>
     <lu-option-picker-advanced>
       <header class="lu-picker-header">
-        <lu-api-paged-searcher [api]="apiUrl" [fields]="apiFields" [orderBy]="apiOrderBy" [filters]="apiFilters"></lu-api-paged-searcher>
+        <lu-api-paged-searcher [api]="apiUrl" [fields]="apiFields" [orderBy]="apiOrderBy" [filters]="filtersToExcludeSelection"></lu-api-paged-searcher>
       </header>
       <lu-option-pager></lu-option-pager>
       <lu-option *ngFor="let environmentSelected of environmentsSelectionDisplayed"

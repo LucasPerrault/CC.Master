@@ -27,10 +27,18 @@ export class EnvironmentApiSelectComponent implements ControlValueAccessor {
   public apiUrl = '/api/v3/environments';
   public apiFields = 'id,subdomain';
   public apiOrderBy = 'subdomain,asc';
-  public apiFilters = [];
 
   public environmentsSelected: IEnvironment[];
   public environmentsSelectionDisplayed: IEnvironment[];
+
+  public get filtersToExcludeSelection(): string[] {
+    if (!this.environmentsSelectionDisplayed?.length) {
+      return [];
+    }
+
+    const environmentSelectedIds = this.environmentsSelectionDisplayed.map(e => e.id);
+    return [`id=notequal,${environmentSelectedIds.join(',')}`];
+  }
 
   constructor(private changeDetectorRef: ChangeDetectorRef) {
   }
@@ -60,14 +68,7 @@ export class EnvironmentApiSelectComponent implements ControlValueAccessor {
   }
 
   public setEnvironmentsDisplayed(): void {
-    if (!this.environmentsSelected || !this.environmentsSelected.length) {
-      this.resetEnvironmentsDisplayed();
-      return;
-    }
-
     this.environmentsSelectionDisplayed = this.environmentsSelected;
-    const environmentSelectedIds = this.environmentsSelected.map(e => e.id);
-    this.apiFilters = [`id=notequal,${environmentSelectedIds.join(',')}`];
   }
 
   public trackBy(index: number, environment: IEnvironment): number {
@@ -76,10 +77,5 @@ export class EnvironmentApiSelectComponent implements ControlValueAccessor {
 
   private reset(): void {
     this.onChange([]);
-  }
-
-  private resetEnvironmentsDisplayed(): void {
-    this.environmentsSelectionDisplayed = [];
-    this.apiFilters = [];
   }
 }
