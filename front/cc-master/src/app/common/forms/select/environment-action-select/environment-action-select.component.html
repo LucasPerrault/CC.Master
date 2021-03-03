@@ -3,6 +3,7 @@
              (ngModelChange)="safeOnChange($event)"
              class="textfield-input"
              [placeholder]="'front_filterLabel_action' | translate"
+             (onOpen)="sort(actions)"
              multiple>
     <ng-container *luDisplayer="let actions; multiple: true">
       <span [luTooltip]="getActionNamesRawString(actions)" *ngIf="actions?.length !== 1; else: singleView">

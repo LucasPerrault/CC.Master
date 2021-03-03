@@ -18,13 +18,11 @@ export class EnvironmentActionSelectComponent implements ControlValueAccessor {
   public onChange: (actionIds: IEnvironmentAction[]) => void;
   public onTouch: () => void;
 
+  public actions: IEnvironmentAction[];
   public actionsSelected: IEnvironmentAction[];
 
-  public get actions(): IEnvironmentAction[] {
-    return this.setTranslatedActions(environmentActions);
-  }
-
   constructor(private translatePipe: TranslatePipe) {
+    this.actions = this.setTranslatedActions(environmentActions);
   }
 
   public registerOnChange(fn: () => void): void {
@@ -36,7 +34,7 @@ export class EnvironmentActionSelectComponent implements ControlValueAccessor {
   }
 
   public writeValue(actionsSelectionUpdated: IEnvironmentAction[]): void {
-    if (actionsSelectionUpdated !== this.actionsSelected) {
+    if (!!actionsSelectionUpdated && actionsSelectionUpdated !== this.actionsSelected) {
       this.actionsSelected = this.setTranslatedActions(actionsSelectionUpdated);
     }
   }
@@ -62,15 +60,30 @@ export class EnvironmentActionSelectComponent implements ControlValueAccessor {
     return actions.map(a => a.name).join(', ');
   }
 
-  private setTranslatedActions(actions: IEnvironmentAction[]): IEnvironmentAction[] {
-    if (!actions) {
-      return [];
-    }
+  public sort(actions: IEnvironmentAction[]): void {
+    const actionsSortedByName = this.orderByName(actions);
+    this.actions = this.orderBySelection(actionsSortedByName);
+  }
 
+  private setTranslatedActions(actions: IEnvironmentAction[]): IEnvironmentAction[] {
     return actions.map(a => ({
       ...a,
       name: this.translatePipe.transform(a.name),
     }));
+  }
+
+  private orderByName(actions: IEnvironmentAction[]): IEnvironmentAction[] {
+    return actions.sort((a, b) => a.name.localeCompare(b.name));
+  }
+
+  private orderBySelection(actions: IEnvironmentAction[]): IEnvironmentAction[] {
+    if (!this.actionsSelected || !this.actionsSelected.length) {
+      return actions;
+    }
+
+    const actionSelectedIds = this.actionsSelected.map(a => a.id);
+    const actionsNotSelected = actions.filter(a => !actionSelectedIds.includes(a.id));
+    return [...this.actionsSelected, ...actionsNotSelected];
   }
 
   private reset(): void {
