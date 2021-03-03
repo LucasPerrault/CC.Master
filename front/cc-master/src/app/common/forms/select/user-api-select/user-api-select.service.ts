@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { defaultPagingParams } from '@cc/common/paging';
 import { cloudControlAdmin, IUser } from '@cc/domain/users';
 import { LuApiV3Service } from '@lucca-front/ng/api';
-import { Observable } from 'rxjs';
+import { Observable, pipe, UnaryFunction } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 @Injectable()
@@ -44,16 +44,24 @@ export class UserApiSelectService extends LuApiV3Service<IUser> {
   }
 
   private get$(url: string): Observable<IUser[]> {
-    return this.shouldBeIncludedUserAdmin(this._filters)
-      ? this.getWithUserAdmin$(url)
-      : this._get(url);
+    const hardcodedUsers = this.getHardcodedUsers();
+    return this._get(url).pipe(startWithHardcodedUsers(hardcodedUsers));
   }
 
-  private getWithUserAdmin$(url: string): Observable<IUser[]> {
-    return this._get(url).pipe(map(u => [cloudControlAdmin, ...u]));
+
+  // CloudControl Admin is not in api, but is needed as a selectable user.
+  // As a result, we'll add it front-side at the end of the request.
+  // The following methods handle this unusual need.
+
+  private getHardcodedUsers() {
+    const hardcodedUsers = [];
+    if (this.shouldIncludeUserAdmin(this._filters)) {
+      hardcodedUsers.push(cloudControlAdmin);
+    }
+    return hardcodedUsers;
   }
 
-  private shouldBeIncludedUserAdmin(filters: string[]): boolean {
+  private shouldIncludeUserAdmin(filters: string[]): boolean {
     if (!filters.length) {
       return true;
     }
@@ -67,3 +75,6 @@ export class UserApiSelectService extends LuApiV3Service<IUser> {
     return !idsExcluded.includes(cloudControlAdmin.id.toString());
   }
 }
+
+const startWithHardcodedUsers = (users: IUser[]): UnaryFunction<Observable<IUser[]>, Observable<IUser[]>> =>
+  pipe(map(u => [...users, ...u]));
