@@ -12,7 +12,6 @@ import {
   LuOptionSearcherModule,
 } from '@lucca-front/ng/option';
 import { LuSelectInputModule } from '@lucca-front/ng/select';
-import { LuTooltipTriggerModule } from '@lucca-front/ng/tooltip';
 
 import { UserApiSelectComponent } from './user-api-select.component';
 
@@ -29,7 +28,6 @@ import { UserApiSelectComponent } from './user-api-select.component';
     LuOptionModule,
     LuInputModule,
     LuApiModule,
-    LuTooltipTriggerModule,
     TranslateModule,
   ],
   exports: [UserApiSelectComponent],

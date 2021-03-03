@@ -5,7 +5,6 @@ import { TranslateModule } from '@cc/aspects/translate';
 import { LuInputModule } from '@lucca-front/ng/input';
 import { LuOptionModule } from '@lucca-front/ng/option';
 import { LuSelectInputModule } from '@lucca-front/ng/select';
-import { LuTooltipTriggerModule } from '@lucca-front/ng/tooltip';
 
 import { EnvironmentActionSelectComponent } from './environment-action-select.component';
 
@@ -18,7 +17,6 @@ import { EnvironmentActionSelectComponent } from './environment-action-select.co
     LuOptionModule,
     TranslateModule,
     CommonModule,
-    LuTooltipTriggerModule,
   ],
   exports: [EnvironmentActionSelectComponent],
 })

@@ -6,7 +6,7 @@
              (onOpen)="setUsersDisplayed()"
              multiple>
     <ng-container *luDisplayer="let users; multiple: true">
-      <span [luTooltip]="getUserNamesRawString(users)" *ngIf="users?.length !== 1; else: singleView">
+      <span *ngIf="users?.length !== 1; else: singleView">
         <span class="label">{{ users.length }}</span>
         {{ 'front_filterSelection_collaborator' | translate: { count: users.length } }}
       </span>

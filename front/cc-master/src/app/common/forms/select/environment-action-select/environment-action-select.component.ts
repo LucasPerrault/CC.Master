@@ -56,10 +56,6 @@ export class EnvironmentActionSelectComponent implements ControlValueAccessor {
     return action.id;
   }
 
-  public getActionNamesRawString(actions: IEnvironmentAction[]): string {
-    return actions.map(a => a.name).join(', ');
-  }
-
   public sort(actions: IEnvironmentAction[]): void {
     const actionsSortedByName = this.orderByName(actions);
     this.actions = this.orderBySelection(actionsSortedByName);

@@ -6,7 +6,7 @@
              (onOpen)="sort(actions)"
              multiple>
     <ng-container *luDisplayer="let actions; multiple: true">
-      <span [luTooltip]="getActionNamesRawString(actions)" *ngIf="actions?.length !== 1; else: singleView">
+      <span *ngIf="actions?.length !== 1; else: singleView">
         <span class="label">{{ actions.length }}</span>
         {{ 'front_filterSelection_action' | translate: { count: actions.length } }}
       </span>

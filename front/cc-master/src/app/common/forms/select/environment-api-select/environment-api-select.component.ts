@@ -74,10 +74,6 @@ export class EnvironmentApiSelectComponent implements ControlValueAccessor {
     return environment.id;
   }
 
-  public getSubDomainsRawString(environments: IEnvironment[]): string {
-    return environments.map(e => e.subDomain).join(', ');
-  }
-
   private reset(): void {
     this.onChange([]);
   }

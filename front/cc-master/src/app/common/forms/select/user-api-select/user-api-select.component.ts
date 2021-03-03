@@ -72,10 +72,6 @@ export class UserApiSelectComponent implements ControlValueAccessor {
     return user.id;
   }
 
-  public getUserNamesRawString(users: IPrincipal[]): string {
-    return users.map(u => u.name).join(', ');
-  }
-
   private reset(): void {
     this.onChange([]);
   }

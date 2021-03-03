@@ -12,7 +12,6 @@ import {
   LuOptionSearcherModule,
 } from '@lucca-front/ng/option';
 import { LuSelectInputModule } from '@lucca-front/ng/select';
-import { LuTooltipTriggerModule } from '@lucca-front/ng/tooltip';
 
 import { EnvironmentApiSelectComponent } from './environment-api-select.component';
 
@@ -30,7 +29,6 @@ import { EnvironmentApiSelectComponent } from './environment-api-select.componen
     LuApiModule,
     TranslateModule,
     CommonModule,
-    LuTooltipTriggerModule,
   ],
   exports: [EnvironmentApiSelectComponent],
 })

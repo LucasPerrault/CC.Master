@@ -6,7 +6,7 @@
              (onOpen)="setEnvironmentsDisplayed()"
              multiple>
     <ng-container *luDisplayer="let environments; multiple: true">
-      <span [luTooltip]="getSubDomainsRawString(environments)" *ngIf="environments?.length !== 1; else: singleView">
+      <span *ngIf="environments?.length !== 1; else: singleView">
         <span class="label">{{ environments.length }}</span>
         {{ 'front_filterSelection_subdomain' | translate: { count: environments.length } }}
       </span>
