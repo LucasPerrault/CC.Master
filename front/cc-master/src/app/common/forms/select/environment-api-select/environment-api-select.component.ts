@@ -27,8 +27,10 @@ export class EnvironmentApiSelectComponent implements ControlValueAccessor {
   public apiUrl = '/api/v3/environments';
   public apiFields = 'id,subdomain';
   public apiOrderBy = 'subdomain,asc';
+  public apiFilters = [];
 
-  public environments: IEnvironment[];
+  public environmentsSelected: IEnvironment[];
+  public environmentsSelectionDisplayed: IEnvironment[];
 
   constructor(private changeDetectorRef: ChangeDetectorRef) {
   }
@@ -42,8 +44,8 @@ export class EnvironmentApiSelectComponent implements ControlValueAccessor {
   }
 
   public writeValue(environmentsSelected: IEnvironment[]): void {
-    if (environmentsSelected !== this.environments) {
-      this.environments = environmentsSelected;
+    if (environmentsSelected !== this.environmentsSelected) {
+      this.environmentsSelected = environmentsSelected;
       this.changeDetectorRef.detectChanges();
     }
   }
@@ -57,6 +59,17 @@ export class EnvironmentApiSelectComponent implements ControlValueAccessor {
     this.onChange(environmentsSelected);
   }
 
+  public setEnvironmentsDisplayed(): void {
+    if (!this.environmentsSelected || !this.environmentsSelected.length) {
+      this.resetEnvironmentsDisplayed();
+      return;
+    }
+
+    this.environmentsSelectionDisplayed = this.environmentsSelected;
+    const environmentSelectedIds = this.environmentsSelected.map(e => e.id);
+    this.apiFilters = [`id=notequal,${environmentSelectedIds.join(',')}`];
+  }
+
   public trackBy(index: number, environment: IEnvironment): number {
     return environment.id;
   }
@@ -67,5 +80,10 @@ export class EnvironmentApiSelectComponent implements ControlValueAccessor {
 
   private reset(): void {
     this.onChange([]);
+  }
+
+  private resetEnvironmentsDisplayed(): void {
+    this.environmentsSelectionDisplayed = [];
+    this.apiFilters = [];
   }
 }

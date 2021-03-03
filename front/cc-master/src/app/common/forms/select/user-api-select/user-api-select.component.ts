@@ -23,7 +23,11 @@ export class UserApiSelectComponent implements ControlValueAccessor {
   public onChange: (users: IPrincipal[]) => void;
   public onTouch: () => void;
 
-  public users: IPrincipal[] = [];
+  public apiUrl = 'api/v3/principals';
+  public apiFilters = [];
+
+  public usersSelected: IPrincipal[] = [];
+  public usersSelectionDisplayed: IPrincipal[];
 
   constructor(private changeDetectorRef: ChangeDetectorRef) {
   }
@@ -38,8 +42,8 @@ export class UserApiSelectComponent implements ControlValueAccessor {
   }
 
   public writeValue(usersUpdated: IPrincipal[]): void {
-    if (usersUpdated !== this.users && usersUpdated !== null) {
-      this.users = usersUpdated;
+    if (usersUpdated !== this.usersSelected && usersUpdated !== null) {
+      this.usersSelected = usersUpdated;
       this.changeDetectorRef.detectChanges();
     }
   }
@@ -53,6 +57,17 @@ export class UserApiSelectComponent implements ControlValueAccessor {
     this.onChange(usersUpdated);
   }
 
+  public setUsersDisplayed(): void {
+    if (!this.usersSelected || !this.usersSelected.length) {
+      this.resetUsersDisplayed();
+      return;
+    }
+
+    this.usersSelectionDisplayed = this.usersSelected;
+    const userSelectedIds = this.usersSelected.map(e => e.id);
+    this.apiFilters = [`id=notequal,${userSelectedIds.join(',')}`];
+  }
+
   public trackBy(index: number, user: IPrincipal): number {
     return user.id;
   }
@@ -63,5 +78,10 @@ export class UserApiSelectComponent implements ControlValueAccessor {
 
   private reset(): void {
     this.onChange([]);
+  }
+
+  private resetUsersDisplayed(): void {
+    this.usersSelectionDisplayed = [];
+    this.apiFilters = [];
   }
 }
