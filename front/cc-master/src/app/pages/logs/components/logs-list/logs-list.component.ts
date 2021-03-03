@@ -10,19 +10,18 @@ import { EnvironmentLogMessageType, IEnvironment, IEnvironmentLog } from '@cc/do
 })
 export class LogsListComponent implements OnInit {
   @Input() public logs: IEnvironmentLog[];
-  @Input() public defaultSortParams: ISortParams;
+  @Input() public sortParams: ISortParams;
   @Output() public updateSort: EventEmitter<ISortParams> = new EventEmitter<ISortParams>();
   @Output() public showMore: EventEmitter<void> = new EventEmitter<void>();
   @Input() public state: PaginatedListState;
 
   public sortOrder = SortOrder;
-  private sortParams: ISortParams;
 
   constructor(private sortService: SortService) {
   }
 
   public ngOnInit(): void {
-    this.sortBy(this.defaultSortParams.field, this.defaultSortParams.order);
+    this.sortBy(this.sortParams.field, this.sortParams.order);
   }
 
   public getInstanceName(environment: IEnvironment): string {
