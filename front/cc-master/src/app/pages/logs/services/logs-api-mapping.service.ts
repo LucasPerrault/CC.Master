@@ -1,9 +1,9 @@
 import { HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { IPrincipal } from '@cc/aspects/principal';
 import { IDateRange } from '@cc/common/date';
 import { ApiV3DateService } from '@cc/common/queries';
 import { IEnvironment, IEnvironmentAction, IEnvironmentDomain } from '@cc/domain/environments';
+import { IUser } from '@cc/domain/users';
 
 import { ILogsFilter } from '../models/logs-filter.interface';
 
@@ -39,7 +39,7 @@ export class LogsApiMappingService {
     return params.set(EnvironmentLogQueryParamKey.EnvironmentId, environmentIds.join(','));
   }
 
-  private setUsers(params: HttpParams, users: IPrincipal[]): HttpParams {
+  private setUsers(params: HttpParams, users: IUser[]): HttpParams {
     if (!users.length) {
       return params.delete(EnvironmentLogQueryParamKey.UserId);
     }

@@ -1,4 +1,4 @@
-import { IPrincipal } from '@cc/aspects/principal';
+import { IUser } from '@cc/domain/users';
 
 import { IEnvironment } from './environment.interface';
 import { IEnvironmentLogMessage } from './environment-log-message.interface';
@@ -7,7 +7,7 @@ export interface IEnvironmentLog {
   id: number;
   name: string;
   userId: number;
-  user: IPrincipal;
+  user: IUser;
   environmentId: number;
   environment: IEnvironment;
   activityId: number;

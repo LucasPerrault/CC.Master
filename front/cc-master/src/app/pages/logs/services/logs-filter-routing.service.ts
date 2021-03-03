@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import { IPrincipal } from '@cc/aspects/principal';
 import { ApiV3DateService } from '@cc/common/queries';
 import {
   environmentActions,
@@ -9,7 +8,7 @@ import {
   IEnvironmentAction,
   IEnvironmentDomain,
 } from '@cc/domain/environments';
-import { UsersService } from '@cc/domain/users';
+import { IUser, UsersService } from '@cc/domain/users';
 import { forkJoin, Observable, of } from 'rxjs';
 import { map, take } from 'rxjs/operators';
 
@@ -52,7 +51,7 @@ export class LogsFilterRoutingService {
     };
   }
 
-  private getUsers$(userIdsToString: string): Observable<IPrincipal[]> {
+  private getUsers$(userIdsToString: string): Observable<IUser[]> {
     const userIds = this.convertToNumbers(userIdsToString);
     if (!userIds.length) {
       return of([]);
