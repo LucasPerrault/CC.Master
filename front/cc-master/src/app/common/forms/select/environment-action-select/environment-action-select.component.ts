@@ -21,10 +21,7 @@ export class EnvironmentActionSelectComponent implements ControlValueAccessor {
   public actionsSelected: IEnvironmentAction[];
 
   public get actions(): IEnvironmentAction[] {
-    return environmentActions.map(a => ({
-      ...a,
-      name: this.translatePipe.transform(a.name),
-    }));
+    return this.setTranslatedActions(environmentActions);
   }
 
   constructor(private translatePipe: TranslatePipe) {
@@ -40,7 +37,7 @@ export class EnvironmentActionSelectComponent implements ControlValueAccessor {
 
   public writeValue(actionsSelectionUpdated: IEnvironmentAction[]): void {
     if (actionsSelectionUpdated !== this.actionsSelected) {
-      this.actionsSelected = actionsSelectionUpdated;
+      this.actionsSelected = this.setTranslatedActions(actionsSelectionUpdated);
     }
   }
 
@@ -63,6 +60,17 @@ export class EnvironmentActionSelectComponent implements ControlValueAccessor {
 
   public getActionNamesRawString(actions: IEnvironmentAction[]): string {
     return actions.map(a => a.name).join(', ');
+  }
+
+  private setTranslatedActions(actions: IEnvironmentAction[]): IEnvironmentAction[] {
+    if (!actions) {
+      return [];
+    }
+
+    return actions.map(a => ({
+      ...a,
+      name: this.translatePipe.transform(a.name),
+    }));
   }
 
   private reset(): void {
