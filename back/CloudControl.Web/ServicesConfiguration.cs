@@ -29,6 +29,9 @@ using Billing.Web;
 using Environments.Infra.Storage;
 using Environments.Web;
 using Salesforce.Web;
+using Lucca.Core.Api.Queryable.EntityFrameworkCore;
+using Instances.Web;
+using Instances.Infra.Storage;
 
 namespace CloudControl.Web
 {
@@ -61,6 +64,7 @@ namespace CloudControl.Web
             ConfigureEnvironments(services, configuration);
             ConfigureSalesforce(services, configuration);
             ConfigureBilling(services, configuration);
+            ConfigureInstances(services, configuration);
         }
 
         public virtual AppConfiguration ConfigureConfiguration(IServiceCollection services)
@@ -101,7 +105,9 @@ namespace CloudControl.Web
             {
                 luccaApiBuilder
                     .SetPagingDefaultLimit(100)
-                    .AddModelBinding();
+                    .AddModelBinding()
+                    .AddEntityFrameworkQuerying()
+                    .ConfigureLuccaApiForInstances();
             });
             services.AddMvc().AddLuccaApi(o =>
             {
@@ -132,6 +138,7 @@ namespace CloudControl.Web
             services.ConfigureContext<DistributorsDbContext>(_hostingEnvironment);
             services.ConfigureContext<IpFilterDbContext>(_hostingEnvironment);
             services.ConfigureContext<ContractsDbContext>(_hostingEnvironment);
+            services.ConfigureContext<InstancesDbContext>(_hostingEnvironment);
         }
 
         public virtual void ConfigureSharedDomains(IServiceCollection services)
@@ -152,6 +159,11 @@ namespace CloudControl.Web
         public virtual void ConfigureBilling(IServiceCollection services, AppConfiguration configuration)
         {
             BillingConfigurer.ConfigureServices(services, configuration.LegacyCloudControl, configuration.BillingContracts);
+        }
+
+        public virtual void ConfigureInstances(IServiceCollection services, AppConfiguration configuration)
+        {
+            InstancesConfigurer.ConfigureServices(services);
         }
 
         public virtual void ConfigureLogs(IServiceCollection services)

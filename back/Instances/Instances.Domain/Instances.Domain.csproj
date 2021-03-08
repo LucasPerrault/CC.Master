@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Lucca.Core.Api.Queryable" Version="0.3.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Core\Authentication\Authentication.Domain\Authentication.Domain.csproj" />
+    <ProjectReference Include="..\..\Shared\Distributors\Distributors.Domain\Distributors.Domain.csproj" />
+  </ItemGroup>
+
+</Project>
