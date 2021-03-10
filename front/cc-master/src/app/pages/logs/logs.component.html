@@ -1,8 +1,8 @@
-<cc-logs-filter [(ngModel)]="logsFilter" (ngModelChange)="updateFiltersAsync($event)"></cc-logs-filter>
+<cc-logs-filter [ngModel]="filters$ | async" (ngModelChange)="updateFiltersAsync($event)"></cc-logs-filter>
 <cc-logs-list class="u-paddingSmall"
               (updateSort)="updateSort($event)"
               (showMore)="showMore()"
               [logs]="logs$ | async"
-              [sortParams]="defaultSortParams"
+              [sortParams]="sortParams$ | async"
               [state]="logsState$ | async">
 </cc-logs-list>
