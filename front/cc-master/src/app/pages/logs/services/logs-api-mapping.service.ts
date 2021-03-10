@@ -1,7 +1,8 @@
 import { HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { IDateRange } from '@cc/common/date';
-import { ApiV3DateService } from '@cc/common/queries';
+import { ApiV3DateService, apiV3SortToHttpParams, toApiV3SortParams } from '@cc/common/queries';
+import { ISortParams } from '@cc/common/sort';
 import { IEnvironment, IEnvironmentAction, IEnvironmentDomain } from '@cc/domain/environments';
 import { IUser } from '@cc/domain/users';
 
@@ -21,7 +22,26 @@ export class LogsApiMappingService {
 
   constructor(private apiV3DateService: ApiV3DateService) { }
 
-  public toHttpParams(filters: ILogsFilter, params: HttpParams): HttpParams {
+  public toHttpParams(filters: ILogsFilter, sortParams: ISortParams): HttpParams {
+    let params = new HttpParams();
+    params = this.setSortParams(params, sortParams);
+    return this.setLogsFilter(params, filters);
+  }
+
+  private setSortParams(params: HttpParams, sortParams: ISortParams): HttpParams {
+    if (!sortParams) {
+      return params;
+    }
+
+    const apiV3SortParams = toApiV3SortParams(sortParams);
+    return apiV3SortToHttpParams(params, apiV3SortParams);
+  }
+
+  private setLogsFilter(params: HttpParams, filters: ILogsFilter): HttpParams {
+    if (!filters) {
+      return params;
+    }
+
     params = this.setEnvironments(params, filters.environments);
     params = this.setUsers(params, filters.users);
     params = this.setActions(params, filters.actions);
