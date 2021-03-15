@@ -33,8 +33,8 @@ export class UserApiSelectComponent implements ControlValueAccessor {
       return [];
     }
 
-    const environmentSelectedIds = this.usersSelectionDisplayed.map(e => e.id);
-    return [`id=notequal,${environmentSelectedIds.join(',')}`];
+    const selectedIds = this.usersSelectionDisplayed.map(e => e.id);
+    return [`id=notequal,${selectedIds.join(',')}`];
   }
 
   constructor(private changeDetectorRef: ChangeDetectorRef) {
