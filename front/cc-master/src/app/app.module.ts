@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterModule, Routes } from '@angular/router';
 import { ErrorsModule } from '@cc/aspects/errors';
 import { PrincipalModule } from '@cc/aspects/principal';
@@ -14,7 +15,8 @@ import { AppComponent } from './app.component';
 
 const routes: Routes = [
   { path: forbiddenUrl, component: ForbiddenComponent },
-  { path: '*', redirectTo: forbiddenUrl, pathMatch: 'full' },
+  { path: 'logs', loadChildren: () => import('./pages/logs/logs.module').then(m => m.LogsModule) },
+  { path: '**', redirectTo: forbiddenUrl, pathMatch: 'full' },
 ];
 
 @NgModule({
@@ -23,6 +25,7 @@ const routes: Routes = [
 	],
 	imports: [
 		BrowserModule,
+    BrowserAnimationsModule,
 		RouterModule.forRoot(routes),
 		PrincipalModule.forRoot(),
     ErrorsModule.forRoot(),

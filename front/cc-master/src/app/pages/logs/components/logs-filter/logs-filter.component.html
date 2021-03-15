@@ -1,0 +1,31 @@
+<div class="u-paddingSmall u-displayInlineFlex u-alignItemsFlexCenter u-flexWrapWrap u-marginTopSmall">
+  <cc-user-api-select class="u-marginRightSmaller u-marginBottomSmaller"
+                      [(ngModel)]="logsFilter.users"
+                      (ngModelChange)="updateAsync()">
+  </cc-user-api-select>
+
+  <cc-environment-action-select class="u-marginRightSmaller u-marginBottomSmaller"
+                                [(ngModel)]="logsFilter.actions"
+                                (ngModelChange)="updateAsync()">
+  </cc-environment-action-select>
+
+  <cc-environment-domain-select class="u-marginRightSmaller u-marginBottomSmaller"
+                                [(ngModel)]="logsFilter.domains"
+                                (ngModelChange)="updateAsync()">
+  </cc-environment-domain-select>
+
+  <cc-environment-api-select class="u-marginRightSmaller u-marginBottomSmaller"
+                             [(ngModel)]="logsFilter.environments"
+                             (ngModelChange)="updateAsync()">
+  </cc-environment-api-select>
+
+  <cc-date-range-select class="u-marginRightSmaller u-marginBottomSmaller"
+                        [(ngModel)]="logsFilter.createdOn"
+                        (ngModelChange)="updateAsync()">
+  </cc-date-range-select>
+
+  <cc-anonymization-button-group class="u-marginRightSmaller u-marginBottomSmaller"
+                                 [(ngModel)]="logsFilter.isAnonymized"
+                                 (ngModelChange)="updateAsync()">
+  </cc-anonymization-button-group>
+</div>

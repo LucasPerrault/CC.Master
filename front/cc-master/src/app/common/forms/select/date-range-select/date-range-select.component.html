@@ -1,0 +1,19 @@
+<form [formGroup]="dateRangeSelected" class="u-displayInlineFlex u-alignItemsCenter">
+  <label class="textfield mod-short palette-grey u-marginRightSmaller">
+    <lu-date-select class="textfield-input"
+                    formControlName="startDate"
+                    [max]="endDate || todayDate"
+                    [placeholder]="'front_filterLabel_startDate' | translate">
+    </lu-date-select>
+  </label>
+
+  <label class="textfield mod-short palette-grey">
+    <lu-date-select class="textfield-input"
+                    formControlName="endDate"
+                    [min]="startDate"
+                    [max]="todayDate"
+                    [placeholder]="'front_filterLabel_endDate' | translate">
+    </lu-date-select>
+  </label>
+</form>
+
