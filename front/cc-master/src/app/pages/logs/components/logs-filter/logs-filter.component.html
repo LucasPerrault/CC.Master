@@ -1,31 +1,31 @@
 <div class="u-paddingSmall u-displayInlineFlex u-alignItemsFlexCenter u-flexWrapWrap u-marginTopSmall">
   <cc-user-api-select class="u-marginRightSmaller u-marginBottomSmaller"
                       [(ngModel)]="logsFilter.users"
-                      (ngModelChange)="updateAsync()">
+                      (ngModelChange)="update()">
   </cc-user-api-select>
 
   <cc-environment-action-select class="u-marginRightSmaller u-marginBottomSmaller"
                                 [(ngModel)]="logsFilter.actions"
-                                (ngModelChange)="updateAsync()">
+                                (ngModelChange)="update()">
   </cc-environment-action-select>
 
   <cc-environment-domain-select class="u-marginRightSmaller u-marginBottomSmaller"
                                 [(ngModel)]="logsFilter.domains"
-                                (ngModelChange)="updateAsync()">
+                                (ngModelChange)="update()">
   </cc-environment-domain-select>
 
   <cc-environment-api-select class="u-marginRightSmaller u-marginBottomSmaller"
                              [(ngModel)]="logsFilter.environments"
-                             (ngModelChange)="updateAsync()">
+                             (ngModelChange)="update()">
   </cc-environment-api-select>
 
   <cc-date-range-select class="u-marginRightSmaller u-marginBottomSmaller"
                         [(ngModel)]="logsFilter.createdOn"
-                        (ngModelChange)="updateAsync()">
+                        (ngModelChange)="update()">
   </cc-date-range-select>
 
   <cc-anonymization-button-group class="u-marginRightSmaller u-marginBottomSmaller"
                                  [(ngModel)]="logsFilter.isAnonymized"
-                                 (ngModelChange)="updateAsync()">
+                                 (ngModelChange)="update()">
   </cc-anonymization-button-group>
 </div>
