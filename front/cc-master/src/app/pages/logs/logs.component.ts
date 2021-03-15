@@ -7,7 +7,6 @@ import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
 import { debounceTime, map, take, takeUntil } from 'rxjs/operators';
 
 import { ILogsFilter } from './models/logs-filter.interface';
-import { ILogsRoutingParams } from './models/logs-routing-params.interface';
 import { LogsApiMappingService } from './services/logs-api-mapping.service';
 import { LogsFilterRoutingService } from './services/logs-filter-routing.service';
 import { LogsRoutingService } from './services/logs-routing.service';
@@ -17,7 +16,7 @@ import { LogsRoutingService } from './services/logs-routing.service';
   templateUrl: './logs.component.html',
 })
 export class LogsComponent implements OnInit, OnDestroy {
-  public filters$: BehaviorSubject<ILogsFilter>;
+  public filters$: Subject<ILogsFilter> = new Subject<ILogsFilter>();
   public sortParams$: BehaviorSubject<ISortParams> = new BehaviorSubject<ISortParams>({
     field: 'createdOn',
     order: SortOrder.Asc,
@@ -41,11 +40,23 @@ export class LogsComponent implements OnInit, OnDestroy {
     private logsFilterRoutingService: LogsFilterRoutingService,
     private pagingService: PagingService,
   ) {
-    this.initLogsFilterAsync(this.logsRoutingService.getLogsRoutingParams())
-      .then(() => this.initHttpParamsUpdateBySubscription());
   }
 
   public ngOnInit(): void {
+    combineLatest([this.sortParams$, this.filters$])
+      .pipe(
+        takeUntil(this.destroySubscription$),
+        debounceTime(300),
+        map(([sort, filter]) => ({ sort, filter })),
+        map(attributes => this.logsApiMappingService.toHttpParams(attributes)),
+      )
+      .subscribe(httpParams => this.paginatedLogs.updateHttpParams(httpParams));
+
+    const routingParams = this.logsRoutingService.getLogsRoutingParams();
+    this.logsFilterRoutingService.toLogsFilter$(routingParams)
+      .pipe(take(1))
+      .subscribe(f => this.filters$.next(f));
+
     this.paginatedLogs = this.pagingService.paginate<IEnvironmentLog>(
       (httpParams) => this.getPaginatedLogs$(httpParams),
     );
@@ -74,23 +85,5 @@ export class LogsComponent implements OnInit, OnDestroy {
     return this.logsService.getLogs$(httpParams).pipe(
       map(response => ({ items: response.items, totalCount: response.count })),
     );
-  }
-
-  private async initLogsFilterAsync(routingParams: ILogsRoutingParams): Promise<void> {
-    const logsFilter = await this.logsFilterRoutingService.toLogsFilter$(routingParams)
-      .pipe(take(1))
-      .toPromise();
-
-    this.filters$ = new BehaviorSubject<ILogsFilter>(logsFilter);
-  }
-
-  private initHttpParamsUpdateBySubscription(): void {
-    combineLatest([this.sortParams$, this.filters$])
-      .pipe(
-        takeUntil(this.destroySubscription$),
-        debounceTime(300),
-        map(([sortParams, filters]) => this.logsApiMappingService.toHttpParams(filters, sortParams)),
-      )
-      .subscribe(httpParams => this.paginatedLogs.updateHttpParams(httpParams));
   }
 }

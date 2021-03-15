@@ -17,15 +17,20 @@ enum EnvironmentLogQueryParamKey {
   IsAnonymized = 'isAnonymizedData'
 }
 
+export class HttpParamsAttributes {
+  filter: ILogsFilter;
+  sort: ISortParams;
+}
+
 @Injectable()
 export class LogsApiMappingService {
 
   constructor(private apiV3DateService: ApiV3DateService) { }
 
-  public toHttpParams(filters: ILogsFilter, sortParams: ISortParams): HttpParams {
+  public toHttpParams(attributes: HttpParamsAttributes): HttpParams {
     let params = new HttpParams();
-    params = this.setSortParams(params, sortParams);
-    return this.setLogsFilter(params, filters);
+    params = this.setSortParams(params, attributes.sort);
+    return this.setLogsFilter(params, attributes.filter);
   }
 
   private setSortParams(params: HttpParams, sortParams: ISortParams): HttpParams {
