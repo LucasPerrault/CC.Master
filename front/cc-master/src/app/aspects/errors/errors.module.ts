@@ -3,8 +3,9 @@ import { ErrorHandler, ModuleWithProviders, NgModule } from '@angular/core';
 import { CcErrorHandler } from '@cc/aspects/errors/error.handler';
 import { HttpErrorInterceptor } from '@cc/aspects/errors/http-error.interceptor';
 import { ToastsService } from '@cc/common/toasts';
-import {LuSentryModule} from '@lucca/sentry/ng';
-import {environment} from '../../../environments/environment';
+import { LuSentryModule } from '@lucca/sentry/ng';
+
+import { environment } from '../../../environments/environment';
 
 @NgModule({
   imports: [
