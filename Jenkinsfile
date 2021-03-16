@@ -16,8 +16,8 @@ node(label: CI.getSelectedNode(script: this)) {
 	def slackChannel = "#cc-ci-cd"
 	def projectTechnicalName = "CC.Master"
 	def slnFilepath = "back\\CC.Master.sln"
-	def repoName = "CC.Master"
-	// def nodeJsVersion = "Node LTS v12.x.y"    -- uncomment when front is migrated
+	def repoName = "CC.Master"	
+    def reportFolderName = "CC.Master-${env.BUILD_NUMBER}-${UUID.randomUUID().toString()}"
 
 	/////////////////////////////////////////////////
 	// Fin des variables à ajuster pour le projet //
@@ -80,9 +80,11 @@ node(label: CI.getSelectedNode(script: this)) {
 
 				installDevtools()
 
+				setupFront(nodeJsVersion: "Node LTS v12.x.y")
+
 			}
 			
-				cleanBack(slnFilepath: slnFilepath)
+			cleanBack(slnFilepath: slnFilepath)
 
 			if(isPr || isMainBranch) {
 				sonar(
@@ -93,7 +95,27 @@ node(label: CI.getSelectedNode(script: this)) {
 					cleanBack(slnFilepath: slnFilepath)
 					buildBack(slnFilepath: slnFilepath)
 					testBack(slnFilepath: slnFilepath)
+				}
+
+				loggableStage('Living Doc') {
+					dir("${WORKSPACE}@tmp") {
+						bat "dotnet tool install --no-cache --tool-path=${WORKSPACE}\\.jenkins\\tools SpecFlow.Plus.LivingDoc.CLI"
 					}
+
+					bat """
+						node back\\Tools\\livingdoc.js
+						livingdoc feature-folder back\\ -t testexecution.json --title ${repoName}
+						exit /b 0
+					"""
+
+					bat """
+						mkdir \\\\labs2\\c\$\\d\\sites\\recette-auto\\${reportFolderName}\\
+						copy LivingDoc.html \\\\labs2\\c\$\\d\\sites\\recette-auto\\${reportFolderName}\\
+						echo "https://recette-auto.lucca.fr/${reportFolderName}/LivingDoc.html"
+						exit /b 0
+					"""
+					slackWarning channel: "cc-ci-cd", message: "${env.BRANCH_NAME} (livingdoc)\n https://recette-auto.lucca.fr/${reportFolderName}/LivingDoc.html"
+				}				
 			}
 
 			if (!isPr) {
@@ -101,7 +123,7 @@ node(label: CI.getSelectedNode(script: this)) {
 					// back
 					def webProjFile = findFiles(glob: "**/CloudControl.Web.csproj").first().path
                     publishBack(startupProjFilepath: webProjFile, framework: "netcoreapp3.1")
-					}
+				}
 
 				archiveElements(back: true, front: false)
 			}
