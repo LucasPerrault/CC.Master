@@ -21,12 +21,12 @@ namespace Instances.Application.Demos
             _rightsFilter = rightsFilters;
         }
 
-        public Task<Page<Demo>> GetDemosAsync(DemoListQuery query)
+        public async Task<Page<Demo>> GetDemosAsync(DemoListQuery query)
         {
-            return _demosStore.GetAsync(
+            return await _demosStore.GetAsync(
                 query.Page,
                 d => d.IsActive == query.IsActive,
-                _rightsFilter.GetDefaultReadFilter(_principal)
+                await _rightsFilter.GetDefaultReadFilterAsync(_principal)
             );
         }
     }
