@@ -1,7 +1,6 @@
 import { ErrorHandler, Injectable } from '@angular/core';
 import { ToastsService, ToastType } from '@cc/common/toasts';
-import {LuSentryErrorHandler} from '@lucca/sentry/ng';
-
+import { LuSentryErrorHandler } from '@lucca/sentry/ng';
 
 @Injectable()
 export class CcErrorHandler implements ErrorHandler {

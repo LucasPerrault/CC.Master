@@ -47,7 +47,7 @@ export class LogsFiltersComponent implements ControlValueAccessor {
     this.logsFilter = logsFilter;
   }
 
-  public async updateAsync(): Promise<void> {
+  public update(): void {
     this.onChange(this.logsFilter);
   }
 }
