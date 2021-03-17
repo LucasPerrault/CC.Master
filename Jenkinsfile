@@ -1,4 +1,4 @@
-@Library('Lucca@v0.7.1')
+@Library('Lucca@v0.25.0')
 
 import hudson.Util;
 import fr.lucca.CI;
@@ -16,12 +16,14 @@ node(label: CI.getSelectedNode(script: this)) {
 	def slackChannel = "#cc-ci-cd"
 	def projectTechnicalName = "CC.Master"
 	def slnFilepath = "back\\CC.Master.sln"
-	def repoName = "CC.Master"
-	// def nodeJsVersion = "Node LTS v12.x.y"    -- uncomment when front is migrated
+	def repoName = "CC.Master"	
+    def reportFolderName = "CC.Master-${env.BUILD_NUMBER}-${UUID.randomUUID().toString()}"
 
 	/////////////////////////////////////////////////
 	// Fin des variables à ajuster pour le projet //
 	/////////////////////////////////////////////////
+
+
 
 	def prepareDirectory = '.prepare';
 	def buildDirectory = '.build';
@@ -37,17 +39,10 @@ node(label: CI.getSelectedNode(script: this)) {
 	}
 
 	def scmVars = null
-	def sonarHostUrl = "https://sonarcloud.io"
-	def sonarRunner = "dotnet-sonarscanner"
-	def coverage = "coverage"
-	def sonarCoverage = "${WORKSPACE}\\${coverage}\\SonarQube.xml"
 
 	try {
 		timeout(time: 15, unit: 'MINUTES') {
 
-			def prefix = ""
-			def suffix = ""
-			def semver = ""
 
 			loggableStage('Notify') {
 				// echo
@@ -57,6 +52,7 @@ node(label: CI.getSelectedNode(script: this)) {
 
 				slackBuildStart channel: slackChannel
 			}
+
 			loggableStage('1. Cleanup') {
 				if(fileExists(prepareDirectory)) {
 					dir(prepareDirectory) {
@@ -75,75 +71,61 @@ node(label: CI.getSelectedNode(script: this)) {
 				}
 			}
 
-
 			loggableStage('2. Prepare') {
 				// git
 				scmVars = checkout scm
 				slackBuildStartUpdate scmVars: scmVars
 
-				// // semver
-				bat "set \"IGNORE_NORMALISATION_GIT_HEAD_MOVE=1\" & dotnet gitversion /output buildserver"
-				def gitVersionProps = readProperties file: 'gitversion.properties'
-				prefix = gitVersionProps["GitVersion_MajorMinorPatch"]
-				suffix = gitVersionProps["GitVersion_NuGetPreReleaseTagV2"]
-				semver = gitVersionProps["GitVersion_AssemblySemVer"]
-				echo "Version calculated : ---------> prefix: ${prefix}  suffix: ${suffix}  semver: ${semver} "
+				computeVersion()
 
-				// lucca
-				bat "dotnet tool install --no-cache --tool-path=${WORKSPACE}\\${prepareDirectory} --add-source http://nuget.lucca.local/nuget devtools"
-				env.PATH="${WORKSPACE}\\${prepareDirectory};${env.PATH}"
-				bat "lucca --version"
+				installDevtools()
+
+				setupFront(nodeJsVersion: "Node LTS v12.x.y")
 
 			}
-			loggableStage('3. Restore') {
-				// back
-				bat "dotnet clean ${slnFilepath}"
-				bat "dotnet restore ${slnFilepath}"
-			}
+			
+			cleanBack(slnFilepath: slnFilepath)
 
-			if(CI.isSonarEnabled(script:this, extraCondition: isPr || isMainBranch)) {
-				loggableStage('4. Qualif') {
-					// sonar start
-					withCredentials([string(credentialsId: 'Sonarcloud', variable: 'Sonarcloud')]) {
-							def sonarArgs = ""
-							if(isPr){
-									sonarArgs = " /d:\"sonar.pullrequest.key=%CHANGE_ID%\" /d:\"sonar.pullrequest.branch=%CHANGE_BRANCH%\" /d:\"sonar.pullrequest.base=%CHANGE_TARGET%\" /d:sonar.pullrequest.provider=GitHub "
-							}
-							def sonarRunnerCommand = "${sonarRunner} begin /o:lucca /k:\"${projectTechnicalName}\" /v:\"${semver}\" /d:\"sonar.host.url=${sonarHostUrl}\" /d:\"sonar.login=%Sonarcloud%\" /d:\"sonar.pullrequest.github.repository=LuccaSA/${repoName}\" ${sonarArgs} /d:sonar.coverageReportPaths=\"${sonarCoverage}\" "
-							echo "bat : ${sonarRunnerCommand}"
-							bat "${sonarRunnerCommand}"
-					}
-
-					// back
-					bat "if exist ${coverage} rmdir /s /q ${coverage}"
-					bat "dotnet test ${slnFilepath} /p:Platform=\"Any CPU\" /nodereuse:false /p:DebugType=Full /p:Configuration=Debug --collect:\"XPlat Code Coverage\" --settings coverlet.runsettings --results-directory:\"${WORKSPACE}\\${coverage}\""
-					bat "reportgenerator \"-reports:${coverage}\\*\\*.xml\" \"-targetdir:${WORKSPACE}\\${coverage}\" -reporttypes:SonarQube"
-
-					// sonar end
-					withCredentials([string(credentialsId: 'Sonarcloud', variable: 'Sonarcloud')]) {
-							bat "${sonarRunner} end /d:\"sonar.login=%Sonarcloud%\" "
-					}
+			if(isPr || isMainBranch) {
+				sonar(
+					repoName: repoName,
+					sonarProjectName: projectTechnicalName,
+					exclusions: "**/Migrations/**",
+				) {
+					cleanBack(slnFilepath: slnFilepath)
+					buildBack(slnFilepath: slnFilepath)
+					testBack(slnFilepath: slnFilepath)
 				}
+
+				loggableStage('Living Doc') {
+					dir("${WORKSPACE}@tmp") {
+						bat "dotnet tool install --no-cache --tool-path=${WORKSPACE}\\.jenkins\\tools SpecFlow.Plus.LivingDoc.CLI"
+					}
+
+					bat """
+						node back\\Tools\\livingdoc.js
+						livingdoc feature-folder back\\ -t testexecution.json --title ${repoName}
+						exit /b 0
+					"""
+
+					bat """
+						mkdir \\\\labs2\\c\$\\d\\sites\\recette-auto\\${reportFolderName}\\
+						copy LivingDoc.html \\\\labs2\\c\$\\d\\sites\\recette-auto\\${reportFolderName}\\
+						echo "https://recette-auto.lucca.fr/${reportFolderName}/LivingDoc.html"
+						exit /b 0
+					"""
+					slackWarning channel: "cc-ci-cd", message: "${env.BRANCH_NAME} (livingdoc)\n https://recette-auto.lucca.fr/${reportFolderName}/LivingDoc.html"
+				}				
 			}
 
 			if (!isPr) {
 				loggableStage('5. Build') {
 					// back
-					def config = "Release"
 					def webProjFile = findFiles(glob: "**/CloudControl.Web.csproj").first().path
-					bat "dotnet publish ${webProjFile} -p:VersionPrefix=${prefix} -p:VersionSuffix=${suffix} -p:AssemblyVersion=${semver} -o ${WORKSPACE}\\${buildDirectory}\\back -c ${config} -f netcoreapp3.1 -r win10-x64 /nodereuse:false --verbosity m"
-
-					withCredentials([file(credentialsId: '86b37cd3-224e-4c64-b90d-843764ba9d30', variable: 'devops_config')]) {
-					}
+                    publishBack(startupProjFilepath: webProjFile, framework: "netcoreapp3.1")
 				}
 
-				loggableStage('6. Archive') {
-					// back
-					zip archive:true, dir: "${buildDirectory}\\back\\", glob: '**/*', zipFile: "${archiveDirectory}/zips/${projectTechnicalName}.back.zip"
-
-					// prod
-					archiveArtifacts artifacts: '.cd/production.json'
-				}
+				archiveElements(back: true, front: false)
 			}
 		}
 	} catch(err) {
