@@ -23,9 +23,9 @@ namespace Authentication.Web.Tests.Controllers
             var response = await _client.GetAsync("/logout");
             Assert.Equal(HttpStatusCode.Redirect, response.StatusCode);
             Assert.Contains(
-                "https://mocked-partenaires.local/logout?callback=https://localhost",
-                response.Headers.GetValues("Location")
-            );
+                    "https://mocked-partenaires.local/logout?callback=https://localhost",
+                    response.Headers.GetValues("Location")
+                );
         }
     }
 }

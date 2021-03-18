@@ -11,20 +11,20 @@ namespace Storage.Infra.Context
             where TContext : CloudControlDbContext<TContext>
         {
             services.AddDbContextOnTenant<TContext>(
-                DatabaseMode.MultiTenant,
-                (sqlOptions) =>
-                {
-                    sqlOptions.EnableRetryOnFailure(5);
-                },
-                (dbContextOptions) =>
-                {
-                    if (!environment.IsProduction())
+                    DatabaseMode.MultiTenant,
+                    (sqlOptions) =>
                     {
-                        dbContextOptions.EnableDetailedErrors();
-                        dbContextOptions.EnableSensitiveDataLogging();
+                        sqlOptions.EnableRetryOnFailure(5);
+                    },
+                    (dbContextOptions) =>
+                    {
+                        if (!environment.IsProduction())
+                        {
+                            dbContextOptions.EnableDetailedErrors();
+                            dbContextOptions.EnableSensitiveDataLogging();
+                        }
                     }
-                }
-            );
+                );
         }
     }
 }

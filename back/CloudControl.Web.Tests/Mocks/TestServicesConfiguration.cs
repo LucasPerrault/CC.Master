@@ -23,7 +23,7 @@ namespace CloudControl.Web.Tests.Mocks
     public class TestServicesConfiguration<TAuthenticationHandler> : ServicesConfiguration where TAuthenticationHandler : AuthenticationHandler<TestAuthenticationOptions>
     {
         public TestServicesConfiguration(IConfiguration configuration, IWebHostEnvironment env)
-        : base(configuration, env)
+            : base(configuration, env)
         { }
 
         public override AppConfiguration ConfigureConfiguration(IServiceCollection services)
@@ -112,11 +112,11 @@ namespace CloudControl.Web.Tests.Mocks
         {
             services
                 .AddHealthCheck(o =>
-                    {
-                        o.ServiceGuid = new Guid("00000000-0000-0000-0000-000000000000");
-                        o.ServiceName = "MOCK";
-                    }
-                );
+                        {
+                            o.ServiceGuid = new Guid("00000000-0000-0000-0000-000000000000");
+                            o.ServiceName = "MOCK";
+                        }
+                    );
         }
 
         public override void ConfigureSalesforce(IServiceCollection services, AppConfiguration configuration)

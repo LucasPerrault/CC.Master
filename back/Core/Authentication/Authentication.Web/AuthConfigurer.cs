@@ -19,9 +19,9 @@ namespace Authentication.Web
         {
             services.AddSingleton(config);
             services.AddTransient
-            (
-                provider => provider.GetService<IHttpContextAccessor>().HttpContext.User
-            );
+                (
+                    provider => provider.GetService<IHttpContextAccessor>().HttpContext.User
+                );
             services.AddLuccaAuthentication<PrincipalStore>();
 
             ConfigureCustomTokensReaders(services);

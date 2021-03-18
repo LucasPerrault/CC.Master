@@ -12,18 +12,18 @@ namespace CloudControl.Web.Configuration
         public const string LuccaLoggerOptionsKey = "LuccaLoggerOptions";
         public const string AppName = "CloudControl";
 
-		public AuthenticationConfiguration Authentication { get; set; }
-		public RightsConfiguration Rights { get; set; }
-		public LegacyCloudControlConfiguration LegacyCloudControl { get; set; }
-		public BillingContractsConfiguration BillingContracts { get; set; }
-		public SalesforceConfiguration Salesforce { get; set; }
+        public AuthenticationConfiguration Authentication { get; set; }
+        public RightsConfiguration Rights { get; set; }
+        public LegacyCloudControlConfiguration LegacyCloudControl { get; set; }
+        public BillingContractsConfiguration BillingContracts { get; set; }
+        public SalesforceConfiguration Salesforce { get; set; }
 
-		public UsersConfiguration Users => new UsersConfiguration
-		{
-			ServerUri = Authentication.ServerUri,
+        public UsersConfiguration Users => new UsersConfiguration
+        {
+            ServerUri = Authentication.ServerUri,
             AllUsersEndpointPath = Authentication.AllUsersEndpointPath,
             UsersEndpointPath = Authentication.UsersEndpointPath,
             UserFetchToken =  Authentication.ApiKeysFetcherToken
-		};
-	}
+        };
+    }
 }

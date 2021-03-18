@@ -20,4 +20,3 @@ namespace CloudControl.Web.Tests.Mocks
         }
     }
 }
-

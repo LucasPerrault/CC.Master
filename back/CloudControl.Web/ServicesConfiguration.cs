@@ -45,25 +45,25 @@ namespace CloudControl.Web
             _hostingEnvironment = env ?? throw new ArgumentNullException(nameof(env));
         }
 
-		public void ConfigureServices(IServiceCollection services)
-		{
-			var configuration = ConfigureConfiguration(services);
-			ConfigureHttpContext(services);
-			ConfigureHealthCheck(services, configuration);
-			ConfigureApi(services);
-			ConfigureLogs(services);
-			// ConfigureSpa(services);
-			ConfigureProxy(services);
-			ConfigureIpFilter(services);
-			ConfigureTenancy(services);
-			ConfigureStorage(services);
-			ConfigureSharedDomains(services, configuration);
-			ConfigureAuthentication(services, configuration);
-			ConfigureRights(services, configuration);
-			ConfigureEnvironments(services, configuration);
-			ConfigureSalesforce(services, configuration);
-			ConfigureBilling(services, configuration);
-		}
+        public void ConfigureServices(IServiceCollection services)
+        {
+            var configuration = ConfigureConfiguration(services);
+            ConfigureHttpContext(services);
+            ConfigureHealthCheck(services, configuration);
+            ConfigureApi(services);
+            ConfigureLogs(services);
+            // ConfigureSpa(services);
+            ConfigureProxy(services);
+            ConfigureIpFilter(services);
+            ConfigureTenancy(services);
+            ConfigureStorage(services);
+            ConfigureSharedDomains(services, configuration);
+            ConfigureAuthentication(services, configuration);
+            ConfigureRights(services, configuration);
+            ConfigureEnvironments(services, configuration);
+            ConfigureSalesforce(services, configuration);
+            ConfigureBilling(services, configuration);
+        }
 
         public virtual AppConfiguration ConfigureConfiguration(IServiceCollection services)
         {
@@ -87,11 +87,11 @@ namespace CloudControl.Web
 
             services
                 .AddHealthCheck(o =>
-                    {
-                        o.ServiceGuid = new Guid("101DFDBD-2438-43D1-9D22-63D1C46B3412");// TODO
-                        o.ServiceName = AppConfiguration.AppName;
-                    }
-                )
+                        {
+                            o.ServiceGuid = new Guid("101DFDBD-2438-43D1-9D22-63D1C46B3412");// TODO
+                            o.ServiceName = AppConfiguration.AppName;
+                        }
+                    )
                 .AddLegacyCheck();
         }
 
@@ -127,21 +127,21 @@ namespace CloudControl.Web
             services.AddTenancy(t => { }, DatabaseMode.MultiTenant);
         }
 
-		public virtual void ConfigureStorage(IServiceCollection services)
-		{
-			StorageConfigurer.ConfigureServices(services, _configuration);
-			services.ConfigureContext<EnvironmentsDbContext>(_hostingEnvironment);
-			services.ConfigureContext<DistributorsDbContext>(_hostingEnvironment);
-			services.ConfigureContext<IpFilterDbContext>(_hostingEnvironment);
-			services.ConfigureContext<ContractsDbContext>(_hostingEnvironment);
-			services.ConfigureContext<UsersDbContext>(_hostingEnvironment);
-		}
+        public virtual void ConfigureStorage(IServiceCollection services)
+        {
+            StorageConfigurer.ConfigureServices(services, _configuration);
+            services.ConfigureContext<EnvironmentsDbContext>(_hostingEnvironment);
+            services.ConfigureContext<DistributorsDbContext>(_hostingEnvironment);
+            services.ConfigureContext<IpFilterDbContext>(_hostingEnvironment);
+            services.ConfigureContext<ContractsDbContext>(_hostingEnvironment);
+            services.ConfigureContext<UsersDbContext>(_hostingEnvironment);
+        }
 
-		public virtual void ConfigureSharedDomains(IServiceCollection services, AppConfiguration configuration)
-		{
-			DistributorsConfigurer.ConfigureServices(services);
-			UsersConfigurer.ConfigureServices(services, configuration.Users);
-		}
+        public virtual void ConfigureSharedDomains(IServiceCollection services, AppConfiguration configuration)
+        {
+            DistributorsConfigurer.ConfigureServices(services);
+            UsersConfigurer.ConfigureServices(services, configuration.Users);
+        }
 
         public virtual void ConfigureAuthentication(IServiceCollection services, AppConfiguration configuration)
         {

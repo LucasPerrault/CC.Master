@@ -24,25 +24,25 @@ namespace CloudControl.Web.Spa
         public static IApplicationBuilder UseFrontApplication(this IApplicationBuilder app, IWebHostEnvironment env)
         {
             app.UseWhen
-            (
-                context => context.IsStaticCall(),
-                app => app.UseSpaStaticFiles(new StaticFileOptions
-                {
-                    FileProvider = new PhysicalFileProvider
-                        (Path.Combine(env.ContentRootPath, GetFrontAppRootPath(env))),
-                    RequestPath = spaStaticPath
-                })
-            );
+                (
+                    context => context.IsStaticCall(),
+                    app => app.UseSpaStaticFiles(new StaticFileOptions
+                    {
+                        FileProvider = new PhysicalFileProvider
+                            (Path.Combine(env.ContentRootPath, GetFrontAppRootPath(env))),
+                        RequestPath = spaStaticPath
+                    })
+                );
 
             app.UseWhen
-            (
-                context => context.IsSpaCall(),
-                app => app.UseSpa(spa =>
-                {
-                    spa.Options.DefaultPage = "/index.html";
-                    spa.Options.SourcePath = env.GetFrontAppRootPath();
-                })
-            );
+                (
+                    context => context.IsSpaCall(),
+                    app => app.UseSpa(spa =>
+                    {
+                        spa.Options.DefaultPage = "/index.html";
+                        spa.Options.SourcePath = env.GetFrontAppRootPath();
+                    })
+                );
 
             return app;
         }
