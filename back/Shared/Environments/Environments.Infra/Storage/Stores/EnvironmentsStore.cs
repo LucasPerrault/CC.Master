@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Environments.Domain;
 using System.Linq;
 using System.Linq.Expressions;
-using Environment = Environments.Domain.Environment;
 
 namespace Environments.Infra.Storage.Stores
 {
@@ -15,7 +13,7 @@ namespace Environments.Infra.Storage.Stores
             _dbContext = dbContext;
         }
 
-        public IQueryable<Environment> GetFilteredAsync(Expression<Func<Environment, bool>> filter)
+        public IQueryable<Environment> GetFilteredAsync(Expression<System.Func<Environment, bool>> filter)
         {
             return _dbContext.Set<Environment>().Where(filter);
         }
