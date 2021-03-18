@@ -4,17 +4,17 @@
     },
     "Authentication": {
         "ServerUri": "{{ CC.Master:AuthenticationTenantUri }}",
-        "UsersEndpointPath": "{{ CC.Master:AuthUsersEndpointPath }}",
-        "ApiKeysEndpointPath": "{{ CC.Master:AuthApiKeysEndpointPath }}",
-        "RedirectEndpointPath": "{{ CC.Master:AuthRedirectEndpointPath }}",
-        "LogoutEndpointPath": "{{ CC.Master:AuthLogoutEndpointPath }}",
-        "ApiKeysFetcherToken": "{{ CC.Master:AuthApiKeysFetcherToken }}"
+        "ApiKeysFetcherToken": "{{ CC.Master:AuthApiKeysFetcherToken }}",
+        "UsersEndpointPath": "/api/v3/users/me",
+        "ApiKeysEndpointPath": "/api/v3/apikeys",
+        "RedirectEndpointPath": "/auth/userlogin",
+        "LogoutEndpointPath": "/logout"
     },
     "Rights": {
         "ServerUri": "{{ CC.Master:RightsTenantUri }}",
-        "DepartmentsEndpointPath": "{{ CC.Master:RightsDepartmentEndpointPath }}",
-        "ForeignAppEndpointPath": "{{ CC.Master:RightsForeignAppEndpointPath }}",
-        "UsersEndpointPath": "{{ CC.Master:RightsUsersEndpointPath }}"
+        "DepartmentsEndpointPath": "/api/v3/departments",
+        "ForeignAppEndpointPath": "/api/v3/foreignapppermissionslookups",
+        "UsersEndpointPath": "/api/v3/userpermissionslookups"
     },
     "LuccaLoggerOptions": {
         "ApplicationName": "CloudControl",
