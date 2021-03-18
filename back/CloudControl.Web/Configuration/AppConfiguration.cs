@@ -21,7 +21,8 @@ namespace CloudControl.Web.Configuration
 		public UsersConfiguration Users => new UsersConfiguration
 		{
 			ServerUri = Authentication.ServerUri,
-			UsersEndpointPath = Authentication.UsersEndpointPath
+			UsersEndpointPath = Authentication.UsersEndpointPath,
+            UserFetchToken =  Authentication.ApiKeysFetcherToken
 		};
 	}
 }

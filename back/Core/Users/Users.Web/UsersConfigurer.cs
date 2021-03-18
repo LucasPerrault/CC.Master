@@ -16,6 +16,15 @@ namespace Users.Web
                     .WithBaseAddress(config.ServerUri, config.UsersEndpointPath);
             });
 
+            services.AddHttpClient<IUsersSyncService, UsersSyncService>(client =>
+            {
+                client.WithUserAgent(nameof(UsersSyncService))
+                    .WithBaseAddress(config.ServerUri, config.UsersEndpointPath)
+                    .WithAuthScheme("Lucca")
+                    .AuthenticateAsApplication(config.UserFetchToken);
+
+            });
+
             services.AddScoped<UsersStore>();
         }
     }

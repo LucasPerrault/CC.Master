@@ -6,5 +6,6 @@ namespace Users.Web
     {
         public Uri ServerUri { get; set; }
         public string UsersEndpointPath { get; set; }
+        public Guid UserFetchToken { get; set; }
     }
 }
