@@ -26,15 +26,10 @@ namespace Authentication.Web
 
             ConfigureCustomTokensReaders(services);
 
+            services.AddSingleton(config);
             services.AddSingleton<AuthRedirectionRemoteService>();
 
-			services.AddScoped<UserAuthenticationRemoteService>();
-
-            services.AddHttpClient<UserAuthenticationRemoteService>((provider, client) =>
-            {
-                client.WithUserAgent(nameof(UserAuthenticationRemoteService))
-                    .WithBaseAddress(config.ServerUri, config.UsersEndpointPath);
-            });
+            services.AddScoped<UserAuthenticationRemoteService>();
 
             services.AddHttpClient<ApiKeyAuthenticationRemoteService>(client =>
             {
