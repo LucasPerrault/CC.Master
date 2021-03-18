@@ -19,7 +19,7 @@ namespace Users.Web
             services.AddHttpClient<IUsersSyncService, UsersSyncService>(client =>
             {
                 client.WithUserAgent(nameof(UsersSyncService))
-                    .WithBaseAddress(config.ServerUri, config.UsersEndpointPath)
+                    .WithBaseAddress(config.ServerUri, config.AllUsersEndpointPath)
                     .WithAuthScheme("Lucca")
                     .AuthenticateAsApplication(config.UserFetchToken);
 

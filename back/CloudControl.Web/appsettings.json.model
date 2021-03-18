@@ -6,6 +6,7 @@
         "ServerUri": "{{ CC.Master:AuthenticationTenantUri }}",
         "ApiKeysFetcherToken": "{{ CC.Master:AuthApiKeysFetcherToken }}",
         "UsersEndpointPath": "/api/v3/users/me",
+        "AllUsersEndpointPath": "/api/v3/users",
         "ApiKeysEndpointPath": "/api/v3/apikeys",
         "RedirectEndpointPath": "/auth/userlogin",
         "LogoutEndpointPath": "/logout"
