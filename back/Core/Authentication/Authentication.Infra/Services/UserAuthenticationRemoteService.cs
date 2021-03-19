@@ -19,25 +19,18 @@ namespace Authentication.Infra.Services
         // will be called with token of current principal
         public async Task<Principal> GetUserPrincipalAsync(Guid token)
         {
-            try
-            {
-                var user = await GetUserAsync(token);
-                if (user == null)
-                {
-                    return null;
-                }
-
-                return new Principal
-                {
-                    Token = token,
-                    UserId = user.Id,
-                    User = user
-                };
-            }
-            catch
+            var user = await GetUserAsync(token);
+            if (user == null)
             {
                 return null;
             }
+
+            return new Principal
+            {
+                Token = token,
+                UserId = user.Id,
+                User = user
+            };
         }
 
         private async Task<User> GetUserAsync(Guid token)

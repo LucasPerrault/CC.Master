@@ -36,24 +36,17 @@ namespace Authentication.Infra.Services
                 { "fields", LuccaApiKey.ApiFields }
             };
 
-            try
-            {
-                var luccaUser = await GetObjectResponseAsync<LuccaApiKey>(token.ToString(), queryParams);
-                var luccaApiKey = luccaUser.Data;
+            var luccaUser = await GetObjectResponseAsync<LuccaApiKey>(token.ToString(), queryParams);
+            var luccaApiKey = luccaUser.Data;
 
-                if (luccaApiKey.Token == default || string.IsNullOrEmpty(luccaApiKey.Name))
-                {
-                    return null;
-                }
-
-                var apiKey= new ApiKey { Token = luccaApiKey.Token, Name = luccaApiKey.Name };
-                _cache.Cache(token, apiKey);
-                return apiKey;
-            }
-            catch
+            if (luccaApiKey.Token == default || string.IsNullOrEmpty(luccaApiKey.Name))
             {
                 return null;
             }
+
+            var apiKey= new ApiKey { Token = luccaApiKey.Token, Name = luccaApiKey.Name };
+            _cache.Cache(token, apiKey);
+            return apiKey;
         }
     }
 }

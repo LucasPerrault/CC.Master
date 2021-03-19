@@ -20,16 +20,8 @@ namespace Users.Infra
             ApplyLateHttpClientAuthentication("Lucca", a => a.AuthenticateAsUser(token));
 
             var queryParams = new Dictionary<string, string> { { "fields", LuccaUser.ApiFields } };
-
-            try
-            {
-                var luccaUser = await GetObjectResponseAsync<LuccaUser>(queryParams);
-                return luccaUser.Data.ToUser();
-            }
-            catch
-            {
-                return null;
-            }
+            var luccaUser = await GetObjectResponseAsync<LuccaUser>(queryParams);
+            return luccaUser.Data.ToUser();
         }
 
     }
