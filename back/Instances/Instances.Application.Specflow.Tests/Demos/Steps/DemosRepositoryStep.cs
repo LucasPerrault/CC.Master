@@ -42,16 +42,29 @@ namespace Instances.Application.Specflow.Tests.Demos.Steps
             _demosContext.DemosListResult = (await demosRepository.GetDemosAsync(demoListQuery)).Items.ToList();
         }
 
-        [Then("it should contain a '(.*)' demo from '(.*)'")]
-        public void ThenItShouldContainADemo(string demoName, string distributorCode)
+        [Then("it should contain (.*)")]
+        public void ThenItShouldContainDemos(bool isTemplateDemo)
         {
-            Assert.Contains(_demosContext.DemosListResult, d => d.Subdomain == demoName && d.Distributor.Code == distributorCode);
+            Assert.Contains(_demosContext.DemosListResult, d => d.IsTemplate == isTemplateDemo);
         }
 
-        [Then("it should not contain any demo from other distributors than '(.*)'")]
-        public void ThenItShouldNotContainAnyOtherDemo(string distributorCode)
+        [Then("it should contain (.*) from '(.*)'")]
+        public void ThenItShouldContainDemosFromDistributor(bool isTemplateDemo, string distributorCode)
         {
-            Assert.DoesNotContain(_demosContext.DemosListResult, d => d.Distributor.Code != distributorCode);
+            Assert.Contains(_demosContext.DemosListResult, d => d.IsTemplate == isTemplateDemo && d.Distributor.Code == distributorCode);
         }
+
+        [Then("it should not contain any (.*) from other distributors than '(.*)'")]
+        public void ThenItShouldNotContainAnyDemosFromDistributorsOtherThan(bool isTemplateDemo, string distributorCode)
+        {
+            Assert.DoesNotContain(_demosContext.DemosListResult, d => d.Distributor.Code != distributorCode && d.IsTemplate == isTemplateDemo);
+        }
+
+        [StepArgumentTransformation(@"'(regular|template)' demos")]
+        public bool IsTemplate(string value)
+        {
+            return value == "template";
+        }
+
     }
 }

@@ -34,7 +34,7 @@ namespace Instances.Domain.Demos
                     return currentUserScope switch
                     {
                         Scope.AllDepartments => _ => true,
-                        Scope.DepartmentOnly => d => d.Distributor.Code == userPrincipal.User.DepartmentCode,
+                        Scope.DepartmentOnly => d => d.Distributor.Code == userPrincipal.User.DepartmentCode || d.IsTemplate,
                         _ => throw new ApplicationException($"Unhandled scope : {currentUserScope}")
                     };
                 case CloudControlApiKeyClaimsPrincipal apiKey:
