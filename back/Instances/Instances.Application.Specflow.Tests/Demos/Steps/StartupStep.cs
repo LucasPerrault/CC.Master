@@ -60,6 +60,7 @@ namespace Instances.Application.Specflow.Tests.Demos.Steps
                 InstanceID = 1,
                 DistributorID = luccaDistributor.Id,
                 Distributor = luccaDistributor,
+                IsTemplate = true,
                 Instance = new Instance()
                 {
                     Id = 1,
@@ -77,6 +78,7 @@ namespace Instances.Application.Specflow.Tests.Demos.Steps
                 IsActive = true,
                 DistributorID = luccaDistributor.Id,
                 Distributor = luccaDistributor,
+                IsTemplate = false,
                 Instance = new Instance()
                 {
                     Id = 2,
@@ -94,6 +96,7 @@ namespace Instances.Application.Specflow.Tests.Demos.Steps
                 IsActive = true,
                 DistributorID = otherDistributor.Id,
                 Distributor = otherDistributor,
+                IsTemplate = false,
                 Instance = new Instance()
                 {
                     Id = 3,
