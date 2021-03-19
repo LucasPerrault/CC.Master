@@ -16,5 +16,6 @@ namespace Instances.Domain.Demos
         public string DistributorID { get; set; }
         public Distributor Distributor { get; set; }
         public string Comment { get; set; }
+        public bool IsTemplate { get; set; }
     }
 }
