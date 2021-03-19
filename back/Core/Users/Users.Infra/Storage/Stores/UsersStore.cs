@@ -35,17 +35,9 @@ namespace Users.Infra.Storage.Stores
             await _context.SaveChangesAsync();
         }
 
-        public Task CreateAsync(User user)
+        public Task CreateAsync(SimpleUser user)
         {
-            var simpleUser = new SimpleUser
-            {
-                Id = user.Id,
-                DepartmentId = user.DepartmentId,
-                FirstName = user.FirstName,
-                LastName = user.LastName
-            };
-
-            _context.Add(simpleUser);
+            _context.Add(user);
             return SaveChangesAsync();
         }
     }

@@ -40,7 +40,16 @@ namespace Users.Infra
                 }
                 else
                 {
-                    await _store.CreateAsync(remoteUser.ToUser());
+                    var simpleUser = new SimpleUser
+                    {
+                        Id = remoteUser.Id,
+                        DepartmentId = remoteUser.DepartmentId,
+                        FirstName = remoteUser.FirstName,
+                        LastName = remoteUser.LastName,
+                        IsActive = remoteUser.DtContractEnd.HasValue && remoteUser.DtContractEnd > now
+                    };
+
+                    await _store.CreateAsync(simpleUser);
                 }
             }
 
