@@ -28,6 +28,8 @@ namespace Authentication.Web
 
             services.AddSingleton(config);
             services.AddSingleton<AuthRedirectionRemoteService>();
+            services.AddSingleton<AuthenticationCache>();
+
 
             services.AddScoped<UserAuthenticationRemoteService>();
 
