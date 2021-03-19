@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using Remote.Infra.Services;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
@@ -27,6 +28,7 @@ namespace Users.Infra
             var localUsers = await _store.GetAllAsync();
             var localUsersDict = localUsers.ToDictionary(u => u.Id, u => u);
 
+            var now = DateTime.Now;
             foreach (var remoteUser in allUsersFromRemote)
             {
                 if (localUsersDict.TryGetValue(remoteUser.Id, out var user))
@@ -34,6 +36,7 @@ namespace Users.Infra
                     user.FirstName = remoteUser.FirstName;
                     user.LastName = remoteUser.LastName;
                     user.DepartmentId = remoteUser.DepartmentId;
+                    user.IsActive = remoteUser.DtContractEnd.HasValue && remoteUser.DtContractEnd > now;
                 }
                 else
                 {

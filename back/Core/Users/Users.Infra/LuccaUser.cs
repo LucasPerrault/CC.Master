@@ -1,10 +1,11 @@
-﻿using Users.Domain;
+﻿using System;
+using Users.Domain;
 
 namespace Users.Infra
 {
     internal class LuccaUser
     {
-        public static readonly string ApiFields = $"{nameof(Id)},{nameof(FirstName)},{nameof(LastName)},{nameof(Mail)},{nameof(Login)},{nameof(Department)}[{LuccaDepartment.ApiFields}],{nameof(ManagerId)},{nameof(DepartmentId)},{nameof(LegalEntityId)}";
+        public static readonly string ApiFields = $"{nameof(Id)},{nameof(FirstName)},{nameof(LastName)},{nameof(Mail)},{nameof(Login)},{nameof(Department)}[{LuccaDepartment.ApiFields}],{nameof(ManagerId)},{nameof(DepartmentId)},{nameof(LegalEntityId)},{nameof(DtContractEnd)}";
 
         public int Id { get; set; }
         public string FirstName { get; set; }
@@ -15,6 +16,7 @@ namespace Users.Infra
         public int? ManagerId { get; set; }
         public int DepartmentId { get; set; }
         public int LegalEntityId { get; set; }
+        public DateTime? DtContractEnd { get; set; }
     }
 
     internal class LuccaDepartment

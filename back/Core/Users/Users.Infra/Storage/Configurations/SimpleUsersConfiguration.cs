@@ -14,6 +14,7 @@ namespace Users.Infra.Storage.Configurations
             builder.Property(u => u.FirstName).HasColumnName("FirstName").HasMaxLength(300);
             builder.Property(u => u.LastName).HasColumnName("LastName").HasMaxLength(300);
             builder.Property(u => u.DepartmentId).HasColumnName("DepartmentId");
+            builder.Property(u => u.IsActive).HasColumnName("IsActive");
 
             builder.HasIndex(u => u.Id).IsUnique();
         }
