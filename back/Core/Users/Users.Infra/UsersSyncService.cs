@@ -25,13 +25,12 @@ namespace Users.Infra
             var allUsersFromRemote = await GetUsersFromRemoteAsync();
 
             var localUsers = await _store.GetAllAsync();
-            var lucasUsersDict = localUsers.ToDictionary(u => u.Id, u => u);
+            var localUsersDict = localUsers.ToDictionary(u => u.Id, u => u);
 
             foreach (var remoteUser in allUsersFromRemote)
             {
-                if (lucasUsersDict.TryGetValue(remoteUser.Id, out var user))
+                if (localUsersDict.TryGetValue(remoteUser.Id, out var user))
                 {
-
                     user.FirstName = remoteUser.FirstName;
                     user.LastName = remoteUser.LastName;
                     user.DepartmentId = remoteUser.DepartmentId;
