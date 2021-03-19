@@ -9,7 +9,7 @@ using Users.Infra.Storage;
 namespace Users.Infra.Migrations
 {
     [DbContext(typeof(UsersDbContext))]
-    [Migration("20210210190522_CreateTableUsers")]
+    [Migration("20210319121904_CreateTableUsers")]
     partial class CreateTableUsers
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -23,10 +23,9 @@ namespace Users.Infra.Migrations
 
             modelBuilder.Entity("Users.Domain.SimpleUser", b =>
                 {
-                    b.Property<int>("TechnicalId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                    b.Property<int>("Id")
+                        .HasColumnName("PartenairesId")
+                        .HasColumnType("int");
 
                     b.Property<int>("DepartmentId")
                         .HasColumnName("DepartmentId")
@@ -37,16 +36,16 @@ namespace Users.Infra.Migrations
                         .HasColumnType("nvarchar(300)")
                         .HasMaxLength(300);
 
-                    b.Property<int>("Id")
-                        .HasColumnName("PartenairesId")
-                        .HasColumnType("int");
+                    b.Property<bool>("IsActive")
+                        .HasColumnName("IsActive")
+                        .HasColumnType("bit");
 
                     b.Property<string>("LastName")
                         .HasColumnName("LastName")
                         .HasColumnType("nvarchar(300)")
                         .HasMaxLength(300);
 
-                    b.HasKey("TechnicalId");
+                    b.HasKey("Id");
 
                     b.HasIndex("Id")
                         .IsUnique();

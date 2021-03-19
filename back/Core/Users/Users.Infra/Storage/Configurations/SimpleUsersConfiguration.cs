@@ -9,8 +9,7 @@ namespace Users.Infra.Storage.Configurations
         public void Configure(EntityTypeBuilder<SimpleUser> builder)
         {
             builder.ToTable("Users");
-            builder.HasKey(u => u.TechnicalId);
-            builder.Property(u => u.Id).HasColumnName("PartenairesId");
+            builder.Property(u => u.Id).HasColumnName("PartenairesId").ValueGeneratedNever();
             builder.Property(u => u.FirstName).HasColumnName("FirstName").HasMaxLength(300);
             builder.Property(u => u.LastName).HasColumnName("LastName").HasMaxLength(300);
             builder.Property(u => u.DepartmentId).HasColumnName("DepartmentId");

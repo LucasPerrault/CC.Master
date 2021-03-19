@@ -20,37 +20,36 @@ namespace Users.Infra.Migrations
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
             modelBuilder.Entity("Users.Domain.SimpleUser", b =>
-            {
-                b.Property<int>("TechnicalId")
-                    .ValueGeneratedOnAdd()
-                    .HasColumnType("int")
-                    .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                {
+                    b.Property<int>("Id")
+                        .HasColumnName("PartenairesId")
+                        .HasColumnType("int");
 
-                b.Property<int>("DepartmentId")
-                    .HasColumnName("DepartmentId")
-                    .HasColumnType("int");
+                    b.Property<int>("DepartmentId")
+                        .HasColumnName("DepartmentId")
+                        .HasColumnType("int");
 
-                b.Property<string>("FirstName")
-                    .HasColumnName("FirstName")
-                    .HasColumnType("nvarchar(300)")
-                    .HasMaxLength(300);
+                    b.Property<string>("FirstName")
+                        .HasColumnName("FirstName")
+                        .HasColumnType("nvarchar(300)")
+                        .HasMaxLength(300);
 
-                b.Property<int>("Id")
-                    .HasColumnName("PartenairesId")
-                    .HasColumnType("int");
+                    b.Property<bool>("IsActive")
+                        .HasColumnName("IsActive")
+                        .HasColumnType("bit");
 
-                b.Property<string>("LastName")
-                    .HasColumnName("LastName")
-                    .HasColumnType("nvarchar(300)")
-                    .HasMaxLength(300);
+                    b.Property<string>("LastName")
+                        .HasColumnName("LastName")
+                        .HasColumnType("nvarchar(300)")
+                        .HasMaxLength(300);
 
-                b.HasKey("TechnicalId");
+                    b.HasKey("Id");
 
-                b.HasIndex("Id")
-                    .IsUnique();
+                    b.HasIndex("Id")
+                        .IsUnique();
 
-                b.ToTable("Users");
-            });
+                    b.ToTable("Users");
+                });
 #pragma warning restore 612, 618
         }
     }

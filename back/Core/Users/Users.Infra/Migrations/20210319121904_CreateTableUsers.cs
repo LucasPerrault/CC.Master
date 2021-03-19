@@ -14,16 +14,15 @@ namespace Users.Infra.Migrations
                 schema: "shared",
                 columns: table => new
                 {
-                    TechnicalId = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
                     PartenairesId = table.Column<int>(nullable: false),
                     FirstName = table.Column<string>(maxLength: 300, nullable: true),
                     LastName = table.Column<string>(maxLength: 300, nullable: true),
-                    DepartmentId = table.Column<int>(nullable: false)
+                    DepartmentId = table.Column<int>(nullable: false),
+                    IsActive = table.Column<bool>(nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Users", x => x.TechnicalId);
+                    table.PrimaryKey("PK_Users", x => x.PartenairesId);
                 });
 
             migrationBuilder.CreateIndex(
