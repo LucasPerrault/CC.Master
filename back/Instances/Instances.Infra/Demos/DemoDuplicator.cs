@@ -1,6 +1,7 @@
 ﻿using Authentication.Domain;
 using Distributors.Infra.Storage.Stores;
 using Instances.Domain.Demos;
+using Instances.Domain.Instances;
 using Lucca.Core.Rights.Abstractions;
 using Lucca.Core.Shared.Domain.Exceptions;
 using Rights.Domain;
@@ -15,19 +16,25 @@ namespace Instances.Infra.Demos
     {
         private readonly IRightsService _rightsService;
         private readonly DistributorsStore _distributorsStore;
+        private readonly ISubdomainValidator _subdomainValidator;
 
-        public DemoDuplicator(IRightsService rightsService, DistributorsStore distributorsStore)
+        public DemoDuplicator
+        (
+            IRightsService rightsService,
+            DistributorsStore distributorsStore,
+            ISubdomainValidator subdomainValidator
+        )
         {
             _rightsService = rightsService;
             _distributorsStore = distributorsStore;
+            _subdomainValidator = subdomainValidator;
         }
 
         public async Task DuplicateAsync(DemoDuplication duplication, ClaimsPrincipal principal)
         {
             await ThrowIfForbiddenAsync(duplication, principal);
 
-            // ensure subdomain is available, source demo exists, distributor selection is okay...
-
+            var subdomain = await GetSubdomainAsync(duplication);
             // determine sql scripts to run on newly copied db
 
             // Request remote database creation
@@ -37,6 +44,30 @@ namespace Instances.Infra.Demos
             // change password for all users
 
             // create SSO for demo if necessary
+        }
+
+        private async Task<string> GetSubdomainAsync(DemoDuplication duplication)
+        {
+            await _subdomainValidator.ThrowIfInvalidAsync(duplication.Subdomain);
+
+            if (await _subdomainValidator.IsAvailableAsync(duplication.Subdomain))
+            {
+                return duplication.Subdomain;
+            }
+
+            if (duplication.IsStrictSubdomainSelection)
+            {
+                throw new BadRequestException($"Subdomain {duplication.Subdomain} is not available");
+            }
+
+            var availableSubdomain = await _subdomainValidator.GetAvailableSubdomainAsync(duplication.Subdomain);
+            if (string.IsNullOrEmpty(availableSubdomain))
+            {
+                throw new BadRequestException($"Subdomain {duplication.Subdomain} is not available");
+            }
+
+            return availableSubdomain;
+
         }
 
         private async Task ThrowIfForbiddenAsync(DemoDuplication duplication, ClaimsPrincipal claimsPrincipal)

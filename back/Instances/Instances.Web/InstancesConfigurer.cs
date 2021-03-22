@@ -1,5 +1,7 @@
 using Instances.Application.Demos;
 using Instances.Domain.Demos;
+using Instances.Domain.Instances;
+using Instances.Infra.Demos;
 using Instances.Infra.Storage.Stores;
 using Lucca.Core.Api.Abstractions;
 using Lucca.Core.Api.Web;
@@ -14,6 +16,7 @@ namespace Instances.Web
             services.AddScoped<IDemosStore, DemosStore>();
             services.AddScoped<IDemoRightsFilter, DemoRightsFilter>();
             services.AddScoped<DemosRepository>();
+            services.AddScoped<ISubdomainValidator, SubdomainValidator>();
         }
 
         public static LuccaApiBuilder ConfigureLuccaApiForInstances(this LuccaApiBuilder luccaApiBuilder)

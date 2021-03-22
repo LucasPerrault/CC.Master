@@ -28,6 +28,11 @@ namespace Instances.Infra.Storage.Stores
             return GetAsync(token, filters.CombineSafely());
         }
 
+        public IQueryable<Demo> GetAllAsync()
+        {
+            return Demos;
+        }
+
         public Task<Page<Demo>> GetAsync(IPageToken token, Expression<Func<Demo, bool>> filter)
         {
             return _queryPager.ToPageAsync(Demos.Where(filter), token);
