@@ -2,6 +2,7 @@
 using Distributors.Infra.Storage.Stores;
 using Instances.Domain.Demos;
 using Instances.Domain.Instances;
+using Instances.Infra.DbDuplication;
 using Lucca.Core.Rights.Abstractions;
 using Lucca.Core.Shared.Domain.Exceptions;
 using Rights.Domain;
@@ -17,17 +18,20 @@ namespace Instances.Infra.Demos
         private readonly IRightsService _rightsService;
         private readonly DistributorsStore _distributorsStore;
         private readonly ISubdomainValidator _subdomainValidator;
+        private readonly DatabaseDuplicator _databaseDuplicator;
 
         public DemoDuplicator
         (
             IRightsService rightsService,
             DistributorsStore distributorsStore,
-            ISubdomainValidator subdomainValidator
+            ISubdomainValidator subdomainValidator,
+            DatabaseDuplicator databaseDuplicator
         )
         {
             _rightsService = rightsService;
             _distributorsStore = distributorsStore;
             _subdomainValidator = subdomainValidator;
+            _databaseDuplicator = databaseDuplicator;
         }
 
         public async Task DuplicateAsync(DemoDuplication duplication, ClaimsPrincipal principal)
@@ -35,9 +39,14 @@ namespace Instances.Infra.Demos
             await ThrowIfForbiddenAsync(duplication, principal);
 
             var subdomain = await GetSubdomainAsync(duplication);
-            // determine sql scripts to run on newly copied db
 
-            // Request remote database creation
+            var distributor = await _distributorsStore.GetByIdAsync(duplication.DistributorId);
+            var databaseDuplication = new DatabaseDuplication
+            {
+                Distributor = distributor,
+                Type = DatabaseType.Demos
+            };
+            await _databaseDuplicator.DuplicateOnRemoteAsync(databaseDuplication);
 
             // create demo on local
 
