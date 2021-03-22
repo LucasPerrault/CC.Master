@@ -44,7 +44,7 @@ namespace Authentication.Infra.Services
                 return null;
             }
 
-            var apiKey= new ApiKey { Token = luccaApiKey.Token, Name = luccaApiKey.Name };
+            var apiKey = new ApiKey { Token = luccaApiKey.Token, Name = luccaApiKey.Name };
             _cache.Cache(token, apiKey);
             return apiKey;
         }
