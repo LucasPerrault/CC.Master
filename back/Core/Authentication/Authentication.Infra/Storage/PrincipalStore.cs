@@ -45,7 +45,7 @@ namespace Authentication.Infra.Storage
             }
             catch (Exception e)
             {
-                _logger.LogError(e, "Could resolve principal for incoming request");
+                _logger.LogError(e, "Could not resolve principal for incoming request");
                 throw;
             }
         }

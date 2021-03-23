@@ -36,7 +36,7 @@ namespace Users.Infra
                     user.FirstName = remoteUser.FirstName;
                     user.LastName = remoteUser.LastName;
                     user.DepartmentId = remoteUser.DepartmentId;
-                    user.IsActive = remoteUser.DtContractEnd.HasValue && remoteUser.DtContractEnd > now;
+                    user.IsActive = remoteUser.IsActive;
                 }
                 else
                 {
@@ -46,7 +46,7 @@ namespace Users.Infra
                         DepartmentId = remoteUser.DepartmentId,
                         FirstName = remoteUser.FirstName,
                         LastName = remoteUser.LastName,
-                        IsActive = remoteUser.DtContractEnd.HasValue && remoteUser.DtContractEnd > now
+                        IsActive = remoteUser.IsActive
                     };
 
                     await _store.CreateAsync(simpleUser);

@@ -17,6 +17,8 @@ namespace Users.Infra
         public int DepartmentId { get; set; }
         public int LegalEntityId { get; set; }
         public DateTime? DtContractEnd { get; set; }
+
+        public bool IsActive => DtContractEnd.HasValue && DtContractEnd > DateTime.Now;
     }
 
     internal class LuccaDepartment
