@@ -86,7 +86,23 @@ namespace Rights.Infra.Services
                 default:
                     throw new ApplicationException("Unhandled ClaimsPrincipal type");
             };
+        }
 
+        public async Task<ISet<int>> GetExternalItemsAsync(params Operation[] operations)
+        {
+            var operationsSet = operations.Select(o => (int)o).ToHashSet();
+            return _principal switch
+            {
+                CloudControlUserClaimsPrincipal userPrincipal =>
+                    (await _permissionsStore.GetUserPermissionsAsync(userPrincipal.User.Id, RightsHelper.CloudControlAppInstanceId, operationsSet))
+                        .Select(up => up.ExternalEntityId)
+                        .ToHashSet(),
+                CloudControlApiKeyClaimsPrincipal apiKey =>
+                    (await _permissionsStore.GetApiKeyPermissionsAsync(apiKey.ApiKey.Id, RightsHelper.CloudControlAppInstanceId, operationsSet))
+                        .Select(akp => akp.ExternalEntityId)
+                        .ToHashSet(),
+                _ => throw new ApplicationException("Unhandled ClaimsPrincipal type")
+            };
         }
 
         private Scope GetHighestScope(IGrouping<Operation, IUserPermission> permissions)

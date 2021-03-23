@@ -11,5 +11,6 @@ namespace Rights.Domain.Abstractions
         Task ThrowIfAllOperationsAreMissingAsync(params Operation[] operations);
         Task<Scope> GetUserOperationHighestScopeAsync(Operation operation);
         Task<Dictionary<Operation, Scope>> GetUserOperationsHighestScopeAsync(params Operation[] operations);
+        Task<ISet<int>> GetExternalItemsAsync(params Operation[] operations);
     }
 }
