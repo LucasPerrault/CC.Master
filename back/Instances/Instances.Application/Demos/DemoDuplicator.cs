@@ -19,7 +19,7 @@ namespace Instances.Application.Demos
         private readonly DistributorsStore _distributorsStore;
         private readonly ISubdomainValidator _subdomainValidator;
         private readonly IDatabaseDuplicator _databaseDuplicator;
-        private readonly IUsersPasswordResetService _usersPasswordResetService;
+        private readonly IDemoUsersPasswordResetService _usersPasswordResetService;
 
         public DemoDuplicator
         (
@@ -27,7 +27,7 @@ namespace Instances.Application.Demos
             DistributorsStore distributorsStore,
             ISubdomainValidator subdomainValidator,
             IDatabaseDuplicator databaseDuplicator,
-            IUsersPasswordResetService usersPasswordResetService
+            IDemoUsersPasswordResetService usersPasswordResetService
         )
         {
             _rightsService = rightsService;
@@ -54,7 +54,7 @@ namespace Instances.Application.Demos
             // create demo on local
             // create demo instance
 
-            await _usersPasswordResetService.ResetPasswordAsync(instance, duplication.Password);
+            await _usersPasswordResetService.ResetPasswordAsync(demo, duplication.Password);
 
             // copy sgf files
 

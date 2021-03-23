@@ -6,6 +6,8 @@ namespace Instances.Domain.Demos
 {
     public class Demo
     {
+        public const string DemoDomain = "ilucca-demo.net";
+
         public int Id { get; set; }
         public string Subdomain { get; set; }
         public DateTime CreatedAt { get; set; }
@@ -17,5 +19,7 @@ namespace Instances.Domain.Demos
         public Distributor Distributor { get; set; }
         public string Comment { get; set; }
         public bool IsTemplate { get; set; }
+
+        public Uri Href => new Uri($"{Subdomain}.{DemoDomain}");
     }
 }

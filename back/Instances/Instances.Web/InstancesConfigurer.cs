@@ -22,6 +22,9 @@ namespace Instances.Web
             services.AddScoped<IDemoRightsFilter, DemoRightsFilter>();
             services.AddScoped<DemosRepository>();
             services.AddScoped<ISubdomainValidator, SubdomainValidator>();
+            services.AddScoped<IUsersPasswordResetService, UsersPasswordResetService>();
+
+            services.AddScoped<IDemoUsersPasswordResetService, DemoUsersPasswordResetService>();
         }
 
         public static LuccaApiBuilder ConfigureLuccaApiForInstances(this LuccaApiBuilder luccaApiBuilder)
