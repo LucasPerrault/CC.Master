@@ -25,7 +25,7 @@ namespace Instances.Infra.Demos
 
     public class SubdomainValidator : ISubdomainValidator
     {
-        private const string SubdomainRegex = "[a-z0-9-]+";
+        private const string SubdomainRegex = @"^(?!-)[a-z0-9-]{1,63}(?<!-)$";
         private const int SubdomainMinLength = 2;
         private const int SubdomainMaxLength = 200;
         private const int MaxDemoPerRequestSubdomain = 10;
