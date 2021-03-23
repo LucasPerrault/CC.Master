@@ -1,12 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
+using Environments.Domain.Storage;
+using System;
 using System.Linq;
 using System.Linq.Expressions;
 using Environment = Environments.Domain.Environment;
 
 namespace Environments.Infra.Storage.Stores
 {
-    public class EnvironmentsStore
+    public class EnvironmentsStore : IEnvironmentsStore
     {
         private readonly EnvironmentsDbContext _dbContext;
 

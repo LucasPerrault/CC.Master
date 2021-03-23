@@ -1,6 +1,6 @@
 ﻿using Authentication.Domain;
 using Environments.Domain;
-using Environments.Infra.Storage.Stores;
+using Environments.Domain.Storage;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,11 +11,11 @@ namespace Environments.Application
 {
     public class EnvironmentsRepository
     {
-        private readonly EnvironmentsStore _store;
+        private readonly IEnvironmentsStore _store;
         private readonly ClaimsPrincipal _principal;
         private readonly IEnvironmentFilter _filter;
 
-        public EnvironmentsRepository(EnvironmentsStore store, ClaimsPrincipal principal, IEnvironmentFilter filter)
+        public EnvironmentsRepository(IEnvironmentsStore store, ClaimsPrincipal principal, IEnvironmentFilter filter)
         {
             _store = store;
             _principal = principal;

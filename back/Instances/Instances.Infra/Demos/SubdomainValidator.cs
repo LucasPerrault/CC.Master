@@ -1,4 +1,4 @@
-﻿using Environments.Infra.Storage.Stores;
+using Environments.Domain.Storage;
 using Instances.Domain.Instances;
 using Instances.Infra.Storage.Stores;
 using Lucca.Core.Shared.Domain.Exceptions;
@@ -31,9 +31,9 @@ namespace Instances.Infra.Demos
         private const int MaxDemoPerRequestSubdomain = 10;
 
         private readonly DemosStore _demosStore;
-        private readonly EnvironmentsStore _environmentsStore;
+        private readonly IEnvironmentsStore _environmentsStore;
 
-        public SubdomainValidator(DemosStore demosStore, EnvironmentsStore environmentsStore)
+        public SubdomainValidator(DemosStore demosStore, IEnvironmentsStore environmentsStore)
         {
             _demosStore = demosStore;
             _environmentsStore = environmentsStore;
