@@ -8,6 +8,7 @@
     <ProjectReference Include="..\..\Core\Storage\Storage.Infra\Storage.Infra.csproj" />
     <ProjectReference Include="..\..\Shared\Distributors\Distributors.Infra\Distributors.Infra.csproj" />
     <ProjectReference Include="..\..\Shared\Environments\Environments.Infra\Environments.Infra.csproj" />
+    <ProjectReference Include="..\..\Shared\Remote\Remote.Infra\Remote.Infra.csproj" />
     <ProjectReference Include="..\Instances.Domain\Instances.Domain.csproj" />
   </ItemGroup>
 
@@ -16,6 +17,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="IdentityModel" Version="3.10.9" />
     <PackageReference Include="Lucca.Core.Shared.Domain" Version="2.0.13" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="3.1.7" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="3.1.7">

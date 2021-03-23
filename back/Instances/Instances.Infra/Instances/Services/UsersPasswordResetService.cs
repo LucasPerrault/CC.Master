@@ -1,4 +1,6 @@
+using IdentityModel.Client;
 using Newtonsoft.Json;
+using Remote.Infra.Extensions;
 using System;
 using System.Net.Http;
 using System.Text;
@@ -15,18 +17,46 @@ namespace Instances.Infra.Instances.Services
     {
         private const string _mediaType = "application/json";
         private const string _identityPasswordResetRoute = "/identity/api/users/resetallpasswords";
-        private readonly HttpClient _client;
 
-        public UsersPasswordResetService(HttpClient client)
+        private readonly IHttpClientFactory _clientFactory;
+        private readonly IdentityAuthenticationConfig _identityAuthenticationConfig;
+
+        public UsersPasswordResetService(IHttpClientFactory clientFactory, IdentityAuthenticationConfig identityAuthenticationConfig)
         {
-            _client = client;
+            _clientFactory = clientFactory;
+            _identityAuthenticationConfig = identityAuthenticationConfig;
         }
 
         public async Task ResetPasswordAsync(Uri instanceHref, string password)
         {
+            var client = await GetAuthenticatedClientAsync(instanceHref);
             var uri = new Uri(instanceHref, _identityPasswordResetRoute);
             var payload = GetPayload(password);
-            await _client.PostAsync(uri, payload);
+            await client.PostAsync(uri, payload);
+        }
+
+        private async Task<HttpClient> GetAuthenticatedClientAsync(Uri instanceHref)
+        {
+            var client = _clientFactory.CreateClient();
+            client.WithUserAgent(nameof(UsersPasswordResetService));
+
+            var uri = new Uri(instanceHref, _identityAuthenticationConfig.TokenRequestRoute);
+            var tokenResponse = await client.RequestClientCredentialsTokenAsync(new ClientCredentialsTokenRequest
+            {
+                Address = uri.ToString(),
+                ClientId = _identityAuthenticationConfig.ClientId,
+                ClientCredentialStyle = ClientCredentialStyle.AuthorizationHeader,
+                ClientSecret = _identityAuthenticationConfig.ClientSecret,
+                Scope = IdentityAuthenticationConfig.ImpersonationScope
+            });
+
+            if (tokenResponse.IsError)
+            {
+                throw new ApplicationException($"Could not authenticate {nameof(UsersPasswordResetService)} to identity");
+            }
+
+            client.SetBearerToken(tokenResponse.AccessToken);
+            return client;
         }
 
         private StringContent GetPayload(string password)
@@ -38,8 +68,8 @@ namespace Instances.Infra.Instances.Services
 
         private class PasswordResetPayload
         {
-
             public string Password { get; }
+
             public PasswordResetPayload(string password)
             {
                 Password = password;

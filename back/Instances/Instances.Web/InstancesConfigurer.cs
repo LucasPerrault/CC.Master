@@ -3,6 +3,7 @@ using Instances.Domain.Demos;
 using Instances.Domain.Instances;
 using Instances.Infra.DbDuplication;
 using Instances.Infra.Demos;
+using Instances.Infra.Instances;
 using Instances.Infra.Instances.Services;
 using Instances.Infra.Storage.Stores;
 using Lucca.Core.Api.Abstractions;
@@ -13,8 +14,14 @@ namespace Instances.Web
 {
     public static class InstancesConfigurer
     {
-        public static void ConfigureServices(IServiceCollection services)
+        public class InstancesConfiguration
         {
+            public IdentityAuthenticationConfig Identity { get; set; }
+        }
+
+        public static void ConfigureServices(IServiceCollection services, InstancesConfiguration configuration)
+        {
+            services.AddSingleton(configuration.Identity);
             services.AddSingleton<IDatabaseDuplicator, DatabaseDuplicator>();
             services.AddSingleton<SqlScriptPicker>();
 
@@ -22,9 +29,10 @@ namespace Instances.Web
             services.AddScoped<IDemoRightsFilter, DemoRightsFilter>();
             services.AddScoped<DemosRepository>();
             services.AddScoped<ISubdomainValidator, SubdomainValidator>();
-            services.AddScoped<IUsersPasswordResetService, UsersPasswordResetService>();
 
             services.AddScoped<IDemoUsersPasswordResetService, DemoUsersPasswordResetService>();
+
+            services.AddScoped<IUsersPasswordResetService, UsersPasswordResetService>();
         }
 
         public static LuccaApiBuilder ConfigureLuccaApiForInstances(this LuccaApiBuilder luccaApiBuilder)

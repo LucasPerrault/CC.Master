@@ -39,5 +39,12 @@
         "ServerUri": "{{ CC.Master:SalesforceUri }}",
         "AccountsEndpointPath": "/salesforce/accounts",
         "Token": "{{ CC.Master:SalesforceToken }}"
+    },
+    "Instances": {
+        "Identity": {
+            "ClientId": "cloud.control",
+            "ClientSecret": "{{ CC.Master:IdentityClientSecret }}",
+            "TokenRequestRoute": "/identity/connect/token"
+        }
     }
 }
