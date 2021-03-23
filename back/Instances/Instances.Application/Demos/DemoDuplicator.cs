@@ -52,7 +52,9 @@ namespace Instances.Application.Demos
             await _databaseDuplicator.DuplicateOnRemoteAsync(databaseDuplication);
 
             // create demo on local
-            // create demo instance
+            Demo demo = null;
+            // create demo instance*
+            demo.Instance = null;
 
             await _usersPasswordResetService.ResetPasswordAsync(demo, duplication.Password);
 
