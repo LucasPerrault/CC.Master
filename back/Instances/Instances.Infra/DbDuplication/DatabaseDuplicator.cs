@@ -2,7 +2,12 @@
 
 namespace Instances.Infra.DbDuplication
 {
-    public class DatabaseDuplicator
+    public interface IDatabaseDuplicator
+    {
+        Task DuplicateOnRemoteAsync(DatabaseDuplication duplication);
+    }
+
+    public class DatabaseDuplicator : IDatabaseDuplicator
     {
         private readonly SqlScriptPicker _scriptPicker;
 

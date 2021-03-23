@@ -11,27 +11,30 @@ using System;
 using System.Security.Claims;
 using System.Threading.Tasks;
 
-namespace Instances.Infra.Demos
+namespace Instances.Application.Demos
 {
     public class DemoDuplicator
     {
         private readonly IRightsService _rightsService;
         private readonly DistributorsStore _distributorsStore;
         private readonly ISubdomainValidator _subdomainValidator;
-        private readonly DatabaseDuplicator _databaseDuplicator;
+        private readonly IDatabaseDuplicator _databaseDuplicator;
+        private readonly IUsersPasswordResetService _usersPasswordResetService;
 
         public DemoDuplicator
         (
             IRightsService rightsService,
             DistributorsStore distributorsStore,
             ISubdomainValidator subdomainValidator,
-            DatabaseDuplicator databaseDuplicator
+            IDatabaseDuplicator databaseDuplicator,
+            IUsersPasswordResetService usersPasswordResetService
         )
         {
             _rightsService = rightsService;
             _distributorsStore = distributorsStore;
             _subdomainValidator = subdomainValidator;
             _databaseDuplicator = databaseDuplicator;
+            _usersPasswordResetService = usersPasswordResetService;
         }
 
         public async Task DuplicateAsync(DemoDuplication duplication, ClaimsPrincipal principal)
@@ -49,8 +52,11 @@ namespace Instances.Infra.Demos
             await _databaseDuplicator.DuplicateOnRemoteAsync(databaseDuplication);
 
             // create demo on local
+            // create demo instance
 
-            // change password for all users
+            await _usersPasswordResetService.ResetPasswordAsync(instance, duplication.Password);
+
+            // copy sgf files
 
             // create SSO for demo if necessary
         }
@@ -76,7 +82,6 @@ namespace Instances.Infra.Demos
             }
 
             return availableSubdomain;
-
         }
 
         private async Task ThrowIfForbiddenAsync(DemoDuplication duplication, ClaimsPrincipal claimsPrincipal)

@@ -3,6 +3,7 @@ using Instances.Domain.Demos;
 using Instances.Domain.Instances;
 using Instances.Infra.DbDuplication;
 using Instances.Infra.Demos;
+using Instances.Infra.Instances.Services;
 using Instances.Infra.Storage.Stores;
 using Lucca.Core.Api.Abstractions;
 using Lucca.Core.Api.Web;
@@ -14,7 +15,7 @@ namespace Instances.Web
     {
         public static void ConfigureServices(IServiceCollection services)
         {
-            services.AddSingleton<DatabaseDuplicator>();
+            services.AddSingleton<IDatabaseDuplicator, DatabaseDuplicator>();
             services.AddSingleton<SqlScriptPicker>();
 
             services.AddScoped<IDemosStore, DemosStore>();
