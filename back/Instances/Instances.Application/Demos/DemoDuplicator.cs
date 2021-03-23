@@ -3,6 +3,7 @@ using Distributors.Infra.Storage.Stores;
 using Instances.Domain.Demos;
 using Instances.Domain.Instances;
 using Instances.Infra.DbDuplication;
+using Instances.Infra.Instances.Services;
 using Lucca.Core.Rights.Abstractions;
 using Lucca.Core.Shared.Domain.Exceptions;
 using Rights.Domain;
@@ -19,6 +20,7 @@ namespace Instances.Application.Demos
         private readonly DistributorsStore _distributorsStore;
         private readonly ISubdomainValidator _subdomainValidator;
         private readonly IDatabaseDuplicator _databaseDuplicator;
+        private readonly IUsersPasswordHelper _passwordHelper;
         private readonly IDemoUsersPasswordResetService _usersPasswordResetService;
 
         public DemoDuplicator
@@ -27,6 +29,7 @@ namespace Instances.Application.Demos
             DistributorsStore distributorsStore,
             ISubdomainValidator subdomainValidator,
             IDatabaseDuplicator databaseDuplicator,
+            IUsersPasswordHelper passwordHelper,
             IDemoUsersPasswordResetService usersPasswordResetService
         )
         {
@@ -34,12 +37,14 @@ namespace Instances.Application.Demos
             _distributorsStore = distributorsStore;
             _subdomainValidator = subdomainValidator;
             _databaseDuplicator = databaseDuplicator;
+            _passwordHelper = passwordHelper;
             _usersPasswordResetService = usersPasswordResetService;
         }
 
         public async Task DuplicateAsync(DemoDuplication duplication, ClaimsPrincipal principal)
         {
             await ThrowIfForbiddenAsync(duplication, principal);
+            ThrowIfInvalid(duplication);
 
             var subdomain = await GetSubdomainAsync(duplication);
 
@@ -61,6 +66,11 @@ namespace Instances.Application.Demos
             // copy sgf files
 
             // create SSO for demo if necessary
+        }
+
+        private void ThrowIfInvalid(DemoDuplication duplication)
+        {
+            _passwordHelper.ThrowIfInvalid(duplication.Password);
         }
 
         private async Task<string> GetSubdomainAsync(DemoDuplication duplication)

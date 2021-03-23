@@ -23,6 +23,7 @@ namespace Instances.Web
         {
             services.AddSingleton(configuration.Identity);
             services.AddSingleton<IDatabaseDuplicator, DatabaseDuplicator>();
+            services.AddSingleton<IUsersPasswordHelper, UsersPasswordHelper>();
             services.AddSingleton<SqlScriptPicker>();
 
             services.AddScoped<IDemosStore, DemosStore>();

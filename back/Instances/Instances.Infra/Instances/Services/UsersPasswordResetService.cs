@@ -18,17 +18,25 @@ namespace Instances.Infra.Instances.Services
         private const string _mediaType = "application/json";
         private const string _identityPasswordResetRoute = "/identity/api/users/resetallpasswords";
 
+        private readonly IUsersPasswordHelper _passwordHelper;
         private readonly IHttpClientFactory _clientFactory;
         private readonly IdentityAuthenticationConfig _identityAuthenticationConfig;
 
-        public UsersPasswordResetService(IHttpClientFactory clientFactory, IdentityAuthenticationConfig identityAuthenticationConfig)
+        public UsersPasswordResetService
+        (
+            IUsersPasswordHelper passwordHelper,
+            IHttpClientFactory clientFactory,
+            IdentityAuthenticationConfig identityAuthenticationConfig
+        )
         {
+            _passwordHelper = passwordHelper;
             _clientFactory = clientFactory;
             _identityAuthenticationConfig = identityAuthenticationConfig;
         }
 
         public async Task ResetPasswordAsync(Uri instanceHref, string password)
         {
+            _passwordHelper.ThrowIfInvalid(password);
             var client = await GetAuthenticatedClientAsync(instanceHref);
             var uri = new Uri(instanceHref, _identityPasswordResetRoute);
             var payload = GetPayload(password);
