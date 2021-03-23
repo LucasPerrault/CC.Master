@@ -6,7 +6,7 @@ namespace Environments.Domain.Storage
 {
     public interface IEnvironmentsStore
     {
-        IQueryable<Environment> GetFilteredAsync(Expression<Func<Environment, bool>> filter);
+        IQueryable<Environment> GetFilteredAsync(params Expression<Func<Environment, bool>>[] filters);
         IQueryable<Environment> GetAllAsync();
     }
 }

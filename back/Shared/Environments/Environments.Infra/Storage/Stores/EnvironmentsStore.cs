@@ -1,4 +1,5 @@
 using Environments.Domain.Storage;
+using Storage.Infra.Stores;
 using System;
 using System.Linq;
 using System.Linq.Expressions;
@@ -15,9 +16,9 @@ namespace Environments.Infra.Storage.Stores
             _dbContext = dbContext;
         }
 
-        public IQueryable<Environment> GetFilteredAsync(Expression<Func<Environment, bool>> filter)
+        public IQueryable<Environment> GetFilteredAsync(params Expression<Func<Environment, bool>>[] filters)
         {
-            return _dbContext.Set<Environment>().Where(filter);
+            return _dbContext.Set<Environment>().Where(filters.CombineSafely());
         }
 
         public IQueryable<Environment> GetAllAsync()
