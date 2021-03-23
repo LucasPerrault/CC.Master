@@ -4,10 +4,8 @@ using Lucca.Core.Api.Queryable.Paging;
 using Microsoft.EntityFrameworkCore;
 using Storage.Infra.Stores;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Instances.Infra.Storage.Stores
@@ -36,6 +34,11 @@ namespace Instances.Infra.Storage.Stores
         public Task<Page<Demo>> GetAsync(IPageToken token, Expression<Func<Demo, bool>> filter)
         {
             return _queryPager.ToPageAsync(Demos.Where(filter), token);
+        }
+
+        public Task<Demo> GetByInstanceIdAsync(int instanceId)
+        {
+            return Demos.SingleOrDefaultAsync(d => d.InstanceID == instanceId);
         }
 
         private IQueryable<Demo> Demos => _dbContext.Set<Demo>().Include(d => d.Instance);
