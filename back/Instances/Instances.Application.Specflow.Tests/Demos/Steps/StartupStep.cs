@@ -5,10 +5,6 @@ using Instances.Domain.Demos;
 using Instances.Domain.Instances.Models;
 using Instances.Infra.Storage;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using TechTalk.SpecFlow;
 
 namespace Instances.Application.Specflow.Tests.Demos.Steps

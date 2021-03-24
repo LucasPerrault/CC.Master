@@ -5,7 +5,7 @@ namespace Instances.Domain.Instances
     public interface ISubdomainValidator
     {
         Task ThrowIfInvalidAsync(string subdomain);
-        Task<bool> IsAvailableAsync(string subdomain);
-        Task<string> GetAvailableSubdomainAsync(string subdomain);
+        bool IsAvailable(string subdomain);
+        string GetAvailableSubdomain(string subdomain);
     }
 }

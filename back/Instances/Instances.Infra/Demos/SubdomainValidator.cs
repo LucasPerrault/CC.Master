@@ -65,17 +65,14 @@ namespace Instances.Infra.Demos
             return Task.CompletedTask;
         }
 
-        public async Task<bool> IsAvailableAsync(string subdomain)
+        public bool IsAvailable(string subdomain)
         {
-            var envTask = _environmentsStore.GetAllAsync()
+            return _environmentsStore.GetAllAsync()
                 .Where(e => e.IsActive)
-                .AllAsync(e => e.Subdomain.ToLower() != subdomain);
-
-            var demoTask = _demosStore.GetAllAsync()
-                .Where(d => d.IsActive)
-                .AllAsync(d => d.Subdomain.ToLower() != subdomain);
-
-            return await envTask && await demoTask;
+                .All(e => e.Subdomain.ToLower() != subdomain)
+                && _demosStore.GetAllAsync()
+                    .Where(d => d.IsActive)
+                    .All(d => d.Subdomain.ToLower() != subdomain);
         }
 
         private HashSet<string> GetUsedSubdomainsByPrefix(string prefix)
@@ -96,10 +93,10 @@ namespace Instances.Infra.Demos
             return usedSubdomains.ToHashSet();
         }
 
-        public async Task<string> GetAvailableSubdomainAsync(string subdomain)
+        public string GetAvailableSubdomain(string subdomain)
         {
             var usedSubdomains = GetUsedSubdomainsByPrefix(subdomain);
-            if (await IsAvailableAsync(subdomain))
+            if (IsAvailable(subdomain))
             {
                 return subdomain;
             }

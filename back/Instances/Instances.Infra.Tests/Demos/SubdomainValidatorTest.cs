@@ -28,7 +28,7 @@ namespace Instances.Infra.Tests.Demos
         [InlineData("aperture-science")]
         [InlineData("Aperture-science")]
         [InlineData("APERTURE-SCIENCE")]
-        public async Task IsAvailableAsync_ShouldReturnTrue_WhenSubdomainIsNotTaken(string takenSubdomain)
+        public void IsAvailableAsync_ShouldReturnTrue_WhenSubdomainIsNotTaken(string takenSubdomain)
         {
 
             var demos = new List<Demo>
@@ -44,14 +44,14 @@ namespace Instances.Infra.Tests.Demos
             _envStoreMock.Setup(s => s.GetAllAsync()).Returns(envs.AsQueryable().BuildMock().Object);
             var subdomainValidator = new SubdomainValidator(_demosStoreMock.Object, _envStoreMock.Object);
 
-            Assert.True(await subdomainValidator.IsAvailableAsync("aperture-science"));
+            Assert.True(subdomainValidator.IsAvailable("aperture-science"));
         }
 
         [Theory]
         [InlineData("aperture-science")]
         [InlineData("Aperture-science")]
         [InlineData("APERTURE-SCIENCE")]
-        public async Task IsAvailableAsync_ShouldReturnFalse_WhenSubdomainIsTakenByActiveDemo(string takenSubdomain)
+        public void  IsAvailableAsync_ShouldReturnFalse_WhenSubdomainIsTakenByActiveDemo(string takenSubdomain)
         {
             var demos = new List<Demo>
             {
@@ -66,7 +66,7 @@ namespace Instances.Infra.Tests.Demos
             _envStoreMock.Setup(s => s.GetAllAsync()).Returns(envs.AsQueryable().BuildMock().Object);
             var subdomainValidator = new SubdomainValidator(_demosStoreMock.Object, _envStoreMock.Object);
 
-            Assert.False(await subdomainValidator.IsAvailableAsync("aperture-science"));
+            Assert.False(subdomainValidator.IsAvailable("aperture-science"));
         }
 
         [Theory]

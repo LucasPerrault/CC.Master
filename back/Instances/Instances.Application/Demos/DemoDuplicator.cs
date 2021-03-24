@@ -105,7 +105,7 @@ namespace Instances.Application.Demos
         {
             await _subdomainValidator.ThrowIfInvalidAsync(duplication.Subdomain);
 
-            if (await _subdomainValidator.IsAvailableAsync(duplication.Subdomain))
+            if (_subdomainValidator.IsAvailable(duplication.Subdomain))
             {
                 return duplication.Subdomain;
             }
@@ -115,7 +115,7 @@ namespace Instances.Application.Demos
                 throw new BadRequestException($"Subdomain {duplication.Subdomain} is not available");
             }
 
-            var availableSubdomain = await _subdomainValidator.GetAvailableSubdomainAsync(duplication.Subdomain);
+            var availableSubdomain = _subdomainValidator.GetAvailableSubdomain(duplication.Subdomain);
             if (string.IsNullOrEmpty(availableSubdomain))
             {
                 throw new BadRequestException($"Subdomain {duplication.Subdomain} is not available");
