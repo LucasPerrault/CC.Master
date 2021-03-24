@@ -41,6 +41,23 @@ namespace Instances.Infra.Storage.Stores
             return Demos.SingleOrDefaultAsync(d => d.InstanceID == instanceId);
         }
 
+        public async Task<Demo> CreateAsync(string subdomain, string distributorId, string comment)
+        {
+            var demo = new Demo
+            {
+                Subdomain = subdomain,
+                DistributorID = distributorId,
+                Comment = comment,
+                CreatedAt = DateTime.Now,
+                DeletionScheduledOn = DateTime.Now.AddDays(62),
+                IsActive = true,
+                IsTemplate = false
+            };
+            await _dbContext.Set<Demo>().AddAsync(demo);
+            await _dbContext.SaveChangesAsync();
+            return demo;
+        }
+
         private IQueryable<Demo> Demos => _dbContext.Set<Demo>().Include(d => d.Instance);
     }
 }

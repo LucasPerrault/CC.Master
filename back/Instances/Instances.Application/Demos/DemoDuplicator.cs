@@ -16,6 +16,7 @@ namespace Instances.Application.Demos
 {
     public class DemoDuplicator
     {
+        private readonly IDemosStore _demosStore;
         private readonly IRightsService _rightsService;
         private readonly DistributorsStore _distributorsStore;
         private readonly ISubdomainValidator _subdomainValidator;
@@ -25,6 +26,7 @@ namespace Instances.Application.Demos
 
         public DemoDuplicator
         (
+            IDemosStore demosStore,
             IRightsService rightsService,
             DistributorsStore distributorsStore,
             ISubdomainValidator subdomainValidator,
@@ -33,6 +35,7 @@ namespace Instances.Application.Demos
             IDemoUsersPasswordResetService usersPasswordResetService
         )
         {
+            _demosStore = demosStore;
             _rightsService = rightsService;
             _distributorsStore = distributorsStore;
             _subdomainValidator = subdomainValidator;
@@ -57,7 +60,7 @@ namespace Instances.Application.Demos
             await _databaseDuplicator.DuplicateOnRemoteAsync(databaseDuplication);
 
             // create demo on local
-            Demo demo = null;
+            Demo demo = await _demosStore.CreateAsync(subdomain, duplication.DistributorId, duplication.Comment);
             // create demo instance*
             demo.Instance = null;
 
