@@ -32,6 +32,7 @@ using Salesforce.Web;
 using Lucca.Core.Api.Queryable.EntityFrameworkCore;
 using Instances.Web;
 using Instances.Infra.Storage;
+using Remote.Infra;
 
 namespace CloudControl.Web
 {
@@ -61,7 +62,6 @@ namespace CloudControl.Web
             ConfigureSharedDomains(services);
             ConfigureAuthentication(services, configuration);
             ConfigureRights(services, configuration);
-            ConfigureEnvironments(services, configuration);
             ConfigureSalesforce(services, configuration);
             ConfigureBilling(services, configuration);
             ConfigureInstances(services, configuration);
@@ -144,6 +144,8 @@ namespace CloudControl.Web
         public virtual void ConfigureSharedDomains(IServiceCollection services)
         {
             DistributorsConfigurer.ConfigureServices(services);
+            EnvironmentsConfigurer.ConfigureEnvironments(services);
+            RemoteConfigurer.ConfigureRemote(services);
         }
 
         public virtual void ConfigureAuthentication(IServiceCollection services, AppConfiguration configuration)
@@ -179,11 +181,6 @@ namespace CloudControl.Web
         public virtual void ConfigureSpa(IServiceCollection services)
         {
             services.RegisterFrontApplication(_hostingEnvironment);
-        }
-
-        public virtual void ConfigureEnvironments(IServiceCollection services, AppConfiguration configuration)
-        {
-            EnvironmentsConfigurer.ConfigureEnvironments(services);
         }
 
         public virtual void ConfigureSalesforce(IServiceCollection services, AppConfiguration configuration)

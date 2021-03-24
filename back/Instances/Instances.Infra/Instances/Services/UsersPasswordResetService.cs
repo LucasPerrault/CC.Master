@@ -1,5 +1,5 @@
-using IdentityModel.Client;
 using Remote.Infra.Extensions;
+using Remote.Infra.Services;
 using System;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -17,17 +17,20 @@ namespace Instances.Infra.Instances.Services
 
         private readonly IUsersPasswordHelper _passwordHelper;
         private readonly IHttpClientFactory _clientFactory;
+        private readonly IHttpClientOAuthAuthenticator _oAuthAuthenticator;
         private readonly IdentityAuthenticationConfig _identityAuthenticationConfig;
 
         public UsersPasswordResetService
         (
             IUsersPasswordHelper passwordHelper,
             IHttpClientFactory clientFactory,
+            IHttpClientOAuthAuthenticator oAuthAuthenticator,
             IdentityAuthenticationConfig identityAuthenticationConfig
         )
         {
             _passwordHelper = passwordHelper;
             _clientFactory = clientFactory;
+            _oAuthAuthenticator = oAuthAuthenticator;
             _identityAuthenticationConfig = identityAuthenticationConfig;
         }
 
@@ -47,29 +50,22 @@ namespace Instances.Infra.Instances.Services
             var client = _clientFactory.CreateClient();
             client.WithUserAgent(nameof(UsersPasswordResetService));
 
-            var uri = new Uri(instanceHref, _identityAuthenticationConfig.TokenRequestRoute);
-            var tokenResponse = await client.RequestClientCredentialsTokenAsync(new ClientCredentialsTokenRequest
+            try
             {
-                Address = uri.ToString(),
-                ClientId = _identityAuthenticationConfig.ClientId,
-                ClientCredentialStyle = ClientCredentialStyle.AuthorizationHeader,
-                ClientSecret = _identityAuthenticationConfig.ClientSecret,
-                Scope = IdentityAuthenticationConfig.ImpersonationScope
-            });
+                await _oAuthAuthenticator.AuthenticateAsync(client, new OAuthAuthentication
+                {
+                   Uri = new Uri(instanceHref, _identityAuthenticationConfig.TokenRequestRoute),
+                   ClientId = _identityAuthenticationConfig.ClientId,
+                   ClientSecret = _identityAuthenticationConfig.ClientSecret,
+                   Scope = IdentityAuthenticationConfig.ImpersonationScope
+                });
 
-            if (tokenResponse.IsError)
-            {
-                throw new ApplicationException($"Could not authenticate {nameof(UsersPasswordResetService)} to identity");
+                return client;
             }
-
-            client.SetBearerToken(tokenResponse.AccessToken);
-            return client;
-        }
-
-        private StringContent GetPayload(string password)
-        {
-            var payload = new PasswordResetPayload(password);
-            return payload.ToJsonPayload();
+            catch (OAuthAuthenticationFailureException e)
+            {
+                throw new ApplicationException($"Could not authenticate {nameof(UsersPasswordResetService)} to identity", e);
+            }
         }
 
         private class PasswordResetPayload
