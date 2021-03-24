@@ -34,6 +34,23 @@ namespace Remote.Infra.Services
             return await ParseResponseAsync<TResult>(response);
         }
 
+        protected Task<TResult> PostGenericObjectResponseAsync<TForm, TResult>(TForm content, Dictionary<string, string> queryParams)
+        {
+            return PostGenericObjectResponseAsync<TForm, TResult>(string.Empty, content, queryParams);
+        }
+
+        protected async Task<TResult> PostGenericObjectResponseAsync<TForm, TResult>(string urlSegment, TForm content, Dictionary<string, string> queryParams)
+        {
+            var requestUri = QueryHelpers.AddQueryString(urlSegment, queryParams);
+            var requestMessage = new HttpRequestMessage(HttpMethod.Post, requestUri);
+
+            using var httpContent = content.ToJsonPayload();
+            requestMessage.Content = httpContent;
+
+            var response = await _httpClient.SendAsync(requestMessage);
+            return await ParseResponseAsync<TResult>(response);
+        }
+
         protected async Task<TResult> PutGenericObjectResponseAsync<TForm, TResult>(string id, TForm content, Dictionary<string, string> queryParams)
         {
             var requestUri = QueryHelpers.AddQueryString(id, queryParams);

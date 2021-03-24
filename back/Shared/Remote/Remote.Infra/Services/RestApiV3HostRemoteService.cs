@@ -37,6 +37,16 @@ namespace Remote.Infra.Services
             return PutGenericObjectResponseAsync<TForm, RestApiV3Response<TResult>>(id, content, queryParams);
         }
 
+        protected Task<RestApiV3Response<TResult>> PostObjectResponseAsync<TForm, TResult>(string urlSegment, TForm content, Dictionary<string, string> queryParams)
+        {
+            return PostGenericObjectResponseAsync<TForm, RestApiV3Response<TResult>>(urlSegment, content, queryParams);
+        }
+
+        protected Task<RestApiV3Response<TResult>> PostObjectResponseAsync<TForm, TResult>(TForm content, Dictionary<string, string> queryParams)
+        {
+            return PostGenericObjectResponseAsync<TForm, RestApiV3Response<TResult>>(content, queryParams);
+        }
+
         protected override string GetErrorMessage(JsonTextReader jsonTextReader)
         {
             var error = _jsonSerializer.Deserialize<RestApiV3Error>(jsonTextReader);
