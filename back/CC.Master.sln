@@ -115,6 +115,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{59382D24-498B-4874-8BA0-1B8448D7322A}"
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
+		.gitignore = .gitignore
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Instances.Application.Specflow.Tests", "Instances\Instances.Application.Specflow.Tests\Instances.Application.Specflow.Tests.csproj", "{B23F9087-AE0B-445C-8BF5-D57A6B44AA1C}"
