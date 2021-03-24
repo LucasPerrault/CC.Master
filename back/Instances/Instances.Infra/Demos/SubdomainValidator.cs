@@ -25,7 +25,7 @@ namespace Instances.Infra.Demos
 
     public class SubdomainValidator : ISubdomainValidator
     {
-        private const string SubdomainRegex = @"^(?!-)[a-z0-9-]{1,63}(?<!-)$";
+        private const string SubdomainRegex = @"^(?!-)[a-z0-9-]+(?<!-)$";
         private const int SubdomainMinLength = 2;
         private const int SubdomainMaxLength = 200;
         private const int MaxDemoPerRequestSubdomain = 10;
@@ -69,11 +69,11 @@ namespace Instances.Infra.Demos
         {
             var envTask = _environmentsStore.GetAllAsync()
                 .Where(e => e.IsActive)
-                .AllAsync(e => e.Subdomain != subdomain);
+                .AllAsync(e => e.Subdomain.ToLower() != subdomain);
 
             var demoTask = _demosStore.GetAllAsync()
                 .Where(d => d.IsActive)
-                .AllAsync(d => d.Subdomain != subdomain);
+                .AllAsync(d => d.Subdomain.ToLower() != subdomain);
 
             return await envTask && await demoTask;
         }
