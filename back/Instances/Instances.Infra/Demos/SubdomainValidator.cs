@@ -1,6 +1,6 @@
 using Environments.Domain.Storage;
+using Instances.Domain.Demos;
 using Instances.Domain.Instances;
-using Instances.Infra.Storage.Stores;
 using Lucca.Core.Shared.Domain.Exceptions;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
@@ -30,10 +30,10 @@ namespace Instances.Infra.Demos
         private const int SubdomainMaxLength = 200;
         private const int MaxDemoPerRequestSubdomain = 10;
 
-        private readonly DemosStore _demosStore;
+        private readonly IDemosStore _demosStore;
         private readonly IEnvironmentsStore _environmentsStore;
 
-        public SubdomainValidator(DemosStore demosStore, IEnvironmentsStore environmentsStore)
+        public SubdomainValidator(IDemosStore demosStore, IEnvironmentsStore environmentsStore)
         {
             _demosStore = demosStore;
             _environmentsStore = environmentsStore;
