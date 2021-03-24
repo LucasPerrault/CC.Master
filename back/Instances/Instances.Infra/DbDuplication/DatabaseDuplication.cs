@@ -14,5 +14,6 @@ namespace Instances.Infra.DbDuplication
     {
         public DatabaseType Type { get; set; }
         public Distributor Distributor { get; set; }
+        public string Cluster { get; set; }
     }
 }

@@ -26,6 +26,7 @@ namespace Instances.Web
             services.AddSingleton<IUsersPasswordHelper, UsersPasswordHelper>();
             services.AddSingleton<SqlScriptPicker>();
 
+            services.AddScoped<IInstancesStore, InstancesRemoteStore>();
             services.AddScoped<IDemosStore, DemosStore>();
             services.AddScoped<IDemoRightsFilter, DemoRightsFilter>();
             services.AddScoped<DemosRepository>();

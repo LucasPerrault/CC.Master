@@ -17,6 +17,7 @@ namespace Instances.Application.Demos
     public class DemoDuplicator
     {
         private readonly IDemosStore _demosStore;
+        private readonly IInstancesStore _instancesStore;
         private readonly IRightsService _rightsService;
         private readonly DistributorsStore _distributorsStore;
         private readonly ISubdomainValidator _subdomainValidator;
@@ -27,6 +28,7 @@ namespace Instances.Application.Demos
         public DemoDuplicator
         (
             IDemosStore demosStore,
+            IInstancesStore instancesStore,
             IRightsService rightsService,
             DistributorsStore distributorsStore,
             ISubdomainValidator subdomainValidator,
@@ -36,6 +38,7 @@ namespace Instances.Application.Demos
         )
         {
             _demosStore = demosStore;
+            _instancesStore = instancesStore;
             _rightsService = rightsService;
             _distributorsStore = distributorsStore;
             _subdomainValidator = subdomainValidator;
@@ -52,23 +55,29 @@ namespace Instances.Application.Demos
             var subdomain = await GetSubdomainAsync(duplication);
 
             var distributor = await _distributorsStore.GetByIdAsync(duplication.DistributorId);
+
+            var clusterTarget = GetClusterTarget(duplication);
             var databaseDuplication = new DatabaseDuplication
             {
                 Distributor = distributor,
-                Type = DatabaseType.Demos
+                Type = DatabaseType.Demos,
+                Cluster = clusterTarget
             };
             await _databaseDuplicator.DuplicateOnRemoteAsync(databaseDuplication);
 
-            // create demo on local
             Demo demo = await _demosStore.CreateAsync(subdomain, duplication.DistributorId, duplication.Comment);
-            // create demo instance*
-            demo.Instance = null;
+            demo.Instance = await _instancesStore.CreateForDemoAsync(duplication.Password, clusterTarget);
 
             await _usersPasswordResetService.ResetPasswordAsync(demo, duplication.Password);
 
             // copy sgf files
 
             // create SSO for demo if necessary
+        }
+
+        private string GetClusterTarget(DemoDuplication duplication)
+        {
+            return "demos";
         }
 
         private void ThrowIfInvalid(DemoDuplication duplication)
