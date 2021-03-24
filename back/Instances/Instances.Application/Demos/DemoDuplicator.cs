@@ -2,6 +2,7 @@
 using Distributors.Infra.Storage.Stores;
 using Instances.Domain.Demos;
 using Instances.Domain.Instances;
+using Instances.Domain.Instances.Models;
 using Instances.Infra.DbDuplication;
 using Instances.Infra.Instances.Services;
 using Lucca.Core.Rights.Abstractions;
@@ -65,14 +66,29 @@ namespace Instances.Application.Demos
             };
             await _databaseDuplicator.DuplicateOnRemoteAsync(databaseDuplication);
 
-            Demo demo = await _demosStore.CreateAsync(subdomain, duplication.DistributorId, duplication.Comment);
-            demo.Instance = await _instancesStore.CreateForDemoAsync(duplication.Password, clusterTarget);
-
+            var instance = await _instancesStore.CreateForDemoAsync(duplication.Password, clusterTarget);
+            var demo = CreateDemo(subdomain, duplication, instance);
+            await _demosStore.CreateAsync(demo);
             await _usersPasswordResetService.ResetPasswordAsync(demo, duplication.Password);
 
             // copy sgf files
 
             // create SSO for demo if necessary
+        }
+
+        private Demo CreateDemo(string subdomain, DemoDuplication duplication, Instance instance)
+        {
+            return new Demo
+            {
+                Subdomain = subdomain,
+                DistributorID = duplication.DistributorId,
+                Comment = duplication.Comment,
+                CreatedAt = DateTime.Now,
+                DeletionScheduledOn = DateTime.Now.AddDays(62),
+                IsActive = true,
+                IsTemplate = false,
+                InstanceID =  instance.Id
+            };
         }
 
         private string GetClusterTarget(DemoDuplication duplication)

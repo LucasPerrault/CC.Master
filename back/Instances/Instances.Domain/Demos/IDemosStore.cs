@@ -9,6 +9,6 @@ namespace Instances.Domain.Demos
     {
         Task<Page<Demo>> GetAsync(IPageToken token, params Expression<Func<Demo, bool>>[] filters);
         Task<Demo> GetByInstanceIdAsync(int instanceId);
-        Task<Demo> CreateAsync(string subdomain, string distributorId, string comment);
+        Task<Demo> CreateAsync(Demo demo);
     }
 }
