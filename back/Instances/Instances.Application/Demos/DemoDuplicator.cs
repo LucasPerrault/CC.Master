@@ -1,5 +1,5 @@
 ﻿using Authentication.Domain;
-using Distributors.Infra.Storage.Stores;
+using Distributors.Domain;
 using Instances.Domain.Demos;
 using Instances.Domain.Instances;
 using Instances.Domain.Instances.Models;
@@ -20,7 +20,7 @@ namespace Instances.Application.Demos
         private readonly IDemosStore _demosStore;
         private readonly IInstancesStore _instancesStore;
         private readonly IRightsService _rightsService;
-        private readonly DistributorsStore _distributorsStore;
+        private readonly IDistributorsStore _distributorsStore;
         private readonly ISubdomainValidator _subdomainValidator;
         private readonly IDatabaseDuplicator _databaseDuplicator;
         private readonly IUsersPasswordHelper _passwordHelper;
@@ -31,7 +31,7 @@ namespace Instances.Application.Demos
             IDemosStore demosStore,
             IInstancesStore instancesStore,
             IRightsService rightsService,
-            DistributorsStore distributorsStore,
+            IDistributorsStore distributorsStore,
             ISubdomainValidator subdomainValidator,
             IDatabaseDuplicator databaseDuplicator,
             IUsersPasswordHelper passwordHelper,
