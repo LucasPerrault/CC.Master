@@ -31,9 +31,14 @@ namespace Instances.Infra.Storage.Stores
             return Demos;
         }
 
-        public Task<Page<Demo>> GetAsync(IPageToken token, Expression<Func<Demo, bool>> filter)
+        public async Task<Page<Demo>> GetAsync(IPageToken token, Expression<Func<Demo, bool>> filter)
         {
-            return _queryPager.ToPageAsync(Demos.Where(filter), token);
+            return await _queryPager.ToPageAsync(await GetAsync(filter), token);
+        }
+
+        public Task<IQueryable<Demo>> GetAsync(Expression<Func<Demo, bool>> filter)
+        {
+            return Task.FromResult(Demos.Where(filter));
         }
 
         public Task<Demo> GetByInstanceIdAsync(int instanceId)

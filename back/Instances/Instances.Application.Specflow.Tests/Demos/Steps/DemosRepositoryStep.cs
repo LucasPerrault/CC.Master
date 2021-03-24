@@ -11,6 +11,7 @@ using Instances.Infra.DbDuplication;
 using Instances.Infra.Demos;
 using Instances.Infra.Instances.Services;
 using Instances.Infra.Storage.Stores;
+using Lucca.Core.Shared.Domain.Exceptions;
 using Moq;
 using Rights.Domain;
 using Rights.Domain.Abstractions;
@@ -54,13 +55,20 @@ namespace Instances.Application.Specflow.Tests.Demos.Steps
 
             var distributorStoreMock = new Mock<IDistributorsStore>();
             distributorStoreMock.Setup(s => s.GetByCodeAsync(It.IsAny<string>()))
-                .Returns(Task.FromResult(new Distributor { Id = distributorId, Code = distributorId }));
+                .Returns<string>(distributor => Task.FromResult(new Distributor
+                {
+                    Id = distributor,
+                    Code = distributor
+                }));
 
             var instancesStoreMock = new Mock<IInstancesStore>();
             instancesStoreMock.Setup(s => s.CreateForDemoAsync(It.IsAny<string>(), It.IsAny<string>()))
                 .Returns(Task.FromResult(new Instance { Id = 1}));
 
             var rightsServiceMock = new Mock<IRightsService>();
+            rightsServiceMock.Setup(rs => rs.GetUserOperationHighestScopeAsync(It.IsAny<Operation>()))
+                .ReturnsAsync((Operation op) => _demosContext.OperationsWithScope[op]);
+
             var envStoreMock = new Mock<IEnvironmentsStore>();
             var dbDuplicatorMock = new Mock<IDatabaseDuplicator>();
             var passwordResetMock = new Mock<IDemoUsersPasswordResetService>();
@@ -74,6 +82,7 @@ namespace Instances.Application.Specflow.Tests.Demos.Steps
                 new SubdomainValidator(demosStore, envStoreMock.Object),
                 dbDuplicatorMock.Object,
                 new UsersPasswordHelper(),
+                new DemoRightsFilter(rightsServiceMock.Object),
                 passwordResetMock.Object
             );
 
@@ -86,7 +95,19 @@ namespace Instances.Application.Specflow.Tests.Demos.Steps
                 IsStrictSubdomainSelection = true
             };
 
-            await duplicator.DuplicateAsync(duplication, _demosContext.Principal);
+            try
+            {
+                await duplicator.DuplicateAsync(duplication, _demosContext.Principal);
+            }
+            catch (ForbiddenException e)
+            {
+                _demosContext.ExceptionResult = e;
+            }
+            catch (BadRequestException e)
+            {
+                _demosContext.ExceptionResult = e;
+            }
+
 
             _demosContext.DemosListResult = demosStore.GetAllAsync().ToList();
         }
@@ -116,6 +137,16 @@ namespace Instances.Application.Specflow.Tests.Demos.Steps
             (
                 _demosContext.DemosListResult,
                 d => d.Subdomain == subdomain && d.DistributorID == distributorId
+            );
+        }
+
+        [Then(@"demo '(.*)' should not exist")]
+        public void ThenDemoShouldNotExistAsync(string subdomain)
+        {
+            Assert.DoesNotContain
+            (
+                _demosContext.DemosListResult,
+                d => d.Subdomain == subdomain
             );
         }
 

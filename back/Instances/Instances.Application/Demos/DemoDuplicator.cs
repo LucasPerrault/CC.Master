@@ -10,6 +10,7 @@ using Lucca.Core.Shared.Domain.Exceptions;
 using Rights.Domain;
 using Rights.Domain.Abstractions;
 using System;
+using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 
@@ -24,6 +25,7 @@ namespace Instances.Application.Demos
         private readonly ISubdomainValidator _subdomainValidator;
         private readonly IDatabaseDuplicator _databaseDuplicator;
         private readonly IUsersPasswordHelper _passwordHelper;
+        private readonly IDemoRightsFilter _demoRightsFilter;
         private readonly IDemoUsersPasswordResetService _usersPasswordResetService;
 
         public DemoDuplicator
@@ -35,6 +37,7 @@ namespace Instances.Application.Demos
             ISubdomainValidator subdomainValidator,
             IDatabaseDuplicator databaseDuplicator,
             IUsersPasswordHelper passwordHelper,
+            IDemoRightsFilter demoRightsFilter,
             IDemoUsersPasswordResetService usersPasswordResetService
         )
         {
@@ -45,6 +48,7 @@ namespace Instances.Application.Demos
             _subdomainValidator = subdomainValidator;
             _databaseDuplicator = databaseDuplicator;
             _passwordHelper = passwordHelper;
+            _demoRightsFilter = demoRightsFilter;
             _usersPasswordResetService = usersPasswordResetService;
         }
 
@@ -136,6 +140,15 @@ namespace Instances.Application.Demos
             if (!( claimsPrincipal is CloudControlUserClaimsPrincipal user))
             {
                 throw new ApplicationException("Unsupported claims principal type");
+            }
+
+            var rightsFilter = await _demoRightsFilter.GetDefaultReadFilterAsync(claimsPrincipal);
+            var demoToDuplicate = (await _demosStore.GetAsync(rightsFilter))
+                .FirstOrDefault(d => d.Subdomain == duplication.SourceDemoSubdomain);
+
+            if (demoToDuplicate == null)
+            {
+                throw new BadRequestException($"Source demo {duplication.SourceDemoSubdomain} could not be found");
             }
 
             var userDistributor = await _distributorsStore.GetByCodeAsync(user.User.DepartmentCode);
