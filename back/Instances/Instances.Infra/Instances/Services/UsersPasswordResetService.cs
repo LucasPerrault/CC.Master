@@ -1,9 +1,7 @@
 using IdentityModel.Client;
-using Newtonsoft.Json;
 using Remote.Infra.Extensions;
 using System;
 using System.Net.Http;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Instances.Infra.Instances.Services
@@ -15,7 +13,6 @@ namespace Instances.Infra.Instances.Services
 
     public class UsersPasswordResetService : IUsersPasswordResetService
     {
-        private const string _mediaType = "application/json";
         private const string _identityPasswordResetRoute = "/identity/api/users/resetallpasswords";
 
         private readonly IUsersPasswordHelper _passwordHelper;
@@ -39,7 +36,9 @@ namespace Instances.Infra.Instances.Services
             _passwordHelper.ThrowIfInvalid(password);
             var client = await GetAuthenticatedClientAsync(instanceHref);
             var uri = new Uri(instanceHref, _identityPasswordResetRoute);
-            var payload = GetPayload(password);
+
+            var dto = new PasswordResetPayload(password);
+            using var payload = dto.ToJsonPayload();
             await client.PostAsync(uri, payload);
         }
 
@@ -70,8 +69,7 @@ namespace Instances.Infra.Instances.Services
         private StringContent GetPayload(string password)
         {
             var payload = new PasswordResetPayload(password);
-            var payloadToString = JsonConvert.SerializeObject(payload);
-            return new StringContent(payloadToString, Encoding.UTF8, _mediaType);
+            return payload.ToJsonPayload();
         }
 
         private class PasswordResetPayload

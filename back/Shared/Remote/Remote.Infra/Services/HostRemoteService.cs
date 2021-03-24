@@ -1,13 +1,11 @@
 ﻿using Microsoft.AspNetCore.WebUtilities;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using Remote.Infra.Exceptions;
 using Remote.Infra.Extensions;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Net.Http;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Remote.Infra.Services
@@ -41,8 +39,7 @@ namespace Remote.Infra.Services
             var requestUri = QueryHelpers.AddQueryString(id, queryParams);
             var requestMessage = new HttpRequestMessage(HttpMethod.Put, requestUri);
 
-            var jObject = JObject.FromObject(content);
-            using var httpContent = new StringContent(jObject.ToString(), Encoding.UTF8, "application/json");
+            using var httpContent = content.ToJsonPayload();
             requestMessage.Content = httpContent;
 
             var response = await _httpClient.SendAsync(requestMessage);
