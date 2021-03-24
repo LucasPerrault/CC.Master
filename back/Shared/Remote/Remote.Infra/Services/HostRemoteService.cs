@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.WebUtilities;
+using Microsoft.AspNetCore.WebUtilities;
 using Newtonsoft.Json;
 using Remote.Infra.Exceptions;
 using Remote.Infra.Extensions;
@@ -28,10 +28,9 @@ namespace Remote.Infra.Services
             return GetGenericObjectResponseAsync<TResult>(string.Empty, queryParams);
         }
 
-        protected async Task<TResult> GetGenericObjectResponseAsync<TResult>(string id, Dictionary<string, string> queryParams)
+        protected Task<TResult> GetGenericObjectResponseAsync<TResult>(string id, Dictionary<string, string> queryParams)
         {
-            var response = await GetResponseMessageAsync(id, queryParams);
-            return await ParseResponseAsync<TResult>(response);
+            return GetRequestResponseAsync<TResult>(HttpMethod.Get, id, queryParams);
         }
 
         protected Task<TResult> PostGenericObjectResponseAsync<TForm, TResult>(TForm content, Dictionary<string, string> queryParams)
@@ -39,39 +38,17 @@ namespace Remote.Infra.Services
             return PostGenericObjectResponseAsync<TForm, TResult>(string.Empty, content, queryParams);
         }
 
-        protected async Task<TResult> PostGenericObjectResponseAsync<TForm, TResult>(string urlSegment, TForm content, Dictionary<string, string> queryParams)
+        protected Task<TResult> PostGenericObjectResponseAsync<TForm, TResult>(string urlSegment, TForm content, Dictionary<string, string> queryParams)
         {
-            var requestUri = QueryHelpers.AddQueryString(urlSegment, queryParams);
-            var requestMessage = new HttpRequestMessage(HttpMethod.Post, requestUri);
-
-            using var httpContent = content.ToJsonPayload();
-            requestMessage.Content = httpContent;
-
-            var response = await _httpClient.SendAsync(requestMessage);
-            return await ParseResponseAsync<TResult>(response);
+            return GetRequestWithContentResponseAsync<TForm, TResult>(HttpMethod.Post, urlSegment, queryParams, content);
         }
 
-        protected async Task<TResult> PutGenericObjectResponseAsync<TForm, TResult>(string id, TForm content, Dictionary<string, string> queryParams)
+        protected Task<TResult> PutGenericObjectResponseAsync<TForm, TResult>(string id, TForm content, Dictionary<string, string> queryParams)
         {
-            var requestUri = QueryHelpers.AddQueryString(id, queryParams);
-            var requestMessage = new HttpRequestMessage(HttpMethod.Put, requestUri);
-
-            using var httpContent = content.ToJsonPayload();
-            requestMessage.Content = httpContent;
-
-            var response = await _httpClient.SendAsync(requestMessage);
-            return await ParseResponseAsync<TResult>(response);
+            return GetRequestWithContentResponseAsync<TForm, TResult>(HttpMethod.Put, id, queryParams, content);
         }
 
         protected abstract string GetErrorMessage(JsonTextReader jsonTextReader);
-
-        private Task<HttpResponseMessage> GetResponseMessageAsync(string subRoute, Dictionary<string, string> queryParams)
-        {
-            var requestUri = QueryHelpers.AddQueryString(subRoute, queryParams);
-            var requestMessage = new HttpRequestMessage(HttpMethod.Get, requestUri);
-
-            return _httpClient.SendAsync(requestMessage);
-        }
 
         protected void ApplyLateHttpClientAuthentication
         (
@@ -80,6 +57,31 @@ namespace Remote.Infra.Services
         )
         {
             authAction(_httpClient.WithAuthScheme(scheme));
+        }
+
+        private async Task<TResult> GetRequestResponseAsync<TResult>(HttpMethod method, string subRoute, Dictionary<string, string> queryParams)
+        {
+            var requestMessage = BuildHttpRequestMessage(method, subRoute, queryParams);
+
+            var response = await _httpClient.SendAsync(requestMessage);
+            return await ParseResponseAsync<TResult>(response);
+        }
+
+        private async Task<TResult> GetRequestWithContentResponseAsync<TForm, TResult>(HttpMethod method, string subRoute, Dictionary<string, string> queryParams, TForm content)
+        {
+            var requestMessage = BuildHttpRequestMessage(method, subRoute, queryParams);
+
+            using var httpContent = content.ToJsonPayload();
+            requestMessage.Content = httpContent;
+
+            var response = await _httpClient.SendAsync(requestMessage);
+            return await ParseResponseAsync<TResult>(response);
+        }
+
+        private HttpRequestMessage BuildHttpRequestMessage(HttpMethod method, string subRoute, Dictionary<string, string> queryParams)
+        {
+            var requestUri = QueryHelpers.AddQueryString(subRoute, queryParams);
+            return new HttpRequestMessage(method, requestUri);
         }
 
         private async Task<TResponse> ParseResponseAsync<TResponse>(HttpResponseMessage response)
