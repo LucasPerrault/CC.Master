@@ -59,14 +59,16 @@ namespace Instances.Application.Demos
 
             var subdomain = await GetSubdomainAsync(duplication);
 
+            var demoToDuplicate = await GetDemoToDuplicateAsync(duplication, principal);
+            var clusterTarget = GetTargetCluster();
             var distributor = await _distributorsStore.GetByIdAsync(duplication.DistributorId);
 
-            var clusterTarget = GetClusterTarget(duplication);
             var databaseDuplication = new TenantDataDuplication
             {
                 Distributor = distributor,
+                SourceDemoCluster = demoToDuplicate.Instance.Cluster,
                 Type = DatabaseType.Demos,
-                Cluster = clusterTarget
+                TargetCluster = clusterTarget
             };
             await _tenantDataDuplicator.DuplicateOnRemoteAsync(databaseDuplication);
 
@@ -76,6 +78,11 @@ namespace Instances.Application.Demos
             await _usersPasswordResetService.ResetPasswordAsync(demo, duplication.Password);
 
             // create SSO for demo if necessary
+        }
+
+        private string GetTargetCluster()
+        {
+            return "not-an-actual-demo-cluster";
         }
 
         private Demo CreateDemo(string subdomain, DemoDuplication duplication, Instance instance)
@@ -91,11 +98,6 @@ namespace Instances.Application.Demos
                 IsTemplate = false,
                 InstanceID =  instance.Id
             };
-        }
-
-        private string GetClusterTarget(DemoDuplication duplication)
-        {
-            return "demos";
         }
 
         private void ThrowIfInvalid(DemoDuplication duplication)
@@ -126,6 +128,16 @@ namespace Instances.Application.Demos
             return availableSubdomain;
         }
 
+        private async Task<Demo> GetDemoToDuplicateAsync(DemoDuplication duplication, ClaimsPrincipal principal)
+        {
+            var rightsFilter = await _demoRightsFilter.GetDefaultReadFilterAsync(principal);
+            var demoToDuplicate = (await _demosStore.GetAsync(rightsFilter))
+                .FirstOrDefault(d => d.Subdomain == duplication.SourceDemoSubdomain);
+
+            return demoToDuplicate
+                ?? throw new BadRequestException($"Source demo {duplication.SourceDemoSubdomain} could not be found");
+        }
+
         private async Task ThrowIfForbiddenAsync(DemoDuplication duplication, ClaimsPrincipal claimsPrincipal)
         {
             await _rightsService.ThrowIfAnyOperationIsMissingAsync(Operation.Demo);
@@ -138,15 +150,6 @@ namespace Instances.Application.Demos
             if (!( claimsPrincipal is CloudControlUserClaimsPrincipal user))
             {
                 throw new ApplicationException("Unsupported claims principal type");
-            }
-
-            var rightsFilter = await _demoRightsFilter.GetDefaultReadFilterAsync(claimsPrincipal);
-            var demoToDuplicate = (await _demosStore.GetAsync(rightsFilter))
-                .FirstOrDefault(d => d.Subdomain == duplication.SourceDemoSubdomain);
-
-            if (demoToDuplicate == null)
-            {
-                throw new BadRequestException($"Source demo {duplication.SourceDemoSubdomain} could not be found");
             }
 
             var userDistributor = await _distributorsStore.GetByCodeAsync(user.User.DepartmentCode);
