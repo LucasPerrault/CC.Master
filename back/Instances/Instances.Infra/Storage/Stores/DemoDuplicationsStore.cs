@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Instances.Infra.Storage.Stores
 {
-    public class DemoDuplicationsStore
+    public class DemoDuplicationsStore : IDemoDuplicationsStore
     {
         private readonly InstancesDbContext _dbContext;
         private readonly IQueryPager _queryPager;

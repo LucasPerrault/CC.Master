@@ -28,6 +28,7 @@ namespace Instances.Web
 
             services.AddScoped<IInstancesStore, InstancesRemoteStore>();
             services.AddScoped<IDemosStore, DemosStore>();
+            services.AddScoped<IDemoDuplicationsStore, DemoDuplicationsStore>();
             services.AddScoped<IDemoRightsFilter, DemoRightsFilter>();
             services.AddScoped<DemosRepository>();
             services.AddScoped<ISubdomainValidator, SubdomainValidator>();

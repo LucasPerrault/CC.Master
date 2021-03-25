@@ -25,6 +25,7 @@ namespace Instances.Application.Demos
     public class DemoDuplicator
     {
         private readonly IDemosStore _demosStore;
+        private readonly IDemoDuplicationsStore _duplicationsStore;
         private readonly IInstancesStore _instancesStore;
         private readonly IRightsService _rightsService;
         private readonly IDistributorsStore _distributorsStore;
@@ -37,6 +38,7 @@ namespace Instances.Application.Demos
         public DemoDuplicator
         (
             IDemosStore demosStore,
+            IDemoDuplicationsStore duplicationsStore,
             IInstancesStore instancesStore,
             IRightsService rightsService,
             IDistributorsStore distributorsStore,
@@ -48,6 +50,7 @@ namespace Instances.Application.Demos
         )
         {
             _demosStore = demosStore;
+            _duplicationsStore = duplicationsStore;
             _instancesStore = instancesStore;
             _rightsService = rightsService;
             _distributorsStore = distributorsStore;
@@ -85,7 +88,7 @@ namespace Instances.Application.Demos
                 Comment = request.Comment
             };
 
-            // TODO storage commit
+            await _duplicationsStore.CreateAsync(duplication);
             // TODO call server target
             // TODO return duplication
 
