@@ -48,7 +48,7 @@ namespace Instances.Application.Specflow.Tests.Demos.Steps
             _demosContext.DemosListResult = (await demosRepository.GetDemosAsync(demoListQuery)).Items.ToList();
         }
 
-        [When("I create new demo '(.*)' by duplicating demo '(.*)' for distributor '(.*)'")]
+        [When("I request creation of demo '(.*)' by duplicating demo '(.*)' for distributor '(.*)'")]
         public async Task WhenICreateANewDemoByDuplicationForDistributor(string subdomain, string sourceSubdomain, string distributorId)
         {
             var demosStore = new DemosStore(_demosContext.DbContext, new DummyQueryPager());
