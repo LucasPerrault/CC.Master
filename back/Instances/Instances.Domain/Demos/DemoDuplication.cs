@@ -1,5 +1,6 @@
 ﻿namespace Instances.Domain.Demos
 {
+    // TODO ressource (db migration, store...)
     public class DemoDuplication
     {
 

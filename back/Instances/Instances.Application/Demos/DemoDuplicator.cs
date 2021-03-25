@@ -52,32 +52,71 @@ namespace Instances.Application.Demos
             _usersPasswordResetService = usersPasswordResetService;
         }
 
-        public async Task DuplicateAsync(DemoDuplication duplication, ClaimsPrincipal principal)
+        public async Task CreateDuplicationAsync(DemoDuplication duplication, ClaimsPrincipal principal)
         {
             await ThrowIfForbiddenAsync(duplication, principal);
             ThrowIfInvalid(duplication);
-
             var subdomain = await GetSubdomainAsync(duplication);
-
             var demoToDuplicate = await GetDemoToDuplicateAsync(duplication, principal);
             var clusterTarget = GetTargetCluster();
+
+            // TODO storage commit
+            // TODO call server target
+            // TODO return duplication
+
+        }
+
+        private async Task<DuplicateInstanceRequestDto> GetDuplicationInstanceRequestAsync(Guid duplicationId, ClaimsPrincipal principal)
+        {
+            DemoDuplication duplication = null; // TODO get duplication by id
+
             var distributor = await _distributorsStore.GetByIdAsync(duplication.DistributorId);
+
+            var demoToDuplicate = await GetDemoToDuplicateAsync(duplication, principal);
 
             var databaseDuplication = new TenantDataDuplication
             {
+                AuthorId = 0, // TODO  duplication.AuthorId
                 Distributor = distributor,
-                SourceDemoCluster = demoToDuplicate.Instance.Cluster,
                 Type = DatabaseType.Demos,
-                TargetCluster = clusterTarget
+                Source = new TenantDataSource
+                {
+                    Subdomain = duplication.Subdomain,
+                    ClusterName = GetSourceDemoCluster(duplication.SourceDemoSubdomain)
+                },
+                Target = new TenantDataSource
+                {
+                    Subdomain = demoToDuplicate.Subdomain,
+                    ClusterName = demoToDuplicate.Instance.Cluster
+                }
             };
-            await _tenantDataDuplicator.DuplicateOnRemoteAsync(databaseDuplication);
+
+            return await _tenantDataDuplicator.DuplicateOnRemoteAsync(databaseDuplication);
+        }
+
+        private async Task MarkDuplicationAsCompleted()
+        {
+            DemoDuplication duplication = null; // TODO  get duplication by id
+            var clusterTarget = GetTargetCluster();
 
             var instance = await _instancesStore.CreateForDemoAsync(duplication.Password, clusterTarget);
-            var demo = CreateDemo(subdomain, duplication, instance);
+            var demo = CreateDemo(duplication, instance);
             await _demosStore.CreateAsync(demo);
             await _usersPasswordResetService.ResetPasswordAsync(demo, duplication.Password);
 
-            // create SSO for demo if necessary
+            // TODO sync ws auth
+            // TODO create SSO for demo if necessary
+            // duplication.Status = DuplicationStatus.Success;
+        }
+
+        private string GetSourceDemoCluster(string sourceDemoSubdomain)
+        {
+            var demo = _demosStore
+                .GetAllAsync()
+                .SingleOrDefault(d => d.IsActive && d.Subdomain == sourceDemoSubdomain);
+
+            return demo?.Instance.Cluster
+                   ?? throw new ApplicationException($"Demo {sourceDemoSubdomain} could not be found");
         }
 
         private string GetTargetCluster()
@@ -85,11 +124,11 @@ namespace Instances.Application.Demos
             return "not-an-actual-demo-cluster";
         }
 
-        private Demo CreateDemo(string subdomain, DemoDuplication duplication, Instance instance)
+        private Demo CreateDemo(DemoDuplication duplication, Instance instance)
         {
             return new Demo
             {
-                Subdomain = subdomain,
+                Subdomain = duplication.Subdomain,
                 DistributorID = duplication.DistributorId,
                 Comment = duplication.Comment,
                 CreatedAt = DateTime.Now,

@@ -1,4 +1,5 @@
 ﻿using Distributors.Domain.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -7,9 +8,13 @@ namespace Instances.Infra.DataDuplication
 
     public class SqlScriptPicker
     {
-        public HashSet<string> GetForDuplication(TenantDataDuplication duplication)
+        public List<Uri> GetForDuplication(TenantDataDuplication duplication)
         {
-            return EnumerateForDuplication(duplication).ToHashSet();
+            var distinctScriptPaths = EnumerateForDuplication(duplication).ToHashSet();
+
+            var absoluteUri = new Uri("jenkins2.lucca.local/finish/me/please");
+
+            return distinctScriptPaths.Select(p => new Uri(absoluteUri, p)).ToList();
         }
 
         private IEnumerable<string> EnumerateForDuplication(TenantDataDuplication duplication)

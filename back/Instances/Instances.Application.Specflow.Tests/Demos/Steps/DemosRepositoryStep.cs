@@ -97,7 +97,7 @@ namespace Instances.Application.Specflow.Tests.Demos.Steps
 
             try
             {
-                await duplicator.DuplicateAsync(duplication, _demosContext.Principal);
+                await duplicator.CreateDuplicationAsync(duplication, _demosContext.Principal);
             }
             catch (ForbiddenException e)
             {

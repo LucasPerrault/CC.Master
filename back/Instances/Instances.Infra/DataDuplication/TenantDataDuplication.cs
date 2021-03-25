@@ -14,7 +14,14 @@ namespace Instances.Infra.DataDuplication
     {
         public DatabaseType Type { get; set; }
         public Distributor Distributor { get; set; }
-        public string TargetCluster { get; set; }
-        public string SourceDemoCluster { get; set; }
+        public TenantDataSource Source { get; set; }
+        public TenantDataSource Target { get; set; }
+        public int AuthorId { get; set; }
+    }
+
+    public class TenantDataSource
+    {
+        public string ClusterName { get; set; }
+        public string Subdomain { get; set; }
     }
 }
