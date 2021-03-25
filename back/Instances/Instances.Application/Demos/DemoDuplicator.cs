@@ -3,7 +3,7 @@ using Distributors.Domain;
 using Instances.Domain.Demos;
 using Instances.Domain.Instances;
 using Instances.Domain.Instances.Models;
-using Instances.Infra.DbDuplication;
+using Instances.Infra.DataDuplication;
 using Instances.Infra.Instances.Services;
 using Lucca.Core.Rights.Abstractions;
 using Lucca.Core.Shared.Domain.Exceptions;
@@ -23,7 +23,7 @@ namespace Instances.Application.Demos
         private readonly IRightsService _rightsService;
         private readonly IDistributorsStore _distributorsStore;
         private readonly ISubdomainValidator _subdomainValidator;
-        private readonly IDatabaseDuplicator _databaseDuplicator;
+        private readonly ITenantDataDuplicator _tenantDataDuplicator;
         private readonly IUsersPasswordHelper _passwordHelper;
         private readonly IDemoRightsFilter _demoRightsFilter;
         private readonly IDemoUsersPasswordResetService _usersPasswordResetService;
@@ -35,7 +35,7 @@ namespace Instances.Application.Demos
             IRightsService rightsService,
             IDistributorsStore distributorsStore,
             ISubdomainValidator subdomainValidator,
-            IDatabaseDuplicator databaseDuplicator,
+            ITenantDataDuplicator tenantDataDuplicator,
             IUsersPasswordHelper passwordHelper,
             IDemoRightsFilter demoRightsFilter,
             IDemoUsersPasswordResetService usersPasswordResetService
@@ -46,7 +46,7 @@ namespace Instances.Application.Demos
             _rightsService = rightsService;
             _distributorsStore = distributorsStore;
             _subdomainValidator = subdomainValidator;
-            _databaseDuplicator = databaseDuplicator;
+            _tenantDataDuplicator = tenantDataDuplicator;
             _passwordHelper = passwordHelper;
             _demoRightsFilter = demoRightsFilter;
             _usersPasswordResetService = usersPasswordResetService;
@@ -62,20 +62,18 @@ namespace Instances.Application.Demos
             var distributor = await _distributorsStore.GetByIdAsync(duplication.DistributorId);
 
             var clusterTarget = GetClusterTarget(duplication);
-            var databaseDuplication = new DatabaseDuplication
+            var databaseDuplication = new TenantDataDuplication
             {
                 Distributor = distributor,
                 Type = DatabaseType.Demos,
                 Cluster = clusterTarget
             };
-            await _databaseDuplicator.DuplicateOnRemoteAsync(databaseDuplication);
+            await _tenantDataDuplicator.DuplicateOnRemoteAsync(databaseDuplication);
 
             var instance = await _instancesStore.CreateForDemoAsync(duplication.Password, clusterTarget);
             var demo = CreateDemo(subdomain, duplication, instance);
             await _demosStore.CreateAsync(demo);
             await _usersPasswordResetService.ResetPasswordAsync(demo, duplication.Password);
-
-            // copy sgf files
 
             // create SSO for demo if necessary
         }

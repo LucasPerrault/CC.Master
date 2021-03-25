@@ -1,6 +1,6 @@
 ﻿using Distributors.Domain.Models;
 
-namespace Instances.Infra.DbDuplication
+namespace Instances.Infra.DataDuplication
 {
     public enum DatabaseType
     {
@@ -10,7 +10,7 @@ namespace Instances.Infra.DbDuplication
         Demos = 4
     }
 
-    public class DatabaseDuplication
+    public class TenantDataDuplication
     {
         public DatabaseType Type { get; set; }
         public Distributor Distributor { get; set; }

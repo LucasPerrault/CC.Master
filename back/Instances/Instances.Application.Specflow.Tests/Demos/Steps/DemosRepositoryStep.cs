@@ -7,7 +7,7 @@ using Instances.Application.Specflow.Tests.Shared.Tooling;
 using Instances.Domain.Demos;
 using Instances.Domain.Instances;
 using Instances.Domain.Instances.Models;
-using Instances.Infra.DbDuplication;
+using Instances.Infra.DataDuplication;
 using Instances.Infra.Demos;
 using Instances.Infra.Instances.Services;
 using Instances.Infra.Storage.Stores;
@@ -70,7 +70,7 @@ namespace Instances.Application.Specflow.Tests.Demos.Steps
                 .ReturnsAsync((Operation op) => _demosContext.OperationsWithScope[op]);
 
             var envStoreMock = new Mock<IEnvironmentsStore>();
-            var dbDuplicatorMock = new Mock<IDatabaseDuplicator>();
+            var dbDuplicatorMock = new Mock<ITenantDataDuplicator>();
             var passwordResetMock = new Mock<IDemoUsersPasswordResetService>();
 
             var duplicator = new DemoDuplicator

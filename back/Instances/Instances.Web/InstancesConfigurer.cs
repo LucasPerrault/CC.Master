@@ -1,7 +1,7 @@
 using Instances.Application.Demos;
 using Instances.Domain.Demos;
 using Instances.Domain.Instances;
-using Instances.Infra.DbDuplication;
+using Instances.Infra.DataDuplication;
 using Instances.Infra.Demos;
 using Instances.Infra.Instances;
 using Instances.Infra.Instances.Services;
@@ -22,7 +22,7 @@ namespace Instances.Web
         public static void ConfigureServices(IServiceCollection services, InstancesConfiguration configuration)
         {
             services.AddSingleton(configuration.Identity);
-            services.AddSingleton<IDatabaseDuplicator, DatabaseDuplicator>();
+            services.AddSingleton<ITenantDataDuplicator, TenantDataDuplicator>();
             services.AddSingleton<IUsersPasswordHelper, UsersPasswordHelper>();
             services.AddSingleton<SqlScriptPicker>();
 

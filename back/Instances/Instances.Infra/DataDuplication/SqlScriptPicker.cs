@@ -2,17 +2,17 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Instances.Infra.DbDuplication
+namespace Instances.Infra.DataDuplication
 {
 
     public class SqlScriptPicker
     {
-        public HashSet<string> GetForDuplication(DbDuplication.DatabaseDuplication duplication)
+        public HashSet<string> GetForDuplication(TenantDataDuplication duplication)
         {
             return EnumerateForDuplication(duplication).ToHashSet();
         }
 
-        private IEnumerable<string> EnumerateForDuplication(DbDuplication.DatabaseDuplication duplication)
+        private IEnumerable<string> EnumerateForDuplication(TenantDataDuplication duplication)
         {
             if (duplication.Type == DatabaseType.Demos || duplication.Type == DatabaseType.Training)
             {
