@@ -32,6 +32,11 @@
     "LegacyCloudControl": {
         "Host": "{{ CC.Master:LegacyCloudControlHost }}"
     },
+    "AuthWebservice": {
+        "ServerUri": "https://ws-auth.ilucca.net",
+        "SyncEndpointPath": "/sync-v2/api",
+        "Token": "{{ CC.Master:LuccaAuthSyncV2SharedToken }}"
+    },
     "BillingContracts": {
         "LegacyClientsEndpointPath": "/api/v3/clients"
     },

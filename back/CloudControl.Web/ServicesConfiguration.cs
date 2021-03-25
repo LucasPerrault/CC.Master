@@ -150,7 +150,7 @@ namespace CloudControl.Web
 
         public virtual void ConfigureAuthentication(IServiceCollection services, AppConfiguration configuration)
         {
-            AuthConfigurer.ConfigureServices(services, configuration.Authentication);
+            AuthConfigurer.ConfigureServices(services, configuration.Authentication, configuration.AuthWebservice);
         }
 
         public virtual void ConfigureRights(IServiceCollection services, AppConfiguration configuration)

@@ -52,6 +52,12 @@ namespace CloudControl.Web.Tests.Mocks
                     LogoutEndpointPath = "/logout",
                     RedirectEndpointPath = "/login"
                 },
+                AuthWebservice = new AuthWebserviceConfiguration
+                {
+                    ServerUri = new Uri("https://mocked-ws-auth.ilucca.local"),
+                    SyncEndpointPath = "/sync",
+                    Token = new Guid("deadbeef-0000-0000-0000-000000000000")
+                }
             });
         }
 
