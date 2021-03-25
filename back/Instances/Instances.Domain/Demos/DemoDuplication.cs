@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Distributors.Domain.Models;
+using System;
 
 namespace Instances.Domain.Demos
 {
@@ -22,6 +23,8 @@ namespace Instances.Domain.Demos
         public int AuthorId { get; set; }
         public DateTime CreatedAt { get; set; }
         public DemoDuplicationProgress Progress { get; set; }
+
+        public Distributor Distributor { get; set; }
     }
 
     public class DemoDuplicationRequest
