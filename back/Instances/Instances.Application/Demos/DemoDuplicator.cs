@@ -16,6 +16,12 @@ using System.Threading.Tasks;
 
 namespace Instances.Application.Demos
 {
+    public enum DemoDuplicationRequestSource
+    {
+        Api = 0,
+        Hubspot = 1
+    }
+
     public class DemoDuplicator
     {
         private readonly IDemosStore _demosStore;
@@ -52,18 +58,47 @@ namespace Instances.Application.Demos
             _usersPasswordResetService = usersPasswordResetService;
         }
 
-        public async Task CreateDuplicationAsync(DemoDuplication duplication, ClaimsPrincipal principal)
+        public async Task CreateDuplicationAsync
+        (
+            DemoDuplicationRequest request,
+            DemoDuplicationRequestSource requestSource,
+            ClaimsPrincipal principal
+        )
         {
-            await ThrowIfForbiddenAsync(duplication, principal);
-            ThrowIfInvalid(duplication);
-            var subdomain = await GetSubdomainAsync(duplication);
-            var demoToDuplicate = await GetDemoToDuplicateAsync(duplication, principal);
+
+            await ThrowIfForbiddenAsync(request, principal);
+            ThrowIfInvalid(request);
+
+            var subdomain = await GetSubdomainAsync(request, requestSource);
+            var demoToDuplicate = await GetDemoToDuplicateAsync(request.SourceDemoSubdomain, principal);
             var clusterTarget = GetTargetCluster();
+
+            var duplication = new DemoDuplication
+            {
+                Subdomain = request.Subdomain,
+                SourceDemoSubdomain = request.SourceDemoSubdomain,
+                CreatedAt = DateTime.Now,
+                DistributorId = request.DistributorId,
+                AuthorId = GetAuthorId(principal),
+                Password = request.Password,
+                Progress = DemoDuplicationProgress.Pending,
+                Comment = request.Comment
+            };
 
             // TODO storage commit
             // TODO call server target
             // TODO return duplication
 
+        }
+
+        private int GetAuthorId(ClaimsPrincipal principal)
+        {
+            if (!( principal is CloudControlUserClaimsPrincipal user ))
+            {
+                return 0;
+            }
+
+            return user.UserId.Value;
         }
 
         private async Task<DuplicateInstanceRequestDto> GetDuplicationInstanceRequestAsync(Guid duplicationId, ClaimsPrincipal principal)
@@ -72,7 +107,7 @@ namespace Instances.Application.Demos
 
             var distributor = await _distributorsStore.GetByIdAsync(duplication.DistributorId);
 
-            var demoToDuplicate = await GetDemoToDuplicateAsync(duplication, principal);
+            var demoToDuplicate = await GetDemoToDuplicateAsync(duplication.SourceDemoSubdomain, principal);
 
             var databaseDuplication = new TenantDataDuplication
             {
@@ -139,45 +174,45 @@ namespace Instances.Application.Demos
             };
         }
 
-        private void ThrowIfInvalid(DemoDuplication duplication)
+        private void ThrowIfInvalid(DemoDuplicationRequest request)
         {
-            _passwordHelper.ThrowIfInvalid(duplication.Password);
+            _passwordHelper.ThrowIfInvalid(request.Password);
         }
 
-        private async Task<string> GetSubdomainAsync(DemoDuplication duplication)
+        private async Task<string> GetSubdomainAsync(DemoDuplicationRequest request, DemoDuplicationRequestSource source)
         {
-            await _subdomainValidator.ThrowIfInvalidAsync(duplication.Subdomain);
+            await _subdomainValidator.ThrowIfInvalidAsync(request.Subdomain);
 
-            if (_subdomainValidator.IsAvailable(duplication.Subdomain))
+            if (_subdomainValidator.IsAvailable(request.Subdomain))
             {
-                return duplication.Subdomain;
+                return request.Subdomain;
             }
 
-            if (duplication.IsStrictSubdomainSelection)
+            if (source != DemoDuplicationRequestSource.Hubspot)
             {
-                throw new BadRequestException($"Subdomain {duplication.Subdomain} is not available");
+                throw new BadRequestException($"Subdomain {request.Subdomain} is not available");
             }
 
-            var availableSubdomain = _subdomainValidator.GetAvailableSubdomain(duplication.Subdomain);
+            var availableSubdomain = _subdomainValidator.GetAvailableSubdomain(request.Subdomain);
             if (string.IsNullOrEmpty(availableSubdomain))
             {
-                throw new BadRequestException($"Subdomain {duplication.Subdomain} is not available");
+                throw new BadRequestException($"Subdomain {request.Subdomain} is not available");
             }
 
             return availableSubdomain;
         }
 
-        private async Task<Demo> GetDemoToDuplicateAsync(DemoDuplication duplication, ClaimsPrincipal principal)
+        private async Task<Demo> GetDemoToDuplicateAsync(string subdomain, ClaimsPrincipal principal)
         {
             var rightsFilter = await _demoRightsFilter.GetDefaultReadFilterAsync(principal);
             var demoToDuplicate = (await _demosStore.GetAsync(rightsFilter))
-                .FirstOrDefault(d => d.Subdomain == duplication.SourceDemoSubdomain);
+                .FirstOrDefault(d => d.Subdomain == subdomain);
 
             return demoToDuplicate
-                ?? throw new BadRequestException($"Source demo {duplication.SourceDemoSubdomain} could not be found");
+                ?? throw new BadRequestException($"Source demo {subdomain} could not be found");
         }
 
-        private async Task ThrowIfForbiddenAsync(DemoDuplication duplication, ClaimsPrincipal claimsPrincipal)
+        private async Task ThrowIfForbiddenAsync(DemoDuplicationRequest request, ClaimsPrincipal claimsPrincipal)
         {
             await _rightsService.ThrowIfAnyOperationIsMissingAsync(Operation.Demo);
 
@@ -192,7 +227,7 @@ namespace Instances.Application.Demos
             }
 
             var userDistributor = await _distributorsStore.GetByCodeAsync(user.User.DepartmentCode);
-            if (userDistributor.Id == duplication.DistributorId)
+            if (userDistributor.Id == request.DistributorId)
             {
                 return;
             }

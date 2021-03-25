@@ -86,18 +86,17 @@ namespace Instances.Application.Specflow.Tests.Demos.Steps
                 passwordResetMock.Object
             );
 
-            var duplication = new DemoDuplication
+            var duplication = new DemoDuplicationRequest
             {
                 Subdomain = subdomain,
                 DistributorId = distributorId,
                 Password = "test",
-                SourceDemoSubdomain = sourceSubdomain,
-                IsStrictSubdomainSelection = true
+                SourceDemoSubdomain = sourceSubdomain
             };
 
             try
             {
-                await duplicator.CreateDuplicationAsync(duplication, _demosContext.Principal);
+                await duplicator.CreateDuplicationAsync(duplication, DemoDuplicationRequestSource.Api, _demosContext.Principal);
             }
             catch (ForbiddenException e)
             {
