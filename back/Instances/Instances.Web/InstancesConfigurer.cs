@@ -2,6 +2,7 @@ using Instances.Application.Demos;
 using Instances.Application.Instances;
 using Instances.Domain.Demos;
 using Instances.Domain.Instances;
+using Instances.Infra.Auth;
 using Instances.Infra.DataDuplication;
 using Instances.Infra.Demos;
 using Instances.Infra.Instances;
@@ -40,6 +41,8 @@ namespace Instances.Web
             services.AddScoped<IDemoUsersPasswordResetService, DemoUsersPasswordResetService>();
 
             services.AddScoped<IUsersPasswordResetService, UsersPasswordResetService>();
+
+            services.AddScoped<IAuthWebserviceSynchronizer, AuthWebserviceSynchronizer>();
         }
 
         public static LuccaApiBuilder ConfigureLuccaApiForInstances(this LuccaApiBuilder luccaApiBuilder)

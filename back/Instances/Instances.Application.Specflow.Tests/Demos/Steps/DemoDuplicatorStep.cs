@@ -1,4 +1,5 @@
-﻿using Distributors.Domain.Models;
+using Distributors.Domain;
+using Distributors.Domain.Models;
 using Environments.Domain.Storage;
 using Instances.Application.Demos;
 using Instances.Application.Instances;
@@ -7,6 +8,7 @@ using Instances.Application.Specflow.Tests.Shared.Tooling;
 using Instances.Domain.Demos;
 using Instances.Domain.Instances;
 using Instances.Domain.Instances.Models;
+using Instances.Infra.Auth;
 using Instances.Infra.DataDuplication;
 using Instances.Infra.Demos;
 using Instances.Infra.Instances.Services;
@@ -124,6 +126,7 @@ namespace Instances.Application.Specflow.Tests.Demos.Steps
 
             var envStoreMock = new Mock<IEnvironmentsStore>();
             var passwordResetMock = new Mock<IDemoUsersPasswordResetService>();
+            var authWsMock = new Mock<IAuthWebserviceSynchronizer>();
 
             return new DemoDuplicator
                 (
@@ -136,7 +139,8 @@ namespace Instances.Application.Specflow.Tests.Demos.Steps
                     new SubdomainValidator(demosStore, envStoreMock.Object),
                     new UsersPasswordHelper(),
                     new DemoRightsFilter(rightsServiceMock.Object),
-                    passwordResetMock.Object
+                    passwordResetMock.Object,
+                	authWsMock.Object
                 );
         }
 

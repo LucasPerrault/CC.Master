@@ -4,6 +4,7 @@ using Instances.Application.Instances;
 using Instances.Domain.Demos;
 using Instances.Domain.Instances;
 using Instances.Domain.Instances.Models;
+using Instances.Infra.Auth;
 using Instances.Infra.Instances.Services;
 using Lucca.Core.Rights.Abstractions;
 using Lucca.Core.Shared.Domain.Exceptions;
@@ -34,6 +35,7 @@ namespace Instances.Application.Demos
         private readonly IUsersPasswordHelper _passwordHelper;
         private readonly IDemoRightsFilter _demoRightsFilter;
         private readonly IDemoUsersPasswordResetService _usersPasswordResetService;
+        private readonly IAuthWebserviceSynchronizer _authWebserviceSynchronizer;
 
         public DemoDuplicator
         (
@@ -46,7 +48,8 @@ namespace Instances.Application.Demos
             ISubdomainValidator subdomainValidator,
             IUsersPasswordHelper passwordHelper,
             IDemoRightsFilter demoRightsFilter,
-            IDemoUsersPasswordResetService usersPasswordResetService
+            IDemoUsersPasswordResetService usersPasswordResetService,
+            IAuthWebserviceSynchronizer authWebserviceSynchronizer
         )
         {
             _instancesDuplicator = instancesDuplicator;
@@ -59,6 +62,7 @@ namespace Instances.Application.Demos
             _passwordHelper = passwordHelper;
             _demoRightsFilter = demoRightsFilter;
             _usersPasswordResetService = usersPasswordResetService;
+            _authWebserviceSynchronizer = authWebserviceSynchronizer;
         }
 
         public async Task<DemoDuplication> CreateDuplicationAsync
@@ -126,6 +130,7 @@ namespace Instances.Application.Demos
             await _usersPasswordResetService.ResetPasswordAsync(demo, duplication.Password);
 
             // TODO sync ws auth
+            await _authWebserviceSynchronizer.SynchronizeAsync(instance.Id);
             // TODO create SSO for demo if necessary
             // duplication.Status = DuplicationStatus.Success;
         }
