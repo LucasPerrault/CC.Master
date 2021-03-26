@@ -29,24 +29,20 @@ namespace Instances.Infra.Migrations
                 name: "Instance",
                 schema: "instances");
 
+            migrationBuilder.DropColumn(
+                name: "sourceDemoSubdomain",
+                schema: "instances",
+                table: "DemoDuplications");
+
             migrationBuilder.AlterColumn<string>(
                 name: "subdomain",
                 schema: "instances",
                 table: "DemoDuplications",
                 maxLength: 200,
-                nullable: true,
+                nullable: false,
                 oldClrType: typeof(string),
-                oldType: "nvarchar(max)",
-                oldNullable: true);
-
-            migrationBuilder.AlterColumn<string>(
-                name: "sourceDemoSubdomain",
-                schema: "instances",
-                table: "DemoDuplications",
-                maxLength: 200,
-                nullable: true,
-                oldClrType: typeof(string),
-                oldType: "nvarchar(max)",
+                oldType: "nvarchar(200)",
+                oldMaxLength: 200,
                 oldNullable: true);
 
             migrationBuilder.AlterColumn<string>(
@@ -54,10 +50,33 @@ namespace Instances.Infra.Migrations
                 schema: "instances",
                 table: "DemoDuplications",
                 maxLength: 255,
-                nullable: true,
+                nullable: false,
                 oldClrType: typeof(string),
-                oldType: "nvarchar(max)",
+                oldType: "nvarchar(255)",
+                oldMaxLength: 255,
                 oldNullable: true);
+
+            migrationBuilder.AlterColumn<string>(
+                name: "distributorId",
+                schema: "instances",
+                table: "DemoDuplications",
+                nullable: false,
+                oldClrType: typeof(string),
+                oldType: "nvarchar(450)",
+                oldNullable: true);
+
+            migrationBuilder.AddColumn<int>(
+                name: "sourceDemoId",
+                schema: "instances",
+                table: "DemoDuplications",
+                nullable: false,
+                defaultValue: 0);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_DemoDuplications_sourceDemoId",
+                schema: "instances",
+                table: "DemoDuplications",
+                column: "sourceDemoId");
 
             migrationBuilder.AddForeignKey(
                 name: "FK_DemoDuplications_Distributors_distributorId",
@@ -67,7 +86,17 @@ namespace Instances.Infra.Migrations
                 principalSchema: "shared",
                 principalTable: "Distributors",
                 principalColumn: "Id",
-                onDelete: ReferentialAction.Restrict);
+                onDelete: ReferentialAction.Cascade);
+
+            migrationBuilder.AddForeignKey(
+                name: "FK_DemoDuplications_Demos_sourceDemoId",
+                schema: "instances",
+                table: "DemoDuplications",
+                column: "sourceDemoId",
+                principalSchema: "instances",
+                principalTable: "Demos",
+                principalColumn: "Id",
+                onDelete: ReferentialAction.Cascade);
 
             migrationBuilder.AddForeignKey(
                 name: "FK_Demos_Distributors_distributorID",
@@ -98,6 +127,11 @@ namespace Instances.Infra.Migrations
                 table: "DemoDuplications");
 
             migrationBuilder.DropForeignKey(
+                name: "FK_DemoDuplications_Demos_sourceDemoId",
+                schema: "instances",
+                table: "DemoDuplications");
+
+            migrationBuilder.DropForeignKey(
                 name: "FK_Demos_Distributors_distributorID",
                 schema: "instances",
                 table: "Demos");
@@ -107,35 +141,51 @@ namespace Instances.Infra.Migrations
                 schema: "instances",
                 table: "Demos");
 
+            migrationBuilder.DropIndex(
+                name: "IX_DemoDuplications_sourceDemoId",
+                schema: "instances",
+                table: "DemoDuplications");
+
+            migrationBuilder.DropColumn(
+                name: "sourceDemoId",
+                schema: "instances",
+                table: "DemoDuplications");
+
             migrationBuilder.AlterColumn<string>(
                 name: "subdomain",
                 schema: "instances",
                 table: "DemoDuplications",
-                type: "nvarchar(max)",
+                type: "nvarchar(200)",
+                maxLength: 200,
                 nullable: true,
                 oldClrType: typeof(string),
-                oldMaxLength: 200,
-                oldNullable: true);
-
-            migrationBuilder.AlterColumn<string>(
-                name: "sourceDemoSubdomain",
-                schema: "instances",
-                table: "DemoDuplications",
-                type: "nvarchar(max)",
-                nullable: true,
-                oldClrType: typeof(string),
-                oldMaxLength: 200,
-                oldNullable: true);
+                oldMaxLength: 200);
 
             migrationBuilder.AlterColumn<string>(
                 name: "password",
                 schema: "instances",
                 table: "DemoDuplications",
-                type: "nvarchar(max)",
+                type: "nvarchar(255)",
+                maxLength: 255,
                 nullable: true,
                 oldClrType: typeof(string),
-                oldMaxLength: 255,
-                oldNullable: true);
+                oldMaxLength: 255);
+
+            migrationBuilder.AlterColumn<string>(
+                name: "distributorId",
+                schema: "instances",
+                table: "DemoDuplications",
+                type: "nvarchar(450)",
+                nullable: true,
+                oldClrType: typeof(string));
+
+            migrationBuilder.AddColumn<string>(
+                name: "sourceDemoSubdomain",
+                schema: "instances",
+                table: "DemoDuplications",
+                type: "nvarchar(200)",
+                maxLength: 200,
+                nullable: true);
 
             migrationBuilder.CreateTable(
                 name: "Distributor",

@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Instances.Infra.Migrations
 {
     [DbContext(typeof(InstancesDbContext))]
-    [Migration("20210325193009_CreateTableDemoDuplications")]
+    [Migration("20210326085403_CreateTableDemoDuplications")]
     partial class CreateTableDemoDuplications
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -90,10 +90,16 @@ namespace Instances.Infra.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("DistributorId")
+                        .IsRequired()
                         .HasColumnName("distributorId")
                         .HasColumnType("nvarchar(450)");
 
+                    b.Property<Guid>("ExternalId")
+                        .HasColumnName("externalId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<string>("Password")
+                        .IsRequired()
                         .HasColumnName("password")
                         .HasColumnType("nvarchar(255)")
                         .HasMaxLength(255);
@@ -102,12 +108,12 @@ namespace Instances.Infra.Migrations
                         .HasColumnName("progress")
                         .HasColumnType("int");
 
-                    b.Property<string>("SourceDemoSubdomain")
-                        .HasColumnName("sourceDemoSubdomain")
-                        .HasColumnType("nvarchar(200)")
-                        .HasMaxLength(200);
+                    b.Property<int>("SourceDemoId")
+                        .HasColumnName("sourceDemoId")
+                        .HasColumnType("int");
 
                     b.Property<string>("Subdomain")
+                        .IsRequired()
                         .HasColumnName("subdomain")
                         .HasColumnType("nvarchar(200)")
                         .HasMaxLength(200);
@@ -115,6 +121,8 @@ namespace Instances.Infra.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("DistributorId");
+
+                    b.HasIndex("SourceDemoId");
 
                     b.ToTable("DemoDuplications");
                 });
@@ -136,7 +144,15 @@ namespace Instances.Infra.Migrations
                 {
                     b.HasOne("Distributors.Domain.Models.Distributor", "Distributor")
                         .WithMany()
-                        .HasForeignKey("DistributorId");
+                        .HasForeignKey("DistributorId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Instances.Domain.Demos.Demo", "SourceDemo")
+                        .WithMany()
+                        .HasForeignKey("SourceDemoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }
