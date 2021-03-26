@@ -24,12 +24,8 @@ namespace Instances.Infra.Auth
 
         public async Task SynchronizeAsync(int instanceId)
         {
-            try
-            {
-                await SynchronizeInstancesAsync();
-                await SynchronizeUsersAsync(instanceId);
-            }
-            catch { }
+            await SynchronizeInstancesAsync();
+            await SynchronizeUsersAsync(instanceId);
         }
 
         private async Task SynchronizeInstancesAsync()

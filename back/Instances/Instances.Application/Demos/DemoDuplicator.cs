@@ -1,4 +1,4 @@
-﻿using Authentication.Domain;
+using Authentication.Domain;
 using Distributors.Domain;
 using Instances.Application.Instances;
 using Instances.Domain.Demos;
@@ -129,9 +129,13 @@ namespace Instances.Application.Demos
             await _demosStore.CreateAsync(demo);
             await _usersPasswordResetService.ResetPasswordAsync(demo, duplication.Password);
 
-            // TODO sync ws auth
-            await _authWebserviceSynchronizer.SynchronizeAsync(instance.Id);
             // TODO create SSO for demo if necessary
+            try
+            {
+                await _authWebserviceSynchronizer.SynchronizeAsync(instance.Id);
+            }
+            catch { }
+
             // duplication.Status = DuplicationStatus.Success;
         }
 
