@@ -18,9 +18,8 @@ namespace Instances.Infra.Storage.Configurations
                 .HasMaxLength(SubdomainValidator.SubdomainMaxLength)
                 .IsRequired();
 
-            builder.Property(d => d.SourceDemoSubdomain)
-                .HasColumnName("sourceDemoSubdomain")
-                .HasMaxLength(SubdomainValidator.SubdomainMaxLength)
+            builder.Property(d => d.SourceDemoId)
+                .HasColumnName("sourceDemoId")
                 .IsRequired();
 
             builder.Property(d => d.Password)

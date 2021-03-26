@@ -79,7 +79,7 @@ namespace Instances.Application.Demos
             var duplication = new DemoDuplication
             {
                 Subdomain = request.Subdomain,
-                SourceDemoSubdomain = request.SourceDemoSubdomain,
+                SourceDemoId = demoToDuplicate.Id,
                 CreatedAt = DateTime.Now,
                 DistributorId = request.DistributorId,
                 AuthorId = GetAuthorId(principal),
