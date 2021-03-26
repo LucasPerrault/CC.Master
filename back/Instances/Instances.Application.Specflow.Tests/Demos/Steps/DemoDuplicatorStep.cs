@@ -14,6 +14,7 @@ using Lucca.Core.Shared.Domain.Exceptions;
 using Moq;
 using Rights.Domain;
 using Rights.Domain.Abstractions;
+using System.Linq;
 using System.Threading.Tasks;
 using TechTalk.SpecFlow;
 using Xunit;
@@ -79,7 +80,7 @@ namespace Instances.Application.Specflow.Tests.Demos.Steps
 
             try
             {
-                _demosContext.DemoDuplicationResult = await duplicator.CreateDuplicationAsync
+                await duplicator.CreateDuplicationAsync
                     (duplication, DemoDuplicationRequestSource.Api, _demosContext.Principal);
             }
             catch (ForbiddenException e)
@@ -95,7 +96,7 @@ namespace Instances.Application.Specflow.Tests.Demos.Steps
         [Then(@"demo duplication should exist for distributor '(.*)'")]
         public void ThenDemoDuplicationShouldExist(string distributorId)
         {
-            Assert.Equal(distributorId, _demosContext.DemoDuplicationResult.DistributorId);
+            Assert.Equal(distributorId, _demosContext.DbContext.Set<DemoDuplication>().Single().DistributorId);
         }
     }
 }
