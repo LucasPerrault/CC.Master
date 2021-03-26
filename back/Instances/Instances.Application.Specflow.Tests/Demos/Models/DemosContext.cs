@@ -15,6 +15,7 @@ namespace Instances.Application.Specflow.Tests.Demos.Models
         public Dictionary<Operation,Scope> OperationsWithScope { get; set; }
         public List<Demo> DemosListResult { get; set; }
         public Exception ExceptionResult { get; set; }
+        public DemoDuplication DemoDuplicationResult { get; set; }
 
         public void Dispose()
         {
