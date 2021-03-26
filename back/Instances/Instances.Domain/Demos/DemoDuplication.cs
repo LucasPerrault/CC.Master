@@ -15,6 +15,7 @@ namespace Instances.Domain.Demos
     public class DemoDuplication
     {
         public int Id { get; set; }
+        public Guid ExternalId { get; set; }
         public string SourceDemoSubdomain { get; set; }
         public string Subdomain { get; set; }
         public string Comment { get; set; }

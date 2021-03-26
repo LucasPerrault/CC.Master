@@ -26,6 +26,10 @@ namespace Instances.Infra.Storage.Configurations
                 .HasMaxLength(UsersPasswordHelper.MaxLength);
 
             builder.Property(d => d.CreatedAt).HasColumnName("createdAt");
+            builder.Property(d => d.ExternalId)
+                .HasColumnName("externalId")
+                .IsRequired();
+
             builder.Property(d => d.Progress).HasColumnName("progress");
             builder.Property(d => d.Comment).HasColumnName("comment");
             builder.Property(d => d.AuthorId).HasColumnName("authorId");
