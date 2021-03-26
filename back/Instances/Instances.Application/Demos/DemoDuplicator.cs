@@ -129,7 +129,6 @@ namespace Instances.Application.Demos
             await _demosStore.CreateAsync(demo);
             await _usersPasswordResetService.ResetPasswordAsync(demo, duplication.Password);
 
-            // TODO create SSO for demo if necessary
             try
             {
                 await _authWebserviceSynchronizer.SynchronizeAsync(instance.Id);
