@@ -1,6 +1,7 @@
 using Instances.Domain.Demos;
 using Lucca.Core.Api.Abstractions.Paging;
 using Lucca.Core.Api.Queryable.Paging;
+using Microsoft.EntityFrameworkCore;
 using Storage.Infra.Stores;
 using System;
 using System.Linq;
@@ -47,6 +48,7 @@ namespace Instances.Infra.Storage.Stores
             return duplication;
         }
 
-        private IQueryable<DemoDuplication> Duplications => _dbContext.Set<DemoDuplication>();
+        private IQueryable<DemoDuplication> Duplications => _dbContext.Set<DemoDuplication>()
+            .Include(d => d.InstanceDuplication.Distributor);
     }
 }

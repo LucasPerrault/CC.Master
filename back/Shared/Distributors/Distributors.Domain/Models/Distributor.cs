@@ -1,8 +1,8 @@
 namespace Distributors.Domain.Models
 {
-    public static class DistributorCodes
+    public static class DistributorIds
     {
-        public const string Mprh = "MPRH";
+        public const string Mprh = "TODOIDDISTRIBUTEURTOUTCACA";
     }
 
     public class Distributor

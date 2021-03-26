@@ -15,6 +15,8 @@ namespace Instances.Infra.Storage
         protected override void ApplyConfiguration(ModelBuilder modelBuilder)
         {
             modelBuilder.ApplyConfiguration(new InstancesConfiguration());
+            modelBuilder.ApplyConfiguration(new InstanceDuplicationsConfiguration());
+
             modelBuilder.ApplyConfiguration(new DemosConfiguration());
             modelBuilder.ApplyConfiguration(new DemoDuplicationsConfiguration());
 

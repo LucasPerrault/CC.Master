@@ -1,4 +1,5 @@
 using Instances.Application.Demos;
+using Instances.Application.Instances;
 using Instances.Domain.Demos;
 using Instances.Domain.Instances;
 using Instances.Infra.DataDuplication;
@@ -22,12 +23,15 @@ namespace Instances.Web
         public static void ConfigureServices(IServiceCollection services, InstancesConfiguration configuration)
         {
             services.AddSingleton(configuration.Identity);
-            services.AddSingleton<ITenantDataDuplicator, TenantDataDuplicator>();
             services.AddSingleton<IUsersPasswordHelper, UsersPasswordHelper>();
             services.AddSingleton<SqlScriptPicker>();
 
             services.AddScoped<IInstancesStore, InstancesRemoteStore>();
+
+            services.AddScoped<IInstancesDuplicator, InstancesDuplicator>();
+
             services.AddScoped<IDemosStore, DemosStore>();
+            services.AddScoped<IInstanceDuplicationsStore, InstanceDuplicationsStore>();
             services.AddScoped<IDemoDuplicationsStore, DemoDuplicationsStore>();
             services.AddScoped<IDemoRightsFilter, DemoRightsFilter>();
             services.AddScoped<DemosRepository>();

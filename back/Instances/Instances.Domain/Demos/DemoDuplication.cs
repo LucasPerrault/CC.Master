@@ -1,4 +1,4 @@
-﻿using Distributors.Domain.Models;
+﻿using Instances.Domain.Instances;
 using System;
 
 namespace Instances.Domain.Demos
@@ -15,29 +15,26 @@ namespace Instances.Domain.Demos
     public class DemoDuplication
     {
         public int Id { get; set; }
-        public Guid ExternalId { get; set; }
-        public string Subdomain { get; set; }
+        public Guid InstanceDuplicationId { get; set; }
         public string Comment { get; set; }
         public string Password { get; set; }
-        public string DistributorId { get; set; }
         public int SourceDemoId { get; set; }
         public int AuthorId { get; set; }
         public DateTime CreatedAt { get; set; }
         public DemoDuplicationProgress Progress { get; set; }
-        public Distributor Distributor { get; set; }
+        public InstanceDuplication InstanceDuplication { get; set; }
         public Demo SourceDemo { get; set; }
 
-
-        public string SourceDemoSubdomain
+        public string DistributorId
         {
             get
             {
-                if (SourceDemo == null)
+                if (InstanceDuplication == null)
                 {
-                    throw new ApplicationException($"{nameof(DemoDuplication)}.{nameof(SourceDemo)} was not included");
+                    throw new ApplicationException($"{nameof(DemoDuplication)}.{nameof(InstanceDuplication)} was not included");
                 }
 
-                return SourceDemo.Subdomain;
+                return InstanceDuplication.DistributorId;
             }
         }
     }
