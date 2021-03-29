@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Instances.Infra.Migrations
 {
     [DbContext(typeof(InstancesDbContext))]
-    [Migration("20210326160659_CreateDuplicationTables")]
+    [Migration("20210329123507_CreateDuplicationTables")]
     partial class CreateDuplicationTables
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -120,10 +120,6 @@ namespace Instances.Infra.Migrations
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
-
-                    b.Property<int>("AuthorId")
-                        .HasColumnName("authorId")
-                        .HasColumnType("int");
 
                     b.Property<string>("DistributorId")
                         .IsRequired()

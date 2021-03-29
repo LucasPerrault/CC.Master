@@ -12,10 +12,6 @@ namespace Instances.Infra.Storage.Configurations
             builder.ToTable("InstanceDuplications");
             builder.HasKey(d => d.Id);
 
-            builder.Property(d => d.AuthorId)
-                .HasColumnName("authorId")
-                .IsRequired();
-
             builder.Property(d => d.DistributorId)
                 .HasColumnName("distributorId")
                 .IsRequired();

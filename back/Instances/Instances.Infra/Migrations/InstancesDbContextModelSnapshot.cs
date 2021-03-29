@@ -119,10 +119,6 @@ namespace Instances.Infra.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<int>("AuthorId")
-                        .HasColumnName("authorId")
-                        .HasColumnType("int");
-
                     b.Property<string>("DistributorId")
                         .IsRequired()
                         .HasColumnName("distributorId")

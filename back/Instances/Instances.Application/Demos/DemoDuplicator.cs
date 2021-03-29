@@ -79,7 +79,6 @@ namespace Instances.Application.Demos
             {
                 Id = Guid.NewGuid(),
                 Type = InstanceDuplicationType.Demos,
-                AuthorId = GetAuthorId(principal),
                 DistributorId = request.DistributorId,
                 SourceCluster = demoToDuplicate.Instance.Cluster,
                 TargetCluster = GetTargetCluster(),

@@ -24,7 +24,6 @@ namespace Instances.Application.Instances
 
             var dto = new DuplicateInstanceRequestDto
             {
-                AuthorId = duplication.AuthorId,
                 SourceTenant = new TenantDto
                 {
                     Tenant = duplication.SourceSubdomain,
@@ -46,7 +45,6 @@ namespace Instances.Application.Instances
 
     public class DuplicateInstanceRequestDto
     {
-        public int AuthorId { get; set; }
         public TenantDto SourceTenant { get; set; }
         public string TargetTenant { get; set; }
         public List<UriLinkDto> PostRestoreScripts { get; set; }

@@ -6,7 +6,6 @@ namespace Instances.Domain.Instances
     public class InstanceDuplication
     {
         public Guid Id { get; set; }
-        public int AuthorId { get; set; }
         public string SourceSubdomain { get; set; }
         public string TargetSubdomain { get; set; }
         public string SourceCluster { get; set; }
