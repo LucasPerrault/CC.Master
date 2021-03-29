@@ -100,7 +100,6 @@ namespace Instances.Application.Demos
             await _duplicationsStore.CreateAsync(duplication);
             _instancesDuplicator.RequestRemoteDuplication(instanceDuplication);
 
-
             return duplication;
         }
 
@@ -114,7 +113,7 @@ namespace Instances.Application.Demos
             return user.UserId.Value;
         }
 
-        public async Task MarkDuplicationAsCompleted(Guid instanceDuplicationId)
+        public async Task MarkDuplicationAsCompletedAsync(Guid instanceDuplicationId)
         {
             var duplication = _duplicationsStore.GetAll()
                 .Single(d => d.InstanceDuplicationId == instanceDuplicationId);
