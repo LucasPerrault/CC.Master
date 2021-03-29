@@ -28,7 +28,7 @@ namespace Instances.Web
 
             services.AddScoped<IInstancesStore, InstancesRemoteStore>();
 
-            services.AddScoped<IInstancesDuplicator, InstancesDuplicator>();
+            services.AddScoped<InstancesDuplicator>();
 
             services.AddScoped<IDemosStore, DemosStore>();
             services.AddScoped<IInstanceDuplicationsStore, InstanceDuplicationsStore>();

@@ -2,37 +2,27 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace Instances.Application.Instances
 {
-    public interface IInstancesDuplicator
+    public class InstancesDuplicator
     {
-        Task<DuplicateInstanceRequestDto> GetDuplicationInstanceRequestAsync(Guid duplicationId);
-    }
-
-    public class InstancesDuplicator : IInstancesDuplicator
-    {
-        private readonly IInstanceDuplicationsStore _duplicationsStore;
         private readonly ISqlScriptPicker _scriptPicker;
 
-        public InstancesDuplicator(IInstanceDuplicationsStore duplicationsStore, ISqlScriptPicker scriptPicker)
+        public InstancesDuplicator(ISqlScriptPicker scriptPicker)
         {
-            _duplicationsStore = duplicationsStore;
             _scriptPicker = scriptPicker;
         }
 
-        public async Task<DuplicateInstanceRequestDto> GetDuplicationInstanceRequestAsync(Guid duplicationId)
+        internal void RequestRemoteDuplicationAsync(InstanceDuplication duplication)
         {
-            var duplication = await _duplicationsStore.GetAsync(duplicationId);
-
             var scripts = _scriptPicker.GetForDuplication(duplication);
 
             var sourceClusterUri = duplication.SourceCluster == duplication.TargetCluster
                 ? null
                 : GetUriFromClusterName(duplication.SourceCluster);
 
-            return new DuplicateInstanceRequestDto
+            var dto = new DuplicateInstanceRequestDto
             {
                 AuthorId = duplication.AuthorId,
                 SourceTenant = new TenantDto
@@ -43,11 +33,13 @@ namespace Instances.Application.Instances
                 TargetTenant = duplication.TargetSubdomain,
                 PostRestoreScripts = scripts.Select(uri => new UriLinkDto { Uri = uri }).ToList()
             };
+
+            // call CC.Data
         }
 
         private Uri GetUriFromClusterName(string sourceCluster)
         {
-            return new Uri($"cc-data.{sourceCluster}.lucca.local");
+            return new Uri($"http://cc-data.{sourceCluster}.lucca.local");
         }
 
     }

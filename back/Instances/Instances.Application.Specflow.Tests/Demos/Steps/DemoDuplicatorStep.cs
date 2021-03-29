@@ -2,11 +2,13 @@
 using Distributors.Domain.Models;
 using Environments.Domain.Storage;
 using Instances.Application.Demos;
+using Instances.Application.Instances;
 using Instances.Application.Specflow.Tests.Demos.Models;
 using Instances.Application.Specflow.Tests.Shared.Tooling;
 using Instances.Domain.Demos;
 using Instances.Domain.Instances;
 using Instances.Domain.Instances.Models;
+using Instances.Infra.DataDuplication;
 using Instances.Infra.Demos;
 using Instances.Infra.Instances.Services;
 using Instances.Infra.Storage.Stores;
@@ -57,8 +59,11 @@ namespace Instances.Application.Specflow.Tests.Demos.Steps
             var envStoreMock = new Mock<IEnvironmentsStore>();
             var passwordResetMock = new Mock<IDemoUsersPasswordResetService>();
 
+            var instanceDuplicator = new InstancesDuplicator(new SqlScriptPicker());
+
             var duplicator = new DemoDuplicator
             (
+                instanceDuplicator,
                 demosStore,
                 demoDuplicationsStore,
                 instancesStoreMock.Object,

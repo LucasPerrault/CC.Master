@@ -12,7 +12,7 @@ namespace Instances.Infra.DataDuplication
         {
             var distinctScriptPaths = EnumerateForDuplication(duplication).ToHashSet();
 
-            var absoluteUri = new Uri("jenkins2.lucca.local/finish/me/please");
+            var absoluteUri = new Uri("http://jenkins2.lucca.local/finish/me/please");
 
             return distinctScriptPaths.Select(p => new Uri(absoluteUri, p)).ToList();
         }

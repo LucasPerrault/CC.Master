@@ -1,5 +1,6 @@
 ﻿using Authentication.Domain;
 using Distributors.Domain;
+using Instances.Application.Instances;
 using Instances.Domain.Demos;
 using Instances.Domain.Instances;
 using Instances.Domain.Instances.Models;
@@ -23,6 +24,7 @@ namespace Instances.Application.Demos
 
     public class DemoDuplicator
     {
+        private readonly InstancesDuplicator _instancesDuplicator;
         private readonly IDemosStore _demosStore;
         private readonly IDemoDuplicationsStore _duplicationsStore;
         private readonly IInstancesStore _instancesStore;
@@ -35,6 +37,7 @@ namespace Instances.Application.Demos
 
         public DemoDuplicator
         (
+            InstancesDuplicator instancesDuplicator,
             IDemosStore demosStore,
             IDemoDuplicationsStore duplicationsStore,
             IInstancesStore instancesStore,
@@ -46,6 +49,7 @@ namespace Instances.Application.Demos
             IDemoUsersPasswordResetService usersPasswordResetService
         )
         {
+            _instancesDuplicator = instancesDuplicator;
             _demosStore = demosStore;
             _duplicationsStore = duplicationsStore;
             _instancesStore = instancesStore;
@@ -95,7 +99,7 @@ namespace Instances.Application.Demos
             };
 
             await _duplicationsStore.CreateAsync(duplication);
-            // TODO call server target
+            _instancesDuplicator.RequestRemoteDuplicationAsync(instanceDuplication);
 
 
             return duplication;
