@@ -110,9 +110,12 @@ namespace Instances.Application.Demos
 
             return user.UserId.Value;
         }
-        private async Task MarkDuplicationAsCompleted()
+
+        public async Task MarkDuplicationAsCompleted(Guid instanceDuplicationId)
         {
-            DemoDuplication duplication = null; // TODO  get duplication by id
+            var duplication = _duplicationsStore.GetAllAsync()
+                .Single(d => d.InstanceDuplicationId == instanceDuplicationId);
+
             var clusterTarget = GetTargetCluster();
 
             var instance = await _instancesStore.CreateForDemoAsync(duplication.Password, clusterTarget);
