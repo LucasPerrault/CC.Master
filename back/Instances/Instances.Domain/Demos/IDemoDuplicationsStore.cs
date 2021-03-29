@@ -12,6 +12,6 @@ namespace Instances.Domain.Demos
         Task<Page<DemoDuplication>> GetAsync(IPageToken token, params Expression<Func<DemoDuplication, bool>>[] filters);
         Task<IQueryable<DemoDuplication>> GetAsync(Expression<Func<DemoDuplication, bool>> filter);
         Task<DemoDuplication> CreateAsync(DemoDuplication demo);
-        IQueryable<DemoDuplication> GetAllAsync();
+        IQueryable<DemoDuplication> GetAll();
     }
 }

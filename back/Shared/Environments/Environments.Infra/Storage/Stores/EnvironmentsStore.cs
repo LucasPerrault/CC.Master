@@ -16,12 +16,12 @@ namespace Environments.Infra.Storage.Stores
             _dbContext = dbContext;
         }
 
-        public IQueryable<Environment> GetFilteredAsync(params Expression<Func<Environment, bool>>[] filters)
+        public IQueryable<Environment> GetFiltered(params Expression<Func<Environment, bool>>[] filters)
         {
             return _dbContext.Set<Environment>().Where(filters.CombineSafely());
         }
 
-        public IQueryable<Environment> GetAllAsync()
+        public IQueryable<Environment> GetAll()
         {
             return _dbContext.Set<Environment>();
         }

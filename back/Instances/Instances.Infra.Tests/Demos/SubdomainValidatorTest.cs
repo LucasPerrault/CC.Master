@@ -40,8 +40,8 @@ namespace Instances.Infra.Tests.Demos
                 new Environment { Subdomain = takenSubdomain, IsActive = false}
             };
 
-            _demosStoreMock.Setup(s => s.GetAllAsync()).Returns(demos.AsQueryable().BuildMock().Object);
-            _envStoreMock.Setup(s => s.GetAllAsync()).Returns(envs.AsQueryable().BuildMock().Object);
+            _demosStoreMock.Setup(s => s.GetAll()).Returns(demos.AsQueryable().BuildMock().Object);
+            _envStoreMock.Setup(s => s.GetAll()).Returns(envs.AsQueryable().BuildMock().Object);
             var subdomainValidator = new SubdomainValidator(_demosStoreMock.Object, _envStoreMock.Object);
 
             Assert.True(subdomainValidator.IsAvailable("aperture-science"));
@@ -62,8 +62,8 @@ namespace Instances.Infra.Tests.Demos
                 new Environment { Subdomain = takenSubdomain, IsActive = false}
             };
 
-            _demosStoreMock.Setup(s => s.GetAllAsync()).Returns(demos.AsQueryable().BuildMock().Object);
-            _envStoreMock.Setup(s => s.GetAllAsync()).Returns(envs.AsQueryable().BuildMock().Object);
+            _demosStoreMock.Setup(s => s.GetAll()).Returns(demos.AsQueryable().BuildMock().Object);
+            _envStoreMock.Setup(s => s.GetAll()).Returns(envs.AsQueryable().BuildMock().Object);
             var subdomainValidator = new SubdomainValidator(_demosStoreMock.Object, _envStoreMock.Object);
 
             Assert.False(subdomainValidator.IsAvailable("aperture-science"));

@@ -67,22 +67,22 @@ namespace Instances.Infra.Demos
 
         public bool IsAvailable(string subdomain)
         {
-            return _environmentsStore.GetAllAsync()
+            return _environmentsStore.GetAll()
                 .Where(e => e.IsActive)
                 .All(e => e.Subdomain.ToLower() != subdomain)
-                && _demosStore.GetAllAsync()
+                && _demosStore.GetAll()
                     .Where(d => d.IsActive)
                     .All(d => d.Subdomain.ToLower() != subdomain);
         }
 
         private HashSet<string> GetUsedSubdomainsByPrefix(string prefix)
         {
-            var usedSubdomainsEnvs = _environmentsStore.GetAllAsync()
+            var usedSubdomainsEnvs = _environmentsStore.GetAll()
                 .Where(e => e.IsActive)
                 .Where(e => e.Subdomain.StartsWith(prefix))
                 .Select(e => e.Subdomain);
 
-            var usedSubdomainsDemos = _demosStore.GetAllAsync()
+            var usedSubdomainsDemos = _demosStore.GetAll()
                 .Where(d => d.IsActive)
                 .Where(d => d.Subdomain.StartsWith(prefix))
                 .Select(e => e.Subdomain);

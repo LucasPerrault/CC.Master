@@ -113,7 +113,7 @@ namespace Instances.Application.Demos
 
         public async Task MarkDuplicationAsCompleted(Guid instanceDuplicationId)
         {
-            var duplication = _duplicationsStore.GetAllAsync()
+            var duplication = _duplicationsStore.GetAll()
                 .Single(d => d.InstanceDuplicationId == instanceDuplicationId);
 
             var clusterTarget = GetTargetCluster();
@@ -131,7 +131,7 @@ namespace Instances.Application.Demos
         private string GetSourceDemoCluster(string sourceDemoSubdomain)
         {
             var demo = _demosStore
-                .GetAllAsync()
+                .GetAll()
                 .SingleOrDefault(d => d.IsActive && d.Subdomain == sourceDemoSubdomain);
 
             return demo?.Instance.Cluster
