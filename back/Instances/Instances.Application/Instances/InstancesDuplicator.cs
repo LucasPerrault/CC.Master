@@ -14,7 +14,7 @@ namespace Instances.Application.Instances
             _scriptPicker = scriptPicker;
         }
 
-        internal void RequestRemoteDuplicationAsync(InstanceDuplication duplication)
+        internal void RequestRemoteDuplication(InstanceDuplication duplication)
         {
             var scripts = _scriptPicker.GetForDuplication(duplication);
 
