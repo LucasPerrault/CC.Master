@@ -1,4 +1,14 @@
-﻿{
+{
+    "Logging": {
+        "LogLevel": {
+            "Default": "Error"
+        },
+        "Debug": {
+            "LogLevel": {
+                "Default": "Warning"
+            }
+        }
+    },
     "SqlInfos": {
         "Default": "Data Source={{ CC.Master:SqlServer }};Initial Catalog=CloudControl;user={{ CC.Master:SqlLogin }};Password={{ CC.Master:SqlPassword }};MultipleActiveResultSets=True;App=CloudControl"
     },
