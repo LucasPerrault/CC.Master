@@ -1,4 +1,4 @@
-﻿{
+{
     "SqlInfos": {
         "Default": "Data Source={{ CC.Master:SqlServer }};Initial Catalog=CloudControl;user={{ CC.Master:SqlLogin }};Password={{ CC.Master:SqlPassword }};MultipleActiveResultSets=True;App=CloudControl"
     },
@@ -46,5 +46,8 @@
             "ClientSecret": "{{ CC.Master:IdentityClientSecret }}",
             "TokenRequestRoute": "/identity/connect/token"
         }
+    },
+    "CcData": {
+        "Token": "{{ CC.Data:CCMasterWebserviceToken }}"
     }
 }

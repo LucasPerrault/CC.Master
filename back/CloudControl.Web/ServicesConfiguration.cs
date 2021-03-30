@@ -165,7 +165,7 @@ namespace CloudControl.Web
 
         public virtual void ConfigureInstances(IServiceCollection services, AppConfiguration configuration)
         {
-            InstancesConfigurer.ConfigureServices(services, configuration.Instances);
+            InstancesConfigurer.ConfigureServices(services, configuration.Instances, configuration.CcData);
         }
 
         public virtual void ConfigureLogs(IServiceCollection services)
