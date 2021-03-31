@@ -1,4 +1,4 @@
-﻿using Core.Proxy.Infra.Configuration;
+using Core.Proxy.Infra.Configuration;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
@@ -9,128 +9,128 @@ using System.Linq;
 
 namespace Core.Proxy.Infra.Extensions
 {
-	public static class LegacyCloudControlProxyExtensions
-	{
-		private const string FORWARDED_BY_LUCCA_HEADER = "X-Forwarded-By-Lucca";
-		private const string FORWARDED_BY_CC_MASTER_HEADER = "X-Forwarded-By-CC-Master";
-		private const string HOST_HEADER = "Host";
+    public static class LegacyCloudControlProxyExtensions
+    {
+        private const string FORWARDED_BY_LUCCA_HEADER = "X-Forwarded-By-Lucca";
+        private const string FORWARDED_BY_CC_MASTER_HEADER = "X-Forwarded-By-CC-Master";
+        private const string HOST_HEADER = "Host";
 
-		private const string HTTP_REDIRECTION_ADDRESS = "http://127.0.0.1";
-		private const string WS_REDIRECTION_ADDRESS = "ws://127.0.0.1";
+        private const string HTTP_REDIRECTION_ADDRESS = "http://127.0.0.1";
+        private const string WS_REDIRECTION_ADDRESS = "ws://127.0.0.1";
 
-		private static readonly HashSet<string> NonV3LegacyApiSegments = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
-		{
-			"workerprocesses",
-			"hangfire",
-			"backoffice",
-		};
-		private static readonly HashSet<string> NonRedirectableSegments = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
-		{
-			"/account/login",
-			"/logout",
-			"/ping",
-			"/healthz",
-			"/health/ready",
-			"/health/live",
-			"/warmup"
-		};
+        private static readonly HashSet<string> NonV3LegacyApiSegments = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+        {
+            "workerprocesses",
+            "hangfire",
+            "backoffice",
+        };
+        private static readonly HashSet<string> NonRedirectableSegments = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+        {
+            "/account/login",
+            "/logout",
+            "/ping",
+            "/healthz",
+            "/health/ready",
+            "/health/live",
+            "/warmup"
+        };
 
-		private static readonly HashSet<string> SpaSegments = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+        private static readonly HashSet<string> SpaSegments = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
 		{
 			"/logs",
 		};
 
-		public static IApplicationBuilder UseLegacyCloudControlHttpProxy(this IApplicationBuilder app)
-		{
-			var proxyConfiguration = app.ApplicationServices.GetService<LegacyCloudControlConfiguration>();
-			app.UseWhen
-			(
-				context  => context.IsRedirectableCall(),
-				app => app.RunProxy(context => context
-					.ForwardTo(HTTP_REDIRECTION_ADDRESS)
-					.CopyXForwardedHeaders()
-					.AddXForwardedHeaders()
-					.AddRedirectionHeader(proxyConfiguration.Host)
-					.AddXForwardedCustomHeaders(context)
-					.Send()
-			));
+        public static IApplicationBuilder UseLegacyCloudControlHttpProxy(this IApplicationBuilder app)
+        {
+            var proxyConfiguration = app.ApplicationServices.GetService<LegacyCloudControlConfiguration>();
+            app.UseWhen
+            (
+                context => context.IsRedirectableCall(),
+                app => app.RunProxy(context => context
+                    .ForwardTo(HTTP_REDIRECTION_ADDRESS)
+                    .CopyXForwardedHeaders()
+                    .AddXForwardedHeaders()
+                    .AddRedirectionHeader(proxyConfiguration.Host)
+                    .AddXForwardedCustomHeaders(context)
+                    .Send()
+            ));
 
-			return app;
-		}
+            return app;
+        }
 
-		public static IApplicationBuilder UseLegacyCloudControlWebSocketProxy(this IApplicationBuilder app)
-		{
-			var proxyConfiguration = app.ApplicationServices.GetService<LegacyCloudControlConfiguration>();
-			app.UseWebSockets();
-			app.UseWebSocketProxy
-			(
-				context => new Uri(WS_REDIRECTION_ADDRESS),
-				options => options
-					.AddRedirectionHeader(proxyConfiguration.Host)
-					.AddXForwardedHeaders()
-			);
+        public static IApplicationBuilder UseLegacyCloudControlWebSocketProxy(this IApplicationBuilder app)
+        {
+            var proxyConfiguration = app.ApplicationServices.GetService<LegacyCloudControlConfiguration>();
+            app.UseWebSockets();
+            app.UseWebSocketProxy
+            (
+                context => new Uri(WS_REDIRECTION_ADDRESS),
+                options => options
+                    .AddRedirectionHeader(proxyConfiguration.Host)
+                    .AddXForwardedHeaders()
+            );
 
-			return app;
-		}
+            return app;
+        }
 
-		internal static bool IsRedirectableCall(this HttpContext httpContext)
-		{
-			return !httpContext.Request.Path.IsNonRedirectablePath()
-				&& (
-					httpContext.Request.Path.StartsWithSegments("/api/v3")
-					|| httpContext.Request.Path.IsNonV3LegacyApiPath()
-					|| !httpContext.Request.Path.StartsWithSegments("/api")
-				);
-		}
+        internal static bool IsRedirectableCall(this HttpContext httpContext)
+        {
+            return !httpContext.Request.Path.IsNonRedirectablePath()
+                && (
+                    httpContext.Request.Path.StartsWithSegments("/api/v3")
+                    || httpContext.Request.Path.IsNonV3LegacyApiPath()
+                    || !httpContext.Request.Path.StartsWithSegments("/api")
+                );
+        }
 
-		private static bool IsNonV3LegacyApiPath(this PathString pathString)
-		{
-			if (!pathString.HasValue)
-			{
-				return false;
-			}
+        private static bool IsNonV3LegacyApiPath(this PathString pathString)
+        {
+            if (!pathString.HasValue)
+            {
+                return false;
+            }
 
-			if (!pathString.StartsWithSegments("/api"))
-			{
-				return false;
-			}
+            if (!pathString.StartsWithSegments("/api"))
+            {
+                return false;
+            }
 
-			var secondSegment = pathString.Value.Split('/').Skip(2).FirstOrDefault();
-			return !string.IsNullOrEmpty(secondSegment) && NonV3LegacyApiSegments.Contains(secondSegment);
-		}
+            var secondSegment = pathString.Value.Split('/').Skip(2).FirstOrDefault();
+            return !string.IsNullOrEmpty(secondSegment) && NonV3LegacyApiSegments.Contains(secondSegment);
+        }
 
-		private static bool IsNonRedirectablePath(this PathString pathString)
-		{
-			if (!pathString.HasValue)
-			{
-				return false;
-			}
+        private static bool IsNonRedirectablePath(this PathString pathString)
+        {
+            if (!pathString.HasValue)
+            {
+                return false;
+            }
 
 			return NonRedirectableSegments.Any(s => pathString.StartsWithSegments(s)) || SpaSegments.Any(s => pathString.StartsWithSegments(s));
 		}
 
-		private static ForwardContext AddRedirectionHeader(this ForwardContext forwardContext, string redirectionUrl)
-		{
-			forwardContext.UpstreamRequest.Headers.Remove(HOST_HEADER);
-			forwardContext.UpstreamRequest.Headers.Add(HOST_HEADER, new [] { redirectionUrl });
-			return forwardContext;
-		}
+        private static ForwardContext AddRedirectionHeader(this ForwardContext forwardContext, string redirectionUrl)
+        {
+            forwardContext.UpstreamRequest.Headers.Remove(HOST_HEADER);
+            forwardContext.UpstreamRequest.Headers.Add(HOST_HEADER, new[] { redirectionUrl });
+            return forwardContext;
+        }
 
-		private static WebSocketClientOptions AddRedirectionHeader(this WebSocketClientOptions options, string redirectionUrl)
-		{
-			options.HttpContext.Request.Headers.Remove(HOST_HEADER);
-			options.HttpContext.Request.Headers.Add(HOST_HEADER, new [] { redirectionUrl });
-			return options;
-		}
+        private static WebSocketClientOptions AddRedirectionHeader(this WebSocketClientOptions options, string redirectionUrl)
+        {
+            options.HttpContext.Request.Headers.Remove(HOST_HEADER);
+            options.HttpContext.Request.Headers.Add(HOST_HEADER, new[] { redirectionUrl });
+            return options;
+        }
 
-		internal static ForwardContext AddXForwardedCustomHeaders(this ForwardContext forwardContext, HttpContext context)
-		{
-			if (context.Request.Headers.TryGetValue(FORWARDED_BY_LUCCA_HEADER, out var forwardedByLuccaHeader))
-			{
-				forwardContext.UpstreamRequest.Headers.Add(FORWARDED_BY_LUCCA_HEADER, new [] { true.ToString()});
-			}
-			forwardContext.UpstreamRequest.Headers.Add(FORWARDED_BY_CC_MASTER_HEADER, new [] { context.Request.Host.Host });
-			return forwardContext;
-		}
-	}
+        internal static ForwardContext AddXForwardedCustomHeaders(this ForwardContext forwardContext, HttpContext context)
+        {
+            if (context.Request.Headers.TryGetValue(FORWARDED_BY_LUCCA_HEADER, out var forwardedByLuccaHeader))
+            {
+                forwardContext.UpstreamRequest.Headers.Add(FORWARDED_BY_LUCCA_HEADER, new[] { true.ToString() });
+            }
+            forwardContext.UpstreamRequest.Headers.Add(FORWARDED_BY_CC_MASTER_HEADER, new[] { context.Request.Host.Host });
+            return forwardContext;
+        }
+    }
 }
