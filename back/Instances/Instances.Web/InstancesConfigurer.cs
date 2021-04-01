@@ -21,12 +21,13 @@ namespace Instances.Web
         public class InstancesConfiguration
         {
             public IdentityAuthenticationConfig Identity { get; set; }
+            public CcDataConfiguration CcData { get; set; }
         }
 
-        public static void ConfigureServices(IServiceCollection services, InstancesConfiguration configuration, CcDataConfiguration ccDataConfiguration)
+        public static void ConfigureServices(IServiceCollection services, InstancesConfiguration configuration)
         {
             services.AddSingleton(configuration.Identity);
-            services.AddSingleton(ccDataConfiguration);
+            services.AddSingleton(configuration.CcData);
             services.AddSingleton<IUsersPasswordHelper, UsersPasswordHelper>();
             services.AddSingleton<SqlScriptPicker>();
 
@@ -50,7 +51,7 @@ namespace Instances.Web
                 {
                     c.WithUserAgent(nameof(CcDataService))
                         .WithAuthScheme("CloudControl")
-                        .AuthenticateAsWebService(ccDataConfiguration.OutboundToken);
+                        .AuthenticateAsWebService(configuration.CcData.OutboundToken);
                 });
         }
 
