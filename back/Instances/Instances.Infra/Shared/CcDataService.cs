@@ -36,10 +36,6 @@ namespace Instances.Infra.Shared
             }.Uri;
             body["CallbackAuthorizationHeader"] = $"Cloudcontrol application={_ccDataConfiguration.InboundToken}";
             var content = new StringContent(body.ToString(), Encoding.UTF8, "application/json");
-            _httpClient.DefaultRequestHeaders.Authorization = AuthenticationHeaderValue.Parse
-            (
-                $"Cloudcontrol webservice={_ccDataConfiguration.OutboundToken}"
-            );
 
             var uri = new Uri(GetCcDataBaseUri(cluster), "/api/v1/duplicate-instance");
             var result = await _httpClient.PostAsync(uri, content);
