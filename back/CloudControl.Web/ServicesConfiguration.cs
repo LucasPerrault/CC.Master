@@ -26,6 +26,7 @@ using Storage.Web;
 using System;
 using Billing.Contracts.Infra.Storage;
 using Billing.Web;
+using Cache.Web;
 using Environments.Infra.Storage;
 using Environments.Web;
 using Salesforce.Web;
@@ -51,6 +52,7 @@ namespace CloudControl.Web
             ConfigureApi(services);
             ConfigureLogs(services);
             // ConfigureSpa(services);
+            ConfigureCache(services, configuration);
             ConfigureProxy(services);
             ConfigureIpFilter(services);
             ConfigureTenancy(services);
@@ -90,7 +92,8 @@ namespace CloudControl.Web
                         o.ServiceName = AppConfiguration.AppName;
                     }
                 )
-                .AddLegacyCheck();
+                .AddLegacyCheck()
+                .AddRedisCheck();
         }
 
         public virtual void ConfigureApi(IServiceCollection services)
@@ -107,6 +110,11 @@ namespace CloudControl.Web
             {
                 o.ShouldIncludeFullExceptionDetails = _hostingEnvironment.IsDevelopment();
             });
+        }
+
+        public virtual void ConfigureCache(IServiceCollection services, AppConfiguration configuration)
+        {
+            RedisCacheConfigurer.ConfigureRedis(services, configuration.Redis);
         }
 
         public virtual void ConfigureProxy(IServiceCollection services)

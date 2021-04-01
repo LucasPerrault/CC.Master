@@ -1,5 +1,6 @@
 using Authentication.Infra.Configurations;
 using Billing.Contracts.Infra.Configurations;
+using Cache.Web;
 using Core.Proxy.Infra.Configuration;
 using Rights.Infra.Configuration;
 using Salesforce.Infra.Configurations;
@@ -16,5 +17,6 @@ namespace CloudControl.Web.Configuration
         public LegacyCloudControlConfiguration LegacyCloudControl { get; set; }
         public BillingContractsConfiguration BillingContracts { get; set; }
         public SalesforceConfiguration Salesforce { get; set; }
+        public RedisConfiguration Redis { get; set; }
     }
 }

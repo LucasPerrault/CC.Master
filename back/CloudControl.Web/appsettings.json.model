@@ -26,6 +26,11 @@
         "ForeignAppEndpointPath": "{{ CC.Master:RightsForeignAppEndpointPath }}",
         "UsersEndpointPath": "{{ CC.Master:RightsUsersEndpointPath }}"
     },
+    "Redis": {
+        "Host": "{{ shared:CacheManagerRedisHost }}",
+        "Password": "{{ shared:CacheManagerRedisPassword }}",
+        "KeyInvalidationInMinutes": "720"
+    },
     "LuccaLoggerOptions": {
         "ApplicationName": "CloudControl",
         "ConnectionString": "{{ shared:LuccaLogsConnectionString }}",
