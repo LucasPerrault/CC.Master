@@ -1,10 +1,9 @@
 using Instances.Domain.Shared;
 using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json.Linq;
+using Remote.Infra.Extensions;
 using System;
 using System.Net.Http;
-using System.Net.Http.Headers;
-using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
@@ -35,10 +34,9 @@ namespace Instances.Infra.Shared
                 Path = callbackPath
             }.Uri;
             body["CallbackAuthorizationHeader"] = $"Cloudcontrol application={_ccDataConfiguration.InboundToken}";
-            var content = new StringContent(body.ToString(), Encoding.UTF8, "application/json");
 
             var uri = new Uri(GetCcDataBaseUri(cluster), "/api/v1/duplicate-instance");
-            var result = await _httpClient.PostAsync(uri, content);
+            var result = await _httpClient.PostAsync(uri, body.ToJsonPayload());
 
             result.EnsureSuccessStatusCode();
         }
