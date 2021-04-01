@@ -48,6 +48,7 @@
         }
     },
     "CcData": {
-        "Token": "{{ CC.Data:CCMasterWebserviceToken }}"
+        "OutboundToken": "{{ CC.Data:CCMasterWebserviceToken }}",
+        "InboundToken": "{{ CC.Data:CCMasterWebserviceToken }}"
     }
 }

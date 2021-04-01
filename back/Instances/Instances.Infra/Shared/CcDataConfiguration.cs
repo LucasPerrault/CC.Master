@@ -4,6 +4,7 @@ namespace Instances.Infra.Shared
 {
     public class CcDataConfiguration
     {
-        public Guid Token { get; set; }
+        public Guid InboundToken { get; set; }
+        public Guid OutboundToken { get; set; }
     }
 }
