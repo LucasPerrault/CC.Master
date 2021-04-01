@@ -15,11 +15,12 @@ namespace Cache.Web
     {
         public static void ConfigureRedis(IServiceCollection service, RedisConfiguration configuration)
         {
-            service.AddSingleton<ICacheService, RedisCacheService>(p => CacheService(configuration));
-            service.AddSingleton(p => CacheService(configuration));
+            var cacheService = CacheService(configuration);
+            service.AddSingleton<IRedisHealthService, RedisHealthService>(_ => cacheService);
+            service.AddSingleton<ICacheService, RedisHealthService>(_ => cacheService);
         }
 
-        private static RedisCacheService CacheService(RedisConfiguration configuration)
+        private static RedisHealthService CacheService(RedisConfiguration configuration)
         {
             var options = new ConfigurationOptions
             {
@@ -30,11 +31,11 @@ namespace Cache.Web
             try
             {
                 var multiplexer = ConnectionMultiplexer.Connect(options);
-                return new RedisCacheService(multiplexer, configuration.KeyInvalidationInMinutes);
+                return new RedisHealthService(multiplexer, configuration.KeyInvalidationInMinutes);
             }
             catch (RedisConnectionException)
             {
-                return new RedisCacheService(null, configuration.KeyInvalidationInMinutes);
+                return new RedisHealthService(null, configuration.KeyInvalidationInMinutes);
             }
         }
 

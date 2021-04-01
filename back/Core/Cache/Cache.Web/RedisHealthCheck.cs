@@ -4,11 +4,16 @@ using System.Threading.Tasks;
 
 namespace Cache.Web
 {
+    public interface IRedisHealthService
+    {
+        bool IsHealthy();
+    }
+
     public class RedisHealthCheck : IHealthCheck
     {
-        private readonly RedisCacheService _redisService;
+        private readonly IRedisHealthService _redisService;
 
-        public RedisHealthCheck(RedisCacheService redisService)
+        public RedisHealthCheck(IRedisHealthService redisService)
         {
             _redisService = redisService;
         }

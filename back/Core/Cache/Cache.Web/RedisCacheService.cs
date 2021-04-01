@@ -6,13 +6,13 @@ using System.Threading.Tasks;
 
 namespace Cache.Web
 {
-    public class RedisCacheService : ICacheService
+    public class RedisHealthService : ICacheService, IRedisHealthService
     {
         private const int _cacheVersion = 1;
         private readonly ConnectionMultiplexer _multiplexer;
         private readonly TimeSpan _defaultInvalidation;
 
-        internal RedisCacheService
+        internal RedisHealthService
         (
             ConnectionMultiplexer connectionMultiplexer,
             int keyInvalidationInMinutes
@@ -22,7 +22,7 @@ namespace Cache.Web
             _defaultInvalidation = TimeSpan.FromMinutes(keyInvalidationInMinutes);
         }
 
-        internal bool IsHealthy() => _multiplexer != null;
+        public bool IsHealthy() => _multiplexer != null;
 
         public async Task<T> GetAsync<T>(CacheKey<T> key)
         {
