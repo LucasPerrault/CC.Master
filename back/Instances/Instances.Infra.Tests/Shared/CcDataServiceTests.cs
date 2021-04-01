@@ -29,7 +29,7 @@ namespace Instances.Infra.Tests.Shared
 
             _ccDataConfiguration = new CcDataConfiguration
             {
-                Token = Guid.NewGuid()
+                InboundToken = Guid.NewGuid()
             };
 
             _ccDataService = new CcDataService(new HttpClient(_mockHttpMessageHandler.Object), _ccDataConfiguration, _mockHttpContextAccessor.Object);
@@ -79,16 +79,15 @@ namespace Instances.Infra.Tests.Shared
                     ItExpr.IsAny<HttpRequestMessage>(),
                     ItExpr.IsAny<CancellationToken>());
 
-            var authorizationHeader = $"Cloudcontrol webservice={_ccDataConfiguration.Token}";
+            var callbackAuthHeader = $"Cloudcontrol application={_ccDataConfiguration.InboundToken}";
             captureMessage.Should().NotBeNull();
             captureMessage.Method.Should().Be(HttpMethod.Post);
             captureMessage.RequestUri.Should().Be("http://cc-data.c5.lucca.local/api/v1/duplicate-instance");
-            captureMessage.Headers.Authorization.ToString().Should().Be(authorizationHeader);
 
             var body = JToken.Parse(await captureMessage.Content.ReadAsStringAsync());
             body.Should().BeEquivalentTo(JToken.Parse($@"{{
                 ""CallbackUri"": ""https://cc.ilucca.local/callback/path/return"",
-                ""CallbackAuthorizationHeader"": ""{ authorizationHeader }"",
+                ""CallbackAuthorizationHeader"": ""{ callbackAuthHeader }"",
                 ""SourceTenant"": {{
                     ""Tenant"": ""tenant"",
                     ""CcDataServerUri"": null

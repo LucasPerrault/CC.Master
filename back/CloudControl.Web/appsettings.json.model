@@ -45,9 +45,10 @@
             "ClientId": "cloud.control",
             "ClientSecret": "{{ CC.Master:IdentityClientSecret }}",
             "TokenRequestRoute": "/identity/connect/token"
+        },
+        "CcData": {
+            "OutboundToken": "{{ CC.Data:CCMasterWebserviceToken }}",
+            "InboundToken": "{{ CC.Data:CCMasterWebserviceToken }}"
         }
-    },
-    "CcData": {
-        "Token": "{{ CC.Data:CCMasterWebserviceToken }}"
     }
 }

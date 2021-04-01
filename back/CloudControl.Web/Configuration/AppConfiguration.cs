@@ -1,7 +1,6 @@
 using Authentication.Infra.Configurations;
 using Billing.Contracts.Infra.Configurations;
 using Core.Proxy.Infra.Configuration;
-using Instances.Infra.Shared;
 using Instances.Web;
 using Rights.Infra.Configuration;
 using Salesforce.Infra.Configurations;
@@ -19,6 +18,5 @@ namespace CloudControl.Web.Configuration
         public BillingContractsConfiguration BillingContracts { get; set; }
         public SalesforceConfiguration Salesforce { get; set; }
         public InstancesConfigurer.InstancesConfiguration Instances { get; set; }
-        public CcDataConfiguration CcData { get; set; }
     }
 }

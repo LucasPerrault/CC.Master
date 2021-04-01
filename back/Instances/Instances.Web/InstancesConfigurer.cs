@@ -12,6 +12,7 @@ using Instances.Infra.Storage.Stores;
 using Lucca.Core.Api.Abstractions;
 using Lucca.Core.Api.Web;
 using Microsoft.Extensions.DependencyInjection;
+using Remote.Infra.Extensions;
 
 namespace Instances.Web
 {
@@ -20,12 +21,13 @@ namespace Instances.Web
         public class InstancesConfiguration
         {
             public IdentityAuthenticationConfig Identity { get; set; }
+            public CcDataConfiguration CcData { get; set; }
         }
 
-        public static void ConfigureServices(IServiceCollection services, InstancesConfiguration configuration, CcDataConfiguration ccDataConfiguration)
+        public static void ConfigureServices(IServiceCollection services, InstancesConfiguration configuration)
         {
             services.AddSingleton(configuration.Identity);
-            services.AddSingleton(ccDataConfiguration);
+            services.AddSingleton(configuration.CcData);
             services.AddSingleton<IUsersPasswordHelper, UsersPasswordHelper>();
             services.AddSingleton<SqlScriptPicker>();
 
@@ -44,7 +46,13 @@ namespace Instances.Web
 
             services.AddScoped<IUsersPasswordResetService, UsersPasswordResetService>();
 
-            services.AddHttpClient<ICcDataService, CcDataService>();
+            services.AddHttpClient<ICcDataService, CcDataService>(
+                c =>
+                {
+                    c.WithUserAgent(nameof(CcDataService))
+                        .WithAuthScheme("CloudControl")
+                        .AuthenticateAsWebService(configuration.CcData.OutboundToken);
+                });
         }
 
         public static LuccaApiBuilder ConfigureLuccaApiForInstances(this LuccaApiBuilder luccaApiBuilder)

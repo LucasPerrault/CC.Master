@@ -1,10 +1,9 @@
 using Instances.Domain.Shared;
 using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json.Linq;
+using Remote.Infra.Extensions;
 using System;
 using System.Net.Http;
-using System.Net.Http.Headers;
-using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
@@ -28,19 +27,16 @@ namespace Instances.Infra.Shared
         public async Task StartDuplicateInstanceAsync(DuplicateInstanceRequestDto duplicateInstanceRequest, string cluster, string callbackPath)
         {
             var body = JToken.FromObject(duplicateInstanceRequest);
-            var authorizationHeader = $"Cloudcontrol webservice={_ccDataConfiguration.Token}";
             body["CallbackUri"] = new UriBuilder
             {
                 Scheme = _httpContextAccessor.HttpContext.Request.Scheme,
                 Host = _httpContextAccessor.HttpContext.Request.Host.Host,
                 Path = callbackPath
             }.Uri;
-            body["CallbackAuthorizationHeader"] = authorizationHeader;
-            var content = new StringContent(body.ToString(), Encoding.UTF8, "application/json");
-            _httpClient.DefaultRequestHeaders.Authorization = AuthenticationHeaderValue.Parse(authorizationHeader);
+            body["CallbackAuthorizationHeader"] = $"Cloudcontrol application={_ccDataConfiguration.InboundToken}";
 
             var uri = new Uri(GetCcDataBaseUri(cluster), "/api/v1/duplicate-instance");
-            var result = await _httpClient.PostAsync(uri, content);
+            var result = await _httpClient.PostAsync(uri, body.ToJsonPayload());
 
             result.EnsureSuccessStatusCode();
         }
