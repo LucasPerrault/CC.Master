@@ -129,11 +129,7 @@ namespace Instances.Application.Demos
             await _demosStore.CreateAsync(demo);
             await _usersPasswordResetService.ResetPasswordAsync(demo, duplication.Password);
 
-            try
-            {
-                await _authWebserviceSynchronizer.SynchronizeAsync(instance.Id);
-            }
-            catch { }
+            await _authWebserviceSynchronizer.SafeSynchronizeAsync(instance.Id);
 
             // duplication.Status = DuplicationStatus.Success;
         }

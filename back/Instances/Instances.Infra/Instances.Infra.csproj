@@ -19,7 +19,6 @@
 
   <ItemGroup>
     <PackageReference Include="Lucca.Core.Shared.Domain" Version="2.0.13" />
-    <PackageReference Include="Lucca.Logs.Shared" Version="0.7.2" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="3.1.7" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="3.1.7">
       <PrivateAssets>all</PrivateAssets>
