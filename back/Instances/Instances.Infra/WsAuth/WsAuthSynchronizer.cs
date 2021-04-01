@@ -1,21 +1,20 @@
-using Authentication.Infra.Services;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Threading.Tasks;
 
-namespace Instances.Infra.Auth
+namespace Instances.Infra.WsAuth
 {
-    public interface IAuthWebserviceSynchronizer
+    public interface IWsAuthSynchronizer
     {
         Task SafeSynchronizeAsync(int instanceId);
     }
 
-    public class AuthWebserviceSynchronizer : IAuthWebserviceSynchronizer
+    public class WsAuthSynchronizer : IWsAuthSynchronizer
     {
-        private readonly AuthWebserviceRemoteService _authWebservice;
-        private readonly ILogger<AuthWebserviceSynchronizer> _logger;
+        private readonly WsAuthRemoteService _authWebservice;
+        private readonly ILogger<WsAuthSynchronizer> _logger;
 
-        public AuthWebserviceSynchronizer(AuthWebserviceRemoteService authWebservice, ILogger<AuthWebserviceSynchronizer> logger)
+        public WsAuthSynchronizer(WsAuthRemoteService authWebservice, ILogger<WsAuthSynchronizer> logger)
         {
             _authWebservice = authWebservice;
             _logger = logger;

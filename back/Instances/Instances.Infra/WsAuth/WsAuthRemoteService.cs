@@ -5,13 +5,13 @@ using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
 
-namespace Authentication.Infra.Services
+namespace Instances.Infra.WsAuth
 {
-    public abstract class AuthWebserviceRemoteService : HostRemoteService
+    public abstract class WsAuthRemoteService : HostRemoteService
     {
         protected override string RemoteApiDescription => "Auth WS";
 
-        public AuthWebserviceRemoteService(HttpClient httpClient, JsonSerializer jsonSerializer)
+        public WsAuthRemoteService(HttpClient httpClient, JsonSerializer jsonSerializer)
             : base(httpClient, jsonSerializer)
         { }
 

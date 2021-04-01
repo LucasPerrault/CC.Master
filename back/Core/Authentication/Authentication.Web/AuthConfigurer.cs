@@ -15,7 +15,7 @@ namespace Authentication.Web
 {
     public class AuthConfigurer
     {
-        public static void ConfigureServices(IServiceCollection services, AuthenticationConfiguration config, AuthWebserviceConfiguration authWsConfig)
+        public static void ConfigureServices(IServiceCollection services, AuthenticationConfiguration config)
         {
             services.AddSingleton(config);
             services.AddTransient
@@ -39,13 +39,6 @@ namespace Authentication.Web
                 client.WithUserAgent(nameof(ApiKeyAuthenticationRemoteService))
                     .WithBaseAddress(config.ServerUri, config.ApiKeysEndpointPath)
                     .WithAuthScheme("Lucca").AuthenticateAsApplication(config.ApiKeysFetcherToken);
-            });
-
-            services.AddHttpClient<AuthWebserviceRemoteService>(client =>
-            {
-                client.WithUserAgent(nameof(AuthWebserviceRemoteService))
-                    .WithBaseAddress(authWsConfig.ServerUri, authWsConfig.SyncEndpointPath)
-                    .WithAuthScheme("Lucca").AuthenticateAsApplication(authWsConfig.Token);
             });
 
             services.AddSingleton<PrincipalStore>();

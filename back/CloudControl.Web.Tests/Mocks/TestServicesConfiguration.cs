@@ -3,6 +3,7 @@ using Billing.Contracts.Infra.Configurations;
 using CloudControl.Web.Configuration;
 using Core.Proxy.Infra.Configuration;
 using Instances.Infra.Instances;
+using Instances.Infra.WsAuth;
 using Instances.Web;
 using IpFilter.Infra.Storage;
 using IpFilter.Web;
@@ -51,12 +52,6 @@ namespace CloudControl.Web.Tests.Mocks
                     ServerUri = new Uri("https://mocked-partenaires.local"),
                     LogoutEndpointPath = "/logout",
                     RedirectEndpointPath = "/login"
-                },
-                AuthWebservice = new AuthWebserviceConfiguration
-                {
-                    ServerUri = new Uri("https://mocked-ws-auth.ilucca.local"),
-                    SyncEndpointPath = "/sync",
-                    Token = new Guid("deadbeef-0000-0000-0000-000000000000")
                 }
             });
         }
@@ -151,6 +146,12 @@ namespace CloudControl.Web.Tests.Mocks
                         ClientId = "mocked.identity.client.id",
                         ClientSecret = "mocked.identity.client.secret",
                         TokenRequestRoute = "mocked/identity/token/request/route"
+                    },
+                    WsAuth = new WsAuthConfiguration
+                    {
+                        ServerUri = new Uri("https://mocked-ws-auth.ilucca.local"),
+                        EndpointPath = "/sync",
+                        Token = new Guid("deadbeef-0000-0000-0000-000000000000")
                     }
                 }
             });

@@ -13,7 +13,6 @@ namespace CloudControl.Web.Configuration
         public const string AppName = "CloudControl";
 
         public AuthenticationConfiguration Authentication { get; set; }
-        public AuthWebserviceConfiguration AuthWebservice { get; set; }
         public RightsConfiguration Rights { get; set; }
         public LegacyCloudControlConfiguration LegacyCloudControl { get; set; }
         public BillingContractsConfiguration BillingContracts { get; set; }

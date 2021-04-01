@@ -4,8 +4,8 @@ using Instances.Application.Instances;
 using Instances.Domain.Demos;
 using Instances.Domain.Instances;
 using Instances.Domain.Instances.Models;
-using Instances.Infra.Auth;
 using Instances.Infra.Instances.Services;
+using Instances.Infra.WsAuth;
 using Lucca.Core.Rights.Abstractions;
 using Lucca.Core.Shared.Domain.Exceptions;
 using Rights.Domain;
@@ -35,7 +35,7 @@ namespace Instances.Application.Demos
         private readonly IUsersPasswordHelper _passwordHelper;
         private readonly IDemoRightsFilter _demoRightsFilter;
         private readonly IDemoUsersPasswordResetService _usersPasswordResetService;
-        private readonly IAuthWebserviceSynchronizer _authWebserviceSynchronizer;
+        private readonly IWsAuthSynchronizer _wsAuthSynchronizer;
 
         public DemoDuplicator
         (
@@ -49,7 +49,7 @@ namespace Instances.Application.Demos
             IUsersPasswordHelper passwordHelper,
             IDemoRightsFilter demoRightsFilter,
             IDemoUsersPasswordResetService usersPasswordResetService,
-            IAuthWebserviceSynchronizer authWebserviceSynchronizer
+            IWsAuthSynchronizer wsAuthSynchronizer
         )
         {
             _instancesDuplicator = instancesDuplicator;
@@ -62,7 +62,7 @@ namespace Instances.Application.Demos
             _passwordHelper = passwordHelper;
             _demoRightsFilter = demoRightsFilter;
             _usersPasswordResetService = usersPasswordResetService;
-            _authWebserviceSynchronizer = authWebserviceSynchronizer;
+            _wsAuthSynchronizer = wsAuthSynchronizer;
         }
 
         public async Task<DemoDuplication> CreateDuplicationAsync
@@ -129,7 +129,7 @@ namespace Instances.Application.Demos
             await _demosStore.CreateAsync(demo);
             await _usersPasswordResetService.ResetPasswordAsync(demo, duplication.Password);
 
-            await _authWebserviceSynchronizer.SafeSynchronizeAsync(instance.Id);
+            await _wsAuthSynchronizer.SafeSynchronizeAsync(instance.Id);
 
             // duplication.Status = DuplicationStatus.Success;
         }

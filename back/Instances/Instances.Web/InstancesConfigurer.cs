@@ -2,15 +2,16 @@ using Instances.Application.Demos;
 using Instances.Application.Instances;
 using Instances.Domain.Demos;
 using Instances.Domain.Instances;
-using Instances.Infra.Auth;
 using Instances.Infra.DataDuplication;
 using Instances.Infra.Demos;
 using Instances.Infra.Instances;
 using Instances.Infra.Instances.Services;
 using Instances.Infra.Storage.Stores;
+using Instances.Infra.WsAuth;
 using Lucca.Core.Api.Abstractions;
 using Lucca.Core.Api.Web;
 using Microsoft.Extensions.DependencyInjection;
+using Remote.Infra.Extensions;
 
 namespace Instances.Web
 {
@@ -19,6 +20,7 @@ namespace Instances.Web
         public class InstancesConfiguration
         {
             public IdentityAuthenticationConfig Identity { get; set; }
+            public WsAuthConfiguration WsAuth { get; set; }
         }
 
         public static void ConfigureServices(IServiceCollection services, InstancesConfiguration configuration)
@@ -42,7 +44,14 @@ namespace Instances.Web
 
             services.AddScoped<IUsersPasswordResetService, UsersPasswordResetService>();
 
-            services.AddScoped<IAuthWebserviceSynchronizer, AuthWebserviceSynchronizer>();
+            services.AddHttpClient<WsAuthRemoteService>(client =>
+            {
+                client.WithUserAgent(nameof(WsAuthRemoteService))
+                    .WithBaseAddress(configuration.WsAuth.ServerUri, configuration.WsAuth.EndpointPath)
+                    .WithAuthScheme("Lucca").AuthenticateAsApplication(configuration.WsAuth.Token);
+            });
+
+            services.AddScoped<IWsAuthSynchronizer, WsAuthSynchronizer>();
         }
 
         public static LuccaApiBuilder ConfigureLuccaApiForInstances(this LuccaApiBuilder luccaApiBuilder)

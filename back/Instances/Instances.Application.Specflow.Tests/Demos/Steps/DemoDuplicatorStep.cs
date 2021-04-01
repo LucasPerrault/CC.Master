@@ -1,4 +1,3 @@
-using Distributors.Domain;
 using Distributors.Domain.Models;
 using Environments.Domain.Storage;
 using Instances.Application.Demos;
@@ -8,11 +7,11 @@ using Instances.Application.Specflow.Tests.Shared.Tooling;
 using Instances.Domain.Demos;
 using Instances.Domain.Instances;
 using Instances.Domain.Instances.Models;
-using Instances.Infra.Auth;
 using Instances.Infra.DataDuplication;
 using Instances.Infra.Demos;
 using Instances.Infra.Instances.Services;
 using Instances.Infra.Storage.Stores;
+using Instances.Infra.WsAuth;
 using Lucca.Core.Shared.Domain.Exceptions;
 using Moq;
 using Rights.Domain;
@@ -126,7 +125,7 @@ namespace Instances.Application.Specflow.Tests.Demos.Steps
 
             var envStoreMock = new Mock<IEnvironmentsStore>();
             var passwordResetMock = new Mock<IDemoUsersPasswordResetService>();
-            var authWsMock = new Mock<IAuthWebserviceSynchronizer>();
+            var authWsMock = new Mock<IWsAuthSynchronizer>();
 
             return new DemoDuplicator
                 (
