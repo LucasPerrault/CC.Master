@@ -63,9 +63,10 @@ namespace Instances.Infra.Shared
                 "formation" => "fm",
                 "green" => "ch",
                 "security" => "se",
+                "recette" => "re",
                 _ => throw new NotSupportedException($"Cluster name is not supported : {cluster}")
             };
-            return new Uri($"http://cc-data.{cluster}{clusterNumber?.ToString() ?? ""}.lucca.local");
+            return new Uri($"{_ccDataConfiguration.Scheme}://cc-data.{cluster}{clusterNumber?.ToString() ?? ""}.{_ccDataConfiguration.Domain}");
         }
     }
 }

@@ -29,7 +29,9 @@ namespace Instances.Infra.Tests.Shared
 
             _ccDataConfiguration = new CcDataConfiguration
             {
-                InboundToken = Guid.NewGuid()
+                InboundToken = Guid.NewGuid(),
+                Domain = "lucca.local",
+                Scheme = "http"
             };
 
             _ccDataService = new CcDataService(new HttpClient(_mockHttpMessageHandler.Object), _ccDataConfiguration, _mockHttpContextAccessor.Object);
@@ -107,6 +109,7 @@ namespace Instances.Infra.Tests.Shared
         [InlineData("GREEN3", "http://cc-data.ch.lucca.local")]
         [InlineData("Preview", "http://cc-data.pm.lucca.local")]
         [InlineData("SECURITY", "http://cc-data.se.lucca.local")]
+        [InlineData("RECETTE", "http://cc-data.re.lucca.local")]
         public void GetCcDataBaseUri_Ok(string input, string expectedOutput)
         {
             var result = _ccDataService.GetCcDataBaseUri(input);

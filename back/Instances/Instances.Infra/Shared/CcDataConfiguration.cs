@@ -6,5 +6,7 @@ namespace Instances.Infra.Shared
     {
         public Guid InboundToken { get; set; }
         public Guid OutboundToken { get; set; }
+        public string Scheme { get; set; }
+        public string Domain { get; set; }
     }
 }

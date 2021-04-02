@@ -47,6 +47,8 @@
             "TokenRequestRoute": "/identity/connect/token"
         },
         "CcData": {
+            "Domain":  "lucca.local",
+            "Scheme":  "http",
             "OutboundToken": "{{ CC.Data:CCMasterWebserviceToken }}",
             "InboundToken": "{{ CC.Data:CCMasterWebserviceToken }}"
         }
