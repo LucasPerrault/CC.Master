@@ -12,6 +12,8 @@ namespace Users.Infra
 {
     public class UsersSyncService : RestApiV3HostRemoteService, IUsersSyncService
     {
+        public static readonly DateTime EarliestContractEnd = new DateTime(1900, 1, 1);
+
         private readonly UsersStore _store;
         protected override string RemoteApiDescription => "Partenaires users";
 
@@ -28,7 +30,6 @@ namespace Users.Infra
             var localUsers = await _store.GetAllAsync();
             var localUsersDict = localUsers.ToDictionary(u => u.Id, u => u);
 
-            var now = DateTime.Now;
             foreach (var remoteUser in allUsersFromRemote)
             {
                 if (localUsersDict.TryGetValue(remoteUser.Id, out var user))
@@ -60,7 +61,8 @@ namespace Users.Infra
         {
             var queryParams = new Dictionary<string, string>
             {
-                { "fields", LuccaUser.ApiFields }
+                { "fields", LuccaUser.ApiFields },
+                {"dtContractEnd", $"since,{EarliestContractEnd :yyyy-MM-dd},null"}
             };
             var response = await GetObjectCollectionResponseAsync<LuccaUser>(queryParams);
             return response.Data.Items;
