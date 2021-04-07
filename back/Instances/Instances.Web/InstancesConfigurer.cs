@@ -52,7 +52,7 @@ namespace Instances.Web
             {
                 client.WithUserAgent(nameof(WsAuthRemoteService))
                     .WithBaseAddress(configuration.WsAuth.ServerUri, configuration.WsAuth.EndpointPath)
-                    .WithAuthScheme("Lucca").AuthenticateAsApplication(configuration.WsAuth.Token);
+                    .WithAuthScheme("Lucca").AuthenticateAsWebService(configuration.WsAuth.Token);
             });
 
             services.AddScoped<IWsAuthSynchronizer, WsAuthSynchronizer>();
