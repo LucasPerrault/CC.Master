@@ -1,4 +1,4 @@
-using Cache.Abstractions;
+﻿using Cache.Abstractions;
 using Instances.Domain.Demos;
 using System;
 using System.Security.Claims;
@@ -82,6 +82,22 @@ namespace Instances.Application.Demos
             };
             var cacheKey = new HubspotDemoDuplicationKey(demoDuplication.InstanceDuplicationId);
             await _cacheService.SetAsync(cacheKey, cachedDuplication);
+        }
+
+        public async Task MarkAsEndedAsync(Guid instanceDuplicationId, bool isSuccessful)
+        {
+            var key = new HubspotDemoDuplicationKey(instanceDuplicationId);
+
+            await _demoDuplicator.MarkDuplicationAsCompletedAsync(instanceDuplicationId);
+
+            var cachedDuplication = await _cacheService.GetAsync(key);
+
+            var workflowId = isSuccessful
+                ? cachedDuplication.SuccessWorkflowId
+                : cachedDuplication.FailureWorkflowId;
+
+            await _hubspotService.CallWorkflowForEmailAsync(workflowId, cachedDuplication.Email);
+            await _cacheService.ExpireAsync(key);
         }
     }
 }

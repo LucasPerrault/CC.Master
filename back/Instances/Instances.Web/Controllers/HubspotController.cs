@@ -1,6 +1,7 @@
 ﻿using Instances.Application.Demos;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Threading.Tasks;
 
 namespace Instances.Web.Controllers
@@ -19,6 +20,14 @@ namespace Instances.Web.Controllers
         public class HubspotDemoDuplicationRequest
         {
             public int VId { get; set; }
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> NotifyDuplicationEndAsync(Guid instanceDuplicationId, bool isSuccessful)
+        {
+            await _demoDuplicator.MarkAsEndedAsync(instanceDuplicationId, isSuccessful);
+
+            return new StatusCodeResult(StatusCodes.Status202Accepted);
         }
 
         [HttpPost]

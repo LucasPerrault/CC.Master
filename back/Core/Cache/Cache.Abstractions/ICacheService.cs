@@ -6,5 +6,6 @@ namespace Cache.Abstractions
     {
         Task<T> GetAsync<T>(CacheKey<T> key);
         Task SetAsync<T>(CacheKey<T> key, T value);
+        Task ExpireAsync<T>(CacheKey<T> key);
     }
 }

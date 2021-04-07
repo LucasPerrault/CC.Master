@@ -44,6 +44,16 @@ namespace Cache.Web
             return SetSerializedValueAsync(key.Key, serialized, key.Invalidation);
         }
 
+        public async Task ExpireAsync<T>(CacheKey<T> key)
+        {
+            if (!IsHealthy())
+            {
+                return;
+            }
+
+            await _multiplexer.GetDatabase().KeyDeleteAsync(GetClientCenterStringKey(key.Key));
+        }
+
         private Task<RedisValue> GetSerializedValueAsync(string key)
         {
             return _multiplexer
