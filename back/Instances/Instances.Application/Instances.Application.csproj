@@ -9,6 +9,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\Core\Cache\Cache.Abstractions\Cache.Abstractions.csproj" />
     <ProjectReference Include="..\Instances.Domain\Instances.Domain.csproj" />
     <ProjectReference Include="..\Instances.Infra\Instances.Infra.csproj" />
   </ItemGroup>
