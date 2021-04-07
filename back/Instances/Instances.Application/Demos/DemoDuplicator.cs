@@ -1,4 +1,4 @@
-﻿using Authentication.Domain;
+using Authentication.Domain;
 using Distributors.Domain;
 using Instances.Application.Instances;
 using Instances.Domain.Demos;
@@ -98,7 +98,7 @@ namespace Instances.Application.Demos
             };
 
             await _duplicationsStore.CreateAsync(duplication);
-            _instancesDuplicator.RequestRemoteDuplication(instanceDuplication);
+            await _instancesDuplicator.RequestRemoteDuplicationAsync(instanceDuplication);
 
             return duplication;
         }
