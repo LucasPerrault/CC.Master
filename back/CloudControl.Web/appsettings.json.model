@@ -1,4 +1,14 @@
-﻿{
+{
+    "Logging": {
+        "LogLevel": {
+            "Default": "Error"
+        },
+        "Debug": {
+            "LogLevel": {
+                "Default": "Warning"
+            }
+        }
+    },
     "SqlInfos": {
         "Default": "Data Source={{ CC.Master:SqlServer }};Initial Catalog=CloudControl;user={{ CC.Master:SqlLogin }};Password={{ CC.Master:SqlPassword }};MultipleActiveResultSets=True;App=CloudControl"
     },
@@ -15,6 +25,11 @@
         "DepartmentsEndpointPath": "{{ CC.Master:RightsDepartmentEndpointPath }}",
         "ForeignAppEndpointPath": "{{ CC.Master:RightsForeignAppEndpointPath }}",
         "UsersEndpointPath": "{{ CC.Master:RightsUsersEndpointPath }}"
+    },
+    "Redis": {
+        "Host": "{{ shared:CacheManagerRedisHost }}",
+        "Password": "{{ shared:CacheManagerRedisPassword }}",
+        "KeyInvalidationInMinutes": "720"
     },
     "LuccaLoggerOptions": {
         "ApplicationName": "CloudControl",
