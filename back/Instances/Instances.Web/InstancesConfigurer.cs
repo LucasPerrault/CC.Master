@@ -9,6 +9,7 @@ using Instances.Infra.Instances;
 using Instances.Infra.Instances.Services;
 using Instances.Infra.Shared;
 using Instances.Infra.Storage.Stores;
+using Instances.Infra.WsAuth;
 using Lucca.Core.Api.Abstractions;
 using Lucca.Core.Api.Web;
 using Microsoft.Extensions.DependencyInjection;
@@ -22,6 +23,7 @@ namespace Instances.Web
         {
             public IdentityAuthenticationConfig Identity { get; set; }
             public CcDataConfiguration CcData { get; set; }
+            public WsAuthConfiguration WsAuth { get; set; }
         }
 
         public static void ConfigureServices(IServiceCollection services, InstancesConfiguration configuration)
@@ -45,6 +47,15 @@ namespace Instances.Web
             services.AddScoped<IDemoUsersPasswordResetService, DemoUsersPasswordResetService>();
 
             services.AddScoped<IUsersPasswordResetService, UsersPasswordResetService>();
+
+            services.AddHttpClient<WsAuthRemoteService>(client =>
+            {
+                client.WithUserAgent(nameof(WsAuthRemoteService))
+                    .WithBaseAddress(configuration.WsAuth.ServerUri, configuration.WsAuth.EndpointPath)
+                    .WithAuthScheme("Lucca").AuthenticateAsApplication(configuration.WsAuth.Token);
+            });
+
+            services.AddScoped<IWsAuthSynchronizer, WsAuthSynchronizer>();
 
             services.AddHttpClient<ICcDataService, CcDataService>(
                 c =>

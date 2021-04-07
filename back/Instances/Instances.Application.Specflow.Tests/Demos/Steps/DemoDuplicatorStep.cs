@@ -12,6 +12,7 @@ using Instances.Infra.DataDuplication;
 using Instances.Infra.Demos;
 using Instances.Infra.Instances.Services;
 using Instances.Infra.Storage.Stores;
+using Instances.Infra.WsAuth;
 using Lucca.Core.Shared.Domain.Exceptions;
 using Moq;
 using Rights.Domain;
@@ -125,6 +126,7 @@ namespace Instances.Application.Specflow.Tests.Demos.Steps
 
             var envStoreMock = new Mock<IEnvironmentsStore>();
             var passwordResetMock = new Mock<IDemoUsersPasswordResetService>();
+            var authWsMock = new Mock<IWsAuthSynchronizer>();
             var ccDataServiceMock = new Mock<ICcDataService>();
 
             return new DemoDuplicator
@@ -138,7 +140,8 @@ namespace Instances.Application.Specflow.Tests.Demos.Steps
                     new SubdomainValidator(demosStore, envStoreMock.Object),
                     new UsersPasswordHelper(),
                     new DemoRightsFilter(rightsServiceMock.Object),
-                    passwordResetMock.Object
+                    passwordResetMock.Object,
+                	authWsMock.Object
                 );
         }
 
