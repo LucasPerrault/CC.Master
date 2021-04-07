@@ -2,10 +2,12 @@ using Instances.Application.Demos;
 using Instances.Application.Instances;
 using Instances.Domain.Demos;
 using Instances.Domain.Instances;
+using Instances.Domain.Shared;
 using Instances.Infra.DataDuplication;
 using Instances.Infra.Demos;
 using Instances.Infra.Instances;
 using Instances.Infra.Instances.Services;
+using Instances.Infra.Shared;
 using Instances.Infra.Storage.Stores;
 using Instances.Infra.WsAuth;
 using Lucca.Core.Api.Abstractions;
@@ -20,12 +22,14 @@ namespace Instances.Web
         public class InstancesConfiguration
         {
             public IdentityAuthenticationConfig Identity { get; set; }
+            public CcDataConfiguration CcData { get; set; }
             public WsAuthConfiguration WsAuth { get; set; }
         }
 
         public static void ConfigureServices(IServiceCollection services, InstancesConfiguration configuration)
         {
             services.AddSingleton(configuration.Identity);
+            services.AddSingleton(configuration.CcData);
             services.AddSingleton<IUsersPasswordHelper, UsersPasswordHelper>();
             services.AddSingleton<SqlScriptPicker>();
 
@@ -52,6 +56,14 @@ namespace Instances.Web
             });
 
             services.AddScoped<IWsAuthSynchronizer, WsAuthSynchronizer>();
+
+            services.AddHttpClient<ICcDataService, CcDataService>(
+                c =>
+                {
+                    c.WithUserAgent(nameof(CcDataService))
+                        .WithAuthScheme("CloudControl")
+                        .AuthenticateAsWebService(configuration.CcData.OutboundToken);
+                });
         }
 
         public static LuccaApiBuilder ConfigureLuccaApiForInstances(this LuccaApiBuilder luccaApiBuilder)

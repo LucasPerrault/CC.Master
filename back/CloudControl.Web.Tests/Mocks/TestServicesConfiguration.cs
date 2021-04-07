@@ -4,6 +4,7 @@ using CloudControl.Web.Configuration;
 using Core.Proxy.Infra.Configuration;
 using Instances.Infra.Instances;
 using Instances.Infra.WsAuth;
+using Instances.Infra.Shared;
 using Instances.Web;
 using IpFilter.Infra.Storage;
 using IpFilter.Web;
@@ -152,6 +153,11 @@ namespace CloudControl.Web.Tests.Mocks
                         ServerUri = new Uri("https://mocked-ws-auth.ilucca.local"),
                         EndpointPath = "/sync",
                         Token = new Guid("deadbeef-0000-0000-0000-000000000000")
+                    },
+                    CcData = new CcDataConfiguration
+                    {
+                        InboundToken = new Guid("00000000-0000-0000-0000-000000000000"),
+                        OutboundToken = new Guid("00000000-0000-0000-0000-000000000000")
                     }
                 }
             });

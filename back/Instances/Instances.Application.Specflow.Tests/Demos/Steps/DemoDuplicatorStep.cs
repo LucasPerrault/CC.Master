@@ -7,6 +7,7 @@ using Instances.Application.Specflow.Tests.Shared.Tooling;
 using Instances.Domain.Demos;
 using Instances.Domain.Instances;
 using Instances.Domain.Instances.Models;
+using Instances.Domain.Shared;
 using Instances.Infra.DataDuplication;
 using Instances.Infra.Demos;
 using Instances.Infra.Instances.Services;
@@ -126,10 +127,11 @@ namespace Instances.Application.Specflow.Tests.Demos.Steps
             var envStoreMock = new Mock<IEnvironmentsStore>();
             var passwordResetMock = new Mock<IDemoUsersPasswordResetService>();
             var authWsMock = new Mock<IWsAuthSynchronizer>();
+            var ccDataServiceMock = new Mock<ICcDataService>();
 
             return new DemoDuplicator
                 (
-                    new InstancesDuplicator(new SqlScriptPicker()),
+                    new InstancesDuplicator(new SqlScriptPicker(), ccDataServiceMock.Object),
                     demosStore,
                     demoDuplicationsStore,
                     _demosContext.Mocks.InstancesStore.Object,
