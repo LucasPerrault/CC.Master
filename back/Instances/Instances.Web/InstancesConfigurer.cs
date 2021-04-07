@@ -24,12 +24,14 @@ namespace Instances.Web
             public IdentityAuthenticationConfig Identity { get; set; }
             public CcDataConfiguration CcData { get; set; }
             public WsAuthConfiguration WsAuth { get; set; }
+            public HubspotConfiguration Hubspot { get; set; }
         }
 
         public static void ConfigureServices(IServiceCollection services, InstancesConfiguration configuration)
         {
             services.AddSingleton(configuration.Identity);
             services.AddSingleton(configuration.CcData);
+            services.AddSingleton(configuration.Hubspot);
             services.AddSingleton<IUsersPasswordHelper, UsersPasswordHelper>();
             services.AddSingleton<SqlScriptPicker>();
 
@@ -47,6 +49,12 @@ namespace Instances.Web
             services.AddScoped<IDemoUsersPasswordResetService, DemoUsersPasswordResetService>();
 
             services.AddScoped<IUsersPasswordResetService, UsersPasswordResetService>();
+
+            services.AddHttpClient<IHubspotService, HubspotService>(client =>
+            {
+                client.WithUserAgent(nameof(HubspotService))
+                    .WithBaseAddress(configuration.Hubspot.ServerUri);
+            });
 
             services.AddHttpClient<WsAuthRemoteService>(client =>
             {
