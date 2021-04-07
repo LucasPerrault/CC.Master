@@ -73,6 +73,11 @@ namespace Instances.Application.Demos
                 DemoDuplicationRequestSource.Hubspot,
                 _principal
             );
+            await _hubspotService.UpdateContactSubdomainAsync
+            (
+                contact.VId,
+                demoDuplication.InstanceDuplication.TargetSubdomain
+            );
 
             var cachedDuplication = new HubspotCachedDuplication
             {
