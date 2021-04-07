@@ -1,5 +1,6 @@
 using Authentication.Infra.Configurations;
 using Billing.Contracts.Infra.Configurations;
+using Cache.Web;
 using CloudControl.Web.Configuration;
 using Core.Proxy.Infra.Configuration;
 using Instances.Infra.Instances;
@@ -60,6 +61,11 @@ namespace CloudControl.Web.Tests.Mocks
         public override void ConfigureApi(IServiceCollection services)
         {
             services.AddControllers();
+        }
+
+        public override void ConfigureCache(IServiceCollection services, AppConfiguration configuration)
+        {
+            // do not configure redis in a test context
         }
 
         public override void ConfigureStorage(IServiceCollection services)
