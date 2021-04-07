@@ -8,6 +8,7 @@ namespace Remote.Infra
         public static void ConfigureRemote(IServiceCollection services)
         {
             services.AddSingleton<IHttpClientOAuthAuthenticator, HttpClientOAuthAuthenticator>();
+            services.AddSingleton<HttpResponseMessageParser>();
         }
     }
 }
