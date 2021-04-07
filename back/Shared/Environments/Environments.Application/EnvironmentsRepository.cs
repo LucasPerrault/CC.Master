@@ -38,7 +38,7 @@ namespace Environments.Application
             }
 
             return _store
-                .GetFilteredAsync(filters.ToArray())
+                .GetFiltered(filters.ToArray())
                 .ToList();
         }
     }

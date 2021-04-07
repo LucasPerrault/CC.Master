@@ -27,8 +27,8 @@ namespace Instances.Infra.Instances.Services
 
         private static readonly Random Random = new Random();
 
-        private const int MinLength = 6;
-        private const int MaxLength = 255;
+        public const int MinLength = 6;
+        public const int MaxLength = 255;
 
         public void ThrowIfInvalid(string password)
         {

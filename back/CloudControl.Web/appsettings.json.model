@@ -1,4 +1,4 @@
-﻿{
+{
     "SqlInfos": {
         "Default": "Data Source={{ CC.Master:SqlServer }};Initial Catalog=CloudControl;user={{ CC.Master:SqlLogin }};Password={{ CC.Master:SqlPassword }};MultipleActiveResultSets=True;App=CloudControl"
     },
@@ -45,6 +45,17 @@
             "ClientId": "cloud.control",
             "ClientSecret": "{{ CC.Master:IdentityClientSecret }}",
             "TokenRequestRoute": "/identity/connect/token"
+        },
+        "WsAuth": {
+            "ServerUri": "https://ws-auth.ilucca.local",
+            "EndpointPath": "/sync-v2/api",
+            "Token": "{{ CC.Master:LuccaAuthSyncV2SharedToken }}"
+        },
+        "CcData": {
+            "Domain":  "lucca.local",
+            "Scheme":  "http",
+            "OutboundToken": "{{ CC.Data:CCMasterWebserviceToken }}",
+            "InboundToken": "{{ CC.Data:CCMasterWebserviceToken }}"
         }
     }
 }

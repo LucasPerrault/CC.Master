@@ -12,6 +12,6 @@ namespace Instances.Domain.Demos
         Task<IQueryable<Demo>> GetAsync(Expression<Func<Demo, bool>> filter);
         Task<Demo> GetByInstanceIdAsync(int instanceId);
         Task<Demo> CreateAsync(Demo demo);
-        IQueryable<Demo> GetAllAsync();
+        IQueryable<Demo> GetAll();
     }
 }

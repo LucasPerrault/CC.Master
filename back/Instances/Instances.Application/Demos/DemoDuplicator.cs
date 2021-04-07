@@ -1,10 +1,11 @@
-﻿using Authentication.Domain;
+using Authentication.Domain;
 using Distributors.Domain;
+using Instances.Application.Instances;
 using Instances.Domain.Demos;
 using Instances.Domain.Instances;
 using Instances.Domain.Instances.Models;
-using Instances.Infra.DataDuplication;
 using Instances.Infra.Instances.Services;
+using Instances.Infra.WsAuth;
 using Lucca.Core.Rights.Abstractions;
 using Lucca.Core.Shared.Domain.Exceptions;
 using Rights.Domain;
@@ -16,87 +17,111 @@ using System.Threading.Tasks;
 
 namespace Instances.Application.Demos
 {
+    public enum DemoDuplicationRequestSource
+    {
+        Api = 0,
+        Hubspot = 1
+    }
+
     public class DemoDuplicator
     {
+        private readonly InstancesDuplicator _instancesDuplicator;
         private readonly IDemosStore _demosStore;
+        private readonly IDemoDuplicationsStore _duplicationsStore;
         private readonly IInstancesStore _instancesStore;
         private readonly IRightsService _rightsService;
         private readonly IDistributorsStore _distributorsStore;
         private readonly ISubdomainValidator _subdomainValidator;
-        private readonly ITenantDataDuplicator _tenantDataDuplicator;
         private readonly IUsersPasswordHelper _passwordHelper;
         private readonly IDemoRightsFilter _demoRightsFilter;
         private readonly IDemoUsersPasswordResetService _usersPasswordResetService;
+        private readonly IWsAuthSynchronizer _wsAuthSynchronizer;
 
         public DemoDuplicator
         (
+            InstancesDuplicator instancesDuplicator,
             IDemosStore demosStore,
+            IDemoDuplicationsStore duplicationsStore,
             IInstancesStore instancesStore,
             IRightsService rightsService,
             IDistributorsStore distributorsStore,
             ISubdomainValidator subdomainValidator,
-            ITenantDataDuplicator tenantDataDuplicator,
             IUsersPasswordHelper passwordHelper,
             IDemoRightsFilter demoRightsFilter,
-            IDemoUsersPasswordResetService usersPasswordResetService
+            IDemoUsersPasswordResetService usersPasswordResetService,
+            IWsAuthSynchronizer wsAuthSynchronizer
         )
         {
+            _instancesDuplicator = instancesDuplicator;
             _demosStore = demosStore;
+            _duplicationsStore = duplicationsStore;
             _instancesStore = instancesStore;
             _rightsService = rightsService;
             _distributorsStore = distributorsStore;
             _subdomainValidator = subdomainValidator;
-            _tenantDataDuplicator = tenantDataDuplicator;
             _passwordHelper = passwordHelper;
             _demoRightsFilter = demoRightsFilter;
             _usersPasswordResetService = usersPasswordResetService;
+            _wsAuthSynchronizer = wsAuthSynchronizer;
         }
 
-        public async Task CreateDuplicationAsync(DemoDuplication duplication, ClaimsPrincipal principal)
+        public async Task<DemoDuplication> CreateDuplicationAsync
+        (
+            DemoDuplicationRequest request,
+            DemoDuplicationRequestSource requestSource,
+            ClaimsPrincipal principal
+        )
         {
-            await ThrowIfForbiddenAsync(duplication, principal);
-            ThrowIfInvalid(duplication);
-            var subdomain = await GetSubdomainAsync(duplication);
-            var demoToDuplicate = await GetDemoToDuplicateAsync(duplication, principal);
-            var clusterTarget = GetTargetCluster();
 
-            // TODO storage commit
-            // TODO call server target
-            // TODO return duplication
+            await ThrowIfForbiddenAsync(request, principal);
+            ThrowIfInvalid(request);
 
-        }
+            var targetSubdomain = await GetSubdomainAsync(request, requestSource);
+            var demoToDuplicate = await GetDemoToDuplicateAsync(request.SourceDemoSubdomain, principal);
 
-        private async Task<DuplicateInstanceRequestDto> GetDuplicationInstanceRequestAsync(Guid duplicationId, ClaimsPrincipal principal)
-        {
-            DemoDuplication duplication = null; // TODO get duplication by id
-
-            var distributor = await _distributorsStore.GetByIdAsync(duplication.DistributorId);
-
-            var demoToDuplicate = await GetDemoToDuplicateAsync(duplication, principal);
-
-            var databaseDuplication = new TenantDataDuplication
+            var instanceDuplication = new InstanceDuplication
             {
-                AuthorId = 0, // TODO  duplication.AuthorId
-                Distributor = distributor,
-                Type = DatabaseType.Demos,
-                Source = new TenantDataSource
-                {
-                    Subdomain = duplication.Subdomain,
-                    ClusterName = GetSourceDemoCluster(duplication.SourceDemoSubdomain)
-                },
-                Target = new TenantDataSource
-                {
-                    Subdomain = demoToDuplicate.Subdomain,
-                    ClusterName = demoToDuplicate.Instance.Cluster
-                }
+                Id = Guid.NewGuid(),
+                Type = InstanceDuplicationType.Demos,
+                DistributorId = request.DistributorId,
+                SourceCluster = demoToDuplicate.Instance.Cluster,
+                TargetCluster = GetTargetCluster(),
+                SourceSubdomain = demoToDuplicate.Subdomain,
+                TargetSubdomain = targetSubdomain
             };
 
-            return await _tenantDataDuplicator.DuplicateOnRemoteAsync(databaseDuplication);
+            var duplication = new DemoDuplication
+            {
+                InstanceDuplication = instanceDuplication,
+                SourceDemoId = demoToDuplicate.Id,
+                CreatedAt = DateTime.Now,
+                AuthorId = GetAuthorId(principal),
+                Password = request.Password,
+                Progress = DemoDuplicationProgress.Pending,
+                Comment = request.Comment
+            };
+
+            await _duplicationsStore.CreateAsync(duplication);
+            await _instancesDuplicator.RequestRemoteDuplicationAsync(instanceDuplication);
+
+            return duplication;
         }
 
-        private async Task MarkDuplicationAsCompleted()
+        private int GetAuthorId(ClaimsPrincipal principal)
         {
-            DemoDuplication duplication = null; // TODO  get duplication by id
+            if (!( principal is CloudControlUserClaimsPrincipal user ))
+            {
+                return 0;
+            }
+
+            return user.UserId.Value;
+        }
+
+        public async Task MarkDuplicationAsCompletedAsync(Guid instanceDuplicationId)
+        {
+            var duplication = _duplicationsStore.GetAll()
+                .Single(d => d.InstanceDuplicationId == instanceDuplicationId);
+
             var clusterTarget = GetTargetCluster();
 
             var instance = await _instancesStore.CreateForDemoAsync(duplication.Password, clusterTarget);
@@ -104,15 +129,15 @@ namespace Instances.Application.Demos
             await _demosStore.CreateAsync(demo);
             await _usersPasswordResetService.ResetPasswordAsync(demo, duplication.Password);
 
-            // TODO sync ws auth
-            // TODO create SSO for demo if necessary
+            await _wsAuthSynchronizer.SafeSynchronizeAsync(instance.Id);
+
             // duplication.Status = DuplicationStatus.Success;
         }
 
         private string GetSourceDemoCluster(string sourceDemoSubdomain)
         {
             var demo = _demosStore
-                .GetAllAsync()
+                .GetAll()
                 .SingleOrDefault(d => d.IsActive && d.Subdomain == sourceDemoSubdomain);
 
             return demo?.Instance.Cluster
@@ -128,7 +153,7 @@ namespace Instances.Application.Demos
         {
             return new Demo
             {
-                Subdomain = duplication.Subdomain,
+                Subdomain = duplication.InstanceDuplication.TargetSubdomain,
                 DistributorID = duplication.DistributorId,
                 Comment = duplication.Comment,
                 CreatedAt = DateTime.Now,
@@ -139,45 +164,45 @@ namespace Instances.Application.Demos
             };
         }
 
-        private void ThrowIfInvalid(DemoDuplication duplication)
+        private void ThrowIfInvalid(DemoDuplicationRequest request)
         {
-            _passwordHelper.ThrowIfInvalid(duplication.Password);
+            _passwordHelper.ThrowIfInvalid(request.Password);
         }
 
-        private async Task<string> GetSubdomainAsync(DemoDuplication duplication)
+        private async Task<string> GetSubdomainAsync(DemoDuplicationRequest request, DemoDuplicationRequestSource source)
         {
-            await _subdomainValidator.ThrowIfInvalidAsync(duplication.Subdomain);
+            await _subdomainValidator.ThrowIfInvalidAsync(request.Subdomain);
 
-            if (_subdomainValidator.IsAvailable(duplication.Subdomain))
+            if (_subdomainValidator.IsAvailable(request.Subdomain))
             {
-                return duplication.Subdomain;
+                return request.Subdomain;
             }
 
-            if (duplication.IsStrictSubdomainSelection)
+            if (source != DemoDuplicationRequestSource.Hubspot)
             {
-                throw new BadRequestException($"Subdomain {duplication.Subdomain} is not available");
+                throw new BadRequestException($"Subdomain {request.Subdomain} is not available");
             }
 
-            var availableSubdomain = _subdomainValidator.GetAvailableSubdomain(duplication.Subdomain);
+            var availableSubdomain = _subdomainValidator.GetAvailableSubdomain(request.Subdomain);
             if (string.IsNullOrEmpty(availableSubdomain))
             {
-                throw new BadRequestException($"Subdomain {duplication.Subdomain} is not available");
+                throw new BadRequestException($"Subdomain {request.Subdomain} is not available");
             }
 
             return availableSubdomain;
         }
 
-        private async Task<Demo> GetDemoToDuplicateAsync(DemoDuplication duplication, ClaimsPrincipal principal)
+        private async Task<Demo> GetDemoToDuplicateAsync(string subdomain, ClaimsPrincipal principal)
         {
             var rightsFilter = await _demoRightsFilter.GetDefaultReadFilterAsync(principal);
             var demoToDuplicate = (await _demosStore.GetAsync(rightsFilter))
-                .FirstOrDefault(d => d.Subdomain == duplication.SourceDemoSubdomain);
+                .FirstOrDefault(d => d.Subdomain == subdomain);
 
             return demoToDuplicate
-                ?? throw new BadRequestException($"Source demo {duplication.SourceDemoSubdomain} could not be found");
+                ?? throw new BadRequestException($"Source demo {subdomain} could not be found");
         }
 
-        private async Task ThrowIfForbiddenAsync(DemoDuplication duplication, ClaimsPrincipal claimsPrincipal)
+        private async Task ThrowIfForbiddenAsync(DemoDuplicationRequest request, ClaimsPrincipal claimsPrincipal)
         {
             await _rightsService.ThrowIfAnyOperationIsMissingAsync(Operation.Demo);
 
@@ -192,7 +217,7 @@ namespace Instances.Application.Demos
             }
 
             var userDistributor = await _distributorsStore.GetByCodeAsync(user.User.DepartmentCode);
-            if (userDistributor.Id == duplication.DistributorId)
+            if (userDistributor.Id == request.DistributorId)
             {
                 return;
             }

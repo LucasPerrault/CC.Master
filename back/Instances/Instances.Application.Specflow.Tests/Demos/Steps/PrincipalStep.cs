@@ -43,5 +43,11 @@ namespace Instances.Application.Specflow.Tests.Demos.Steps
         {
             Assert.Contains(errorMessageExtract, _demosContext.ExceptionResult.Message);
         }
+
+        [Then(@"user should not get error")]
+        public void ThenUserShouldNotGetError()
+        {
+            Assert.Null(_demosContext.ExceptionResult);
+        }
     }
 }

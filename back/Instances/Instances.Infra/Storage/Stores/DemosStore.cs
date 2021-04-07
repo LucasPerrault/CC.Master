@@ -26,7 +26,7 @@ namespace Instances.Infra.Storage.Stores
             return GetAsync(token, filters.CombineSafely());
         }
 
-        public IQueryable<Demo> GetAllAsync()
+        public IQueryable<Demo> GetAll()
         {
             return Demos;
         }

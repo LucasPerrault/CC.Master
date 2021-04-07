@@ -31,7 +31,27 @@ namespace Remote.Infra.Services
 
         protected Task<TResult> GetGenericObjectResponseAsync<TResult>(string id, Dictionary<string, string> queryParams)
         {
-            return GetRequestResponseAsync<TResult>(HttpMethod.Get, id, queryParams);
+            return GetRequestResponseResultAsync<TResult>(HttpMethod.Get, id, queryParams);
+        }
+
+        protected Task PostAsync(Dictionary<string, string> queryParams)
+        {
+            return PostAsync(string.Empty, queryParams);
+        }
+
+        protected async Task PostAsync(string urlSegment, Dictionary<string, string> queryParams)
+        {
+            await GetRequestResponseMessageAsync(HttpMethod.Post, urlSegment, queryParams);
+        }
+
+        protected Task<TResult> PostResponseAsync<TResult>(Dictionary<string, string> queryParams)
+        {
+            return PostResponseAsync<TResult>(string.Empty, queryParams);
+        }
+
+        protected Task<TResult> PostResponseAsync<TResult>(string urlSegment, Dictionary<string, string> queryParams)
+        {
+            return GetRequestResponseResultAsync<TResult>(HttpMethod.Post, urlSegment, queryParams);
         }
 
         protected Task<TResult> PostGenericObjectResponseAsync<TForm, TResult>(TForm content, Dictionary<string, string> queryParams)
@@ -60,11 +80,17 @@ namespace Remote.Infra.Services
             authAction(_httpClient.WithAuthScheme(scheme));
         }
 
-        private async Task<TResult> GetRequestResponseAsync<TResult>(HttpMethod method, string subRoute, Dictionary<string, string> queryParams)
+        private Task<HttpResponseMessage> GetRequestResponseMessageAsync(HttpMethod method, string subRoute, Dictionary<string, string> queryParams)
         {
             var requestMessage = BuildHttpRequestMessage(method, subRoute, queryParams);
 
-            var response = await _httpClient.SendAsync(requestMessage);
+            return _httpClient.SendAsync(requestMessage);
+        }
+
+        private async Task<TResult> GetRequestResponseResultAsync<TResult>(HttpMethod method, string subRoute, Dictionary<string, string> queryParams)
+        {
+            var response = await GetRequestResponseMessageAsync(method, subRoute, queryParams);
+
             return await ParseResponseAsync<TResult>(response);
         }
 

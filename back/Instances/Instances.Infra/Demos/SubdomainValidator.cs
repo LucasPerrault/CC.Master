@@ -2,7 +2,6 @@ using Environments.Domain.Storage;
 using Instances.Domain.Demos;
 using Instances.Domain.Instances;
 using Lucca.Core.Shared.Domain.Exceptions;
-using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -26,8 +25,8 @@ namespace Instances.Infra.Demos
     public class SubdomainValidator : ISubdomainValidator
     {
         private const string SubdomainRegex = @"^(?!-)[a-z0-9-]+(?<!-)$";
-        private const int SubdomainMinLength = 2;
-        private const int SubdomainMaxLength = 200;
+        public const int SubdomainMinLength = 2;
+        public const int SubdomainMaxLength = 200;
         private const int MaxDemoPerRequestSubdomain = 10;
 
         private readonly IDemosStore _demosStore;
@@ -67,22 +66,22 @@ namespace Instances.Infra.Demos
 
         public bool IsAvailable(string subdomain)
         {
-            return _environmentsStore.GetAllAsync()
+            return _environmentsStore.GetAll()
                 .Where(e => e.IsActive)
                 .All(e => e.Subdomain.ToLower() != subdomain)
-                && _demosStore.GetAllAsync()
+                && _demosStore.GetAll()
                     .Where(d => d.IsActive)
                     .All(d => d.Subdomain.ToLower() != subdomain);
         }
 
         private HashSet<string> GetUsedSubdomainsByPrefix(string prefix)
         {
-            var usedSubdomainsEnvs = _environmentsStore.GetAllAsync()
+            var usedSubdomainsEnvs = _environmentsStore.GetAll()
                 .Where(e => e.IsActive)
                 .Where(e => e.Subdomain.StartsWith(prefix))
                 .Select(e => e.Subdomain);
 
-            var usedSubdomainsDemos = _demosStore.GetAllAsync()
+            var usedSubdomainsDemos = _demosStore.GetAll()
                 .Where(d => d.IsActive)
                 .Where(d => d.Subdomain.StartsWith(prefix))
                 .Select(e => e.Subdomain);
