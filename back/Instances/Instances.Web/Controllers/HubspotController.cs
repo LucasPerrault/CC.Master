@@ -1,4 +1,4 @@
-﻿using Instances.Application.Demos;
+using Instances.Application.Demos;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace Instances.Web.Controllers
 {
 
-    [ApiController, Microsoft.AspNetCore.Components.Route("/api/hubspotDemoDuplication")]
+    [ApiController, Microsoft.AspNetCore.Components.Route("/api/hubspot")]
     public class HubspotController
     {
         private readonly HubspotDemoDuplicator _demoDuplicator;
@@ -22,20 +22,24 @@ namespace Instances.Web.Controllers
             public int VId { get; set; }
         }
 
-        [HttpPost]
-        public async Task<ActionResult> NotifyDuplicationEndAsync(Guid instanceDuplicationId, bool isSuccessful)
+        [HttpPost("duplications/{instanceDuplicationId}/notify")]
+        public async Task<ActionResult> NotifyDuplicationEndAsync
+        (
+            [FromRoute]Guid instanceDuplicationId,
+            [FromQuery]bool isSuccessful
+        )
         {
             await _demoDuplicator.MarkAsEndedAsync(instanceDuplicationId, isSuccessful);
 
             return new StatusCodeResult(StatusCodes.Status202Accepted);
         }
 
-        [HttpPost]
+        [HttpPost("/duplication-request")]
         public async Task<ActionResult> RequestDuplicationAsync
         (
             [FromQuery]int successWorkflowId,
             [FromQuery]int failWorkflowId,
-            [FromBody] HubspotDemoDuplicationRequest request
+            [FromBody]HubspotDemoDuplicationRequest request
         )
         {
             await _demoDuplicator.DuplicateAsync(new HubspotDemoDuplication

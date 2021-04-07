@@ -102,7 +102,7 @@ namespace Instances.Application.Demos
             };
 
             await _duplicationsStore.CreateAsync(duplication);
-            await _instancesDuplicator.RequestRemoteDuplicationAsync(instanceDuplication);
+            await _instancesDuplicator.RequestRemoteDuplicationAsync(instanceDuplication, requestSource);
 
             return duplication;
         }
