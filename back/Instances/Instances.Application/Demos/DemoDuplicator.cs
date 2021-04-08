@@ -137,8 +137,8 @@ namespace Instances.Application.Demos
         private string GetSourceDemoCluster(string sourceDemoSubdomain)
         {
             var demo = _demosStore
-                .GetAll()
-                .SingleOrDefault(d => d.IsActive && d.Subdomain == sourceDemoSubdomain);
+                .GetActive()
+                .SingleOrDefault(d => d.Subdomain == sourceDemoSubdomain);
 
             return demo?.Instance.Cluster
                    ?? throw new ApplicationException($"Demo {sourceDemoSubdomain} could not be found");

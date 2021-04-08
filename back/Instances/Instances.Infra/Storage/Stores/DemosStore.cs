@@ -26,9 +26,9 @@ namespace Instances.Infra.Storage.Stores
             return GetAsync(token, filters.CombineSafely());
         }
 
-        public IQueryable<Demo> GetAll()
+        public IQueryable<Demo> GetActive()
         {
-            return Demos;
+            return Demos.Where(d => d.IsActive);
         }
 
         public async Task<Page<Demo>> GetAsync(IPageToken token, Expression<Func<Demo, bool>> filter)

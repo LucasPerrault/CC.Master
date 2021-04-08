@@ -40,7 +40,7 @@ namespace Instances.Infra.Tests.Demos
                 new Environment { Subdomain = takenSubdomain, IsActive = false}
             };
 
-            _demosStoreMock.Setup(s => s.GetAll()).Returns(demos.AsQueryable().BuildMock().Object);
+            _demosStoreMock.Setup(s => s.GetActive()).Returns(demos.AsQueryable().BuildMock().Object);
             _envStoreMock.Setup(s => s.GetAll()).Returns(envs.AsQueryable().BuildMock().Object);
             var subdomainValidator = new SubdomainValidator(_demosStoreMock.Object, _envStoreMock.Object);
 
@@ -62,7 +62,7 @@ namespace Instances.Infra.Tests.Demos
                 new Environment { Subdomain = takenSubdomain, IsActive = false}
             };
 
-            _demosStoreMock.Setup(s => s.GetAll()).Returns(demos.AsQueryable().BuildMock().Object);
+            _demosStoreMock.Setup(s => s.GetActive()).Returns(demos.AsQueryable().BuildMock().Object);
             _envStoreMock.Setup(s => s.GetAll()).Returns(envs.AsQueryable().BuildMock().Object);
             var subdomainValidator = new SubdomainValidator(_demosStoreMock.Object, _envStoreMock.Object);
 

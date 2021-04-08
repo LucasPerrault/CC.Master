@@ -69,9 +69,7 @@ namespace Instances.Infra.Demos
             return _environmentsStore.GetAll()
                 .Where(e => e.IsActive)
                 .All(e => e.Subdomain.ToLower() != subdomain)
-                && _demosStore.GetAll()
-                    .Where(d => d.IsActive)
-                    .All(d => d.Subdomain.ToLower() != subdomain);
+                && _demosStore.GetActive().All(d => d.Subdomain.ToLower() != subdomain);
         }
 
         private HashSet<string> GetUsedSubdomainsByPrefix(string prefix)
@@ -81,8 +79,7 @@ namespace Instances.Infra.Demos
                 .Where(e => e.Subdomain.StartsWith(prefix))
                 .Select(e => e.Subdomain);
 
-            var usedSubdomainsDemos = _demosStore.GetAll()
-                .Where(d => d.IsActive)
+            var usedSubdomainsDemos = _demosStore.GetActive()
                 .Where(d => d.Subdomain.StartsWith(prefix))
                 .Select(e => e.Subdomain);
 
