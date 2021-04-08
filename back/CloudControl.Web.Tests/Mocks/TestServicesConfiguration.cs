@@ -87,6 +87,9 @@ namespace CloudControl.Web.Tests.Mocks
             });
         }
 
+        public override void ConfigureEmails(IServiceCollection services, AppConfiguration configuration)
+        { }
+
         public override void ConfigureIpFilter(IServiceCollection services)
         {
             var settings = new LuccaSecuritySettings

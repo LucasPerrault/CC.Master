@@ -2,6 +2,7 @@ using Authentication.Infra.Configurations;
 using Billing.Contracts.Infra.Configurations;
 using Cache.Web;
 using Core.Proxy.Infra.Configuration;
+using Email.Infra.Configuration;
 using Instances.Web;
 using Rights.Infra.Configuration;
 using Salesforce.Infra.Configurations;
@@ -20,5 +21,6 @@ namespace CloudControl.Web.Configuration
         public SalesforceConfiguration Salesforce { get; set; }
         public InstancesConfigurer.InstancesConfiguration Instances { get; set; }
         public RedisConfiguration Redis { get; set; }
+		public EmailConfiguration Email { get; set; }
     }
 }

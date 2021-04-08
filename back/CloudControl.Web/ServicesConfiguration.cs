@@ -4,6 +4,7 @@ using CloudControl.Web.Exceptions;
 using CloudControl.Web.Spa;
 using Distributors.Infra.Storage;
 using Distributors.Web;
+using Email.Web;
 using IpFilter.Web;
 using IpFilter.Infra.Storage;
 using Lucca.Core.Api.Abstractions;
@@ -67,6 +68,7 @@ namespace CloudControl.Web
             ConfigureSalesforce(services, configuration);
             ConfigureBilling(services, configuration);
             ConfigureInstances(services, configuration);
+            ConfigureEmails(services, configuration);
         }
 
         public virtual AppConfiguration ConfigureConfiguration(IServiceCollection services)
@@ -159,6 +161,11 @@ namespace CloudControl.Web
         public virtual void ConfigureAuthentication(IServiceCollection services, AppConfiguration configuration)
         {
             AuthConfigurer.ConfigureServices(services, configuration.Authentication);
+        }
+
+        public virtual void ConfigureEmails(IServiceCollection services, AppConfiguration configuration)
+        {
+            EmailConfigurer.ConfigureServices(services, configuration.Email);
         }
 
         public virtual void ConfigureRights(IServiceCollection services, AppConfiguration configuration)

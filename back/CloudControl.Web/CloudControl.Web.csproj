@@ -17,6 +17,7 @@
       <ProjectReference Include="..\Billing\Billing.Contracts\Billing.Contracts.Infra\Billing.Contracts.Infra.csproj" />
       <ProjectReference Include="..\Billing\Billing.Web\Billing.Web.csproj" />
       <ProjectReference Include="..\Core\Authentication\Authentication.Web\Authentication.Web.csproj" />
+      <ProjectReference Include="..\Core\Email\Email.Web\Email.Web.csproj" />
       <ProjectReference Include="..\Core\Cache\Cache.Web\Cache.Web.csproj" />
       <ProjectReference Include="..\Core\IpFilter\IpFilter.Web\IpFilter.Web.csproj" />
       <ProjectReference Include="..\Core\Proxy\Proxy.Web\Proxy.Web.csproj" />
