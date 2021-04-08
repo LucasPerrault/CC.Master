@@ -35,8 +35,6 @@ namespace Instances.Application.Specflow.Tests.Demos.Steps
             _demosContext = demosContext;
         }
 
-
-
         [Given(@"a (.*) duplication for demo '(.*)' of id '(.*)'")]
         public async Task GivenADuplication
         (

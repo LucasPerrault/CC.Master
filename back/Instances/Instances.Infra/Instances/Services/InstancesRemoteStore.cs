@@ -17,7 +17,7 @@ namespace Instances.Infra.Instances.Services
         { }
 
 
-        class CreateForDemoDto
+        private class CreateForDemoDto
         {
             public string Password { get; set; }
             public string Server { get; set; }
