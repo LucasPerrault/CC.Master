@@ -134,16 +134,6 @@ namespace Instances.Application.Demos
             // duplication.Status = DuplicationStatus.Success;
         }
 
-        private string GetSourceDemoCluster(string sourceDemoSubdomain)
-        {
-            var demo = _demosStore
-                .GetActive()
-                .SingleOrDefault(d => d.Subdomain == sourceDemoSubdomain);
-
-            return demo?.Instance.Cluster
-                   ?? throw new ApplicationException($"Demo {sourceDemoSubdomain} could not be found");
-        }
-
         private string GetTargetCluster()
         {
             return "not-an-actual-demo-cluster";
