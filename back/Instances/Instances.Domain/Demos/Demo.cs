@@ -13,6 +13,7 @@ namespace Instances.Domain.Demos
         public DateTime CreatedAt { get; set; }
         public DateTime DeletionScheduledOn { get; set; }
         public bool IsActive { get; set; }
+        public int AuthorId { get; set; }
         public int InstanceID { get; set; }
         public Instance Instance { get; set; }
         public string DistributorID { get; set; }

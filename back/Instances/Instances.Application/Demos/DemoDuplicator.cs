@@ -150,6 +150,7 @@ namespace Instances.Application.Demos
                 DistributorID = duplication.DistributorId,
                 Comment = duplication.Comment,
                 CreatedAt = DateTime.Now,
+                AuthorId = duplication.AuthorId,
                 DeletionScheduledOn = DateTime.Now.AddDays(62),
                 IsActive = true,
                 IsTemplate = false,
