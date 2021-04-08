@@ -88,7 +88,7 @@ namespace Rights.Infra.Services
             };
         }
 
-        public async Task<ISet<int>> GetExternalItemsAsync(params Operation[] operations)
+        public async Task<ISet<int>> GetEnvironmentPurposesAsync(params Operation[] operations)
         {
             var operationsSet = operations.Select(o => (int)o).ToHashSet();
             return _principal switch
