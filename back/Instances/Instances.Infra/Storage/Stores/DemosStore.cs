@@ -43,6 +43,12 @@ namespace Instances.Infra.Storage.Stores
             await _dbContext.SaveChangesAsync();
         }
 
+        public async Task UpdateDeletionScheduleAsync(Demo demo, DateTime deletionScheduledOn)
+        {
+            demo.DeletionScheduledOn = deletionScheduledOn;
+            await _dbContext.SaveChangesAsync();
+        }
+
         public async Task<Page<Demo>> GetAsync(IPageToken token, Expression<Func<Demo, bool>> filter)
         {
             return await _queryPager.ToPageAsync(await GetAsync(filter), token);

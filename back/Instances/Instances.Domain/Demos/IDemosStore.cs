@@ -14,5 +14,6 @@ namespace Instances.Domain.Demos
         Task<Demo> CreateAsync(Demo demo);
         Task<IQueryable<Demo>> GetActiveAsync(params Expression<Func<Demo, bool>>[] filters);
         Task DeleteAsync(Demo demo);
+        Task UpdateDeletionScheduleAsync(Demo demo, DateTime deletionScheduledOn);
     }
 }
