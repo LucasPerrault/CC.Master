@@ -42,6 +42,7 @@ namespace Instances.Web
             services.AddScoped<IDemoDuplicationsStore, DemoDuplicationsStore>();
             services.AddScoped<IDemoRightsFilter, DemoRightsFilter>();
             services.AddScoped<DemosRepository>();
+            services.AddScoped<ISubdomainGenerator, SubdomainGenerator>();
             services.AddScoped<ISubdomainValidator, SubdomainValidator>();
 
             services.AddScoped<IDemoUsersPasswordResetService, DemoUsersPasswordResetService>();

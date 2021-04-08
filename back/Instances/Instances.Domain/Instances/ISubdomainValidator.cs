@@ -4,9 +4,8 @@ namespace Instances.Domain.Instances
 {
     public interface ISubdomainValidator
     {
-        Task<string> GetSubdomainAsync(string candidate, bool useAsPrefix);
         Task ThrowIfInvalidAsync(string subdomain);
-        bool IsAvailable(string subdomain);
-        string GetAvailableSubdomainByPrefix(string prefix);
+        Task<bool> IsAvailableAsync(string subdomain);
+        Task<string> GetAvailableSubdomainByPrefixAsync(string prefix);
     }
 }

@@ -31,7 +31,7 @@ namespace Instances.Application.Demos
         private readonly IInstancesStore _instancesStore;
         private readonly IRightsService _rightsService;
         private readonly IDistributorsStore _distributorsStore;
-        private readonly ISubdomainValidator _subdomainValidator;
+        private readonly ISubdomainGenerator _subdomainGenerator;
         private readonly IUsersPasswordHelper _passwordHelper;
         private readonly IDemoRightsFilter _demoRightsFilter;
         private readonly IDemoUsersPasswordResetService _usersPasswordResetService;
@@ -45,7 +45,7 @@ namespace Instances.Application.Demos
             IInstancesStore instancesStore,
             IRightsService rightsService,
             IDistributorsStore distributorsStore,
-            ISubdomainValidator subdomainValidator,
+            ISubdomainGenerator subdomainGenerator,
             IUsersPasswordHelper passwordHelper,
             IDemoRightsFilter demoRightsFilter,
             IDemoUsersPasswordResetService usersPasswordResetService,
@@ -58,7 +58,7 @@ namespace Instances.Application.Demos
             _instancesStore = instancesStore;
             _rightsService = rightsService;
             _distributorsStore = distributorsStore;
-            _subdomainValidator = subdomainValidator;
+            _subdomainGenerator = subdomainGenerator;
             _passwordHelper = passwordHelper;
             _demoRightsFilter = demoRightsFilter;
             _usersPasswordResetService = usersPasswordResetService;
@@ -76,7 +76,7 @@ namespace Instances.Application.Demos
             ThrowIfInvalid(request);
 
             var shouldUseSubdomainAsPrefix = requestSource == DemoDuplicationRequestSource.Hubspot;
-            var targetSubdomain = await _subdomainValidator.GetSubdomainAsync(request.Subdomain, shouldUseSubdomainAsPrefix);
+            var targetSubdomain = await _subdomainGenerator.GetSubdomainAsync(request.Subdomain, shouldUseSubdomainAsPrefix);
 
             var demoToDuplicate = await GetDemoToDuplicateAsync(request.SourceDemoSubdomain, principal);
 
@@ -182,7 +182,7 @@ namespace Instances.Application.Demos
                 return;
             }
 
-            if (!( claimsPrincipal is CloudControlUserClaimsPrincipal user))
+            if (!(claimsPrincipal is CloudControlUserClaimsPrincipal user))
             {
                 throw new ApplicationException("Unsupported claims principal type");
             }

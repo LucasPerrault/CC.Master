@@ -38,29 +38,6 @@ namespace Instances.Infra.Demos
             _environmentsStore = environmentsStore;
         }
 
-        public async Task<string> GetSubdomainAsync(string candidate, bool useAsPrefix)
-        {
-            await ThrowIfInvalidAsync(candidate);
-
-            if (IsAvailable(candidate))
-            {
-                return candidate;
-            }
-
-            if (!useAsPrefix)
-            {
-                throw new BadRequestException($"Subdomain {candidate} is not available");
-            }
-
-            var availableSubdomain = GetAvailableSubdomainByPrefix(candidate);
-            if (string.IsNullOrEmpty(availableSubdomain))
-            {
-                throw new BadRequestException($"Subdomain {candidate} is not available (limit reached for this prefix)");
-            }
-
-            return availableSubdomain;
-        }
-
         public Task ThrowIfInvalidAsync(string subdomain)
         {
             if (SubdomainValidation.ReservedSubdomains.Contains(subdomain))
@@ -87,22 +64,22 @@ namespace Instances.Infra.Demos
             return Task.CompletedTask;
         }
 
-        public bool IsAvailable(string subdomain)
+        public async Task<bool> IsAvailableAsync(string subdomain)
         {
             return _environmentsStore.GetAll()
                 .Where(e => e.IsActive)
                 .All(e => e.Subdomain.ToLower() != subdomain)
-                && _demosStore.GetActive().All(d => d.Subdomain.ToLower() != subdomain);
+                && (await _demosStore.GetActiveAsync()).All(d => d.Subdomain.ToLower() != subdomain);
         }
 
-        private HashSet<string> GetUsedSubdomainsByPrefix(string prefix)
+        private async Task<HashSet<string>> GetUsedSubdomainsByPrefixAsync(string prefix)
         {
             var usedSubdomainsEnvs = _environmentsStore.GetAll()
                 .Where(e => e.IsActive)
                 .Where(e => e.Subdomain.StartsWith(prefix))
                 .Select(e => e.Subdomain);
 
-            var usedSubdomainsDemos = _demosStore.GetActive()
+            var usedSubdomainsDemos = (await _demosStore.GetActiveAsync())
                 .Where(d => d.Subdomain.StartsWith(prefix))
                 .Select(e => e.Subdomain);
 
@@ -112,9 +89,9 @@ namespace Instances.Infra.Demos
             return usedSubdomains.ToHashSet();
         }
 
-        public string GetAvailableSubdomainByPrefix(string prefix)
+        public async Task<string> GetAvailableSubdomainByPrefixAsync(string prefix)
         {
-            var usedSubdomains = GetUsedSubdomainsByPrefix(prefix);
+            var usedSubdomains = await GetUsedSubdomainsByPrefixAsync(prefix);
 
             for (var i = 1; i <= MaxDemoPerRequestSubdomain; i++)
             {
