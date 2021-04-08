@@ -1,4 +1,5 @@
 using Instances.Domain.Demos;
+using Instances.Domain.Instances;
 using Lucca.Core.Api.Abstractions.Paging;
 using Lucca.Core.Shared.Domain.Exceptions;
 using System.Linq;
@@ -11,12 +12,20 @@ namespace Instances.Application.Demos
     {
         private readonly ClaimsPrincipal _principal;
         private readonly IDemosStore _demosStore;
+        private readonly IInstancesStore _instancesStore;
         private readonly IDemoRightsFilter _rightsFilter;
 
-        public DemosRepository(ClaimsPrincipal principal, IDemosStore demosStore, IDemoRightsFilter rightsFilters)
+        public DemosRepository
+        (
+            ClaimsPrincipal principal,
+            IDemosStore demosStore,
+            IInstancesStore instancesStore,
+            IDemoRightsFilter rightsFilters
+        )
         {
             _principal = principal;
             _demosStore = demosStore;
+            _instancesStore = instancesStore;
             _rightsFilter = rightsFilters;
         }
 
@@ -46,6 +55,7 @@ namespace Instances.Application.Demos
                 throw new BadRequestException($"Demo {demo.Id} is protected and cannot be deleted");
             }
 
+            await _instancesStore.DeleteForDemoAsync(demo.Instance);
             await _demosStore.DeleteAsync(demo);
             return demo;
         }

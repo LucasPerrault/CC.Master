@@ -16,7 +16,6 @@ namespace Instances.Infra.Instances.Services
         public InstancesRemoteStore(HttpClient httpClient, JsonSerializer jsonSerializer) : base(httpClient, jsonSerializer)
         { }
 
-
         private class CreateForDemoDto
         {
             public string Password { get; set; }
@@ -34,6 +33,21 @@ namespace Instances.Infra.Instances.Services
             );
 
             return response.Data;
+        }
+
+        public class DeleteForDemoDto
+        {
+            public int Id { get; set; }
+        }
+
+        public async Task DeleteForDemoAsync(Instance demoInstance)
+        {
+            await PostObjectResponseAsync<DeleteForDemoDto, Instance>
+            (
+                "deleteForDemo",
+                new DeleteForDemoDto { Id =  demoInstance.Id },
+                new Dictionary<string, string>()
+            );
         }
     }
 }

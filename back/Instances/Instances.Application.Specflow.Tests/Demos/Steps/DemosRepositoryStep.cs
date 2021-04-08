@@ -35,8 +35,9 @@ namespace Instances.Application.Specflow.Tests.Demos.Steps
             };
             var demosStore = new DemosStore(_demosContext.DbContext, new DummyQueryPager());
             var rightsServiceMock = new Mock<IRightsService>();
+            var instanceStoreMock = new Mock<IInstancesStore>();
             rightsServiceMock.Setup(rs => rs.GetUserOperationHighestScopeAsync(It.IsAny<Operation>())).ReturnsAsync((Operation op) => _demosContext.OperationsWithScope[op]);
-            var demosRepository = new DemosRepository(_demosContext.Principal, demosStore, new DemoRightsFilter(rightsServiceMock.Object));
+            var demosRepository = new DemosRepository(_demosContext.Principal, demosStore, instanceStoreMock.Object, new DemoRightsFilter(rightsServiceMock.Object));
             _demosContext.DemosListResult = (await demosRepository.GetDemosAsync(demoListQuery)).Items.ToList();
         }
 
