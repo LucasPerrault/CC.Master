@@ -20,12 +20,12 @@ namespace Instances.Infra.Instances.Services
         private class CreateForDemoDto
         {
             public string Password { get; set; }
-            public string Server { get; set; }
+            public string Cluster { get; set; }
         }
 
         public async Task<Instance> CreateForDemoAsync(string password, string cluster)
         {
-            var dto = new CreateForDemoDto { Password = password, Server = cluster};
+            var dto = new CreateForDemoDto { Password = password, Cluster = cluster};
             var response = await PostObjectResponseAsync<CreateForDemoDto, Instance>
             (
                 "createForDemo",
