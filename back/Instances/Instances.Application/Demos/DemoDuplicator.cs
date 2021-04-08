@@ -166,8 +166,8 @@ namespace Instances.Application.Demos
         private async Task<Demo> GetDemoToDuplicateAsync(string subdomain, ClaimsPrincipal principal)
         {
             var rightsFilter = await _demoRightsFilter.GetDefaultReadFilterAsync(principal);
-            var demoToDuplicate = (await _demosStore.GetAsync(rightsFilter))
-                .FirstOrDefault(d => d.Subdomain == subdomain);
+            var demoToDuplicate = ( await _demosStore.GetActiveAsync(rightsFilter, d => d.Subdomain == subdomain) )
+                .FirstOrDefault();
 
             return demoToDuplicate
                 ?? throw new BadRequestException($"Source demo {subdomain} could not be found");

@@ -1,6 +1,7 @@
 using Instances.Domain.Demos;
 using Lucca.Core.Api.Abstractions.Paging;
 using Lucca.Core.Api.Queryable.Paging;
+using Lucca.Core.Shared.Domain.Expressions;
 using Microsoft.EntityFrameworkCore;
 using Storage.Infra.Stores;
 using System;
@@ -26,9 +27,14 @@ namespace Instances.Infra.Storage.Stores
             return GetAsync(token, filters.CombineSafely());
         }
 
-        public IQueryable<Demo> GetActive()
+        public Task<IQueryable<Demo>> GetActiveAsync(params Expression<Func<Demo, bool>>[] filters)
         {
-            return Demos.Where(d => d.IsActive);
+            return GetActiveAsync(filters.CombineSafely());
+        }
+
+        private Task<IQueryable<Demo>> GetActiveAsync(Expression<Func<Demo, bool>> filter)
+        {
+            return GetAsync(filter.SmartAndAlso(d => d.IsActive));
         }
 
         public async Task<Page<Demo>> GetAsync(IPageToken token, Expression<Func<Demo, bool>> filter)
