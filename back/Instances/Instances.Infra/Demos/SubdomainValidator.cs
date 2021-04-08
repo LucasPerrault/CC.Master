@@ -38,6 +38,29 @@ namespace Instances.Infra.Demos
             _environmentsStore = environmentsStore;
         }
 
+        public async Task<string> GetSubdomainAsync(string candidate, bool useAsPrefix)
+        {
+            await ThrowIfInvalidAsync(candidate);
+
+            if (IsAvailable(candidate))
+            {
+                return candidate;
+            }
+
+            if (!useAsPrefix)
+            {
+                throw new BadRequestException($"Subdomain {candidate} is not available");
+            }
+
+            var availableSubdomain = GetAvailableSubdomainByPrefix(candidate);
+            if (string.IsNullOrEmpty(availableSubdomain))
+            {
+                throw new BadRequestException($"Subdomain {candidate} is not available (limit reached for this prefix)");
+            }
+
+            return availableSubdomain;
+        }
+
         public Task ThrowIfInvalidAsync(string subdomain)
         {
             if (SubdomainValidation.ReservedSubdomains.Contains(subdomain))
@@ -89,17 +112,13 @@ namespace Instances.Infra.Demos
             return usedSubdomains.ToHashSet();
         }
 
-        public string GetAvailableSubdomain(string subdomain)
+        public string GetAvailableSubdomainByPrefix(string prefix)
         {
-            var usedSubdomains = GetUsedSubdomainsByPrefix(subdomain);
-            if (IsAvailable(subdomain))
-            {
-                return subdomain;
-            }
+            var usedSubdomains = GetUsedSubdomainsByPrefix(prefix);
 
             for (var i = 1; i <= MaxDemoPerRequestSubdomain; i++)
             {
-                var candidate = $"{subdomain}{i}";
+                var candidate = $"{prefix}{i}";
                 if (usedSubdomains.Contains(candidate))
                 {
                     continue;

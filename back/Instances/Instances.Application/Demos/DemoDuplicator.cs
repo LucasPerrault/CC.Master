@@ -72,11 +72,12 @@ namespace Instances.Application.Demos
             ClaimsPrincipal principal
         )
         {
-
             await ThrowIfForbiddenAsync(request, principal);
             ThrowIfInvalid(request);
 
-            var targetSubdomain = await GetSubdomainAsync(request, requestSource);
+            var shouldUseSubdomainAsPrefix = requestSource == DemoDuplicationRequestSource.Hubspot;
+            var targetSubdomain = await _subdomainValidator.GetSubdomainAsync(request.Subdomain, shouldUseSubdomainAsPrefix);
+
             var demoToDuplicate = await GetDemoToDuplicateAsync(request.SourceDemoSubdomain, principal);
 
             var instanceDuplication = new InstanceDuplication
@@ -161,28 +162,6 @@ namespace Instances.Application.Demos
             _passwordHelper.ThrowIfInvalid(request.Password);
         }
 
-        private async Task<string> GetSubdomainAsync(DemoDuplicationRequest request, DemoDuplicationRequestSource source)
-        {
-            await _subdomainValidator.ThrowIfInvalidAsync(request.Subdomain);
-
-            if (_subdomainValidator.IsAvailable(request.Subdomain))
-            {
-                return request.Subdomain;
-            }
-
-            if (source != DemoDuplicationRequestSource.Hubspot)
-            {
-                throw new BadRequestException($"Subdomain {request.Subdomain} is not available");
-            }
-
-            var availableSubdomain = _subdomainValidator.GetAvailableSubdomain(request.Subdomain);
-            if (string.IsNullOrEmpty(availableSubdomain))
-            {
-                throw new BadRequestException($"Subdomain {request.Subdomain} is not available");
-            }
-
-            return availableSubdomain;
-        }
 
         private async Task<Demo> GetDemoToDuplicateAsync(string subdomain, ClaimsPrincipal principal)
         {
