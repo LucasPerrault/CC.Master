@@ -117,10 +117,9 @@ namespace Instances.Application.Demos
             return user.UserId.Value;
         }
 
-        public async Task MarkDuplicationAsCompletedAsync(Guid instanceDuplicationId)
+        public async Task MarkDuplicationAsCompletedAsync(Guid instanceDuplicationId, bool isSuccessful)
         {
-            var duplication = _duplicationsStore.GetAll()
-                .Single(d => d.InstanceDuplicationId == instanceDuplicationId);
+            var duplication = _duplicationsStore.GetByInstanceDuplicationId(instanceDuplicationId);
 
             var clusterTarget = GetTargetCluster();
 
@@ -131,7 +130,10 @@ namespace Instances.Application.Demos
 
             await _wsAuthSynchronizer.SafeSynchronizeAsync(instance.Id);
 
-            // duplication.Status = DuplicationStatus.Success;
+            var progress = isSuccessful
+                ? DemoDuplicationProgress.FinishedWithSuccess
+                : DemoDuplicationProgress.FinishedWithFailure;
+            await _duplicationsStore.UpdateProgressAsync(duplication, progress);
         }
 
         private string GetTargetCluster()
