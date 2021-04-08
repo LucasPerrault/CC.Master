@@ -23,7 +23,7 @@ namespace Instances.Infra.DataDuplication
             {
                 yield return @"Integration\CloudControl\clean_db_for_training.sql";
             }
-            if (duplication.Type == InstanceDuplicationType.Demos && duplication.DistributorId == DistributorIds.Mprh)
+            if (duplication.Type == InstanceDuplicationType.Demos && duplication.DistributorId == DistributorIds.PeopleSphere)
             {
                 yield return @"Integration\CloudControl\MPRH_Demo.login.uniqueness.sql";
             }
