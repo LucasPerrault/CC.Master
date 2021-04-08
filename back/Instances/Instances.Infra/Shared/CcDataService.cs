@@ -3,12 +3,22 @@ using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json.Linq;
 using Remote.Infra.Extensions;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Net.Http;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace Instances.Infra.Shared
 {
+
+    internal class DeleteInstanceRequestDto
+    {
+        public List<string> Tenants { get; set; }
+        public Uri CallbackUri { get; set; }
+        public string CallbackAuthorizationHeader { get; set; }
+    }
+
     public class CcDataService : ICcDataService
     {
         private static readonly Regex ClusterNumberExtractor = new Regex(@"([a-z]+)(\d+)", RegexOptions.Compiled);
@@ -27,18 +37,48 @@ namespace Instances.Infra.Shared
         public async Task StartDuplicateInstanceAsync(DuplicateInstanceRequestDto duplicateInstanceRequest, string cluster, string callbackPath)
         {
             var body = JToken.FromObject(duplicateInstanceRequest);
-            body["CallbackUri"] = new UriBuilder
-            {
-                Scheme = _httpContextAccessor.HttpContext.Request.Scheme,
-                Host = _httpContextAccessor.HttpContext.Request.Host.Host,
-                Path = callbackPath
-            }.Uri;
-            body["CallbackAuthorizationHeader"] = $"Cloudcontrol application={_ccDataConfiguration.InboundToken}";
+            body["CallbackUri"] = GetCallbackUri(callbackPath);
+            body["CallbackAuthorizationHeader"] = GetCallbackAuthHeader();
 
             var uri = new Uri(GetCcDataBaseUri(cluster), "/api/v1/duplicate-instance");
             var result = await _httpClient.PostAsync(uri, body.ToJsonPayload());
 
             result.EnsureSuccessStatusCode();
+        }
+
+        public Task DeleteInstanceAsync(string subdomain, string cluster, string callbackPath)
+        {
+            return DeleteInstancesAsync(new List<string> { subdomain }, cluster, callbackPath);
+        }
+
+        public async Task DeleteInstancesAsync(IEnumerable<string> subdomains, string cluster, string callbackPath)
+        {
+            var request = new DeleteInstanceRequestDto
+            {
+                Tenants = subdomains.ToList(),
+                CallbackUri = GetCallbackUri(callbackPath),
+                CallbackAuthorizationHeader =  GetCallbackAuthHeader()
+            };
+
+            var uri = new Uri(GetCcDataBaseUri(cluster), "/api/v1/delete-instance");
+            var result = await _httpClient.PostAsync(uri, request.ToJsonPayload());
+
+            result.EnsureSuccessStatusCode();
+        }
+
+        private Uri GetCallbackUri(string callbackPath)
+        {
+            return new UriBuilder
+            {
+                Scheme = _httpContextAccessor.HttpContext.Request.Scheme,
+                Host = _httpContextAccessor.HttpContext.Request.Host.Host,
+                Path = callbackPath
+            }.Uri;
+        }
+
+        private string GetCallbackAuthHeader()
+        {
+            return $"Cloudcontrol application={_ccDataConfiguration.InboundToken}";
         }
 
         public Uri GetCcDataBaseUri(string cluster)
