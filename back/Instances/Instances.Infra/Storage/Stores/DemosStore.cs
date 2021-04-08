@@ -37,14 +37,20 @@ namespace Instances.Infra.Storage.Stores
             return GetAsync(filter.SmartAndAlso(d => d.IsActive));
         }
 
+        public async Task DeleteAsync(Demo demo)
+        {
+            demo.IsActive = false;
+            await _dbContext.SaveChangesAsync();
+        }
+
         public async Task<Page<Demo>> GetAsync(IPageToken token, Expression<Func<Demo, bool>> filter)
         {
             return await _queryPager.ToPageAsync(await GetAsync(filter), token);
         }
 
-        public Task<IQueryable<Demo>> GetAsync(Expression<Func<Demo, bool>> filter)
+        public Task<IQueryable<Demo>> GetAsync(params Expression<Func<Demo, bool>>[] filters)
         {
-            return Task.FromResult(Demos.Where(filter));
+            return Task.FromResult(Demos.Where(filters.CombineSafely()));
         }
 
         public Task<Demo> GetByInstanceIdAsync(int instanceId)

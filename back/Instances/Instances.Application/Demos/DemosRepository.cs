@@ -1,9 +1,8 @@
 using Instances.Domain.Demos;
 using Lucca.Core.Api.Abstractions.Paging;
-using System;
-using System.Collections.Generic;
+using Lucca.Core.Shared.Domain.Exceptions;
+using System.Linq;
 using System.Security.Claims;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Instances.Application.Demos
@@ -28,6 +27,27 @@ namespace Instances.Application.Demos
                 d => d.IsActive == query.IsActive,
                 await _rightsFilter.GetDefaultReadFilterAsync(_principal)
             );
+        }
+
+        public async Task<Demo> DeleteAsync(int id)
+        {
+            var demo = (
+                await _demosStore.GetAsync(await _rightsFilter
+                .GetDefaultReadFilterAsync(_principal), d => d.IsActive)
+            ).SingleOrDefault(d => d.Id == id);
+
+            if (demo == null)
+            {
+                throw new NotFoundException();
+            }
+
+            if (demo.Instance.IsProtected)
+            {
+                throw new BadRequestException($"Demo {demo.Id} is protected and cannot be deleted");
+            }
+
+            await _demosStore.DeleteAsync(demo);
+            return demo;
         }
     }
 }

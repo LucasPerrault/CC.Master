@@ -5,9 +5,6 @@ using Lucca.Core.Api.Web.ModelBinding.Sorting;
 using Microsoft.AspNetCore.Mvc;
 using Rights.Domain;
 using Rights.Web.Attributes;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Instances.Web.Controllers
@@ -28,6 +25,13 @@ namespace Instances.Web.Controllers
         public Task<Page<Demo>> GetAsync([FromQuery]DemoListQuery query)
         {
             return _demosRepository.GetDemosAsync(query);
+        }
+
+        [HttpDelete("{id}")]
+        [ForbidIfMissing(Operation.Demo)]
+        public Task<Demo> DeleteAsync([FromRoute]int demoId)
+        {
+            return _demosRepository.DeleteAsync(demoId);
         }
     }
 }
