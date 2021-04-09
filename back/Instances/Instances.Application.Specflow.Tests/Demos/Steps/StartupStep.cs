@@ -5,10 +5,7 @@ using Instances.Domain.Demos;
 using Instances.Domain.Instances.Models;
 using Instances.Infra.Storage;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
 using System;
-using System.Collections.Generic;
-using System.Text;
 using TechTalk.SpecFlow;
 
 namespace Instances.Application.Specflow.Tests.Demos.Steps
@@ -23,6 +20,11 @@ namespace Instances.Application.Specflow.Tests.Demos.Steps
             _objectContainer = objectContainer;
         }
 
+        private static string GetNameUniqueForTestContext(string name)
+        {
+            return $"{name}-{Guid.NewGuid()}";
+        }
+
         [BeforeScenario]
         public void InitializeScenario()
         {
@@ -30,7 +32,7 @@ namespace Instances.Application.Specflow.Tests.Demos.Steps
             _objectContainer.RegisterInstanceAs<DemosContext>(demosContext);
 
             var options = new DbContextOptionsBuilder<InstancesDbContext>()
-                .UseInMemoryDatabase(databaseName: "Instances")
+                .UseInMemoryDatabase(GetNameUniqueForTestContext("Instances"))
                 .Options;
 
             var context = new InstancesDbContext(options);

@@ -2,10 +2,9 @@ using Authentication.Domain;
 using Instances.Application.Specflow.Tests.Demos.Models;
 using Lucca.Core.Rights.Abstractions;
 using Rights.Domain;
-using System;
 using System.Collections.Generic;
-using System.Text;
 using TechTalk.SpecFlow;
+using Xunit;
 
 namespace Instances.Application.Specflow.Tests.Demos.Steps
 {
@@ -37,6 +36,18 @@ namespace Instances.Application.Specflow.Tests.Demos.Steps
                     LastName = "Bombeur",
                 }
             });
+        }
+
+        [Then(@"user should get error containing '(.*)'")]
+        public void ThenUserShouldGetErrorContainingAsync(string errorMessageExtract)
+        {
+            Assert.Contains(errorMessageExtract, _demosContext.ExceptionResult.Message);
+        }
+
+        [Then(@"user should not get error")]
+        public void ThenUserShouldNotGetError()
+        {
+            Assert.Null(_demosContext.ExceptionResult);
         }
     }
 }

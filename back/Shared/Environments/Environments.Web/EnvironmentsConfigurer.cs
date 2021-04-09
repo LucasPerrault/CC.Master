@@ -1,5 +1,6 @@
 ﻿using Environments.Application;
 using Environments.Domain;
+using Environments.Domain.Storage;
 using Environments.Infra.Storage.Stores;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -11,7 +12,7 @@ namespace Environments.Web
         {
             services.AddSingleton<IEnvironmentFilter, EnvironmentFilter>();
 
-            services.AddScoped<EnvironmentsStore>();
+            services.AddScoped<IEnvironmentsStore, EnvironmentsStore>();
             services.AddScoped<EnvironmentsRepository>();
         }
     }

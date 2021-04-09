@@ -1,13 +1,12 @@
 using Instances.Domain.Demos;
 using Lucca.Core.Api.Abstractions.Paging;
 using Lucca.Core.Api.Queryable.Paging;
+using Lucca.Core.Shared.Domain.Expressions;
 using Microsoft.EntityFrameworkCore;
 using Storage.Infra.Stores;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Instances.Infra.Storage.Stores
@@ -28,9 +27,36 @@ namespace Instances.Infra.Storage.Stores
             return GetAsync(token, filters.CombineSafely());
         }
 
-        public Task<Page<Demo>> GetAsync(IPageToken token, Expression<Func<Demo, bool>> filter)
+        public Task<IQueryable<Demo>> GetActiveAsync(params Expression<Func<Demo, bool>>[] filters)
         {
-            return _queryPager.ToPageAsync(Demos.Where(filter), token);
+            return GetActiveAsync(filters.CombineSafely());
+        }
+
+        private Task<IQueryable<Demo>> GetActiveAsync(Expression<Func<Demo, bool>> filter)
+        {
+            return GetAsync(filter.SmartAndAlso(d => d.IsActive));
+        }
+
+        public async Task<Page<Demo>> GetAsync(IPageToken token, Expression<Func<Demo, bool>> filter)
+        {
+            return await _queryPager.ToPageAsync(await GetAsync(filter), token);
+        }
+
+        public Task<IQueryable<Demo>> GetAsync(Expression<Func<Demo, bool>> filter)
+        {
+            return Task.FromResult(Demos.Where(filter));
+        }
+
+        public Task<Demo> GetByInstanceIdAsync(int instanceId)
+        {
+            return Demos.SingleOrDefaultAsync(d => d.InstanceID == instanceId);
+        }
+
+        public async Task<Demo> CreateAsync(Demo demo)
+        {
+            await _dbContext.Set<Demo>().AddAsync(demo);
+            await _dbContext.SaveChangesAsync();
+            return demo;
         }
 
         private IQueryable<Demo> Demos => _dbContext.Set<Demo>().Include(d => d.Instance);

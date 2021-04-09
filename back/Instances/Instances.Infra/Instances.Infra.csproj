@@ -7,6 +7,8 @@
   <ItemGroup>
     <ProjectReference Include="..\..\Core\Storage\Storage.Infra\Storage.Infra.csproj" />
     <ProjectReference Include="..\..\Shared\Distributors\Distributors.Infra\Distributors.Infra.csproj" />
+    <ProjectReference Include="..\..\Shared\Environments\Environments.Infra\Environments.Infra.csproj" />
+    <ProjectReference Include="..\..\Shared\Remote\Remote.Infra\Remote.Infra.csproj" />
     <ProjectReference Include="..\Instances.Domain\Instances.Domain.csproj" />
   </ItemGroup>
 

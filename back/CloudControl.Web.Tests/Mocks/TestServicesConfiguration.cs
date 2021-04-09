@@ -1,7 +1,12 @@
 using Authentication.Infra.Configurations;
 using Billing.Contracts.Infra.Configurations;
+using Cache.Web;
 using CloudControl.Web.Configuration;
 using Core.Proxy.Infra.Configuration;
+using Instances.Infra.Instances;
+using Instances.Infra.WsAuth;
+using Instances.Infra.Shared;
+using Instances.Web;
 using IpFilter.Infra.Storage;
 using IpFilter.Web;
 using Lucca.Core.AspNetCore.Healthz;
@@ -49,13 +54,18 @@ namespace CloudControl.Web.Tests.Mocks
                     ServerUri = new Uri("https://mocked-partenaires.local"),
                     LogoutEndpointPath = "/logout",
                     RedirectEndpointPath = "/login"
-                },
+                }
             });
         }
 
         public override void ConfigureApi(IServiceCollection services)
         {
             services.AddControllers();
+        }
+
+        public override void ConfigureCache(IServiceCollection services, AppConfiguration configuration)
+        {
+            // do not configure redis in a test context
         }
 
         public override void ConfigureStorage(IServiceCollection services)
@@ -128,6 +138,33 @@ namespace CloudControl.Web.Tests.Mocks
                     ServerUri = new Uri("https://mocked-salesforce.local"),
                     AccountsEndpointPath = "/api/mocked/accounts",
                     Token = new Guid("deadbeef-0000-0000-0000-000000000000")
+                }
+            });
+        }
+
+        public override void ConfigureInstances(IServiceCollection services, AppConfiguration configuration)
+        {
+            base.ConfigureInstances(services, new AppConfiguration
+            {
+                Instances = new InstancesConfigurer.InstancesConfiguration
+                {
+                    Identity = new IdentityAuthenticationConfig
+                    {
+                        ClientId = "mocked.identity.client.id",
+                        ClientSecret = "mocked.identity.client.secret",
+                        TokenRequestRoute = "mocked/identity/token/request/route"
+                    },
+                    WsAuth = new WsAuthConfiguration
+                    {
+                        ServerUri = new Uri("https://mocked-ws-auth.ilucca.local"),
+                        EndpointPath = "/sync",
+                        Token = new Guid("deadbeef-0000-0000-0000-000000000000")
+                    },
+                    CcData = new CcDataConfiguration
+                    {
+                        InboundToken = new Guid("00000000-0000-0000-0000-000000000000"),
+                        OutboundToken = new Guid("00000000-0000-0000-0000-000000000000")
+                    }
                 }
             });
         }

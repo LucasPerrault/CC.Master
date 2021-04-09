@@ -26,12 +26,14 @@ using Storage.Web;
 using System;
 using Billing.Contracts.Infra.Storage;
 using Billing.Web;
+using Cache.Web;
 using Environments.Infra.Storage;
 using Environments.Web;
 using Salesforce.Web;
 using Lucca.Core.Api.Queryable.EntityFrameworkCore;
 using Instances.Web;
 using Instances.Infra.Storage;
+using Remote.Infra;
 
 namespace CloudControl.Web
 {
@@ -54,6 +56,7 @@ namespace CloudControl.Web
             ConfigureApi(services);
             ConfigureLogs(services);
             // ConfigureSpa(services);
+            ConfigureCache(services, configuration);
             ConfigureProxy(services);
             ConfigureIpFilter(services);
             ConfigureTenancy(services);
@@ -61,7 +64,6 @@ namespace CloudControl.Web
             ConfigureSharedDomains(services);
             ConfigureAuthentication(services, configuration);
             ConfigureRights(services, configuration);
-            ConfigureEnvironments(services, configuration);
             ConfigureSalesforce(services, configuration);
             ConfigureBilling(services, configuration);
             ConfigureInstances(services, configuration);
@@ -94,7 +96,8 @@ namespace CloudControl.Web
                         o.ServiceName = AppConfiguration.AppName;
                     }
                 )
-                .AddLegacyCheck();
+                .AddLegacyCheck()
+                .AddRedisCheck();
         }
 
         public virtual void ConfigureApi(IServiceCollection services)
@@ -113,6 +116,11 @@ namespace CloudControl.Web
             {
                 o.ShouldIncludeFullExceptionDetails = _hostingEnvironment.IsDevelopment();
             });
+        }
+
+        public virtual void ConfigureCache(IServiceCollection services, AppConfiguration configuration)
+        {
+            RedisCacheConfigurer.ConfigureRedis(services, configuration.Redis);
         }
 
         public virtual void ConfigureProxy(IServiceCollection services)
@@ -144,6 +152,8 @@ namespace CloudControl.Web
         public virtual void ConfigureSharedDomains(IServiceCollection services)
         {
             DistributorsConfigurer.ConfigureServices(services);
+            EnvironmentsConfigurer.ConfigureEnvironments(services);
+            RemoteConfigurer.ConfigureRemote(services);
         }
 
         public virtual void ConfigureAuthentication(IServiceCollection services, AppConfiguration configuration)
@@ -163,7 +173,7 @@ namespace CloudControl.Web
 
         public virtual void ConfigureInstances(IServiceCollection services, AppConfiguration configuration)
         {
-            InstancesConfigurer.ConfigureServices(services);
+            InstancesConfigurer.ConfigureServices(services, configuration.Instances);
         }
 
         public virtual void ConfigureLogs(IServiceCollection services)
@@ -179,11 +189,6 @@ namespace CloudControl.Web
         public virtual void ConfigureSpa(IServiceCollection services)
         {
             services.RegisterFrontApplication(_hostingEnvironment);
-        }
-
-        public virtual void ConfigureEnvironments(IServiceCollection services, AppConfiguration configuration)
-        {
-            EnvironmentsConfigurer.ConfigureEnvironments(services);
         }
 
         public virtual void ConfigureSalesforce(IServiceCollection services, AppConfiguration configuration)

@@ -1,4 +1,14 @@
-﻿{
+{
+    "Logging": {
+        "LogLevel": {
+            "Default": "Error"
+        },
+        "Debug": {
+            "LogLevel": {
+                "Default": "Warning"
+            }
+        }
+    },
     "SqlInfos": {
         "Default": "Data Source={{ CC.Master:SqlServer }};Initial Catalog=CloudControl;user={{ CC.Master:SqlLogin }};Password={{ CC.Master:SqlPassword }};MultipleActiveResultSets=True;App=CloudControl"
     },
@@ -15,6 +25,11 @@
         "DepartmentsEndpointPath": "{{ CC.Master:RightsDepartmentEndpointPath }}",
         "ForeignAppEndpointPath": "{{ CC.Master:RightsForeignAppEndpointPath }}",
         "UsersEndpointPath": "{{ CC.Master:RightsUsersEndpointPath }}"
+    },
+    "Redis": {
+        "Host": "{{ shared:CacheManagerRedisHost }}",
+        "Password": "{{ shared:CacheManagerRedisPassword }}",
+        "KeyInvalidationInMinutes": "720"
     },
     "LuccaLoggerOptions": {
         "ApplicationName": "CloudControl",
@@ -39,5 +54,28 @@
         "ServerUri": "{{ CC.Master:SalesforceUri }}",
         "AccountsEndpointPath": "/salesforce/accounts",
         "Token": "{{ CC.Master:SalesforceToken }}"
+    },
+    "Instances": {
+        "InstancesStore": {
+            "Host": "{{ CC.Master:LegacyCloudControlHost }}",
+            "Endpoint": "/api/v3/instances",
+            "Token": "{{ CC.Master:InstanceCreationToken }}"
+        },
+        "Identity": {
+            "ClientId": "cloud.control",
+            "ClientSecret": "{{ CC.Master:IdentityClientSecret }}",
+            "TokenRequestRoute": "/identity/connect/token"
+        },
+        "WsAuth": {
+            "ServerUri": "https://ws-auth.ilucca.local",
+            "EndpointPath": "/sync-v2/api",
+            "Token": "{{ CC.Master:LuccaAuthSyncV2SharedToken }}"
+        },
+        "CcData": {
+            "Domain":  "lucca.local",
+            "Scheme":  "http",
+            "OutboundToken": "{{ CC.Data:CCMasterWebserviceToken }}",
+            "InboundToken": "{{ CC.Data:CCMasterWebserviceToken }}"
+        }
     }
 }
