@@ -1,8 +1,8 @@
 using Authentication.Infra.Configurations;
 using Billing.Contracts.Infra.Configurations;
-using Cache.Web;
 using CloudControl.Web.Configuration;
 using Core.Proxy.Infra.Configuration;
+using Instances.Infra.Demos;
 using Instances.Infra.Instances;
 using Instances.Infra.WsAuth;
 using Instances.Infra.Shared;
@@ -162,8 +162,13 @@ namespace CloudControl.Web.Tests.Mocks
                     },
                     CcData = new CcDataConfiguration
                     {
-                        InboundToken = new Guid("00000000-0000-0000-0000-000000000000"),
-                        OutboundToken = new Guid("00000000-0000-0000-0000-000000000000")
+                        InboundToken = new Guid("deadbeef-0000-0000-0000-000000000000"),
+                        OutboundToken = new Guid("deadbeef-0000-0000-0000-000000000000")
+                    },
+                    Hubspot = new HubspotConfiguration
+                    {
+                        OutboundToken = new Guid("deadbeef-0000-0000-0000-000000000000"),
+                        ServerUri = new Uri("https://api.hubapi.mocked")
                     }
                 }
             });

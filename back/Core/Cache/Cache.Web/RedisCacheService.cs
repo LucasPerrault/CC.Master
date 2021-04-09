@@ -44,17 +44,27 @@ namespace Cache.Web
             return SetSerializedValueAsync(key.Key, serialized, key.Invalidation);
         }
 
+        public async Task ExpireAsync<T>(CacheKey<T> key)
+        {
+            if (!IsHealthy())
+            {
+                return;
+            }
+
+            await _multiplexer.GetDatabase().KeyDeleteAsync(GetCcMasterStringKey(key.Key));
+        }
+
         private Task<RedisValue> GetSerializedValueAsync(string key)
         {
             return _multiplexer
                 .GetDatabase()
-                .StringGetAsync(GetClientCenterStringKey(key));
+                .StringGetAsync(GetCcMasterStringKey(key));
         }
         private Task SetSerializedValueAsync(string key, string value, TimeSpan? invalidation)
         {
-            return _multiplexer.GetDatabase().StringSetAsync(GetClientCenterStringKey(key), value, invalidation ?? _defaultInvalidation);
+            return _multiplexer.GetDatabase().StringSetAsync(GetCcMasterStringKey(key), value, invalidation ?? _defaultInvalidation);
         }
 
-        private string GetClientCenterStringKey(string key) => $"CC.Master:v{_cacheVersion}:{key}";
+        private string GetCcMasterStringKey(string key) => $"CC.Master:v{_cacheVersion}:{key}";
     }
 }

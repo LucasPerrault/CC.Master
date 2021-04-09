@@ -76,6 +76,10 @@
             "Scheme":  "http",
             "OutboundToken": "{{ CC.Data:CCMasterWebserviceToken }}",
             "InboundToken": "{{ CC.Data:CCMasterWebserviceToken }}"
+        },
+        "Hubspot": {
+            "ServerUri": "{{ CC.Master:HubspotServerUri }}",
+            "OutboundToken": "{{ CC.Master:HubspotOutboundToken }}"
         }
     }
 }

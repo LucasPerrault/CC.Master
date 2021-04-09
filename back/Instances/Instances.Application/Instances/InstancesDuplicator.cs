@@ -1,7 +1,7 @@
+using Instances.Application.Demos;
 using Instances.Domain.Instances;
 using Instances.Domain.Shared;
-using System;
-using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -18,7 +18,8 @@ namespace Instances.Application.Instances
             _ccDataService = ccDataService;
         }
 
-        internal Task RequestRemoteDuplicationAsync(InstanceDuplication duplication)
+        internal Task RequestRemoteDuplicationAsync
+            (InstanceDuplication duplication, DemoDuplicationRequestSource source)
         {
             var scripts = _scriptPicker.GetForDuplication(duplication);
 
@@ -36,7 +37,27 @@ namespace Instances.Application.Instances
                 TargetTenant = duplication.TargetSubdomain,
                 PostRestoreScripts = scripts.Select(uri => new UriLinkDto { Uri = uri }).ToList()
             };
-            return _ccDataService.StartDuplicateInstanceAsync(duplicateInstanceRequest, duplication.SourceCluster, "TODO");
+
+            return _ccDataService.StartDuplicateInstanceAsync
+            (
+                duplicateInstanceRequest,
+                duplication.SourceCluster,
+                GetCallbackPath(duplication, source)
+            );
+        }
+
+        private string GetCallbackPath
+        (
+            InstanceDuplication duplication,
+            DemoDuplicationRequestSource source
+        )
+        {
+            return source switch
+            {
+                DemoDuplicationRequestSource.Hubspot => $"/api/hubspot/duplications/{duplication.Id}/notify",
+                DemoDuplicationRequestSource.Api => $"/api/demos/duplications/{duplication.Id}/notify",
+                _ => throw new InvalidEnumArgumentException(nameof(source), (int)source, typeof(DemoDuplicationRequestSource))
+            };
         }
     }
 }
