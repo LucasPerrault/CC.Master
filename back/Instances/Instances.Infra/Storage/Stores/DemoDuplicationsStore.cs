@@ -1,11 +1,7 @@
 using Instances.Domain.Demos;
-using Lucca.Core.Api.Abstractions.Paging;
-using Lucca.Core.Api.Queryable.Paging;
 using Microsoft.EntityFrameworkCore;
-using Storage.Infra.Stores;
 using System;
 using System.Linq;
-using System.Linq.Expressions;
 using System.Threading.Tasks;
 
 namespace Instances.Infra.Storage.Stores
@@ -13,32 +9,10 @@ namespace Instances.Infra.Storage.Stores
     public class DemoDuplicationsStore : IDemoDuplicationsStore
     {
         private readonly InstancesDbContext _dbContext;
-        private readonly IQueryPager _queryPager;
 
-        public DemoDuplicationsStore(InstancesDbContext dbContext, IQueryPager queryPager)
+        public DemoDuplicationsStore(InstancesDbContext dbContext)
         {
             _dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
-            _queryPager = queryPager ?? throw new ArgumentNullException(nameof(queryPager));
-        }
-
-        public Task<Page<DemoDuplication>> GetAsync(IPageToken token, params Expression<Func<DemoDuplication, bool>>[] filters)
-        {
-            return GetAsync(token, filters.CombineSafely());
-        }
-
-        public IQueryable<DemoDuplication> GetAll()
-        {
-            return Duplications;
-        }
-
-        public async Task<Page<DemoDuplication>> GetAsync(IPageToken token, Expression<Func<DemoDuplication, bool>> filter)
-        {
-            return await _queryPager.ToPageAsync(await GetAsync(filter), token);
-        }
-
-        public Task<IQueryable<DemoDuplication>> GetAsync(Expression<Func<DemoDuplication, bool>> filter)
-        {
-            return Task.FromResult(Duplications.Where(filter));
         }
 
         public async Task<DemoDuplication> CreateAsync(DemoDuplication duplication)
@@ -46,6 +20,17 @@ namespace Instances.Infra.Storage.Stores
             await _dbContext.Set<DemoDuplication>().AddAsync(duplication);
             await _dbContext.SaveChangesAsync();
             return duplication;
+        }
+
+        public DemoDuplication GetByInstanceDuplicationId(Guid instanceDuplicationId)
+        {
+            return Duplications.Single(d => d.InstanceDuplicationId == instanceDuplicationId);
+        }
+
+        public async Task UpdateProgressAsync(DemoDuplication duplication, DemoDuplicationProgress progress)
+        {
+            duplication.Progress = progress;
+            await _dbContext.SaveChangesAsync();
         }
 
         private IQueryable<DemoDuplication> Duplications => _dbContext.Set<DemoDuplication>()

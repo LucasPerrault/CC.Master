@@ -35,8 +35,6 @@ namespace Instances.Application.Specflow.Tests.Demos.Steps
             _demosContext = demosContext;
         }
 
-
-
         [Given(@"a (.*) duplication for demo '(.*)' of id '(.*)'")]
         public async Task GivenADuplication
         (
@@ -46,7 +44,7 @@ namespace Instances.Application.Specflow.Tests.Demos.Steps
         )
         {
             var distributor = _demosContext.DbContext.Set<Distributor>().First();
-            var demoDuplicationsStore = new DemoDuplicationsStore(_demosContext.DbContext, new DummyQueryPager());
+            var demoDuplicationsStore = new DemoDuplicationsStore(_demosContext.DbContext);
             var duplication = new DemoDuplication
             {
                 Password = "test",
@@ -100,13 +98,13 @@ namespace Instances.Application.Specflow.Tests.Demos.Steps
         public async Task WhenIGetNotificationThatDuplicationHasEnded(Guid duplicationId)
         {
             var duplicator = GetDuplicator();
-            await duplicator.MarkDuplicationAsCompletedAsync(duplicationId);
+            await duplicator.MarkDuplicationAsCompletedAsync(duplicationId, true);
         }
 
         private DemoDuplicator GetDuplicator()
         {
             var demosStore = new DemosStore(_demosContext.DbContext, new DummyQueryPager());
-            var demoDuplicationsStore = new DemoDuplicationsStore(_demosContext.DbContext, new DummyQueryPager());
+            var demoDuplicationsStore = new DemoDuplicationsStore(_demosContext.DbContext);
 
             _demosContext.Mocks.DistributorsStore
                 .Setup(s => s.GetByCodeAsync(It.IsAny<string>()))
@@ -137,11 +135,11 @@ namespace Instances.Application.Specflow.Tests.Demos.Steps
                     _demosContext.Mocks.InstancesStore.Object,
                     rightsServiceMock.Object,
                     _demosContext.Mocks.DistributorsStore.Object,
-                    new SubdomainValidator(demosStore, envStoreMock.Object),
+                    new SubdomainGenerator(new SubdomainValidator(demosStore, envStoreMock.Object)),
                     new UsersPasswordHelper(),
                     new DemoRightsFilter(rightsServiceMock.Object),
                     passwordResetMock.Object,
-                	authWsMock.Object
+                    authWsMock.Object
                 );
         }
 

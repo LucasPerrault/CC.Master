@@ -9,9 +9,8 @@ namespace Instances.Domain.Demos
 
     public interface IDemoDuplicationsStore
     {
-        Task<Page<DemoDuplication>> GetAsync(IPageToken token, params Expression<Func<DemoDuplication, bool>>[] filters);
-        Task<IQueryable<DemoDuplication>> GetAsync(Expression<Func<DemoDuplication, bool>> filter);
         Task<DemoDuplication> CreateAsync(DemoDuplication demo);
-        IQueryable<DemoDuplication> GetAll();
+        DemoDuplication GetByInstanceDuplicationId(Guid instanceDuplicationId);
+        Task UpdateProgressAsync(DemoDuplication duplication, DemoDuplicationProgress progress);
     }
 }

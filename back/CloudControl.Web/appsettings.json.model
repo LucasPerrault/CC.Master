@@ -56,6 +56,11 @@
         "Token": "{{ CC.Master:SalesforceToken }}"
     },
     "Instances": {
+        "InstancesStore": {
+            "Host": "{{ CC.Master:LegacyCloudControlHost }}",
+            "Endpoint": "/api/v3/instances",
+            "Token": "{{ CC.Master:InstanceCreationToken }}"
+        },
         "Identity": {
             "ClientId": "cloud.control",
             "ClientSecret": "{{ CC.Master:IdentityClientSecret }}",

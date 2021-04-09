@@ -30,8 +30,8 @@ namespace Environments.Domain
 
         public async Task<Expression<Func<Environment, bool>>> PurposeReadAccessFilter(Operation operation)
         {
-            var externalItems = await _rightsService.GetExternalItemsAsync(operation);
-            return e => externalItems.Contains((int)e.Purpose);
+            var purposes = await _rightsService.GetEnvironmentPurposesAsync(operation);
+            return e => purposes.Contains((int)e.Purpose);
         }
     }
 }

@@ -2,7 +2,7 @@ namespace Distributors.Domain.Models
 {
     public static class DistributorIds
     {
-        public const string Mprh = "TODOIDDISTRIBUTEURTOUTCACA";
+        public const string PeopleSphere = "0015700001sILhMAAW";
     }
 
     public class Distributor

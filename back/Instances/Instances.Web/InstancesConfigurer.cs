@@ -14,13 +14,22 @@ using Lucca.Core.Api.Abstractions;
 using Lucca.Core.Api.Web;
 using Microsoft.Extensions.DependencyInjection;
 using Remote.Infra.Extensions;
+using System;
 
 namespace Instances.Web
 {
     public static class InstancesConfigurer
     {
+        public class InstancesStoreConfiguration
+        {
+            public Uri Host { get; set; }
+            public string Endpoint { get; set; }
+            public Guid Token { get; set; }
+        }
+
         public class InstancesConfiguration
         {
+            public InstancesStoreConfiguration Store { get; set; }
             public IdentityAuthenticationConfig Identity { get; set; }
             public CcDataConfiguration CcData { get; set; }
             public WsAuthConfiguration WsAuth { get; set; }
@@ -35,8 +44,6 @@ namespace Instances.Web
             services.AddSingleton<IUsersPasswordHelper, UsersPasswordHelper>();
             services.AddSingleton<SqlScriptPicker>();
 
-            services.AddScoped<IInstancesStore, InstancesRemoteStore>();
-
             services.AddScoped<InstancesDuplicator>();
 
             services.AddScoped<IDemosStore, DemosStore>();
@@ -44,16 +51,26 @@ namespace Instances.Web
             services.AddScoped<IDemoDuplicationsStore, DemoDuplicationsStore>();
             services.AddScoped<IDemoRightsFilter, DemoRightsFilter>();
             services.AddScoped<DemosRepository>();
+            services.AddScoped<ISubdomainGenerator, SubdomainGenerator>();
             services.AddScoped<ISubdomainValidator, SubdomainValidator>();
 
             services.AddScoped<IDemoUsersPasswordResetService, DemoUsersPasswordResetService>();
 
             services.AddScoped<IUsersPasswordResetService, UsersPasswordResetService>();
 
-            services.AddHttpClient<IHubspotService, HubspotService>(client =>
+
+            services.AddHttpClient<IHubspotService, HubspotService>( client =>
             {
                 client.WithUserAgent(nameof(HubspotService))
                     .WithBaseAddress(configuration.Hubspot.ServerUri);
+            });
+
+            services.AddHttpClient<IInstancesStore, InstancesRemoteStore>(client =>
+            {
+                client.WithUserAgent(nameof(InstancesRemoteStore))
+                    .WithBaseAddress(new Uri(configuration.Store.Host, configuration.Store.Endpoint))
+                    .WithAuthScheme("CloudControl").AuthenticateAsApplication(configuration.Store.Token);
+
             });
 
             services.AddHttpClient<WsAuthRemoteService>(client =>

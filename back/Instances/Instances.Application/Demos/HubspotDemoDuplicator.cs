@@ -93,7 +93,7 @@ namespace Instances.Application.Demos
         {
             var key = new HubspotDemoDuplicationKey(instanceDuplicationId);
 
-            await _demoDuplicator.MarkDuplicationAsCompletedAsync(instanceDuplicationId);
+            await _demoDuplicator.MarkDuplicationAsCompletedAsync(instanceDuplicationId, isSuccessful);
 
             var cachedDuplication = await _cacheService.GetAsync(key);
 
