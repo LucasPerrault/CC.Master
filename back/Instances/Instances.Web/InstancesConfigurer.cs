@@ -34,6 +34,7 @@ namespace Instances.Web
             public CcDataConfiguration CcData { get; set; }
             public WsAuthConfiguration WsAuth { get; set; }
             public HubspotConfiguration Hubspot { get; set; }
+            public SqlScriptPickerConfiguration SqlScriptPicker { get; set; }
         }
 
         public static void ConfigureServices(IServiceCollection services, InstancesConfiguration configuration)

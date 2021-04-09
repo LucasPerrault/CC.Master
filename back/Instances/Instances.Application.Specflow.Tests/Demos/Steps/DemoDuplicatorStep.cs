@@ -129,7 +129,14 @@ namespace Instances.Application.Specflow.Tests.Demos.Steps
 
             return new DemoDuplicator
                 (
-                    new InstancesDuplicator(new SqlScriptPicker(), ccDataServiceMock.Object),
+                    new InstancesDuplicator(new SqlScriptPicker(
+                        new SqlScriptPickerConfiguration
+                        {
+                            JenkinsBaseUri = new Uri("http://localhost"),
+                            MonolithJobPath = "ilucca",
+                        }),
+                        ccDataServiceMock.Object
+                    ),
                     demosStore,
                     demoDuplicationsStore,
                     _demosContext.Mocks.InstancesStore.Object,
