@@ -18,7 +18,10 @@
         "ApiKeysEndpointPath": "{{ CC.Master:AuthApiKeysEndpointPath }}",
         "RedirectEndpointPath": "{{ CC.Master:AuthRedirectEndpointPath }}",
         "LogoutEndpointPath": "{{ CC.Master:AuthLogoutEndpointPath }}",
-        "ApiKeysFetcherToken": "{{ CC.Master:AuthApiKeysFetcherToken }}"
+        "ApiKeysFetcherToken": "{{ CC.Master:AuthApiKeysFetcherToken }}",
+        "Hangfire": {
+            "SharedSecret": "{{ LuccaHangfire:CloudControlToken }}"
+        }
     },
     "Rights": {
         "ServerUri": "{{ CC.Master:RightsTenantUri }}",

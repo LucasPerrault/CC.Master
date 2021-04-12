@@ -21,7 +21,6 @@ namespace Core.Proxy.Infra.Extensions
         private static readonly HashSet<string> NonV3LegacyApiSegments = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
         {
             "workerprocesses",
-            "hangfire",
             "backoffice",
         };
         private static readonly HashSet<string> NonRedirectableSegments = new HashSet<string>(StringComparer.OrdinalIgnoreCase)

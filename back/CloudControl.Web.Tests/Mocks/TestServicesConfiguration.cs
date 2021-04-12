@@ -53,7 +53,11 @@ namespace CloudControl.Web.Tests.Mocks
                 {
                     ServerUri = new Uri("https://mocked-partenaires.local"),
                     LogoutEndpointPath = "/logout",
-                    RedirectEndpointPath = "/login"
+                    RedirectEndpointPath = "/login",
+                    Hangfire = new HangfireAuthenticationConfiguration
+                    {
+                        SharedSecret = Guid.Empty
+                    }
                 }
             });
         }
