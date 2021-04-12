@@ -126,6 +126,7 @@ namespace Instances.Application.Specflow.Tests.Demos.Steps
             var passwordResetMock = new Mock<IDemoUsersPasswordResetService>();
             var authWsMock = new Mock<IWsAuthSynchronizer>();
             var ccDataServiceMock = new Mock<ICcDataService>();
+            var clusterSelectorMock = new Mock<IClusterSelector>();
 
             return new DemoDuplicator
                 (
@@ -143,6 +144,7 @@ namespace Instances.Application.Specflow.Tests.Demos.Steps
                     rightsServiceMock.Object,
                     _demosContext.Mocks.DistributorsStore.Object,
                     new SubdomainGenerator(new SubdomainValidator(demosStore, envStoreMock.Object)),
+                    clusterSelectorMock.Object,
                     new UsersPasswordHelper(),
                     new DemoRightsFilter(rightsServiceMock.Object),
                     passwordResetMock.Object,
