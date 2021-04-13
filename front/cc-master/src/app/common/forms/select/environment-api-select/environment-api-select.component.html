@@ -1,4 +1,4 @@
-<label class="textfield palette-grey">
+<label class="textfield" [ngClass]="class">
   <lu-select [(ngModel)]="environmentsSelected"
              (ngModelChange)="safeOnChange($event)"
              class="textfield-input"

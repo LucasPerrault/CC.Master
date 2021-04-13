@@ -1,4 +1,4 @@
-import { Component, forwardRef, OnDestroy, OnInit } from '@angular/core';
+import { Component, forwardRef, Input, OnDestroy, OnInit } from '@angular/core';
 import { ControlValueAccessor, FormControl, FormGroup, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { IDateRange } from '@cc/common/date';
 import { Subject } from 'rxjs';
@@ -16,6 +16,8 @@ import { debounceTime, takeUntil } from 'rxjs/operators';
   ],
 })
 export class DateRangeSelectComponent implements ControlValueAccessor, OnInit, OnDestroy {
+  @Input() public class?: string;
+
   public onChange: (range: IDateRange) => void;
   public onTouch: () => void;
 

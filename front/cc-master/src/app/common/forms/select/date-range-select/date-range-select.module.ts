@@ -1,3 +1,4 @@
+import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { TranslateModule } from '@cc/aspects/translate';
@@ -8,11 +9,12 @@ import { DateRangeSelectComponent } from './date-range-select.component';
 
 @NgModule({
   declarations: [DateRangeSelectComponent],
-  imports: [
-    LuDateModule,
-    ReactiveFormsModule,
-    TranslateModule,
-  ],
+    imports: [
+        LuDateModule,
+        ReactiveFormsModule,
+        TranslateModule,
+        CommonModule,
+    ],
   exports: [DateRangeSelectComponent],
   providers: [
     LuNativeDateAdapter,
