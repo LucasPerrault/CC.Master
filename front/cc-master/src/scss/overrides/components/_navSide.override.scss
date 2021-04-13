@@ -1,0 +1,7 @@
+$navSide: (
+	scrollbar: (
+		bg-color: darken(#2d3368, 20%),
+	),
+);
+
+$theme: _set($theme, "components.navSide", $navSide);
