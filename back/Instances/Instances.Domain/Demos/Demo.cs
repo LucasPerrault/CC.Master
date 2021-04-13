@@ -21,6 +21,6 @@ namespace Instances.Domain.Demos
         public string Comment { get; set; }
         public bool IsTemplate { get; set; }
 
-        public Uri Href => new Uri($"{Subdomain}.{DemoDomain}");
+        public Uri Href => new Uri($"https://{Subdomain}.{DemoDomain}");
     }
 }

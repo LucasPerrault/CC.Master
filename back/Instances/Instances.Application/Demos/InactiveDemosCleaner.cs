@@ -43,7 +43,8 @@ namespace Instances.Application.Demos
         public async Task CleanAsync()
         {
             var today = _timeProvider.Today();
-            var infoTasks = ( await _demosStore.GetActiveAsync() )
+            var activeDemos = await _demosStore.GetActiveAsync();
+            var infoTasks = activeDemos
                 .Where(d => !d.IsTemplate && !d.Instance.IsProtected)
                 .Select(d => GetUpdatedCleanupInfoAsync(d, today));
 
@@ -100,8 +101,12 @@ namespace Instances.Application.Demos
         private async Task UpdateDeletionScheduleAsync(Demo demo)
         {
             var latestConnection = await _sessionLogsService.GetLatestAsync(demo.Href);
+            var latestDemoUsage = latestConnection == new DateTime(0001, 1, 1)
+                ? demo.CreatedAt
+                : latestConnection;
+
             var acceptableInactivity = GetAcceptableInactivity(demo);
-            await _demosStore.UpdateDeletionScheduleAsync(demo, latestConnection.Add(acceptableInactivity));
+            await _demosStore.UpdateDeletionScheduleAsync(demo, latestDemoUsage.Add(acceptableInactivity));
         }
     }
 }

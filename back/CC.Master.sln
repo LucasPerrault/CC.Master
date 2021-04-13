@@ -138,6 +138,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Email.Web", "Core\Email\Ema
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Email.Domain", "Core\Email\Email.Domain\Email.Domain.csproj", "{4978160A-E5A1-48D7-8724-B968D7F20AE5}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Instances.Application.Tests", "Instances\Instances.Application.Tests\Instances.Application.Tests.csproj", "{46ABD450-5656-43CB-BEDB-BCBAA3ABEA14}"
+EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tools", "Core\Tools\Tools\Tools.csproj", "{897CF018-79A8-41D8-A554-F65DF36F9B03}"
 EndProject
 Global
