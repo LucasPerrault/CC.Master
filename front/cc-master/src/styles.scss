@@ -9,6 +9,7 @@ $noCssVar: true;
 @import './scss/header';
 @import './scss/layout';
 @import './scss/shame';
+@import './scss/table';
 
 :root {
 	@include generateCSSVarsFromTheme($theme);
