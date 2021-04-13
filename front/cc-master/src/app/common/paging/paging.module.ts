@@ -3,17 +3,15 @@ import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { PagingService } from '@cc/common/paging/services/paging.service';
 
-import { InfiniteScrollViewportComponent } from './components/infinite-scroll-viewport.component';
+import { InfiniteScrollDirective } from './services/infinite-scroll.directive';
 
 @NgModule({
-  declarations: [InfiniteScrollViewportComponent],
+  declarations: [InfiniteScrollDirective],
   imports: [
     CommonModule,
     ScrollingModule,
   ],
   providers: [PagingService],
-  exports: [
-    InfiniteScrollViewportComponent,
-  ],
+  exports: [InfiniteScrollDirective],
 })
 export class PagingModule { }
