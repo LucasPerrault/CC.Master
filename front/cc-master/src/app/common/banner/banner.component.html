@@ -1,0 +1,15 @@
+<div class="banner-container">
+  <div>
+    <a class="partenaires" href="/goToPartenaires" *ngIf="principal.isLuccaUser">
+      {{ "front_banner_link_partner" | translate }}
+    </a>
+    <a class="lucca" href="/goToLucca">
+      {{ "front_banner_link_lucca" | translate }}
+    </a>
+  </div>
+  <span class="iLuccaTitle">{{ "front_banner_title" | translate }}</span>
+  <div>
+    {{ principal.name }}
+    <a (click)="logoutAsync()">{{ "front_banner_logout" | translate }}</a>
+  </div>
+</div>

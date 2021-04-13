@@ -1,0 +1,44 @@
+@import "theming.import";
+
+:host {
+  display: block;
+  font-weight: 400;
+  font-size: 1rem;
+  padding: .4rem 1rem;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  height: _theme("commons.banner-height");
+  color: _color("grey", "text");
+  background: _color("grey", "900");
+}
+
+.banner-container {
+  display: flex;
+  justify-content: space-between;
+}
+.banner-container a {
+  text-decoration: none;
+  color: _color("grey", "100");
+  margin: 0 .5rem 0 1rem;
+
+  &:hover {
+    color: _color("grey", "text");
+    text-decoration: underline;
+  }
+}
+
+.iLuccaTitle {
+  height: 20px;
+  line-height: 20px;
+  text-align: center;
+  text-transform: uppercase;
+  color: _color("grey", "darker");
+  padding: 0 25px;
+  font-size: 13px;
+  font-weight: 600;
+  background: _color("grey", "50");
+  border-radius: 4px;
+}
