@@ -85,6 +85,7 @@ node(label: CI.getSelectedNode(script: this)) {
 			}
 			
 			cleanBack(slnFilepath: slnFilepath)
+			lokalise()
 
 			if(isPr || isMainBranch) {
 				sonar(
