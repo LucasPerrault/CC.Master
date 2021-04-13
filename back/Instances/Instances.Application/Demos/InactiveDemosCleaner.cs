@@ -7,11 +7,13 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Tools;
 
 namespace Instances.Application.Demos
 {
     public class InactiveDemosCleaner
     {
+        private readonly ITimeProvider _timeProvider;
         private readonly IInstanceSessionLogsService _sessionLogsService;
         private readonly IDemosStore _demosStore;
         private readonly ICcDataService _ccDataService;
@@ -24,12 +26,14 @@ namespace Instances.Application.Demos
 
         public InactiveDemosCleaner
         (
+            ITimeProvider timeProvider,
             IInstanceSessionLogsService sessionLogsService,
             IDemosStore demosStore,
             ICcDataService ccDataService,
             IEmailService emailService
         )
         {
+            _timeProvider = timeProvider;
             _sessionLogsService = sessionLogsService;
             _demosStore = demosStore;
             _ccDataService = ccDataService;
@@ -38,9 +42,10 @@ namespace Instances.Application.Demos
 
         public async Task CleanAsync()
         {
+            var today = _timeProvider.Today();
             var infoTasks = ( await _demosStore.GetActiveAsync() )
                 .Where(d => !d.IsTemplate && !d.Instance.IsProtected)
-                .Select(d => GetUpdatedCleanupInfoAsync(d));
+                .Select(d => GetUpdatedCleanupInfoAsync(d, today));
 
             var infos = await Task.WhenAll(infoTasks);
 
@@ -79,12 +84,12 @@ namespace Instances.Application.Demos
             );
         }
 
-        private async Task<DemoCleanupInfo> GetUpdatedCleanupInfoAsync(Demo demo)
+        private async Task<DemoCleanupInfo> GetUpdatedCleanupInfoAsync(Demo demo, DateTime demoDeletionSchedule)
         {
             try
             {
                 await UpdateDeletionScheduleAsync(demo);
-                return new DemoCleanupInfo(demo);
+                return new DemoCleanupInfo(demo, demoDeletionSchedule);
             }
             catch (Exception e)
             {

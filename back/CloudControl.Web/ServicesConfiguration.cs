@@ -1,4 +1,4 @@
-using Authentication.Web;
+﻿using Authentication.Web;
 using CloudControl.Web.Configuration;
 using CloudControl.Web.Exceptions;
 using CloudControl.Web.Spa;
@@ -35,6 +35,7 @@ using Lucca.Core.Api.Queryable.EntityFrameworkCore;
 using Instances.Web;
 using Instances.Infra.Storage;
 using Remote.Infra;
+using Tools.Web;
 
 namespace CloudControl.Web
 {
@@ -52,6 +53,7 @@ namespace CloudControl.Web
         public void ConfigureServices(IServiceCollection services)
         {
             var configuration = ConfigureConfiguration(services);
+            ToolsConfigurer.ConfigureTools(services);
             ConfigureHttpContext(services);
             ConfigureHealthCheck(services, configuration);
             ConfigureApi(services);

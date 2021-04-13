@@ -20,14 +20,14 @@ namespace Instances.Domain.Demos
 
         public DateTime DeletionScheduledDate => Demo.DeletionScheduledOn;
 
-        private static DemoState GetDemoState(Demo demo)
+        private static DemoState GetDemoState(Demo demo, DateTime today)
         {
-            if (demo.DeletionScheduledOn <= DateTime.Today)
+            if (demo.DeletionScheduledOn <= today)
             {
                 return DemoState.DeletionScheduledToday;
             }
 
-            if (demo.DeletionScheduledOn < DateTime.Today.Add(ReportAheadDuration))
+            if (demo.DeletionScheduledOn < today.Add(ReportAheadDuration))
             {
                 return DemoState.DeletionScheduledSoon;
             }
@@ -35,10 +35,10 @@ namespace Instances.Domain.Demos
             return DemoState.AliveAndWell;
         }
 
-        public DemoCleanupInfo(Demo demo)
+        public DemoCleanupInfo(Demo demo, DateTime today)
         {
             Demo = demo;
-            State = GetDemoState(demo);
+            State = GetDemoState(demo, today);
         }
 
         public DemoCleanupInfo(Demo demo, Exception exception, DemoState errorState)
