@@ -5,6 +5,7 @@ using Lucca.Core.Shared.Domain.Expressions;
 using Microsoft.EntityFrameworkCore;
 using Storage.Infra.Stores;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
@@ -57,6 +58,12 @@ namespace Instances.Infra.Storage.Stores
             await _dbContext.Set<Demo>().AddAsync(demo);
             await _dbContext.SaveChangesAsync();
             return demo;
+        }
+
+        public Task<Dictionary<string, int>> GetNumberOfActiveDemosByCluster()
+        {
+            // On ne passe pas par GetActiveDemos pour bénéficier (on espère) du group by en sql
+            return Demos.Where(d => d.IsActive).GroupBy(d => d.Instance.Cluster).ToDictionaryAsync(g => g.Key, g => g.Count());
         }
 
         private IQueryable<Demo> Demos => _dbContext.Set<Demo>().Include(d => d.Instance);

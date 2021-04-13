@@ -32,6 +32,7 @@ namespace Instances.Application.Demos
         private readonly IRightsService _rightsService;
         private readonly IDistributorsStore _distributorsStore;
         private readonly ISubdomainGenerator _subdomainGenerator;
+        private readonly IClusterSelector _clusterSelector;
         private readonly IUsersPasswordHelper _passwordHelper;
         private readonly IDemoRightsFilter _demoRightsFilter;
         private readonly IDemoUsersPasswordResetService _usersPasswordResetService;
@@ -46,6 +47,7 @@ namespace Instances.Application.Demos
             IRightsService rightsService,
             IDistributorsStore distributorsStore,
             ISubdomainGenerator subdomainGenerator,
+            IClusterSelector clusterSelector,
             IUsersPasswordHelper passwordHelper,
             IDemoRightsFilter demoRightsFilter,
             IDemoUsersPasswordResetService usersPasswordResetService,
@@ -59,6 +61,7 @@ namespace Instances.Application.Demos
             _rightsService = rightsService;
             _distributorsStore = distributorsStore;
             _subdomainGenerator = subdomainGenerator;
+            _clusterSelector = clusterSelector;
             _passwordHelper = passwordHelper;
             _demoRightsFilter = demoRightsFilter;
             _usersPasswordResetService = usersPasswordResetService;
@@ -86,7 +89,7 @@ namespace Instances.Application.Demos
                 Type = InstanceDuplicationType.Demos,
                 DistributorId = request.DistributorId,
                 SourceCluster = demoToDuplicate.Instance.Cluster,
-                TargetCluster = GetTargetCluster(),
+                TargetCluster = await _clusterSelector.GetFillingCluster(),
                 SourceSubdomain = demoToDuplicate.Subdomain,
                 TargetSubdomain = targetSubdomain
             };
@@ -122,9 +125,7 @@ namespace Instances.Application.Demos
         {
             var duplication = _duplicationsStore.GetByInstanceDuplicationId(instanceDuplicationId);
 
-            var clusterTarget = GetTargetCluster();
-
-            var instance = await _instancesStore.CreateForDemoAsync(duplication.Password, clusterTarget);
+            var instance = await _instancesStore.CreateForDemoAsync(duplication.Password, duplication.InstanceDuplication.TargetCluster);
             var demo = CreateDemo(duplication, instance);
             await _demosStore.CreateAsync(demo);
             await _usersPasswordResetService.ResetPasswordAsync(demo, duplication.Password);
@@ -135,11 +136,6 @@ namespace Instances.Application.Demos
                 ? DemoDuplicationProgress.FinishedWithSuccess
                 : DemoDuplicationProgress.FinishedWithFailure;
             await _duplicationsStore.UpdateProgressAsync(duplication, progress);
-        }
-
-        private string GetTargetCluster()
-        {
-            return "not-an-actual-demo-cluster";
         }
 
         private Demo CreateDemo(DemoDuplication duplication, Instance instance)
