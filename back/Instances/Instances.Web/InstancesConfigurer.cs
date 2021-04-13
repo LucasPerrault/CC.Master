@@ -1,4 +1,5 @@
 using Instances.Application.Demos;
+using Instances.Application.Demos.Emails;
 using Instances.Application.Instances;
 using Instances.Domain.Demos;
 using Instances.Domain.Instances;
@@ -14,6 +15,7 @@ using Lucca.Core.Api.Abstractions;
 using Lucca.Core.Api.Web;
 using Microsoft.Extensions.DependencyInjection;
 using Remote.Infra.Extensions;
+using Resources.Translations;
 using System;
 
 namespace Instances.Web
@@ -53,6 +55,10 @@ namespace Instances.Web
             services.AddScoped<DemosRepository>();
             services.AddScoped<ISubdomainGenerator, SubdomainGenerator>();
             services.AddScoped<ISubdomainValidator, SubdomainValidator>();
+
+            services.AddScoped<IDemoEmails, DemoEmails>();
+
+            services.AddScoped<Translations>();
 
             services.AddScoped<IDemoUsersPasswordResetService, DemoUsersPasswordResetService>();
 

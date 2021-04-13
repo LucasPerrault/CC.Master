@@ -18,6 +18,7 @@ namespace Instances.Application.Demos
         private readonly IDemosStore _demosStore;
         private readonly ICcDataService _ccDataService;
         private readonly IEmailService _emailService;
+        private readonly IDemoEmails _demoEmails;
 
         public static readonly TimeSpan StandardAcceptableInactivity = TimeSpan.FromDays(62);
         public static readonly TimeSpan HubspotAcceptableInactivity = TimeSpan.FromDays(31);
@@ -30,7 +31,8 @@ namespace Instances.Application.Demos
             IInstanceSessionLogsService sessionLogsService,
             IDemosStore demosStore,
             ICcDataService ccDataService,
-            IEmailService emailService
+            IEmailService emailService,
+            IDemoEmails demoEmails
         )
         {
             _timeProvider = timeProvider;
@@ -38,6 +40,7 @@ namespace Instances.Application.Demos
             _demosStore = demosStore;
             _ccDataService = ccDataService;
             _emailService = emailService;
+            _demoEmails = demoEmails;
         }
 
         public async Task CleanAsync()
@@ -81,7 +84,7 @@ namespace Instances.Application.Demos
             (
                 new SenderForm { DisplayName = "Suppression des démos" },
                 RecipientForm.FromContact(EmailContact.CloudControl),
-                DemoEmails.IntentEmail(DateTime.Today, info).Content
+                _demoEmails.GetIntentEmail(DateTime.Today, info).Content
             );
         }
 

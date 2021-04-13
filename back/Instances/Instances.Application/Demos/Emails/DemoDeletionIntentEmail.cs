@@ -1,15 +1,28 @@
 ﻿using Email.Domain;
 using Instances.Domain.Demos;
 using Lucca.Emails.Client.Contracts.Fragments;
+using Resources.Translations;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace Instances.Application.Demos.Emails
 {
-    public static class DemoEmails
+    public interface IDemoEmails
     {
-        public static EmailContentBuilder IntentEmail(DateTime deletionDate, IEnumerable<DemoCleanupInfo> infos)
+        EmailContentBuilder GetIntentEmail(DateTime deletionDate, IEnumerable<DemoCleanupInfo> infos);
+    }
+
+    public class DemoEmails : IDemoEmails
+    {
+        private readonly Translations _translations;
+
+        public DemoEmails(Translations translations)
+        {
+            _translations = translations;
+        }
+
+        public EmailContentBuilder GetIntentEmail(DateTime deletionDate, IEnumerable<DemoCleanupInfo> infos)
         {
             var infoPerState = infos.GroupBy(i => i.State).ToDictionary(i => i.Key, i => i.ToList());
 
@@ -17,37 +30,37 @@ namespace Instances.Application.Demos.Emails
                 ? infoPerState[DemoState.AliveAndWell].Count
                 : 0;
 
-            var builder = new EmailContentBuilder($"Nettoyage des démos - {deletionDate:yyyy-MM-dd}")
-                .Add(new Paragraph("Un nettoyage automatique des démos vient d'être lancé."))
-                .Add(new Paragraph($"{aliveAndWellCount} démos sont actives en ce moment."));
+            var builder = new EmailContentBuilder(_translations.EmailsDemoCleanupIntentTitle($"{deletionDate:yyyy-MM-dd}"))
+                .Add(new Paragraph(_translations.EmailsDemoCleanupIntentContext()))
+                .Add(new Paragraph(_translations.EmailsDemoCleanupIntentAliveAndWellCount(aliveAndWellCount)));
 
             if (infoPerState.ContainsKey(DemoState.ErrorAtStateEvaluation))
             {
                 var unknownState = infoPerState[DemoState.ErrorAtStateEvaluation];
-                builder.Add(new Paragraph($"{unknownState.Count} démos dont l'égibilité à la suppression n'a pu être déterminée"));
+                builder.Add(new Paragraph(_translations.EmailsDemoCleanupIntentUndeterminedCount(unknownState.Count)));
                 builder.AddHtmlList(unknownState.Select(d => d.Demo.Subdomain));
             }
 
             if (infoPerState.ContainsKey(DemoState.DeletionScheduledToday))
             {
                 var deletions = infoPerState[DemoState.DeletionScheduledToday];
-                builder.Add(new Paragraph($"{deletions.Count} suppressions programmées"));
+                builder.Add(new Paragraph(_translations.EmailsDemoCleanupIntentUndeterminedCount(deletions.Count)));
                 builder.AddHtmlList(deletions.Select(d => d.Demo.Subdomain));
             }
             else
             {
-                builder.Add(new Paragraph("Aucune suppression programmée."));
+                builder.Add(new Paragraph(_translations.EmailsDemoCleanupIntentNoneTriggered()));
             }
 
             if (infoPerState.ContainsKey(DemoState.DeletionScheduledSoon))
             {
                 var soonDeletions = infoPerState[DemoState.DeletionScheduledSoon];
-                builder.Add(new Paragraph($"{soonDeletions.Count} suppressions à venir"));
+                builder.Add(new Paragraph(_translations.EmailsDemoCleanupIntentToBeScheduledCount(soonDeletions.Count)));
                 builder.AddHtmlList(soonDeletions.Select(d => $"{d.Demo.Subdomain} {d.DeletionScheduledDate.ToLongDateString()}"));
             }
             else
             {
-                builder.Add(new Paragraph("Aucune suppression à programmer dans les jours à venir."));
+                builder.Add(new Paragraph(_translations.EmailsDemoCleanupIntentNoneToBeScheduled()));
             }
 
             return builder;

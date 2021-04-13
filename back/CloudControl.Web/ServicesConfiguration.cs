@@ -34,7 +34,11 @@ using Salesforce.Web;
 using Lucca.Core.Api.Queryable.EntityFrameworkCore;
 using Instances.Web;
 using Instances.Infra.Storage;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Localization;
 using Remote.Infra;
+using System.Collections.Generic;
+using System.Globalization;
 using Tools.Web;
 
 namespace CloudControl.Web
@@ -54,6 +58,7 @@ namespace CloudControl.Web
         {
             var configuration = ConfigureConfiguration(services);
             ToolsConfigurer.ConfigureTools(services);
+            ConfigureCulture(services);
             ConfigureHttpContext(services);
             ConfigureHealthCheck(services, configuration);
             ConfigureApi(services);
@@ -71,6 +76,33 @@ namespace CloudControl.Web
             ConfigureBilling(services, configuration);
             ConfigureInstances(services, configuration);
             ConfigureEmails(services, configuration);
+        }
+
+        private void ConfigureCulture(IServiceCollection services)
+        {
+            CultureInfo.DefaultThreadCurrentCulture = CultureInfo.GetCultureInfo("fr");
+
+            services.AddLocalization();
+
+            services.Configure<RequestLocalizationOptions>(opts =>
+            {
+                var supportedCultures = new List<CultureInfo>
+                {
+                    new CultureInfo("en"),
+                    new CultureInfo("fr"),
+                    new CultureInfo("es"),
+                    new CultureInfo("de"),
+                    new CultureInfo("it"),
+                    new CultureInfo("nl"),
+                    new CultureInfo("nl-BE"),
+                    new CultureInfo("pt"),
+                };
+                opts.DefaultRequestCulture = new RequestCulture("fr");
+                // Formatting numbers, dates, etc.
+                opts.SupportedCultures = supportedCultures;
+                // UI strings that we have localized.
+                opts.SupportedUICultures = supportedCultures;
+            });
         }
 
         public virtual AppConfiguration ConfigureConfiguration(IServiceCollection services)
