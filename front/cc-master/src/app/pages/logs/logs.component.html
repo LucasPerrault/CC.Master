@@ -1,8 +1,14 @@
-<cc-logs-filter [ngModel]="filters$ | async" (ngModelChange)="updateFiltersAsync($event)"></cc-logs-filter>
-<cc-logs-list class="u-paddingSmall"
-              (updateSort)="updateSort($event)"
-              (showMore)="showMore()"
-              [logs]="logs$ | async"
-              [sortParams]="sortParams$ | async"
-              [state]="logsState$ | async">
-</cc-logs-list>
+<div class="page mod-fullWidth" ccInfiniteScroll (bottomReached)="showMore()">
+  <header class="page-header">
+    <h1>Logs</h1>
+  </header>
+
+  <cc-logs-filter class="header" [ngModel]="filters$ | async" (ngModelChange)="updateFiltersAsync($event)">
+  </cc-logs-filter>
+
+  <cc-logs-list (updateSort)="updateSort($event)"
+                [logs]="logs$ | async"
+                [sortParams]="sortParams$ | async"
+                [state]="logsState$ | async">
+  </cc-logs-list>
+</div>

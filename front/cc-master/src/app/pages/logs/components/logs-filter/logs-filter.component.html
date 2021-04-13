@@ -1,31 +1,32 @@
-<div class="u-paddingSmall u-displayInlineFlex u-alignItemsFlexCenter u-flexWrapWrap u-marginTopSmall">
-  <cc-user-api-select class="u-marginRightSmaller u-marginBottomSmaller"
-                      [(ngModel)]="logsFilter.users"
-                      (ngModelChange)="update()">
-  </cc-user-api-select>
-
-  <cc-environment-action-select class="u-marginRightSmaller u-marginBottomSmaller"
-                                [(ngModel)]="logsFilter.actions"
-                                (ngModelChange)="update()">
-  </cc-environment-action-select>
-
-  <cc-environment-domain-select class="u-marginRightSmaller u-marginBottomSmaller"
-                                [(ngModel)]="logsFilter.domains"
-                                (ngModelChange)="update()">
-  </cc-environment-domain-select>
-
-  <cc-environment-api-select class="u-marginRightSmaller u-marginBottomSmaller"
-                             [(ngModel)]="logsFilter.environments"
-                             (ngModelChange)="update()">
-  </cc-environment-api-select>
-
-  <cc-date-range-select class="u-marginRightSmaller u-marginBottomSmaller"
-                        [(ngModel)]="logsFilter.createdOn"
-                        (ngModelChange)="update()">
-  </cc-date-range-select>
-
-  <cc-anonymization-button-group class="u-marginRightSmaller u-marginBottomSmaller"
-                                 [(ngModel)]="logsFilter.isAnonymized"
+<div class="u-displayFlex u-flexDirectionColumn">
+  <cc-anonymization-button-group [(ngModel)]="logsFilter.isAnonymized"
                                  (ngModelChange)="update()">
   </cc-anonymization-button-group>
+
+  <div class="u-displayFlex u-flexWrapWrap u-paddingTopSmaller">
+    <cc-user-api-select class="palette-grey mod-outlined mod-inline"
+                        [(ngModel)]="logsFilter.users"
+                        (ngModelChange)="update()">
+    </cc-user-api-select>
+
+    <cc-environment-action-select class="palette-grey mod-outlined mod-inline"
+                                  [(ngModel)]="logsFilter.actions"
+                                  (ngModelChange)="update()">
+    </cc-environment-action-select>
+
+    <cc-environment-domain-select class="palette-grey mod-outlined mod-inline"
+                                  [(ngModel)]="logsFilter.domains"
+                                  (ngModelChange)="update()">
+    </cc-environment-domain-select>
+
+    <cc-environment-api-select class="palette-grey mod-outlined mod-inline"
+                               [(ngModel)]="logsFilter.environments"
+                               (ngModelChange)="update()">
+    </cc-environment-api-select>
+
+    <cc-date-range-select class="palette-grey mod-outlined mod-inline"
+                          [(ngModel)]="logsFilter.createdOn"
+                          (ngModelChange)="update()">
+    </cc-date-range-select>
+  </div>
 </div>
