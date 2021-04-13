@@ -1,3 +1,9 @@
 .radioButtons-item-label {
     background-color: _color('white');
 }
+
+.textfield.mod-outlined {
+  & .lu-select-placeholder {
+    color: _color('grey', 800)
+  }
+}
