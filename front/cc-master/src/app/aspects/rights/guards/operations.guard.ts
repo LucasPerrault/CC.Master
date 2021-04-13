@@ -1,22 +1,24 @@
 import { Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot, UrlTree } from '@angular/router';
-import { Operation } from '@cc/aspects/rights/operation.enum';
+import { Operation } from '@cc/aspects/rights/enums/operation.enum';
+import { OperationRestrictionMode } from '@cc/aspects/rights/enums/operation-restriction-mode.enum';
 import { RightsService } from '@cc/aspects/rights/rights.service';
 import { forbiddenUrl } from '@cc/common/error-redirections';
-
 
 @Injectable()
 export class OperationsGuard implements CanActivate {
 
-    public constructor(private rightsService: RightsService, private router: Router) { }
+  public constructor(private rightsService: RightsService, private router: Router) {
+  }
 
-    canActivate(next: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean | UrlTree {
-        const operations = next.data.operations as Operation[];
+  canActivate(next: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean | UrlTree {
+    const operations = next.data.operations as Operation[] | [];
+    const mode = next?.data?.mode as OperationRestrictionMode;
 
-        return this.hasOperations(operations) || this.router.parseUrl(forbiddenUrl);
-    }
+    return this.hasOperations(operations, mode) || this.router.parseUrl(forbiddenUrl);
+  }
 
-    public hasOperations(operations: Operation[]): boolean {
-        return this.rightsService.hasOperations(operations);
-    }
+  public hasOperations(operations: Operation[], mode: OperationRestrictionMode): boolean {
+    return this.rightsService.hasOperationsByRestrictionMode(operations, mode);
+  }
 }
