@@ -1,4 +1,4 @@
-import {ChangeDetectorRef, Component, forwardRef, Input} from '@angular/core';
+import { ChangeDetectorRef, Component, forwardRef, Input } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { IUser } from '@cc/domain/users';
 import { ALuApiService } from '@lucca-front/ng/api';
