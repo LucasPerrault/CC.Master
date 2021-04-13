@@ -89,6 +89,11 @@ namespace Instances.Web
                         .WithAuthScheme("CloudControl")
                         .AuthenticateAsWebService(configuration.CcData.OutboundToken);
                 });
+
+            services.AddHttpClient<IInstanceSessionLogsService, InstanceSessionLogsService>(c =>
+            {
+                c.WithUserAgent(nameof(InstanceSessionLogsService));
+            });
         }
 
         public static LuccaApiBuilder ConfigureLuccaApiForInstances(this LuccaApiBuilder luccaApiBuilder)

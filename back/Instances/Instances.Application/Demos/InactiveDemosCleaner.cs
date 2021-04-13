@@ -1,18 +1,18 @@
 ﻿using Email.Domain;
 using Instances.Application.Demos.Emails;
 using Instances.Domain.Demos;
+using Instances.Domain.Instances;
 using Instances.Domain.Shared;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace Instances.Application.Demos
 {
     public class InactiveDemosCleaner
     {
-        private readonly HttpClient _httpClient;
+        private readonly IInstanceSessionLogsService _sessionLogsService;
         private readonly IDemosStore _demosStore;
         private readonly ICcDataService _ccDataService;
         private readonly IEmailService _emailService;
@@ -24,13 +24,13 @@ namespace Instances.Application.Demos
 
         public InactiveDemosCleaner
         (
-            HttpClient httpClient,
+            IInstanceSessionLogsService sessionLogsService,
             IDemosStore demosStore,
             ICcDataService ccDataService,
             IEmailService emailService
         )
         {
-            _httpClient = httpClient;
+            _sessionLogsService = sessionLogsService;
             _demosStore = demosStore;
             _ccDataService = ccDataService;
             _emailService = emailService;
@@ -79,13 +79,6 @@ namespace Instances.Application.Demos
             );
         }
 
-        private async Task<DateTime> GetLatestConnectionAsync(Demo demo)
-        {
-            var uri = new Uri(demo.Href, "/api/v3/sessionlogs/latest");
-            var dateTimeAsString = await _httpClient.GetStringAsync(uri);
-            return DateTime.Parse(dateTimeAsString);
-        }
-
         private async Task<DemoCleanupInfo> GetUpdatedCleanupInfoAsync(Demo demo)
         {
             try
@@ -101,7 +94,7 @@ namespace Instances.Application.Demos
 
         private async Task UpdateDeletionScheduleAsync(Demo demo)
         {
-            var latestConnection = await GetLatestConnectionAsync(demo);
+            var latestConnection = await _sessionLogsService.GetLatestAsync(demo.Href);
             var acceptableInactivity = GetAcceptableInactivity(demo);
             await _demosStore.UpdateDeletionScheduleAsync(demo, latestConnection.Add(acceptableInactivity));
         }
