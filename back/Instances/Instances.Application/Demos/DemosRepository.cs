@@ -50,6 +50,11 @@ namespace Instances.Application.Demos
                 throw new NotFoundException();
             }
 
+            if (demo.IsTemplate)
+            {
+                throw new ForbiddenException("Template demos cannot be deleted");
+            }
+
             if (demo.Instance.IsProtected)
             {
                 throw new BadRequestException($"Demo {demo.Id} is protected and cannot be deleted");

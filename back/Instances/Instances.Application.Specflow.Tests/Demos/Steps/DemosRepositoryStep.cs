@@ -7,6 +7,7 @@ using Instances.Infra.Storage.Stores;
 using Moq;
 using Rights.Domain;
 using Rights.Domain.Abstractions;
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 using TechTalk.SpecFlow;
@@ -25,6 +26,29 @@ namespace Instances.Application.Specflow.Tests.Demos.Steps
 
         }
 
+        [When(@"I delete demo '(.*)'")]
+        public async Task WhenIDeleteDemoAsync(string subdomain)
+        {
+
+            var id = _demosContext.DbContext.Set<Demo>().Single(d => d.Subdomain == subdomain).Id;
+            var demosRepository = GetNewRepository();
+
+            try
+            {
+                await demosRepository.DeleteAsync(id);
+            }
+            catch (Exception e)
+            {
+                _demosContext.ExceptionResult = e;
+            }
+        }
+
+        [StepArgumentTransformation(@"'(regular|template)' demos")]
+        public bool IsTemplate(string value)
+        {
+            return value == "template";
+        }
+
         [When("I get the list of demos")]
         public async Task WhenIGetDemos()
         {
@@ -33,11 +57,7 @@ namespace Instances.Application.Specflow.Tests.Demos.Steps
                 IsActive = true,
                 Page = null,
             };
-            var demosStore = new DemosStore(_demosContext.DbContext, new DummyQueryPager());
-            var rightsServiceMock = new Mock<IRightsService>();
-            var instanceStoreMock = new Mock<IInstancesStore>();
-            rightsServiceMock.Setup(rs => rs.GetUserOperationHighestScopeAsync(It.IsAny<Operation>())).ReturnsAsync((Operation op) => _demosContext.OperationsWithScope[op]);
-            var demosRepository = new DemosRepository(_demosContext.Principal, demosStore, instanceStoreMock.Object, new DemoRightsFilter(rightsServiceMock.Object));
+            var demosRepository = GetNewRepository();
             _demosContext.DemosListResult = (await demosRepository.GetDemosAsync(demoListQuery)).Items.ToList();
         }
 
@@ -79,12 +99,6 @@ namespace Instances.Application.Specflow.Tests.Demos.Steps
             );
         }
 
-        [StepArgumentTransformation(@"'(regular|template)' demos")]
-        public bool IsTemplate(string value)
-        {
-            return value == "template";
-        }
-
         [Then(@"instance duplication should exist for subdomain '(.*)'")]
         public void ThenInstanceDuplicationShouldExistForSubdomainAsync(string subdomain)
         {
@@ -94,6 +108,15 @@ namespace Instances.Application.Specflow.Tests.Demos.Steps
                         .Single()
                         .TargetSubdomain
                 );
+        }
+
+        private DemosRepository GetNewRepository()
+        {
+            var demosStore = new DemosStore(_demosContext.DbContext, new DummyQueryPager());
+            var rightsServiceMock = new Mock<IRightsService>();
+            var instanceStoreMock = new Mock<IInstancesStore>();
+            rightsServiceMock.Setup(rs => rs.GetUserOperationHighestScopeAsync(It.IsAny<Operation>())).ReturnsAsync((Operation op) => _demosContext.OperationsWithScope[op]);
+            return new DemosRepository(_demosContext.Principal, demosStore, instanceStoreMock.Object, new DemoRightsFilter(rightsServiceMock.Object));
         }
     }
 }
