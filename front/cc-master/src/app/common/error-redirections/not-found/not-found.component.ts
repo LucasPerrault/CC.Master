@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
-import { NoNavComponent } from '@cc/common/routing';
+
+import { NoNavComponent } from '../no-nav/no-nav.component';
 
 @Component({
     selector: 'cc-not-found',

@@ -1,4 +1,4 @@
 <div class="main-content mod-withoutScroll">
-  <router-outlet></router-outlet>
+  <router-outlet (activate)="updateNavigationVisibility($event)"></router-outlet>
 </div>
 <cc-toasts></cc-toasts>
