@@ -1,0 +1,10 @@
+{
+  "config": [
+    {
+      "generator": "ngx",
+      "local_directory": "Instances.Domain/Resources/Translations",
+      "remote_directory": "back/Instances",
+      "project_id": "355064325fdcc500c72789.45020379"
+    }
+  ]
+}
