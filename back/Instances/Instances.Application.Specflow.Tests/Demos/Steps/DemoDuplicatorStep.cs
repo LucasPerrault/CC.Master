@@ -126,16 +126,25 @@ namespace Instances.Application.Specflow.Tests.Demos.Steps
             var passwordResetMock = new Mock<IDemoUsersPasswordResetService>();
             var authWsMock = new Mock<IWsAuthSynchronizer>();
             var ccDataServiceMock = new Mock<ICcDataService>();
+            var clusterSelectorMock = new Mock<IClusterSelector>();
 
             return new DemoDuplicator
                 (
-                    new InstancesDuplicator(new SqlScriptPicker(), ccDataServiceMock.Object),
+                    new InstancesDuplicator(new SqlScriptPicker(
+                        new SqlScriptPickerConfiguration
+                        {
+                            JenkinsBaseUri = new Uri("http://localhost"),
+                            MonolithJobPath = "ilucca",
+                        }),
+                        ccDataServiceMock.Object
+                    ),
                     demosStore,
                     demoDuplicationsStore,
                     _demosContext.Mocks.InstancesStore.Object,
                     rightsServiceMock.Object,
                     _demosContext.Mocks.DistributorsStore.Object,
                     new SubdomainGenerator(new SubdomainValidator(demosStore, envStoreMock.Object)),
+                    clusterSelectorMock.Object,
                     new UsersPasswordHelper(),
                     new DemoRightsFilter(rightsServiceMock.Object),
                     passwordResetMock.Object,

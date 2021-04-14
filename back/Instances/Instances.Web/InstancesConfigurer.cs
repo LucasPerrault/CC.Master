@@ -36,6 +36,8 @@ namespace Instances.Web
             public CcDataConfiguration CcData { get; set; }
             public WsAuthConfiguration WsAuth { get; set; }
             public HubspotConfiguration Hubspot { get; set; }
+            public SqlScriptPickerConfiguration SqlScriptPicker { get; set; }
+            public ClusterSelectorConfiguration DemoClusterSelection { get; set; }
         }
 
         public static void ConfigureServices(IServiceCollection services, InstancesConfiguration configuration)
@@ -55,6 +57,7 @@ namespace Instances.Web
             services.AddScoped<DemosRepository>();
             services.AddScoped<ISubdomainGenerator, SubdomainGenerator>();
             services.AddScoped<ISubdomainValidator, SubdomainValidator>();
+            services.AddScoped<IClusterSelector, ClusterSelector>();
 
             services.AddScoped<IDemoEmails, DemoEmails>();
 
