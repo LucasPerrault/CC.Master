@@ -1,11 +1,15 @@
 using Authentication.Web;
+using Billing.Contracts.Infra.Storage;
+using Billing.Web;
 using CloudControl.Web.Configuration;
 using CloudControl.Web.Exceptions;
 using CloudControl.Web.Spa;
 using Distributors.Infra.Storage;
 using Distributors.Web;
-using IpFilter.Web;
+using Environments.Infra.Storage;
+using Environments.Web;
 using IpFilter.Infra.Storage;
+using IpFilter.Web;
 using Lucca.Core.Api.Abstractions;
 using Lucca.Core.Api.Web;
 using Lucca.Core.AspNetCore.Healthz;
@@ -21,6 +25,7 @@ using Microsoft.Extensions.Hosting;
 using Newtonsoft.Json;
 using Proxy.Web;
 using Rights.Web;
+using Salesforce.Web;
 using Storage.Infra.Context;
 using Storage.Web;
 using System;
@@ -30,6 +35,8 @@ using Cache.Web;
 using Environments.Infra.Storage;
 using Environments.Web;
 using Salesforce.Web;
+using Users.Infra.Storage;
+using Users.Web;
 
 namespace CloudControl.Web
 {
@@ -57,7 +64,7 @@ namespace CloudControl.Web
             ConfigureIpFilter(services);
             ConfigureTenancy(services);
             ConfigureStorage(services);
-            ConfigureSharedDomains(services);
+            ConfigureSharedDomains(services, configuration);
             ConfigureAuthentication(services, configuration);
             ConfigureRights(services, configuration);
             ConfigureEnvironments(services, configuration);
@@ -140,11 +147,13 @@ namespace CloudControl.Web
             services.ConfigureContext<DistributorsDbContext>(_hostingEnvironment);
             services.ConfigureContext<IpFilterDbContext>(_hostingEnvironment);
             services.ConfigureContext<ContractsDbContext>(_hostingEnvironment);
+            services.ConfigureContext<UsersDbContext>(_hostingEnvironment);
         }
 
-        public virtual void ConfigureSharedDomains(IServiceCollection services)
+        public virtual void ConfigureSharedDomains(IServiceCollection services, AppConfiguration configuration)
         {
             DistributorsConfigurer.ConfigureServices(services);
+            UsersConfigurer.ConfigureServices(services, configuration.Users);
         }
 
         public virtual void ConfigureAuthentication(IServiceCollection services, AppConfiguration configuration)

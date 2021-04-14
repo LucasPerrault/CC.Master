@@ -42,12 +42,12 @@ namespace Authentication.Web.Middlewares
             cookieService.SetAuthTokenCookie(httpContext, token);
 
             var redirectionUri = UriHelper.BuildAbsolute
-            (
-                "https",
-                httpContext.Request.Host,
-                httpContext.Request.PathBase,
-                httpContext.Request.Path
-            );
+                (
+                    "https",
+                    httpContext.Request.Host,
+                    httpContext.Request.PathBase,
+                    httpContext.Request.Path
+                );
             httpContext.Response.Redirect(redirectionUri, false);
         }
     }

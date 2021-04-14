@@ -21,9 +21,9 @@ namespace Billing.Contracts.Infra.Storage.Stores
         {
             return await Set()
                 .Where(contract =>
-                    contract.ClientExternalId == clientExternalId
-                    && contract.EnvironmentSubdomain == subdomain
-                )
+                        contract.ClientExternalId == clientExternalId
+                        && contract.EnvironmentSubdomain == subdomain
+                    )
                 .ToListAsync();
         }
 

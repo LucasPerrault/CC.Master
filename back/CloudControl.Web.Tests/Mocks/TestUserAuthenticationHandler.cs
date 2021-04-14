@@ -4,6 +4,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
+using Users.Domain;
 
 namespace CloudControl.Web.Tests.Mocks
 {

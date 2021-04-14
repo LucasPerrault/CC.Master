@@ -19,20 +19,19 @@ namespace Authentication.Web
         {
             services.AddSingleton(config);
             services.AddTransient
-            (
-                provider => provider.GetService<IHttpContextAccessor>().HttpContext.User
-            );
+                (
+                    provider => provider.GetService<IHttpContextAccessor>().HttpContext.User
+                );
             services.AddLuccaAuthentication<PrincipalStore>();
 
             ConfigureCustomTokensReaders(services);
 
+            services.AddSingleton(config);
             services.AddSingleton<AuthRedirectionRemoteService>();
+            services.AddSingleton<AuthenticationCache>();
 
-            services.AddHttpClient<UserAuthenticationRemoteService>((provider, client) =>
-            {
-                client.WithUserAgent(nameof(UserAuthenticationRemoteService))
-                    .WithBaseAddress(config.ServerUri, config.UsersEndpointPath);
-            });
+
+            services.AddScoped<UserAuthenticationRemoteService>();
 
             services.AddHttpClient<ApiKeyAuthenticationRemoteService>(client =>
             {

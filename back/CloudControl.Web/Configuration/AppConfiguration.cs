@@ -4,6 +4,7 @@ using Cache.Web;
 using Core.Proxy.Infra.Configuration;
 using Rights.Infra.Configuration;
 using Salesforce.Infra.Configurations;
+using Users.Web;
 
 namespace CloudControl.Web.Configuration
 {
@@ -18,5 +19,13 @@ namespace CloudControl.Web.Configuration
         public BillingContractsConfiguration BillingContracts { get; set; }
         public SalesforceConfiguration Salesforce { get; set; }
         public RedisConfiguration Redis { get; set; }
+
+        public UsersConfiguration Users => new UsersConfiguration
+        {
+            ServerUri = Authentication.ServerUri,
+            AllUsersEndpointPath = Authentication.AllUsersEndpointPath,
+            UsersEndpointPath = Authentication.UsersEndpointPath,
+            UserFetchToken =  Authentication.ApiKeysFetcherToken
+        };
     }
 }
