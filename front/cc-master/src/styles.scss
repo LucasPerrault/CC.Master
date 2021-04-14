@@ -10,6 +10,7 @@ $noCssVar: true;
 @import './scss/layout';
 @import './scss/shame';
 @import './scss/table';
+@import './error-page';
 
 :root {
 	@include generateCSSVarsFromTheme($theme);
