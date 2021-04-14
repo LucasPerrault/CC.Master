@@ -84,7 +84,7 @@ namespace Instances.Application.Demos
             (
                 new SenderForm { DisplayName = "Suppression des démos" },
                 RecipientForm.FromContact(EmailContact.CloudControl),
-                _demoEmails.GetIntentEmail(DateTime.Today, info).Content
+                _demoEmails.GetIntentEmail(_timeProvider.Today(), info).Content
             );
         }
 

@@ -33,6 +33,9 @@ namespace Instances.Application.Tests
             _ccDataServiceMock = new Mock<ICcDataService>();
             _emailServiceMock = new Mock<IEmailService>();
             _emailsMock = new Mock<IDemoEmails>();
+
+            _emailsMock.Setup(e => e.GetIntentEmail(It.IsAny<DateTime>(), It.IsAny<IEnumerable<DemoCleanupInfo>>()))
+                .Returns(new EmailContentBuilder("mocked"));
         }
 
         [Fact]
