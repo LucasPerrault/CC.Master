@@ -34,14 +34,14 @@ namespace Cache.Web
             return serializedValue.HasValue ? JsonConvert.DeserializeObject<T>(serializedValue) : default;
         }
 
-        public Task SetAsync<T>(CacheKey<T> key, T nonSerializedObject)
+        public Task SetAsync<T>(CacheKey<T> key, T nonSerializedObject, CacheInvalidation invalidation)
         {
             if (!IsHealthy())
             {
                 return Task.CompletedTask;
             }
             var serialized = JsonConvert.SerializeObject(nonSerializedObject);
-            return SetSerializedValueAsync(key.Key, serialized, key.Invalidation);
+            return SetSerializedValueAsync(key.Key, serialized, invalidation);
         }
 
         public async Task ExpireAsync<T>(CacheKey<T> key)
@@ -60,9 +60,18 @@ namespace Cache.Web
                 .GetDatabase()
                 .StringGetAsync(GetCcMasterStringKey(key));
         }
-        private Task SetSerializedValueAsync(string key, string value, TimeSpan? invalidation)
+        private Task SetSerializedValueAsync(string key, string value, CacheInvalidation invalidation)
         {
-            return _multiplexer.GetDatabase().StringSetAsync(GetCcMasterStringKey(key), value, invalidation ?? _defaultInvalidation);
+            return invalidation switch
+            {
+                NeverCacheInvalidation _ => _multiplexer.GetDatabase()
+                    .StringSetAsync(GetCcMasterStringKey(key), value),
+                DefaultCacheInvalidation _ => _multiplexer.GetDatabase()
+                    .StringSetAsync(GetCcMasterStringKey(key), value, _defaultInvalidation),
+                DurationCacheInvalidation duration => _multiplexer.GetDatabase()
+                    .StringSetAsync(GetCcMasterStringKey(key), value, duration.Duration),
+                _ => throw new ApplicationException("unhandled type of cache invalidation")
+            };
         }
 
         private string GetCcMasterStringKey(string key) => $"CC.Master:v{_cacheVersion}:{key}";

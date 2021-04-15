@@ -22,9 +22,10 @@ namespace Instances.Application.Demos
 
     public class HubspotDemoDuplicationKey : CacheKey<HubspotCachedDuplication>
     {
+        public static readonly TimeSpan LifeSpan = TimeSpan.FromMinutes(20);
+
         private readonly Guid _instanceDuplicationId;
         public override string Key => $"hubspot:duplication:{_instanceDuplicationId.ToString()}";
-        public override TimeSpan? Invalidation => TimeSpan.FromMinutes(20);
 
         public HubspotDemoDuplicationKey(Guid instanceDuplicationId)
         {
@@ -86,7 +87,12 @@ namespace Instances.Application.Demos
                 SuccessWorkflowId = hubspotDemoDuplication.SuccessWorkflowId
             };
             var cacheKey = new HubspotDemoDuplicationKey(demoDuplication.InstanceDuplicationId);
-            await _cacheService.SetAsync(cacheKey, cachedDuplication);
+            await _cacheService.SetAsync
+            (
+                cacheKey,
+                cachedDuplication,
+                CacheInvalidation.After(HubspotDemoDuplicationKey.LifeSpan)
+            );
         }
 
         public async Task MarkAsEndedAsync(Guid instanceDuplicationId, bool isSuccessful)
