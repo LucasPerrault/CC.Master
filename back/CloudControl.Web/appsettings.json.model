@@ -13,7 +13,7 @@
         "Default": "Data Source={{ CC.Master:SqlServer }};Initial Catalog=CloudControl;user={{ CC.Master:SqlLogin }};Password={{ CC.Master:SqlPassword }};MultipleActiveResultSets=True;App=CloudControl"
     },
     "Authentication": {
-        "ServerUri": "{{ CC.Master:AuthenticationTenantUri }}",
+        "ServerUri": "{{ CC.Master:PartenairesUri }}",
         "UsersEndpointPath": "{{ CC.Master:AuthUsersEndpointPath }}",
         "ApiKeysEndpointPath": "{{ CC.Master:AuthApiKeysEndpointPath }}",
         "RedirectEndpointPath": "{{ CC.Master:AuthRedirectEndpointPath }}",
@@ -21,7 +21,7 @@
         "ApiKeysFetcherToken": "{{ CC.Master:AuthApiKeysFetcherToken }}"
     },
     "Rights": {
-        "ServerUri": "{{ CC.Master:RightsTenantUri }}",
+        "ServerUri": "{{ CC.Master:PartenairesUri }}",
         "DepartmentsEndpointPath": "{{ CC.Master:RightsDepartmentEndpointPath }}",
         "ForeignAppEndpointPath": "{{ CC.Master:RightsForeignAppEndpointPath }}",
         "UsersEndpointPath": "{{ CC.Master:RightsUsersEndpointPath }}"
