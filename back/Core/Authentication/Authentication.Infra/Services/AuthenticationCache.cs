@@ -20,26 +20,30 @@ namespace Authentication.Infra.Services
 
         internal bool TryGetUser(Guid token, out User user)
         {
-            if (!_cachedUsers.TryGetValue(token, out CachedUser cachedUser))
-            {
-                user = null;
-                return false;
-            }
-
-            user = GetValidPrincipal(cachedUser);
-            return user != null;
+            user = null;
+            return false;
+            // if (!_cachedUsers.TryGetValue(token, out CachedUser cachedUser))
+            // {
+            //     user = null;
+            //     return false;
+            // }
+            //
+            // user = GetValidPrincipal(cachedUser);
+            // return user != null;
         }
 
         internal bool TryGetApiKey(Guid token, out ApiKey apiKey)
         {
-            if (!_cachedApiKeys.TryGetValue(token, out CachedApiKey cachedApiKey))
-            {
-                apiKey = null;
-                return false;
-            }
-
-            apiKey = GetValidPrincipal(cachedApiKey);
-            return apiKey != null;
+            apiKey = null;
+            return false;
+            // if (!_cachedApiKeys.TryGetValue(token, out CachedApiKey cachedApiKey))
+            // {
+            //     apiKey = null;
+            //     return false;
+            // }
+            //
+            // apiKey = GetValidPrincipal(cachedApiKey);
+            // return apiKey != null;
         }
 
         internal void Cache(Guid token, User user)
