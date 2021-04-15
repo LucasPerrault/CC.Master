@@ -9,7 +9,12 @@ using System.Threading.Tasks;
 
 namespace Authentication.Infra.Services
 {
-    public class ApiKeyAuthenticationRemoteService : RestApiV3HostRemoteService
+    public interface IApiKeyAuthenticationRemoteService
+    {
+        Task<ApiKey> GetApiKeyPrincipalAsync(Guid token);
+    }
+
+    public class ApiKeyAuthenticationRemoteService : RestApiV3HostRemoteService, IApiKeyAuthenticationRemoteService
     {
         private readonly AuthenticationCache _cache;
         protected override string RemoteApiDescription => "Partenaires";

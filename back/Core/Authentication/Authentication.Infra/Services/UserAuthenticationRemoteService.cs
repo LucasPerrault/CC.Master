@@ -5,7 +5,12 @@ using Users.Domain;
 
 namespace Authentication.Infra.Services
 {
-    public class UserAuthenticationRemoteService
+    public interface IUserAuthenticationRemoteService
+    {
+        Task<Principal> GetUserPrincipalAsync(Guid token);
+    }
+
+    public class UserAuthenticationRemoteService : IUserAuthenticationRemoteService
     {
         private readonly IUsersService _usersService;
         private readonly AuthenticationCache _cache;

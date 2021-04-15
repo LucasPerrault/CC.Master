@@ -11,14 +11,14 @@ namespace Authentication.Infra.Storage
 {
     public class PrincipalStore : IPrincipalStore<ClaimsPrincipal>
     {
-        private readonly UserAuthenticationRemoteService _userAuthService;
-        private readonly ApiKeyAuthenticationRemoteService _apiKeyAuthService;
+        private readonly IUserAuthenticationRemoteService _userAuthService;
+        private readonly IApiKeyAuthenticationRemoteService _apiKeyAuthService;
         private readonly ILogger<PrincipalStore> _logger;
 
         public PrincipalStore
         (
-            UserAuthenticationRemoteService userAuthService,
-            ApiKeyAuthenticationRemoteService apiKeyAuthService,
+            IUserAuthenticationRemoteService userAuthService,
+            IApiKeyAuthenticationRemoteService apiKeyAuthService,
             ILogger<PrincipalStore> logger
         )
         {
@@ -46,7 +46,7 @@ namespace Authentication.Infra.Storage
             catch (Exception e)
             {
                 _logger.LogError(e, "Could not resolve principal for incoming request");
-                throw;
+                return null;
             }
         }
 
