@@ -59,7 +59,7 @@
         "InstancesStore": {
             "Host": "{{ CC.Master:LegacyCloudControlHost }}",
             "Endpoint": "/api/v3/instances",
-            "Token": "{{ CC.Master:InstanceCreationToken }}"
+            "Token": "{{ CC.Master:LegacyCommunicationToken }}"
         },
         "Identity": {
             "ClientId": "cloud.control",
