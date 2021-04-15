@@ -29,7 +29,7 @@ namespace Instances.Web
 
         public class InstancesConfiguration
         {
-            public InstancesStoreConfiguration Store { get; set; }
+            public InstancesStoreConfiguration InstancesStore { get; set; }
             public IdentityAuthenticationConfig Identity { get; set; }
             public CcDataConfiguration CcData { get; set; }
             public WsAuthConfiguration WsAuth { get; set; }
