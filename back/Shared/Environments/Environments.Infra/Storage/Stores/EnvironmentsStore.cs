@@ -1,12 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
+using Environments.Domain.Storage;
+using Storage.Infra.Stores;
+using System;
 using System.Linq;
 using System.Linq.Expressions;
 using Environment = Environments.Domain.Environment;
 
 namespace Environments.Infra.Storage.Stores
 {
-    public class EnvironmentsStore
+    public class EnvironmentsStore : IEnvironmentsStore
     {
         private readonly EnvironmentsDbContext _dbContext;
 
@@ -15,12 +16,12 @@ namespace Environments.Infra.Storage.Stores
             _dbContext = dbContext;
         }
 
-        public IQueryable<Environment> GetFilteredAsync(Expression<Func<Environment, bool>> filter)
+        public IQueryable<Environment> GetFiltered(params Expression<Func<Environment, bool>>[] filters)
         {
-            return _dbContext.Set<Environment>().Where(filter);
+            return _dbContext.Set<Environment>().Where(filters.CombineSafely());
         }
 
-        public IQueryable<Environment> GetAllAsync()
+        public IQueryable<Environment> GetAll()
         {
             return _dbContext.Set<Environment>();
         }

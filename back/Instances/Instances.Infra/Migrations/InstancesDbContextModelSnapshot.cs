@@ -68,6 +68,95 @@ namespace Instances.Infra.Migrations
                     b.ToTable("Demos");
                 });
 
+            modelBuilder.Entity("Instances.Domain.Demos.DemoDuplication", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("AuthorId")
+                        .HasColumnName("authorId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Comment")
+                        .HasColumnName("comment")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnName("createdAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("InstanceDuplicationId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Password")
+                        .IsRequired()
+                        .HasColumnName("password")
+                        .HasColumnType("nvarchar(255)")
+                        .HasMaxLength(255);
+
+                    b.Property<int>("Progress")
+                        .HasColumnName("progress")
+                        .HasColumnType("int");
+
+                    b.Property<int>("SourceDemoId")
+                        .HasColumnName("sourceDemoId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("InstanceDuplicationId");
+
+                    b.HasIndex("SourceDemoId");
+
+                    b.ToTable("DemoDuplications");
+                });
+
+            modelBuilder.Entity("Instances.Domain.Instances.InstanceDuplication", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("DistributorId")
+                        .IsRequired()
+                        .HasColumnName("distributorId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("SourceCluster")
+                        .IsRequired()
+                        .HasColumnName("sourceCluster")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("SourceSubdomain")
+                        .IsRequired()
+                        .HasColumnName("sourceSubdomain")
+                        .HasColumnType("nvarchar(200)")
+                        .HasMaxLength(200);
+
+                    b.Property<string>("TargetCluster")
+                        .IsRequired()
+                        .HasColumnName("targetCluster")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("TargetSubdomain")
+                        .IsRequired()
+                        .HasColumnName("targetSubdomain")
+                        .HasColumnType("nvarchar(200)")
+                        .HasMaxLength(200);
+
+                    b.Property<int>("Type")
+                        .HasColumnName("type")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("DistributorId");
+
+                    b.ToTable("InstanceDuplications");
+                });
+
             modelBuilder.Entity("Instances.Domain.Demos.Demo", b =>
                 {
                     b.HasOne("Distributors.Domain.Models.Distributor", "Distributor")
@@ -77,6 +166,30 @@ namespace Instances.Infra.Migrations
                     b.HasOne("Instances.Domain.Instances.Models.Instance", "Instance")
                         .WithOne()
                         .HasForeignKey("Instances.Domain.Demos.Demo", "InstanceID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Instances.Domain.Demos.DemoDuplication", b =>
+                {
+                    b.HasOne("Instances.Domain.Instances.InstanceDuplication", "InstanceDuplication")
+                        .WithMany()
+                        .HasForeignKey("InstanceDuplicationId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Instances.Domain.Demos.Demo", "SourceDemo")
+                        .WithMany()
+                        .HasForeignKey("SourceDemoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Instances.Domain.Instances.InstanceDuplication", b =>
+                {
+                    b.HasOne("Distributors.Domain.Models.Distributor", "Distributor")
+                        .WithMany()
+                        .HasForeignKey("DistributorId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });

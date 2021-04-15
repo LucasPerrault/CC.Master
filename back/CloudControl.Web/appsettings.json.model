@@ -54,5 +54,41 @@
         "ServerUri": "{{ CC.Master:SalesforceUri }}",
         "AccountsEndpointPath": "/salesforce/accounts",
         "Token": "{{ CC.Master:SalesforceToken }}"
+    },
+    "Instances": {
+        "InstancesStore": {
+            "Host": "{{ CC.Master:LegacyCloudControlHost }}",
+            "Endpoint": "/api/v3/instances",
+            "Token": "{{ CC.Master:InstanceCreationToken }}"
+        },
+        "Identity": {
+            "ClientId": "cloud.control",
+            "ClientSecret": "{{ CC.Master:IdentityClientSecret }}",
+            "TokenRequestRoute": "/identity/connect/token"
+        },
+        "WsAuth": {
+            "ServerUri": "https://ws-auth.ilucca.local",
+            "EndpointPath": "/sync-v2/api",
+            "Token": "{{ CC.Master:LuccaAuthSyncV2SharedToken }}"
+        },
+        "CcData": {
+            "Domain": "lucca.local",
+            "Scheme": "http",
+            "OutboundToken": "{{ CC.Data:CCMasterWebserviceToken }}",
+            "InboundToken": "{{ CC.Data:CCMasterWebserviceToken }}"
+        },
+        "Hubspot": {
+            "ServerUri": "{{ CC.Master:HubspotServerUri }}",
+            "OutboundToken": "{{ CC.Master:HubspotOutboundToken }}"
+        },
+        "SqlScriptPicker": {
+            "JenkinsBaseUri": "http://jenkins2.lucca.local:8080/",
+            "MonolithJobPath": "job/CI.Pipeline.Multibranch"
+        },
+        "DemoClusterSelection": {
+            "UseFixedCluster": "{{ CC.Data:UseFixedClusterForDemos }}",
+            "FixedClusterName": "{{ CC.Data:FixedClusterName }}",
+            "ClusterChoiceCacheRetentionInHours": 24
+        }
     }
 }

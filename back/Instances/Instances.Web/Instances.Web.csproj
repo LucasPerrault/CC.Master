@@ -10,6 +10,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\Core\Rights\Rights.Web\Rights.Web.csproj" />
+    <ProjectReference Include="..\..\Shared\Remote\Remote.Infra\Remote.Infra.csproj" />
     <ProjectReference Include="..\Instances.Application\Instances.Application.csproj" />
     <ProjectReference Include="..\Instances.Domain\Instances.Domain.csproj" />
     <ProjectReference Include="..\Instances.Infra\Instances.Infra.csproj" />

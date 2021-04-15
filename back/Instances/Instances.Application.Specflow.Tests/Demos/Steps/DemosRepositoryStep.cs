@@ -2,14 +2,12 @@ using Instances.Application.Demos;
 using Instances.Application.Specflow.Tests.Demos.Models;
 using Instances.Application.Specflow.Tests.Shared.Tooling;
 using Instances.Domain.Demos;
+using Instances.Domain.Instances;
 using Instances.Infra.Storage.Stores;
 using Moq;
 using Rights.Domain;
 using Rights.Domain.Abstractions;
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using TechTalk.SpecFlow;
 using Xunit;
@@ -60,11 +58,41 @@ namespace Instances.Application.Specflow.Tests.Demos.Steps
             Assert.DoesNotContain(_demosContext.DemosListResult, d => d.Distributor.Code != distributorCode && d.IsTemplate == isTemplateDemo);
         }
 
+        [Then(@"demo '(.*)' should exist for distributor '(.*)'")]
+        public void ThenDemoShouldExistForDistributor(string subdomain, string distributorId)
+        {
+            Assert.Contains
+            (
+                _demosContext.DemosListResult,
+                d => d.Subdomain == subdomain && d.DistributorID == distributorId
+            );
+        }
+
+        [Then(@"demo '(.*)' should not exist")]
+        public void ThenDemoShouldNotExistAsync(string subdomain)
+        {
+            Assert.DoesNotContain
+            (
+                _demosContext.DemosListResult,
+                d => d.Subdomain == subdomain
+            );
+        }
+
         [StepArgumentTransformation(@"'(regular|template)' demos")]
         public bool IsTemplate(string value)
         {
             return value == "template";
         }
 
+        [Then(@"instance duplication should exist for subdomain '(.*)'")]
+        public void ThenInstanceDuplicationShouldExistForSubdomainAsync(string subdomain)
+        {
+            Assert.Equal
+                (
+                    subdomain, _demosContext.DbContext.Set<InstanceDuplication>()
+                        .Single()
+                        .TargetSubdomain
+                );
+        }
     }
 }

@@ -6,7 +6,7 @@ logs/
 **/bin/
 **/obj/
 
-**/Resources
+**/Resources/Translations
 **/*.csproj.user
 **/Properties/launchSettings.json
 
