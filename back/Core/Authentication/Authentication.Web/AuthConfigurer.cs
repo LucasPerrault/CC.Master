@@ -30,10 +30,9 @@ namespace Authentication.Web
             services.AddSingleton<AuthRedirectionRemoteService>();
             services.AddSingleton<AuthenticationCache>();
 
+            services.AddScoped<IUserAuthenticationRemoteService, UserAuthenticationRemoteService>();
 
-            services.AddScoped<UserAuthenticationRemoteService>();
-
-            services.AddHttpClient<ApiKeyAuthenticationRemoteService>(client =>
+            services.AddHttpClient<IApiKeyAuthenticationRemoteService, ApiKeyAuthenticationRemoteService>(client =>
             {
                 client.WithUserAgent(nameof(ApiKeyAuthenticationRemoteService))
                     .WithBaseAddress(config.ServerUri, config.ApiKeysEndpointPath)
