@@ -5,6 +5,7 @@ using Instances.Application.Instances;
 using Instances.Application.Specflow.Tests.Demos.Models;
 using Instances.Application.Specflow.Tests.Shared.Tooling;
 using Instances.Domain.Demos;
+using Instances.Domain.Demos.Cleanup;
 using Instances.Domain.Instances;
 using Instances.Domain.Instances.Models;
 using Instances.Domain.Shared;
@@ -148,7 +149,8 @@ namespace Instances.Application.Specflow.Tests.Demos.Steps
                     new UsersPasswordHelper(),
                     new DemoRightsFilter(rightsServiceMock.Object),
                     passwordResetMock.Object,
-                    authWsMock.Object
+                    authWsMock.Object,
+                    new Mock<IDemoDeletionCalculator>().Object
                 );
         }
 

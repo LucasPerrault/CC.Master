@@ -1,6 +1,7 @@
 ﻿using Email.Domain;
 using Instances.Application.Demos.Emails;
 using Instances.Domain.Demos;
+using Instances.Domain.Demos.Cleanup;
 using Instances.Domain.Instances;
 using Instances.Domain.Shared;
 using System;
@@ -19,11 +20,7 @@ namespace Instances.Application.Demos
         private readonly ICcDataService _ccDataService;
         private readonly IEmailService _emailService;
         private readonly IDemoEmails _demoEmails;
-
-        public static readonly TimeSpan StandardAcceptableInactivity = TimeSpan.FromDays(62);
-        public static readonly TimeSpan HubspotAcceptableInactivity = TimeSpan.FromDays(31);
-
-        private const int HubspotUserId = 0;
+        private readonly IDemoDeletionCalculator _deletionCalculator;
 
         public InactiveDemosCleaner
         (
@@ -32,7 +29,8 @@ namespace Instances.Application.Demos
             IDemosStore demosStore,
             ICcDataService ccDataService,
             IEmailService emailService,
-            IDemoEmails demoEmails
+            IDemoEmails demoEmails,
+            IDemoDeletionCalculator deletionCalculator
         )
         {
             _timeProvider = timeProvider;
@@ -41,6 +39,7 @@ namespace Instances.Application.Demos
             _ccDataService = ccDataService;
             _emailService = emailService;
             _demoEmails = demoEmails;
+            _deletionCalculator = deletionCalculator;
         }
 
         public async Task CleanAsync()
@@ -55,16 +54,6 @@ namespace Instances.Application.Demos
 
             await ReportCleanupIntentionsAsync(infos.Where(i => i.ShouldBeReported()));
             await DeleteAllAsync(infos.Where(i => i.State == DemoState.DeletionScheduledToday));
-        }
-
-        private TimeSpan GetAcceptableInactivity(Demo demo)
-        {
-            if (demo.AuthorId == HubspotUserId)
-            {
-                return HubspotAcceptableInactivity;
-            }
-
-            return StandardAcceptableInactivity;
         }
 
         private async Task DeleteAllAsync(IEnumerable<DemoCleanupInfo> info)
@@ -108,8 +97,8 @@ namespace Instances.Application.Demos
                 ? demo.CreatedAt
                 : latestConnection;
 
-            var acceptableInactivity = GetAcceptableInactivity(demo);
-            await _demosStore.UpdateDeletionScheduleAsync(demo, latestDemoUsage.Add(acceptableInactivity));
+            var shouldBeDeletedAt = _deletionCalculator.GetDeletionDate(demo, latestDemoUsage);
+            await _demosStore.UpdateDeletionScheduleAsync(demo, shouldBeDeletedAt);
         }
     }
 }

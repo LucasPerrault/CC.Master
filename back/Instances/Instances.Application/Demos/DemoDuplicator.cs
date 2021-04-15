@@ -2,6 +2,7 @@ using Authentication.Domain;
 using Distributors.Domain;
 using Instances.Application.Instances;
 using Instances.Domain.Demos;
+using Instances.Domain.Demos.Cleanup;
 using Instances.Domain.Instances;
 using Instances.Domain.Instances.Models;
 using Instances.Infra.Instances.Services;
@@ -37,6 +38,7 @@ namespace Instances.Application.Demos
         private readonly IDemoRightsFilter _demoRightsFilter;
         private readonly IDemoUsersPasswordResetService _usersPasswordResetService;
         private readonly IWsAuthSynchronizer _wsAuthSynchronizer;
+        private readonly IDemoDeletionCalculator _deletionCalculator;
 
         public DemoDuplicator
         (
@@ -51,7 +53,8 @@ namespace Instances.Application.Demos
             IUsersPasswordHelper passwordHelper,
             IDemoRightsFilter demoRightsFilter,
             IDemoUsersPasswordResetService usersPasswordResetService,
-            IWsAuthSynchronizer wsAuthSynchronizer
+            IWsAuthSynchronizer wsAuthSynchronizer,
+            IDemoDeletionCalculator deletionCalculator
         )
         {
             _instancesDuplicator = instancesDuplicator;
@@ -66,6 +69,7 @@ namespace Instances.Application.Demos
             _demoRightsFilter = demoRightsFilter;
             _usersPasswordResetService = usersPasswordResetService;
             _wsAuthSynchronizer = wsAuthSynchronizer;
+            _deletionCalculator = deletionCalculator;
         }
 
         public async Task<DemoDuplication> CreateDuplicationAsync
@@ -140,18 +144,20 @@ namespace Instances.Application.Demos
 
         private Demo CreateDemo(DemoDuplication duplication, Instance instance)
         {
-            return new Demo
+            var demo = new Demo
             {
                 Subdomain = duplication.InstanceDuplication.TargetSubdomain,
                 DistributorID = duplication.DistributorId,
                 Comment = duplication.Comment,
                 CreatedAt = DateTime.Now,
                 AuthorId = duplication.AuthorId,
-                DeletionScheduledOn = DateTime.Now.AddDays(62),
                 IsActive = true,
                 IsTemplate = false,
                 InstanceID =  instance.Id
             };
+
+            demo.DeletionScheduledOn = _deletionCalculator.GetDeletionDate(demo, DateTime.Now);
+            return demo;
         }
 
         private void ThrowIfInvalid(DemoDuplicationRequest request)

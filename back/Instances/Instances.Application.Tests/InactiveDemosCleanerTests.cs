@@ -2,6 +2,7 @@ using Email.Domain;
 using Instances.Application.Demos;
 using Instances.Application.Demos.Emails;
 using Instances.Domain.Demos;
+using Instances.Domain.Demos.Cleanup;
 using Instances.Domain.Instances;
 using Instances.Domain.Instances.Models;
 using Instances.Domain.Shared;
@@ -24,6 +25,7 @@ namespace Instances.Application.Tests
         private readonly Mock<IInstanceSessionLogsService> _sessionLogsServiceMock;
         private readonly Mock<ITimeProvider> _timeProviderMock;
         private readonly Mock<IDemoEmails> _emailsMock;
+        private readonly Mock<IDemoDeletionCalculator> _deletionCalculatorMock;
 
         public InactiveDemosCleanerTests()
         {
@@ -33,6 +35,7 @@ namespace Instances.Application.Tests
             _ccDataServiceMock = new Mock<ICcDataService>();
             _emailServiceMock = new Mock<IEmailService>();
             _emailsMock = new Mock<IDemoEmails>();
+            _deletionCalculatorMock = new Mock<IDemoDeletionCalculator>();
 
             _emailsMock.Setup(e => e.GetIntentEmail(It.IsAny<DateTime>(), It.IsAny<IEnumerable<DemoCleanupInfo>>()))
                 .Returns(new EmailContentBuilder("mocked"));
@@ -70,7 +73,8 @@ namespace Instances.Application.Tests
                 _demosStoreMock.Object,
                 _ccDataServiceMock.Object,
                 _emailServiceMock.Object,
-                _emailsMock.Object
+                _emailsMock.Object,
+                _deletionCalculatorMock.Object
             );
 
             await cleaner.CleanAsync();
@@ -95,13 +99,13 @@ namespace Instances.Application.Tests
             var demos = new List<Demo> { demo };
 
             _timeProviderMock.Setup(p => p.Today()).Returns(new DateTime(2010, 10, 01));
+            _deletionCalculatorMock
+                .Setup(c => c.GetDeletionDate(It.IsAny<Demo>(), It.IsAny<DateTime>()))
+                .Returns(new DateTime(2010, 03, 04));
 
             _demosStoreMock
                 .Setup(s => s.GetActiveAsync())
                 .Returns(Task.FromResult(demos.AsQueryable().BuildMock().Object));
-
-            _sessionLogsServiceMock.Setup(s => s.GetLatestAsync(It.IsAny<Uri>()))
-                .Returns(Task.FromResult(new DateTime(2010, 01, 01)));
 
             var cleaner = new InactiveDemosCleaner
             (
@@ -110,7 +114,8 @@ namespace Instances.Application.Tests
                 _demosStoreMock.Object,
                 _ccDataServiceMock.Object,
                 _emailServiceMock.Object,
-                _emailsMock.Object
+                _emailsMock.Object,
+                _deletionCalculatorMock.Object
             );
 
             await cleaner.CleanAsync();
@@ -129,14 +134,16 @@ namespace Instances.Application.Tests
             };
             var demos = new List<Demo> { demo };
 
-            _timeProviderMock.Setup(p => p.Today()).Returns(new DateTime(2010, 10, 01));
+            _timeProviderMock
+                .Setup(p => p.Today())
+                .Returns(new DateTime(2010, 10, 01));
+            _deletionCalculatorMock
+                .Setup(c => c.GetDeletionDate(It.IsAny<Demo>(), It.IsAny<DateTime>()))
+                .Returns(new DateTime(2010, 02, 01));
 
             _demosStoreMock
                 .Setup(s => s.GetActiveAsync())
                 .Returns(Task.FromResult(demos.AsQueryable().BuildMock().Object));
-
-            _sessionLogsServiceMock.Setup(s => s.GetLatestAsync(It.IsAny<Uri>()))
-                .Returns(Task.FromResult(new DateTime(2010, 01, 01)));
 
             var cleaner = new InactiveDemosCleaner
             (
@@ -145,7 +152,8 @@ namespace Instances.Application.Tests
                 _demosStoreMock.Object,
                 _ccDataServiceMock.Object,
                 _emailServiceMock.Object,
-                _emailsMock.Object
+                _emailsMock.Object,
+                _deletionCalculatorMock.Object
             );
 
             await cleaner.CleanAsync();
@@ -165,14 +173,16 @@ namespace Instances.Application.Tests
             };
             var demos = new List<Demo> { demo };
 
-            _timeProviderMock.Setup(p => p.Today()).Returns(new DateTime(0001, 01, 01));
+            _timeProviderMock
+                .Setup(p => p.Today())
+                .Returns(new DateTime(0001, 01, 01));
+            _deletionCalculatorMock
+                .Setup(c => c.GetDeletionDate(It.IsAny<Demo>(), It.IsAny<DateTime>()))
+                .Returns(new DateTime(2010, 03, 04));
 
             _demosStoreMock
                 .Setup(s => s.GetActiveAsync())
                 .Returns(Task.FromResult(demos.AsQueryable().BuildMock().Object));
-
-            _sessionLogsServiceMock.Setup(s => s.GetLatestAsync(It.IsAny<Uri>()))
-                .Returns(Task.FromResult(new DateTime(2010, 01, 01)));
 
             var cleaner = new InactiveDemosCleaner
             (
@@ -181,7 +191,8 @@ namespace Instances.Application.Tests
                 _demosStoreMock.Object,
                 _ccDataServiceMock.Object,
                 _emailServiceMock.Object,
-                _emailsMock.Object
+                _emailsMock.Object,
+                _deletionCalculatorMock.Object
             );
 
             await cleaner.CleanAsync();
@@ -214,7 +225,8 @@ namespace Instances.Application.Tests
                 _demosStoreMock.Object,
                 _ccDataServiceMock.Object,
                 _emailServiceMock.Object,
-                _emailsMock.Object
+                _emailsMock.Object,
+                _deletionCalculatorMock.Object
             );
 
             await cleaner.CleanAsync();
@@ -252,7 +264,8 @@ namespace Instances.Application.Tests
                 _demosStoreMock.Object,
                 _ccDataServiceMock.Object,
                 _emailServiceMock.Object,
-                _emailsMock.Object
+                _emailsMock.Object,
+                _deletionCalculatorMock.Object
             );
 
             await cleaner.CleanAsync();
@@ -302,7 +315,8 @@ namespace Instances.Application.Tests
                 _demosStoreMock.Object,
                 _ccDataServiceMock.Object,
                 _emailServiceMock.Object,
-                _emailsMock.Object
+                _emailsMock.Object,
+                _deletionCalculatorMock.Object
             );
 
             await cleaner.CleanAsync();

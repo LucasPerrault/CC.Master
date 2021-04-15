@@ -2,6 +2,7 @@ using Instances.Application.Demos;
 using Instances.Application.Demos.Emails;
 using Instances.Application.Instances;
 using Instances.Domain.Demos;
+using Instances.Domain.Demos.Cleanup;
 using Instances.Domain.Instances;
 using Instances.Domain.Shared;
 using Instances.Infra.DataDuplication;
@@ -46,6 +47,7 @@ namespace Instances.Web
             services.AddSingleton(configuration.CcData);
             services.AddSingleton(configuration.Hubspot);
             services.AddSingleton<IUsersPasswordHelper, UsersPasswordHelper>();
+            services.AddSingleton<IDemoDeletionCalculator, DemoDeletionCalculator>();
             services.AddSingleton<SqlScriptPicker>();
 
             services.AddScoped<InstancesDuplicator>();

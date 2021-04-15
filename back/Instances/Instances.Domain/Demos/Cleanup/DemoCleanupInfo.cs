@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Instances.Domain.Demos
+namespace Instances.Domain.Demos.Cleanup
 {
     public enum DemoState
     {
