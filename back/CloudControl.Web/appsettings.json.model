@@ -28,8 +28,8 @@
         "UsersEndpointPath": "/api/v3/userpermissionslookups"
     },
     "Redis": {
-        "Host": "{{ shared:CacheManagerRedisHost }}",
-        "Password": "{{ shared:CacheManagerRedisPassword }}",
+        "Host": "{{ shared:CacheManagerRedis6Host }}",
+        "Password": "{{ shared:CacheManagerRedis6Password }}",
         "KeyInvalidationInMinutes": "720"
     },
     "LuccaLoggerOptions": {
