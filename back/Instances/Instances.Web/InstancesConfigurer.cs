@@ -29,7 +29,7 @@ namespace Instances.Web
 
         public class InstancesConfiguration
         {
-            public InstancesStoreConfiguration Store { get; set; }
+            public InstancesStoreConfiguration InstancesStore { get; set; }
             public IdentityAuthenticationConfig Identity { get; set; }
             public CcDataConfiguration CcData { get; set; }
             public WsAuthConfiguration WsAuth { get; set; }
@@ -71,8 +71,8 @@ namespace Instances.Web
             services.AddHttpClient<IInstancesStore, InstancesRemoteStore>(client =>
             {
                 client.WithUserAgent(nameof(InstancesRemoteStore))
-                    .WithBaseAddress(new Uri(configuration.Store.Host, configuration.Store.Endpoint))
-                    .WithAuthScheme("CloudControl").AuthenticateAsApplication(configuration.Store.Token);
+                    .WithBaseAddress(new Uri(configuration.InstancesStore.Host, configuration.InstancesStore.Endpoint))
+                    .WithAuthScheme("CloudControl").AuthenticateAsApplication(configuration.InstancesStore.Token);
 
             });
 
