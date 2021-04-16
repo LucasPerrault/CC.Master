@@ -39,16 +39,16 @@ namespace Core.Proxy.Infra.Extensions
         {
             var proxyConfiguration = app.ApplicationServices.GetService<LegacyCloudControlConfiguration>();
             app.UseWhen
-            (
-                context => context.IsRedirectableCall(),
-                app => app.RunProxy(context => context
-                    .ForwardTo(HTTP_REDIRECTION_ADDRESS)
-                    .CopyXForwardedHeaders()
-                    .AddXForwardedHeaders()
-                    .AddRedirectionHeader(proxyConfiguration.Host)
-                    .AddXForwardedCustomHeaders(context)
-                    .Send()
-            ));
+                (
+                    context => context.IsRedirectableCall(),
+                    app => app.RunProxy(context => context
+                            .ForwardTo(HTTP_REDIRECTION_ADDRESS)
+                            .CopyXForwardedHeaders()
+                            .AddXForwardedHeaders()
+                            .AddRedirectionHeader(proxyConfiguration.Host)
+                            .AddXForwardedCustomHeaders(context)
+                            .Send()
+                        ));
 
             return app;
         }
@@ -58,12 +58,12 @@ namespace Core.Proxy.Infra.Extensions
             var proxyConfiguration = app.ApplicationServices.GetService<LegacyCloudControlConfiguration>();
             app.UseWebSockets();
             app.UseWebSocketProxy
-            (
-                context => new Uri(WS_REDIRECTION_ADDRESS),
-                options => options
-                    .AddRedirectionHeader(proxyConfiguration.Host)
-                    .AddXForwardedHeaders()
-            );
+                (
+                    context => new Uri(WS_REDIRECTION_ADDRESS),
+                    options => options
+                        .AddRedirectionHeader(proxyConfiguration.Host)
+                        .AddXForwardedHeaders()
+                );
 
             return app;
         }
@@ -71,11 +71,11 @@ namespace Core.Proxy.Infra.Extensions
         internal static bool IsRedirectableCall(this HttpContext httpContext)
         {
             return !httpContext.Request.Path.IsNonRedirectablePath()
-                && (
-                    httpContext.Request.Path.StartsWithSegments("/api/v3")
-                    || httpContext.Request.Path.IsNonV3LegacyApiPath()
-                    || !httpContext.Request.Path.StartsWithSegments("/api")
-                );
+                   && (
+                       httpContext.Request.Path.StartsWithSegments("/api/v3")
+                       || httpContext.Request.Path.IsNonV3LegacyApiPath()
+                       || !httpContext.Request.Path.StartsWithSegments("/api")
+                   );
         }
 
         private static bool IsNonV3LegacyApiPath(this PathString pathString)

@@ -4,6 +4,7 @@ using Lucca.Core.Rights.Abstractions;
 using Rights.Domain;
 using System.Collections.Generic;
 using TechTalk.SpecFlow;
+using Users.Domain;
 using Xunit;
 
 namespace Instances.Application.Specflow.Tests.Demos.Steps
