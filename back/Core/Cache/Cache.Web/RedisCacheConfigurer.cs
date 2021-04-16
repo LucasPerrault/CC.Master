@@ -22,11 +22,8 @@ namespace Cache.Web
 
         private static RedisHealthService CacheService(RedisConfiguration configuration)
         {
-            var options = new ConfigurationOptions
-            {
-                EndPoints = { configuration.Host },
-                Password = configuration.Password
-            };
+            var options = ConfigurationOptions.Parse(configuration.Host);
+            options.Password = configuration.Password;
 
             try
             {
