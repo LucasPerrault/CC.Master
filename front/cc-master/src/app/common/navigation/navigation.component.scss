@@ -1,0 +1,14 @@
+@import "theming.import";
+
+.nav-header {
+  height: 5rem;
+  padding-top: .25rem;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  background-color: #2d3368;
+}
+.cloudcontrolLogo {
+  height: 100%;
+  background: url("/assets/cc.svg") no-repeat center;
+}

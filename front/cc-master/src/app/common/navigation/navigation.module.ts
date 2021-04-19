@@ -4,19 +4,23 @@ import { RouterModule } from '@angular/router';
 import { TranslateModule } from '@cc/aspects/translate';
 
 import { getNavigationTabs } from './constants/navigation-tabs.const';
+import { NavigationComponent } from './navigation.component';
 import { NAVIGATION_TABS } from './navigation-tabs.token';
+import { NavigationTabsService } from './services/navigation-tabs.service';
 import { NavigationAlertService } from './services/navigation-alert.service';
 
 @NgModule({
-  declarations: [],
+  declarations: [NavigationComponent],
   imports: [
     CommonModule,
     RouterModule,
     TranslateModule,
   ],
   exports: [
+    NavigationComponent,
   ],
   providers: [
+    NavigationTabsService,
     NavigationAlertService,
     {
       provide: NAVIGATION_TABS,

@@ -7,6 +7,7 @@ import { LuSentryLoggerService } from '@lucca/sentry/ng';
 @Component({
 	selector: 'cc-root',
 	templateUrl: './app.component.html',
+  styleUrls: ['./app.component.scss']
 })
 export class AppComponent implements OnInit {
   public isNavigationDisplayed = true;
@@ -26,7 +27,7 @@ export class AppComponent implements OnInit {
     this.loggerService.setUser(sentryUser);
   }
 
-  public updateNavigationVisibility($event: any) {
+  public updateNavigationVisibility($event: any): void {
     this.isNavigationDisplayed = !($event as NoNavComponent).isNoNavComponent;
   }
 }
