@@ -3,6 +3,7 @@ using Instances.Application.Specflow.Tests.Demos.Models;
 using Instances.Application.Specflow.Tests.Shared.Tooling;
 using Instances.Domain.Demos;
 using Instances.Domain.Instances;
+using Instances.Domain.Shared;
 using Instances.Infra.Storage.Stores;
 using Moq;
 using Rights.Domain;
@@ -115,8 +116,9 @@ namespace Instances.Application.Specflow.Tests.Demos.Steps
             var demosStore = new DemosStore(_demosContext.DbContext, new DummyQueryPager());
             var rightsServiceMock = new Mock<IRightsService>();
             var instanceStoreMock = new Mock<IInstancesStore>();
+            var ccDataServiceMock = new Mock<ICcDataService>();
             rightsServiceMock.Setup(rs => rs.GetUserOperationHighestScopeAsync(It.IsAny<Operation>())).ReturnsAsync((Operation op) => _demosContext.OperationsWithScope[op]);
-            return new DemosRepository(_demosContext.Principal, demosStore, instanceStoreMock.Object, new DemoRightsFilter(rightsServiceMock.Object));
+            return new DemosRepository(_demosContext.Principal, demosStore, instanceStoreMock.Object, new DemoRightsFilter(rightsServiceMock.Object), ccDataServiceMock.Object);
         }
     }
 }
