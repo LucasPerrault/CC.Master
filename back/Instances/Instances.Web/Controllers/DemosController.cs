@@ -14,11 +14,13 @@ namespace Instances.Web.Controllers
     [ApiSort("-" + nameof(Demo.Id))]
     public class DemosController
     {
-        private DemosRepository _demosRepository;
+        private readonly DemosRepository _demosRepository;
+        private readonly DeletionCallbackNotifier _notifier;
 
-        public DemosController(DemosRepository demosRepository)
+        public DemosController(DemosRepository demosRepository, DeletionCallbackNotifier notifier)
         {
             _demosRepository = demosRepository;
+            _notifier = notifier;
         }
 
         [HttpGet]
@@ -28,11 +30,18 @@ namespace Instances.Web.Controllers
             return _demosRepository.GetDemosAsync(query);
         }
 
-        [HttpDelete("{id}")]
+        [HttpDelete("{id:int}")]
         [ForbidIfMissing(Operation.Demo)]
-        public Task<Demo> DeleteAsync([FromRoute]int demoId)
+        public Task<Demo> DeleteAsync([FromRoute]int id)
         {
-            return _demosRepository.DeleteAsync(demoId);
+            return _demosRepository.DeleteAsync(id);
+        }
+
+        [HttpDelete("deletion-report/{clusterName}")]
+        [ForbidIfMissing(Operation.Demo)]
+        public Task DeletionReport([FromRoute]string clusterName, [FromBody]DeletionReport deletionReport)
+        {
+            return _notifier.NotifyDemoDeletionReportAsync(clusterName, deletionReport);
         }
     }
 }

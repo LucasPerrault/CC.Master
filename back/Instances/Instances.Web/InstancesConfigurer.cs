@@ -1,4 +1,5 @@
 using Instances.Application.Demos;
+using Instances.Application.Demos.Deletion;
 using Instances.Application.Demos.Emails;
 using Instances.Application.Instances;
 using Instances.Domain.Demos;
@@ -46,6 +47,7 @@ namespace Instances.Web
             services.AddSingleton(configuration.Identity);
             services.AddSingleton(configuration.CcData);
             services.AddSingleton(configuration.Hubspot);
+            services.AddSingleton<DeletionCallbackNotifier>();
             services.AddSingleton<IUsersPasswordHelper, UsersPasswordHelper>();
             services.AddSingleton<IDemoDeletionCalculator, DemoDeletionCalculator>();
             services.AddSingleton<SqlScriptPicker>();
