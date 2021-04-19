@@ -16,7 +16,7 @@ using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 
-namespace Instances.Application.Demos
+namespace Instances.Application.Demos.Duplication
 {
     public enum DemoDuplicationRequestSource
     {

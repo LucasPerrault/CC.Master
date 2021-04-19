@@ -1,4 +1,5 @@
 using Instances.Application.Demos;
+using Instances.Application.Demos.Deletion;
 using Instances.Domain.Demos;
 using Lucca.Core.Api.Abstractions.Paging;
 using Lucca.Core.Api.Web.ModelBinding.Sorting;

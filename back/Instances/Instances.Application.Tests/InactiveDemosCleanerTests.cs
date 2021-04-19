@@ -1,5 +1,6 @@
 using Email.Domain;
 using Instances.Application.Demos;
+using Instances.Application.Demos.Deletion;
 using Instances.Application.Demos.Emails;
 using Instances.Domain.Demos;
 using Instances.Domain.Demos.Cleanup;

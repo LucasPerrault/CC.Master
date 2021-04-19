@@ -10,7 +10,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Tools;
 
-namespace Instances.Application.Demos
+namespace Instances.Application.Demos.Deletion
 {
     public class InactiveDemosCleaner
     {

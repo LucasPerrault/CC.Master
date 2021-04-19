@@ -4,7 +4,7 @@ using System;
 using System.Security.Claims;
 using System.Threading.Tasks;
 
-namespace Instances.Application.Demos
+namespace Instances.Application.Demos.Duplication
 {
     public class HubspotDemoDuplication
     {
