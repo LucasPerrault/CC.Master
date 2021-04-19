@@ -63,6 +63,12 @@
         "AccountsEndpointPath": "/salesforce/accounts",
         "Token": "{{ CC.Master:SalesforceToken }}"
     },
+    "Slack": {
+        "Hooks": {
+            "CloudControl": "{{ CC.Master:SlackHookCloudControl }}",
+            "DemosMaintainers": "{{ CC.Master:SlackHookDemosMaintainers }}"
+        }
+    },
     "Instances": {
         "InstancesStore": {
             "Host": "{{ CC.Master:LegacyCloudControlHost }}",

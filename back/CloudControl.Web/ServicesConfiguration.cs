@@ -39,6 +39,7 @@ using Microsoft.AspNetCore.Localization;
 using Remote.Infra;
 using System.Collections.Generic;
 using System.Globalization;
+using TeamNotification.Web;
 using Tools.Web;
 
 namespace CloudControl.Web
@@ -65,6 +66,7 @@ namespace CloudControl.Web
             ConfigureLogs(services);
             // ConfigureSpa(services);
             ConfigureCache(services, configuration);
+            ConfigureNotifications(services, configuration);
             ConfigureProxy(services);
             ConfigureIpFilter(services);
             ConfigureTenancy(services);
@@ -166,6 +168,11 @@ namespace CloudControl.Web
         public virtual void ConfigureTenancy(IServiceCollection services)
         {
             services.AddTenancy(t => { }, DatabaseMode.MultiTenant);
+        }
+
+        public virtual void ConfigureNotifications(IServiceCollection services, AppConfiguration configuration)
+        {
+            TeamNotificationConfigurer.ConfigureTeamNotification(services, configuration.Slack);
         }
 
         public virtual void ConfigureStorage(IServiceCollection services)

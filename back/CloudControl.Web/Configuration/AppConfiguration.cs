@@ -6,6 +6,7 @@ using Email.Infra.Configuration;
 using Instances.Web;
 using Rights.Infra.Configuration;
 using Salesforce.Infra.Configurations;
+using TeamNotification.Web;
 
 namespace CloudControl.Web.Configuration
 {
@@ -22,5 +23,6 @@ namespace CloudControl.Web.Configuration
         public InstancesConfigurer.InstancesConfiguration Instances { get; set; }
         public RedisConfiguration Redis { get; set; }
         public EmailConfiguration Email { get; set; }
+        public SlackConfiguration Slack { get; set; }
     }
 }
