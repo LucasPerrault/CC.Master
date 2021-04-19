@@ -1,10 +1,7 @@
 ﻿using Authentication.Infra.Configurations;
 using Lucca.Core.Shared.Domain.Exceptions;
 using Microsoft.AspNetCore.Http;
-using System;
 using System.Linq;
-using System.Security.Cryptography;
-using System.Text;
 
 namespace Authentication.Infra.Services
 {
@@ -13,10 +10,16 @@ namespace Authentication.Infra.Services
         public const string SignatureHeader = "X-Lucca-Signature";
 
         private readonly HangfireAuthenticationConfiguration _configuration;
+        private readonly SignatureAuthenticationService _service;
 
-        public HangfireAuthorizationService(HangfireAuthenticationConfiguration configuration)
+        public HangfireAuthorizationService
+        (
+            HangfireAuthenticationConfiguration configuration,
+            SignatureAuthenticationService service
+        )
         {
             _configuration = configuration;
+            _service = service;
         }
 
         public void ThrowIfUnauthorized(HttpRequest request)
@@ -29,32 +32,12 @@ namespace Authentication.Infra.Services
             }
 
             var headerSignature = signatures.First();
-            var computedSignature = GetSignature(_configuration.SharedSecret, GetUrl(request));
+            var computedSignature = _service.GetSignature(_configuration.SharedSecret, request);
 
             if (!computedSignature.Equals(headerSignature))
             {
                 throw new ForbiddenException();
             }
-        }
-
-        private static string GetSignature(Guid sharedSecret, string url)
-        {
-            var secretBytes = Encoding.UTF8.GetBytes(sharedSecret.ToString());
-            var data = Encoding.UTF8.GetBytes(url);
-
-            using var hasher = new HMACSHA256(secretBytes);
-            return Convert.ToBase64String(hasher.ComputeHash(data));
-        }
-
-        private static string GetUrl(HttpRequest request)
-        {
-            var builder = new UriBuilder(request.Host.Value)
-            {
-                Scheme = null!,
-                Port = -1
-            };
-
-            return builder.ToString();
         }
     }
 }
