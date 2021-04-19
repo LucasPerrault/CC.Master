@@ -10,6 +10,6 @@ namespace TeamNotification.Web
     public class SlackHooks
     {
         public Uri DemosMaintainers { get; set; }
-        public Uri CloudControl { get; set; }
+        public Uri CloudControlTeam { get; set; }
     }
 }
