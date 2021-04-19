@@ -27,13 +27,16 @@ namespace Instances.Application.Specflow.Tests.Demos.Steps
 
         }
 
-        [When(@"I delete demo '(.*)'")]
-        public async Task WhenIDeleteDemoAsync(string subdomain)
+        [When(@"I delete (.*) demo (.*)")]
+        public async Task WhenIDeleteDemoAsync(bool isTemplate, DistributorFilter filter)
         {
+            var id = _demosContext.DbContext.Set<Demo>().Where(filter.AsFunc).First(d => d.IsTemplate == isTemplate).Id;
+            await SafeDeleteAsync(id);
+        }
 
-            var id = _demosContext.DbContext.Set<Demo>().Single(d => d.Subdomain == subdomain).Id;
+        private async Task SafeDeleteAsync(int id)
+        {
             var demosRepository = GetNewRepository();
-
             try
             {
                 await demosRepository.DeleteAsync(id);
@@ -42,12 +45,6 @@ namespace Instances.Application.Specflow.Tests.Demos.Steps
             {
                 _demosContext.ExceptionResult = e;
             }
-        }
-
-        [StepArgumentTransformation(@"'(regular|template)' demos")]
-        public bool IsTemplate(string value)
-        {
-            return value == "template";
         }
 
         [When("I get the list of demos")]
@@ -62,22 +59,22 @@ namespace Instances.Application.Specflow.Tests.Demos.Steps
             _demosContext.DemosListResult = (await demosRepository.GetDemosAsync(demoListQuery)).Items.ToList();
         }
 
-        [Then("it should contain (.*)")]
+        [Then("it should contain (.*) demos")]
         public void ThenItShouldContainDemos(bool isTemplateDemo)
         {
             Assert.Contains(_demosContext.DemosListResult, d => d.IsTemplate == isTemplateDemo);
         }
 
-        [Then("it should contain (.*) from '(.*)'")]
-        public void ThenItShouldContainDemosFromDistributor(bool isTemplateDemo, string distributorCode)
+        [Then("it should contain (.*) demos (.*)")]
+        public void ThenItShouldContainDemosFromDistributor(bool isTemplateDemo, DistributorFilter filter)
         {
-            Assert.Contains(_demosContext.DemosListResult, d => d.IsTemplate == isTemplateDemo && d.Distributor.Code == distributorCode);
+            Assert.Contains(_demosContext.DemosListResult, d => d.IsTemplate == isTemplateDemo && filter.AsFunc(d));
         }
 
-        [Then("it should not contain any (.*) from other distributors than '(.*)'")]
-        public void ThenItShouldNotContainAnyDemosFromDistributorsOtherThan(bool isTemplateDemo, string distributorCode)
+        [Then("it should not contain any (.*) demos (.*)")]
+        public void ThenItShouldNotContainAnyDemosFromDistributorsOtherThan(bool isTemplateDemo, DistributorFilter filter)
         {
-            Assert.DoesNotContain(_demosContext.DemosListResult, d => d.Distributor.Code != distributorCode && d.IsTemplate == isTemplateDemo);
+            Assert.DoesNotContain(_demosContext.DemosListResult, d => d.IsTemplate == isTemplateDemo && filter.AsFunc(d));
         }
 
         [Then(@"demo '(.*)' should exist for distributor '(.*)'")]
@@ -94,10 +91,20 @@ namespace Instances.Application.Specflow.Tests.Demos.Steps
         public void ThenDemoShouldNotExistAsync(string subdomain)
         {
             Assert.DoesNotContain
-            (
-                _demosContext.DemosListResult,
-                d => d.Subdomain == subdomain
-            );
+                (
+                    _demosContext.DemosListResult,
+                    d => d.Subdomain == subdomain
+                );
+        }
+
+        [Then(@" (.*) demo (.*) should not exist")]
+        public void ThenDemoShouldNotExistFilteredAsync(bool isTemplateDemo, DistributorFilter filter)
+        {
+            Assert.DoesNotContain
+                (
+                    _demosContext.DemosListResult,
+                    d => d.IsTemplate == isTemplateDemo && filter.AsFunc(d)
+                );
         }
 
         [Then(@"instance duplication should exist for subdomain '(.*)'")]

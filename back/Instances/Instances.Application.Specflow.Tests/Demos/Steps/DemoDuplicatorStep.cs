@@ -63,14 +63,14 @@ namespace Instances.Application.Specflow.Tests.Demos.Steps
         }
 
 
-        [When("I request creation of demo '(.*)' by duplicating demo '(.*)' for distributor '(.*)'")]
-        public async Task WhenICreateANewDemoByDuplicationForDistributor(string subdomain, string sourceSubdomain, string distributorId)
+        [When("I request creation of demo '(.*)' by duplicating demo '(.*)' (.*)")]
+        public async Task WhenICreateANewDemoByDuplicationForDistributor(string subdomain, string sourceSubdomain, DistributorSelection selection)
         {
             var duplicator = GetDuplicator();
             var duplication = new DemoDuplicationRequest
             {
                 Subdomain = subdomain,
-                DistributorId = distributorId,
+                DistributorId = selection.Code,
                 Password = "test",
                 SourceDemoSubdomain = sourceSubdomain
             };
@@ -90,10 +90,10 @@ namespace Instances.Application.Specflow.Tests.Demos.Steps
             }
         }
 
-        [Then(@"demo duplication should exist for distributor '(.*)'")]
-        public void ThenDemoDuplicationShouldExist(string distributorId)
+        [Then(@"demo duplication should exist (.*)")]
+        public void ThenDemoDuplicationShouldExist(DistributorSelection selection)
         {
-            Assert.Equal(distributorId, _demosContext.DbContext.Set<DemoDuplication>().Single().DistributorId);
+            Assert.Equal(selection.Code, _demosContext.DbContext.Set<DemoDuplication>().Single().DistributorId);
         }
 
         [When(@"I get notification that duplication '(.*)' has ended")]
