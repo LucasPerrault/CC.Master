@@ -28,6 +28,7 @@ namespace Instances.Application.Demos
         private readonly InstancesDuplicator _instancesDuplicator;
         private readonly IDemosStore _demosStore;
         private readonly IDemoDuplicationsStore _duplicationsStore;
+        private readonly IInstanceDuplicationsStore _instanceDuplicationsStore;
         private readonly IInstancesStore _instancesStore;
         private readonly IRightsService _rightsService;
         private readonly IDistributorsStore _distributorsStore;
@@ -43,6 +44,7 @@ namespace Instances.Application.Demos
             InstancesDuplicator instancesDuplicator,
             IDemosStore demosStore,
             IDemoDuplicationsStore duplicationsStore,
+            IInstanceDuplicationsStore instanceDuplicationsStore,
             IInstancesStore instancesStore,
             IRightsService rightsService,
             IDistributorsStore distributorsStore,
@@ -57,6 +59,7 @@ namespace Instances.Application.Demos
             _instancesDuplicator = instancesDuplicator;
             _demosStore = demosStore;
             _duplicationsStore = duplicationsStore;
+            _instanceDuplicationsStore = instanceDuplicationsStore;
             _instancesStore = instancesStore;
             _rightsService = rightsService;
             _distributorsStore = distributorsStore;
@@ -91,7 +94,8 @@ namespace Instances.Application.Demos
                 SourceCluster = demoToDuplicate.Instance.Cluster,
                 TargetCluster = await _clusterSelector.GetFillingCluster(),
                 SourceSubdomain = demoToDuplicate.Subdomain,
-                TargetSubdomain = targetSubdomain
+                TargetSubdomain = targetSubdomain,
+                Progress = InstanceDuplicationProgress.Pending
             };
 
             var duplication = new DemoDuplication
@@ -101,7 +105,6 @@ namespace Instances.Application.Demos
                 CreatedAt = DateTime.Now,
                 AuthorId = GetAuthorId(principal),
                 Password = request.Password,
-                Progress = DemoDuplicationProgress.Pending,
                 Comment = request.Comment
             };
 
@@ -125,6 +128,16 @@ namespace Instances.Application.Demos
         {
             var duplication = _duplicationsStore.GetByInstanceDuplicationId(instanceDuplicationId);
 
+            if (!isSuccessful)
+            {
+                await _instanceDuplicationsStore.UpdateProgressAsync(duplication.InstanceDuplication, InstanceDuplicationProgress.FinishedWithFailure);
+                return;
+            }
+
+            await _instanceDuplicationsStore.UpdateProgressAsync(duplication.InstanceDuplication, InstanceDuplicationProgress.FinishedWithSuccess);
+
+            var clusterTarget = GetTargetCluster();
+
             var instance = await _instancesStore.CreateForDemoAsync(duplication.Password, duplication.InstanceDuplication.TargetCluster);
             var demo = CreateDemo(duplication, instance);
             await _demosStore.CreateAsync(demo);
@@ -132,10 +145,6 @@ namespace Instances.Application.Demos
 
             await _wsAuthSynchronizer.SafeSynchronizeAsync(instance.Id);
 
-            var progress = isSuccessful
-                ? DemoDuplicationProgress.FinishedWithSuccess
-                : DemoDuplicationProgress.FinishedWithFailure;
-            await _duplicationsStore.UpdateProgressAsync(duplication, progress);
         }
 
         private Demo CreateDemo(DemoDuplication duplication, Instance instance)

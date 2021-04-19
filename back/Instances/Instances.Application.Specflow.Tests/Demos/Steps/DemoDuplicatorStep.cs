@@ -38,7 +38,7 @@ namespace Instances.Application.Specflow.Tests.Demos.Steps
         [Given(@"a (.*) duplication for demo '(.*)' of id '(.*)'")]
         public async Task GivenADuplication
         (
-            DemoDuplicationProgress progress,
+            InstanceDuplicationProgress progress,
             string subdomain,
             Guid duplicationId
         )
@@ -48,12 +48,12 @@ namespace Instances.Application.Specflow.Tests.Demos.Steps
             var duplication = new DemoDuplication
             {
                 Password = "test",
-                Progress = progress,
                 InstanceDuplicationId = duplicationId,
                 InstanceDuplication = new InstanceDuplication
                 {
                     Id = duplicationId,
                     TargetSubdomain = subdomain,
+                    Progress = progress,
                     DistributorId = distributor.Id
                 }
             };
@@ -105,6 +105,7 @@ namespace Instances.Application.Specflow.Tests.Demos.Steps
         {
             var demosStore = new DemosStore(_demosContext.DbContext, new DummyQueryPager());
             var demoDuplicationsStore = new DemoDuplicationsStore(_demosContext.DbContext);
+            var instanceDuplicationsStore = new InstanceDuplicationsStore(_demosContext.DbContext);
 
             _demosContext.Mocks.DistributorsStore
                 .Setup(s => s.GetByCodeAsync(It.IsAny<string>()))
@@ -140,6 +141,7 @@ namespace Instances.Application.Specflow.Tests.Demos.Steps
                     ),
                     demosStore,
                     demoDuplicationsStore,
+                    instanceDuplicationsStore,
                     _demosContext.Mocks.InstancesStore.Object,
                     rightsServiceMock.Object,
                     _demosContext.Mocks.DistributorsStore.Object,

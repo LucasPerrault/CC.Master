@@ -1,4 +1,4 @@
-﻿using Instances.Domain.Instances;
+using Instances.Domain.Instances;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Threading.Tasks;
@@ -18,6 +18,12 @@ namespace Instances.Infra.Storage.Stores
         {
             return _dbContext.Set<InstanceDuplication>()
                 .FirstOrDefaultAsync(d => d.Id == id);
+        }
+
+        public async Task UpdateProgressAsync(InstanceDuplication duplication, InstanceDuplicationProgress progress)
+        {
+            duplication.Progress = progress;
+            await _dbContext.SaveChangesAsync();
         }
     }
 }
