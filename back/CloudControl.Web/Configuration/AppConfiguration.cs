@@ -21,6 +21,6 @@ namespace CloudControl.Web.Configuration
         public SalesforceConfiguration Salesforce { get; set; }
         public InstancesConfigurer.InstancesConfiguration Instances { get; set; }
         public RedisConfiguration Redis { get; set; }
-		public EmailConfiguration Email { get; set; }
+        public EmailConfiguration Email { get; set; }
     }
 }

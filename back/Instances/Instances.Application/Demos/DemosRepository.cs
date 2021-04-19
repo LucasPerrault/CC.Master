@@ -40,10 +40,13 @@ namespace Instances.Application.Demos
 
         public async Task<Demo> DeleteAsync(int id)
         {
-            var demo = (
-                await _demosStore.GetAsync(await _rightsFilter
-                .GetDefaultReadFilterAsync(_principal), d => d.IsActive)
-            ).SingleOrDefault(d => d.Id == id);
+            var activeDemosInScope = await _demosStore.GetAsync
+            (
+                await _rightsFilter.GetDefaultReadFilterAsync(_principal),
+                d => d.IsActive
+            );
+
+            var demo = activeDemosInScope.SingleOrDefault(d => d.Id == id);
 
             if (demo == null)
             {

@@ -88,14 +88,7 @@ namespace CloudControl.Web
             {
                 var supportedCultures = new List<CultureInfo>
                 {
-                    new CultureInfo("en"),
                     new CultureInfo("fr"),
-                    new CultureInfo("es"),
-                    new CultureInfo("de"),
-                    new CultureInfo("it"),
-                    new CultureInfo("nl"),
-                    new CultureInfo("nl-BE"),
-                    new CultureInfo("pt"),
                 };
                 opts.DefaultRequestCulture = new RequestCulture("fr");
                 // Formatting numbers, dates, etc.
