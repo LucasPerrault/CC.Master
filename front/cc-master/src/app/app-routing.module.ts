@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { AnyOperationsGuard } from '@cc/aspects/rights';
 import { ForbiddenComponent, forbiddenUrl, NotFoundComponent, notFoundUrl } from '@cc/common/error-redirections';
 import { NavigationPath } from '@cc/common/navigation';
 
@@ -16,7 +17,7 @@ const pageRoutes: Routes = [
 const routes: Routes = [
   { path: forbiddenUrl, component: ForbiddenComponent },
   { path: notFoundUrl, component: NotFoundComponent },
-  { path: '', children: pageRoutes },
+  { path: '', canActivate: [AnyOperationsGuard], children: pageRoutes },
   { path: '**', redirectTo: notFoundUrl, pathMatch: 'full' },
 ];
 
