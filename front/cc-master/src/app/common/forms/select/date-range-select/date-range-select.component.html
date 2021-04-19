@@ -1,5 +1,5 @@
-<form [formGroup]="dateRangeSelected" class="u-displayInlineFlex u-alignItemsCenter">
-  <label class="textfield u-marginRightSmaller" [ngClass]="class">
+<form [formGroup]="dateRangeSelected" class="u-displayInlineFlex u-alignItemsCenter u-flexWrapWrap">
+  <label class="textfield" [ngClass]="class">
     <lu-date-select class="textfield-input"
                     formControlName="startDate"
                     [max]="endDate || todayDate"
