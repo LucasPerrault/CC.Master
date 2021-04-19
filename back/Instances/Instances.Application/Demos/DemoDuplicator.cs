@@ -136,8 +136,6 @@ namespace Instances.Application.Demos
 
             await _instanceDuplicationsStore.UpdateProgressAsync(duplication.InstanceDuplication, InstanceDuplicationProgress.FinishedWithSuccess);
 
-            var clusterTarget = GetTargetCluster();
-
             var instance = await _instancesStore.CreateForDemoAsync(duplication.Password, duplication.InstanceDuplication.TargetCluster);
             var demo = CreateDemo(duplication, instance);
             await _demosStore.CreateAsync(demo);
