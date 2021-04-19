@@ -2,7 +2,6 @@ import { ScrollingModule } from '@angular/cdk/scrolling';
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { RouterModule, Routes } from '@angular/router';
 import { TranslateModule } from '@cc/aspects/translate';
 import {
   DateRangeSelectModule,
@@ -25,10 +24,6 @@ import { LogsApiMappingService } from './services/logs-api-mapping.service';
 import { LogsFilterRoutingService } from './services/logs-filter-routing.service';
 import { LogsRoutingService } from './services/logs-routing.service';
 
-const routes: Routes = [
-	{ path: '', component: LogsComponent },
-];
-
 @NgModule({
 	declarations: [
 		LogsComponent,
@@ -37,7 +32,6 @@ const routes: Routes = [
     AnonymizationButtonGroupComponent,
 	],
   imports: [
-    RouterModule.forChild(routes),
     CommonModule,
     FormsModule,
     EnvironmentsModule,

@@ -12,22 +12,16 @@ import { NavigationModule } from '@cc/common/navigation/navigation.module';
 import { ToastsModule } from '@cc/common/toasts';
 
 import { AppComponent } from './app.component';
-
-const routes: Routes = [
-  { path: forbiddenUrl, component: ForbiddenComponent },
-  { path: notFoundUrl, component: NotFoundComponent },
-  { path: 'logs', loadChildren: () => import('./pages/logs/logs.module').then(m => m.LogsModule) },
-  { path: '**', redirectTo: notFoundUrl, pathMatch: 'full' },
-];
+import { AppRoutingModule } from './app-routing.module';
 
 @NgModule({
 	declarations: [
 		AppComponent,
 	],
   imports: [
+    AppRoutingModule,
     BrowserModule,
     BrowserAnimationsModule,
-    RouterModule.forRoot(routes),
     PrincipalModule.forRoot(),
     ErrorsModule.forRoot(),
     TranslateModule.forRoot(),
