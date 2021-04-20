@@ -27,6 +27,7 @@ namespace Instances.Application.Demos.Duplication
 
     public class DemoDuplicator
     {
+        private readonly ClaimsPrincipal _principal;
         private readonly InstancesDuplicator _instancesDuplicator;
         private readonly IDemosStore _demosStore;
         private readonly IDemoDuplicationsStore _duplicationsStore;
@@ -45,6 +46,7 @@ namespace Instances.Application.Demos.Duplication
 
         public DemoDuplicator
         (
+            ClaimsPrincipal principal,
             InstancesDuplicator instancesDuplicator,
             IDemosStore demosStore,
             IDemoDuplicationsStore duplicationsStore,
@@ -62,6 +64,7 @@ namespace Instances.Application.Demos.Duplication
             ILogger<DemoDuplicator> logger
         )
         {
+            _principal = principal;
             _instancesDuplicator = instancesDuplicator;
             _demosStore = demosStore;
             _duplicationsStore = duplicationsStore;
@@ -82,17 +85,16 @@ namespace Instances.Application.Demos.Duplication
         public async Task<DemoDuplication> CreateDuplicationAsync
         (
             DemoDuplicationRequest request,
-            DemoDuplicationRequestSource requestSource,
-            ClaimsPrincipal principal
+            DemoDuplicationRequestSource requestSource
         )
         {
-            await ThrowIfForbiddenAsync(request, principal);
+            await ThrowIfForbiddenAsync(request);
             ThrowIfInvalid(request);
 
             var shouldUseSubdomainAsPrefix = requestSource == DemoDuplicationRequestSource.Hubspot;
             var targetSubdomain = await _subdomainGenerator.GetSubdomainAsync(request.Subdomain, shouldUseSubdomainAsPrefix);
 
-            var demoToDuplicate = await GetDemoToDuplicateAsync(request.SourceDemoSubdomain, principal);
+            var demoToDuplicate = await GetDemoToDuplicateAsync(request.SourceDemoSubdomain);
 
             var instanceDuplication = new InstanceDuplication
             {
@@ -111,7 +113,7 @@ namespace Instances.Application.Demos.Duplication
                 InstanceDuplication = instanceDuplication,
                 SourceDemoId = demoToDuplicate.Id,
                 CreatedAt = DateTime.Now,
-                AuthorId = GetAuthorId(principal),
+                AuthorId = GetAuthorId(_principal),
                 Password = request.Password,
                 Comment = request.Comment
             };
@@ -186,9 +188,9 @@ namespace Instances.Application.Demos.Duplication
             _passwordHelper.ThrowIfInvalid(request.Password);
         }
 
-        private async Task<Demo> GetDemoToDuplicateAsync(string subdomain, ClaimsPrincipal principal)
+        private async Task<Demo> GetDemoToDuplicateAsync(string subdomain)
         {
-            var rightsFilter = await _demoRightsFilter.GetDefaultReadFilterAsync(principal);
+            var rightsFilter = await _demoRightsFilter.GetDefaultReadFilterAsync(_principal);
             var demoToDuplicate = (await _demosStore.GetActiveAsync(rightsFilter, d => d.Subdomain == subdomain))
                 .FirstOrDefault();
 
@@ -196,16 +198,16 @@ namespace Instances.Application.Demos.Duplication
                 ?? throw new BadRequestException($"Source demo {subdomain} could not be found");
         }
 
-        private async Task ThrowIfForbiddenAsync(DemoDuplicationRequest request, ClaimsPrincipal claimsPrincipal)
+        private async Task ThrowIfForbiddenAsync(DemoDuplicationRequest request)
         {
             await _rightsService.ThrowIfAnyOperationIsMissingAsync(Operation.Demo);
 
-            if (claimsPrincipal is CloudControlApiKeyClaimsPrincipal)
+            if (_principal is CloudControlApiKeyClaimsPrincipal)
             {
                 return;
             }
 
-            if (!(claimsPrincipal is CloudControlUserClaimsPrincipal user))
+            if (!(_principal is CloudControlUserClaimsPrincipal user))
             {
                 throw new ApplicationException("Unsupported claims principal type");
             }

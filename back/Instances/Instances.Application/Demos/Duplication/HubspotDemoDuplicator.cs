@@ -1,7 +1,6 @@
 ﻿using Cache.Abstractions;
 using Instances.Domain.Demos;
 using System;
-using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace Instances.Application.Demos.Duplication
@@ -39,20 +38,17 @@ namespace Instances.Application.Demos.Duplication
         private const string _defaultHubspotPassword = "test";
 
         private readonly DemoDuplicator _demoDuplicator;
-        private readonly ClaimsPrincipal _principal;
         private readonly ICacheService _cacheService;
         private readonly IHubspotService _hubspotService;
 
         public HubspotDemoDuplicator
         (
             DemoDuplicator demoDuplicator,
-            ClaimsPrincipal principal,
             ICacheService cacheService,
             IHubspotService hubspotService
         )
         {
             _demoDuplicator = demoDuplicator;
-            _principal = principal;
             _cacheService = cacheService;
             _hubspotService = hubspotService;
         }
@@ -71,8 +67,7 @@ namespace Instances.Application.Demos.Duplication
             var demoDuplication = await _demoDuplicator.CreateDuplicationAsync
             (
                 request,
-                DemoDuplicationRequestSource.Hubspot,
-                _principal
+                DemoDuplicationRequestSource.Hubspot
             );
             await _hubspotService.UpdateContactSubdomainAsync
             (
