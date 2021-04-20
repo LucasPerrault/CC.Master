@@ -16,18 +16,21 @@ export const getNavigationTabs = (alertService: NavigationAlertService): INaviga
       name: 'front_navigation_sourcesTab',
       url: NavigationPath.CodeSources,
       icon: 'branch',
+      isLegacy: true,
       restriction: { operations: [Operation.ReadCodeSources] },
     },
     {
       name: 'front_navigation_ftpTab',
       url: NavigationPath.Ftp,
       icon: 'upload',
+      isLegacy: true,
       restriction: { operations: [Operation.ReadFtp] },
     },
     {
       name: 'front_navigation_demosTab',
       url: NavigationPath.Demos,
       icon: 'lucca',
+      isLegacy: true,
       restriction: { operations: [Operation.Demo] },
     },
     {
@@ -39,10 +42,12 @@ export const getNavigationTabs = (alertService: NavigationAlertService): INaviga
         {
           url: NavigationPath.ContractsDraft,
           name: 'front_navigation_draftsTab',
+          isLegacy: true,
         },
         {
           url: NavigationPath.ContractsManage,
           name: 'front_navigation_contractManageTab',
+          isLegacy: true,
         },
       ],
     },
@@ -50,6 +55,7 @@ export const getNavigationTabs = (alertService: NavigationAlertService): INaviga
       name: 'front_navigation_countsTab',
       url: NavigationPath.Counts,
       icon: 'analytics',
+      isLegacy: true,
       restriction: { operations: [Operation.CountsTrack] },
     },
     {
@@ -61,6 +67,7 @@ export const getNavigationTabs = (alertService: NavigationAlertService): INaviga
         {
           url: NavigationPath.AccountingRevenue,
           name: 'front_navigation_accountingRevenueTab',
+          isLegacy: true,
         },
       ],
     },
@@ -76,19 +83,23 @@ export const getNavigationTabs = (alertService: NavigationAlertService): INaviga
         {
           url: NavigationPath.BillingSynthesis,
           name: 'front_navigation_billingSynthesisTab',
+          isLegacy: true,
         },
         {
           url: NavigationPath.BillingToDo,
           name: 'front_navigation_billingToDoTab',
+          isLegacy: true,
         },
         {
           url: NavigationPath.BillingToExport,
           name: 'front_navigation_billingExportTab',
           alert$: alertService.getNotExportedCount$(),
+          isLegacy: true,
         },
         {
           url: NavigationPath.BillingExported,
           name: 'front_navigation_billingExportedTab',
+          isLegacy: true,
         },
       ],
     },
@@ -97,6 +108,7 @@ export const getNavigationTabs = (alertService: NavigationAlertService): INaviga
       url: NavigationPath.Cmrr,
       icon: 'evolution',
       restriction: { operations: [Operation.ReadCMRR] },
+      isLegacy: true,
     },
     {
       name: 'front_navigation_distributorsTab',
@@ -115,10 +127,12 @@ export const getNavigationTabs = (alertService: NavigationAlertService): INaviga
         {
           url: NavigationPath.DistributorsManage,
           name: 'front_navigation_distributorsManageTab',
+          isLegacy: true,
         },
         {
           url: NavigationPath.DistributorsEnvironmentAccesses,
           name: 'front_navigation_distributorsEnvironmentAccessesTab',
+          isLegacy: true,
         },
       ],
     },
@@ -127,6 +141,7 @@ export const getNavigationTabs = (alertService: NavigationAlertService): INaviga
       url: NavigationPath.Offers,
       icon: 'pricetag',
       restriction: { operations: [Operation.ReadCommercialOffers] },
+      isLegacy: true,
     },
     {
       name: 'front_navigation_logsTab',
