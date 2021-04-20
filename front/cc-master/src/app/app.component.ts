@@ -1,13 +1,13 @@
 import { Component, Inject, LOCALE_ID, OnInit } from '@angular/core';
 import { IPrincipal, PRINCIPAL } from '@cc/aspects/principal';
 import { TranslateInitializationService } from '@cc/aspects/translate';
-import { NoNavComponent } from '@cc/common/error-redirections';
+import { NoNavComponent } from '@cc/common/routing';
 import { LuSentryLoggerService } from '@lucca/sentry/ng';
 
 @Component({
 	selector: 'cc-root',
 	templateUrl: './app.component.html',
-  styleUrls: ['./app.component.scss']
+  styleUrls: ['./app.component.scss'],
 })
 export class AppComponent implements OnInit {
   public isNavigationDisplayed = true;
