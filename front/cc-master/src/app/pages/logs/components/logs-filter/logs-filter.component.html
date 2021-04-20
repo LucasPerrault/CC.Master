@@ -35,5 +35,6 @@
 
 <button class="button mod-outline palette-grey mod-icon u-marginLeftAuto" (click)="toggleMoreFiltersDisplay()">
   <span aria-hidden="true" class="button-icon lucca-icon icon-filterAbstract"></span>
-  <span>{{ "front_logPage_moreFiltersButton_label" | translate }}</span>
+  <span *ngIf="!showMoreFilters; else showLessFilters">{{ "front_logPage_moreFiltersButton_label" | translate }}</span>
+  <ng-template #showLessFilters>{{ "front_logPage_lessFiltersButton_label" | translate }}</ng-template>
 </button>
