@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot, UrlTree } from '@angular/router';
-import { forbiddenUrl } from '@cc/common/error-redirections';
+import { NoNavPath } from '@cc/common/routing';
 
 import { RightsService } from '../rights.service';
 
@@ -11,6 +11,6 @@ export class AnyOperationsGuard implements CanActivate {
   }
 
   canActivate(next: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean | UrlTree {
-    return this.rightsService.hasAnyOperation() || this.router.parseUrl(forbiddenUrl);
+    return this.rightsService.hasAnyOperation() || this.router.parseUrl(NoNavPath.Forbidden);
   }
 }

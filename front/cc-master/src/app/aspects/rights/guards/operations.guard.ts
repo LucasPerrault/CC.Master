@@ -3,7 +3,7 @@ import { ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot, UrlTr
 import { Operation } from '@cc/aspects/rights/enums/operation.enum';
 import { OperationRestrictionMode } from '@cc/aspects/rights/enums/operation-restriction-mode.enum';
 import { RightsService } from '@cc/aspects/rights/rights.service';
-import { forbiddenUrl } from '@cc/common/error-redirections';
+import { NoNavPath } from '@cc/common/routing';
 
 @Injectable()
 export class OperationsGuard implements CanActivate {
@@ -15,7 +15,7 @@ export class OperationsGuard implements CanActivate {
     const operations = next.data.operations as Operation[] | [];
     const mode = next?.data?.mode as OperationRestrictionMode;
 
-    return this.hasOperations(operations, mode) || this.router.parseUrl(forbiddenUrl);
+    return this.hasOperations(operations, mode) || this.router.parseUrl(NoNavPath.Forbidden);
   }
 
   public hasOperations(operations: Operation[], mode: OperationRestrictionMode): boolean {

@@ -20,8 +20,4 @@ export enum NavigationPath {
   CodeSources = 'sources',
   Accounting = 'accounting',
   AccountingRevenue = 'revenue',
-  IpAuthorizationRequest = 'ipauthorizationrequest',
-  AuthorizeIp = 'authorizeip',
-  InvalidIp = 'invalidiprequest',
-  WrongEmailDomainBaseUrl = 'wrongemaildomain',
 }

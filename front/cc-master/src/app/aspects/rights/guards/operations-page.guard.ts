@@ -1,8 +1,8 @@
 import { Inject, Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot, UrlTree } from '@angular/router';
-import { forbiddenUrl } from '@cc/common/error-redirections';
 import { INavigationTab } from '@cc/common/navigation';
 import { NAVIGATION_TABS } from '@cc/common/navigation/navigation-tabs.token';
+import { NoNavPath } from '@cc/common/routing';
 
 import { RightsService } from '../rights.service';
 
@@ -22,6 +22,6 @@ export class OperationsPageGuard implements CanActivate {
       activatedTab.restriction.mode,
     );
 
-    return hasOperations || this.router.parseUrl(forbiddenUrl);
+    return hasOperations || this.router.parseUrl(NoNavPath.Forbidden);
   }
 }
