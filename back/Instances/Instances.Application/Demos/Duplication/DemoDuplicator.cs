@@ -146,23 +146,20 @@ namespace Instances.Application.Demos.Duplication
 
         private async Task<bool> CompleteDemoCreationAsync(DemoDuplication duplication)
         {
-            Instance instance;
             try
             {
-                instance = await _instancesStore.CreateForDemoAsync(duplication.Password, duplication.InstanceDuplication.TargetCluster);
+                var instance = await _instancesStore.CreateForDemoAsync(duplication.Password, duplication.InstanceDuplication.TargetCluster);
                 var demo = BuildDemo(duplication, instance);
                 await _demosStore.CreateAsync(demo);
                 await _usersPasswordResetService.ResetPasswordAsync(demo, duplication.Password);
+                await _wsAuthSynchronizer.SafeSynchronizeAsync(instance.Id);
+                return true;
             }
             catch (Exception e)
             {
                 _logger.LogError(e, "Could not create demo, following instance duplication");
                 return false;
             }
-
-            await _wsAuthSynchronizer.SafeSynchronizeAsync(instance.Id);
-
-            return true;
         }
 
         private Demo BuildDemo(DemoDuplication duplication, Instance instance)
