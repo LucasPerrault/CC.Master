@@ -52,7 +52,7 @@ namespace Instances.Web.Controllers
             return _demosRepository.DeleteAsync(id);
         }
 
-        [HttpDelete("deletion-report/{clusterName}")]
+        [HttpPost("deletion-report/{clusterName}")]
         [ForbidIfMissing(Operation.Demo)]
         public Task DeletionReport([FromRoute]string clusterName, [FromBody]DeletionReport deletionReport)
         {
