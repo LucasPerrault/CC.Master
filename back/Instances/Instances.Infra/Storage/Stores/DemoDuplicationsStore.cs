@@ -1,6 +1,7 @@
 using Instances.Domain.Demos;
 using Microsoft.EntityFrameworkCore;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -22,15 +23,14 @@ namespace Instances.Infra.Storage.Stores
             return duplication;
         }
 
+        public IReadOnlyCollection<DemoDuplication> GetByIds(IReadOnlyCollection<int> ids)
+        {
+            return _dbContext.Set<DemoDuplication>().Where(d => ids.Contains(d.Id)).ToList();
+        }
+
         public DemoDuplication GetByInstanceDuplicationId(Guid instanceDuplicationId)
         {
             return Duplications.Single(d => d.InstanceDuplicationId == instanceDuplicationId);
-        }
-
-        public async Task UpdateProgressAsync(DemoDuplication duplication, DemoDuplicationProgress progress)
-        {
-            duplication.Progress = progress;
-            await _dbContext.SaveChangesAsync();
         }
 
         private IQueryable<DemoDuplication> Duplications => _dbContext.Set<DemoDuplication>()

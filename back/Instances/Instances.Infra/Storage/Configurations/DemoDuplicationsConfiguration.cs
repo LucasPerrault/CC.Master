@@ -27,10 +27,6 @@ namespace Instances.Infra.Storage.Configurations
             builder.Property(d => d.CreatedAt)
                 .HasColumnName("createdAt");
 
-            builder.Property(d => d.Progress)
-                .HasColumnName("progress")
-                .IsRequired();
-
             builder.Property(d => d.Comment)
                 .HasColumnName("comment");
 

@@ -38,6 +38,10 @@ namespace Instances.Infra.Storage.Configurations
                 .HasColumnName("type")
                 .IsRequired();
 
+            builder.Property(d => d.Progress)
+                .HasColumnName("progress")
+                .IsRequired();
+
             builder.HasOne(d => d.Distributor)
                 .WithMany()
                 .HasForeignKey(d => d.DistributorId);
