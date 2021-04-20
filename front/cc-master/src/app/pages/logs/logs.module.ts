@@ -1,7 +1,7 @@
 import { ScrollingModule } from '@angular/cdk/scrolling';
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule, Routes } from '@angular/router';
 import { TranslateModule } from '@cc/aspects/translate';
 import {
@@ -52,6 +52,7 @@ const routes: Routes = [
     SortModule,
     UsersModule,
     QueriesModule,
+    ReactiveFormsModule,
   ],
   providers:[LogsApiMappingService, LogsRoutingService, LogsFilterRoutingService],
 })

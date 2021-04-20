@@ -1,4 +1,4 @@
-<cc-logs-filter [ngModel]="filters$ | async" (ngModelChange)="updateFiltersAsync($event)"></cc-logs-filter>
+<cc-logs-filter [formControl]="filters"></cc-logs-filter>
 <cc-logs-list class="u-paddingSmall"
               (updateSort)="updateSort($event)"
               (showMore)="showMore()"
