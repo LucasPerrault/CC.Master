@@ -30,6 +30,22 @@ namespace Instances.Infra.Migrations
                     ,d.[deletionScheduledOn] deletionScheduledOn
                 FROM [instances].[Demos] d
             ");
+
+            migrationBuilder.AddColumn<int>(
+                name: "authorId",
+                schema: "instances",
+                table: "Demos",
+                nullable: false,
+                defaultValue: 0);
+
+            migrationBuilder.Sql(@"
+                with demoCreators as (
+                    select Demos.id demoId, ActionLogs.idUser userId from Demos
+                    inner join ActionLogs on ActionLogs.idInstance = Demos.instanceId
+                    where action = 1
+                )
+                update instances.Demos set authorId = userId from demoCreators where demoId = instances.Demos.id");
+
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -38,7 +54,7 @@ namespace Instances.Infra.Migrations
                 DROP VIEW [dbo].[Demos]
             ");
             migrationBuilder.Sql($@"
-                ALTER SCHEMA dbo TRANSFER instances.Demos;  
+                ALTER SCHEMA dbo TRANSFER instances.Demos;
             ");
         }
     }

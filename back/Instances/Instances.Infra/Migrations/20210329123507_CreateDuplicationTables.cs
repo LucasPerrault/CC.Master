@@ -21,18 +21,12 @@ namespace Instances.Infra.Migrations
                     sourceCluster = table.Column<string>(nullable: false),
                     targetCluster = table.Column<string>(nullable: false),
                     type = table.Column<int>(nullable: false),
-                    distributorId = table.Column<string>(nullable: false)
+                    distributorId = table.Column<string>(nullable: false),
+                    progress = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_InstanceDuplications", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_InstanceDuplications_Distributors_distributorId",
-                        column: x => x.distributorId,
-                        principalSchema: "shared",
-                        principalTable: "Distributors",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -47,8 +41,7 @@ namespace Instances.Infra.Migrations
                     password = table.Column<string>(maxLength: 255, nullable: false),
                     sourceDemoId = table.Column<int>(nullable: false),
                     authorId = table.Column<int>(nullable: false),
-                    createdAt = table.Column<DateTime>(nullable: false),
-                    progress = table.Column<int>(nullable: false)
+                    createdAt = table.Column<DateTime>(nullable: false)
                 },
                 constraints: table =>
                 {
