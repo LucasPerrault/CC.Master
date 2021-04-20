@@ -79,7 +79,7 @@ namespace Instances.Application.Specflow.Tests.Demos.Steps
             try
             {
                 await duplicator.CreateDuplicationAsync
-                    (duplication, DemoDuplicationRequestSource.Api, _demosContext.Principal);
+                    (duplication, DemoDuplicationRequestSource.Api);
             }
             catch (ForbiddenException e)
             {
@@ -135,6 +135,7 @@ namespace Instances.Application.Specflow.Tests.Demos.Steps
 
             return new DemoDuplicator
                 (
+                    _demosContext.Principal,
                     new InstancesDuplicator(new SqlScriptPicker(
                         new SqlScriptPickerConfiguration
                         {
