@@ -8,7 +8,7 @@ namespace Instances.Infra.Storage.Configurations
     {
         public void Configure(EntityTypeBuilder<Instance> builder)
         {
-            builder.ToView("Instances");
+            builder.ToTable("Instances");
             builder.HasKey(d => d.Id);
             builder.Property(d => d.Cluster).HasColumnName("Cluster");
             builder.Property(d => d.Type).HasColumnName("Type");
