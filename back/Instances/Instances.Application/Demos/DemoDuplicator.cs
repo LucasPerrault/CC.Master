@@ -132,13 +132,13 @@ namespace Instances.Application.Demos
         {
             var duplication = _duplicationsStore.GetByInstanceDuplicationId(instanceDuplicationId);
 
-            isSuccessful = isSuccessful && await CreateDemoAsync(duplication);
+            isSuccessful = isSuccessful && await CompleteDemoCreationAsync(duplication);
 
             var success = isSuccessful ? InstanceDuplicationProgress.FinishedWithSuccess : InstanceDuplicationProgress.FinishedWithFailure;
             await _instanceDuplicationsStore.UpdateProgressAsync(duplication.InstanceDuplication, success);
         }
 
-        private async Task<bool> CreateDemoAsync(DemoDuplication duplication)
+        private async Task<bool> CompleteDemoCreationAsync(DemoDuplication duplication)
         {
             Instance instance;
             try
