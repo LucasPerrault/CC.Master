@@ -6,8 +6,8 @@ import { TranslateModule } from '@cc/aspects/translate';
 import { getNavigationTabs } from './constants/navigation-tabs.const';
 import { NavigationComponent } from './navigation.component';
 import { NAVIGATION_TABS } from './navigation-tabs.token';
-import { NavigationTabsService } from './services/navigation-tabs.service';
 import { NavigationAlertService } from './services/navigation-alert.service';
+import { NavigationTabsService } from './services/navigation-tabs.service';
 
 @NgModule({
   declarations: [NavigationComponent],
