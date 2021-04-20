@@ -8,6 +8,7 @@ using Instances.Infra.Instances.Services;
 using Instances.Infra.WsAuth;
 using Lucca.Core.Rights.Abstractions;
 using Lucca.Core.Shared.Domain.Exceptions;
+using Microsoft.Extensions.Logging;
 using Rights.Domain;
 using Rights.Domain.Abstractions;
 using System;
@@ -38,6 +39,7 @@ namespace Instances.Application.Demos
         private readonly IDemoRightsFilter _demoRightsFilter;
         private readonly IDemoUsersPasswordResetService _usersPasswordResetService;
         private readonly IWsAuthSynchronizer _wsAuthSynchronizer;
+        private readonly ILogger<DemoDuplicator> _logger;
 
         public DemoDuplicator
         (
@@ -53,7 +55,8 @@ namespace Instances.Application.Demos
             IUsersPasswordHelper passwordHelper,
             IDemoRightsFilter demoRightsFilter,
             IDemoUsersPasswordResetService usersPasswordResetService,
-            IWsAuthSynchronizer wsAuthSynchronizer
+            IWsAuthSynchronizer wsAuthSynchronizer,
+            ILogger<DemoDuplicator> logger
         )
         {
             _instancesDuplicator = instancesDuplicator;
@@ -69,6 +72,7 @@ namespace Instances.Application.Demos
             _demoRightsFilter = demoRightsFilter;
             _usersPasswordResetService = usersPasswordResetService;
             _wsAuthSynchronizer = wsAuthSynchronizer;
+            _logger = logger;
         }
 
         public async Task<DemoDuplication> CreateDuplicationAsync
@@ -116,7 +120,7 @@ namespace Instances.Application.Demos
 
         private int GetAuthorId(ClaimsPrincipal principal)
         {
-            if (!( principal is CloudControlUserClaimsPrincipal user ))
+            if (!(principal is CloudControlUserClaimsPrincipal user))
             {
                 return 0;
             }
@@ -128,24 +132,34 @@ namespace Instances.Application.Demos
         {
             var duplication = _duplicationsStore.GetByInstanceDuplicationId(instanceDuplicationId);
 
-            if (!isSuccessful)
+            isSuccessful = isSuccessful && await CreateDemoAsync(duplication);
+
+            var success = isSuccessful ? InstanceDuplicationProgress.FinishedWithSuccess : InstanceDuplicationProgress.FinishedWithFailure;
+            await _instanceDuplicationsStore.UpdateProgressAsync(duplication.InstanceDuplication, success);
+        }
+
+        private async Task<bool> CreateDemoAsync(DemoDuplication duplication)
+        {
+            Instance instance;
+            try
             {
-                await _instanceDuplicationsStore.UpdateProgressAsync(duplication.InstanceDuplication, InstanceDuplicationProgress.FinishedWithFailure);
-                return;
+                instance = await _instancesStore.CreateForDemoAsync(duplication.Password, duplication.InstanceDuplication.TargetCluster);
+                var demo = BuildDemo(duplication, instance);
+                await _demosStore.CreateAsync(demo);
+                await _usersPasswordResetService.ResetPasswordAsync(demo, duplication.Password);
             }
-
-            await _instanceDuplicationsStore.UpdateProgressAsync(duplication.InstanceDuplication, InstanceDuplicationProgress.FinishedWithSuccess);
-
-            var instance = await _instancesStore.CreateForDemoAsync(duplication.Password, duplication.InstanceDuplication.TargetCluster);
-            var demo = CreateDemo(duplication, instance);
-            await _demosStore.CreateAsync(demo);
-            await _usersPasswordResetService.ResetPasswordAsync(demo, duplication.Password);
+            catch (Exception e)
+            {
+                _logger.LogError(e, "Could not create demo, following instance duplication");
+                return false;
+            }
 
             await _wsAuthSynchronizer.SafeSynchronizeAsync(instance.Id);
 
+            return true;
         }
 
-        private Demo CreateDemo(DemoDuplication duplication, Instance instance)
+        private Demo BuildDemo(DemoDuplication duplication, Instance instance)
         {
             return new Demo
             {
@@ -156,7 +170,7 @@ namespace Instances.Application.Demos
                 DeletionScheduledOn = DateTime.Now.AddDays(62),
                 IsActive = true,
                 IsTemplate = false,
-                InstanceID =  instance.Id
+                InstanceID = instance.Id
             };
         }
 
@@ -165,11 +179,10 @@ namespace Instances.Application.Demos
             _passwordHelper.ThrowIfInvalid(request.Password);
         }
 
-
         private async Task<Demo> GetDemoToDuplicateAsync(string subdomain, ClaimsPrincipal principal)
         {
             var rightsFilter = await _demoRightsFilter.GetDefaultReadFilterAsync(principal);
-            var demoToDuplicate = ( await _demosStore.GetActiveAsync(rightsFilter, d => d.Subdomain == subdomain) )
+            var demoToDuplicate = (await _demosStore.GetActiveAsync(rightsFilter, d => d.Subdomain == subdomain))
                 .FirstOrDefault();
 
             return demoToDuplicate
