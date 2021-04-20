@@ -3,7 +3,7 @@
     <h1>Logs</h1>
   </header>
 
-  <cc-logs-filter class="header" [ngModel]="filters$ | async" (ngModelChange)="updateFiltersAsync($event)">
+  <cc-logs-filter class="header u-alignItemsFlexStart" [ngModel]="filters$ | async" (ngModelChange)="updateFiltersAsync($event)">
   </cc-logs-filter>
 
   <cc-logs-list (updateSort)="updateSort($event)"

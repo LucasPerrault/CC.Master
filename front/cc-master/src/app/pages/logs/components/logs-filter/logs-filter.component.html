@@ -1,9 +1,5 @@
-<div class="u-displayFlex u-flexDirectionColumn">
-  <cc-anonymization-button-group [(ngModel)]="logsFilter.isAnonymized"
-                                 (ngModelChange)="update()">
-  </cc-anonymization-button-group>
-
-  <div class="u-displayFlex u-flexWrapWrap u-paddingTopSmaller">
+<div class="grid">
+  <div class="grid-xs12">
     <cc-user-api-select class="palette-grey mod-outlined mod-inline"
                         [(ngModel)]="logsFilter.users"
                         (ngModelChange)="update()">
@@ -14,19 +10,30 @@
                                   (ngModelChange)="update()">
     </cc-environment-action-select>
 
-    <cc-environment-domain-select class="palette-grey mod-outlined mod-inline"
-                                  [(ngModel)]="logsFilter.domains"
-                                  (ngModelChange)="update()">
-    </cc-environment-domain-select>
-
     <cc-environment-api-select class="palette-grey mod-outlined mod-inline"
                                [(ngModel)]="logsFilter.environments"
                                (ngModelChange)="update()">
     </cc-environment-api-select>
 
-    <cc-date-range-select class="palette-grey mod-outlined mod-inline"
+    <cc-date-range-select class="palette-grey mod-outlined mod-inline mod-short"
                           [(ngModel)]="logsFilter.createdOn"
                           (ngModelChange)="update()">
     </cc-date-range-select>
   </div>
+
+  <div class="grid-xs12 u-displayFlex u-marginTopSmaller u-animatedFadeIn" *ngIf="showMoreFilters">
+    <cc-environment-domain-select class="palette-grey mod-outlined mod-inline"
+                                  [(ngModel)]="logsFilter.domains"
+                                  (ngModelChange)="update()">
+    </cc-environment-domain-select>
+
+    <cc-anonymization-button-group class="u-marginRightSmallest" [(ngModel)]="logsFilter.isAnonymized"
+                                   (ngModelChange)="update()">
+    </cc-anonymization-button-group>
+  </div>
 </div>
+
+<button class="button mod-outline palette-grey mod-icon u-marginLeftAuto" (click)="toggleMoreFiltersDisplay()">
+  <span aria-hidden="true" class="button-icon lucca-icon icon-filterAbstract"></span>
+  <span>{{ "front_logPage_moreFiltersButton_label" | translate }}</span>
+</button>

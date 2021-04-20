@@ -18,6 +18,8 @@ export class LogsFiltersComponent implements ControlValueAccessor {
   public onChange: (logsFilter: ILogsFilter) => void;
   public onTouch: () => void;
 
+  public showMoreFilters = false;
+
   public logsFilter: ILogsFilter = {
     users: [],
     environments: [],
@@ -45,9 +47,21 @@ export class LogsFiltersComponent implements ControlValueAccessor {
 
     this.onChange(logsFilter);
     this.logsFilter = logsFilter;
+
+    if (this.shouldDisplayHiddenFilters(logsFilter)) {
+      this.toggleMoreFiltersDisplay();
+    }
   }
 
   public update(): void {
     this.onChange(this.logsFilter);
+  }
+
+  public toggleMoreFiltersDisplay(): void {
+    this.showMoreFilters = !this.showMoreFilters;
+  }
+
+  private shouldDisplayHiddenFilters(filters: ILogsFilter): boolean {
+    return !!filters.domains.length || !!filters.environments.length;
   }
 }
