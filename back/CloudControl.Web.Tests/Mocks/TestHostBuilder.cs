@@ -1,4 +1,3 @@
-using CloudControl.Web;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Hosting;
@@ -20,4 +19,3 @@ namespace CloudControl.Web.Tests.Mocks
         }
     }
 }
-

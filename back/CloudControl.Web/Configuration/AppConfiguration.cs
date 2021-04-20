@@ -7,6 +7,7 @@ using Instances.Web;
 using Rights.Infra.Configuration;
 using Salesforce.Infra.Configurations;
 using TeamNotification.Web;
+using Users.Web;
 
 namespace CloudControl.Web.Configuration
 {
@@ -24,5 +25,13 @@ namespace CloudControl.Web.Configuration
         public RedisConfiguration Redis { get; set; }
         public EmailConfiguration Email { get; set; }
         public SlackConfiguration Slack { get; set; }
+
+        public UsersConfiguration Users => new UsersConfiguration
+        {
+            ServerUri = Authentication.ServerUri,
+            AllUsersEndpointPath = Authentication.AllUsersEndpointPath,
+            UsersEndpointPath = Authentication.UsersEndpointPath,
+            UserFetchToken =  Authentication.ApiKeysFetcherToken
+        };
     }
 }

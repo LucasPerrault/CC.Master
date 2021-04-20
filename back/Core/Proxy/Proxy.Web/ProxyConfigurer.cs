@@ -14,8 +14,8 @@ namespace Proxy.Web
         public static void ConfigureServices(IServiceCollection services)
         {
             services.AddProxy(httpClientBuilder =>
-                httpClientBuilder.ConfigureHttpClient(client => client.Timeout = TimeSpan.FromMinutes(CloudControlTimeoutInMinutes))
-            );
+                    httpClientBuilder.ConfigureHttpClient(client => client.Timeout = TimeSpan.FromMinutes(CloudControlTimeoutInMinutes))
+                );
         }
 
         public static void ConfigureLegacyHealthzServices(IServiceCollection services, LegacyCloudControlConfiguration config)

@@ -4,6 +4,7 @@ using Lucca.Core.Shared.Domain.Contracts.Principals;
 using System;
 using System.Collections.Generic;
 using System.Security.Claims;
+using Users.Domain;
 
 namespace Authentication.Domain
 {

@@ -1,5 +1,6 @@
 ﻿using Lucca.Core.Shared.Domain.Contracts.Principals;
 using System;
+using Users.Domain;
 
 namespace Authentication.Domain
 {

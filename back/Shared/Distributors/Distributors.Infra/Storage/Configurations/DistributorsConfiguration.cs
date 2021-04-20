@@ -13,6 +13,7 @@ namespace Distributors.Infra.Storage.Configurations
             builder.HasKey(d => d.Id);
             builder.Property(d => d.Name).HasColumnName("Name");
             builder.Property(d => d.Code).HasColumnName("Code");
+            builder.Property(d => d.DepartmentId).HasColumnName("DepartmentId");
         }
     }
 }

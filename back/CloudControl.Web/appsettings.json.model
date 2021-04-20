@@ -13,25 +13,26 @@
         "Default": "Data Source={{ CC.Master:SqlServer }};Initial Catalog=CloudControl;user={{ CC.Master:SqlLogin }};Password={{ CC.Master:SqlPassword }};MultipleActiveResultSets=True;App=CloudControl"
     },
     "Authentication": {
-        "ServerUri": "{{ CC.Master:AuthenticationTenantUri }}",
-        "UsersEndpointPath": "{{ CC.Master:AuthUsersEndpointPath }}",
-        "ApiKeysEndpointPath": "{{ CC.Master:AuthApiKeysEndpointPath }}",
-        "RedirectEndpointPath": "{{ CC.Master:AuthRedirectEndpointPath }}",
-        "LogoutEndpointPath": "{{ CC.Master:AuthLogoutEndpointPath }}",
+        "ServerUri": "{{ CC.Master:PartenairesUri }}",
         "ApiKeysFetcherToken": "{{ CC.Master:AuthApiKeysFetcherToken }}",
+        "UsersEndpointPath": "/api/v3/users/me",
+        "AllUsersEndpointPath": "/api/v3/users",
+        "ApiKeysEndpointPath": "/api/v3/apikeys",
+        "RedirectEndpointPath": "/auth/userlogin",
+        "LogoutEndpointPath": "/logout",
         "Hangfire": {
             "SharedSecret": "{{ LuccaHangfire:CloudControlToken }}"
         }
     },
     "Rights": {
-        "ServerUri": "{{ CC.Master:RightsTenantUri }}",
-        "DepartmentsEndpointPath": "{{ CC.Master:RightsDepartmentEndpointPath }}",
-        "ForeignAppEndpointPath": "{{ CC.Master:RightsForeignAppEndpointPath }}",
-        "UsersEndpointPath": "{{ CC.Master:RightsUsersEndpointPath }}"
+        "ServerUri": "{{ CC.Master:PartenairesUri }}",
+        "DepartmentsEndpointPath": "/api/v3/departments",
+        "ForeignAppEndpointPath": "/api/v3/foreignapppermissionslookups",
+        "UsersEndpointPath": "/api/v3/userpermissionslookups"
     },
     "Redis": {
-        "Host": "{{ shared:CacheManagerRedisHost }}",
-        "Password": "{{ shared:CacheManagerRedisPassword }}",
+        "Host": "{{ shared:CacheManagerRedis6Host }}",
+        "Password": "{{ shared:CacheManagerRedis6Password }}",
         "KeyInvalidationInMinutes": "720"
     },
     "Email": {
@@ -73,17 +74,17 @@
         "InstancesStore": {
             "Host": "{{ CC.Master:LegacyCloudControlHost }}",
             "Endpoint": "/api/v3/instances",
-            "Token": "{{ CC.Master:InstanceCreationToken }}"
+            "Token": "{{ CC.Master:LegacyCommunicationToken }}"
         },
         "Identity": {
-            "ClientId": "cloud.control",
-            "ClientSecret": "{{ CC.Master:IdentityClientSecret }}",
+            "ClientId": "{{ luccaidentity:CloudControlClientId }}",
+            "ClientSecret": "{{ luccaidentity:CloudControlClientSecret }}",
             "TokenRequestRoute": "/identity/connect/token"
         },
         "WsAuth": {
             "ServerUri": "https://ws-auth.ilucca.local",
             "EndpointPath": "/sync-v2/api",
-            "Token": "{{ CC.Master:LuccaAuthSyncV2SharedToken }}"
+            "Token": "{{ Lucca.Auth.Sync:CloudControlToken }}"
         },
         "CcData": {
             "Domain": "lucca.local",
@@ -100,8 +101,8 @@
             "MonolithJobPath": "job/CI.Pipeline.Multibranch"
         },
         "DemoClusterSelection": {
-            "UseFixedCluster": "{{ CC.Data:UseFixedClusterForDemos }}",
-            "FixedClusterName": "{{ CC.Data:FixedClusterName }}",
+            "UseFixedCluster": "{{ CC.Master:UseFixedClusterForDemos }}",
+            "FixedClusterName": "{{ CC.Master:FixedClusterName }}",
             "ClusterChoiceCacheRetentionInHours": 24
         }
     }

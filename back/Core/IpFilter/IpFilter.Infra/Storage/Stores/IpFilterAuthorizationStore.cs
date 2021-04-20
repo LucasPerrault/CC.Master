@@ -19,12 +19,12 @@ namespace IpFilter.Infra.Storage.Stores
         {
             return await _dbContext.Set<IpFilterAuthorization>()
                 .Where
-                (
-                    d =>
-                        d.IpAddress == user.IpAddress
-                        && d.UserId == user.UserId
-                        && d.Device == user.Device
-                ).ToListAsync();
+                    (
+                        d =>
+                            d.IpAddress == user.IpAddress
+                            && d.UserId == user.UserId
+                            && d.Device == user.Device
+                    ).ToListAsync();
         }
     }
 }

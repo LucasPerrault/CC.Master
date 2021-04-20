@@ -20,15 +20,8 @@ namespace Instances.Domain.Demos
 
     public class ClusterSelectorCacheKey : CacheKey<string>
     {
-        private int _cacheDurationInHours;
 
         public override string Key => $"demos:selectedCluster";
-        public override TimeSpan? Invalidation => TimeSpan.FromHours(_cacheDurationInHours);
-
-        public ClusterSelectorCacheKey(int cacheDurationInHours)
-        {
-            _cacheDurationInHours = cacheDurationInHours;
-        }
     }
 
     public class ClusterSelector : IClusterSelector
@@ -50,7 +43,7 @@ namespace Instances.Domain.Demos
             {
                 return _configuration.FixedClusterName;
             }
-            var clusterChoiceCacheKey = new ClusterSelectorCacheKey(_configuration.ClusterChoiceCacheRetentionInHours);
+            var clusterChoiceCacheKey = new ClusterSelectorCacheKey();
             var cachedClusterChoice = await _cacheService.GetAsync(clusterChoiceCacheKey);
             if(cachedClusterChoice != null)
             {
@@ -59,7 +52,12 @@ namespace Instances.Domain.Demos
 
             var clusterChoice = await GetSelectedClusterByCountAsync();
 
-            await _cacheService.SetAsync(clusterChoiceCacheKey, clusterChoice);
+            await _cacheService.SetAsync
+            (
+                clusterChoiceCacheKey,
+                clusterChoice,
+                CacheInvalidation.After(TimeSpan.FromHours(_configuration.ClusterChoiceCacheRetentionInHours))
+            );
             return clusterChoice;
         }
 

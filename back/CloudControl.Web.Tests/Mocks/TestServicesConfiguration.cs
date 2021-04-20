@@ -22,14 +22,28 @@ using Rights.Infra.Configuration;
 using Salesforce.Infra.Configurations;
 using System;
 using System.Collections.Generic;
+using Users.Infra.Storage;
 
 namespace CloudControl.Web.Tests.Mocks
 {
     public class TestServicesConfiguration<TAuthenticationHandler> : ServicesConfiguration where TAuthenticationHandler : AuthenticationHandler<TestAuthenticationOptions>
     {
+        private readonly AuthenticationConfiguration _mockedAuthConfiguration;
+
         public TestServicesConfiguration(IConfiguration configuration, IWebHostEnvironment env)
-        : base(configuration, env)
-        { }
+            : base(configuration, env)
+        {
+            _mockedAuthConfiguration = new AuthenticationConfiguration
+            {
+                ServerUri = new Uri("https://mocked-partenaires.local"),
+                LogoutEndpointPath = "/logout",
+                RedirectEndpointPath = "/login",
+                UsersEndpointPath = "/users/endpoint/mocked",
+                AllUsersEndpointPath = "/all/users/endpoint/path/mocked",
+                ApiKeysEndpointPath = "/api-key/endpoint/mock",
+                ApiKeysFetcherToken = Guid.Empty
+            };
+        }
 
         public override AppConfiguration ConfigureConfiguration(IServiceCollection services)
         {
@@ -75,6 +89,7 @@ namespace CloudControl.Web.Tests.Mocks
         public override void ConfigureStorage(IServiceCollection services)
         {
             services.AddMockDbContext<IpFilterDbContext>("IpFilters", o => new IpFilterDbContext(o));
+            services.AddMockDbContext<UsersDbContext>("Users", o => new UsersDbContext(o));
         }
 
         public override void ConfigureRights(IServiceCollection services, AppConfiguration configuration)
@@ -110,6 +125,11 @@ namespace CloudControl.Web.Tests.Mocks
             IpFilterConfigurer.ConfigureServices(services);
         }
 
+        public override void ConfigureSharedDomains(IServiceCollection services, AppConfiguration configuration)
+        {
+            base.ConfigureSharedDomains(services, new AppConfiguration { Authentication = _mockedAuthConfiguration });
+        }
+
         public override void ConfigureBilling(IServiceCollection services, AppConfiguration configuration)
         {
             base.ConfigureBilling(services, new AppConfiguration
@@ -129,11 +149,11 @@ namespace CloudControl.Web.Tests.Mocks
         {
             services
                 .AddHealthCheck(o =>
-                    {
-                        o.ServiceGuid = new Guid("00000000-0000-0000-0000-000000000000");
-                        o.ServiceName = "MOCK";
-                    }
-                );
+                        {
+                            o.ServiceGuid = new Guid("00000000-0000-0000-0000-000000000000");
+                            o.ServiceName = "MOCK";
+                        }
+                    );
         }
 
         public override void ConfigureSalesforce(IServiceCollection services, AppConfiguration configuration)
