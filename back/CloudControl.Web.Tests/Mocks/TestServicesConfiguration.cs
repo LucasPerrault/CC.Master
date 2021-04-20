@@ -22,6 +22,7 @@ using Rights.Infra.Configuration;
 using Salesforce.Infra.Configurations;
 using System;
 using System.Collections.Generic;
+using TeamNotification.Web;
 using Users.Infra.Storage;
 
 namespace CloudControl.Web.Tests.Mocks
@@ -79,6 +80,17 @@ namespace CloudControl.Web.Tests.Mocks
         public override void ConfigureApi(IServiceCollection services)
         {
             services.AddControllers();
+        }
+
+        public override void ConfigureNotifications(IServiceCollection services, AppConfiguration configuration)
+        {
+            base.ConfigureNotifications(services, new AppConfiguration
+            {
+                Slack = new SlackConfiguration
+                {
+                    Hooks = new SlackHooks()
+                }
+            });
         }
 
         public override void ConfigureCache(IServiceCollection services, AppConfiguration configuration)
