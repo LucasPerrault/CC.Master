@@ -35,7 +35,7 @@
               </a>
 
               <ng-template #legacyLink>
-                <a [attr.href]="[tab.url, child.url]" class="navSide-item-link">
+                <a [attr.href]="getChildrenUrl(tab, child)" class="navSide-item-subMenu-link">
                   {{ child.name | translate }}
                   <span class="navSide-item-alert" *ngIf="getAlert(tab, child); let alert">{{ alert }}</span>
                 </a>

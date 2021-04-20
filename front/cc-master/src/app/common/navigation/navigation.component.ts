@@ -59,4 +59,8 @@ export class NavigationComponent implements OnInit, OnDestroy {
   public getAlert(tab: INavigationTab, child: INavigationTab): string {
     return this.navigationService.getAlert(tab, child);
   }
+
+  public getChildrenUrl(parent: INavigationTab, child: INavigationTab): string {
+    return `${ parent.url }/${ child.url }`;
+  }
 }
