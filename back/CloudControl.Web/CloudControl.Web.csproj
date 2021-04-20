@@ -17,6 +17,7 @@
       <ProjectReference Include="..\Billing\Billing.Contracts\Billing.Contracts.Infra\Billing.Contracts.Infra.csproj" />
       <ProjectReference Include="..\Billing\Billing.Web\Billing.Web.csproj" />
       <ProjectReference Include="..\Core\Authentication\Authentication.Web\Authentication.Web.csproj" />
+      <ProjectReference Include="..\Core\Email\Email.Web\Email.Web.csproj" />
       <ProjectReference Include="..\Core\Cache\Cache.Web\Cache.Web.csproj" />
       <ProjectReference Include="..\Core\IpFilter\IpFilter.Web\IpFilter.Web.csproj" />
       <ProjectReference Include="..\Core\Proxy\Proxy.Web\Proxy.Web.csproj" />
@@ -24,6 +25,7 @@
       <ProjectReference Include="..\Core\Salesforce\Salesforce.Infra\Salesforce.Infra.csproj" />
       <ProjectReference Include="..\Core\Salesforce\Salesforce.Web\Salesforce.Web.csproj" />
       <ProjectReference Include="..\Core\Storage\Storage.Web\Storage.Web.csproj" />
+      <ProjectReference Include="..\Core\TeamNotification\TeamNotification.Web\TeamNotification.Web.csproj" />
       <ProjectReference Include="..\Core\Users\Users.Web\Users.Web.csproj" />
       <ProjectReference Include="..\Instances\Instances.Web\Instances.Web.csproj" />
       <ProjectReference Include="..\Shared\Distributors\Distributors.Web\Distributors.Web.csproj" />

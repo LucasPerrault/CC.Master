@@ -19,7 +19,10 @@
         "AllUsersEndpointPath": "/api/v3/users",
         "ApiKeysEndpointPath": "/api/v3/apikeys",
         "RedirectEndpointPath": "/auth/userlogin",
-        "LogoutEndpointPath": "/logout"
+        "LogoutEndpointPath": "/logout",
+        "Hangfire": {
+            "SharedSecret": "{{ LuccaHangfire:CloudControlToken }}"
+        }
     },
     "Rights": {
         "ServerUri": "{{ CC.Master:PartenairesUri }}",
@@ -31,6 +34,11 @@
         "Host": "{{ shared:CacheManagerRedis6Host }}",
         "Password": "{{ shared:CacheManagerRedis6Password }}",
         "KeyInvalidationInMinutes": "720"
+    },
+    "Email": {
+        "ServerUri": "{{ CC.Master:AuthenticationTenantUri }}",
+        "EmailAppEndpointPath": "{{ CC.Master:EmailAppEndpointPath }}",
+        "LuccaEmailsAuthorizationToken": "{{ CC.Master:LuccaEmailsToken }}"
     },
     "LuccaLoggerOptions": {
         "ApplicationName": "CloudControl",
@@ -55,6 +63,12 @@
         "ServerUri": "{{ CC.Master:SalesforceUri }}",
         "AccountsEndpointPath": "/salesforce/accounts",
         "Token": "{{ CC.Master:SalesforceToken }}"
+    },
+    "Slack": {
+        "Hooks": {
+            "CloudControl": "{{ CC.Master:SlackHookCcMonitorEnvironments }}",
+            "DemosMaintainers": "{{ CC.Master:SlackHookCcNotifications }}"
+        }
     },
     "Instances": {
         "InstancesStore": {

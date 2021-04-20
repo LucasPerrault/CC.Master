@@ -10,6 +10,9 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\Core\Cache\Cache.Abstractions\Cache.Abstractions.csproj" />
+    <ProjectReference Include="..\..\Core\Email\Email.Domain\Email.Domain.csproj" />
+    <ProjectReference Include="..\..\Core\TeamNotification\TeamNotification.Abstractions\TeamNotification.Abstractions.csproj" />
+    <ProjectReference Include="..\..\Core\Tools\Tools\Tools.csproj" />
     <ProjectReference Include="..\Instances.Domain\Instances.Domain.csproj" />
     <ProjectReference Include="..\Instances.Infra\Instances.Infra.csproj" />
   </ItemGroup>

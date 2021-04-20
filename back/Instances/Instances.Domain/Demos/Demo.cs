@@ -13,6 +13,7 @@ namespace Instances.Domain.Demos
         public DateTime CreatedAt { get; set; }
         public DateTime DeletionScheduledOn { get; set; }
         public bool IsActive { get; set; }
+        public int AuthorId { get; set; }
         public int InstanceID { get; set; }
         public Instance Instance { get; set; }
         public string DistributorID { get; set; }
@@ -20,6 +21,6 @@ namespace Instances.Domain.Demos
         public string Comment { get; set; }
         public bool IsTemplate { get; set; }
 
-        public Uri Href => new Uri($"{Subdomain}.{DemoDomain}");
+        public Uri Href => new Uri($"https://{Subdomain}.{DemoDomain}");
     }
 }

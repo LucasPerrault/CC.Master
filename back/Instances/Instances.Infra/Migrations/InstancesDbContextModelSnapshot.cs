@@ -27,6 +27,10 @@ namespace Instances.Infra.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<int>("AuthorId")
+                        .HasColumnName("authorId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Comment")
                         .HasColumnName("comment")
                         .HasColumnType("nvarchar(max)");

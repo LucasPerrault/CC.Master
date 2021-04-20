@@ -6,6 +6,7 @@ using CloudControl.Web.Exceptions;
 using CloudControl.Web.Spa;
 using Distributors.Infra.Storage;
 using Distributors.Web;
+using Email.Web;
 using Environments.Infra.Storage;
 using Environments.Web;
 using IpFilter.Infra.Storage;
@@ -33,7 +34,13 @@ using Cache.Web;
 using Lucca.Core.Api.Queryable.EntityFrameworkCore;
 using Instances.Web;
 using Instances.Infra.Storage;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Localization;
 using Remote.Infra;
+using System.Collections.Generic;
+using System.Globalization;
+using TeamNotification.Web;
+using Tools.Web;
 using Users.Infra.Storage;
 using Users.Web;
 
@@ -53,12 +60,15 @@ namespace CloudControl.Web
         public void ConfigureServices(IServiceCollection services)
         {
             var configuration = ConfigureConfiguration(services);
+            ToolsConfigurer.ConfigureTools(services);
+            ConfigureCulture(services);
             ConfigureHttpContext(services);
             ConfigureHealthCheck(services, configuration);
             ConfigureApi(services);
             ConfigureLogs(services);
             // ConfigureSpa(services);
             ConfigureCache(services, configuration);
+            ConfigureNotifications(services, configuration);
             ConfigureProxy(services);
             ConfigureIpFilter(services);
             ConfigureTenancy(services);
@@ -69,6 +79,27 @@ namespace CloudControl.Web
             ConfigureSalesforce(services, configuration);
             ConfigureBilling(services, configuration);
             ConfigureInstances(services, configuration);
+            ConfigureEmails(services, configuration);
+        }
+
+        private void ConfigureCulture(IServiceCollection services)
+        {
+            CultureInfo.DefaultThreadCurrentCulture = CultureInfo.GetCultureInfo("fr");
+
+            services.AddLocalization();
+
+            services.Configure<RequestLocalizationOptions>(opts =>
+            {
+                var supportedCultures = new List<CultureInfo>
+                {
+                    new CultureInfo("fr"),
+                };
+                opts.DefaultRequestCulture = new RequestCulture("fr");
+                // Formatting numbers, dates, etc.
+                opts.SupportedCultures = supportedCultures;
+                // UI strings that we have localized.
+                opts.SupportedUICultures = supportedCultures;
+            });
         }
 
         public virtual AppConfiguration ConfigureConfiguration(IServiceCollection services)
@@ -141,6 +172,11 @@ namespace CloudControl.Web
             services.AddTenancy(t => { }, DatabaseMode.MultiTenant);
         }
 
+        public virtual void ConfigureNotifications(IServiceCollection services, AppConfiguration configuration)
+        {
+            TeamNotificationConfigurer.ConfigureTeamNotification(services, configuration.Slack);
+        }
+
         public virtual void ConfigureStorage(IServiceCollection services)
         {
             StorageConfigurer.ConfigureServices(services, _configuration);
@@ -163,6 +199,11 @@ namespace CloudControl.Web
         public virtual void ConfigureAuthentication(IServiceCollection services, AppConfiguration configuration)
         {
             AuthConfigurer.ConfigureServices(services, configuration.Authentication);
+        }
+
+        public virtual void ConfigureEmails(IServiceCollection services, AppConfiguration configuration)
+        {
+            EmailConfigurer.ConfigureServices(services, configuration.Email);
         }
 
         public virtual void ConfigureRights(IServiceCollection services, AppConfiguration configuration)

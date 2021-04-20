@@ -1,6 +1,9 @@
 using Instances.Application.Demos;
+using Instances.Application.Demos.Deletion;
+using Instances.Application.Demos.Emails;
 using Instances.Application.Instances;
 using Instances.Domain.Demos;
+using Instances.Domain.Demos.Cleanup;
 using Instances.Domain.Instances;
 using Instances.Domain.Shared;
 using Instances.Infra.DataDuplication;
@@ -14,6 +17,7 @@ using Lucca.Core.Api.Abstractions;
 using Lucca.Core.Api.Web;
 using Microsoft.Extensions.DependencyInjection;
 using Remote.Infra.Extensions;
+using Resources.Translations;
 using System;
 
 namespace Instances.Web
@@ -43,7 +47,9 @@ namespace Instances.Web
             services.AddSingleton(configuration.Identity);
             services.AddSingleton(configuration.CcData);
             services.AddSingleton(configuration.Hubspot);
+            services.AddSingleton<DeletionCallbackNotifier>();
             services.AddSingleton<IUsersPasswordHelper, UsersPasswordHelper>();
+            services.AddSingleton<IDemoDeletionCalculator, DemoDeletionCalculator>();
             services.AddSingleton<SqlScriptPicker>();
 
             services.AddScoped<InstancesDuplicator>();
@@ -57,6 +63,10 @@ namespace Instances.Web
             services.AddScoped<ISubdomainGenerator, SubdomainGenerator>();
             services.AddScoped<ISubdomainValidator, SubdomainValidator>();
             services.AddScoped<IClusterSelector, ClusterSelector>();
+
+            services.AddScoped<IDemoEmails, DemoEmails>();
+
+            services.AddScoped<Translations>();
 
             services.AddScoped<IDemoUsersPasswordResetService, DemoUsersPasswordResetService>();
 
@@ -93,6 +103,11 @@ namespace Instances.Web
                         .WithAuthScheme("CloudControl")
                         .AuthenticateAsWebService(configuration.CcData.OutboundToken);
                 });
+
+            services.AddHttpClient<IInstanceSessionLogsService, InstanceSessionLogsService>(c =>
+            {
+                c.WithUserAgent(nameof(InstanceSessionLogsService));
+            });
         }
 
         public static LuccaApiBuilder ConfigureLuccaApiForInstances(this LuccaApiBuilder luccaApiBuilder)

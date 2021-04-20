@@ -2,6 +2,7 @@ using Authentication.Domain;
 using Distributors.Domain;
 using Instances.Application.Instances;
 using Instances.Domain.Demos;
+using Instances.Domain.Demos.Cleanup;
 using Instances.Domain.Instances;
 using Instances.Domain.Instances.Models;
 using Instances.Infra.Instances.Services;
@@ -16,7 +17,7 @@ using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 
-namespace Instances.Application.Demos
+namespace Instances.Application.Demos.Duplication
 {
     public enum DemoDuplicationRequestSource
     {
@@ -39,6 +40,7 @@ namespace Instances.Application.Demos
         private readonly IDemoRightsFilter _demoRightsFilter;
         private readonly IDemoUsersPasswordResetService _usersPasswordResetService;
         private readonly IWsAuthSynchronizer _wsAuthSynchronizer;
+        private readonly IDemoDeletionCalculator _deletionCalculator;
         private readonly ILogger<DemoDuplicator> _logger;
 
         public DemoDuplicator
@@ -56,6 +58,7 @@ namespace Instances.Application.Demos
             IDemoRightsFilter demoRightsFilter,
             IDemoUsersPasswordResetService usersPasswordResetService,
             IWsAuthSynchronizer wsAuthSynchronizer,
+            IDemoDeletionCalculator deletionCalculator,
             ILogger<DemoDuplicator> logger
         )
         {
@@ -72,6 +75,7 @@ namespace Instances.Application.Demos
             _demoRightsFilter = demoRightsFilter;
             _usersPasswordResetService = usersPasswordResetService;
             _wsAuthSynchronizer = wsAuthSynchronizer;
+            _deletionCalculator = deletionCalculator;
             _logger = logger;
         }
 
@@ -161,17 +165,20 @@ namespace Instances.Application.Demos
 
         private Demo BuildDemo(DemoDuplication duplication, Instance instance)
         {
-            return new Demo
+            var demo = new Demo
             {
                 Subdomain = duplication.InstanceDuplication.TargetSubdomain,
                 DistributorID = duplication.DistributorId,
                 Comment = duplication.Comment,
                 CreatedAt = DateTime.Now,
-                DeletionScheduledOn = DateTime.Now.AddDays(62),
+                AuthorId = duplication.AuthorId,
                 IsActive = true,
                 IsTemplate = false,
                 InstanceID = instance.Id
             };
+
+            demo.DeletionScheduledOn = _deletionCalculator.GetDeletionDate(demo, DateTime.Now);
+            return demo;
         }
 
         private void ThrowIfInvalid(DemoDuplicationRequest request)
