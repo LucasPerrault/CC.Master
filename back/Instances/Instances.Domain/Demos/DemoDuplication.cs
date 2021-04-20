@@ -1,17 +1,8 @@
-﻿using Instances.Domain.Instances;
+using Instances.Domain.Instances;
 using System;
 
 namespace Instances.Domain.Demos
 {
-    public enum DemoDuplicationProgress
-    {
-        Pending = 1,
-        Running = 2,
-        FinishedWithSuccess = 3,
-        FinishedWithFailure = 4,
-        Canceled = 5
-    }
-
     public class DemoDuplication
     {
         public int Id { get; set; }
@@ -21,7 +12,6 @@ namespace Instances.Domain.Demos
         public int SourceDemoId { get; set; }
         public int AuthorId { get; set; }
         public DateTime CreatedAt { get; set; }
-        public DemoDuplicationProgress Progress { get; set; }
         public InstanceDuplication InstanceDuplication { get; set; }
         public Demo SourceDemo { get; set; }
 

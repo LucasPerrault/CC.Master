@@ -59,6 +59,7 @@ namespace Instances.Web
             services.AddScoped<IDemoDuplicationsStore, DemoDuplicationsStore>();
             services.AddScoped<IDemoRightsFilter, DemoRightsFilter>();
             services.AddScoped<DemosRepository>();
+            services.AddScoped<InstanceDuplicationsRepository>();
             services.AddScoped<ISubdomainGenerator, SubdomainGenerator>();
             services.AddScoped<ISubdomainValidator, SubdomainValidator>();
             services.AddScoped<IClusterSelector, ClusterSelector>();

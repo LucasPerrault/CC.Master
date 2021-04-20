@@ -3,6 +3,15 @@ using System;
 
 namespace Instances.Domain.Instances
 {
+    public enum InstanceDuplicationProgress
+    {
+        Pending = 1,
+        Running = 2,
+        FinishedWithSuccess = 3,
+        FinishedWithFailure = 4,
+        Canceled = 5
+    }
+
     public class InstanceDuplication
     {
         public Guid Id { get; set; }
@@ -12,6 +21,7 @@ namespace Instances.Domain.Instances
         public string TargetCluster { get; set; }
 
         public InstanceDuplicationType Type { get; set; }
+        public InstanceDuplicationProgress Progress { get; set; }
         public string DistributorId { get; set; }
 
         public Distributor Distributor { get; set; }

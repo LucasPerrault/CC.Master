@@ -16,6 +16,7 @@ using Instances.Infra.Instances.Services;
 using Instances.Infra.Storage.Stores;
 using Instances.Infra.WsAuth;
 using Lucca.Core.Shared.Domain.Exceptions;
+using Microsoft.Extensions.Logging;
 using Moq;
 using Rights.Domain;
 using Rights.Domain.Abstractions;
@@ -40,7 +41,7 @@ namespace Instances.Application.Specflow.Tests.Demos.Steps
         [Given(@"a (.*) duplication for demo '(.*)' of id '(.*)'")]
         public async Task GivenADuplication
         (
-            DemoDuplicationProgress progress,
+            InstanceDuplicationProgress progress,
             string subdomain,
             Guid duplicationId
         )
@@ -50,12 +51,12 @@ namespace Instances.Application.Specflow.Tests.Demos.Steps
             var duplication = new DemoDuplication
             {
                 Password = "test",
-                Progress = progress,
                 InstanceDuplicationId = duplicationId,
                 InstanceDuplication = new InstanceDuplication
                 {
                     Id = duplicationId,
                     TargetSubdomain = subdomain,
+                    Progress = progress,
                     DistributorId = distributor.Id
                 }
             };
@@ -107,6 +108,7 @@ namespace Instances.Application.Specflow.Tests.Demos.Steps
         {
             var demosStore = new DemosStore(_demosContext.DbContext, new DummyQueryPager());
             var demoDuplicationsStore = new DemoDuplicationsStore(_demosContext.DbContext);
+            var instanceDuplicationsStore = new InstanceDuplicationsStore(_demosContext.DbContext);
 
             _demosContext.Mocks.DistributorsStore
                 .Setup(s => s.GetByCodeAsync(It.IsAny<string>()))
@@ -129,6 +131,7 @@ namespace Instances.Application.Specflow.Tests.Demos.Steps
             var authWsMock = new Mock<IWsAuthSynchronizer>();
             var ccDataServiceMock = new Mock<ICcDataService>();
             var clusterSelectorMock = new Mock<IClusterSelector>();
+            var logger = new Mock<ILogger<DemoDuplicator>>();
 
             return new DemoDuplicator
                 (
@@ -142,6 +145,7 @@ namespace Instances.Application.Specflow.Tests.Demos.Steps
                     ),
                     demosStore,
                     demoDuplicationsStore,
+                    instanceDuplicationsStore,
                     _demosContext.Mocks.InstancesStore.Object,
                     rightsServiceMock.Object,
                     _demosContext.Mocks.DistributorsStore.Object,
@@ -151,7 +155,8 @@ namespace Instances.Application.Specflow.Tests.Demos.Steps
                     new DemoRightsFilter(rightsServiceMock.Object),
                     passwordResetMock.Object,
                     authWsMock.Object,
-                    new Mock<IDemoDeletionCalculator>().Object
+                    new Mock<IDemoDeletionCalculator>().Object,
+                    logger.Object
                 );
         }
 
