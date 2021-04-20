@@ -8,6 +8,7 @@ import { NavigationComponent } from './navigation.component';
 import { NAVIGATION_TABS } from './navigation-tabs.token';
 import { NavigationAlertService } from './services/navigation-alert.service';
 import { NavigationTabsService } from './services/navigation-tabs.service';
+import { ZendeskHelpService } from './services/zendesk-help.service';
 
 @NgModule({
   declarations: [NavigationComponent],
@@ -20,6 +21,7 @@ import { NavigationTabsService } from './services/navigation-tabs.service';
     NavigationComponent,
   ],
   providers: [
+    ZendeskHelpService,
     NavigationTabsService,
     NavigationAlertService,
     {

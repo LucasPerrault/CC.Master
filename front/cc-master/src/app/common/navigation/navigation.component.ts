@@ -5,6 +5,7 @@ import { filter, takeUntil } from 'rxjs/operators';
 
 import { INavigationTab } from './models/navigation-tab.interface';
 import { NavigationTabsService } from './services/navigation-tabs.service';
+import { ZendeskHelpService } from './services/zendesk-help.service';
 
 @Component({
   selector: 'cc-navigation',
@@ -20,9 +21,12 @@ export class NavigationComponent implements OnInit, OnDestroy {
   private destroy$: Subject<void> = new Subject<void>();
 
   constructor(
+    private zendeskHelpService: ZendeskHelpService,
     private navigationService: NavigationTabsService,
     private router: Router,
-  ) { }
+  ) {
+    this.zendeskHelpService.setupWebWidget();
+  }
 
   public ngOnInit(): void {
     const navigationEnded$ = this.router.events.pipe(
@@ -62,5 +66,9 @@ export class NavigationComponent implements OnInit, OnDestroy {
 
   public getChildrenUrl(parent: INavigationTab, child: INavigationTab): string {
     return `${ parent.url }/${ child.url }`;
+  }
+
+  public toggleHelp(): void {
+    this.zendeskHelpService.toggleWidgetDisplay();
   }
 }
