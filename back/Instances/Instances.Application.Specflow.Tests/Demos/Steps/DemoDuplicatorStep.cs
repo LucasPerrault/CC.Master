@@ -14,6 +14,7 @@ using Instances.Infra.Instances.Services;
 using Instances.Infra.Storage.Stores;
 using Instances.Infra.WsAuth;
 using Lucca.Core.Shared.Domain.Exceptions;
+using Microsoft.Extensions.Logging;
 using Moq;
 using Rights.Domain;
 using Rights.Domain.Abstractions;
@@ -128,6 +129,7 @@ namespace Instances.Application.Specflow.Tests.Demos.Steps
             var authWsMock = new Mock<IWsAuthSynchronizer>();
             var ccDataServiceMock = new Mock<ICcDataService>();
             var clusterSelectorMock = new Mock<IClusterSelector>();
+            var logger = new Mock<ILogger<DemoDuplicator>>();
 
             return new DemoDuplicator
                 (
@@ -150,7 +152,8 @@ namespace Instances.Application.Specflow.Tests.Demos.Steps
                     new UsersPasswordHelper(),
                     new DemoRightsFilter(rightsServiceMock.Object),
                     passwordResetMock.Object,
-                    authWsMock.Object
+                    authWsMock.Object,
+                    logger.Object
                 );
         }
 
