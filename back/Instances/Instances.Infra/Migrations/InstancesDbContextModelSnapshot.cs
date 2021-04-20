@@ -100,10 +100,6 @@ namespace Instances.Infra.Migrations
                         .HasColumnType("nvarchar(255)")
                         .HasMaxLength(255);
 
-                    b.Property<int>("Progress")
-                        .HasColumnName("progress")
-                        .HasColumnType("int");
-
                     b.Property<int>("SourceDemoId")
                         .HasColumnName("sourceDemoId")
                         .HasColumnType("int");
@@ -127,6 +123,10 @@ namespace Instances.Infra.Migrations
                         .IsRequired()
                         .HasColumnName("distributorId")
                         .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("Progress")
+                        .HasColumnName("progress")
+                        .HasColumnType("int");
 
                     b.Property<string>("SourceCluster")
                         .IsRequired()
