@@ -23,7 +23,7 @@ namespace Billing.Cmrr.Infra.Migrations
                     c.discount2 distributorDiscount,
                     c.countDate createdAt
                     FROM [dbo].[Counts] c
-                    INNER JOIN Accountings a on a.entryNumber = c.entryNumber
+                    INNER JOIN [dbo].[Accountings] a on a.entryNumber = c.entryNumber
                     WHERE accountNumber = '401'
             ");
         }

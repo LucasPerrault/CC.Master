@@ -15,6 +15,7 @@ namespace Billing.Cmrr.Infra.Storage
         protected override void ApplyConfiguration(ModelBuilder modelBuilder)
         {
             modelBuilder.ApplyConfiguration(new CmrrCountConfiguration());
+            modelBuilder.ApplyConfiguration(new CmrrContractConfiguration());
         }
     }
 
