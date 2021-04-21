@@ -71,7 +71,7 @@ namespace Instances.Application.Specflow.Tests.Demos.Steps
             var duplication = new DemoDuplicationRequest
             {
                 Subdomain = subdomain,
-                DistributorId = selection.Code,
+                DistributorCode = selection.Code,
                 Password = "test",
                 SourceDemoSubdomain = sourceSubdomain
             };

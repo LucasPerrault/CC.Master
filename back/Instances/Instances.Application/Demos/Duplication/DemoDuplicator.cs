@@ -95,12 +95,12 @@ namespace Instances.Application.Demos.Duplication
             var targetSubdomain = await _subdomainGenerator.GetSubdomainAsync(request.Subdomain, shouldUseSubdomainAsPrefix);
 
             var demoToDuplicate = await GetDemoToDuplicateAsync(request.SourceDemoSubdomain);
-
+            var distributor = await _distributorsStore.GetByCodeAsync(request.DistributorCode);
             var instanceDuplication = new InstanceDuplication
             {
                 Id = Guid.NewGuid(),
                 Type = InstanceDuplicationType.Demos,
-                DistributorId = request.DistributorId,
+                DistributorId = distributor.Id,
                 SourceCluster = demoToDuplicate.Instance.Cluster,
                 TargetCluster = await _clusterSelector.GetFillingCluster(),
                 SourceSubdomain = demoToDuplicate.Subdomain,
@@ -209,8 +209,7 @@ namespace Instances.Application.Demos.Duplication
                 throw new ApplicationException("Unsupported claims principal type");
             }
 
-            var userDistributor = await _distributorsStore.GetByCodeAsync(user.User.DepartmentCode);
-            if (userDistributor.Id == request.DistributorId)
+            if (user.User.DepartmentCode == request.DistributorCode)
             {
                 return;
             }
