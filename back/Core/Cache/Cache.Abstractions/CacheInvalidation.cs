@@ -4,10 +4,8 @@ namespace Cache.Abstractions
 {
     public abstract class CacheInvalidation
     {
-        internal CacheInvalidation()
-        {
-
-        }
+        protected internal CacheInvalidation()
+        { }
 
         public static CacheInvalidation Never => new NeverCacheInvalidation();
 

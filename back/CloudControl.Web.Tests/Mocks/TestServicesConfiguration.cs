@@ -2,6 +2,8 @@ using Authentication.Infra.Configurations;
 using Billing.Contracts.Infra.Configurations;
 using CloudControl.Web.Configuration;
 using Core.Proxy.Infra.Configuration;
+using Instances.Domain.Demos;
+using Instances.Infra.DataDuplication;
 using Instances.Infra.Demos;
 using Instances.Infra.Instances;
 using Instances.Infra.WsAuth;
@@ -208,7 +210,9 @@ namespace CloudControl.Web.Tests.Mocks
                     {
                         OutboundToken = new Guid("deadbeef-0000-0000-0000-000000000000"),
                         ServerUri = new Uri("https://api.hubapi.mocked")
-                    }
+                    },
+                    SqlScriptPicker = new SqlScriptPickerConfiguration(),
+                    DemoClusterSelection = new ClusterSelectorConfiguration()
                 }
             });
         }
