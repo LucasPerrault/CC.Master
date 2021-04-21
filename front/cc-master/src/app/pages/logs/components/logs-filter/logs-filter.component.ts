@@ -43,7 +43,6 @@ export class LogsFiltersComponent implements ControlValueAccessor {
       return;
     }
 
-    this.onChange(logsFilter);
     this.logsFilter = logsFilter;
   }
 
