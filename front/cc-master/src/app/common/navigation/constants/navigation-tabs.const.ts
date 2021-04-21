@@ -69,6 +69,11 @@ export const getNavigationTabs = (alertService: NavigationAlertService): INaviga
           name: 'front_navigation_accountingRevenueTab',
           isLegacy: true,
         },
+        {
+          url: NavigationPath.AccountingMiscTransactions,
+          name: 'front_navigation_accountingMiscTransactionsTab',
+          isLegacy: true,
+        },
       ],
     },
     {

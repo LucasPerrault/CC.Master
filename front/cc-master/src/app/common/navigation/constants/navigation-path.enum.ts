@@ -20,4 +20,5 @@ export enum NavigationPath {
   CodeSources = 'sources',
   Accounting = 'accounting',
   AccountingRevenue = 'revenue',
+  AccountingMiscTransactions = 'misc',
 }
