@@ -1,10 +1,10 @@
 import { Operation, OperationRestrictionMode } from '@cc/aspects/rights';
 
 import { INavigationTab } from '../models/navigation-tab.interface';
-import { NavigationAlertService } from '../services/navigation-alert.service';
+import { NavigationAlert } from './navigation-alert.enum';
 import { NavigationPath } from './navigation-path.enum';
 
-export const getNavigationTabs = (alertService: NavigationAlertService): INavigationTab[] => [
+export const navigationTabs: INavigationTab[] = [
     {
       name: 'front_navigation_environmentsTab',
       url: NavigationPath.Environments,
@@ -98,7 +98,7 @@ export const getNavigationTabs = (alertService: NavigationAlertService): INaviga
         {
           url: NavigationPath.BillingToExport,
           name: 'front_navigation_billingExportTab',
-          alert$: alertService.getNotExportedCount$(),
+          alert: NavigationAlert.BillingToExport,
           isLegacy: true,
         },
         {

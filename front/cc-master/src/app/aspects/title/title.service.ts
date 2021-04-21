@@ -1,7 +1,7 @@
-import { Inject, Injectable } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 import { TranslatePipe } from '@cc/aspects/translate';
-import { INavigationTab, NAVIGATION_TABS } from '@cc/common/navigation';
+import { INavigationTab, navigationTabs } from '@cc/common/navigation';
 import { noNavTabs } from '@cc/common/routing';
 
 @Injectable()
@@ -11,7 +11,6 @@ export class TitleService {
   private readonly cloudControlPageTitlePrefix = 'CC';
 
   constructor(
-    @Inject(NAVIGATION_TABS) private tabs: INavigationTab[],
     private title: Title,
     private translatePipe: TranslatePipe,
   ) {
@@ -30,7 +29,7 @@ export class TitleService {
 
   private getActivatedTab(activatedUrl: string): INavigationTab | undefined {
     const firstSegment = this.getFirstSegment(activatedUrl);
-    const allTabs = [...this.tabs, ...noNavTabs];
+    const allTabs = [...navigationTabs, ...noNavTabs];
 
     return allTabs.find(tab => tab.url.toLowerCase() === firstSegment.toLowerCase());
   }

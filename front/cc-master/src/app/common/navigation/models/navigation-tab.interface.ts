@@ -1,5 +1,6 @@
 import { Operation, OperationRestrictionMode } from '@cc/aspects/rights';
-import { Observable } from 'rxjs';
+
+import { NavigationAlert } from '../constants/navigation-alert.enum';
 
 export interface INavigationTab {
   name: string;
@@ -7,7 +8,7 @@ export interface INavigationTab {
   url: string;
   isLegacy?: boolean;
   children?: INavigationTab[];
-  alert$?: Observable<string>;
+  alert?: NavigationAlert;
   restriction?: INavigationRestriction;
 }
 

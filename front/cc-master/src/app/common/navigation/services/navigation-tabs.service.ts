@@ -3,8 +3,10 @@ import { IPrincipal, PRINCIPAL } from '@cc/aspects/principal';
 import { RightsService } from '@cc/aspects/rights';
 import { Observable } from 'rxjs';
 
+import { navigationTabs } from '../constants/navigation-tabs.const';
 import { INavigationTab } from '../models/navigation-tab.interface';
-import { NAVIGATION_TABS } from '../navigation-tabs.token';
+import { NavigationAlertService } from '../services/navigation-alert.service';
+
 
 enum NavigationTabState {
   Open = 0,
@@ -22,14 +24,14 @@ export class NavigationTabsService {
   private states: { [name: string]: NavigationTabState } = { };
 
   public get tabs(): INavigationTab[] {
-    return this.navigationTabs.filter(tab =>
+    return navigationTabs.filter(tab =>
       this.rightsService.hasOperationsByRestrictionMode(tab.restriction.operations, tab.restriction.mode),
     );
   }
 
   constructor(
     @Inject(PRINCIPAL) private principal: IPrincipal,
-    @Inject(NAVIGATION_TABS) private navigationTabs: INavigationTab[],
+    private alertService: NavigationAlertService,
     private rightsService: RightsService,
   ) {}
 
@@ -81,8 +83,8 @@ export class NavigationTabsService {
   private getTabAlerts(tab: INavigationTab): NavigationTabAlert[] {
     let alerts: NavigationTabAlert[] = [];
 
-    if (!!tab.alert$) {
-      const uniqAlertByTab = { key: this.getTabUrlAsKey(tab), alert$: tab.alert$ };
+    if (!!tab.alert) {
+      const uniqAlertByTab = { key: this.getTabUrlAsKey(tab), alert$: this.alertService.getAlert$(tab.alert) };
       alerts = [...alerts, uniqAlertByTab];
     }
 
@@ -94,11 +96,11 @@ export class NavigationTabsService {
   }
 
   private getChildrenTabAlerts(tab: INavigationTab): NavigationTabAlert[] {
-    const childrenWithAlert = tab.children.filter(child => !!child.alert$);
+    const childrenWithAlert = tab.children.filter(child => !!child.alert);
 
     return childrenWithAlert.map(child => ({
       key: this.getTabUrlAsKey(tab, child),
-      alert$: child.alert$,
+      alert$: this.alertService.getAlert$(child.alert),
     }));
   }
 
