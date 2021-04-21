@@ -5,7 +5,6 @@ import { TranslateModule } from '@cc/aspects/translate';
 
 import { NavigationComponent } from './navigation.component';
 import { NavigationAlertService } from './services/navigation-alert.service';
-import { NavigationTabsService } from './services/navigation-tabs.service';
 import { ZendeskHelpService } from './services/zendesk-help.service';
 
 @NgModule({
@@ -20,7 +19,6 @@ import { ZendeskHelpService } from './services/zendesk-help.service';
   ],
   providers: [
     ZendeskHelpService,
-    NavigationTabsService,
     NavigationAlertService,
   ],
 })

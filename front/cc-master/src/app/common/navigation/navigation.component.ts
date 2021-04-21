@@ -1,11 +1,23 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
-import { Subject } from 'rxjs';
+import { RightsService } from '@cc/aspects/rights';
+import { Observable, Subject } from 'rxjs';
 import { filter, takeUntil } from 'rxjs/operators';
 
+import { navigationTabs } from './constants/navigation-tabs.const';
 import { INavigationTab } from './models/navigation-tab.interface';
-import { NavigationTabsService } from './services/navigation-tabs.service';
+import { NavigationAlertService } from './services/navigation-alert.service';
 import { ZendeskHelpService } from './services/zendesk-help.service';
+
+enum NavigationTabState {
+  Open = 0,
+  Closed = 1,
+}
+
+class NavigationTabAlert {
+  public key: string;
+  public alert$: Observable<string>;
+}
 
 @Component({
   selector: 'cc-navigation',
@@ -15,14 +27,20 @@ import { ZendeskHelpService } from './services/zendesk-help.service';
 export class NavigationComponent implements OnInit, OnDestroy {
 
   public get tabs(): INavigationTab[] {
-    return this.navigationService.tabs;
+    return navigationTabs.filter(tab =>
+      this.rightsService.hasOperationsByRestrictionMode(tab.restriction.operations, tab.restriction.mode),
+    );
   }
+
+  private alerts: { [name: string]: string } = { };
+  private states: { [name: string]: NavigationTabState } = { };
 
   private destroy$: Subject<void> = new Subject<void>();
 
   constructor(
     private zendeskHelpService: ZendeskHelpService,
-    private navigationService: NavigationTabsService,
+    private alertService: NavigationAlertService,
+    private rightsService: RightsService,
     private router: Router,
   ) {
     this.zendeskHelpService.setupWebWidget();
@@ -35,7 +53,7 @@ export class NavigationComponent implements OnInit, OnDestroy {
     );
 
     navigationEnded$.subscribe(async (activatedRoute: NavigationEnd) =>
-      await this.navigationService.openActivatedTabAsync(activatedRoute.url),
+      await this.openActivatedTabAsync(activatedRoute.url),
     );
   }
 
@@ -49,19 +67,20 @@ export class NavigationComponent implements OnInit, OnDestroy {
   }
 
   public async toggleAsync(tab: INavigationTab): Promise<void> {
-    await this.navigationService.toggleState(tab);
+    this.states[tab.name] = this.isOpen(tab) ? NavigationTabState.Closed : NavigationTabState.Open;
 
     if (this.isOpen(tab)) {
-      await this.navigationService.refreshAlertsAsync(tab);
+      await this.refreshAlertsAsync(tab);
     }
   }
 
   public isOpen(tab: INavigationTab): boolean {
-    return this.navigationService.isOpen(tab);
+    return this.states[tab.name] === NavigationTabState.Open;
   }
 
   public getAlert(tab: INavigationTab, child: INavigationTab): string {
-    return this.navigationService.getAlert(tab, child);
+    const key = this.getTabUrlAsKey(tab, child);
+    return this.alerts[key];
   }
 
   public getChildrenUrl(parent: INavigationTab, child: INavigationTab): string {
@@ -70,5 +89,62 @@ export class NavigationComponent implements OnInit, OnDestroy {
 
   public toggleHelp(): void {
     this.zendeskHelpService.toggleWidgetDisplay();
+  }
+
+  private async openActivatedTabAsync(url: string): Promise<void> {
+    const tabWithChildren = this.tabs.filter(t => !!t.children);
+
+    for (const child of tabWithChildren) {
+      if (!this.shouldOpenParentTab(url, child)) {
+        continue;
+      }
+
+      this.states[child.name] = NavigationTabState.Open;
+      await this.refreshAlertsAsync(child);
+    }
+  }
+
+  private shouldOpenParentTab(url: string, child: INavigationTab): boolean {
+    const urlWithNoPrependingSlash = url.startsWith('/') ? url.slice(1) : url;
+    const firstSegment = urlWithNoPrependingSlash.split('/')[0];
+
+    return firstSegment.toLowerCase().startsWith(child.url.toLowerCase());
+  }
+
+  private async refreshAlertsAsync(tab: INavigationTab, forceUpdate: boolean = false): Promise<void> {
+    for (const tabAlert of this.getTabAlerts(tab)) {
+      if (!forceUpdate && !!this.alerts[tabAlert.key]) {
+        continue;
+      }
+
+      this.alerts[tabAlert.key] = await tabAlert.alert$.toPromise();
+    }
+  }
+
+  private getTabAlerts(tab: INavigationTab): NavigationTabAlert[] {
+    let alerts: NavigationTabAlert[] = [];
+
+    if (!!tab.alert) {
+      const uniqAlertByTab = { key: this.getTabUrlAsKey(tab), alert$: this.alertService.getAlert$(tab.alert) };
+      alerts = [...alerts, uniqAlertByTab];
+    }
+
+    if (!!tab.children) {
+      alerts = [...alerts, ...this.getChildrenTabAlerts(tab)];
+    }
+
+    return alerts;
+  }
+
+  private getTabUrlAsKey = (tab: INavigationTab, child: INavigationTab = undefined): string =>
+    !!child ? tab.url + '/' + child.url : tab.url;
+
+  private getChildrenTabAlerts(tab: INavigationTab): NavigationTabAlert[] {
+    const childrenWithAlert = tab.children.filter(child => !!child.alert);
+
+    return childrenWithAlert.map(child => ({
+      key: this.getTabUrlAsKey(tab, child),
+      alert$: this.alertService.getAlert$(child.alert),
+    }));
   }
 }
