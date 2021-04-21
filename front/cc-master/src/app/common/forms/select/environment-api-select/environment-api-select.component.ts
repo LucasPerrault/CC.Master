@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, forwardRef } from '@angular/core';
+import { ChangeDetectorRef, Component, forwardRef, Input } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { IEnvironment } from '@cc/domain/environments';
 import { ALuApiService } from '@lucca-front/ng/api';
@@ -21,6 +21,8 @@ import { EnvironmentApiSelectService } from './environment-api-select.service';
   ],
 })
 export class EnvironmentApiSelectComponent implements ControlValueAccessor {
+  @Input() public class?: string;
+
   public onChange: (environments: IEnvironment[]) => void;
   public onTouch: () => void;
 

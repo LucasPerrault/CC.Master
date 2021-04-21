@@ -1,53 +1,44 @@
-<cc-infinite-scroll-viewport (showMore)="showMoreData()">
-  <table class="table card mod-infinite-scrolling">
-    <thead class="table-head">
-    <tr class="table-head-row">
-      <th class="table-head-row-cell mod-sortable"
-          [class.is-sorted-descending]="activeAscOrDescIcon('userId', sortOrder.Asc)"
-          [class.is-sorted-ascending]="activeAscOrDescIcon('userId', sortOrder.Desc)"
-          (click)="sortBy('userId')">
-        {{ 'front_logPage_columnTable_collaborator' | translate }}
-      </th>
-      <th class="table-head-row-cell">{{ 'front_logPage_columnTable_action' | translate }}</th>
-      <th class="table-head-row-cell">{{ 'front_logPage_columnTable_instance' | translate }}</th>
-      <th class="table-head-row-cell mod-sortable"
-          [class.is-sorted-descending]="activeAscOrDescIcon('createdOn', sortOrder.Asc)"
-          [class.is-sorted-ascending]="activeAscOrDescIcon('createdOn', sortOrder.Desc)"
-          (click)="sortBy('createdOn')">{{ 'front_logPage_columnTable_date' | translate }}</th>
-      <th class="table-head-row-cell column-xs">{{ 'front_logPage_columnTable_anonymized' | translate }}</th>
-      <th class="table-head-row-cell column-xl">{{ 'front_logPage_columnTable_justification' | translate }}</th>
-    </tr>
-    </thead>
-    <tbody class="table-body">
-    <tr *ngFor="let log of logs" class="table-body-row">
-      <td class="table-body-row-cell">{{ log.user.name }}</td>
-      <td class="table-body-row-cell">{{ log.activity }}</td>
-      <td class="table-body-row-cell">{{ getInstanceName(log.environment) }}</td>
-      <td class="table-body-row-cell">
-        {{ log.createdOn | date: 'shortDate' }} {{ log.createdOn | date: 'mediumTime' }}
-      </td>
-      <td class="table-body-row-cell column-xs">
-        <div class="checkbox">
-          <input class="checkbox-input" type="checkbox" id="isAnonymizedData" [checked]="log.isAnonymizedData" disabled>
-          <label class="checkbox-label" for="isAnonymizedData"></label>
-        </div>
-      </td>
-      <td class="table-body-row-cell column-xl">{{ getNonAnonymizedActionExplanation(log) }}</td>
-    </tr>
-    <tr class="table-body-row" *ngIf="isLoading">
-      <td class="table-body-row-cell" colspan="6">
-        <div class="loading" [ngClass]="{'mod-dialog': isUpdateData, 'u-right': isLoadMore}">
-        </div>
-      </td>
-    </tr>
-    <tr class="table-body-row" *ngIf="!logs.length && isIdle">
-      <td class="table-body-row-cell" colspan="6">
-        <section class="emptyState">
-          <h3 class="emptyState-title">{{ 'front_logPage_emptyState_title' | translate }}</h3>
-          <p class="emptyState-description">{{ 'front_logPage_emptyState_information' | translate }}</p>
-        </section>
-      </td>
-    </tr>
-    </tbody>
-  </table>
-</cc-infinite-scroll-viewport>
+<table class="table">
+  <thead class="table-head">
+  <tr class="table-head-row">
+    <th class="table-head-row-cell mod-sortable"
+        [class.is-sorted-descending]="activeAscOrDescIcon('userId', sortOrder.Asc)"
+        [class.is-sorted-ascending]="activeAscOrDescIcon('userId', sortOrder.Desc)"
+        (click)="sortBy('userId')">
+      {{ 'front_logPage_columnTable_collaborator' | translate }}
+    </th>
+    <th class="table-head-row-cell">{{ 'front_logPage_columnTable_action' | translate }}</th>
+    <th class="table-head-row-cell">{{ 'front_logPage_columnTable_instance' | translate }}</th>
+    <th class="table-head-row-cell mod-sortable"
+        [class.is-sorted-descending]="activeAscOrDescIcon('createdOn', sortOrder.Asc)"
+        [class.is-sorted-ascending]="activeAscOrDescIcon('createdOn', sortOrder.Desc)"
+        (click)="sortBy('createdOn')">{{ 'front_logPage_columnTable_date' | translate }}</th>
+    <th class="table-head-row-cell column-xs">{{ 'front_logPage_columnTable_anonymized' | translate }}</th>
+    <th class="table-head-row-cell column-xl">{{ 'front_logPage_columnTable_justification' | translate }}</th>
+  </tr>
+  </thead>
+  <tbody class="table-body">
+  <tr *ngFor="let log of logs" class="table-body-row">
+    <td class="table-body-row-cell">{{ log.user.name }}</td>
+    <td class="table-body-row-cell">{{ log.activity }}</td>
+    <td class="table-body-row-cell">{{ getInstanceName(log.environment) }}</td>
+    <td class="table-body-row-cell">
+      {{ log.createdOn | date: 'shortDate' }} {{ log.createdOn | date: 'mediumTime' }}
+    </td>
+    <td class="table-body-row-cell column-xs">
+      <div class="checkbox">
+        <input class="checkbox-input" type="checkbox" id="isAnonymizedData" [checked]="log.isAnonymizedData" disabled>
+        <label class="checkbox-label" for="isAnonymizedData"></label>
+      </div>
+    </td>
+    <td class="table-body-row-cell column-xl">{{ getNonAnonymizedActionExplanation(log) }}</td>
+  </tr>
+  </tbody>
+</table>
+
+<div *ngIf="isLoading" class="loading" [ngClass]="{ 'mod-fullPage': isUpdateData, 'u-right': isLoadMore }"></div>
+
+<section *ngIf="!logs.length && isIdle" class="emptyState">
+  <h3 class="emptyState-title">{{ 'front_logPage_emptyState_title' | translate }}</h3>
+  <p class="emptyState-description">{{ 'front_logPage_emptyState_information' | translate }}</p>
+</section>

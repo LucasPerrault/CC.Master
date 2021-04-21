@@ -6,13 +6,11 @@ import { EnvironmentLogMessageType, IEnvironment, IEnvironmentLog } from '@cc/do
 @Component({
   selector: 'cc-logs-list',
   templateUrl: './logs-list.component.html',
-  styleUrls: ['./logs-list.component.scss'],
 })
 export class LogsListComponent implements OnInit {
   @Input() public logs: IEnvironmentLog[];
   @Input() public sortParams: ISortParams;
   @Output() public updateSort: EventEmitter<ISortParams> = new EventEmitter<ISortParams>();
-  @Output() public showMore: EventEmitter<void> = new EventEmitter<void>();
   @Input() public state: PaginatedListState;
 
   public sortOrder = SortOrder;
@@ -34,10 +32,6 @@ export class LogsListComponent implements OnInit {
     }
     const justificationLogMessage = log.messages.find(m => m.type === EnvironmentLogMessageType.Explanation);
     return !!justificationLogMessage ? justificationLogMessage.message : '';
-  }
-
-  public showMoreData(): void {
-    this.showMore.emit();
   }
 
   public activeAscOrDescIcon(field: string, order: SortOrder): boolean {

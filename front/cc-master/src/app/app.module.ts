@@ -6,6 +6,7 @@ import { ErrorsModule } from '@cc/aspects/errors';
 import { PrincipalModule } from '@cc/aspects/principal';
 import { RightsModule } from '@cc/aspects/rights/rights.module';
 import { TranslateModule } from '@cc/aspects/translate';
+import { BannerComponent, BannerModule } from '@cc/common/banner';
 import { ForbiddenComponent, forbiddenUrl } from '@cc/common/error-redirections';
 import { ToastsModule } from '@cc/common/toasts';
 
@@ -30,10 +31,9 @@ const routes: Routes = [
     TranslateModule.forRoot(),
     ToastsModule,
     RightsModule,
+    BannerModule,
 	],
-	providers: [
-  ],
-  bootstrap: [AppComponent],
+  bootstrap: [AppComponent, BannerComponent],
 })
 export class AppModule {
 }

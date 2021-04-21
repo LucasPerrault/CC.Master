@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, forwardRef } from '@angular/core';
+import { ChangeDetectorRef, Component, forwardRef, Input } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { IUser } from '@cc/domain/users';
 import { ALuApiService } from '@lucca-front/ng/api';
@@ -20,6 +20,7 @@ import { UserApiSelectService } from './user-api-select.service';
   ],
 })
 export class UserApiSelectComponent implements ControlValueAccessor {
+  @Input() public class?: string;
   public onChange: (users: IUser[]) => void;
   public onTouch: () => void;
 

@@ -1,0 +1,17 @@
+.textfield.mod-outlined {
+  & .lu-select-placeholder {
+    color: _color('grey', 800)
+  }
+}
+
+.radioButtons.palette-grey.mod-outlined .radioButtons-item-label {
+  background-color: _color('white');
+}
+
+.button.mod-outline {
+  background-color: _color('white');
+}
+
+.main.mod-withBanner .main-content.mod-withoutScroll {
+  overflow: visible;
+}

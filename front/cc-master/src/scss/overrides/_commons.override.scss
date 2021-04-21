@@ -1,0 +1,9 @@
+$commons: (
+  banner-height: 30px,
+  background:(
+    base: #FFFFFF,
+    lightest: #F2F5F6,
+  ),
+);
+
+$theme: _set($theme, "commons", $commons);

@@ -1,4 +1,4 @@
-import { Component, forwardRef } from '@angular/core';
+import { Component, forwardRef, Input } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { environmentDomains, IEnvironmentDomain } from '@cc/domain/environments';
 
@@ -14,6 +14,8 @@ import { environmentDomains, IEnvironmentDomain } from '@cc/domain/environments'
   ],
 })
 export class EnvironmentDomainSelectComponent implements ControlValueAccessor {
+  @Input() public class?: string;
+
   public onChange: (domainIds: IEnvironmentDomain[]) => void;
   public onTouch: () => void;
 
