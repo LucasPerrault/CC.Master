@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { AnyOperationsGuard, OperationsPageGuard } from '@cc/aspects/rights';
+import { OperationsPageGuard } from '@cc/aspects/rights';
 import { ForbiddenComponent, NotFoundComponent } from '@cc/common/error-redirections';
 import { NavigationPath } from '@cc/common/navigation';
 import { NoNavPath } from '@cc/common/routing';
@@ -18,7 +18,7 @@ const pageRoutes: Routes = [
 const routes: Routes = [
   { path: NoNavPath.Forbidden, component: ForbiddenComponent },
   { path: NoNavPath.NotFound, component: NotFoundComponent },
-  { path: '', canActivate: [AnyOperationsGuard, OperationsPageGuard], children: pageRoutes },
+  { path: '', canActivate: [OperationsPageGuard], children: pageRoutes },
   { path: '**', redirectTo: NoNavPath.NotFound, pathMatch: 'full' },
 ];
 
