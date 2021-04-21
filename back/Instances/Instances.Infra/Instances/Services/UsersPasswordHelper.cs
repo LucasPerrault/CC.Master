@@ -1,4 +1,4 @@
-﻿using Instances.Infra.Resources;
+using Instances.Infra.Resources;
 using Lucca.Core.Shared.Domain.Exceptions;
 using System;
 using System.Collections.Generic;
@@ -32,6 +32,11 @@ namespace Instances.Infra.Instances.Services
 
         public void ThrowIfInvalid(string password)
         {
+            if(string.IsNullOrEmpty(password))
+            {
+                throw new BadRequestException($"Password empty, you must specify a password");
+            }
+
             if (TerriblePasswordsAllowedForLegacyReasons.Contains(password))
             {
                 return;
