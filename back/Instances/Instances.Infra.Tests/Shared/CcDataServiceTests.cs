@@ -2,6 +2,7 @@ using FluentAssertions;
 using FluentAssertions.Json;
 using Instances.Infra.Shared;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
 using Moq;
 using Moq.Protected;
 using Newtonsoft.Json.Linq;
@@ -21,11 +22,13 @@ namespace Instances.Infra.Tests.Shared
         private readonly Mock<HttpMessageHandler> _mockHttpMessageHandler;
         private readonly Mock<IHttpContextAccessor> _mockHttpContextAccessor;
         private readonly CcDataConfiguration _ccDataConfiguration;
+        private readonly Mock<ILogger<CcDataService>> _mockLogger;
 
         public CcDataServiceTests()
         {
             _mockHttpMessageHandler = new Mock<HttpMessageHandler>(MockBehavior.Strict);
             _mockHttpContextAccessor = new Mock<IHttpContextAccessor>(MockBehavior.Strict);
+            _mockLogger = new Mock<ILogger<CcDataService>>(MockBehavior.Strict);
 
             _ccDataConfiguration = new CcDataConfiguration
             {
@@ -34,7 +37,7 @@ namespace Instances.Infra.Tests.Shared
                 Scheme = "http"
             };
 
-            _ccDataService = new CcDataService(new HttpClient(_mockHttpMessageHandler.Object), _ccDataConfiguration, _mockHttpContextAccessor.Object);
+            _ccDataService = new CcDataService(new HttpClient(_mockHttpMessageHandler.Object), _ccDataConfiguration, _mockHttpContextAccessor.Object, _mockLogger.Object);
         }
 
         [Fact]
