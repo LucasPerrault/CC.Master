@@ -42,7 +42,7 @@ namespace Instances.Application.Instances
             return _ccDataService.StartDuplicateInstanceAsync
             (
                 duplicateInstanceRequest,
-                duplication.SourceCluster,
+                duplication.TargetCluster,
                 GetCallbackPath(duplication, source)
             );
         }
