@@ -23,7 +23,6 @@ namespace IpFilter.Infra.Storage.Stores
                         d =>
                             d.IpAddress == user.IpAddress
                             && d.UserId == user.UserId
-                            && d.Device == user.Device
                     ).ToListAsync();
         }
     }
