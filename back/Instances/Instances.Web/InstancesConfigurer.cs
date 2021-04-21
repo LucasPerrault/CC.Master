@@ -1,5 +1,6 @@
 using Instances.Application.Demos;
 using Instances.Application.Demos.Deletion;
+using Instances.Application.Demos.Duplication;
 using Instances.Application.Demos.Emails;
 using Instances.Application.Instances;
 using Instances.Domain.Demos;
@@ -47,18 +48,22 @@ namespace Instances.Web
             services.AddSingleton(configuration.Identity);
             services.AddSingleton(configuration.CcData);
             services.AddSingleton(configuration.Hubspot);
+            services.AddSingleton(configuration.SqlScriptPicker);
+            services.AddSingleton(configuration.DemoClusterSelection);
             services.AddSingleton<DeletionCallbackNotifier>();
             services.AddSingleton<IUsersPasswordHelper, UsersPasswordHelper>();
             services.AddSingleton<IDemoDeletionCalculator, DemoDeletionCalculator>();
-            services.AddSingleton<SqlScriptPicker>();
+            services.AddSingleton<ISqlScriptPicker, SqlScriptPicker>();
 
             services.AddScoped<InstancesDuplicator>();
+            services.AddScoped<DemoDuplicator>();
 
             services.AddScoped<IDemosStore, DemosStore>();
             services.AddScoped<IInstanceDuplicationsStore, InstanceDuplicationsStore>();
             services.AddScoped<IDemoDuplicationsStore, DemoDuplicationsStore>();
             services.AddScoped<IDemoRightsFilter, DemoRightsFilter>();
             services.AddScoped<DemosRepository>();
+            services.AddScoped<InstanceDuplicationsRepository>();
             services.AddScoped<InstanceDuplicationsRepository>();
             services.AddScoped<ISubdomainGenerator, SubdomainGenerator>();
             services.AddScoped<ISubdomainValidator, SubdomainValidator>();

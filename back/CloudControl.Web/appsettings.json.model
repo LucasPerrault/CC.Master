@@ -37,7 +37,7 @@
     },
     "Email": {
         "ServerUri": "{{ CC.Master:AuthenticationTenantUri }}",
-        "EmailAppEndpointPath": "{{ CC.Master:EmailAppEndpointPath }}",
+        "EmailAppEndpointPath": "/admin/emails",
         "LuccaEmailsAuthorizationToken": "{{ CC.Master:LuccaEmailsToken }}"
     },
     "LuccaLoggerOptions": {
@@ -72,7 +72,7 @@
     },
     "Instances": {
         "InstancesStore": {
-            "Host": "{{ CC.Master:LegacyCloudControlHost }}",
+            "Host": "http://{{ CC.Master:LegacyCloudControlHost }}",
             "Endpoint": "/api/v3/instances",
             "Token": "{{ CC.Master:LegacyCommunicationToken }}"
         },

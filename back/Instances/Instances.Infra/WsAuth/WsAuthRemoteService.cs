@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Instances.Infra.WsAuth
 {
-    public abstract class WsAuthRemoteService : HostRemoteService
+    public class WsAuthRemoteService : HostRemoteService
     {
         protected override string RemoteApiDescription => "Auth WS";
 
