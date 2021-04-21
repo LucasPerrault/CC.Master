@@ -14,7 +14,7 @@ export class OperationsPageGuard implements CanActivate {
 
   canActivate(next: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean | UrlTree {
     const navigationTabs = next.data.tabs as INavigationTab[] | [];
-    const activatedTab = navigationTabs.find(tab => tab.url === state.url.slice(1));
+    const activatedTab = navigationTabs.find((tab: INavigationTab) => tab.url === state.url.slice(1));
 
     const hasOperations = !!activatedTab && this.rightsService.hasOperationsByRestrictionMode(
       activatedTab.restriction.operations,
