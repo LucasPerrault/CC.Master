@@ -112,6 +112,10 @@ namespace Instances.Infra.Shared
             {
                 clusterNumber = null;
             }
+            if(cluster == "demo" && clusterNumber == null)
+            {
+                clusterNumber = 1;
+            }
             cluster = cluster switch
             {
                 "cluster" => "c",
