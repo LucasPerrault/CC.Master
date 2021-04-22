@@ -31,7 +31,7 @@ namespace Instances.Domain.Demos
 
     public class DemoDuplicationRequest
     {
-        public string SourceDemoSubdomain { get; set; }
+        public int SourceId { get; set; }
         public string Subdomain { get; set; }
         public string Comment { get; set; }
         public string Password { get; set; }

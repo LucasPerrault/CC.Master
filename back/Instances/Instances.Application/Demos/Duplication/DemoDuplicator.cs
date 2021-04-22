@@ -94,7 +94,7 @@ namespace Instances.Application.Demos.Duplication
             var shouldUseSubdomainAsPrefix = requestSource == DemoDuplicationRequestSource.Hubspot;
             var targetSubdomain = await _subdomainGenerator.GetSubdomainAsync(request.Subdomain, shouldUseSubdomainAsPrefix);
 
-            var demoToDuplicate = await GetDemoToDuplicateAsync(request.SourceDemoSubdomain);
+            var demoToDuplicate = await GetDemoToDuplicateAsync(request.SourceId);
             var distributor = await _distributorsStore.GetByCodeAsync(request.DistributorCode);
             var instanceDuplication = new InstanceDuplication
             {
@@ -185,14 +185,14 @@ namespace Instances.Application.Demos.Duplication
             _passwordHelper.ThrowIfInvalid(request.Password);
         }
 
-        private async Task<Demo> GetDemoToDuplicateAsync(string subdomain)
+        private async Task<Demo> GetDemoToDuplicateAsync(int sourceId)
         {
             var rightsFilter = await _demoRightsFilter.GetDefaultReadFilterAsync(_principal);
-            var demoToDuplicate = (await _demosStore.GetActiveAsync(rightsFilter, d => d.Subdomain == subdomain))
+            var demoToDuplicate = (await _demosStore.GetActiveAsync(rightsFilter, d => d.Id == sourceId))
                 .FirstOrDefault();
 
             return demoToDuplicate
-                ?? throw new BadRequestException($"Source demo {subdomain} could not be found");
+                ?? throw new BadRequestException($"Source demo {sourceId} could not be found");
         }
 
         private async Task ThrowIfForbiddenAsync(DemoDuplicationRequest request)

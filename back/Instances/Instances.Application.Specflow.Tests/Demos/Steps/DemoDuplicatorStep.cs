@@ -67,13 +67,14 @@ namespace Instances.Application.Specflow.Tests.Demos.Steps
         [When("I request creation of demo '(.*)' by duplicating demo '(.*)' (.*)")]
         public async Task WhenICreateANewDemoByDuplicationForDistributor(string subdomain, string sourceSubdomain, DistributorSelection selection)
         {
+            var source = _demosContext.DbContext.Set<Demo>().Single(d => d.Subdomain == subdomain);
             var duplicator = GetDuplicator();
             var duplication = new DemoDuplicationRequest
             {
                 Subdomain = subdomain,
                 DistributorCode = selection.Code,
                 Password = "test",
-                SourceDemoSubdomain = sourceSubdomain
+                SourceId = source.Id
             };
 
             try
