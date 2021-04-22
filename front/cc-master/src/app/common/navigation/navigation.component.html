@@ -21,7 +21,7 @@
 
       <ng-template #withChildren>
         <div class="navSide-item is-active" [class.is-open]="isOpen(tab)">
-          <a class="navSide-item-link" (click)="toggleAsync(tab)">
+          <a class="navSide-item-link" (click)="toggleAndRefreshAsync(tab)">
             <span aria-hidden="true" class="lucca-icon" [ngClass]="getIconClass(tab)"></span>
             <span class=" navSide-item-link-title">{{ tab.name | translate }}</span>
             <span aria-hidden="true" class="navSide-item-arrow lucca-icon icon-arrowEast"></span>

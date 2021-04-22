@@ -66,7 +66,7 @@ export class NavigationComponent implements OnInit, OnDestroy {
     return !!tab.icon ? `icon-${tab.icon}` : '';
   }
 
-  public async toggleAsync(tab: INavigationTab): Promise<void> {
+  public async toggleAndRefreshAsync(tab: INavigationTab): Promise<void> {
     this.states[tab.name] = this.isOpen(tab) ? NavigationTabState.Closed : NavigationTabState.Open;
 
     if (this.isOpen(tab)) {
