@@ -32,7 +32,7 @@ namespace Rights.Web.Controllers
                 {
                     PrincipalType = PrincipalType.User,
                     Id = user.UserId.Value,
-                    Email = user.User.Mail,
+                    Mail = user.User.Mail,
                     Name = user.Name,
                     Permissions = await GetPermissionsAsync(user)
                 },
@@ -40,7 +40,7 @@ namespace Rights.Web.Controllers
                 {
                     PrincipalType = PrincipalType.ApiKey,
                     Id = apiKey.ApiKey.Id,
-                    Email = string.Empty,
+                    Mail = string.Empty,
                     Name = apiKey.ApiKey.Name,
                     Permissions = await GetPermissionsAsync(apiKey)
                 },
@@ -82,7 +82,7 @@ namespace Rights.Web.Controllers
     {
         public PrincipalType PrincipalType { get; set; }
         public int Id { get; set; }
-        public string Email { get; set; }
+        public string Mail { get; set; }
         public string Name { get; set; }
         public List<PermissionDto> Permissions { get; set; }
     }
