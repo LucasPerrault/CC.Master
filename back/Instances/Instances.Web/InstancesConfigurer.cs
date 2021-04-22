@@ -106,7 +106,7 @@ namespace Instances.Web
                 {
                     c.WithUserAgent(nameof(CcDataService))
                         .WithAuthScheme("CloudControl")
-                        .AuthenticateAsWebService(configuration.CcData.OutboundToken);
+                        .AuthenticateAsApplication(configuration.CcData.OutboundToken);
                 });
 
             services.AddHttpClient<IInstanceSessionLogsService, InstanceSessionLogsService>(c =>
