@@ -137,7 +137,7 @@ export class NavigationComponent implements OnInit, OnDestroy {
   }
 
   private getTabUrlAsKey = (tab: INavigationTab, child: INavigationTab = undefined): string =>
-    !!child ? tab.url + '/' + child.url : tab.url;
+    !!child ? `${ tab.url }/${ child.url }` : tab.url;
 
   private getChildrenTabAlerts(tab: INavigationTab): NavigationTabAlert[] {
     const childrenWithAlert = tab.children.filter(child => !!child.alert);
