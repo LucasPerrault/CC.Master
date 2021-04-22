@@ -1,7 +1,7 @@
 import { ScrollingModule } from '@angular/cdk/scrolling';
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TranslateModule } from '@cc/aspects/translate';
 import {
   DateRangeSelectModule,
@@ -46,6 +46,7 @@ import { LogsRoutingService } from './services/logs-routing.service';
     SortModule,
     UsersModule,
     QueriesModule,
+    ReactiveFormsModule,
   ],
   providers:[LogsApiMappingService, LogsRoutingService, LogsFilterRoutingService],
 })

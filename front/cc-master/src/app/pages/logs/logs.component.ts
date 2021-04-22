@@ -1,5 +1,6 @@
 import { HttpParams } from '@angular/common/http';
 import { Component, OnDestroy, OnInit } from '@angular/core';
+import { FormControl } from '@angular/forms';
 import { IPaginatedResult, PaginatedList, PaginatedListState, PagingService } from '@cc/common/paging';
 import { ISortParams, SortOrder } from '@cc/common/sort';
 import { IEnvironmentLog, LogsService } from '@cc/domain/environments';
@@ -16,7 +17,7 @@ import { LogsRoutingService } from './services/logs-routing.service';
   templateUrl: './logs.component.html',
 })
 export class LogsComponent implements OnInit, OnDestroy {
-  public filters$: Subject<ILogsFilter> = new Subject<ILogsFilter>();
+  public filters: FormControl = new FormControl(null);
   public sortParams$: BehaviorSubject<ISortParams> = new BehaviorSubject<ISortParams>({
     field: 'createdOn',
     order: SortOrder.Asc,
@@ -43,7 +44,7 @@ export class LogsComponent implements OnInit, OnDestroy {
   }
 
   public ngOnInit(): void {
-    combineLatest([this.sortParams$, this.filters$])
+    combineLatest([this.sortParams$, this.filters.valueChanges])
       .pipe(
         takeUntil(this.destroySubscription$),
         debounceTime(300),
@@ -52,10 +53,14 @@ export class LogsComponent implements OnInit, OnDestroy {
       )
       .subscribe(httpParams => this.paginatedLogs.updateHttpParams(httpParams));
 
+    this.filters.valueChanges
+      .pipe(takeUntil(this.destroySubscription$))
+      .subscribe(async (filters: ILogsFilter) => await this.updateRoutingParamsAsync(filters));
+
     const routingParams = this.logsRoutingService.getLogsRoutingParams();
     this.logsFilterRoutingService.toLogsFilter$(routingParams)
       .pipe(take(1))
-      .subscribe(f => this.filters$.next(f));
+      .subscribe(f => this.filters.setValue(f));
 
     this.paginatedLogs = this.pagingService.paginate<IEnvironmentLog>(
       (httpParams) => this.getPaginatedLogs$(httpParams),
@@ -67,18 +72,17 @@ export class LogsComponent implements OnInit, OnDestroy {
     this.destroySubscription$.complete();
   }
 
-  public async updateFiltersAsync(filters: ILogsFilter): Promise<void> {
-    this.filters$.next(filters);
-    const routingParams = this.logsFilterRoutingService.toLogsRoutingParams(filters);
-    await this.logsRoutingService.updateRouterAsync(routingParams);
-  }
-
   public updateSort(sortParams: ISortParams) {
     this.sortParams$.next(sortParams);
   }
 
   public showMore(): void {
     this.paginatedLogs.nextPage();
+  }
+
+  public async updateRoutingParamsAsync(filters: ILogsFilter): Promise<void> {
+    const routingParams = this.logsFilterRoutingService.toLogsRoutingParams(filters);
+    await this.logsRoutingService.updateRouterAsync(routingParams);
   }
 
   private getPaginatedLogs$(httpParams: HttpParams): Observable<IPaginatedResult<IEnvironmentLog>> {
