@@ -1,4 +1,4 @@
-import { Operation } from './operation.enum';
+import { Operation } from './enums/operation.enum';
 
 export interface IPermission {
   operation: IOperation;

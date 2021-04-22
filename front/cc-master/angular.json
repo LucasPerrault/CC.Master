@@ -30,7 +30,7 @@
             "styles": [
               "src/styles.scss"
             ],
-            "scripts": [],
+            "scripts": ["src/assets/zendesk.js"],
             "stylePreprocessorOptions": {
               "includePaths": [
                 "./src/scss",
@@ -42,6 +42,16 @@
             }
           },
           "configurations": {
+            "serve": {
+              "assets": [
+                "src/favicon.ico",
+                {
+                  "glob": "**/*",
+                  "input": "src/assets",
+                  "output": "./cc-master/assets"
+                }
+              ]
+            },
             "production": {
               "fileReplacements": [
                 {
@@ -76,7 +86,7 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
             "proxyConfig": "proxy.conf.js",
-            "browserTarget": "cc-master:build"
+            "browserTarget": "cc-master:build:serve"
           },
           "configurations": {
             "production": {
