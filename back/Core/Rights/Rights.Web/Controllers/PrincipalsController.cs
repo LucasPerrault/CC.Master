@@ -34,6 +34,7 @@ namespace Rights.Web.Controllers
                     Id = user.UserId.Value,
                     Mail = user.User.Mail,
                     Name = user.Name,
+                    Token = user.Token,
                     Permissions = await GetPermissionsAsync(user)
                 },
                 CloudControlApiKeyClaimsPrincipal apiKey => new MeDto
@@ -42,6 +43,7 @@ namespace Rights.Web.Controllers
                     Id = apiKey.ApiKey.Id,
                     Mail = string.Empty,
                     Name = apiKey.ApiKey.Name,
+                    Token = apiKey.Token,
                     Permissions = await GetPermissionsAsync(apiKey)
                 },
                 _ => throw new ApplicationException("Unhandled principal type")
@@ -84,6 +86,7 @@ namespace Rights.Web.Controllers
         public int Id { get; set; }
         public string Mail { get; set; }
         public string Name { get; set; }
+        public Guid Token { get; set; }
         public List<PermissionDto> Permissions { get; set; }
     }
 
