@@ -1,5 +1,6 @@
 using Distributors.Domain.Models;
 using Instances.Domain.Instances;
+using Instances.Domain.Instances.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -31,15 +32,15 @@ namespace Instances.Infra.DataDuplication
 
         private IEnumerable<string> EnumerateForDuplication(InstanceDuplication duplication)
         {
-            if (duplication.Type == InstanceDuplicationType.Demos || duplication.Type == InstanceDuplicationType.Training)
+            if (duplication.TargetType == InstanceType.Training || duplication.TargetType == InstanceType.Demo)
             {
                 yield return @"Integration\CloudControl\clean_db_for_training.sql";
             }
-            if (duplication.Type == InstanceDuplicationType.Demos && duplication.DistributorId == DistributorIds.PeopleSphere)
+            if (duplication.TargetType == InstanceType.Demo && duplication.DistributorId == DistributorIds.PeopleSphere)
             {
                 yield return @"Integration\CloudControl\MPRH_Demo.login.uniqueness.sql";
             }
-            if (duplication.Type == InstanceDuplicationType.Production)
+            if (duplication.TargetType == InstanceType.Prod)
             {
                 yield return @"Integration\CloudControl\clean_db_for_new_instance.sql";
             }

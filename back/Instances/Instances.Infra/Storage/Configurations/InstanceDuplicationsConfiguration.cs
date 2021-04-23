@@ -34,8 +34,12 @@ namespace Instances.Infra.Storage.Configurations
                 .HasColumnName("targetCluster")
                 .IsRequired();
 
-            builder.Property(d => d.Type)
-                .HasColumnName("type")
+            builder.Property(d => d.SourceType)
+                .HasColumnName("sourceType")
+                .IsRequired();
+
+            builder.Property(d => d.TargetType)
+                .HasColumnName("targetType")
                 .IsRequired();
 
             builder.Property(d => d.Progress)

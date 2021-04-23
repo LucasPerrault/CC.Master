@@ -99,7 +99,8 @@ namespace Instances.Application.Demos.Duplication
             var instanceDuplication = new InstanceDuplication
             {
                 Id = Guid.NewGuid(),
-                Type = InstanceDuplicationType.Demos,
+                SourceType = InstanceType.Demo,
+                TargetType = InstanceType.Demo,
                 DistributorId = distributor.Id,
                 SourceCluster = demoToDuplicate.Instance.Cluster,
                 TargetCluster = await _clusterSelector.GetFillingCluster(),
