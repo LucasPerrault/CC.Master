@@ -35,6 +35,7 @@ namespace Instances.Infra.Storage.Configurations
                 .IsRequired();
 
             builder.Ignore(d => d.DistributorId);
+            builder.Ignore(d => d.HasEnded);
 
             builder.HasOne(d => d.InstanceDuplication).WithMany().HasForeignKey(d => d.InstanceDuplicationId);
         }

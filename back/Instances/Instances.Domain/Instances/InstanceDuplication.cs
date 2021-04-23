@@ -20,11 +20,19 @@ namespace Instances.Domain.Instances
         public string SourceCluster { get; set; }
         public string TargetCluster { get; set; }
 
+        public DateTime StartedAt { get; internal set; }
+        public DateTime? EndedAt { get; set; }
+
         public InstanceDuplicationType Type { get; set; }
         public InstanceDuplicationProgress Progress { get; set; }
         public string DistributorId { get; set; }
 
         public Distributor Distributor { get; set; }
+
+        public InstanceDuplication()
+        {
+            StartedAt = DateTime.Now;
+        }
     }
 
     public enum InstanceDuplicationType

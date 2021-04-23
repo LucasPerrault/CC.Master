@@ -42,6 +42,13 @@ namespace Instances.Infra.Storage.Configurations
                 .HasColumnName("progress")
                 .IsRequired();
 
+            builder.Property(d => d.StartedAt)
+                .HasColumnName("startedAt")
+                .IsRequired();
+
+            builder.Property(d => d.EndedAt)
+                .HasColumnName("endedAt");
+
             builder.HasOne(d => d.Distributor)
                 .WithMany()
                 .HasForeignKey(d => d.DistributorId);

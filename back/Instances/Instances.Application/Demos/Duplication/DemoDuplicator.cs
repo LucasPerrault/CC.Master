@@ -138,10 +138,15 @@ namespace Instances.Application.Demos.Duplication
         {
             var duplication = _duplicationsStore.GetByInstanceDuplicationId(instanceDuplicationId);
 
+            if (duplication.HasEnded)
+            {
+                throw new BadRequestException($"Duplication {instanceDuplicationId} was already marked as complete");
+            }
+
             isSuccessful = isSuccessful && await CompleteDemoCreationAsync(duplication);
 
             var success = isSuccessful ? InstanceDuplicationProgress.FinishedWithSuccess : InstanceDuplicationProgress.FinishedWithFailure;
-            await _instanceDuplicationsStore.UpdateProgressAsync(duplication.InstanceDuplication, success);
+            await _instanceDuplicationsStore.MarkAsCompleteAsync(duplication.InstanceDuplication, success);
         }
 
         private async Task<bool> CompleteDemoCreationAsync(DemoDuplication duplication)

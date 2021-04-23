@@ -13,18 +13,30 @@ namespace Instances.Domain.Demos
         public int AuthorId { get; set; }
         public DateTime CreatedAt { get; set; }
         public InstanceDuplication InstanceDuplication { get; set; }
-        public Demo SourceDemo { get; set; }
 
         public string DistributorId
         {
             get
             {
-                if (InstanceDuplication == null)
-                {
-                    throw new ApplicationException($"{nameof(DemoDuplication)}.{nameof(InstanceDuplication)} was not included");
-                }
-
+                ThrowIfInstanceDuplicationIsNotIncluded();
                 return InstanceDuplication.DistributorId;
+            }
+        }
+
+        public bool HasEnded
+        {
+            get
+            {
+                ThrowIfInstanceDuplicationIsNotIncluded();
+                return InstanceDuplication.EndedAt.HasValue;
+            }
+        }
+
+        private void ThrowIfInstanceDuplicationIsNotIncluded()
+        {
+            if (InstanceDuplication == null)
+            {
+                throw new ApplicationException($"{nameof(DemoDuplication)}.{nameof(InstanceDuplication)} was not included");
             }
         }
     }
