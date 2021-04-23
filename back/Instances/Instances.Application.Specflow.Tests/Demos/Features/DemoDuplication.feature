@@ -43,4 +43,4 @@ Scenario: Create a demo virgin as a non-lucca user with scope "DepartmentOnly"
 Scenario: Create a demo from forbidden distributor as a user with scope "DepartmentOnly"
     Given a user with department code 'DISTRIBUTOR' and operation 'Demo' and scope 'DepartmentOnly'
     When I request creation of demo 'aperture-science' by duplicating demo 'demo-lucca' for distributor 'DISTRIBUTOR'
-        Then user should get error containing 'Source demo demo-lucca could not be found'
+        Then user should get error containing 'Source demo 2 could not be found'

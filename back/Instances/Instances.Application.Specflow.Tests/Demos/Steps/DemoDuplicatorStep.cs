@@ -68,7 +68,7 @@ namespace Instances.Application.Specflow.Tests.Demos.Steps
         [When("I request creation of demo '(.*)' by duplicating demo '(.*)' (.*)")]
         public async Task WhenICreateANewDemoByDuplicationForDistributor(string subdomain, string sourceSubdomain, DistributorSelection selection)
         {
-            var source = _demosContext.DbContext.Set<Demo>().Single(d => d.Subdomain == subdomain);
+            var source = _demosContext.DbContext.Set<Demo>().Single(d => d.Subdomain == sourceSubdomain);
             var duplicator = GetDuplicator();
             var duplication = new DemoDuplicationRequest
             {
@@ -80,8 +80,7 @@ namespace Instances.Application.Specflow.Tests.Demos.Steps
 
             try
             {
-                await duplicator.CreateDuplicationAsync
-                    (duplication, DemoDuplicationRequestSource.Api);
+                await duplicator.CreateDuplicationAsync(duplication, DemoDuplicationRequestSource.Api);
             }
             catch (ForbiddenException e)
             {
