@@ -2,7 +2,7 @@ using Instances.Domain.Instances;
 using System;
 using System.Threading.Tasks;
 
-namespace Instances.Application.Demos
+namespace Instances.Application.Instances
 {
     public class InstanceDuplicationsRepository
     {
