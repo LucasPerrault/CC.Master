@@ -1,11 +1,15 @@
 <div class="banner-container">
-  <div>
-    <a class="partenaires" href="/goToPartenaires" *ngIf="principal.isLuccaUser">
-      {{ "front_banner_link_partner" | translate }}
-    </a>
-    <a class="lucca" href="/goToLucca">
-      {{ "front_banner_link_lucca" | translate }}
-    </a>
+  <div class="u-displayFlex">
+    <div class="cloudcontrolLogo"></div>
+    Cloud Control
+    <div>
+      <a class="partenaires" href="/goToPartenaires" *ngIf="principal.isLuccaUser">
+        {{ "front_banner_link_partner" | translate }}
+      </a>
+      <a class="lucca" href="/goToLucca">
+        {{ "front_banner_link_lucca" | translate }}
+      </a>
+    </div>
   </div>
   <span class="iLuccaTitle">{{ "front_banner_title" | translate }}</span>
   <div>

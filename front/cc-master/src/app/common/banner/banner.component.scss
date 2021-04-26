@@ -43,3 +43,10 @@
   background: _color("grey", "50");
   border-radius: 4px;
 }
+
+.cloudcontrolLogo {
+  width: 1.25rem;
+  height: 1.25rem;
+  margin-right: .5em;
+  background: url("/cc-master/assets/cc.svg") no-repeat center;
+}

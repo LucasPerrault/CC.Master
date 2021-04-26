@@ -22,7 +22,6 @@ class NavigationTabAlert {
 @Component({
   selector: 'cc-navigation',
   templateUrl: './navigation.component.html',
-  styleUrls: ['./navigation.component.scss'],
 })
 export class NavigationComponent implements OnInit, OnDestroy {
 
