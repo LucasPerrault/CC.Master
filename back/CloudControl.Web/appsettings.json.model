@@ -82,8 +82,8 @@
             "TokenRequestRoute": "/identity/connect/token"
         },
         "WsAuth": {
-            "ServerUri": "https://ws-auth.ilucca.local",
-            "EndpointPath": "/sync-v2/api",
+            "ServerUri": "{{ shared:LuccaAuthSyncBaseUrl }}",
+            "EndpointPath": "/api",
             "Token": "{{ Lucca.Auth.Sync:CloudControlToken }}"
         },
         "CcData": {
