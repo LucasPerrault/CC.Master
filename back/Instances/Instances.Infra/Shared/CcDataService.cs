@@ -127,7 +127,12 @@ namespace Instances.Infra.Shared
                 "recette" => "re",
                 _ => throw new NotSupportedException($"Cluster name is not supported : {cluster}")
             };
-            return new Uri($"{_ccDataConfiguration.Scheme}://cc-data.{cluster}{clusterNumber?.ToString() ?? ""}.{_ccDataConfiguration.Domain}");
+            var prodOrBeta = "";
+            if(_ccDataConfiguration.ShouldTargetBeta)
+            {
+                prodOrBeta = ".beta";
+            }
+            return new Uri($"{_ccDataConfiguration.Scheme}://cc-data{prodOrBeta}.{cluster}{clusterNumber?.ToString() ?? ""}.{_ccDataConfiguration.Domain}");
         }
     }
 }

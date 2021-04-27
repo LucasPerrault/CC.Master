@@ -90,7 +90,8 @@
             "Domain": "lucca.local",
             "Scheme": "http",
             "OutboundToken": "{{ CC.Data:CCMasterWebserviceToken }}",
-            "InboundToken": "{{ CC.Data:CCMasterWebserviceToken }}"
+            "InboundToken": "{{ CC.Data:CCMasterWebserviceToken }}",
+            "ShouldTargetBeta": "{{ CC.Master:ShouldTargetCCDataBeta }}"
         },
         "Hubspot": {
             "ServerUri": "{{ CC.Master:HubspotServerUri }}",
