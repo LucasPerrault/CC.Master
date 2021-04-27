@@ -3,10 +3,10 @@
     <div class="cloudcontrolLogo"></div>
     Cloud Control
     <div>
-      <a class="partenaires" href="/goToPartenaires" *ngIf="principal.isLuccaUser">
+      <a class="partenaires" href="/goToPartenaires">
         {{ "front_banner_link_partner" | translate }}
       </a>
-      <a class="lucca" href="/goToLucca">
+      <a class="lucca" href="/goToLucca" *ngIf="principal.isLuccaUser">
         {{ "front_banner_link_lucca" | translate }}
       </a>
     </div>
