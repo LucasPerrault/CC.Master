@@ -16,7 +16,7 @@ namespace Instances.Infra.Instances.Services
     {
         private static readonly Regex Regex = new Regex
         (
-            @"[a-z0-9]+",
+            @"^[a-z0-9]+$",
             RegexOptions.IgnoreCase
         );
 
