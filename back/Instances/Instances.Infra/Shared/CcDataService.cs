@@ -100,23 +100,29 @@ namespace Instances.Infra.Shared
 
         public Uri GetCcDataBaseUri(string cluster)
         {
-            cluster = cluster.ToLower();
-            var match = ClusterNumberExtractor.Match(cluster);
-            int? clusterNumber = null;
-            if (match.Success)
-            {
-                cluster = match.Groups[1].Value;
-                clusterNumber = int.Parse(match.Groups[2].Value);
-            }
-            if (cluster == "green")
-            {
-                clusterNumber = null;
-            }
-            if(cluster == "demo" && clusterNumber == null)
-            {
-                clusterNumber = 1;
-            }
-            cluster = cluster switch
+            var parsedCluster = GetParsedCluster(cluster);
+
+            var subdomain = GetCcDataSubdomainPart();
+            var clusterSubdomainPart = GetClusterSubdomainPart(parsedCluster);
+
+            return new Uri($"{_ccDataConfiguration.Scheme}://{subdomain}.{clusterSubdomainPart}.{_ccDataConfiguration.Domain}");
+        }
+
+        private string GetClusterSubdomainPart(ParsedCluster parsedCluster)
+        {
+            return GetClusterName(parsedCluster) + GetClusterNumber(parsedCluster);
+        }
+
+        private string GetCcDataSubdomainPart()
+        {
+            return _ccDataConfiguration.ShouldTargetBeta
+                ? "cc-data.beta"
+                : "cc-data";
+        }
+
+        private static string GetClusterName(ParsedCluster context)
+        {
+            return context.Name switch
             {
                 "cluster" => "c",
                 "demo" => "dm",
@@ -125,14 +131,44 @@ namespace Instances.Infra.Shared
                 "green" => "ch",
                 "security" => "se",
                 "recette" => "re",
-                _ => throw new NotSupportedException($"Cluster name is not supported : {cluster}")
+                _ => throw new NotSupportedException($"Cluster name is not supported : {context.Name}")
             };
-            var prodOrBeta = "";
-            if(_ccDataConfiguration.ShouldTargetBeta)
+        }
+
+        private string GetClusterNumber(ParsedCluster context)
+        {
+            return context.Name switch
             {
-                prodOrBeta = ".beta";
+                "green" => string.Empty,
+                "demo" when !context.Number.HasValue => "1",
+                _ => context.Number.HasValue ? context.Number.ToString() : string.Empty
+            };
+        }
+
+        private ParsedCluster GetParsedCluster(string cluster)
+        {
+            cluster = cluster.ToLower();
+            var match = ClusterNumberExtractor.Match(cluster);
+
+            if (match.Success)
+            {
+                return new ParsedCluster
+                {
+                    Name = match.Groups[1].Value,
+                    Number = int.Parse(match.Groups[2].Value)
+                };
             }
-            return new Uri($"{_ccDataConfiguration.Scheme}://cc-data{prodOrBeta}.{cluster}{clusterNumber?.ToString() ?? ""}.{_ccDataConfiguration.Domain}");
+
+            return new ParsedCluster
+            {
+                Name = cluster
+            };
+        }
+
+        private class ParsedCluster
+        {
+            public string Name { get; set; }
+            public int? Number { get; set; }
         }
     }
 }
