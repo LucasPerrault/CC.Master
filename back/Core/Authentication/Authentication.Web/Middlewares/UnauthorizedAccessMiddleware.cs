@@ -3,8 +3,6 @@ using Authentication.Infra.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Extensions;
-using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using Tools.Web;
 
@@ -12,15 +10,6 @@ namespace Authentication.Web.Middlewares
 {
     public class UnauthorizedAccessMiddleware
     {
-        private static readonly HashSet<string> _anonymousRoutes = new HashSet<string>(StringComparer.InvariantCultureIgnoreCase)
-        {
-            "/ping",
-            "/healthz",
-            "/health/ready",
-            "/health/live",
-            "/warmup"
-        };
-
         private static readonly string _apiRoutePrefix = "/api";
 
         private readonly RequestDelegate _next;
@@ -34,10 +23,7 @@ namespace Authentication.Web.Middlewares
 
         public async Task Invoke(HttpContext httpContext)
         {
-            var isAnonymousRoute = httpContext.Request.Path.HasValue
-                                   && _anonymousRoutes.Contains(httpContext.Request.Path.Value);
-
-            if (isAnonymousRoute || httpContext.HasAttribute<IAllowAnonymous>())
+            if (httpContext.HasAttribute<IAllowAnonymous>())
             {
                 await _next.Invoke(httpContext);
                 return;
