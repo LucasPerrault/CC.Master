@@ -1,5 +1,6 @@
 using Environments.Domain;
 using Environments.Domain.Storage;
+using FluentAssertions;
 using Instances.Domain.Demos;
 using Instances.Infra.Demos;
 using Lucca.Core.Shared.Domain.Exceptions;
@@ -78,7 +79,7 @@ namespace Instances.Infra.Tests.Demos
 
         [Theory]
         [InlineData("aperture-science")]
-        [InlineData("this-was-a-triumph-im-making-a-note-here-huge-success-its-hard-to-overstate-my-satisfaction-aperture-science-we-do-what-we-must-because-we-can-for-the-good-of-all-of-us-except-the-ones-who-are-dead-bu")]
+        [InlineData("not-longer-than-63-this-was-a-triumph-im-making-a-note-here-hug")]
         public async Task IsAvailableAsync_ShouldNotThrow_WhenSubdomainIsNotValid(string validSubdomain)
         {
             var subdomainValidator = new SubdomainValidator(_demosStoreMock.Object, _envStoreMock.Object);
@@ -91,7 +92,7 @@ namespace Instances.Infra.Tests.Demos
         [InlineData("aperture#science")]
         [InlineData("aperture-scìence")]
         [InlineData("aperture\u1F91science")]
-        [InlineData("this-was-a-triumph-im-making-a-note-here-huge-success-its-hard-to-overstate-my-satisfaction-aperture-science-we-do-what-we-must-because-we-can-for-the-good-of-all-of-us-except-the-ones-who-are-dead-but")]
+        [InlineData("longer-than-63-this-was-a-triumph-im-making-a-note-here-huge-suc")]
         [InlineData("Aperture-science")]
         [InlineData("APERTURE-SCIENCE")]
         [InlineData("a")]
@@ -102,6 +103,61 @@ namespace Instances.Infra.Tests.Demos
             var subdomainValidator = new SubdomainValidator(_demosStoreMock.Object, _envStoreMock.Object);
 
             await Assert.ThrowsAsync<BadRequestException>(async () => await subdomainValidator.ThrowIfInvalidAsync(invalidSubdomain));
+        }
+
+        [Theory]
+        [InlineData("really-longer-than-63-this-was-a-triumph-im-making-a-note-here-huge-success")]
+        [InlineData("longer-than-63-this-was-a-triumph-im-making-a-note-here-huge-suc")]
+        [InlineData("equal-to-63-this-was-a-triumph-im-making-a-note-here-huge-succe")]
+        [InlineData("equal-to-63-with-10-this-was-a-triumph-im-making-a-note-here-hu")]
+        // 62 car actuellement, on peut aller jusqu'à un nombre de 10
+        [InlineData("equal-to-62-this-was-a-triumph-im-making-a-note-here-huge-succ")]
+        [InlineData("equal-to-62-with-10-this-was-a-triumph-im-making-a-note-here-h")]
+        public async Task GetAvailableSubdomainByPrefixAsync_ShouldCropPrefixWhenTooLong(string prefix)
+        {
+            var existingDemos = new List<Demo>();
+            for(var i = 0; i < SubdomainValidator.MaxDemoPerRequestSubdomain;i++)
+            {
+                existingDemos.Add(new Demo
+                {
+                    Subdomain = $"equal-to-63-with-10-this-was-a-triumph-im-making-a-note-here-{i}"
+                });
+                existingDemos.Add(new Demo
+                {
+                    Subdomain = $"equal-to-62-with-10-this-was-a-triumph-im-making-a-note-here-{i}"
+                });
+            }
+
+            _demosStoreMock.Setup(ds => ds.GetActiveAsync()).ReturnsAsync(existingDemos.AsQueryable());
+
+            var subdomainValidator = new SubdomainValidator(_demosStoreMock.Object, _envStoreMock.Object);
+            var availableSubdomain = await subdomainValidator.GetAvailableSubdomainByPrefixAsync(prefix);
+            System.Func<Task> act = async () => await subdomainValidator.ThrowIfInvalidAsync(availableSubdomain);
+            await act.Should().NotThrowAsync();
+        }
+
+        [Theory]
+        [InlineData("a-normal-prefix")]
+        // 61 car actuellement, on peut aller jusqu'à un nombre de 10, 61 + 2 = 63 qui est la longueur max
+        [InlineData("equal-to-61-this-was-a-triumph-im-making-a-note-here-huge-suc")]
+        [InlineData("equal-to-61-with-10-this-was-a-triumph-im-making-a-note-here-")]
+        public async Task GetAvailableSubdomainByPrefixAsync_ShouldNotCropPrefixWhenNotNecessary(string prefix)
+        {
+            var existingDemos = new List<Demo>();
+            for (var i = 0; i < SubdomainValidator.MaxDemoPerRequestSubdomain; i++)
+            {
+                existingDemos.Add(new Demo
+                {
+                    Subdomain = $"equal-to-61-with-10-this-was-a-triumph-im-making-a-note-here-{i}"
+                });
+            }
+            _demosStoreMock.Setup(ds => ds.GetActiveAsync()).ReturnsAsync(existingDemos.AsQueryable());
+
+            var subdomainValidator = new SubdomainValidator(_demosStoreMock.Object, _envStoreMock.Object);
+            var availableSubdomain = await subdomainValidator.GetAvailableSubdomainByPrefixAsync(prefix);
+            Assert.Contains(prefix, availableSubdomain);
+            System.Func<Task> act = async () => await subdomainValidator.ThrowIfInvalidAsync(availableSubdomain);
+            await act.Should().NotThrowAsync();
         }
     }
 }

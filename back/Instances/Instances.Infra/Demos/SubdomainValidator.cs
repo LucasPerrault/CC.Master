@@ -2,6 +2,7 @@ using Environments.Domain.Storage;
 using Instances.Domain.Demos;
 using Instances.Domain.Instances;
 using Lucca.Core.Shared.Domain.Exceptions;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -26,8 +27,8 @@ namespace Instances.Infra.Demos
     {
         private const string SubdomainRegex = @"^(?!-)[a-z0-9-]+(?<!-)$";
         public const int SubdomainMinLength = 2;
-        public const int SubdomainMaxLength = 200;
-        private const int MaxDemoPerRequestSubdomain = 10;
+        public const int SubdomainMaxLength = 63;
+        public const int MaxDemoPerRequestSubdomain = 10;
 
         private readonly IDemosStore _demosStore;
         private readonly IEnvironmentsStore _environmentsStore;
@@ -91,11 +92,16 @@ namespace Instances.Infra.Demos
 
         public async Task<string> GetAvailableSubdomainByPrefixAsync(string prefix)
         {
-            var usedSubdomains = await GetUsedSubdomainsByPrefixAsync(prefix);
+            var suffixMaxLength = $"{MaxDemoPerRequestSubdomain}".Length;
+
+            var maxSizedPrefix = Math.Min(prefix.Length, SubdomainMaxLength - suffixMaxLength);
+            var maxPrefix = prefix.Substring(0, maxSizedPrefix);
+
+            var usedSubdomains = await GetUsedSubdomainsByPrefixAsync(maxPrefix);
 
             for (var i = 1; i <= MaxDemoPerRequestSubdomain; i++)
             {
-                var candidate = $"{prefix}{i}";
+                var candidate = $"{maxPrefix}{i}";
                 if (usedSubdomains.Contains(candidate))
                 {
                     continue;
