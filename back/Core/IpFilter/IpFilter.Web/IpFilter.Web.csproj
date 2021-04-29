@@ -12,7 +12,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="Lucca.Core.AspNetCore.Middlewares" Version="3.1.11" />
+      <PackageReference Include="Lucca.Core.AspNetCore.Middlewares" Version="3.2.6" />
     </ItemGroup>
 
 </Project>
