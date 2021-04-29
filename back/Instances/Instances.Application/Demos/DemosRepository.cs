@@ -5,6 +5,7 @@ using Lucca.Core.Api.Abstractions.Paging;
 using Lucca.Core.Shared.Domain.Exceptions;
 using System;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Security.Claims;
 using System.Threading.Tasks;
 
@@ -36,9 +37,14 @@ namespace Instances.Application.Demos
 
         public async Task<Page<Demo>> GetDemosAsync(DemoListQuery query)
         {
+            Expression<Func<Demo, bool>> activeFilter = (d => true);
+                if(query.IsActive.Count == 1)
+            {
+                activeFilter = (d => d.IsActive == query.IsActive.Single());
+            }
             return await _demosStore.GetAsync(
                 query.Page,
-                d => d.IsActive == query.IsActive,
+                activeFilter,
                 await _rightsFilter.GetDefaultReadFilterAsync(_principal)
             );
         }

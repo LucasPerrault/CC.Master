@@ -9,6 +9,7 @@ using Moq;
 using Rights.Domain;
 using Rights.Domain.Abstractions;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using TechTalk.SpecFlow;
@@ -52,7 +53,7 @@ namespace Instances.Application.Specflow.Tests.Demos.Steps
         {
             var demoListQuery = new DemoListQuery()
             {
-                IsActive = true,
+                IsActive = new HashSet<bool>{ true },
                 Page = null,
             };
             var demosRepository = GetNewRepository();
