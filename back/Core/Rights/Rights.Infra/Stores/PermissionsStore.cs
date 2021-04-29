@@ -1,6 +1,5 @@
 using Lucca.Core.Rights.Abstractions.Permissions;
 using Lucca.Core.Rights.Abstractions.Stores;
-using Rights.Infra.Services;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -8,28 +7,26 @@ namespace Rights.Infra.Stores
 {
     public class PermissionsStore : IPermissionsStore
     {
-        private readonly ApiKeyPermissionsService _apiKeyPermissionsService;
-        private readonly UserPermissionsService _userPermissionsService;
+        private readonly ICloudControlPermissionsStore _permissionsStore;
 
-        public PermissionsStore(ApiKeyPermissionsService apiKeyPermissionsService, UserPermissionsService userPermissionsService)
+        public PermissionsStore(ICloudControlPermissionsStore permissionsStore)
         {
-            _apiKeyPermissionsService = apiKeyPermissionsService;
-            _userPermissionsService = userPermissionsService;
+            _permissionsStore = permissionsStore;
         }
 
-        public async Task<List<IApiKeyPermission>> GetApiKeyPermissionsAsync(int apiKeyId, int appInstanceId, ISet<int> operations)
+        public Task<List<IApiKeyPermission>> GetApiKeyPermissionsAsync(int apiKeyId, int appInstanceId, ISet<int> operations)
         {
-            return new List<IApiKeyPermission>(await _apiKeyPermissionsService.GetApiKeyPermissionsAsync(apiKeyId, operations));
+            return _permissionsStore.GetApiKeyPermissionsAsync(apiKeyId, operations);
         }
 
-        public async Task<List<IUserPermission>> GetUserPermissionsAsync(int principalId, int appInstanceId)
+        public Task<List<IUserPermission>> GetUserPermissionsAsync(int principalId, int appInstanceId)
         {
-            return new List<IUserPermission>(await _userPermissionsService.GetUserPermissionsAsync(principalId));
+            return _permissionsStore.GetUserPermissionsAsync(principalId);
         }
 
-        public async Task<List<IUserPermission>> GetUserPermissionsAsync(int principalId, int appInstanceId, ISet<int> operations)
+        public Task<List<IUserPermission>> GetUserPermissionsAsync(int principalId, int appInstanceId, ISet<int> operations)
         {
-            return new List<IUserPermission>(await _userPermissionsService.GetUserPermissionsAsync(principalId, operations));
+            return _permissionsStore.GetUserPermissionsAsync(principalId, operations);
         }
 
         public Task<List<IWebServicePermission>> GetWebServicesPermissionsAsync(string webServiceId, int appInstanceId, ISet<int> operations)

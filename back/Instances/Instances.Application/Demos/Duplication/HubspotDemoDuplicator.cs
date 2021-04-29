@@ -34,7 +34,7 @@ namespace Instances.Application.Demos.Duplication
 
     public class HubspotDemoDuplicator
     {
-        private const string _defaultMasterSubdomain = "masterdemo";
+        private const int _defaultSourceDemoId = 385;
         private const string _defaultHubspotPassword = "test";
 
         private readonly DemoDuplicator _demoDuplicator;
@@ -58,8 +58,7 @@ namespace Instances.Application.Demos.Duplication
             var contact = await _hubspotService.GetContactAsync(hubspotDemoDuplication.VId);
             var request = new DemoDuplicationRequest
             {
-                SourceDemoSubdomain = _defaultMasterSubdomain,
-
+                SourceId = _defaultSourceDemoId,
                 Subdomain = contact.Company,
                 Password = _defaultHubspotPassword
             };

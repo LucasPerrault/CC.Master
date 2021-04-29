@@ -13,28 +13,40 @@ namespace Instances.Domain.Demos
         public int AuthorId { get; set; }
         public DateTime CreatedAt { get; set; }
         public InstanceDuplication InstanceDuplication { get; set; }
-        public Demo SourceDemo { get; set; }
 
         public string DistributorId
         {
             get
             {
-                if (InstanceDuplication == null)
-                {
-                    throw new ApplicationException($"{nameof(DemoDuplication)}.{nameof(InstanceDuplication)} was not included");
-                }
-
+                ThrowIfInstanceDuplicationIsNotIncluded();
                 return InstanceDuplication.DistributorId;
+            }
+        }
+
+        public bool HasEnded
+        {
+            get
+            {
+                ThrowIfInstanceDuplicationIsNotIncluded();
+                return InstanceDuplication.EndedAt.HasValue;
+            }
+        }
+
+        private void ThrowIfInstanceDuplicationIsNotIncluded()
+        {
+            if (InstanceDuplication == null)
+            {
+                throw new ApplicationException($"{nameof(DemoDuplication)}.{nameof(InstanceDuplication)} was not included");
             }
         }
     }
 
     public class DemoDuplicationRequest
     {
-        public string SourceDemoSubdomain { get; set; }
+        public int SourceId { get; set; }
         public string Subdomain { get; set; }
         public string Comment { get; set; }
         public string Password { get; set; }
-        public string DistributorId { get; set; }
+        public string DistributorCode { get; set; }
     }
 }

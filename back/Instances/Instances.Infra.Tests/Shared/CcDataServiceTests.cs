@@ -2,6 +2,7 @@ using FluentAssertions;
 using FluentAssertions.Json;
 using Instances.Infra.Shared;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
 using Moq;
 using Moq.Protected;
 using Newtonsoft.Json.Linq;
@@ -21,20 +22,23 @@ namespace Instances.Infra.Tests.Shared
         private readonly Mock<HttpMessageHandler> _mockHttpMessageHandler;
         private readonly Mock<IHttpContextAccessor> _mockHttpContextAccessor;
         private readonly CcDataConfiguration _ccDataConfiguration;
+        private readonly Mock<ILogger<CcDataService>> _mockLogger;
 
         public CcDataServiceTests()
         {
             _mockHttpMessageHandler = new Mock<HttpMessageHandler>(MockBehavior.Strict);
             _mockHttpContextAccessor = new Mock<IHttpContextAccessor>(MockBehavior.Strict);
+            _mockLogger = new Mock<ILogger<CcDataService>>(MockBehavior.Strict);
 
             _ccDataConfiguration = new CcDataConfiguration
             {
                 InboundToken = Guid.NewGuid(),
                 Domain = "lucca.local",
-                Scheme = "http"
+                Scheme = "http",
+                ShouldTargetBeta = false,
             };
 
-            _ccDataService = new CcDataService(new HttpClient(_mockHttpMessageHandler.Object), _ccDataConfiguration, _mockHttpContextAccessor.Object);
+            _ccDataService = new CcDataService(new HttpClient(_mockHttpMessageHandler.Object), _ccDataConfiguration, _mockHttpContextAccessor.Object, _mockLogger.Object);
         }
 
         [Fact]
@@ -105,13 +109,30 @@ namespace Instances.Infra.Tests.Shared
         [InlineData("CLUSTER5", "http://cc-data.c5.lucca.local")]
         [InlineData("CLUSTER10", "http://cc-data.c10.lucca.local")]
         [InlineData("DEMO2", "http://cc-data.dm2.lucca.local")]
-        [InlineData("DEMO", "http://cc-data.dm.lucca.local")]
+        [InlineData("DEMO", "http://cc-data.dm1.lucca.local")]
         [InlineData("GREEN3", "http://cc-data.ch.lucca.local")]
         [InlineData("Preview", "http://cc-data.pm.lucca.local")]
         [InlineData("SECURITY", "http://cc-data.se.lucca.local")]
         [InlineData("RECETTE", "http://cc-data.re.lucca.local")]
-        public void GetCcDataBaseUri_Ok(string input, string expectedOutput)
+        public void GetCcDataBaseUri_BetaFalseOk(string input, string expectedOutput)
         {
+            var result = _ccDataService.GetCcDataBaseUri(input);
+
+            result.Should().Be(new Uri(expectedOutput));
+        }
+
+        [Theory]
+        [InlineData("CLUSTER5", "http://cc-data.beta.c5.lucca.local")]
+        [InlineData("CLUSTER10", "http://cc-data.beta.c10.lucca.local")]
+        [InlineData("DEMO2", "http://cc-data.beta.dm2.lucca.local")]
+        [InlineData("DEMO", "http://cc-data.beta.dm1.lucca.local")]
+        [InlineData("GREEN3", "http://cc-data.beta.ch.lucca.local")]
+        [InlineData("Preview", "http://cc-data.beta.pm.lucca.local")]
+        [InlineData("SECURITY", "http://cc-data.beta.se.lucca.local")]
+        [InlineData("RECETTE", "http://cc-data.beta.re.lucca.local")]
+        public void GetCcDataBaseUri_BetaTrueOk(string input, string expectedOutput)
+        {
+            _ccDataConfiguration.ShouldTargetBeta = true;
             var result = _ccDataService.GetCcDataBaseUri(input);
 
             result.Should().Be(new Uri(expectedOutput));

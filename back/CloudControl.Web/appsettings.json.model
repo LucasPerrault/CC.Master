@@ -82,15 +82,16 @@
             "TokenRequestRoute": "/identity/connect/token"
         },
         "WsAuth": {
-            "ServerUri": "https://ws-auth.ilucca.local",
-            "EndpointPath": "/sync-v2/api",
+            "ServerUri": "{{ shared:LuccaAuthSyncBaseUrl }}",
+            "EndpointPath": "/api",
             "Token": "{{ Lucca.Auth.Sync:CloudControlToken }}"
         },
         "CcData": {
             "Domain": "lucca.local",
             "Scheme": "http",
             "OutboundToken": "{{ CC.Data:CCMasterWebserviceToken }}",
-            "InboundToken": "{{ CC.Data:CCMasterWebserviceToken }}"
+            "InboundToken": "{{ CC.Data:CCMasterWebserviceToken }}",
+            "ShouldTargetBeta": "{{ CC.Master:ShouldTargetCCDataBeta }}"
         },
         "Hubspot": {
             "ServerUri": "{{ CC.Master:HubspotServerUri }}",

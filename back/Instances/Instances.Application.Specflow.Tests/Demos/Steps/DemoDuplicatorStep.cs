@@ -24,6 +24,7 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 using TechTalk.SpecFlow;
+using Tools;
 using Xunit;
 
 namespace Instances.Application.Specflow.Tests.Demos.Steps
@@ -67,19 +68,19 @@ namespace Instances.Application.Specflow.Tests.Demos.Steps
         [When("I request creation of demo '(.*)' by duplicating demo '(.*)' (.*)")]
         public async Task WhenICreateANewDemoByDuplicationForDistributor(string subdomain, string sourceSubdomain, DistributorSelection selection)
         {
+            var source = _demosContext.DbContext.Set<Demo>().Single(d => d.Subdomain == sourceSubdomain);
             var duplicator = GetDuplicator();
             var duplication = new DemoDuplicationRequest
             {
                 Subdomain = subdomain,
-                DistributorId = selection.Code,
+                DistributorCode = selection.Code,
                 Password = "test",
-                SourceDemoSubdomain = sourceSubdomain
+                SourceId = source.Id
             };
 
             try
             {
-                await duplicator.CreateDuplicationAsync
-                    (duplication, DemoDuplicationRequestSource.Api);
+                await duplicator.CreateDuplicationAsync(duplication, DemoDuplicationRequestSource.Api);
             }
             catch (ForbiddenException e)
             {
@@ -108,7 +109,11 @@ namespace Instances.Application.Specflow.Tests.Demos.Steps
         {
             var demosStore = new DemosStore(_demosContext.DbContext, new DummyQueryPager());
             var demoDuplicationsStore = new DemoDuplicationsStore(_demosContext.DbContext);
-            var instanceDuplicationsStore = new InstanceDuplicationsStore(_demosContext.DbContext);
+            var instanceDuplicationsStore = new InstanceDuplicationsStore
+            (
+                _demosContext.DbContext,
+                new Mock<ITimeProvider>().Object
+            );
 
             _demosContext.Mocks.DistributorsStore
                 .Setup(s => s.GetByCodeAsync(It.IsAny<string>()))

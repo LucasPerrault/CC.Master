@@ -94,13 +94,14 @@ namespace Instances.Application.Demos.Duplication
             var shouldUseSubdomainAsPrefix = requestSource == DemoDuplicationRequestSource.Hubspot;
             var targetSubdomain = await _subdomainGenerator.GetSubdomainAsync(request.Subdomain, shouldUseSubdomainAsPrefix);
 
-            var demoToDuplicate = await GetDemoToDuplicateAsync(request.SourceDemoSubdomain);
-
+            var demoToDuplicate = await GetDemoToDuplicateAsync(request.SourceId);
+            var distributor = await _distributorsStore.GetByCodeAsync(request.DistributorCode);
             var instanceDuplication = new InstanceDuplication
             {
                 Id = Guid.NewGuid(),
-                Type = InstanceDuplicationType.Demos,
-                DistributorId = request.DistributorId,
+                SourceType = InstanceType.Demo,
+                TargetType = InstanceType.Demo,
+                DistributorId = distributor.Id,
                 SourceCluster = demoToDuplicate.Instance.Cluster,
                 TargetCluster = await _clusterSelector.GetFillingCluster(),
                 SourceSubdomain = demoToDuplicate.Subdomain,
@@ -138,10 +139,15 @@ namespace Instances.Application.Demos.Duplication
         {
             var duplication = _duplicationsStore.GetByInstanceDuplicationId(instanceDuplicationId);
 
+            if (duplication.HasEnded)
+            {
+                throw new BadRequestException($"Duplication {instanceDuplicationId} was already marked as complete");
+            }
+
             isSuccessful = isSuccessful && await CompleteDemoCreationAsync(duplication);
 
             var success = isSuccessful ? InstanceDuplicationProgress.FinishedWithSuccess : InstanceDuplicationProgress.FinishedWithFailure;
-            await _instanceDuplicationsStore.UpdateProgressAsync(duplication.InstanceDuplication, success);
+            await _instanceDuplicationsStore.MarkAsCompleteAsync(duplication.InstanceDuplication, success);
         }
 
         private async Task<bool> CompleteDemoCreationAsync(DemoDuplication duplication)
@@ -185,14 +191,14 @@ namespace Instances.Application.Demos.Duplication
             _passwordHelper.ThrowIfInvalid(request.Password);
         }
 
-        private async Task<Demo> GetDemoToDuplicateAsync(string subdomain)
+        private async Task<Demo> GetDemoToDuplicateAsync(int sourceId)
         {
             var rightsFilter = await _demoRightsFilter.GetDefaultReadFilterAsync(_principal);
-            var demoToDuplicate = (await _demosStore.GetActiveAsync(rightsFilter, d => d.Subdomain == subdomain))
+            var demoToDuplicate = (await _demosStore.GetActiveAsync(rightsFilter, d => d.Id == sourceId))
                 .FirstOrDefault();
 
             return demoToDuplicate
-                ?? throw new BadRequestException($"Source demo {subdomain} could not be found");
+                ?? throw new BadRequestException($"Source demo {sourceId} could not be found");
         }
 
         private async Task ThrowIfForbiddenAsync(DemoDuplicationRequest request)
@@ -209,8 +215,7 @@ namespace Instances.Application.Demos.Duplication
                 throw new ApplicationException("Unsupported claims principal type");
             }
 
-            var userDistributor = await _distributorsStore.GetByCodeAsync(user.User.DepartmentCode);
-            if (userDistributor.Id == request.DistributorId)
+            if (user.User.DepartmentCode == request.DistributorCode)
             {
                 return;
             }

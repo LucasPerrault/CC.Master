@@ -4,14 +4,16 @@ using Instances.Infra.Storage;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Instances.Infra.Migrations
 {
     [DbContext(typeof(InstancesDbContext))]
-    partial class InstancesDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210423134303_AlterInstanceDuplicationsAddStartedAtEndedAt")]
+    partial class AlterInstanceDuplicationsAddStartedAtEndedAt
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -130,6 +132,8 @@ namespace Instances.Infra.Migrations
 
                     b.HasIndex("InstanceDuplicationId");
 
+                    b.HasIndex("SourceDemoId");
+
                     b.ToTable("DemoDuplications");
                 });
 
@@ -163,10 +167,6 @@ namespace Instances.Infra.Migrations
                         .HasColumnType("nvarchar(200)")
                         .HasMaxLength(200);
 
-                    b.Property<int>("SourceType")
-                        .HasColumnName("sourceType")
-                        .HasColumnType("int");
-
                     b.Property<DateTime>("StartedAt")
                         .HasColumnName("startedAt")
                         .HasColumnType("datetime2");
@@ -182,8 +182,8 @@ namespace Instances.Infra.Migrations
                         .HasColumnType("nvarchar(200)")
                         .HasMaxLength(200);
 
-                    b.Property<int>("TargetType")
-                        .HasColumnName("targetType")
+                    b.Property<int>("Type")
+                        .HasColumnName("type")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -251,6 +251,12 @@ namespace Instances.Infra.Migrations
                     b.HasOne("Instances.Domain.Instances.InstanceDuplication", "InstanceDuplication")
                         .WithMany()
                         .HasForeignKey("InstanceDuplicationId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Instances.Domain.Demos.Demo", "SourceDemo")
+                        .WithMany()
+                        .HasForeignKey("SourceDemoId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
