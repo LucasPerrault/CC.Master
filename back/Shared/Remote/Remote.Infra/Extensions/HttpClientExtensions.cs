@@ -70,6 +70,11 @@ namespace Remote.Infra.Extensions
                 return Authenticate($"application={appToken}");
             }
 
+            public HttpClient AuthenticateAsWebService(Guid appToken)
+            {
+                return Authenticate($"webservice={appToken}");
+            }
+
             public HttpClient AuthenticateCurrentPrincipal(IServiceProvider provider)
             {
                 var claimsPrincipal = provider.GetRequiredService<ClaimsPrincipal>();

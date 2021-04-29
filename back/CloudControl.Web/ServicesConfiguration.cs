@@ -6,11 +6,13 @@ using CloudControl.Web.Exceptions;
 using CloudControl.Web.Spa;
 using Distributors.Infra.Storage;
 using Distributors.Web;
+using Email.Web;
 using Environments.Infra.Storage;
 using Environments.Web;
 using IpFilter.Infra.Storage;
 using IpFilter.Web;
 using Lucca.Core.Api.Abstractions;
+using Lucca.Core.Api.Queryable.EntityFrameworkCore;
 using Lucca.Core.Api.Web;
 using Lucca.Core.AspNetCore.Healthz;
 using Lucca.Core.AspNetCore.Middlewares;
@@ -29,12 +31,16 @@ using Salesforce.Web;
 using Storage.Infra.Context;
 using Storage.Web;
 using System;
-using Billing.Contracts.Infra.Storage;
-using Billing.Web;
 using Cache.Web;
-using Environments.Infra.Storage;
-using Environments.Web;
-using Salesforce.Web;
+using Instances.Web;
+using Instances.Infra.Storage;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Localization;
+using Remote.Infra;
+using System.Collections.Generic;
+using System.Globalization;
+using TeamNotification.Web;
+using Tools.Web;
 using Users.Infra.Storage;
 using Users.Web;
 
@@ -54,12 +60,15 @@ namespace CloudControl.Web
         public void ConfigureServices(IServiceCollection services)
         {
             var configuration = ConfigureConfiguration(services);
+            ToolsConfigurer.ConfigureTools(services);
+            ConfigureCulture(services);
             ConfigureHttpContext(services);
             ConfigureHealthCheck(services, configuration);
             ConfigureApi(services);
             ConfigureLogs(services);
             // ConfigureSpa(services);
             ConfigureCache(services, configuration);
+            ConfigureNotifications(services, configuration);
             ConfigureProxy(services);
             ConfigureIpFilter(services);
             ConfigureTenancy(services);
@@ -67,9 +76,30 @@ namespace CloudControl.Web
             ConfigureSharedDomains(services, configuration);
             ConfigureAuthentication(services, configuration);
             ConfigureRights(services, configuration);
-            ConfigureEnvironments(services, configuration);
             ConfigureSalesforce(services, configuration);
             ConfigureBilling(services, configuration);
+            ConfigureInstances(services, configuration);
+            ConfigureEmails(services, configuration);
+        }
+
+        private void ConfigureCulture(IServiceCollection services)
+        {
+            CultureInfo.DefaultThreadCurrentCulture = CultureInfo.GetCultureInfo("fr");
+
+            services.AddLocalization();
+
+            services.Configure<RequestLocalizationOptions>(opts =>
+            {
+                var supportedCultures = new List<CultureInfo>
+                {
+                    new CultureInfo("fr"),
+                };
+                opts.DefaultRequestCulture = new RequestCulture("fr");
+                // Formatting numbers, dates, etc.
+                opts.SupportedCultures = supportedCultures;
+                // UI strings that we have localized.
+                opts.SupportedUICultures = supportedCultures;
+            });
         }
 
         public virtual AppConfiguration ConfigureConfiguration(IServiceCollection services)
@@ -111,12 +141,17 @@ namespace CloudControl.Web
             {
                 luccaApiBuilder
                     .SetPagingDefaultLimit(100)
-                    .AddModelBinding();
+                    .AddModelBinding()
+                    .AddEntityFrameworkQuerying()
+                    .ConfigureLuccaApiForInstances();
             });
             services.AddMvc().AddLuccaApi(o =>
             {
                 o.ShouldIncludeFullExceptionDetails = _hostingEnvironment.IsDevelopment();
-            });
+            })
+            .AddMvcOptions(
+                options => options.Filters.Add<HandleDomainExceptionsFilter>()
+            );
         }
 
         public virtual void ConfigureCache(IServiceCollection services, AppConfiguration configuration)
@@ -140,6 +175,11 @@ namespace CloudControl.Web
             services.AddTenancy(t => { }, DatabaseMode.MultiTenant);
         }
 
+        public virtual void ConfigureNotifications(IServiceCollection services, AppConfiguration configuration)
+        {
+            TeamNotificationConfigurer.ConfigureTeamNotification(services, configuration.Slack);
+        }
+
         public virtual void ConfigureStorage(IServiceCollection services)
         {
             StorageConfigurer.ConfigureServices(services, _configuration);
@@ -148,17 +188,25 @@ namespace CloudControl.Web
             services.ConfigureContext<IpFilterDbContext>(_hostingEnvironment);
             services.ConfigureContext<ContractsDbContext>(_hostingEnvironment);
             services.ConfigureContext<UsersDbContext>(_hostingEnvironment);
+            services.ConfigureContext<InstancesDbContext>(_hostingEnvironment);
         }
 
         public virtual void ConfigureSharedDomains(IServiceCollection services, AppConfiguration configuration)
         {
             DistributorsConfigurer.ConfigureServices(services);
             UsersConfigurer.ConfigureServices(services, configuration.Users);
+            EnvironmentsConfigurer.ConfigureEnvironments(services);
+            RemoteConfigurer.ConfigureRemote(services);
         }
 
         public virtual void ConfigureAuthentication(IServiceCollection services, AppConfiguration configuration)
         {
             AuthConfigurer.ConfigureServices(services, configuration.Authentication);
+        }
+
+        public virtual void ConfigureEmails(IServiceCollection services, AppConfiguration configuration)
+        {
+            EmailConfigurer.ConfigureServices(services, configuration.Email);
         }
 
         public virtual void ConfigureRights(IServiceCollection services, AppConfiguration configuration)
@@ -169,6 +217,11 @@ namespace CloudControl.Web
         public virtual void ConfigureBilling(IServiceCollection services, AppConfiguration configuration)
         {
             BillingConfigurer.ConfigureServices(services, configuration.LegacyCloudControl, configuration.BillingContracts);
+        }
+
+        public virtual void ConfigureInstances(IServiceCollection services, AppConfiguration configuration)
+        {
+            InstancesConfigurer.ConfigureServices(services, configuration.Instances);
         }
 
         public virtual void ConfigureLogs(IServiceCollection services)
@@ -184,11 +237,6 @@ namespace CloudControl.Web
         public virtual void ConfigureSpa(IServiceCollection services)
         {
             services.RegisterFrontApplication(_hostingEnvironment);
-        }
-
-        public virtual void ConfigureEnvironments(IServiceCollection services, AppConfiguration configuration)
-        {
-            EnvironmentsConfigurer.ConfigureEnvironments(services);
         }
 
         public virtual void ConfigureSalesforce(IServiceCollection services, AppConfiguration configuration)

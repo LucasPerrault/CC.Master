@@ -35,6 +35,8 @@ namespace Rights.Web
                     .WithAuthScheme("Lucca").AuthenticateCurrentPrincipal(provider);
             });
 
+            services.AddScoped<ICloudControlPermissionsStore, CloudControlPermissionsStore>();
+
             services.AddScoped<ApiKeyPermissionsService>();
             services.AddScoped<UserPermissionsService>();
 

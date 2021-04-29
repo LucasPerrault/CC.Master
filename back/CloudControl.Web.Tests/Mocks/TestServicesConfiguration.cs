@@ -1,8 +1,14 @@
 using Authentication.Infra.Configurations;
 using Billing.Contracts.Infra.Configurations;
-using Cache.Web;
 using CloudControl.Web.Configuration;
 using Core.Proxy.Infra.Configuration;
+using Instances.Domain.Demos;
+using Instances.Infra.DataDuplication;
+using Instances.Infra.Demos;
+using Instances.Infra.Instances;
+using Instances.Infra.WsAuth;
+using Instances.Infra.Shared;
+using Instances.Web;
 using IpFilter.Infra.Storage;
 using IpFilter.Web;
 using Lucca.Core.AspNetCore.Healthz;
@@ -18,6 +24,7 @@ using Rights.Infra.Configuration;
 using Salesforce.Infra.Configurations;
 using System;
 using System.Collections.Generic;
+using TeamNotification.Web;
 using Users.Infra.Storage;
 
 namespace CloudControl.Web.Tests.Mocks
@@ -57,12 +64,35 @@ namespace CloudControl.Web.Tests.Mocks
 
         public override void ConfigureAuthentication(IServiceCollection services, AppConfiguration appConfiguration)
         {
-            base.ConfigureAuthentication(services, new AppConfiguration { Authentication = _mockedAuthConfiguration });
+            base.ConfigureAuthentication(services, new AppConfiguration
+            {
+                Authentication = new AuthenticationConfiguration
+                {
+                    ServerUri = new Uri("https://mocked-partenaires.local"),
+                    LogoutEndpointPath = "/logout",
+                    RedirectEndpointPath = "/login",
+                    Hangfire = new HangfireAuthenticationConfiguration
+                    {
+                        SharedSecret = Guid.Empty
+                    }
+                }
+            });
         }
 
         public override void ConfigureApi(IServiceCollection services)
         {
             services.AddControllers();
+        }
+
+        public override void ConfigureNotifications(IServiceCollection services, AppConfiguration configuration)
+        {
+            base.ConfigureNotifications(services, new AppConfiguration
+            {
+                Slack = new SlackConfiguration
+                {
+                    Hooks = new SlackHooks()
+                }
+            });
         }
 
         public override void ConfigureCache(IServiceCollection services, AppConfiguration configuration)
@@ -89,6 +119,9 @@ namespace CloudControl.Web.Tests.Mocks
                 }
             });
         }
+
+        public override void ConfigureEmails(IServiceCollection services, AppConfiguration configuration)
+        { }
 
         public override void ConfigureIpFilter(IServiceCollection services)
         {
@@ -146,6 +179,40 @@ namespace CloudControl.Web.Tests.Mocks
                     ServerUri = new Uri("https://mocked-salesforce.local"),
                     AccountsEndpointPath = "/api/mocked/accounts",
                     Token = new Guid("deadbeef-0000-0000-0000-000000000000")
+                }
+            });
+        }
+
+        public override void ConfigureInstances(IServiceCollection services, AppConfiguration configuration)
+        {
+            base.ConfigureInstances(services, new AppConfiguration
+            {
+                Instances = new InstancesConfigurer.InstancesConfiguration
+                {
+                    Identity = new IdentityAuthenticationConfig
+                    {
+                        ClientId = "mocked.identity.client.id",
+                        ClientSecret = "mocked.identity.client.secret",
+                        TokenRequestRoute = "mocked/identity/token/request/route"
+                    },
+                    WsAuth = new WsAuthConfiguration
+                    {
+                        ServerUri = new Uri("https://mocked-ws-auth.ilucca.local"),
+                        EndpointPath = "/sync",
+                        Token = new Guid("deadbeef-0000-0000-0000-000000000000")
+                    },
+                    CcData = new CcDataConfiguration
+                    {
+                        InboundToken = new Guid("deadbeef-0000-0000-0000-000000000000"),
+                        OutboundToken = new Guid("deadbeef-0000-0000-0000-000000000000")
+                    },
+                    Hubspot = new HubspotConfiguration
+                    {
+                        OutboundToken = new Guid("deadbeef-0000-0000-0000-000000000000"),
+                        ServerUri = new Uri("https://api.hubapi.mocked")
+                    },
+                    SqlScriptPicker = new SqlScriptPickerConfiguration(),
+                    DemoClusterSelection = new ClusterSelectorConfiguration()
                 }
             });
         }

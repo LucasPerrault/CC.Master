@@ -2,8 +2,11 @@ using Authentication.Infra.Configurations;
 using Billing.Contracts.Infra.Configurations;
 using Cache.Web;
 using Core.Proxy.Infra.Configuration;
+using Email.Infra.Configuration;
+using Instances.Web;
 using Rights.Infra.Configuration;
 using Salesforce.Infra.Configurations;
+using TeamNotification.Web;
 using Users.Web;
 
 namespace CloudControl.Web.Configuration
@@ -18,7 +21,10 @@ namespace CloudControl.Web.Configuration
         public LegacyCloudControlConfiguration LegacyCloudControl { get; set; }
         public BillingContractsConfiguration BillingContracts { get; set; }
         public SalesforceConfiguration Salesforce { get; set; }
+        public InstancesConfigurer.InstancesConfiguration Instances { get; set; }
         public RedisConfiguration Redis { get; set; }
+        public EmailConfiguration Email { get; set; }
+        public SlackConfiguration Slack { get; set; }
 
         public UsersConfiguration Users => new UsersConfiguration
         {

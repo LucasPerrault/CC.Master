@@ -1,10 +1,11 @@
+using Distributors.Domain;
 using Distributors.Domain.Models;
 using Microsoft.EntityFrameworkCore;
 using System.Threading.Tasks;
 
 namespace Distributors.Infra.Storage.Stores
 {
-    public class DistributorsStore
+    public class DistributorsStore : IDistributorsStore
     {
         private readonly DistributorsDbContext _dbContext;
 

@@ -1,3 +1,4 @@
+using Lucca.Core.Api.Queryable.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using System;
 
@@ -22,6 +23,8 @@ namespace Storage.Infra.Context
             }
 
             modelBuilder.HasDefaultSchema(Schema);
+
+            modelBuilder.RegisterPagingMethods();
 
             ApplyConfiguration(modelBuilder);
 

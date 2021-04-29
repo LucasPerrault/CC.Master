@@ -6,7 +6,11 @@ logs/
 **/bin/
 **/obj/
 
-**/Resources
+
+CC.Master.sln.DotSettings.user
+*.feature.cs
+
+**/Resources/Translations
 **/*.csproj.user
 **/Properties/launchSettings.json
 
