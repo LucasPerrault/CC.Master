@@ -12,6 +12,7 @@ using Environments.Web;
 using IpFilter.Infra.Storage;
 using IpFilter.Web;
 using Lucca.Core.Api.Abstractions;
+using Lucca.Core.Api.Queryable.EntityFrameworkCore;
 using Lucca.Core.Api.Web;
 using Lucca.Core.AspNetCore.Healthz;
 using Lucca.Core.AspNetCore.Middlewares;
@@ -31,7 +32,6 @@ using Storage.Infra.Context;
 using Storage.Web;
 using System;
 using Cache.Web;
-using Lucca.Core.Api.Queryable.EntityFrameworkCore;
 using Instances.Web;
 using Instances.Infra.Storage;
 using Microsoft.AspNetCore.Builder;
@@ -148,7 +148,10 @@ namespace CloudControl.Web
             services.AddMvc().AddLuccaApi(o =>
             {
                 o.ShouldIncludeFullExceptionDetails = _hostingEnvironment.IsDevelopment();
-            });
+            })
+            .AddMvcOptions(
+                options => options.Filters.Add<HandleDomainExceptionsFilter>()
+            );
         }
 
         public virtual void ConfigureCache(IServiceCollection services, AppConfiguration configuration)
