@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using Tools;
 
 namespace Instances.Infra.Demos
 {
@@ -83,7 +84,12 @@ namespace Instances.Infra.Demos
                 .Where(e => e.Subdomain.StartsWith(prefix))
                 .Select(e => e.Subdomain);
 
-            var usedSubdomainsDemos = (await _demosStore.GetAsync(DemoFilter.Active(), DemoAccess.All))
+            var filter = new DemoFilter
+            {
+                IsActive = BoolCombination.TrueOnly,
+                Search = prefix
+            };
+            var usedSubdomainsDemos = (await _demosStore.GetAsync(filter, DemoAccess.All))
                 .Where(d => d.Subdomain.StartsWith(prefix))
                 .Select(e => e.Subdomain);
 

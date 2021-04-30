@@ -45,27 +45,8 @@ namespace Instances.Application.Tests
         [Fact]
         public async Task CleanupShouldNotAffectTemplateOrProtectedDemos()
         {
-            var demos = new List<Demo>
-            {
-                new Demo
-                {
-                    Subdomain = "template",
-                    IsTemplate = true,
-                    DeletionScheduledOn = new DateTime(2020, 01 ,01)
-                },
-                new Demo
-                {
-                    Subdomain = "protected",
-                    DeletionScheduledOn = new DateTime(2020, 01 ,01),
-                    Instance = new Instance { IsProtected = true }
-                }
-            };
 
             _timeProviderMock.Setup(p => p.Today()).Returns(new DateTime(2020, 01, 01));
-
-            _demosStoreMock
-                .Setup(s => s.GetAsync(It.Is<DemoFilter>(f => f.IsActive == BoolCombination.TrueOnly), It.IsAny<DemoAccess>()))
-                .Returns(Task.FromResult(demos.AsQueryable().BuildMock().Object));
 
             var cleaner = new InactiveDemosCleaner
             (
@@ -80,11 +61,19 @@ namespace Instances.Application.Tests
 
             await cleaner.CleanAsync();
 
-            _ccDataServiceMock.Verify(s => s.DeleteInstancesAsync(
-                    It.IsAny<IEnumerable<string>>(),
-                    It.IsAny<string>(),
-                    It.IsAny<string>()
-                ), Times.Never);
+
+            _demosStoreMock.Verify
+            (
+                s => s.GetAsync
+                (
+                    It.Is<DemoFilter>(f => f.IsActive == BoolCombination.TrueOnly
+                        && f.IsTemplate == BoolCombination.FalseOnly
+                        && f.IsProtected == BoolCombination.FalseOnly
+                    ),
+                    It.IsAny<DemoAccess>()
+                ),
+                Times.Once()
+            );
         }
 
         [Fact]

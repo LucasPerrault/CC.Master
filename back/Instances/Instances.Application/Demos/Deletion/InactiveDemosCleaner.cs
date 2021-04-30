@@ -46,9 +46,15 @@ namespace Instances.Application.Demos.Deletion
         public async Task CleanAsync()
         {
             var today = _timeProvider.Today();
-            var activeDemos = await _demosStore.GetAsync(DemoFilter.Active(), DemoAccess.All);
+            var filter = new DemoFilter
+            {
+                IsActive = BoolCombination.TrueOnly,
+                IsTemplate = BoolCombination.FalseOnly,
+                IsProtected = BoolCombination.FalseOnly
+            };
+
+            var activeDemos = await _demosStore.GetAsync(filter, DemoAccess.All);
             var infoTasks = activeDemos
-                .Where(d => !d.IsTemplate && !d.Instance.IsProtected)
                 .Select(d => GetUpdatedCleanupInfoAsync(d, today));
 
             var infos = await Task.WhenAll(infoTasks);

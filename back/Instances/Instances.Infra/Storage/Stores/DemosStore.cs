@@ -79,9 +79,26 @@ namespace Instances.Infra.Storage.Stores
                 filters.Add(d => d.IsActive == boolean);
             }
 
+            if (filter.IsTemplate != BoolCombination.Both)
+            {
+                var boolean = ToBoolean(filter.IsTemplate);
+                filters.Add(d => d.IsTemplate == boolean);
+            }
+
+            if (filter.IsProtected != BoolCombination.Both)
+            {
+                var boolean = ToBoolean(filter.IsProtected);
+                filters.Add(d => d.Instance.IsProtected == boolean);
+            }
+
             if(!string.IsNullOrEmpty(filter.Subdomain))
             {
                 filters.Add(d => d.Subdomain == filter.Subdomain);
+            }
+
+            if(!string.IsNullOrEmpty(filter.Search))
+            {
+                filters.Add(d =>filter.Search.Contains(d.Subdomain));
             }
 
             filters.Add(ToRightExpression(access));
