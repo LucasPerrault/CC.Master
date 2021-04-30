@@ -9,12 +9,12 @@ namespace Instances.Domain.Demos
 {
     public interface IDemosStore
     {
-        Task<IQueryable<Demo>> GetAsync(DemoFilter filter);
-        Task<Page<Demo>> GetAsync(IPageToken pageToken, DemoFilter filter);
+        Task<IQueryable<Demo>> GetAsync(DemoFilter filter, DemoAccess access);
+        Task<Page<Demo>> GetAsync(IPageToken pageToken, DemoFilter filter, DemoAccess access);
+        Task<Demo> GetActiveByIdAsync(int id, DemoAccess access);
         Task<Dictionary<string, int>> GetNumberOfActiveDemosByCluster();
         Task<Demo> CreateAsync(Demo demo);
         Task UpdateDeletionScheduleAsync(Demo demo, DateTime deletionScheduledOn);
         Task DeleteAsync(Demo demo);
-        Task<Demo> GetActiveByIdAsync(int id, DemoAccess access);
     }
 }

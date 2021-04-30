@@ -24,14 +24,14 @@ namespace Instances.Infra.Storage.Stores
             _queryPager = queryPager ?? throw new ArgumentNullException(nameof(queryPager));
         }
 
-        public Task<IQueryable<Demo>> GetAsync(DemoFilter filter)
+        public Task<IQueryable<Demo>> GetAsync(DemoFilter filter, DemoAccess access)
         {
-            return Task.FromResult(Demos.Where(ToExpression(filter)));
+            return Task.FromResult(Demos.Where(ToExpression(filter, access)));
         }
 
-        public async Task<Page<Demo>> GetAsync(IPageToken pageToken, DemoFilter filter)
+        public async Task<Page<Demo>> GetAsync(IPageToken pageToken, DemoFilter filter, DemoAccess access)
         {
-            return await _queryPager.ToPageAsync(await GetAsync(filter), pageToken);
+            return await _queryPager.ToPageAsync(await GetAsync(filter, access), pageToken);
         }
 
         public Task<Demo> GetActiveByIdAsync(int id, DemoAccess demoAccess)
@@ -69,7 +69,7 @@ namespace Instances.Infra.Storage.Stores
 
         private IQueryable<Demo> Demos => _dbContext.Set<Demo>().Include(d => d.Instance);
 
-        private Expression<Func<Demo, bool>> ToExpression(DemoFilter filter)
+        private Expression<Func<Demo, bool>> ToExpression(DemoFilter filter, DemoAccess access)
         {
             var filters = new List<Expression<Func<Demo, bool>>>();
 
@@ -84,7 +84,7 @@ namespace Instances.Infra.Storage.Stores
                 filters.Add(d => d.Subdomain == filter.Subdomain);
             }
 
-            filters.Add(ToRightExpression(filter.Access));
+            filters.Add(ToRightExpression(access));
 
             return filters.ToArray().CombineSafely();
         }

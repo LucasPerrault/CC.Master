@@ -36,23 +36,24 @@ namespace Instances.Application.Demos
             _ccDataService = ccDataService;
         }
 
-        public async Task<Page<Demo>> GetDemosAsync(DemoListQuery query)
+        public async Task<Page<Demo>> GetDemosAsync(IPageToken pageToken, DemoFilter filter)
         {
             var access = await _rightsFilter.GetReadAccessAsync(_principal);
-            return await _demosStore.GetAsync(
-                query.Page,
-                query.ToDemoFilter(access)
+            return await _demosStore.GetAsync
+            (
+                pageToken,
+                filter,
+                access
             );
         }
 
         public async Task<Demo> DeleteAsync(int id)
         {
+            var access = await _rightsFilter.GetReadAccessAsync(_principal);
             var activeDemosInScope = await _demosStore.GetAsync
             (
-                new DemoFilter(await _rightsFilter.GetReadAccessAsync(_principal))
-                {
-                    IsActive = BoolCombination.TrueOnly
-                }
+                new DemoFilter { IsActive = BoolCombination.TrueOnly },
+                access
             );
 
             var demo = activeDemosInScope.SingleOrDefault(d => d.Id == id);

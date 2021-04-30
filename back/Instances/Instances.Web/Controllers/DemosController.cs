@@ -36,7 +36,7 @@ namespace Instances.Web.Controllers
         [ForbidIfMissing(Operation.Demo)]
         public Task<Page<Demo>> GetAsync([FromQuery]DemoListQuery query)
         {
-            return _demosRepository.GetDemosAsync(query);
+            return _demosRepository.GetDemosAsync(query.Page, query.ToDemoFilter());
         }
 
         [HttpPost("duplicate")]

@@ -64,7 +64,7 @@ namespace Instances.Application.Tests
                 }
             };
 
-            _demosStoreMock.Setup(s => s.GetAsync(It.IsAny<DemoFilter>()))
+            _demosStoreMock.Setup(s => s.GetAsync(It.IsAny<DemoFilter>(), It.IsAny<DemoAccess>()))
                 .Returns(Task.FromResult(demos.AsQueryable().BuildMock().Object));
 
             await demosRepo.DeleteAsync(12);

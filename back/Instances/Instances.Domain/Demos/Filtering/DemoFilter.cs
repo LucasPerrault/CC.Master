@@ -6,17 +6,7 @@ namespace Instances.Domain.Demos.Filtering
     {
         public string Subdomain { get; set; }
         public BoolCombination IsActive { get; set; } = BoolCombination.Both;
-        public DemoAccess Access { get; }
 
-        public DemoFilter(DemoAccess demoAccess)
-        {
-            Access = demoAccess;
-        }
-
-        private DemoFilter() : this(DemoAccess.None)
-        { }
-
-        public static DemoFilter Active(DemoAccess demoAccess) => new DemoFilter(demoAccess)
-            { IsActive = BoolCombination.TrueOnly };
+        public static DemoFilter Active() => new DemoFilter { IsActive = BoolCombination.TrueOnly };
     }
 }
