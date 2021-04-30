@@ -3,6 +3,7 @@ using Distributors.Domain;
 using Instances.Application.Instances;
 using Instances.Domain.Demos;
 using Instances.Domain.Demos.Cleanup;
+using Instances.Domain.Demos.Filtering;
 using Instances.Domain.Instances;
 using Instances.Domain.Instances.Models;
 using Instances.Infra.Instances.Services;
@@ -13,7 +14,6 @@ using Microsoft.Extensions.Logging;
 using Rights.Domain;
 using Rights.Domain.Abstractions;
 using System;
-using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 
@@ -193,9 +193,8 @@ namespace Instances.Application.Demos.Duplication
 
         private async Task<Demo> GetDemoToDuplicateAsync(int sourceId)
         {
-            var rightsFilter = await _demoRightsFilter.GetDefaultReadFilterAsync(_principal);
-            var demoToDuplicate = (await _demosStore.GetActiveAsync(rightsFilter, d => d.Id == sourceId))
-                .FirstOrDefault();
+            var access = await _demoRightsFilter.GetReadAccessAsync(_principal);
+            var demoToDuplicate = await _demosStore.GetActiveByIdAsync(sourceId, access);
 
             return demoToDuplicate
                 ?? throw new BadRequestException($"Source demo {sourceId} could not be found");

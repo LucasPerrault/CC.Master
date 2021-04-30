@@ -1,13 +1,15 @@
 using Instances.Domain.Demos;
+using Instances.Domain.Demos.Filtering;
 using Instances.Domain.Instances;
 using Instances.Domain.Shared;
 using Lucca.Core.Api.Abstractions.Paging;
 using Lucca.Core.Shared.Domain.Exceptions;
 using System;
+using System.Collections.Generic;
 using System.Linq;
-using System.Linq.Expressions;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using Tools;
 
 namespace Instances.Application.Demos
 {
@@ -37,15 +39,10 @@ namespace Instances.Application.Demos
 
         public async Task<Page<Demo>> GetDemosAsync(DemoListQuery query)
         {
-            Expression<Func<Demo, bool>> activeFilter = (d => true);
-                if(query.IsActive.Count == 1)
-            {
-                activeFilter = (d => d.IsActive == query.IsActive.Single());
-            }
+            var access = await _rightsFilter.GetReadAccessAsync(_principal);
             return await _demosStore.GetAsync(
                 query.Page,
-                activeFilter,
-                await _rightsFilter.GetDefaultReadFilterAsync(_principal)
+                query.ToDemoFilter(access)
             );
         }
 
@@ -53,8 +50,10 @@ namespace Instances.Application.Demos
         {
             var activeDemosInScope = await _demosStore.GetAsync
             (
-                await _rightsFilter.GetDefaultReadFilterAsync(_principal),
-                d => d.IsActive
+                new DemoFilter(await _rightsFilter.GetReadAccessAsync(_principal))
+                {
+                    IsActive = BoolCombination.TrueOnly
+                }
             );
 
             var demo = activeDemosInScope.SingleOrDefault(d => d.Id == id);

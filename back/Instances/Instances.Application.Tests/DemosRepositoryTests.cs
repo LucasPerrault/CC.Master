@@ -1,5 +1,6 @@
 ﻿using Instances.Application.Demos;
 using Instances.Domain.Demos;
+using Instances.Domain.Demos.Filtering;
 using Instances.Domain.Instances;
 using Instances.Domain.Instances.Models;
 using Instances.Domain.Shared;
@@ -52,7 +53,7 @@ namespace Instances.Application.Tests
                 }
             };
 
-            _demosStoreMock.Setup(s => s.GetAsync(It.IsAny<Expression<Func<Demo, bool>>[]>()))
+            _demosStoreMock.Setup(s => s.GetAsync(It.IsAny<DemoFilter>()))
                 .Returns(Task.FromResult(demos.AsQueryable().BuildMock().Object));
 
             await demosRepo.DeleteAsync(12);

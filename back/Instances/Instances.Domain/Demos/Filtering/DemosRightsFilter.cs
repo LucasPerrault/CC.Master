@@ -7,11 +7,11 @@ using System.Linq.Expressions;
 using System.Security.Claims;
 using System.Threading.Tasks;
 
-namespace Instances.Domain.Demos
+namespace Instances.Domain.Demos.Filtering
 {
     public interface IDemoRightsFilter
     {
-        Task<Expression<Func<Demo, bool>>> GetDefaultReadFilterAsync(ClaimsPrincipal principal);
+        Task<DemoAccess> GetReadAccessAsync(ClaimsPrincipal principal);
     }
 
     public class DemoRightsFilter : IDemoRightsFilter
@@ -23,7 +23,7 @@ namespace Instances.Domain.Demos
             _rightsService = rightsService;
         }
 
-        public async Task<Expression<Func<Demo, bool>>> GetDefaultReadFilterAsync(ClaimsPrincipal principal)
+        public async Task<DemoAccess> GetReadAccessAsync(ClaimsPrincipal principal)
         {
             switch(principal)
             {
@@ -31,12 +31,12 @@ namespace Instances.Domain.Demos
                     var currentUserScope = await _rightsService.GetUserOperationHighestScopeAsync(Operation.Demo);
                     return currentUserScope switch
                     {
-                        Scope.AllDepartments => _ => true,
-                        Scope.DepartmentOnly => d => d.Distributor.Code == userPrincipal.User.DepartmentCode || d.IsTemplate,
+                        Scope.AllDepartments => DemoAccess.All,
+                        Scope.DepartmentOnly => DemoAccess.ForDistributor(userPrincipal.User.DepartmentCode),
                         _ => throw new ApplicationException($"Unhandled scope : {currentUserScope}")
                     };
-                case CloudControlApiKeyClaimsPrincipal apiKey:
-                    return (Demo d) => true;
+                case CloudControlApiKeyClaimsPrincipal _:
+                    return DemoAccess.All;
                 default:
                     throw new ApplicationException("Unhandled ClaimsPrincipal type");
             };
