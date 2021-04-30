@@ -41,7 +41,7 @@ namespace Instances.Infra.Tests.Demos
 
             _demosStoreMock
                 .Setup(s => s.GetAsync(It.IsAny<DemoFilter>(), It.IsAny<DemoAccess>()))
-                .Returns(Task.FromResult(new List<Demo>().AsQueryable().BuildMock().Object));
+                .ReturnsAsync(new List<Demo>());
             _envStoreMock.Setup(s => s.GetAll()).Returns(envs.AsQueryable().BuildMock().Object);
             var subdomainValidator = new SubdomainValidator(_demosStoreMock.Object, _envStoreMock.Object);
 
@@ -58,7 +58,7 @@ namespace Instances.Infra.Tests.Demos
 
             _demosStoreMock
                 .Setup(s => s.GetAsync(It.IsAny<DemoFilter>(), It.IsAny<DemoAccess>()))
-                .Returns(Task.FromResult(demos.AsQueryable().BuildMock().Object));
+                .ReturnsAsync(demos);
             _envStoreMock.Setup(s => s.GetAll()).Returns(new List<Environment>().AsQueryable().BuildMock().Object);
             var subdomainValidator = new SubdomainValidator(_demosStoreMock.Object, _envStoreMock.Object);
 
@@ -78,7 +78,7 @@ namespace Instances.Infra.Tests.Demos
 
             _demosStoreMock
                 .Setup(s => s.GetAsync(It.IsAny<DemoFilter>(), It.IsAny<DemoAccess>()))
-                .Returns(Task.FromResult(new List<Demo>().AsQueryable().BuildMock().Object));
+                .ReturnsAsync(new List<Demo>());
 
             _envStoreMock.Setup(s => s.GetAll()).Returns(envs.AsQueryable().BuildMock().Object);
             var subdomainValidator = new SubdomainValidator(_demosStoreMock.Object, _envStoreMock.Object);
@@ -139,7 +139,7 @@ namespace Instances.Infra.Tests.Demos
 
             _demosStoreMock
                 .Setup(ds => ds.GetAsync(It.IsAny<DemoFilter>(), It.IsAny<DemoAccess>()))
-                .ReturnsAsync(existingDemos.AsQueryable());
+                .ReturnsAsync(existingDemos);
 
             var subdomainValidator = new SubdomainValidator(_demosStoreMock.Object, _envStoreMock.Object);
             var availableSubdomain = await subdomainValidator.GetAvailableSubdomainByPrefixAsync(prefix);
@@ -167,7 +167,7 @@ namespace Instances.Infra.Tests.Demos
                     It.Is<DemoFilter>(d => d.IsActive == BoolCombination.TrueOnly),
                     It.IsAny<DemoAccess>()
                 ))
-                .ReturnsAsync(existingDemos.AsQueryable());
+                .ReturnsAsync(existingDemos);
 
             var subdomainValidator = new SubdomainValidator(_demosStoreMock.Object, _envStoreMock.Object);
             var availableSubdomain = await subdomainValidator.GetAvailableSubdomainByPrefixAsync(prefix);

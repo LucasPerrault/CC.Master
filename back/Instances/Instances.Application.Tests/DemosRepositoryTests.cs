@@ -6,13 +6,11 @@ using Instances.Domain.Instances;
 using Instances.Domain.Instances.Models;
 using Instances.Domain.Shared;
 using Lucca.Core.Rights.Abstractions;
-using MockQueryable.Moq;
 using Moq;
 using Rights.Domain;
 using Rights.Domain.Abstractions;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -65,7 +63,7 @@ namespace Instances.Application.Tests
             };
 
             _demosStoreMock.Setup(s => s.GetAsync(It.IsAny<DemoFilter>(), It.IsAny<DemoAccess>()))
-                .Returns(Task.FromResult(demos.AsQueryable().BuildMock().Object));
+                .ReturnsAsync(demos);
 
             await demosRepo.DeleteAsync(12);
 

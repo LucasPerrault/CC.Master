@@ -7,7 +7,6 @@ using Instances.Domain.Demos.Filtering;
 using Instances.Domain.Instances;
 using Instances.Domain.Instances.Models;
 using Instances.Domain.Shared;
-using MockQueryable.Moq;
 using Moq;
 using System;
 using System.Collections.Generic;
@@ -45,8 +44,11 @@ namespace Instances.Application.Tests
         [Fact]
         public async Task CleanupShouldNotAffectTemplateOrProtectedDemos()
         {
-
             _timeProviderMock.Setup(p => p.Today()).Returns(new DateTime(2020, 01, 01));
+
+            _demosStoreMock
+                .Setup(s => s.GetAsync(It.IsAny<DemoFilter>(), It.IsAny<DemoAccess>()))
+                .ReturnsAsync(new List<Demo>());
 
             var cleaner = new InactiveDemosCleaner
             (
@@ -95,7 +97,7 @@ namespace Instances.Application.Tests
 
             _demosStoreMock
                 .Setup(s => s.GetAsync(It.IsAny<DemoFilter>(), It.IsAny<DemoAccess>()))
-                .Returns(Task.FromResult(demos.AsQueryable().BuildMock().Object));
+                .ReturnsAsync(demos);
 
             var cleaner = new InactiveDemosCleaner
             (
@@ -133,7 +135,7 @@ namespace Instances.Application.Tests
 
             _demosStoreMock
                 .Setup(s => s.GetAsync(It.Is<DemoFilter>(f => f.IsActive == BoolCombination.TrueOnly), It.IsAny<DemoAccess>()))
-                .Returns(Task.FromResult(demos.AsQueryable().BuildMock().Object));
+                .ReturnsAsync(demos);
 
             var cleaner = new InactiveDemosCleaner
             (
@@ -172,7 +174,7 @@ namespace Instances.Application.Tests
 
             _demosStoreMock
                 .Setup(s => s.GetAsync(It.Is<DemoFilter>(f => f.IsActive == BoolCombination.TrueOnly), It.IsAny<DemoAccess>()))
-                .Returns(Task.FromResult(demos.AsQueryable().BuildMock().Object));
+                .ReturnsAsync(demos);
 
             var cleaner = new InactiveDemosCleaner
             (
@@ -206,7 +208,7 @@ namespace Instances.Application.Tests
 
             _demosStoreMock
                 .Setup(s => s.GetAsync(It.Is<DemoFilter>(f => f.IsActive == BoolCombination.TrueOnly), It.IsAny<DemoAccess>()))
-                .Returns(Task.FromResult(demos.AsQueryable().BuildMock().Object));
+                .ReturnsAsync(demos);
 
             var cleaner = new InactiveDemosCleaner
             (
@@ -245,7 +247,7 @@ namespace Instances.Application.Tests
 
             _demosStoreMock
                 .Setup(s => s.GetAsync(It.Is<DemoFilter>(f => f.IsActive == BoolCombination.TrueOnly), It.IsAny<DemoAccess>()))
-                .Returns(Task.FromResult(demos.AsQueryable().BuildMock().Object));
+                .ReturnsAsync(demos);
 
             var cleaner = new InactiveDemosCleaner
             (
@@ -296,7 +298,7 @@ namespace Instances.Application.Tests
 
             _demosStoreMock
                 .Setup(s => s.GetAsync(It.Is<DemoFilter>(f => f.IsActive == BoolCombination.TrueOnly), It.IsAny<DemoAccess>()))
-                .Returns(Task.FromResult(demos.AsQueryable().BuildMock().Object));
+                .ReturnsAsync(demos);
 
             var cleaner = new InactiveDemosCleaner
             (

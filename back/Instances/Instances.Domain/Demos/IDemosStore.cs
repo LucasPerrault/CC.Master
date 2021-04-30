@@ -9,7 +9,7 @@ namespace Instances.Domain.Demos
 {
     public interface IDemosStore
     {
-        Task<IQueryable<Demo>> GetAsync(DemoFilter filter, DemoAccess access);
+        Task<List<Demo>> GetAsync(DemoFilter filter, DemoAccess access);
         Task<Page<Demo>> GetAsync(IPageToken pageToken, DemoFilter filter, DemoAccess access);
         Task<Demo> GetActiveByIdAsync(int id, DemoAccess access);
         Task<Dictionary<string, int>> GetNumberOfActiveDemosByCluster();

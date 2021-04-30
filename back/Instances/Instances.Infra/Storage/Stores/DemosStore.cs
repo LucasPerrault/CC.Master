@@ -24,14 +24,14 @@ namespace Instances.Infra.Storage.Stores
             _queryPager = queryPager ?? throw new ArgumentNullException(nameof(queryPager));
         }
 
-        public Task<IQueryable<Demo>> GetAsync(DemoFilter filter, DemoAccess access)
+        public Task<List<Demo>> GetAsync(DemoFilter filter, DemoAccess access)
         {
-            return Task.FromResult(Demos.Where(ToExpression(filter, access)));
+            return Get(filter, access).ToListAsync();
         }
 
-        public async Task<Page<Demo>> GetAsync(IPageToken pageToken, DemoFilter filter, DemoAccess access)
+        public Task<Page<Demo>> GetAsync(IPageToken pageToken, DemoFilter filter, DemoAccess access)
         {
-            return await _queryPager.ToPageAsync(await GetAsync(filter, access), pageToken);
+            return _queryPager.ToPageAsync(Get(filter, access), pageToken);
         }
 
         public Task<Demo> GetActiveByIdAsync(int id, DemoAccess demoAccess)
@@ -65,6 +65,11 @@ namespace Instances.Infra.Storage.Stores
         {
             // On ne passe pas par GetActiveDemos pour bénéficier (on espère) du group by en sql
             return Demos.Where(d => d.IsActive).GroupBy(d => d.Instance.Cluster).ToDictionaryAsync(g => g.Key, g => g.Count());
+        }
+
+        private IQueryable<Demo> Get(DemoFilter filter, DemoAccess access)
+        {
+            return Demos.Where(ToExpression(filter, access));
         }
 
         private IQueryable<Demo> Demos => _dbContext.Set<Demo>().Include(d => d.Instance);
