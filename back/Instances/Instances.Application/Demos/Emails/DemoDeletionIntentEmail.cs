@@ -1,5 +1,4 @@
 ﻿using Email.Domain;
-using Instances.Domain.Demos;
 using Instances.Domain.Demos.Cleanup;
 using Lucca.Emails.Client.Contracts.Fragments;
 using Resources.Translations;

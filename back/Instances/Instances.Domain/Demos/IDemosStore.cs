@@ -2,7 +2,6 @@ using Instances.Domain.Demos.Filtering;
 using Lucca.Core.Api.Abstractions.Paging;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace Instances.Domain.Demos

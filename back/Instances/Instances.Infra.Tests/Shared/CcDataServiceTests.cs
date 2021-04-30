@@ -1,5 +1,6 @@
 using FluentAssertions;
 using FluentAssertions.Json;
+using Instances.Domain.Shared;
 using Instances.Infra.Shared;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
@@ -7,6 +8,7 @@ using Moq;
 using Moq.Protected;
 using Newtonsoft.Json.Linq;
 using System;
+using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
 using System.Threading;
@@ -65,12 +67,12 @@ namespace Instances.Infra.Tests.Shared
                 .Setup(httpContextAccessor => httpContextAccessor.HttpContext)
                 .Returns(httpContext);
 
-            await _ccDataService.StartDuplicateInstanceAsync(new Domain.Shared.DuplicateInstanceRequestDto
+            await _ccDataService.StartDuplicateInstanceAsync(new DuplicateInstanceRequestDto
             {
-                SourceTenant = new Domain.Shared.TenantDto { Tenant = "tenant" },
+                SourceTenant = new TenantDto { Tenant = "tenant" },
                 TargetTenant = "target",
-                PostRestoreScripts = new System.Collections.Generic.List<Domain.Shared.UriLinkDto> {
-                    new Domain.Shared.UriLinkDto
+                PostRestoreScripts = new List<UriLinkDto> {
+                    new UriLinkDto
                     {
                         Uri = new Uri("http://test")
                     }

@@ -2,13 +2,11 @@ using Authentication.Domain;
 using Environments.Domain;
 using Environments.Domain.Storage;
 using Rights.Domain;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Security.Claims;
 using System.Threading.Tasks;
-using Environment = Environments.Domain.Environment;
 
 namespace Environments.Application
 {
@@ -27,7 +25,7 @@ namespace Environments.Application
 
         public async Task<List<Environment>> GetAsync()
         {
-            var filters = new List<Expression<Func<Environment, bool>>>
+            var filters = new List<Expression<System.Func<Environment, bool>>>
             {
                 await _filter.PurposeReadAccessFilter(Operation.ReadEnvironments)
             };

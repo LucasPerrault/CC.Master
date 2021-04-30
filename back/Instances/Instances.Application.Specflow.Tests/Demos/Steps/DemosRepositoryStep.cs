@@ -10,7 +10,6 @@ using Moq;
 using Rights.Domain;
 using Rights.Domain.Abstractions;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using TechTalk.SpecFlow;

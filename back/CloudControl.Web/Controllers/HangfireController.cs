@@ -1,5 +1,4 @@
 ﻿using Authentication.Web.Attributes;
-using Instances.Application.Demos;
 using Instances.Application.Demos.Deletion;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;

@@ -1,4 +1,3 @@
-using Environments.Domain;
 using Environments.Domain.Storage;
 using FluentAssertions;
 using Instances.Domain.Demos;
@@ -7,11 +6,13 @@ using Instances.Infra.Demos;
 using Lucca.Core.Shared.Domain.Exceptions;
 using MockQueryable.Moq;
 using Moq;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Tools;
 using Xunit;
+using Environment = Environments.Domain.Environment;
 
 namespace Instances.Infra.Tests.Demos
 {
@@ -143,7 +144,7 @@ namespace Instances.Infra.Tests.Demos
 
             var subdomainValidator = new SubdomainValidator(_demosStoreMock.Object, _envStoreMock.Object);
             var availableSubdomain = await subdomainValidator.GetAvailableSubdomainByPrefixAsync(prefix);
-            System.Func<Task> act = async () => await subdomainValidator.ThrowIfInvalidAsync(availableSubdomain);
+            Func<Task> act = async () => await subdomainValidator.ThrowIfInvalidAsync(availableSubdomain);
             await act.Should().NotThrowAsync();
         }
 
@@ -172,7 +173,7 @@ namespace Instances.Infra.Tests.Demos
             var subdomainValidator = new SubdomainValidator(_demosStoreMock.Object, _envStoreMock.Object);
             var availableSubdomain = await subdomainValidator.GetAvailableSubdomainByPrefixAsync(prefix);
             Assert.Contains(prefix, availableSubdomain);
-            System.Func<Task> act = async () => await subdomainValidator.ThrowIfInvalidAsync(availableSubdomain);
+            Func<Task> act = async () => await subdomainValidator.ThrowIfInvalidAsync(availableSubdomain);
             await act.Should().NotThrowAsync();
         }
     }
