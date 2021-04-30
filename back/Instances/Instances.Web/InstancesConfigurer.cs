@@ -62,7 +62,7 @@ namespace Instances.Web
             services.AddScoped<IDemosStore, DemosStore>();
             services.AddScoped<IInstanceDuplicationsStore, InstanceDuplicationsStore>();
             services.AddScoped<IDemoDuplicationsStore, DemoDuplicationsStore>();
-            services.AddScoped<IDemoRightsFilter, DemoRightsFilter>();
+            services.AddScoped<DemoRightsFilter>();
             services.AddScoped<DemosRepository>();
             services.AddScoped<InstanceDuplicationsRepository>();
             services.AddScoped<InstanceDuplicationsRepository>();

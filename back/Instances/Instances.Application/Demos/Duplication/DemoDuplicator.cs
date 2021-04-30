@@ -38,7 +38,7 @@ namespace Instances.Application.Demos.Duplication
         private readonly ISubdomainGenerator _subdomainGenerator;
         private readonly IClusterSelector _clusterSelector;
         private readonly IUsersPasswordHelper _passwordHelper;
-        private readonly IDemoRightsFilter _demoRightsFilter;
+        private readonly DemoRightsFilter _demoRightsFilter;
         private readonly IDemoUsersPasswordResetService _usersPasswordResetService;
         private readonly IWsAuthSynchronizer _wsAuthSynchronizer;
         private readonly IDemoDeletionCalculator _deletionCalculator;
@@ -57,7 +57,6 @@ namespace Instances.Application.Demos.Duplication
             ISubdomainGenerator subdomainGenerator,
             IClusterSelector clusterSelector,
             IUsersPasswordHelper passwordHelper,
-            IDemoRightsFilter demoRightsFilter,
             IDemoUsersPasswordResetService usersPasswordResetService,
             IWsAuthSynchronizer wsAuthSynchronizer,
             IDemoDeletionCalculator deletionCalculator,
@@ -75,7 +74,7 @@ namespace Instances.Application.Demos.Duplication
             _subdomainGenerator = subdomainGenerator;
             _clusterSelector = clusterSelector;
             _passwordHelper = passwordHelper;
-            _demoRightsFilter = demoRightsFilter;
+            _demoRightsFilter = new DemoRightsFilter(_rightsService);
             _usersPasswordResetService = usersPasswordResetService;
             _wsAuthSynchronizer = wsAuthSynchronizer;
             _deletionCalculator = deletionCalculator;

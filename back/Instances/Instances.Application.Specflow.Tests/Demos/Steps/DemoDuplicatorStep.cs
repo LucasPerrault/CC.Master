@@ -7,7 +7,6 @@ using Instances.Application.Specflow.Tests.Demos.Models;
 using Instances.Application.Specflow.Tests.Shared.Tooling;
 using Instances.Domain.Demos;
 using Instances.Domain.Demos.Cleanup;
-using Instances.Domain.Demos.Filtering;
 using Instances.Domain.Instances;
 using Instances.Domain.Instances.Models;
 using Instances.Domain.Shared;
@@ -159,7 +158,6 @@ namespace Instances.Application.Specflow.Tests.Demos.Steps
                     new SubdomainGenerator(new SubdomainValidator(demosStore, envStoreMock.Object)),
                     clusterSelectorMock.Object,
                     new UsersPasswordHelper(),
-                    new DemoRightsFilter(rightsServiceMock.Object),
                     passwordResetMock.Object,
                     authWsMock.Object,
                     new Mock<IDemoDeletionCalculator>().Object,

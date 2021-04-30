@@ -5,7 +5,6 @@ using Instances.Domain.Shared;
 using Lucca.Core.Api.Abstractions.Paging;
 using Lucca.Core.Shared.Domain.Exceptions;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -18,7 +17,7 @@ namespace Instances.Application.Demos
         private readonly ClaimsPrincipal _principal;
         private readonly IDemosStore _demosStore;
         private readonly IInstancesStore _instancesStore;
-        private readonly IDemoRightsFilter _rightsFilter;
+        private readonly DemoRightsFilter _rightsFilter;
         private readonly ICcDataService _ccDataService;
 
         public DemosRepository
@@ -26,7 +25,7 @@ namespace Instances.Application.Demos
             ClaimsPrincipal principal,
             IDemosStore demosStore,
             IInstancesStore instancesStore,
-            IDemoRightsFilter rightsFilters,
+            DemoRightsFilter rightsFilters,
             ICcDataService ccDataService
         )
         {

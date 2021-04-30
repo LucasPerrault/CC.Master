@@ -9,12 +9,7 @@ using System.Threading.Tasks;
 
 namespace Instances.Domain.Demos.Filtering
 {
-    public interface IDemoRightsFilter
-    {
-        Task<DemoAccess> GetReadAccessAsync(ClaimsPrincipal principal);
-    }
-
-    public class DemoRightsFilter : IDemoRightsFilter
+    public class DemoRightsFilter
     {
         private readonly IRightsService _rightsService;
 
