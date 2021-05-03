@@ -11,10 +11,12 @@ using Moq;
 using Rights.Domain;
 using Rights.Domain.Abstractions;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using TechTalk.SpecFlow;
 using Tools;
+using Tools.Web;
 using Xunit;
 
 namespace Instances.Application.Specflow.Tests.Demos.Steps
@@ -35,7 +37,7 @@ namespace Instances.Application.Specflow.Tests.Demos.Steps
         {
             var demoFilter = new DemoFilter()
             {
-                IsTemplate = isTemplate ? BoolCombination.TrueOnly : BoolCombination.FalseOnly,
+                IsTemplate = new HashSet<bool> { isTemplate }.ToBoolCombination(),
             };
             var demosRepository = GetNewRepository();
             _demosContext.DemosListResult = (await demosRepository.GetDemosAsync(null, demoFilter)).Items.ToList();
