@@ -19,7 +19,7 @@ namespace CloudControl.Web.Spa
         {
             app.UseSpaStaticFiles(new StaticFileOptions
             {
-                RequestPath = "/cc-master"
+                RequestPath = "/cc-master",
             });
 
             return app;
@@ -27,7 +27,11 @@ namespace CloudControl.Web.Spa
 
         public static IApplicationBuilder UseFrontApplication(this IApplicationBuilder app, IWebHostEnvironment env)
         {
-            app.UseSpa(spa => spa.Options.DefaultPage = "/index.html");
+            app.UseSpa(spa =>
+            {
+                spa.Options.DefaultPage = "/index.html";
+                spa.Options.SourcePath = GetFrontAppRootPath(env);
+            });
             return app;
         }
 
