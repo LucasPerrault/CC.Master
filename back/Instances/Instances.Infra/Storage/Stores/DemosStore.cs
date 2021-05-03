@@ -122,6 +122,11 @@ namespace Instances.Infra.Storage.Stores
                 filters.Add(d => d.AuthorId == filter.AuthorId.Value);
             }
 
+            if (!string.IsNullOrEmpty(filter.Subdomain))
+            {
+                filters.Add(d => d.Subdomain == filter.Subdomain);
+            }
+
             filters.Add(ToRightExpression(access));
 
             return filters.ToArray().CombineSafely();
