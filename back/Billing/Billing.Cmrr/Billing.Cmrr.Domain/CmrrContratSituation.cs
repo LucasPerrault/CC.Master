@@ -5,7 +5,7 @@ namespace Billing.Cmrr.Domain
         public int ContractId { get; set; }
         public CmrrContract Contract { get; set; }
 
-        public CmrrCount FirstPeriodCount { get; set; }
-        public CmrrCount LastPeriodCount { get; set; }
+        public CmrrCount StartPeriodCount { get; set; }
+        public CmrrCount EndPeriodCount { get; set; }
     }
 }

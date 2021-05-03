@@ -19,22 +19,31 @@ namespace Billing.Cmrr.Application
             _contractsStore = contractsStore ?? throw new ArgumentNullException(nameof(contractsStore));
             _countsStore = countsStore ?? throw new ArgumentNullException(nameof(countsStore));
         }
-        public async Task<List<CmrrContratSituation>> GetContractSituationsAsync(DateTime startPeriod, DateTime endPeriod)
+        public async Task<List<CmrrContratSituation>> GetContractSituationsAsync(CmrrSituationFilter situationFilter)
         {
-            ThrowIfDatesInvalid(startPeriod, endPeriod);
+            ThrowIfDatesInvalid(situationFilter.StartPeriod, situationFilter.EndPeriod);
 
-            var startPeriodCounts = await _countsStore.GetByPeriodAsync(startPeriod);
-            var endPeriodCounts = await _countsStore.GetByPeriodAsync(endPeriod);
-            var contracts = await _contractsStore.GetContractsNotEndedAtAsync(startPeriod);
+            var startPeriodCounts = await _countsStore.GetByPeriodAsync(situationFilter.StartPeriod);
+            var endPeriodCounts = await _countsStore.GetByPeriodAsync(situationFilter.EndPeriod);
+            IEnumerable<CmrrContract> contracts = await _contractsStore.GetContractsNotEndedAtAsync(situationFilter.StartPeriod, situationFilter.EndPeriod);
 
+            if (situationFilter.ClientId.Any())
+                contracts = contracts.Where(c => situationFilter.ClientId.Contains(c.ClientId));
+
+            if (situationFilter.DistributorsId.Any())
+                contracts = contracts.Where(c => situationFilter.DistributorsId.Contains(c.DistributorId));
+
+            var situations = CreateContractSituations(contracts, startPeriodCounts, endPeriodCounts);
+
+            return situations;
+        }
+
+        private static List<CmrrContratSituation> CreateContractSituations(IEnumerable<CmrrContract> contracts, List<CmrrCount> startPeriodCounts, List<CmrrCount> endPeriodCounts)
+        {
+            var situations = new List<CmrrContratSituation>();
 
             var startPeriodCountsByContractId = startPeriodCounts.ToDictionary(c => c.ContractId, c => c);
             var endPeriodCountsByContractId = endPeriodCounts.ToDictionary(c => c.ContractId, c => c);
-            var allCounts = new List<CmrrCount>();
-            allCounts.AddRange(startPeriodCounts);
-            allCounts.AddRange(endPeriodCounts);
-
-            var situations = new List<CmrrContratSituation>();
 
             foreach (var contract in contracts)
             {
@@ -44,14 +53,16 @@ namespace Billing.Cmrr.Application
                     ContractId = contract.Id
                 };
 
-                if (startPeriodCountsByContractId.TryGetValue(contract.Id, out var firstPeriodCount))
-                    situation.FirstPeriodCount = firstPeriodCount;
+                if (startPeriodCountsByContractId.TryGetValue(contract.Id, out var startPeriodCount))
+                    situation.StartPeriodCount = startPeriodCount;
 
-                if (endPeriodCountsByContractId.TryGetValue(contract.Id, out var lastPeriodCount))
-                    situation.LastPeriodCount = lastPeriodCount;
+                if (endPeriodCountsByContractId.TryGetValue(contract.Id, out var endPeriodCount))
+                    situation.EndPeriodCount = endPeriodCount;
+
+                if (situation.StartPeriodCount is null && situation.EndPeriodCount is null)
+                    continue;
 
                 situations.Add(situation);
-
             }
 
             return situations;
@@ -70,18 +81,6 @@ namespace Billing.Cmrr.Application
 
             if (!IsFirstDayOfMonth(endPeriod))
                 throw new ArgumentException($"{nameof(endPeriod)} must be on the day one of month");
-        }
-
-        private CmrrContratSituation GetCmrrSituation(DateTime startPeriod, DateTime endPeriod, List<CmrrContract> contracts, IGrouping<int, CmrrCount> countGroup)
-        {
-            var currentContract = contracts.SingleOrDefault(c => c.Id == countGroup.Key);
-            return new CmrrContratSituation
-            {
-                Contract = currentContract,
-                ContractId = countGroup.Key,
-                FirstPeriodCount = countGroup.FirstOrDefault(countGroup => countGroup.CountPeriod == startPeriod),
-                LastPeriodCount = countGroup.FirstOrDefault(countGroup => countGroup.CountPeriod == endPeriod),
-            };
         }
     }
 }

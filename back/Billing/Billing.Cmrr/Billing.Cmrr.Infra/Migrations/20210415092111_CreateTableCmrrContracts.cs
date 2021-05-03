@@ -19,7 +19,8 @@ namespace Billing.Cmrr.Infra.Migrations
                         c.clientId clientId,
                         c.idDistributor distributorId,
                         c.environmentID environmentId, 
-                        e.dtCreation environmentCreatedAt
+                        e.dtCreation environmentCreatedAt,
+                        CAST(CASE WHEN c.ArchivedAt is null THEN 0 ELSE 1 END AS bit) AS isArchived
                     FROM [dbo].[Contracts] c
                     INNER JOIN [dbo].[CommercialOffers] o on c.idCommercialOffer = o.idCommercialOffer
                     INNER JOIN [dbo].[Environments] e on c.environmentID = e.id

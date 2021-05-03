@@ -20,6 +20,8 @@ namespace Billing.Cmrr.Domain
         public int EnvironmentId { get; set; }
         public DateTime EnvironmentCreatedAt { get; set; }
 
+        public bool IsArchived { get; set; }
+
     }
 
     public enum ContractCreationCause : byte

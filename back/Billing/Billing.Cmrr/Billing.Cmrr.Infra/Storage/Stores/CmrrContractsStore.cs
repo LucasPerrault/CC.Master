@@ -17,11 +17,13 @@ namespace Billing.Cmrr.Infra.Storage.Stores
             _dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
         }
 
-        public Task<List<CmrrContract>> GetContractsNotEndedAtAsync(DateTime period)
+        public Task<List<CmrrContract>> GetContractsNotEndedAtAsync(DateTime startPeriod, DateTime endPeriod)
         {
-            return _dbContext.Set<CmrrContract>()
-                             .Where(c => !c.EndDate.HasValue || c.EndDate > period)
-                             .ToListAsync();
+            return NotArchivedContract.Where(c => !c.EndDate.HasValue || c.EndDate >= startPeriod)
+                                      .Where(c => c.StartDate <= endPeriod)
+                                      .ToListAsync();
         }
+
+        private IQueryable<CmrrContract> NotArchivedContract => _dbContext.Set<CmrrContract>().Where(c => !c.IsArchived);
     }
 }

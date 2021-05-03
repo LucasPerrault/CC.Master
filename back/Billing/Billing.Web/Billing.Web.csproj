@@ -11,6 +11,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\Core\Proxy\Proxy.Infra\Proxy.Infra.csproj" />
     <ProjectReference Include="..\..\Core\Rights\Rights.Infra\Rights.Infra.csproj" />
+    <ProjectReference Include="..\..\Core\Rights\Rights.Web\Rights.Web.csproj" />
     <ProjectReference Include="..\..\Shared\Remote\Remote.Infra\Remote.Infra.csproj" />
     <ProjectReference Include="..\Billing.Cmrr\Billing.Cmrr.Application\Billing.Cmrr.Application.csproj" />
     <ProjectReference Include="..\Billing.Cmrr\Billing.Cmrr.Infra\Billing.Cmrr.Infra.csproj" />

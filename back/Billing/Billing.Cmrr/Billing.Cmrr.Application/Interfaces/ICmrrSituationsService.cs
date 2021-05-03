@@ -7,6 +7,15 @@ namespace Billing.Cmrr.Application.Interfaces
 {
     public interface ICmrrSituationsService
     {
-        Task<List<CmrrContratSituation>> GetContractSituationsAsync(DateTime startPeriod, DateTime endPeriod);
+        Task<List<CmrrContratSituation>> GetContractSituationsAsync(CmrrSituationFilter situationFilter);
+    }
+
+    public class CmrrSituationFilter
+    {
+        public DateTime StartPeriod { get; set; }
+        public DateTime EndPeriod { get; set; }
+
+        public HashSet<int> ClientId { get; set; } = new HashSet<int>();
+        public HashSet<string> DistributorsId { get; set; } = new HashSet<string>();
     }
 }
