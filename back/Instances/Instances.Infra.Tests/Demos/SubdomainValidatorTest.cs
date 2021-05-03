@@ -41,7 +41,7 @@ namespace Instances.Infra.Tests.Demos
             };
 
             _demosStoreMock
-                .Setup(s => s.GetAsync(It.IsAny<DemoFilter>(), It.IsAny<DemoAccess>()))
+                .Setup(s => s.GetAsync(It.Is<DemoFilter>(d => d.IsActive == BoolCombination.TrueOnly), It.IsAny<DemoAccess>()))
                 .ReturnsAsync(new List<Demo>());
             _envStoreMock.Setup(s => s.GetAll()).Returns(envs.AsQueryable().BuildMock().Object);
             var subdomainValidator = new SubdomainValidator(_demosStoreMock.Object, _envStoreMock.Object);
@@ -58,7 +58,7 @@ namespace Instances.Infra.Tests.Demos
             var demos = new List<Demo> { new Demo { Subdomain = takenSubdomain } };
 
             _demosStoreMock
-                .Setup(s => s.GetAsync(It.IsAny<DemoFilter>(), It.IsAny<DemoAccess>()))
+                .Setup(s => s.GetAsync(It.Is<DemoFilter>(d => d.IsActive == BoolCombination.TrueOnly), It.IsAny<DemoAccess>()))
                 .ReturnsAsync(demos);
             _envStoreMock.Setup(s => s.GetAll()).Returns(new List<Environment>().AsQueryable().BuildMock().Object);
             var subdomainValidator = new SubdomainValidator(_demosStoreMock.Object, _envStoreMock.Object);
@@ -78,7 +78,7 @@ namespace Instances.Infra.Tests.Demos
             };
 
             _demosStoreMock
-                .Setup(s => s.GetAsync(It.IsAny<DemoFilter>(), It.IsAny<DemoAccess>()))
+                .Setup(s => s.GetAsync(It.Is<DemoFilter>(d => d.IsActive == BoolCombination.TrueOnly), It.IsAny<DemoAccess>()))
                 .ReturnsAsync(new List<Demo>());
 
             _envStoreMock.Setup(s => s.GetAll()).Returns(envs.AsQueryable().BuildMock().Object);
@@ -139,7 +139,7 @@ namespace Instances.Infra.Tests.Demos
             }
 
             _demosStoreMock
-                .Setup(ds => ds.GetAsync(It.IsAny<DemoFilter>(), It.IsAny<DemoAccess>()))
+                .Setup(ds => ds.GetAsync(It.Is<DemoFilter>(d => d.IsActive == BoolCombination.TrueOnly), It.IsAny<DemoAccess>()))
                 .ReturnsAsync(existingDemos);
 
             var subdomainValidator = new SubdomainValidator(_demosStoreMock.Object, _envStoreMock.Object);

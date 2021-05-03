@@ -96,7 +96,11 @@ namespace Instances.Application.Tests
                 .Returns(new DateTime(2010, 03, 04));
 
             _demosStoreMock
-                .Setup(s => s.GetAsync(It.IsAny<DemoFilter>(), It.IsAny<DemoAccess>()))
+                .Setup(s => s.GetAsync
+                (
+                    It.Is<DemoFilter>(d => d.IsActive == BoolCombination.TrueOnly),
+                    It.IsAny<DemoAccess>()
+                ))
                 .ReturnsAsync(demos);
 
             var cleaner = new InactiveDemosCleaner
