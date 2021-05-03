@@ -16,6 +16,10 @@ export class OperationsPageGuard implements CanActivate {
     const navigationTabs = next.data.tabs as INavigationTab[] | [];
     const activatedTab = navigationTabs.find((tab: INavigationTab) => tab.url === state.url.slice(1));
 
+    if (!activatedTab) {
+      return this.router.parseUrl(NoNavPath.NotFound);
+    }
+
     const hasOperations = !!activatedTab && this.rightsService.hasOperationsByRestrictionMode(
       activatedTab.restriction.operations,
       activatedTab.restriction.mode,
