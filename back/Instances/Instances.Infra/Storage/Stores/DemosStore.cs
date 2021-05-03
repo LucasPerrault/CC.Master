@@ -54,6 +54,12 @@ namespace Instances.Infra.Storage.Stores
             await _dbContext.SaveChangesAsync();
         }
 
+        public async Task UpdateCommentAsync(Demo demo, string comment)
+        {
+            demo.Comment = comment;
+            await _dbContext.SaveChangesAsync();
+        }
+
         public async Task<Demo> CreateAsync(Demo demo)
         {
             await _dbContext.Set<Demo>().AddAsync(demo);

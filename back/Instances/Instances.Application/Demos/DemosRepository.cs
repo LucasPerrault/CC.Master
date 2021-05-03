@@ -1,3 +1,4 @@
+using Instances.Application.Demos.Dtos;
 using Instances.Domain.Demos;
 using Instances.Domain.Demos.Filtering;
 using Instances.Domain.Instances;
@@ -47,7 +48,40 @@ namespace Instances.Application.Demos
             );
         }
 
+        public async Task<Demo> UpdateDemoAsync(int id, DemoPutPayload payload)
+        {
+            var demo = await GetSingleActiveDemoAsync(id);
+
+            if (demo.IsTemplate)
+            {
+                throw new ForbiddenException("Template demos cannot be updated");
+            }
+
+            await _demosStore.UpdateCommentAsync(demo, payload.Comment);
+            return demo;
+        }
+
         public async Task<Demo> DeleteAsync(int id)
+        {
+            var demo = await GetSingleActiveDemoAsync(id);
+
+            if (demo.IsTemplate)
+            {
+                throw new ForbiddenException("Template demos cannot be deleted");
+            }
+
+            if (demo.Instance.IsProtected)
+            {
+                throw new BadRequestException($"Demo {demo.Id} is protected and cannot be deleted");
+            }
+
+            await _instancesStore.DeleteForDemoAsync(demo.Instance);
+            await _demosStore.DeleteAsync(demo);
+            await _ccDataService.DeleteInstanceAsync(demo.Subdomain, demo.Instance.Cluster, string.Empty);
+            return demo;
+        }
+
+        private async Task<Demo> GetSingleActiveDemoAsync(int id)
         {
             var access = await _rightsFilter.GetReadAccessAsync(_principal);
             var activeDemosInScope = await _demosStore.GetAsync
@@ -63,19 +97,6 @@ namespace Instances.Application.Demos
                 throw new NotFoundException();
             }
 
-            if (demo.IsTemplate)
-            {
-                throw new ForbiddenException("Template demos cannot be deleted");
-            }
-
-            if (demo.Instance.IsProtected)
-            {
-                throw new BadRequestException($"Demo {demo.Id} is protected and cannot be deleted");
-            }
-
-            await _instancesStore.DeleteForDemoAsync(demo.Instance);
-            await _demosStore.DeleteAsync(demo);
-            await _ccDataService.DeleteInstanceAsync(demo.Subdomain, demo.Instance.Cluster, String.Empty);
             return demo;
         }
     }

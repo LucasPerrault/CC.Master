@@ -1,5 +1,6 @@
 using Instances.Application.Demos;
 using Instances.Application.Demos.Deletion;
+using Instances.Application.Demos.Dtos;
 using Instances.Application.Demos.Duplication;
 using Instances.Domain.Demos;
 using Lucca.Core.Api.Abstractions.Paging;
@@ -37,6 +38,13 @@ namespace Instances.Web.Controllers
         public Task<Page<Demo>> GetAsync([FromQuery]DemoListQuery query)
         {
             return _demosRepository.GetDemosAsync(query.Page, query.ToDemoFilter());
+        }
+
+        [HttpPut("{id:int}")]
+        [ForbidIfMissing(Operation.Demo)]
+        public Task<Demo> PutAsync([FromRoute]int id, [FromBody]DemoPutPayload payload)
+        {
+            return _demosRepository.UpdateDemoAsync(id, payload);
         }
 
         [HttpPost("duplicate")]
