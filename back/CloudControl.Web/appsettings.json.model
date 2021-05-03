@@ -1,20 +1,44 @@
-﻿{
+{
+    "Logging": {
+        "LogLevel": {
+            "Default": "Error"
+        },
+        "Debug": {
+            "LogLevel": {
+                "Default": "Warning"
+            }
+        }
+    },
     "SqlInfos": {
         "Default": "Data Source={{ CC.Master:SqlServer }};Initial Catalog=CloudControl;user={{ CC.Master:SqlLogin }};Password={{ CC.Master:SqlPassword }};MultipleActiveResultSets=True;App=CloudControl"
     },
     "Authentication": {
-        "ServerUri": "{{ CC.Master:AuthenticationTenantUri }}",
-        "UsersEndpointPath": "{{ CC.Master:AuthUsersEndpointPath }}",
-        "ApiKeysEndpointPath": "{{ CC.Master:AuthApiKeysEndpointPath }}",
-        "RedirectEndpointPath": "{{ CC.Master:AuthRedirectEndpointPath }}",
-        "LogoutEndpointPath": "{{ CC.Master:AuthLogoutEndpointPath }}",
-        "ApiKeysFetcherToken": "{{ CC.Master:AuthApiKeysFetcherToken }}"
+        "ServerUri": "{{ CC.Master:PartenairesUri }}",
+        "ApiKeysFetcherToken": "{{ CC.Master:AuthApiKeysFetcherToken }}",
+        "UsersEndpointPath": "/api/v3/users/me",
+        "AllUsersEndpointPath": "/api/v3/users",
+        "ApiKeysEndpointPath": "/api/v3/apikeys",
+        "RedirectEndpointPath": "/auth/userlogin",
+        "LogoutEndpointPath": "/logout",
+        "Hangfire": {
+            "SharedSecret": "{{ LuccaHangfire:CloudControlToken }}"
+        }
     },
     "Rights": {
-        "ServerUri": "{{ CC.Master:RightsTenantUri }}",
-        "DepartmentsEndpointPath": "{{ CC.Master:RightsDepartmentEndpointPath }}",
-        "ForeignAppEndpointPath": "{{ CC.Master:RightsForeignAppEndpointPath }}",
-        "UsersEndpointPath": "{{ CC.Master:RightsUsersEndpointPath }}"
+        "ServerUri": "{{ CC.Master:PartenairesUri }}",
+        "DepartmentsEndpointPath": "/api/v3/departments",
+        "ForeignAppEndpointPath": "/api/v3/foreignapppermissionslookups",
+        "UsersEndpointPath": "/api/v3/userpermissionslookups"
+    },
+    "Redis": {
+        "Host": "{{ shared:CacheManagerRedis6Host }}",
+        "Password": "{{ shared:CacheManagerRedis6Password }}",
+        "KeyInvalidationInMinutes": "720"
+    },
+    "Email": {
+        "ServerUri": "{{ CC.Master:AuthenticationTenantUri }}",
+        "EmailAppEndpointPath": "/admin/emails",
+        "LuccaEmailsAuthorizationToken": "{{ CC.Master:LuccaEmailsToken }}"
     },
     "LuccaLoggerOptions": {
         "ApplicationName": "CloudControl",
@@ -39,5 +63,48 @@
         "ServerUri": "{{ CC.Master:SalesforceUri }}",
         "AccountsEndpointPath": "/salesforce/accounts",
         "Token": "{{ CC.Master:SalesforceToken }}"
+    },
+    "Slack": {
+        "Hooks": {
+            "CloudControl": "{{ CC.Master:SlackHookCcMonitorEnvironments }}",
+            "DemosMaintainers": "{{ CC.Master:SlackHookCcNotifications }}"
+        }
+    },
+    "Instances": {
+        "InstancesStore": {
+            "Host": "http://{{ CC.Master:LegacyCloudControlHost }}",
+            "Endpoint": "/api/v3/instances",
+            "Token": "{{ CC.Master:LegacyCommunicationToken }}"
+        },
+        "Identity": {
+            "ClientId": "{{ luccaidentity:CloudControlClientId }}",
+            "ClientSecret": "{{ luccaidentity:CloudControlClientSecret }}",
+            "TokenRequestRoute": "/identity/connect/token"
+        },
+        "WsAuth": {
+            "ServerUri": "{{ shared:LuccaAuthSyncBaseUrl }}",
+            "EndpointPath": "/api",
+            "Token": "{{ Lucca.Auth.Sync:CloudControlToken }}"
+        },
+        "CcData": {
+            "Domain": "lucca.local",
+            "Scheme": "http",
+            "OutboundToken": "{{ CC.Data:CCMasterWebserviceToken }}",
+            "InboundToken": "{{ CC.Data:CCMasterWebserviceToken }}",
+            "ShouldTargetBeta": "{{ CC.Master:ShouldTargetCCDataBeta }}"
+        },
+        "Hubspot": {
+            "ServerUri": "{{ CC.Master:HubspotServerUri }}",
+            "OutboundToken": "{{ CC.Master:HubspotOutboundToken }}"
+        },
+        "SqlScriptPicker": {
+            "JenkinsBaseUri": "http://jenkins2.lucca.local:8080/",
+            "MonolithJobPath": "job/CI.Pipeline.Multibranch"
+        },
+        "DemoClusterSelection": {
+            "UseFixedCluster": "{{ CC.Master:UseFixedClusterForDemos }}",
+            "FixedClusterName": "{{ CC.Master:FixedClusterName }}",
+            "ClusterChoiceCacheRetentionInHours": 24
+        }
     }
 }

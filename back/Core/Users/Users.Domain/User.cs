@@ -1,6 +1,6 @@
 ﻿using Lucca.Core.Rights.Abstractions.Principals;
 
-namespace Authentication.Domain
+namespace Users.Domain
 {
     public class User : IUser
     {

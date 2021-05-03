@@ -24,7 +24,7 @@ namespace IpFilter.Infra
         public bool IsCurrentlyValid(IpFilterAuthorization ipFilterAuthorization)
         {
             return ipFilterAuthorization.CreatedAt < DateTime.Now
-                && ipFilterAuthorization.ExpiresAt > DateTime.Now;
+                   && ipFilterAuthorization.ExpiresAt > DateTime.Now;
         }
     }
 }

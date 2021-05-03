@@ -1,0 +1,64 @@
+﻿using System.Collections.Generic;
+
+namespace Instances.Infra.Resources
+{
+    internal static class PasswordResources
+    {
+        public static readonly List<string> Prefixes = new List<string>
+        {
+            "Toulouse",
+            "Marseille",
+            "Limoges",
+            "Laval",
+            "Bordeaux",
+            "Albi",
+            "Biarritz",
+            "SaintGaudens",
+            "Montauban",
+            "Agen",
+            "Bayonne",
+            "Bruxelles",
+            "LeCaire",
+            "Helsinki",
+            "Budapest",
+            "Dublin",
+            "Amsterdam",
+            "Varsovie",
+            "Lisbonne",
+            "Prague",
+            "Stockholm",
+            "Berne",
+            "Bangkok",
+            "Alger",
+            "Canberra",
+            "Vienne",
+            "LaHavane",
+            "Tirana",
+            "Rome",
+            "Jérusalem",
+            "Tokyo",
+            "Luxembourg",
+            "Beyrouth",
+            "Mexico",
+            "Manille",
+            "Moscou",
+            "Londres",
+            "Bergues",
+            "Plumaudan",
+            "Bourgougnague",
+            "Tours",
+            "Lyon",
+            "Dakar",
+            "Singapour",
+            "Bratislava",
+            "Belgrade",
+            "Reykjavik",
+            "Brasilia",
+            "Pretoria",
+            "BuenosAires",
+            "Copenhague",
+            "LaRochelle",
+            "Boussay"
+        };
+    }
+}

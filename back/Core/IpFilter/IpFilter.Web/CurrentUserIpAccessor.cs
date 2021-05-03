@@ -40,16 +40,9 @@ namespace IpFilter.Web
                 return _emptyResponse;
             }
 
-            if (!HttpContext.Request.Headers.TryGetValue(HeaderNames.UserAgent, out var userAgents))
-            {
-                return _emptyResponse;
-            }
-
-            var userAgent = userAgents.First();
             var user = new IpFilterUser
             {
                 IpAddress = ip.ToString(),
-                Device = userAgent,
                 UserId = userPrincipal.UserId.Value
             };
 

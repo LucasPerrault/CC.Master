@@ -1,10 +1,11 @@
-﻿using Authentication.Domain;
+﻿using System;
+using Users.Domain;
 
-namespace Authentication.Infra.DTOs
+namespace Users.Infra
 {
     internal class LuccaUser
     {
-        public static readonly string ApiFields = $"{nameof(Id)},{nameof(FirstName)},{nameof(LastName)},{nameof(Mail)},{nameof(Login)},{nameof(Department)}[{LuccaDepartment.ApiFields}],{nameof(ManagerId)},{nameof(DepartmentId)},{nameof(LegalEntityId)}";
+        public static readonly string ApiFields = $"{nameof(Id)},{nameof(FirstName)},{nameof(LastName)},{nameof(Mail)},{nameof(Login)},{nameof(Department)}[{LuccaDepartment.ApiFields}],{nameof(ManagerId)},{nameof(DepartmentId)},{nameof(LegalEntityId)},{nameof(DtContractEnd)}";
 
         public int Id { get; set; }
         public string FirstName { get; set; }
@@ -15,6 +16,9 @@ namespace Authentication.Infra.DTOs
         public int? ManagerId { get; set; }
         public int DepartmentId { get; set; }
         public int LegalEntityId { get; set; }
+        public DateTime? DtContractEnd { get; set; }
+
+        public bool IsActive => !DtContractEnd.HasValue || DtContractEnd > DateTime.Now;
     }
 
     internal class LuccaDepartment

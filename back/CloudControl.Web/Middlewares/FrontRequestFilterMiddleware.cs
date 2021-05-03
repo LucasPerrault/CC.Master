@@ -20,7 +20,8 @@ namespace CloudControl.Web.Middlewares
         public async Task Invoke(HttpContext httpContext)
         {
             var isFrontRequest = !httpContext.Request.Path.HasValue
-                || !_nonFrontRequestPrefixes.Any(prefix => httpContext.Request.Path.Value.StartsWith(prefix));
+                                 || !_nonFrontRequestPrefixes.Any
+                                     (prefix => httpContext.Request.Path.Value.StartsWith(prefix));
 
             if (!isFrontRequest)
             {

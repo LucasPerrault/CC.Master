@@ -1,6 +1,7 @@
 using Environments.Domain;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using Storage.Infra.Context;
 
 namespace Environments.Infra.Storage.Configurations
 {
@@ -8,7 +9,7 @@ namespace Environments.Infra.Storage.Configurations
     {
         public void Configure(EntityTypeBuilder<Environment> builder)
         {
-            builder.ToView("Environments");
+            builder.ToView("Environments", StorageSchemas.Shared.Value);
             builder.HasKey(d => d.Id);
             builder.Property(d => d.Subdomain).HasColumnName("Subdomain");
             builder.Property(d => d.Domain).HasColumnName("Domain");

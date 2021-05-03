@@ -17,24 +17,23 @@ namespace Authentication.Web
     {
         public static void ConfigureServices(IServiceCollection services, AuthenticationConfiguration config)
         {
+            services.AddSingleton(new HangfireAuthorizationService(config.Hangfire, new SignatureAuthenticationService()));
             services.AddSingleton(config);
             services.AddTransient
-            (
-                provider => provider.GetService<IHttpContextAccessor>().HttpContext.User
-            );
+                (
+                    provider => provider.GetService<IHttpContextAccessor>().HttpContext.User
+                );
             services.AddLuccaAuthentication<PrincipalStore>();
 
             ConfigureCustomTokensReaders(services);
 
+            services.AddSingleton(config);
             services.AddSingleton<AuthRedirectionRemoteService>();
+            services.AddSingleton<AuthenticationCache>();
 
-            services.AddHttpClient<UserAuthenticationRemoteService>((provider, client) =>
-            {
-                client.WithUserAgent(nameof(UserAuthenticationRemoteService))
-                    .WithBaseAddress(config.ServerUri, config.UsersEndpointPath);
-            });
+            services.AddScoped<IUserAuthenticationRemoteService, UserAuthenticationRemoteService>();
 
-            services.AddHttpClient<ApiKeyAuthenticationRemoteService>(client =>
+            services.AddHttpClient<IApiKeyAuthenticationRemoteService, ApiKeyAuthenticationRemoteService>(client =>
             {
                 client.WithUserAgent(nameof(ApiKeyAuthenticationRemoteService))
                     .WithBaseAddress(config.ServerUri, config.ApiKeysEndpointPath)

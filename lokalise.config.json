@@ -1,5 +1,6 @@
 {
-  "includes": [
-    "front/cc-master"
-  ]
+    "includes": [
+        "back",
+        "front/cc-master"
+    ]
 }

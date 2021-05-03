@@ -21,7 +21,7 @@ namespace Authentication.Infra.Services
 
             var header = httpRequest.Headers[AuthorizationKey].FirstOrDefault()?.ToUpperInvariant();
             return header != null 
-                && header.StartsWith(GetHeaderPrefix(key));
+                   && header.StartsWith(GetHeaderPrefix(key));
         }
 
         protected override string GetValue(HttpRequest httpRequest, string key)

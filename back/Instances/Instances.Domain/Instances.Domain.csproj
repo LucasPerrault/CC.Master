@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Lucca.Core.Api.Queryable" Version="0.3.4" />
+    <PackageReference Include="Microsoft.Extensions.Localization.Abstractions" Version="3.1.11" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Core\Authentication\Authentication.Domain\Authentication.Domain.csproj" />
+    <ProjectReference Include="..\..\Core\Cache\Cache.Abstractions\Cache.Abstractions.csproj" />
+    <ProjectReference Include="..\..\Core\Rights\Rights.Domain\Rights.Domain.csproj" />
+    <ProjectReference Include="..\..\Shared\Distributors\Distributors.Domain\Distributors.Domain.csproj" />
+  </ItemGroup>
+
+</Project>

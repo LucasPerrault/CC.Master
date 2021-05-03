@@ -5,13 +5,15 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="Lucca.Core.AspNetCore.EfMigration" Version="3.1.8" />
-      <PackageReference Include="Microsoft.EntityFrameworkCore" Version="3.1.7" />
-      <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="3.1.7">
+      <PackageReference Include="Lucca.Core.Api.Queryable.EntityFrameworkCore" Version="0.3.4" />
+      <PackageReference Include="Lucca.Core.AspNetCore.EfMigration" Version="3.2.6" />
+      <PackageReference Include="Lucca.Core.Shared.Domain" Version="2.0.13" />
+      <PackageReference Include="Microsoft.EntityFrameworkCore" Version="3.1.10" />
+      <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="3.1.10">
         <PrivateAssets>all</PrivateAssets>
         <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       </PackageReference>
-      <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="3.1.7" />
+      <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="3.1.10" />
     </ItemGroup>
 
 </Project>

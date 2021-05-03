@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Lucca.Core.Api.Web" Version="0.3.4" />
+    <PackageReference Include="Microsoft.Extensions.Localization" Version="3.1.11" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Core\Rights\Rights.Web\Rights.Web.csproj" />
+    <ProjectReference Include="..\..\Shared\Remote\Remote.Infra\Remote.Infra.csproj" />
+    <ProjectReference Include="..\Instances.Application\Instances.Application.csproj" />
+    <ProjectReference Include="..\Instances.Domain\Instances.Domain.csproj" />
+    <ProjectReference Include="..\Instances.Infra\Instances.Infra.csproj" />
+  </ItemGroup>
+
+</Project>

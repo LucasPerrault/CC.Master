@@ -41,7 +41,7 @@ namespace IpFilter.Web
         internal static bool IsAccessibleForAllIps(this HttpContext httpContext)
         {
             return WhitelistedRoutes.Contains(httpContext.Request.Path)
-                || httpContext.HasAttribute<AllowAllIpsAttribute>();
+                   || httpContext.HasAttribute<AllowAllIpsAttribute>();
         }
     }
 }
