@@ -18,16 +18,13 @@ node(label: CI.getSelectedNode(script: this)) {
 	def slnFilepath = "back\\CC.Master.sln"
 	def repoName = "CC.Master"	
 	def reportFolderName = "CC.Master-${env.BUILD_NUMBER}-${UUID.randomUUID().toString()}"
+	def frontDistPath = "${WORKSPACE}\\${CI.getPublishDirectory(this)}\\front\\wwwroot"
 	def spaSubPath = "cc-master"
 
 	/////////////////////////////////////////////////
 	// Fin des variables à ajuster pour le projet //
 	/////////////////////////////////////////////////
 
-
-
-	def prepareDirectory = '.prepare';
-	def buildDirectory = '.build';
 
 	def isPr = false
 	def isMainBranch = false
@@ -106,13 +103,11 @@ node(label: CI.getSelectedNode(script: this)) {
 				def webProjFile = findFiles(glob: "**/CloudControl.Web.csproj").first().path
 				publishBack(startupProjFilepath: webProjFile, framework: "netcoreapp3.1")
 
-				// front
-				def distPath: "..\\..\\${buildDirectory}\\front\\wwwroot"
 				sentryGenerate(spaSubPath: spaSubPath)
-				buildFront(spaSubPath: spaSubPath, outputPath: distPath)
-				sentryPost(distPath: distPath, spaSubPath: spaSubPath)
+				buildFront(spaSubPath: spaSubPath, outputPath: frontDistPath)
+				sentryPost(distPath: frontDistPath, spaSubPath: spaSubPath)
 
-				archiveElements(back: true, front: false)
+				archiveElements(back: true, front: true)
 			}
 		}
 	} catch(err) {
