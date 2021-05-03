@@ -103,7 +103,17 @@ namespace Instances.Infra.Storage.Stores
 
             if(!string.IsNullOrEmpty(filter.Search))
             {
-                filters.Add(d =>filter.Search.Contains(d.Subdomain));
+                filters.Add(d => filter.Search.Contains(d.Subdomain));
+            }
+
+            if(!string.IsNullOrEmpty(filter.DistributorId))
+            {
+                filters.Add(d => d.DistributorID == filter.DistributorId);
+            }
+
+            if(filter.AuthorId != null)
+            {
+                filters.Add(d => d.AuthorId == filter.AuthorId.Value);
             }
 
             filters.Add(ToRightExpression(access));
