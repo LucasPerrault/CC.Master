@@ -6,6 +6,6 @@ namespace Billing.Cmrr.Domain.Interfaces
 {
     public interface ICmrrContractsStore
     {
-        Task<List<CmrrContract>> Get(DateTime period);
+        Task<List<CmrrContract>> GetContractsNotEndedAtAsync(DateTime period);
     }
 }

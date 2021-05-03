@@ -17,7 +17,7 @@ namespace Billing.Cmrr.Infra.Storage.Stores
             _dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
         }
 
-        public Task<List<CmrrContract>> Get(DateTime period)
+        public Task<List<CmrrContract>> GetContractsNotEndedAtAsync(DateTime period)
         {
             return _dbContext.Set<CmrrContract>()
                              .Where(c => !c.EndDate.HasValue || c.EndDate > period)

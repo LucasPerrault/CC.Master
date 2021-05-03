@@ -10,15 +10,15 @@ namespace Billing.Cmrr.Domain
         public DateTime CountPeriod { get; set; }
         public BillingStrategy BillingStrategy { get; set; }
 
-        public string AccountingNumber { get; set; }
+        public int AccountingNumber { get; set; }
         public int EntryNumber { get; set; }
         public string Code { get; set; }
 
         public int CurrencyId { get; set; }
         public decimal CurrencyTotal { get; set; }
         public decimal EuroTotal { get; set; }
-        public decimal LuccaDiscount { get; set; }
-        public decimal DistributorDiscount { get; set; }
+        public double LuccaDiscount { get; set; }
+        public double DistributorDiscount { get; set; }
 
         public DateTime CreatedAt { get; set; }
     }

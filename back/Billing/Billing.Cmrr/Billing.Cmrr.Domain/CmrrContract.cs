@@ -15,14 +15,14 @@ namespace Billing.Cmrr.Domain
         public ContractEndReason EndReason { get; set; }
 
         public int ClientId { get; set; }
-        public int DistributorId { get; set; }
+        public string DistributorId { get; set; }
 
         public int EnvironmentId { get; set; }
         public DateTime EnvironmentCreatedAt { get; set; }
 
     }
 
-    public enum ContractCreationCause
+    public enum ContractCreationCause : byte
     {
         NewBooking = 1,
         Modification = 2
