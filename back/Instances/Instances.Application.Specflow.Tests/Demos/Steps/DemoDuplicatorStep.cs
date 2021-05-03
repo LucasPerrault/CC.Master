@@ -158,7 +158,6 @@ namespace Instances.Application.Specflow.Tests.Demos.Steps
                     new SubdomainGenerator(new SubdomainValidator(demosStore, envStoreMock.Object)),
                     clusterSelectorMock.Object,
                     new UsersPasswordHelper(),
-                    new DemoRightsFilter(rightsServiceMock.Object),
                     passwordResetMock.Object,
                     authWsMock.Object,
                     new Mock<IDemoDeletionCalculator>().Object,

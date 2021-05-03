@@ -5,6 +5,7 @@ using Instances.Application.Demos.Emails;
 using Instances.Application.Instances;
 using Instances.Domain.Demos;
 using Instances.Domain.Demos.Cleanup;
+using Instances.Domain.Demos.Filtering;
 using Instances.Domain.Instances;
 using Instances.Domain.Shared;
 using Instances.Infra.DataDuplication;
@@ -61,7 +62,7 @@ namespace Instances.Web
             services.AddScoped<IDemosStore, DemosStore>();
             services.AddScoped<IInstanceDuplicationsStore, InstanceDuplicationsStore>();
             services.AddScoped<IDemoDuplicationsStore, DemoDuplicationsStore>();
-            services.AddScoped<IDemoRightsFilter, DemoRightsFilter>();
+            services.AddScoped<DemoRightsFilter>();
             services.AddScoped<DemosRepository>();
             services.AddScoped<InstanceDuplicationsRepository>();
             services.AddScoped<InstanceDuplicationsRepository>();

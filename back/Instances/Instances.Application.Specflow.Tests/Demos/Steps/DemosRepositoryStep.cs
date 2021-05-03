@@ -2,6 +2,7 @@ using Instances.Application.Demos;
 using Instances.Application.Specflow.Tests.Demos.Models;
 using Instances.Application.Specflow.Tests.Shared.Tooling;
 using Instances.Domain.Demos;
+using Instances.Domain.Demos.Filtering;
 using Instances.Domain.Instances;
 using Instances.Domain.Shared;
 using Instances.Infra.Storage.Stores;
@@ -9,10 +10,10 @@ using Moq;
 using Rights.Domain;
 using Rights.Domain.Abstractions;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using TechTalk.SpecFlow;
+using Tools;
 using Xunit;
 
 namespace Instances.Application.Specflow.Tests.Demos.Steps
@@ -51,13 +52,12 @@ namespace Instances.Application.Specflow.Tests.Demos.Steps
         [When("I get the list of demos")]
         public async Task WhenIGetDemos()
         {
-            var demoListQuery = new DemoListQuery()
+            var demoFilter = new DemoFilter()
             {
-                IsActive = new HashSet<bool>{ true },
-                Page = null,
+                IsActive = BoolCombination.TrueOnly,
             };
             var demosRepository = GetNewRepository();
-            _demosContext.DemosListResult = (await demosRepository.GetDemosAsync(demoListQuery)).Items.ToList();
+            _demosContext.DemosListResult = (await demosRepository.GetDemosAsync(null, demoFilter)).Items.ToList();
         }
 
         [Then("it should contain (.*) demos")]

@@ -1,13 +1,14 @@
 using Instances.Domain.Demos;
+using Instances.Domain.Demos.Filtering;
 using Instances.Domain.Instances;
 using Instances.Domain.Shared;
 using Lucca.Core.Api.Abstractions.Paging;
 using Lucca.Core.Shared.Domain.Exceptions;
 using System;
 using System.Linq;
-using System.Linq.Expressions;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using Tools;
 
 namespace Instances.Application.Demos
 {
@@ -16,7 +17,7 @@ namespace Instances.Application.Demos
         private readonly ClaimsPrincipal _principal;
         private readonly IDemosStore _demosStore;
         private readonly IInstancesStore _instancesStore;
-        private readonly IDemoRightsFilter _rightsFilter;
+        private readonly DemoRightsFilter _rightsFilter;
         private readonly ICcDataService _ccDataService;
 
         public DemosRepository
@@ -24,7 +25,7 @@ namespace Instances.Application.Demos
             ClaimsPrincipal principal,
             IDemosStore demosStore,
             IInstancesStore instancesStore,
-            IDemoRightsFilter rightsFilters,
+            DemoRightsFilter rightsFilters,
             ICcDataService ccDataService
         )
         {
@@ -35,26 +36,24 @@ namespace Instances.Application.Demos
             _ccDataService = ccDataService;
         }
 
-        public async Task<Page<Demo>> GetDemosAsync(DemoListQuery query)
+        public async Task<Page<Demo>> GetDemosAsync(IPageToken pageToken, DemoFilter filter)
         {
-            Expression<Func<Demo, bool>> activeFilter = (d => true);
-                if(query.IsActive.Count == 1)
-            {
-                activeFilter = (d => d.IsActive == query.IsActive.Single());
-            }
-            return await _demosStore.GetAsync(
-                query.Page,
-                activeFilter,
-                await _rightsFilter.GetDefaultReadFilterAsync(_principal)
+            var access = await _rightsFilter.GetReadAccessAsync(_principal);
+            return await _demosStore.GetAsync
+            (
+                pageToken,
+                filter,
+                access
             );
         }
 
         public async Task<Demo> DeleteAsync(int id)
         {
+            var access = await _rightsFilter.GetReadAccessAsync(_principal);
             var activeDemosInScope = await _demosStore.GetAsync
             (
-                await _rightsFilter.GetDefaultReadFilterAsync(_principal),
-                d => d.IsActive
+                new DemoFilter { IsActive = BoolCombination.TrueOnly },
+                access
             );
 
             var demo = activeDemosInScope.SingleOrDefault(d => d.Id == id);

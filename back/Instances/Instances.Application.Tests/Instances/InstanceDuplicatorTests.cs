@@ -1,18 +1,10 @@
-using Instances.Application.Demos;
 using Instances.Application.Demos.Duplication;
 using Instances.Application.Instances;
-using Instances.Domain.Demos;
 using Instances.Domain.Instances;
-using Instances.Domain.Instances.Models;
 using Instances.Domain.Shared;
 using Instances.Infra.DataDuplication;
-using MockQueryable.Moq;
 using Moq;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Security.Claims;
 using System.Threading.Tasks;
 using Xunit;
 

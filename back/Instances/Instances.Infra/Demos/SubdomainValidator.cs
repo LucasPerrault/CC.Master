@@ -1,5 +1,6 @@
 using Environments.Domain.Storage;
 using Instances.Domain.Demos;
+using Instances.Domain.Demos.Filtering;
 using Instances.Domain.Instances;
 using Lucca.Core.Shared.Domain.Exceptions;
 using System;
@@ -7,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using Tools;
 
 namespace Instances.Infra.Demos
 {
@@ -67,10 +69,12 @@ namespace Instances.Infra.Demos
 
         public async Task<bool> IsAvailableAsync(string subdomain)
         {
-            return _environmentsStore.GetAll()
-                .Where(e => e.IsActive)
-                .All(e => e.Subdomain.ToLower() != subdomain)
-                && (await _demosStore.GetActiveAsync()).All(d => d.Subdomain.ToLower() != subdomain);
+            return
+                _environmentsStore.GetAll()
+                    .Where(e => e.IsActive)
+                    .All(e => e.Subdomain.ToLower() != subdomain)
+                && (await _demosStore.GetAsync(DemoFilter.Active(), DemoAccess.All))
+                    .All(d => d.Subdomain.ToLower() != subdomain);
         }
 
         private async Task<HashSet<string>> GetUsedSubdomainsByPrefixAsync(string prefix)
@@ -80,7 +84,12 @@ namespace Instances.Infra.Demos
                 .Where(e => e.Subdomain.StartsWith(prefix))
                 .Select(e => e.Subdomain);
 
-            var usedSubdomainsDemos = (await _demosStore.GetActiveAsync())
+            var filter = new DemoFilter
+            {
+                IsActive = BoolCombination.TrueOnly,
+                Search = prefix
+            };
+            var usedSubdomainsDemos = (await _demosStore.GetAsync(filter, DemoAccess.All))
                 .Where(d => d.Subdomain.StartsWith(prefix))
                 .Select(e => e.Subdomain);
 

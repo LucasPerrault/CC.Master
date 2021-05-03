@@ -3,6 +3,7 @@ using Distributors.Domain;
 using Instances.Application.Instances;
 using Instances.Domain.Demos;
 using Instances.Domain.Demos.Cleanup;
+using Instances.Domain.Demos.Filtering;
 using Instances.Domain.Instances;
 using Instances.Domain.Instances.Models;
 using Instances.Infra.Instances.Services;
@@ -13,7 +14,6 @@ using Microsoft.Extensions.Logging;
 using Rights.Domain;
 using Rights.Domain.Abstractions;
 using System;
-using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 
@@ -38,7 +38,7 @@ namespace Instances.Application.Demos.Duplication
         private readonly ISubdomainGenerator _subdomainGenerator;
         private readonly IClusterSelector _clusterSelector;
         private readonly IUsersPasswordHelper _passwordHelper;
-        private readonly IDemoRightsFilter _demoRightsFilter;
+        private readonly DemoRightsFilter _demoRightsFilter;
         private readonly IDemoUsersPasswordResetService _usersPasswordResetService;
         private readonly IWsAuthSynchronizer _wsAuthSynchronizer;
         private readonly IDemoDeletionCalculator _deletionCalculator;
@@ -57,7 +57,6 @@ namespace Instances.Application.Demos.Duplication
             ISubdomainGenerator subdomainGenerator,
             IClusterSelector clusterSelector,
             IUsersPasswordHelper passwordHelper,
-            IDemoRightsFilter demoRightsFilter,
             IDemoUsersPasswordResetService usersPasswordResetService,
             IWsAuthSynchronizer wsAuthSynchronizer,
             IDemoDeletionCalculator deletionCalculator,
@@ -75,7 +74,7 @@ namespace Instances.Application.Demos.Duplication
             _subdomainGenerator = subdomainGenerator;
             _clusterSelector = clusterSelector;
             _passwordHelper = passwordHelper;
-            _demoRightsFilter = demoRightsFilter;
+            _demoRightsFilter = new DemoRightsFilter(_rightsService);
             _usersPasswordResetService = usersPasswordResetService;
             _wsAuthSynchronizer = wsAuthSynchronizer;
             _deletionCalculator = deletionCalculator;
@@ -193,9 +192,8 @@ namespace Instances.Application.Demos.Duplication
 
         private async Task<Demo> GetDemoToDuplicateAsync(int sourceId)
         {
-            var rightsFilter = await _demoRightsFilter.GetDefaultReadFilterAsync(_principal);
-            var demoToDuplicate = (await _demosStore.GetActiveAsync(rightsFilter, d => d.Id == sourceId))
-                .FirstOrDefault();
+            var access = await _demoRightsFilter.GetReadAccessAsync(_principal);
+            var demoToDuplicate = await _demosStore.GetActiveByIdAsync(sourceId, access);
 
             return demoToDuplicate
                 ?? throw new BadRequestException($"Source demo {sourceId} could not be found");
