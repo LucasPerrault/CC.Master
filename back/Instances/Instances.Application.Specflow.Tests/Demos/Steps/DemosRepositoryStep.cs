@@ -1,4 +1,5 @@
 using Instances.Application.Demos;
+using Instances.Application.Demos.Dtos;
 using Instances.Application.Specflow.Tests.Demos.Models;
 using Instances.Application.Specflow.Tests.Shared.Tooling;
 using Instances.Domain.Demos;
@@ -27,6 +28,52 @@ namespace Instances.Application.Specflow.Tests.Demos.Steps
         {
             _demosContext = demosContext;
 
+        }
+
+        [When("I get the list of (.*) demos")]
+        public async Task WhenIGetDemos(bool isTemplate)
+        {
+            var demoFilter = new DemoFilter()
+            {
+                IsTemplate = isTemplate ? BoolCombination.TrueOnly : BoolCombination.FalseOnly,
+            };
+            var demosRepository = GetNewRepository();
+            _demosContext.DemosListResult = (await demosRepository.GetDemosAsync(null, demoFilter)).Items.ToList();
+        }
+
+        [When("I get the list of demos for subdomain '(.*)'")]
+        public async Task WhenIGetDemosForSubdomain(string subdomain)
+        {
+            var demoFilter = new DemoFilter()
+            {
+                Subdomain = subdomain,
+            };
+            var demosRepository = GetNewRepository();
+            _demosContext.DemosListResult = (await demosRepository.GetDemosAsync(null, demoFilter)).Items.ToList();
+        }
+
+        [When("I update the comment to '(.*)' on (.*) demo (.*)")]
+        public async Task WhenIUpdateDemoComment(string comment, bool isTemplate, DistributorFilter filter)
+        {
+            var demoPutPayload = new DemoPutPayload()
+            {
+                Comment = comment,
+            };
+            var id = _demosContext.DbContext.Set<Demo>().Where(filter.AsFunc).First(d => d.IsTemplate == isTemplate).Id;
+            await SafePutAsync(id, demoPutPayload);
+        }
+
+        private async Task SafePutAsync(int id, DemoPutPayload payload)
+        {
+            var demosRepository = GetNewRepository();
+            try
+            {
+                _demosContext.SingleDemoResult = await demosRepository.UpdateDemoAsync(id, payload);
+            }
+            catch (Exception e)
+            {
+                _demosContext.ExceptionResult = e;
+            }
         }
 
         [When(@"I delete (.*) demo (.*)")]
@@ -86,6 +133,24 @@ namespace Instances.Application.Specflow.Tests.Demos.Steps
                 _demosContext.DemosListResult,
                 d => d.Subdomain == subdomain && d.DistributorID == distributorId
             );
+        }
+
+        [Then("demo comment should be '(.*)'")]
+        public void ThenDemoCommentShouldBe(string comment)
+        {
+            Assert.Equal(comment, _demosContext.SingleDemoResult.Comment);
+        }
+
+        [Then("it should contain demos '(.*)'")]
+        public void ThenItShouldContainDemosForSubdomain(string subdomain)
+        {
+            Assert.Contains(_demosContext.DemosListResult, d => d.Subdomain == subdomain);
+        }
+
+        [Then("it should not contain any demo other than '(.*)'")]
+        public void ThenItShouldNotContainDemosWithSubdomainOtherThan(string subdomain)
+        {
+            Assert.DoesNotContain(_demosContext.DemosListResult, d => d.Subdomain != subdomain);
         }
 
         [Then(@"demo '(.*)' should not exist")]
