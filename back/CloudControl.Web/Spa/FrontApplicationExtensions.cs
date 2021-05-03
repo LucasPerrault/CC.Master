@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Builder;
+using Core.Proxy.Infra.Extensions;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -27,11 +28,15 @@ namespace CloudControl.Web.Spa
 
         public static IApplicationBuilder UseFrontApplication(this IApplicationBuilder app, IWebHostEnvironment env)
         {
-            app.UseSpa(spa =>
-            {
-                spa.Options.DefaultPage = "/index.html";
-                spa.Options.SourcePath = GetFrontAppRootPath(env);
-            });
+            app.UseWhen
+            (
+                c => !c.Request.Path.IsRootCall(),
+                a => a.UseSpa(spa =>
+                {
+                    spa.Options.DefaultPage = "/index.html";
+                    spa.Options.SourcePath = GetFrontAppRootPath(env);
+                })
+            );
             return app;
         }
 

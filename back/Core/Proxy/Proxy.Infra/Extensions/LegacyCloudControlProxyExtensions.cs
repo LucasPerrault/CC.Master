@@ -31,20 +31,18 @@ namespace Core.Proxy.Infra.Extensions
             "/healthz",
             "/health/ready",
             "/health/live",
-            "/warmup"
-        };
+            "/warmup",
 
-        private static readonly HashSet<string> SpaSegments = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
-		{
-			"/logs",
-		};
+            // front
+            "/logs",
+        };
 
         public static IApplicationBuilder UseLegacyCloudControlHttpProxy(this IApplicationBuilder app)
         {
             var proxyConfiguration = app.ApplicationServices.GetService<LegacyCloudControlConfiguration>();
             app.UseWhen
                 (
-                    context => context.IsRedirectableCall(),
+                    context => context.ShouldRedirect(),
                     app => app.RunProxy(context => context
                             .ForwardTo(HTTP_REDIRECTION_ADDRESS)
                             .CopyXForwardedHeaders()
@@ -72,14 +70,31 @@ namespace Core.Proxy.Infra.Extensions
             return app;
         }
 
-        internal static bool IsRedirectableCall(this HttpContext httpContext)
+        internal static bool ShouldRedirect(this HttpContext httpContext)
         {
-            return !httpContext.Request.Path.IsNonRedirectablePath()
-                   && (
-                       httpContext.Request.Path.StartsWithSegments("/api/v3")
-                       || httpContext.Request.Path.IsNonV3LegacyApiPath()
-                       || !httpContext.Request.Path.StartsWithSegments("/api")
-                   );
+            if (httpContext.Request.Path.IsRootCall())
+            {
+                return true;
+            }
+
+            if (httpContext.Request.Path.IsKnownNonRedirectableSegment())
+            {
+                return false;
+            }
+
+            return httpContext.Request.Path.StartsWithSegments("/api/v3")
+                   || httpContext.Request.Path.IsNonV3LegacyApiPath()
+                   || !httpContext.Request.Path.StartsWithSegments("/api");
+        }
+
+        public static bool IsRootCall(this PathString pathString)
+        {
+            return !pathString.HasValue || pathString == "/";
+        }
+
+        private static bool IsKnownNonRedirectableSegment(this PathString pathString)
+        {
+            return NonRedirectableSegments.Any(s => pathString.StartsWithSegments(s));
         }
 
         private static bool IsNonV3LegacyApiPath(this PathString pathString)
@@ -97,16 +112,6 @@ namespace Core.Proxy.Infra.Extensions
             var secondSegment = pathString.Value.Split('/').Skip(2).FirstOrDefault();
             return !string.IsNullOrEmpty(secondSegment) && NonV3LegacyApiSegments.Contains(secondSegment);
         }
-
-        private static bool IsNonRedirectablePath(this PathString pathString)
-        {
-            if (!pathString.HasValue)
-            {
-                return false;
-            }
-
-			return NonRedirectableSegments.Any(s => pathString.StartsWithSegments(s)) || SpaSegments.Any(s => pathString.StartsWithSegments(s));
-		}
 
         private static ForwardContext AddRedirectionHeader(this ForwardContext forwardContext, string redirectionUrl)
         {
