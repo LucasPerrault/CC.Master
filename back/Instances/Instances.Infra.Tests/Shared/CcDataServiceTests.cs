@@ -111,7 +111,7 @@ namespace Instances.Infra.Tests.Shared
         [InlineData("DEMO2", "http://cc-data.dm2.lucca.local")]
         [InlineData("DEMO", "http://cc-data.dm1.lucca.local")]
         [InlineData("GREEN3", "http://cc-data.ch.lucca.local")]
-        [InlineData("Preview", "http://cc-data.pm.lucca.local")]
+        [InlineData("Preview", "http://cc-data.pw.lucca.local")]
         [InlineData("SECURITY", "http://cc-data.se.lucca.local")]
         [InlineData("RECETTE", "http://cc-data.re.lucca.local")]
         public void GetCcDataBaseUri_BetaFalseOk(string input, string expectedOutput)
@@ -127,7 +127,7 @@ namespace Instances.Infra.Tests.Shared
         [InlineData("DEMO2", "http://cc-data.beta.dm2.lucca.local")]
         [InlineData("DEMO", "http://cc-data.beta.dm1.lucca.local")]
         [InlineData("GREEN3", "http://cc-data.beta.ch.lucca.local")]
-        [InlineData("Preview", "http://cc-data.beta.pm.lucca.local")]
+        [InlineData("Preview", "http://cc-data.beta.pw.lucca.local")]
         [InlineData("SECURITY", "http://cc-data.beta.se.lucca.local")]
         [InlineData("RECETTE", "http://cc-data.beta.re.lucca.local")]
         public void GetCcDataBaseUri_BetaTrueOk(string input, string expectedOutput)
