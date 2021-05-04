@@ -17,6 +17,7 @@ enum LogsFilterKey {
 @Component({
   selector: 'cc-logs-filter',
   templateUrl: './logs-filter.component.html',
+  styleUrls: ['./logs-filter.component.scss'],
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,
