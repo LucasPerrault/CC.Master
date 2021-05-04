@@ -13,4 +13,6 @@
                 [sortParams]="sortParams$ | async"
                 [state]="logsState$ | async">
   </cc-logs-list>
+
+  <div class="loading mod-fullPage" *ngIf="isLoading$ | async"></div>
 </div>

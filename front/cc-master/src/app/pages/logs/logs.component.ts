@@ -34,6 +34,12 @@ export class LogsComponent implements OnInit, OnDestroy {
     return this.paginatedLogs.state$;
   }
 
+  public get isLoading$(): Observable<boolean> {
+    return this.logsState$.pipe(
+      map(state => state === PaginatedListState.Update)
+    );
+  }
+
   constructor(
     private logsService: LogsService,
     private logsApiMappingService: LogsApiMappingService,

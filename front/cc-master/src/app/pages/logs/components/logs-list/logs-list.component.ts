@@ -44,20 +44,11 @@ export class LogsListComponent implements OnInit {
     this.updateSort.emit(this.sortParams);
   }
 
-  public get isLoading(): boolean {
-    return this.isUpdateData || this.isLoadMore;
-  }
-
   public get isIdle(): boolean {
     return this.state === PaginatedListState.Idle || this.state === PaginatedListState.Error;
-  }
-
-  public get isUpdateData(): boolean {
-    return this.state === PaginatedListState.Update;
   }
 
   public get isLoadMore(): boolean {
     return this.state === PaginatedListState.LoadMore;
   }
-
 }
