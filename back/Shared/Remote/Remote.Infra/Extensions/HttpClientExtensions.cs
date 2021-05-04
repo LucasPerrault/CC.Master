@@ -82,7 +82,7 @@ namespace Remote.Infra.Extensions
                 {
                     CloudControlUserClaimsPrincipal u => AuthenticateAsUser(u.Token),
                     CloudControlApiKeyClaimsPrincipal ak => AuthenticateAsApplication(ak.Token),
-                    _ => throw new ApplicationException("Can't authenticate to Lucca service with unrecognized principal")
+                    _ => _httpClient // return not authenticated
                 };
             }
         }

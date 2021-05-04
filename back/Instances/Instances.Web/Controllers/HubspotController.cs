@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 namespace Instances.Web.Controllers
 {
 
-    [ApiController, Microsoft.AspNetCore.Components.Route("/api/hubspot")]
+    [ApiController, Route("/api/hubspot")]
     public class HubspotController
     {
         private readonly HubspotDemoDuplicator _demoDuplicator;
@@ -22,6 +22,12 @@ namespace Instances.Web.Controllers
         public class HubspotDemoDuplicationRequest
         {
             public int VId { get; set; }
+        }
+
+        public class HubspotDemoDuplicationQuery
+        {
+            public int SuccessWorkflowId { get; set; }
+            public int FailWorkflowId { get; set; }
         }
 
         [HttpPost("duplications/{instanceDuplicationId}/notify")]
@@ -46,19 +52,18 @@ namespace Instances.Web.Controllers
         // They would also need to know valid workflow ids for emails to reach contacts.
         [AllowAnonymous]
         [AllowAllIps]
-        [HttpPost("/duplication-request")]
+        [HttpPost("duplication-request")]
         public async Task<ActionResult> RequestDuplicationAsync
         (
-            [FromQuery]int successWorkflowId,
-            [FromQuery]int failWorkflowId,
+            [FromQuery]HubspotDemoDuplicationQuery duplicationQuery,
             [FromBody]HubspotDemoDuplicationRequest request
         )
         {
             await _demoDuplicator.DuplicateAsync(new HubspotDemoDuplication
             {
                 VId = request.VId,
-                SuccessWorkflowId = successWorkflowId,
-                FailureWorkflowId = failWorkflowId
+                SuccessWorkflowId = duplicationQuery.SuccessWorkflowId,
+                FailureWorkflowId = duplicationQuery.FailWorkflowId
             });
 
             return new StatusCodeResult(StatusCodes.Status202Accepted);
