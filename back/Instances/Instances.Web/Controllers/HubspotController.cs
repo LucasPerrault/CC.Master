@@ -59,7 +59,7 @@ namespace Instances.Web.Controllers
             [FromBody]HubspotDemoDuplicationRequest request
         )
         {
-            await _demoDuplicator.DuplicateAsync(new HubspotDemoDuplication
+            await _demoDuplicator.DuplicateMasterForHubspotAsync(new HubspotDemoDuplication
             {
                 VId = request.VId,
                 SuccessWorkflowId = duplicationQuery.SuccessWorkflowId,

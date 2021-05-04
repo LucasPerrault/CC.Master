@@ -51,7 +51,7 @@ namespace Instances.Web.Controllers
         [ForbidIfMissing(Operation.Demo)]
         public Task<DemoDuplication> Duplicate(DemoDuplicationRequest request)
         {
-            return _duplicator.CreateDuplicationAsync(request, DemoDuplicationRequestSource.Api);
+            return _duplicator.CreateDuplicationAsync(request);
         }
 
         [HttpDelete("{id:int}")]

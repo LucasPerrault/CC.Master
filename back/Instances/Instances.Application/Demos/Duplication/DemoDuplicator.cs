@@ -19,12 +19,6 @@ using System.Threading.Tasks;
 
 namespace Instances.Application.Demos.Duplication
 {
-    public enum DemoDuplicationRequestSource
-    {
-        Api = 0,
-        Hubspot = 1
-    }
-
     public class DemoDuplicator
     {
         private readonly ClaimsPrincipal _principal;
@@ -81,17 +75,12 @@ namespace Instances.Application.Demos.Duplication
             _logger = logger;
         }
 
-        public async Task<DemoDuplication> CreateDuplicationAsync
-        (
-            DemoDuplicationRequest request,
-            DemoDuplicationRequestSource requestSource
-        )
+        public async Task<DemoDuplication> CreateDuplicationAsync(DemoDuplicationRequest request)
         {
             await ThrowIfForbiddenAsync(request);
             ThrowIfInvalid(request);
 
-            var shouldUseSubdomainAsPrefix = requestSource == DemoDuplicationRequestSource.Hubspot;
-            var targetSubdomain = await _subdomainGenerator.GetSubdomainAsync(request.Subdomain, shouldUseSubdomainAsPrefix);
+            var targetSubdomain = await _subdomainGenerator.GetSubdomainAsync(request.Subdomain, false);
 
             var demoToDuplicate = await GetDemoToDuplicateAsync(request.SourceId);
             var distributor = await _distributorsStore.GetByCodeAsync(request.DistributorCode);
@@ -119,7 +108,7 @@ namespace Instances.Application.Demos.Duplication
             };
 
             await _duplicationsStore.CreateAsync(duplication);
-            await _instancesDuplicator.RequestRemoteDuplicationAsync(instanceDuplication, requestSource);
+            await _instancesDuplicator.RequestRemoteDuplicationAsync(instanceDuplication, $"/api/demos/duplications/{duplication.Id}/notify");
 
             return duplication;
         }
@@ -128,7 +117,7 @@ namespace Instances.Application.Demos.Duplication
         {
             if (!(principal is CloudControlUserClaimsPrincipal user))
             {
-                return 0;
+                throw new BadRequestException("Duplication api is opened to users only");
             }
 
             return user.UserId.Value;
@@ -205,7 +194,7 @@ namespace Instances.Application.Demos.Duplication
 
             if (_principal is CloudControlApiKeyClaimsPrincipal)
             {
-                return;
+                throw new BadRequestException("Duplication api is opened to users only");
             }
 
             if (!(_principal is CloudControlUserClaimsPrincipal user))

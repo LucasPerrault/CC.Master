@@ -1,5 +1,10 @@
 ﻿using Cache.Abstractions;
+using Distributors.Domain.Models;
+using Instances.Application.Instances;
 using Instances.Domain.Demos;
+using Instances.Domain.Demos.Filtering;
+using Instances.Domain.Instances;
+using Instances.Domain.Instances.Models;
 using System;
 using System.Threading.Tasks;
 
@@ -34,40 +39,43 @@ namespace Instances.Application.Demos.Duplication
 
     public class HubspotDemoDuplicator
     {
-        private const int _defaultSourceDemoId = 385;
-        private const string _defaultHubspotPassword = "test";
+        private const int DefaultSourceDemoId = 385;
+        private const string DefaultHubspotPassword = "test";
 
         private readonly DemoDuplicator _demoDuplicator;
         private readonly ICacheService _cacheService;
         private readonly IHubspotService _hubspotService;
+        private readonly IDemosStore _demosStore;
+        private readonly ISubdomainGenerator _subdomainGenerator;
+        private readonly IClusterSelector _clusterSelector;
+        private readonly IDemoDuplicationsStore _duplicationsStore;
+        private readonly InstancesDuplicator _instancesDuplicator;
 
         public HubspotDemoDuplicator
         (
             DemoDuplicator demoDuplicator,
             ICacheService cacheService,
-            IHubspotService hubspotService
+            IHubspotService hubspotService,
+            IDemosStore demosStore,
+            ISubdomainGenerator subdomainGenerator,
+            IClusterSelector clusterSelector,
+            IDemoDuplicationsStore duplicationsStore
         )
         {
             _demoDuplicator = demoDuplicator;
             _cacheService = cacheService;
             _hubspotService = hubspotService;
+            _demosStore = demosStore;
+            _subdomainGenerator = subdomainGenerator;
+            _clusterSelector = clusterSelector;
+            _duplicationsStore = duplicationsStore;
         }
 
-        public async Task DuplicateAsync(HubspotDemoDuplication hubspotDemoDuplication)
+        public async Task DuplicateMasterForHubspotAsync(HubspotDemoDuplication hubspotDemoDuplication)
         {
             var contact = await _hubspotService.GetContactAsync(hubspotDemoDuplication.VId);
-            var request = new DemoDuplicationRequest
-            {
-                SourceId = _defaultSourceDemoId,
-                Subdomain = contact.Company,
-                Password = _defaultHubspotPassword
-            };
 
-            var demoDuplication = await _demoDuplicator.CreateDuplicationAsync
-            (
-                request,
-                DemoDuplicationRequestSource.Hubspot
-            );
+            var demoDuplication = await CreateDuplicationAsync(contact.Company);
             await _hubspotService.UpdateContactSubdomainAsync
             (
                 contact.VId,
@@ -87,6 +95,39 @@ namespace Instances.Application.Demos.Duplication
                 cachedDuplication,
                 CacheInvalidation.After(HubspotDemoDuplicationKey.LifeSpan)
             );
+        }
+
+        private async Task<DemoDuplication> CreateDuplicationAsync(string subdomain)
+        {
+            var targetSubdomain = await _subdomainGenerator.GetSubdomainAsync(subdomain, true);
+            var demoToDuplicate = await _demosStore.GetActiveByIdAsync(DefaultSourceDemoId, DemoAccess.All);
+
+            var instanceDuplication = new InstanceDuplication
+            {
+                Id = Guid.NewGuid(),
+                SourceType = InstanceType.Demo,
+                TargetType = InstanceType.Demo,
+                DistributorId = DistributorIds.Lucca,
+                SourceCluster = demoToDuplicate.Instance.Cluster,
+                TargetCluster = await _clusterSelector.GetFillingCluster(),
+                SourceSubdomain = demoToDuplicate.Subdomain,
+                TargetSubdomain = targetSubdomain,
+                Progress = InstanceDuplicationProgress.Pending
+            };
+
+            var duplication = new DemoDuplication
+            {
+                InstanceDuplication = instanceDuplication,
+                SourceDemoId = demoToDuplicate.Id,
+                CreatedAt = DateTime.Now,
+                AuthorId = 0,
+                Password = DefaultHubspotPassword,
+            };
+
+            await _duplicationsStore.CreateAsync(duplication);
+            await _instancesDuplicator.RequestRemoteDuplicationAsync(instanceDuplication, $"/api/hubspot/duplications/{duplication.Id}/notify");
+
+            return duplication;
         }
 
         public async Task MarkAsEndedAsync(Guid instanceDuplicationId, bool isSuccessful)

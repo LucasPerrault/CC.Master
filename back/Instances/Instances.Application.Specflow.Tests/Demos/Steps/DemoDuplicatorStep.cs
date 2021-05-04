@@ -80,7 +80,7 @@ namespace Instances.Application.Specflow.Tests.Demos.Steps
 
             try
             {
-                await duplicator.CreateDuplicationAsync(duplication, DemoDuplicationRequestSource.Api);
+                await duplicator.CreateDuplicationAsync(duplication);
             }
             catch (ForbiddenException e)
             {

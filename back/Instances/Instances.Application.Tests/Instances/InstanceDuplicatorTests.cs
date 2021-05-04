@@ -1,4 +1,3 @@
-using Instances.Application.Demos.Duplication;
 using Instances.Application.Instances;
 using Instances.Domain.Instances;
 using Instances.Domain.Shared;
@@ -36,7 +35,7 @@ namespace Instances.Application.Tests
                     MonolithJobPath = "MO-NO-LI-TH"
                 }),
                 _ccDataServiceMock.Object);
-            await instanceDuplicator.RequestRemoteDuplicationAsync(duplication, DemoDuplicationRequestSource.Api);
+            await instanceDuplicator.RequestRemoteDuplicationAsync(duplication, "callback/path");
 
             _ccDataServiceMock.Verify(ccDataService => ccDataService.StartDuplicateInstanceAsync(It.IsAny<DuplicateInstanceRequestDto>(), duplication.TargetCluster, It.IsAny<string>()), Times.Once);
         }
