@@ -5,7 +5,6 @@ using Instances.Domain.Instances;
 using Instances.Domain.Shared;
 using Lucca.Core.Api.Abstractions.Paging;
 using Lucca.Core.Shared.Domain.Exceptions;
-using System;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -55,6 +54,11 @@ namespace Instances.Application.Demos
             if (demo.IsTemplate)
             {
                 throw new ForbiddenException("Template demos cannot be updated");
+            }
+
+            if (payload.Comment == null)
+            {
+                throw new BadRequestException("Missing payload field 'Comment'");
             }
 
             await _demosStore.UpdateCommentAsync(demo, payload.Comment);
