@@ -59,7 +59,8 @@ namespace Instances.Application.Demos.Duplication
             IDemosStore demosStore,
             ISubdomainGenerator subdomainGenerator,
             IClusterSelector clusterSelector,
-            IDemoDuplicationsStore duplicationsStore
+            IDemoDuplicationsStore duplicationsStore,
+            InstancesDuplicator instancesDuplicator
         )
         {
             _demoDuplicator = demoDuplicator;
@@ -69,13 +70,14 @@ namespace Instances.Application.Demos.Duplication
             _subdomainGenerator = subdomainGenerator;
             _clusterSelector = clusterSelector;
             _duplicationsStore = duplicationsStore;
+            _instancesDuplicator = instancesDuplicator;
         }
 
         public async Task DuplicateMasterForHubspotAsync(HubspotDemoDuplication hubspotDemoDuplication)
         {
             var contact = await _hubspotService.GetContactAsync(hubspotDemoDuplication.VId);
 
-            var demoDuplication = await CreateDuplicationAsync(contact.Company);
+            var demoDuplication = await CreateDuplicationAsync(contact.Company.ToValidSubdomain());
             await _hubspotService.UpdateContactSubdomainAsync
             (
                 contact.VId,
