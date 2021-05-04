@@ -1,7 +1,7 @@
 import { HttpParams } from '@angular/common/http';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { IPaginatedResult, PaginatedList, PaginatedListState, PagingService } from '@cc/common/paging';
+import { defaultPagingParams, IPaginatedResult, PaginatedList, PaginatedListState, PagingService } from '@cc/common/paging';
 import { ISortParams, SortOrder } from '@cc/common/sort';
 import { IEnvironmentLog, LogsService } from '@cc/domain/environments';
 import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
@@ -64,6 +64,7 @@ export class LogsComponent implements OnInit, OnDestroy {
 
     this.paginatedLogs = this.pagingService.paginate<IEnvironmentLog>(
       (httpParams) => this.getPaginatedLogs$(httpParams),
+      { page: defaultPagingParams.page, limit: 50 },
     );
   }
 

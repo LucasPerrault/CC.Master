@@ -10,8 +10,8 @@ type PagedFetchFunction<T> = (httpParams: HttpParams) => Observable<IPaginatedRe
 
 @Injectable()
 export class PagingService {
-  public paginate<T>(fetch: PagedFetchFunction<T>): PaginatedList<T> {
-    return new PaginatedList<T>(fetch);
+  public paginate<T>(fetch: PagedFetchFunction<T>, paging: IPagingParams = defaultPagingParams): PaginatedList<T> {
+    return new PaginatedList<T>(fetch, paging);
   }
 }
 
@@ -36,7 +36,7 @@ export class PaginatedList<T> {
     return this.state.asObservable();
   }
 
-  constructor(private fetchMore: PagedFetchFunction<T>, paging: IPagingParams = defaultPagingParams) {
+  constructor(private fetchMore: PagedFetchFunction<T>, paging) {
     this.paging = paging;
   }
 
