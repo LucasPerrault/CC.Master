@@ -1,9 +1,7 @@
-using Billing.Cmrr.Application;
 using Billing.Cmrr.Application.Interfaces;
 using Billing.Cmrr.Domain;
 using Microsoft.AspNetCore.Mvc;
 using Rights.Domain;
-using Rights.Domain.Abstractions;
 using Rights.Web.Attributes;
 using System;
 using System.Collections.Generic;
@@ -15,12 +13,10 @@ namespace Billing.Web.Controllers
     public class CmrrController
     {
         private readonly ICmrrSituationsService _cmrrSituationService;
-        private readonly IRightsService _rightsService;
 
-        public CmrrController(ICmrrSituationsService cmrrSituationService, IRightsService rightsService)
+        public CmrrController(ICmrrSituationsService cmrrSituationService)
         {
             _cmrrSituationService = cmrrSituationService ?? throw new ArgumentNullException(nameof(cmrrSituationService));
-            _rightsService = rightsService;
         }
 
         [HttpGet, ForbidIfMissing(Operation.ReadCMRR)]
