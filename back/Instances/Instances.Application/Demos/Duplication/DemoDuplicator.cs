@@ -4,7 +4,6 @@ using Instances.Application.Instances;
 using Instances.Domain.Demos;
 using Instances.Domain.Demos.Filtering;
 using Instances.Domain.Instances;
-using Instances.Domain.Instances.Models;
 using Instances.Infra.Instances.Services;
 using Lucca.Core.Rights.Abstractions;
 using Lucca.Core.Shared.Domain.Exceptions;
@@ -58,36 +57,29 @@ namespace Instances.Application.Demos.Duplication
         {
             await ThrowIfForbiddenAsync(request);
             ThrowIfInvalid(request);
-
-            var targetSubdomain = await _subdomainGenerator.GetSubdomainAsync(request.Subdomain, false);
+            await _subdomainGenerator.ThrowIfNotUsable(request.Subdomain);
 
             var demoToDuplicate = await GetDemoToDuplicateAsync(request.SourceId);
             var distributor = await _distributorsStore.GetByCodeAsync(request.DistributorCode);
-            var instanceDuplication = new InstanceDuplication
-            {
-                Id = Guid.NewGuid(),
-                SourceType = InstanceType.Demo,
-                TargetType = InstanceType.Demo,
-                DistributorId = distributor.Id,
-                SourceCluster = demoToDuplicate.Instance.Cluster,
-                TargetCluster = await _clusterSelector.GetFillingCluster(),
-                SourceSubdomain = demoToDuplicate.Subdomain,
-                TargetSubdomain = targetSubdomain,
-                Progress = InstanceDuplicationProgress.Pending
-            };
+            var targetCluster = await _clusterSelector.GetFillingCluster();
 
-            var duplication = new DemoDuplication
-            {
-                InstanceDuplication = instanceDuplication,
-                SourceDemoId = demoToDuplicate.Id,
-                CreatedAt = DateTime.Now,
-                AuthorId = GetAuthorId(_principal),
-                Password = request.Password,
-                Comment = request.Comment
-            };
+            var duplication = DuplicationFactory.New
+            (
+                distributor.Id,
+                GetAuthorId(_principal),
+                demoToDuplicate,
+                targetCluster,
+                request.Subdomain,
+                request.Password,
+                request.Comment
+            );
 
             await _duplicationsStore.CreateAsync(duplication);
-            await _instancesDuplicator.RequestRemoteDuplicationAsync(instanceDuplication, $"/api/demos/duplications/{duplication.InstanceDuplicationId}/notify");
+            await _instancesDuplicator.RequestRemoteDuplicationAsync
+            (
+                duplication.InstanceDuplication,
+                $"/api/demos/duplications/{duplication.InstanceDuplicationId}/notify"
+            );
 
             return duplication;
         }

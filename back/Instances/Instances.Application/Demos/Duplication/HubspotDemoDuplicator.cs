@@ -4,7 +4,6 @@ using Instances.Application.Instances;
 using Instances.Domain.Demos;
 using Instances.Domain.Demos.Filtering;
 using Instances.Domain.Instances;
-using Instances.Domain.Instances.Models;
 using System;
 using System.Threading.Tasks;
 
@@ -40,6 +39,7 @@ namespace Instances.Application.Demos.Duplication
     public class HubspotDemoDuplicator
     {
         private const int DefaultSourceDemoId = 385;
+        private const int DefaultAuthorId = 0;
         private const string DefaultHubspotPassword = "test";
 
         private readonly ICacheService _cacheService;
@@ -96,35 +96,24 @@ namespace Instances.Application.Demos.Duplication
             );
         }
 
-        private async Task<DemoDuplication> CreateDuplicationAsync(string subdomain)
+        private async Task<DemoDuplication> CreateDuplicationAsync(string requestedSubdomain)
         {
-            var targetSubdomain = await _subdomainGenerator.GetSubdomainAsync(subdomain, true);
+            var targetSubdomain = await _subdomainGenerator.GetSubdomainFromPrefixAsync(requestedSubdomain);
             var demoToDuplicate = await _demosStore.GetActiveByIdAsync(DefaultSourceDemoId, DemoAccess.All);
+            var targetCluster = await _clusterSelector.GetFillingCluster();
 
-            var instanceDuplication = new InstanceDuplication
-            {
-                Id = Guid.NewGuid(),
-                SourceType = InstanceType.Demo,
-                TargetType = InstanceType.Demo,
-                DistributorId = DistributorIds.Lucca,
-                SourceCluster = demoToDuplicate.Instance.Cluster,
-                TargetCluster = await _clusterSelector.GetFillingCluster(),
-                SourceSubdomain = demoToDuplicate.Subdomain,
-                TargetSubdomain = targetSubdomain,
-                Progress = InstanceDuplicationProgress.Pending
-            };
-
-            var duplication = new DemoDuplication
-            {
-                InstanceDuplication = instanceDuplication,
-                SourceDemoId = demoToDuplicate.Id,
-                CreatedAt = DateTime.Now,
-                AuthorId = 0,
-                Password = DefaultHubspotPassword,
-            };
+            var duplication = DuplicationFactory.New
+                (
+                    DistributorIds.Lucca,
+                    DefaultAuthorId,
+                    demoToDuplicate,
+                    targetCluster,
+                    targetSubdomain,
+                    DefaultHubspotPassword
+                );
 
             await _duplicationsStore.CreateAsync(duplication);
-            await _instancesDuplicator.RequestRemoteDuplicationAsync(instanceDuplication, $"/api/hubspot/duplications/{duplication.InstanceDuplicationId}/notify");
+            await _instancesDuplicator.RequestRemoteDuplicationAsync(duplication.InstanceDuplication, $"/api/hubspot/duplications/{duplication.InstanceDuplicationId}/notify");
 
             return duplication;
         }
