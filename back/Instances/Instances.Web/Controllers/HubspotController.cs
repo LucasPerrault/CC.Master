@@ -1,4 +1,6 @@
 using Instances.Application.Demos.Duplication;
+using IpFilter.Domain;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -34,6 +36,16 @@ namespace Instances.Web.Controllers
             return new StatusCodeResult(StatusCodes.Status202Accepted);
         }
 
+        // Hubspot needs anonymous access to this route as in cannot authenticate its calls.
+        // Ip ranges used by hubspot are inconsistent with their documentation.
+        //
+        // We have no choice but open this route to any call,
+        // knowing that an attacker would need to know valid vIds of hubspot contacts
+        // in order to create demos on this route.
+        //
+        // They would also need to know valid workflow ids for emails to reach contacts.
+        [AllowAnonymous]
+        [AllowAllIps]
         [HttpPost("/duplication-request")]
         public async Task<ActionResult> RequestDuplicationAsync
         (
