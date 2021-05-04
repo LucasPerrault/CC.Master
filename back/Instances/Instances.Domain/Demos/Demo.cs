@@ -15,7 +15,7 @@ namespace Instances.Domain.Demos
         public DateTime DeletionScheduledOn { get; set; }
         public bool IsActive { get; set; }
         public int AuthorId { get; set; }
-        public User Author { get; set; }
+        public SimpleUser Author { get; set; }
         public int InstanceID { get; set; }
         public Instance Instance { get; set; }
         public string DistributorID { get; set; }
