@@ -19,18 +19,21 @@ namespace Instances.Web.Controllers
     {
         private readonly DemosRepository _demosRepository;
         private readonly DemoDuplicator _duplicator;
+        private readonly DemoDuplicationCompleter _duplicationCompleter;
         private readonly DeletionCallbackNotifier _notifier;
 
         public DemosController
         (
             DemosRepository demosRepository,
             DemoDuplicator duplicator,
-            DeletionCallbackNotifier notifier
+            DeletionCallbackNotifier notifier,
+            DemoDuplicationCompleter duplicationCompleter
         )
         {
             _demosRepository = demosRepository;
             _duplicator = duplicator;
             _notifier = notifier;
+            _duplicationCompleter = duplicationCompleter;
         }
 
         [HttpGet]
@@ -65,7 +68,7 @@ namespace Instances.Web.Controllers
         [ForbidIfMissing(Operation.Demo)]
         public Task DuplicationReport([FromRoute]Guid duplicationId, [FromBody]DuplicationCallbackPayload payload)
         {
-            return _duplicator.MarkDuplicationAsCompletedAsync(duplicationId, payload.Success);
+            return _duplicationCompleter.MarkDuplicationAsCompletedAsync(duplicationId, payload.Success);
         }
 
         [HttpPost("deletion-report/{clusterName}")]

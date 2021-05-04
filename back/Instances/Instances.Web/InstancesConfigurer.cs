@@ -59,6 +59,7 @@ namespace Instances.Web
             services.AddScoped<InstancesDuplicator>();
             services.AddScoped<DemoDuplicator>();
             services.AddScoped<HubspotDemoDuplicator>();
+            services.AddScoped<DemoDuplicationCompleter>();
 
             services.AddScoped<IDemosStore, DemosStore>();
             services.AddScoped<IInstanceDuplicationsStore, InstanceDuplicationsStore>();
