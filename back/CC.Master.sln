@@ -172,6 +172,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TeamNotification.Web", "Cor
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Billing.Cmrr.Infra.Tests", "Billing\Billing.Cmrr\Billing.Cmrr.Infra.Tests\Billing.Cmrr.Infra.Tests.csproj", "{90600798-B647-4D6D-99CC-24E463350CE8}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Billing.Cmrr.Domain.Tests", "Billing\Billing.Cmrr\Billing.Cmrr.Domain.Tests\Billing.Cmrr.Domain.Tests.csproj", "{6CEE3CAC-CE56-4251-B677-B44CEFBD044E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -418,6 +420,10 @@ Global
 		{90600798-B647-4D6D-99CC-24E463350CE8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{90600798-B647-4D6D-99CC-24E463350CE8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{90600798-B647-4D6D-99CC-24E463350CE8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6CEE3CAC-CE56-4251-B677-B44CEFBD044E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6CEE3CAC-CE56-4251-B677-B44CEFBD044E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6CEE3CAC-CE56-4251-B677-B44CEFBD044E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6CEE3CAC-CE56-4251-B677-B44CEFBD044E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -496,6 +502,7 @@ Global
 		{CF272166-F4E4-45C5-A128-CE7F66091776} = {B921BC27-1DE6-4FDC-98F2-CBA747138531}
 		{B4D3D09C-427A-47DC-A4B8-9A462332C9F5} = {B921BC27-1DE6-4FDC-98F2-CBA747138531}
 		{90600798-B647-4D6D-99CC-24E463350CE8} = {B6A787B1-6BB0-4B3A-B20F-32351F78376D}
+		{6CEE3CAC-CE56-4251-B677-B44CEFBD044E} = {B6A787B1-6BB0-4B3A-B20F-32351F78376D}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {EBA79BF7-490F-4B8F-8162-771B77F6C73B}
