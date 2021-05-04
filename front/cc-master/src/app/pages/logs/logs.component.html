@@ -1,4 +1,4 @@
-<div class="page mod-fullWidth mod-withFullwidthTable" ccInfiniteScroll (bottomReached)="showMore()">
+<div class="page mod-fullWidth mod-withFullwidthTable">
   <header class="page-header blockWithFixedSizeInFlex">
     <h1>{{ "front_logPage_title" | translate }}</h1>
   </header>
@@ -6,7 +6,9 @@
   <cc-logs-filter class="header u-alignItemsFlexStart blockWithFixedSizeInFlex" [formControl]="filters">
   </cc-logs-filter>
 
-  <cc-logs-list (updateSort)="updateSort($event)"
+  <cc-logs-list ccInfiniteScroll
+                (bottomReached)="showMore()"
+                (updateSort)="updateSort($event)"
                 [logs]="logs$ | async"
                 [sortParams]="sortParams$ | async"
                 [state]="logsState$ | async">
