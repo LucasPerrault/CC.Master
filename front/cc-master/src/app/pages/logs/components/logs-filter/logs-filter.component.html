@@ -24,6 +24,8 @@
 
 <button class="button mod-outline palette-grey mod-icon u-marginLeftAuto" (click)="toggleMoreFiltersDisplay()">
   <span aria-hidden="true" class="button-icon lucca-icon icon-filterAbstract"></span>
-  <span *ngIf="!showMoreFilters; else showLessFilters">{{ "front_logPage_moreFiltersButton_label" | translate }}</span>
-  <ng-template #showLessFilters>{{ "front_logPage_lessFiltersButton_label" | translate }}</ng-template>
+  {{ "front_logPage_moreFiltersButton_label" | translate }}
+  <span class="label mod-number u-animatedScaleIn" *ngIf="hasAdditionalFiltersSelected()">
+    {{ getAdditionalFiltersKeySelected().length }}
+  </span>
 </button>

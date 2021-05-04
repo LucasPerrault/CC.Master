@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, forwardRef, OnDestroy, OnInit } from '@angular/core';
+import { Component, forwardRef, OnDestroy, OnInit } from '@angular/core';
 import { ControlValueAccessor, FormControl, FormGroup, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
@@ -33,6 +33,8 @@ export class LogsFiltersComponent implements ControlValueAccessor, OnInit, OnDes
 
   public filtersFormGroup: FormGroup;
   public filtersKey = LogsFilterKey;
+
+  private readonly additionalFiltersKey = [LogsFilterKey.Domains, LogsFilterKey.IsAnonymized];
 
   private destroy$: Subject<void> = new Subject<void>();
 
@@ -76,7 +78,7 @@ export class LogsFiltersComponent implements ControlValueAccessor, OnInit, OnDes
 
     this.filtersFormGroup.setValue(logsFilter, { emitEvent: false });
 
-    if (this.shouldDisplayHiddenFilters(logsFilter)) {
+    if (this.hasAdditionalFiltersSelected()) {
       this.toggleMoreFiltersDisplay();
     }
   }
@@ -85,7 +87,17 @@ export class LogsFiltersComponent implements ControlValueAccessor, OnInit, OnDes
     this.showMoreFilters = !this.showMoreFilters;
   }
 
-  private shouldDisplayHiddenFilters(filters: ILogsFilter): boolean {
-    return !!filters.domains.length || filters.isAnonymized !== null;
+  public getAdditionalFiltersKeySelected(): LogsFilterKey[] {
+    return this.additionalFiltersKey.filter(key => {
+      if (key === LogsFilterKey.IsAnonymized) {
+        return this.filtersFormGroup.get(key).value !== null;
+      }
+
+      return !!this.filtersFormGroup.get(key).value.length;
+    });
+  }
+
+  public hasAdditionalFiltersSelected(): boolean {
+    return !!this.getAdditionalFiltersKeySelected().length;
   }
 }
