@@ -61,6 +61,6 @@ export class LogsFiltersComponent implements ControlValueAccessor {
   }
 
   private shouldDisplayHiddenFilters(filters: ILogsFilter): boolean {
-    return !!filters.domains.length || !!filters.environments.length;
+    return !!filters.domains.length || filters.isAnonymized !== null;
   }
 }
