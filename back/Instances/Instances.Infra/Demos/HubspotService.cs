@@ -61,8 +61,7 @@ namespace Instances.Infra.Demos
             {
                 VId = dto.VId,
                 Email = dto.Properties.Email.Value,
-                Company = dto.Properties.Company.Value,
-                IpAddress = dto.Properties.IpAddress.Value
+                Company = dto.Properties.Company.Value
             };
         }
 
@@ -98,7 +97,6 @@ namespace Instances.Infra.Demos
             {
                 public APIField Email { get; set; }
                 public APIField Company { get; set; }
-                public APIField IpAddress { get; set; }
             }
 
             public class APIField
