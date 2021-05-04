@@ -20,6 +20,7 @@ namespace Instances.Domain.Instances
                 .Where(c => char.IsLetterOrDigit(c) || c == Separator)
                 .WithoutConsecutiveChars(Separator)
                 .WithoutFirstChars(Separator)
+                .WithoutLastChars(Separator)
                 .Take(SubdomainMaxLength)
                 .Concat();
         }
@@ -68,6 +69,14 @@ namespace Instances.Domain.Instances
                 yield return c;
                 isFirstYieldedChar = false;
             }
+        }
+
+        static IEnumerable<char> WithoutLastChars(this IEnumerable<char> chars, params char[] charsThatShouldNotBeLast)
+        {
+            return chars
+                .Reverse()
+                .WithoutFirstChars(charsThatShouldNotBeLast)
+                .Reverse();
         }
     }
 }
