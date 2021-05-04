@@ -1,9 +1,11 @@
 ﻿using Instances.Domain.Demos;
+using Lucca.Core.Shared.Domain.Exceptions;
 using Microsoft.AspNetCore.WebUtilities;
 using Remote.Infra.Extensions;
 using Remote.Infra.Services;
 using System;
 using System.Collections.Generic;
+using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 
@@ -43,6 +45,14 @@ namespace Instances.Infra.Demos
 
             if (!responseMessage.IsSuccessStatusCode)
             {
+                if (responseMessage.StatusCode == HttpStatusCode.NotFound)
+                {
+                    throw new DomainException
+                    (
+                        DomainExceptionCode.NotFound,
+                        $"Hubspot could not find user with vId {vId}"
+                    );
+                }
                 throw new ApplicationException($"Hubspot contact fetch failed with status {responseMessage.StatusCode}");
             }
 
