@@ -22,5 +22,5 @@ Scenario: Get a list of demos as a user with scope "DepartmentOnly"
 Scenario: Get a list of demos filtered with subdomain "demo-lucca"
     Given a user with department code 'DISTRIBUTOR' and operation 'Demo' and scope 'AllDepartments'
     When I get the list of demos for subdomain 'demo-lucca'
-        Then it should contain demos 'demo-lucca'
+        Then it should contain demos with subdomain 'demo-lucca'
         And it should not contain any demo other than 'demo-lucca'

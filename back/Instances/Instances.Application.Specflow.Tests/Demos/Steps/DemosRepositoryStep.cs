@@ -43,12 +43,12 @@ namespace Instances.Application.Specflow.Tests.Demos.Steps
             _demosContext.DemosListResult = (await demosRepository.GetDemosAsync(null, demoFilter)).Items.ToList();
         }
 
-        [When("I get the list of demos for subdomain '(.*)'")]
-        public async Task WhenIGetDemosForSubdomain(string subdomain)
+        [When("I get the list of demos (.*)")]
+        public async Task WhenIGetDemosForSubdomain(SubdomainSelection selection)
         {
             var demoFilter = new DemoFilter()
             {
-                Subdomain = subdomain,
+                Subdomain = selection.Subdomain,
             };
             var demosRepository = GetNewRepository();
             _demosContext.DemosListResult = (await demosRepository.GetDemosAsync(null, demoFilter)).Items.ToList();
@@ -143,10 +143,10 @@ namespace Instances.Application.Specflow.Tests.Demos.Steps
             Assert.Equal(comment, _demosContext.SingleDemoResult.Comment);
         }
 
-        [Then("it should contain demos '(.*)'")]
-        public void ThenItShouldContainDemosForSubdomain(string subdomain)
+        [Then("it should contain demos (.*)")]
+        public void ThenItShouldContainDemosForSubdomain(SubdomainSelection selection)
         {
-            Assert.Contains(_demosContext.DemosListResult, d => d.Subdomain == subdomain);
+            Assert.Contains(_demosContext.DemosListResult, d => d.Subdomain == selection.Subdomain);
         }
 
         [Then("it should not contain any demo other than '(.*)'")]
@@ -175,12 +175,12 @@ namespace Instances.Application.Specflow.Tests.Demos.Steps
                 );
         }
 
-        [Then(@"instance duplication should exist for subdomain '(.*)'")]
-        public void ThenInstanceDuplicationShouldExistForSubdomainAsync(string subdomain)
+        [Then(@"instance duplication should exist (.*)")]
+        public void ThenInstanceDuplicationShouldExistForSubdomainAsync(SubdomainSelection selection)
         {
             Assert.Equal
                 (
-                    subdomain, _demosContext.DbContext.Set<InstanceDuplication>()
+                    selection.Subdomain, _demosContext.DbContext.Set<InstanceDuplication>()
                         .Single()
                         .TargetSubdomain
                 );
