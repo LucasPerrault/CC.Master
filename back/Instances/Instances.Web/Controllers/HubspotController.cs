@@ -1,4 +1,5 @@
 using Instances.Application.Demos.Duplication;
+using Instances.Web.Controllers.Dtos;
 using IpFilter.Domain;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -13,10 +14,12 @@ namespace Instances.Web.Controllers
     public class HubspotController
     {
         private readonly HubspotDemoDuplicator _demoDuplicator;
+        private readonly IDemoDuplicationCompleter _duplicationCompleter;
 
-        public HubspotController(HubspotDemoDuplicator demoDuplicator)
+        public HubspotController(HubspotDemoDuplicator demoDuplicator, IDemoDuplicationCompleter duplicationCompleter)
         {
             _demoDuplicator = demoDuplicator;
+            _duplicationCompleter = duplicationCompleter;
         }
 
         public class HubspotDemoDuplicationRequest
@@ -34,15 +37,16 @@ namespace Instances.Web.Controllers
         public async Task<ActionResult> NotifyDuplicationEndAsync
         (
             [FromRoute]Guid instanceDuplicationId,
-            [FromQuery]bool isSuccessful
+            [FromBody]DuplicationCallbackPayload payload
         )
         {
-            await _demoDuplicator.MarkAsEndedAsync(instanceDuplicationId, isSuccessful);
+            await _duplicationCompleter.MarkDuplicationAsCompletedAsync(instanceDuplicationId, payload.Success);
+            await _demoDuplicator.MarkAsEndedAsync(instanceDuplicationId, payload.Success);
 
             return new StatusCodeResult(StatusCodes.Status202Accepted);
         }
 
-        // Hubspot needs anonymous access to this route as in cannot authenticate its calls.
+        // Hubspot needs anonymous access to this route as it cannot authenticate its calls.
         // Ip ranges used by hubspot are inconsistent with their documentation.
         //
         // We have no choice but open this route to any call,

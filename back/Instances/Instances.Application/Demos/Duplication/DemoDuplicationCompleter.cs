@@ -10,7 +10,12 @@ using System.Threading.Tasks;
 
 namespace Instances.Application.Demos.Duplication
 {
-    public class DemoDuplicationCompleter
+    public interface IDemoDuplicationCompleter
+    {
+        Task MarkDuplicationAsCompletedAsync(Guid instanceDuplicationId, bool isSuccessful);
+    }
+
+    public class DemoDuplicationCompleter : IDemoDuplicationCompleter
     {
         private readonly IDemosStore _demosStore;
         private readonly IInstancesStore _instancesStore;

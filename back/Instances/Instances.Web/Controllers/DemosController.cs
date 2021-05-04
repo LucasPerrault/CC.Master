@@ -3,6 +3,7 @@ using Instances.Application.Demos.Deletion;
 using Instances.Application.Demos.Dtos;
 using Instances.Application.Demos.Duplication;
 using Instances.Domain.Demos;
+using Instances.Web.Controllers.Dtos;
 using Lucca.Core.Api.Abstractions.Paging;
 using Lucca.Core.Api.Web.ModelBinding.Sorting;
 using Microsoft.AspNetCore.Mvc;
@@ -19,7 +20,7 @@ namespace Instances.Web.Controllers
     {
         private readonly DemosRepository _demosRepository;
         private readonly DemoDuplicator _duplicator;
-        private readonly DemoDuplicationCompleter _duplicationCompleter;
+        private readonly IDemoDuplicationCompleter _duplicationCompleter;
         private readonly DeletionCallbackNotifier _notifier;
 
         public DemosController
@@ -27,7 +28,7 @@ namespace Instances.Web.Controllers
             DemosRepository demosRepository,
             DemoDuplicator duplicator,
             DeletionCallbackNotifier notifier,
-            DemoDuplicationCompleter duplicationCompleter
+            IDemoDuplicationCompleter duplicationCompleter
         )
         {
             _demosRepository = demosRepository;
@@ -66,7 +67,11 @@ namespace Instances.Web.Controllers
 
         [HttpPost("duplications/{duplicationId:guid}/notify")]
         [ForbidIfMissing(Operation.Demo)]
-        public Task DuplicationReport([FromRoute]Guid duplicationId, [FromBody]DuplicationCallbackPayload payload)
+        public Task DuplicationReport
+        (
+            [FromRoute]Guid duplicationId,
+            [FromBody]DuplicationCallbackPayload payload
+        )
         {
             return _duplicationCompleter.MarkDuplicationAsCompletedAsync(duplicationId, payload.Success);
         }
@@ -77,11 +82,5 @@ namespace Instances.Web.Controllers
         {
             return _notifier.NotifyDemoDeletionReportAsync(clusterName, deletionReport);
         }
-    }
-
-    public class DuplicationCallbackPayload
-    {
-        public bool Success { get; set; }
-        public string Error { get; set; }
     }
 }

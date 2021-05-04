@@ -42,7 +42,6 @@ namespace Instances.Application.Demos.Duplication
         private const int DefaultSourceDemoId = 385;
         private const string DefaultHubspotPassword = "test";
 
-        private readonly DemoDuplicationCompleter _duplicationCompleter;
         private readonly ICacheService _cacheService;
         private readonly IHubspotService _hubspotService;
         private readonly IDemosStore _demosStore;
@@ -53,7 +52,6 @@ namespace Instances.Application.Demos.Duplication
 
         public HubspotDemoDuplicator
         (
-            DemoDuplicationCompleter duplicationCompleter,
             ICacheService cacheService,
             IHubspotService hubspotService,
             IDemosStore demosStore,
@@ -63,7 +61,6 @@ namespace Instances.Application.Demos.Duplication
             InstancesDuplicator instancesDuplicator
         )
         {
-            _duplicationCompleter = duplicationCompleter;
             _cacheService = cacheService;
             _hubspotService = hubspotService;
             _demosStore = demosStore;
@@ -127,7 +124,7 @@ namespace Instances.Application.Demos.Duplication
             };
 
             await _duplicationsStore.CreateAsync(duplication);
-            await _instancesDuplicator.RequestRemoteDuplicationAsync(instanceDuplication, $"/api/hubspot/duplications/{duplication.Id}/notify");
+            await _instancesDuplicator.RequestRemoteDuplicationAsync(instanceDuplication, $"/api/hubspot/duplications/{duplication.InstanceDuplicationId}/notify");
 
             return duplication;
         }
@@ -135,9 +132,6 @@ namespace Instances.Application.Demos.Duplication
         public async Task MarkAsEndedAsync(Guid instanceDuplicationId, bool isSuccessful)
         {
             var key = new HubspotDemoDuplicationKey(instanceDuplicationId);
-
-            await _duplicationCompleter.MarkDuplicationAsCompletedAsync(instanceDuplicationId, isSuccessful);
-
             var cachedDuplication = await _cacheService.GetAsync(key);
 
             var workflowId = isSuccessful

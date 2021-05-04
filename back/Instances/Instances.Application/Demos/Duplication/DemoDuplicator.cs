@@ -87,7 +87,7 @@ namespace Instances.Application.Demos.Duplication
             };
 
             await _duplicationsStore.CreateAsync(duplication);
-            await _instancesDuplicator.RequestRemoteDuplicationAsync(instanceDuplication, $"/api/demos/duplications/{duplication.Id}/notify");
+            await _instancesDuplicator.RequestRemoteDuplicationAsync(instanceDuplication, $"/api/demos/duplications/{duplication.InstanceDuplicationId}/notify");
 
             return duplication;
         }
