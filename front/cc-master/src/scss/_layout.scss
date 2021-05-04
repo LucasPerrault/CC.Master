@@ -6,6 +6,17 @@
     padding-right: 0;
   }
 
+  &.mod-withFullwidthTable {
+    display: flex;
+    flex-direction: column;
+    padding-bottom: 0;
+    max-height: calc(100vh - #{_theme("commons.banner-height")});
+
+    .blockWithFixedSizeInFlex {
+      flex: 0 0 auto;
+    }
+  }
+
   &.mod-noScroll {
     display: flex;
     flex-direction: column;

@@ -6,6 +6,7 @@ import { EnvironmentLogMessageType, IEnvironment, IEnvironmentLog } from '@cc/do
 @Component({
   selector: 'cc-logs-list',
   templateUrl: './logs-list.component.html',
+  styleUrls: ['./logs-list.component.scss'],
 })
 export class LogsListComponent implements OnInit {
   @Input() public logs: IEnvironmentLog[];
