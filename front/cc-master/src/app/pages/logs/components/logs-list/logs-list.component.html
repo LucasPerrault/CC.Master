@@ -26,10 +26,8 @@
       {{ log.createdOn | date: 'shortDate' }} {{ log.createdOn | date: 'mediumTime' }}
     </td>
     <td class="table-body-row-cell size-smallest">
-      <div class="checkbox">
-        <input class="checkbox-input" type="checkbox" id="isAnonymizedData" [checked]="log.isAnonymizedData" disabled>
-        <label class="checkbox-label" for="isAnonymizedData"></label>
-      </div>
+      <span *ngIf="log.isAnonymizedData; else nonAnonymized">{{ "front_logPage_columnTable_isAnonymized_true" | translate }}</span>
+      <ng-template #nonAnonymized>{{ "front_logPage_columnTable_isAnonymized_false" | translate }}</ng-template>
     </td>
     <td class="table-body-row-cell size-smaller">{{ getNonAnonymizedActionExplanation(log) }}</td>
   </tr>
