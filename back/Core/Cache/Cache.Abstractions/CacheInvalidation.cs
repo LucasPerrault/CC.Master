@@ -29,7 +29,9 @@ namespace Cache.Abstractions
     public class DurationCacheInvalidation : CacheInvalidation
     {
         internal DurationCacheInvalidation(TimeSpan duration)
-        { }
+        {
+            Duration = duration;
+        }
 
         public TimeSpan Duration { get; }
     }
