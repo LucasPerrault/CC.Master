@@ -14,6 +14,7 @@ namespace Instances.Domain.Demos
         Task<Dictionary<string, int>> GetNumberOfActiveDemosByCluster();
         Task<Demo> CreateAsync(Demo demo);
         Task UpdateDeletionScheduleAsync(Demo demo, DateTime deletionScheduledOn);
+        Task UpdateCommentAsync(Demo demo, string comment);
         Task DeleteAsync(Demo demo);
     }
 }

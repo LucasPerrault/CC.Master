@@ -13,6 +13,7 @@ namespace Instances.Web
         public string Search { get; set; } = null;
         public int? AuthorId { get; set; } = null;
         public string DistributorId { get; set; } = null;
+        public string Subdomain { get; set; } = null;
         public HashSet<bool> IsTemplate { get; set; } = new HashSet<bool>();
         public DemoListInstance Instance { get; set; } = new DemoListInstance();
 
@@ -25,6 +26,7 @@ namespace Instances.Web
                 IsTemplate = IsTemplate.ToBoolCombination(),
                 DistributorId = DistributorId,
                 AuthorId = AuthorId,
+                Subdomain = Subdomain,
                 IsProtected = Instance?.IsProtected?.ToBoolCombination() ?? BoolCombination.Both,
             };
         }

@@ -4,14 +4,16 @@ using Instances.Infra.Storage;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Instances.Infra.Migrations
 {
     [DbContext(typeof(InstancesDbContext))]
-    partial class InstancesDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210505082739_AddAuthorReference")]
+    partial class AddAuthorReference
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -162,8 +164,8 @@ namespace Instances.Infra.Migrations
                     b.Property<string>("SourceSubdomain")
                         .IsRequired()
                         .HasColumnName("sourceSubdomain")
-                        .HasColumnType("nvarchar(200)")
-                        .HasMaxLength(200);
+                        .HasColumnType("nvarchar(63)")
+                        .HasMaxLength(63);
 
                     b.Property<int>("SourceType")
                         .HasColumnName("sourceType")
@@ -181,8 +183,8 @@ namespace Instances.Infra.Migrations
                     b.Property<string>("TargetSubdomain")
                         .IsRequired()
                         .HasColumnName("targetSubdomain")
-                        .HasColumnType("nvarchar(200)")
-                        .HasMaxLength(200);
+                        .HasColumnType("nvarchar(63)")
+                        .HasMaxLength(63);
 
                     b.Property<int>("TargetType")
                         .HasColumnName("targetType")
