@@ -88,14 +88,8 @@ namespace Instances.Application.Demos
         private async Task<Demo> GetSingleActiveDemoAsync(int id)
         {
             var access = await _rightsFilter.GetReadAccessAsync(_principal);
-            var activeDemosInScope = await _demosStore.GetAsync
-            (
-                new DemoFilter { IsActive = BoolCombination.TrueOnly },
-                access
-            );
 
-            var demo = activeDemosInScope.SingleOrDefault(d => d.Id == id);
-
+            var demo = await _demosStore.GetActiveByIdAsync(id, access);
             if (demo == null)
             {
                 throw new NotFoundException();
