@@ -78,7 +78,9 @@ namespace Instances.Infra.Storage.Stores
             return Demos.Where(ToExpression(filter, access));
         }
 
-        private IQueryable<Demo> Demos => _dbContext.Set<Demo>().Include(d => d.Instance);
+        private IQueryable<Demo> Demos => _dbContext.Set<Demo>()
+            .Include(d => d.Instance)
+            .Include(d => d.Author);
 
         private Expression<Func<Demo, bool>> ToExpression(DemoFilter filter, DemoAccess access)
         {
