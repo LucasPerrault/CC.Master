@@ -3,7 +3,7 @@ using System;
 using System.Linq;
 using System.Linq.Expressions;
 
-namespace Storage.Infra.Stores
+namespace Storage.Infra.Extensions
 {
     public static class FilterHelper
     {

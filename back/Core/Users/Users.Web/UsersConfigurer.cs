@@ -12,6 +12,7 @@ namespace Users.Web
         public static void ConfigureServices(IServiceCollection services, UsersConfiguration config)
         {
             services.AddScoped<UsersRepository>();
+            services.AddScoped<UserRightsFilter>();
 
             services.AddHttpClient<IUsersService, UsersService>(client =>
             {

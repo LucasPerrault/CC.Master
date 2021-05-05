@@ -8,4 +8,9 @@
       <PackageReference Include="Lucca.Core.Rights.Abstractions" Version="6.1.1" />
     </ItemGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\..\Rights\Rights.Domain\Rights.Domain.csproj" />
+      <ProjectReference Include="..\..\Tools\Tools\Tools.csproj" />
+    </ItemGroup>
+
 </Project>

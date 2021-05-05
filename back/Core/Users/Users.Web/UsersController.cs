@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Users.Application;
 using Users.Domain;
+using Users.Domain.Filtering;
 
 namespace Users.Web
 {
@@ -28,7 +29,7 @@ namespace Users.Web
         [HttpGet]
         public Task<List<SimpleUser>> GetUsersAsync()
         {
-            return _repository.GetAsync();
+            return _repository.GetAsync(UsersFilter.ActiveOnly);
         }
     }
 }

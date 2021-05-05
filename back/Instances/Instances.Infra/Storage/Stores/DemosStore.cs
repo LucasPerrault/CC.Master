@@ -4,7 +4,7 @@ using Lucca.Core.Api.Abstractions.Paging;
 using Lucca.Core.Api.Queryable.Paging;
 using Microsoft.EntityFrameworkCore;
 using Rights.Domain.Filtering;
-using Storage.Infra.Stores;
+using Storage.Infra.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -81,19 +81,19 @@ namespace Instances.Infra.Storage.Stores
 
             if (filter.IsActive != BoolCombination.Both)
             {
-                var boolean = ToBoolean(filter.IsActive);
+                var boolean = filter.IsActive.ToBoolean();
                 filters.Add(d => d.IsActive == boolean);
             }
 
             if (filter.IsTemplate != BoolCombination.Both)
             {
-                var boolean = ToBoolean(filter.IsTemplate);
+                var boolean = filter.IsTemplate.ToBoolean();
                 filters.Add(d => d.IsTemplate == boolean);
             }
 
             if (filter.IsProtected != BoolCombination.Both)
             {
-                var boolean = ToBoolean(filter.IsProtected);
+                var boolean = filter.IsProtected.ToBoolean();
                 filters.Add(d => d.Instance.IsProtected == boolean);
             }
 
@@ -122,22 +122,12 @@ namespace Instances.Infra.Storage.Stores
             return filters.ToArray().CombineSafely();
         }
 
-        private bool ToBoolean(BoolCombination boolCombination)
-        {
-            return boolCombination switch
-            {
-                BoolCombination.TrueOnly => true,
-                BoolCombination.FalseOnly => false,
-                _ => throw new ApplicationException($"Unexpected bool combination value {boolCombination}")
-            };
-        }
-
         private Expression<Func<Demo, bool>> ToRightExpression(AccessRight access)
         {
             return access switch
             {
                 NoAccessRight _ => _ => false,
-                DistributorAccessRight r => d => d.Distributor.Code == r.DistributorCode || d.IsTemplate,
+                DistributorCodeAccessRight r => d => d.Distributor.Code == r.DistributorCode || d.IsTemplate,
                 AllAccessRight _ => _ => true,
                 _ => throw new ApplicationException($"Unknown type of demo filter right {access}")
             };
