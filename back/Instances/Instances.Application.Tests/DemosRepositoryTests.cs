@@ -9,6 +9,7 @@ using Lucca.Core.Rights.Abstractions;
 using Moq;
 using Rights.Domain;
 using Rights.Domain.Abstractions;
+using Rights.Domain.Filtering;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -62,7 +63,7 @@ namespace Instances.Application.Tests
                 }
             };
 
-            _demosStoreMock.Setup(s => s.GetAsync(It.IsAny<DemoFilter>(), It.IsAny<DemoAccess>()))
+            _demosStoreMock.Setup(s => s.GetAsync(It.IsAny<DemoFilter>(), It.IsAny<AccessRight>()))
                 .ReturnsAsync(demos);
 
             await demosRepo.DeleteAsync(12);

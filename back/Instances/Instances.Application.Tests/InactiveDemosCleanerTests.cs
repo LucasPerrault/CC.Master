@@ -8,6 +8,7 @@ using Instances.Domain.Instances;
 using Instances.Domain.Instances.Models;
 using Instances.Domain.Shared;
 using Moq;
+using Rights.Domain.Filtering;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -47,7 +48,7 @@ namespace Instances.Application.Tests
             _timeProviderMock.Setup(p => p.Today()).Returns(new DateTime(2020, 01, 01));
 
             _demosStoreMock
-                .Setup(s => s.GetAsync(It.IsAny<DemoFilter>(), It.IsAny<DemoAccess>()))
+                .Setup(s => s.GetAsync(It.IsAny<DemoFilter>(), It.IsAny<AccessRight>()))
                 .ReturnsAsync(new List<Demo>());
 
             var cleaner = new InactiveDemosCleaner
@@ -72,7 +73,7 @@ namespace Instances.Application.Tests
                         && f.IsTemplate == BoolCombination.FalseOnly
                         && f.IsProtected == BoolCombination.FalseOnly
                     ),
-                    It.IsAny<DemoAccess>()
+                    It.IsAny<AccessRight>()
                 ),
                 Times.Once()
             );
@@ -99,7 +100,7 @@ namespace Instances.Application.Tests
                 .Setup(s => s.GetAsync
                 (
                     It.Is<DemoFilter>(d => d.IsActive == BoolCombination.TrueOnly),
-                    It.IsAny<DemoAccess>()
+                    It.IsAny<AccessRight>()
                 ))
                 .ReturnsAsync(demos);
 
@@ -138,7 +139,7 @@ namespace Instances.Application.Tests
                 .Returns(new DateTime(2010, 02, 01));
 
             _demosStoreMock
-                .Setup(s => s.GetAsync(It.Is<DemoFilter>(f => f.IsActive == BoolCombination.TrueOnly), It.IsAny<DemoAccess>()))
+                .Setup(s => s.GetAsync(It.Is<DemoFilter>(f => f.IsActive == BoolCombination.TrueOnly), It.IsAny<AccessRight>()))
                 .ReturnsAsync(demos);
 
             var cleaner = new InactiveDemosCleaner
@@ -177,7 +178,7 @@ namespace Instances.Application.Tests
                 .Returns(new DateTime(2010, 03, 04));
 
             _demosStoreMock
-                .Setup(s => s.GetAsync(It.Is<DemoFilter>(f => f.IsActive == BoolCombination.TrueOnly), It.IsAny<DemoAccess>()))
+                .Setup(s => s.GetAsync(It.Is<DemoFilter>(f => f.IsActive == BoolCombination.TrueOnly), It.IsAny<AccessRight>()))
                 .ReturnsAsync(demos);
 
             var cleaner = new InactiveDemosCleaner
@@ -211,7 +212,7 @@ namespace Instances.Application.Tests
             _timeProviderMock.Setup(p => p.Today()).Returns(new DateTime(2010, 10, 01));
 
             _demosStoreMock
-                .Setup(s => s.GetAsync(It.Is<DemoFilter>(f => f.IsActive == BoolCombination.TrueOnly), It.IsAny<DemoAccess>()))
+                .Setup(s => s.GetAsync(It.Is<DemoFilter>(f => f.IsActive == BoolCombination.TrueOnly), It.IsAny<AccessRight>()))
                 .ReturnsAsync(demos);
 
             var cleaner = new InactiveDemosCleaner
@@ -250,7 +251,7 @@ namespace Instances.Application.Tests
             _timeProviderMock.Setup(p => p.Today()).Returns(new DateTime(2010, 10, 01));
 
             _demosStoreMock
-                .Setup(s => s.GetAsync(It.Is<DemoFilter>(f => f.IsActive == BoolCombination.TrueOnly), It.IsAny<DemoAccess>()))
+                .Setup(s => s.GetAsync(It.Is<DemoFilter>(f => f.IsActive == BoolCombination.TrueOnly), It.IsAny<AccessRight>()))
                 .ReturnsAsync(demos);
 
             var cleaner = new InactiveDemosCleaner
@@ -301,7 +302,7 @@ namespace Instances.Application.Tests
             _timeProviderMock.Setup(p => p.Today()).Returns(new DateTime(2010, 10, 01));
 
             _demosStoreMock
-                .Setup(s => s.GetAsync(It.Is<DemoFilter>(f => f.IsActive == BoolCombination.TrueOnly), It.IsAny<DemoAccess>()))
+                .Setup(s => s.GetAsync(It.Is<DemoFilter>(f => f.IsActive == BoolCombination.TrueOnly), It.IsAny<AccessRight>()))
                 .ReturnsAsync(demos);
 
             var cleaner = new InactiveDemosCleaner

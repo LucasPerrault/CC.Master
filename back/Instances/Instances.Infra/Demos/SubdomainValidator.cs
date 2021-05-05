@@ -3,6 +3,7 @@ using Instances.Domain.Demos;
 using Instances.Domain.Demos.Filtering;
 using Instances.Domain.Instances;
 using Lucca.Core.Shared.Domain.Exceptions;
+using Rights.Domain.Filtering;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -73,7 +74,7 @@ namespace Instances.Infra.Demos
                 _environmentsStore.GetAll()
                     .Where(e => e.IsActive)
                     .All(e => e.Subdomain.ToLower() != subdomain)
-                && (await _demosStore.GetAsync(DemoFilter.Active(), DemoAccess.All))
+                && (await _demosStore.GetAsync(DemoFilter.Active(), AccessRight.All))
                     .All(d => d.Subdomain.ToLower() != subdomain);
         }
 
@@ -89,7 +90,7 @@ namespace Instances.Infra.Demos
                 IsActive = BoolCombination.TrueOnly,
                 Search = prefix
             };
-            var usedSubdomainsDemos = (await _demosStore.GetAsync(filter, DemoAccess.All))
+            var usedSubdomainsDemos = (await _demosStore.GetAsync(filter, AccessRight.All))
                 .Where(d => d.Subdomain.StartsWith(prefix))
                 .Select(e => e.Subdomain);
 

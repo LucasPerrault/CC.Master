@@ -6,6 +6,7 @@ using Instances.Infra.Demos;
 using Lucca.Core.Shared.Domain.Exceptions;
 using MockQueryable.Moq;
 using Moq;
+using Rights.Domain.Filtering;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -41,7 +42,7 @@ namespace Instances.Infra.Tests.Demos
             };
 
             _demosStoreMock
-                .Setup(s => s.GetAsync(It.Is<DemoFilter>(d => d.IsActive == BoolCombination.TrueOnly), It.IsAny<DemoAccess>()))
+                .Setup(s => s.GetAsync(It.Is<DemoFilter>(d => d.IsActive == BoolCombination.TrueOnly), It.IsAny<AccessRight>()))
                 .ReturnsAsync(new List<Demo>());
             _envStoreMock.Setup(s => s.GetAll()).Returns(envs.AsQueryable().BuildMock().Object);
             var subdomainValidator = new SubdomainValidator(_demosStoreMock.Object, _envStoreMock.Object);
@@ -58,7 +59,7 @@ namespace Instances.Infra.Tests.Demos
             var demos = new List<Demo> { new Demo { Subdomain = takenSubdomain } };
 
             _demosStoreMock
-                .Setup(s => s.GetAsync(It.Is<DemoFilter>(d => d.IsActive == BoolCombination.TrueOnly), It.IsAny<DemoAccess>()))
+                .Setup(s => s.GetAsync(It.Is<DemoFilter>(d => d.IsActive == BoolCombination.TrueOnly), It.IsAny<AccessRight>()))
                 .ReturnsAsync(demos);
             _envStoreMock.Setup(s => s.GetAll()).Returns(new List<Environment>().AsQueryable().BuildMock().Object);
             var subdomainValidator = new SubdomainValidator(_demosStoreMock.Object, _envStoreMock.Object);
@@ -78,7 +79,7 @@ namespace Instances.Infra.Tests.Demos
             };
 
             _demosStoreMock
-                .Setup(s => s.GetAsync(It.Is<DemoFilter>(d => d.IsActive == BoolCombination.TrueOnly), It.IsAny<DemoAccess>()))
+                .Setup(s => s.GetAsync(It.Is<DemoFilter>(d => d.IsActive == BoolCombination.TrueOnly), It.IsAny<AccessRight>()))
                 .ReturnsAsync(new List<Demo>());
 
             _envStoreMock.Setup(s => s.GetAll()).Returns(envs.AsQueryable().BuildMock().Object);
@@ -139,7 +140,7 @@ namespace Instances.Infra.Tests.Demos
             }
 
             _demosStoreMock
-                .Setup(ds => ds.GetAsync(It.Is<DemoFilter>(d => d.IsActive == BoolCombination.TrueOnly), It.IsAny<DemoAccess>()))
+                .Setup(ds => ds.GetAsync(It.Is<DemoFilter>(d => d.IsActive == BoolCombination.TrueOnly), It.IsAny<AccessRight>()))
                 .ReturnsAsync(existingDemos);
 
             var subdomainValidator = new SubdomainValidator(_demosStoreMock.Object, _envStoreMock.Object);
@@ -166,7 +167,7 @@ namespace Instances.Infra.Tests.Demos
             _demosStoreMock.Setup(ds => ds.GetAsync
                 (
                     It.Is<DemoFilter>(d => d.IsActive == BoolCombination.TrueOnly),
-                    It.IsAny<DemoAccess>()
+                    It.IsAny<AccessRight>()
                 ))
                 .ReturnsAsync(existingDemos);
 
