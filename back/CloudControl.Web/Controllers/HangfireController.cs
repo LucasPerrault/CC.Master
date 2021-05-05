@@ -1,12 +1,13 @@
-﻿using Authentication.Web.Attributes;
-using Instances.Application.Demos.Deletion;
+﻿using Instances.Application.Demos.Deletion;
 using Microsoft.AspNetCore.Mvc;
+using Rights.Domain;
+using Rights.Web.Attributes;
 using System.Threading.Tasks;
 using Users.Domain;
 
 namespace CloudControl.Web.Controllers
 {
-    [ApiController, Route("/api/hangfire")]
+    [ApiController, Route("/api/hangfire"), ForbidIfMissing(Operation.HangfireNetcoreRequest)]
     public class HangfireController
     {
         private readonly InactiveDemosCleaner _cleaner;
@@ -18,14 +19,12 @@ namespace CloudControl.Web.Controllers
             _usersSyncService = usersSyncService;
         }
 
-        [HangfireAuthorize]
         [HttpPost("cleanup-demos")]
         public async Task CleanupDemosAsync()
         {
             await _cleaner.CleanAsync();
         }
 
-        [HangfireAuthorize]
         [HttpPost("sync-users")]
         public async Task SyncUsers()
         {

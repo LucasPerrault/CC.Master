@@ -11,19 +11,11 @@ namespace Users.Web
     [ApiController, Route("/api/users")]
     public class UsersController
     {
-        private readonly IUsersSyncService _syncService;
         private readonly UsersRepository _repository;
 
-        public UsersController(IUsersSyncService syncService, UsersRepository repository)
+        public UsersController(UsersRepository repository)
         {
-            _syncService = syncService;
             _repository = repository;
-        }
-
-        [HttpPost("sync")]
-        public async Task Sync()
-        {
-            await _syncService.SyncAsync();
         }
 
         [HttpGet]
