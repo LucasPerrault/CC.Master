@@ -69,6 +69,11 @@ namespace Users.Infra.Storage.Stores
                 expressions.Add(u => u.IsActive == filter.IsActive.ToBoolean());
             }
 
+            if (!string.IsNullOrEmpty(filter.Search))
+            {
+                expressions.Add(u => u.FirstName.Contains(filter.Search) || u.LastName.Contains(filter.Search));
+            }
+
             return expressions.ToArray().CombineSafely();
         }
 
