@@ -35,11 +35,11 @@ namespace Instances.Infra.Storage.Stores
             return _queryPager.ToPageAsync(Get(filter, access), pageToken);
         }
 
-        public Task<Demo> GetActiveByIdAsync(int id, AccessRight demoAccess)
+        public Task<Demo> GetActiveByIdAsync(int id, AccessRight access)
         {
             return Demos
                 .Where(d => d.IsActive)
-                .Where(ToRightExpression(demoAccess))
+                .Where(ToRightExpression(access))
                 .SingleOrDefaultAsync(d => d.Id == id);
         }
 

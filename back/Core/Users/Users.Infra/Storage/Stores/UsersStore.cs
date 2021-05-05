@@ -24,28 +24,28 @@ namespace Users.Infra.Storage.Stores
             _distributorsStore = distributorsStore;
         }
 
-        public async Task<SimpleUser> GetByIdAsync(int id, AccessRight right)
+        public async Task<SimpleUser> GetByIdAsync(int id, AccessRight accessRight)
         {
             return await _context
                 .Set<SimpleUser>()
-                .Where(await ToExpressionAsync(right))
+                .Where(await ToExpressionAsync(accessRight))
                 .SingleOrDefaultAsync(u => u.Id == id);
         }
 
-        public async Task<bool> ExistsByIdAsync(int userId, AccessRight right)
+        public async Task<bool> ExistsByIdAsync(int userId, AccessRight accessRight)
         {
             return await _context
                 .Set<SimpleUser>()
-                .Where(await ToExpressionAsync(right))
+                .Where(await ToExpressionAsync(accessRight))
                 .AnyAsync(u => u.Id == userId);
         }
 
-        public async Task<List<SimpleUser>> GetAllAsync(UsersFilter filter, AccessRight right)
+        public async Task<List<SimpleUser>> GetAllAsync(UsersFilter filter, AccessRight accessRight)
         {
             return await _context
                 .Set<SimpleUser>()
                 .Where(ToExpression(filter))
-                .Where(await ToExpressionAsync(right))
+                .Where(await ToExpressionAsync(accessRight))
                 .ToListAsync();
         }
 
@@ -83,11 +83,12 @@ namespace Users.Infra.Storage.Stores
             {
                 NoAccessRight _ => _ => false,
                 AllAccessRight _ => _ => true,
-                DistributorCodeAccessRight right => await ToDistributorExpression(right.DistributorCode)
+                DistributorCodeAccessRight right => await ToDistributorExpressionAsync(right.DistributorCode),
+                _ => throw new ApplicationException($"Unhandled access right {typeof(AccessRight)}")
             };
         }
 
-        private async Task<Expression<Func<SimpleUser, bool>>> ToDistributorExpression(string distributorCode)
+        private async Task<Expression<Func<SimpleUser, bool>>> ToDistributorExpressionAsync(string distributorCode)
         {
             var distributor = await _distributorsStore.GetByCodeAsync(distributorCode);
             return user => user.DepartmentId == distributor.DepartmentId;
