@@ -5,7 +5,7 @@ using Users.Domain;
 
 namespace Users.Infra.Storage.Stores
 {
-    public class UsersStore
+    public class UsersStore : IUsersStore
     {
         private readonly UsersDbContext _context;
 

@@ -8,7 +8,7 @@
         public static AccessRight All => new AllAccessRight();
 
         public static AccessRight ForDistributor
-            (string distributorId) => new DistributorAccessRight(distributorId);
+            (string distributorCode) => new DistributorAccessRight(distributorCode);
 
         public static AccessRight None => new NoAccessRight();
     }
