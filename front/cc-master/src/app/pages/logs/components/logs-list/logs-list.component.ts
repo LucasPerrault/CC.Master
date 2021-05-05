@@ -48,7 +48,7 @@ export class LogsListComponent implements OnInit {
     return this.state === PaginatedListState.Idle || this.state === PaginatedListState.Error;
   }
 
-  public get isLoadMore(): boolean {
+  public get isLoadingMore(): boolean {
     return this.state === PaginatedListState.LoadMore;
   }
 }
