@@ -7,6 +7,7 @@ using Instances.Infra.Storage;
 using Microsoft.EntityFrameworkCore;
 using System;
 using TechTalk.SpecFlow;
+using Users.Domain;
 
 namespace Instances.Application.Specflow.Tests.Demos.Steps
 {
@@ -54,6 +55,15 @@ namespace Instances.Application.Specflow.Tests.Demos.Steps
                 Name = "Other distributor",
             };
 
+            var luccaUser = new SimpleUser
+            {
+                Id = 42,
+                DepartmentId = 22,
+                IsActive = true,
+                FirstName = "Mia",
+                LastName = "Houx"
+            };
+
             context.Add(new Demo()
             {
                 Id = 1,
@@ -70,7 +80,9 @@ namespace Instances.Application.Specflow.Tests.Demos.Steps
                     Cluster = "demo",
                     EnvironmentId = null,
                     Type = InstanceType.Demo
-                }
+                },
+                AuthorId = luccaUser.Id,
+                Author = luccaUser
             });
             context.Add(new Demo()
             {
@@ -88,7 +100,9 @@ namespace Instances.Application.Specflow.Tests.Demos.Steps
                     Cluster = "demo",
                     EnvironmentId = null,
                     Type = InstanceType.Demo
-                }
+                },
+                AuthorId = luccaUser.Id,
+                Author = luccaUser
             });
             context.Add(new Demo()
             {
@@ -106,9 +120,11 @@ namespace Instances.Application.Specflow.Tests.Demos.Steps
                     Cluster = "demo",
                     EnvironmentId = null,
                     Type = InstanceType.Demo
-                }
+                },
+                AuthorId = luccaUser.Id,
+                Author = luccaUser
             });
-            context.SaveChanges();
+            demosContext.DbContext.SaveChanges();
         }
 
     }
