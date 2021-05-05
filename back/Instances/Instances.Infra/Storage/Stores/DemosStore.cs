@@ -36,9 +36,9 @@ namespace Instances.Infra.Storage.Stores
 
         public Task<Demo> GetActiveByIdAsync(int id, DemoAccess demoAccess)
         {
-            return Demos
-                .Where(d => d.IsActive)
-                .Where(ToRightExpression(demoAccess))
+            var isActiveFilter = new DemoFilter { IsActive = BoolCombination.TrueOnly };
+
+            return Get(isActiveFilter, demoAccess)
                 .SingleOrDefaultAsync(d => d.Id == id);
         }
 
