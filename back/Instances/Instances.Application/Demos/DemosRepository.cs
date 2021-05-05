@@ -5,10 +5,8 @@ using Instances.Domain.Instances;
 using Instances.Domain.Shared;
 using Lucca.Core.Api.Abstractions.Paging;
 using Lucca.Core.Shared.Domain.Exceptions;
-using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
-using Tools;
 
 namespace Instances.Application.Demos
 {

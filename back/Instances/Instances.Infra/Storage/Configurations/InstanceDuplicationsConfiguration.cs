@@ -1,5 +1,4 @@
 using Instances.Domain.Instances;
-using Instances.Infra.Demos;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
