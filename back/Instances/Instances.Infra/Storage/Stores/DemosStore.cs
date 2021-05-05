@@ -104,7 +104,7 @@ namespace Instances.Infra.Storage.Stores
 
             if(!string.IsNullOrEmpty(filter.Search))
             {
-                filters.Add(d => filter.Search.Contains(d.Subdomain));
+                filters.Add(d => d.Subdomain.Contains(filter.Search));
             }
 
             if(!string.IsNullOrEmpty(filter.DistributorId))
