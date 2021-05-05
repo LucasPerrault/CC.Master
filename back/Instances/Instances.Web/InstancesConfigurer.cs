@@ -121,7 +121,8 @@ namespace Instances.Web
             luccaApiBuilder.ConfigureSorting<Demo>()
                 .Allow(d => d.DeletionScheduledOn)
                 .Allow(d => d.Id)
-                .Allow(d => d.CreatedAt);
+                .Allow(d => d.CreatedAt)
+                .Allow(d => d.Subdomain);
             return luccaApiBuilder;
         }
     }

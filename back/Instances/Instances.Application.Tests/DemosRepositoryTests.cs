@@ -1,4 +1,4 @@
-﻿using Authentication.Domain;
+using Authentication.Domain;
 using Instances.Application.Demos;
 using Instances.Domain.Demos;
 using Instances.Domain.Demos.Filtering;
@@ -53,18 +53,16 @@ namespace Instances.Application.Tests
                 .Setup(s => s.GetUserOperationHighestScopeAsync(Operation.Demo))
                 .ReturnsAsync(Scope.AllDepartments);
 
-            var demos = new List<Demo>()
+            var demo = new Demo
             {
-                new Demo
-                {
-                    Id = 12,
-                    Subdomain = "aperture-science",
-                    Instance = new Instance { Id = 123456, IsProtected = false, Cluster = "c1000"}
-                }
+                Id = 12,
+                Subdomain = "aperture-science",
+                Instance = new Instance { Id = 123456, IsProtected = false, Cluster = "c1000" }
             };
+            var demos = new List<Demo> { demo };
 
-            _demosStoreMock.Setup(s => s.GetAsync(It.IsAny<DemoFilter>(), It.IsAny<AccessRight>()))
-                .ReturnsAsync(demos);
+            _demosStoreMock.Setup(s => s.GetActiveByIdAsync(It.IsAny<int>(), It.IsAny<AccessRight>()))
+                .ReturnsAsync(demo);
 
             await demosRepo.DeleteAsync(12);
 

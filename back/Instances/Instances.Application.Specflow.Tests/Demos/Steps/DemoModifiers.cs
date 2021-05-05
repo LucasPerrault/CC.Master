@@ -1,4 +1,4 @@
-﻿using Instances.Domain.Demos;
+using Instances.Domain.Demos;
 using System;
 using TechTalk.SpecFlow;
 
@@ -39,6 +39,16 @@ namespace Instances.Application.Specflow.Tests.Demos.Steps
         public string Code { get; }
     }
 
+    public class SubdomainSelection
+    {
+        public SubdomainSelection(string subdomain)
+        {
+            Subdomain = subdomain;
+        }
+
+        public string Subdomain { get; }
+    }
+
     [Binding]
     public class DemoModifiers
     {
@@ -64,6 +74,13 @@ namespace Instances.Application.Specflow.Tests.Demos.Steps
         public DistributorFilter FilterOutDistributor(string code)
         {
             return DistributorFilter.NotFromCode(code);
+        }
+
+        [StepArgumentTransformation("for subdomain '(.*)'")]
+        [StepArgumentTransformation("with subdomain '(.*)'")]
+        public SubdomainSelection SelectSubdomain(string subdomain)
+        {
+            return new SubdomainSelection(subdomain);
         }
     }
 }

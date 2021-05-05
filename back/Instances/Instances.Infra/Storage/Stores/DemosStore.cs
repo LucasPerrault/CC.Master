@@ -37,9 +37,9 @@ namespace Instances.Infra.Storage.Stores
 
         public Task<Demo> GetActiveByIdAsync(int id, AccessRight access)
         {
-            return Demos
-                .Where(d => d.IsActive)
-                .Where(ToRightExpression(access))
+            var isActiveFilter = new DemoFilter { IsActive = BoolCombination.TrueOnly };
+
+            return Get(isActiveFilter, access)
                 .SingleOrDefaultAsync(d => d.Id == id);
         }
 
@@ -52,6 +52,12 @@ namespace Instances.Infra.Storage.Stores
         public async Task UpdateDeletionScheduleAsync(Demo demo, DateTime deletionScheduledOn)
         {
             demo.DeletionScheduledOn = deletionScheduledOn;
+            await _dbContext.SaveChangesAsync();
+        }
+
+        public async Task UpdateCommentAsync(Demo demo, string comment)
+        {
+            demo.Comment = comment;
             await _dbContext.SaveChangesAsync();
         }
 
@@ -73,7 +79,9 @@ namespace Instances.Infra.Storage.Stores
             return Demos.Where(ToExpression(filter, access));
         }
 
-        private IQueryable<Demo> Demos => _dbContext.Set<Demo>().Include(d => d.Instance);
+        private IQueryable<Demo> Demos => _dbContext.Set<Demo>()
+            .Include(d => d.Instance)
+            .Include(d => d.Author);
 
         private Expression<Func<Demo, bool>> ToExpression(DemoFilter filter, AccessRight access)
         {

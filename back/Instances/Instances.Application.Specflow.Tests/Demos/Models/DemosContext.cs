@@ -17,6 +17,7 @@ namespace Instances.Application.Specflow.Tests.Demos.Models
         public ClaimsPrincipal Principal { get; set; }
         public Dictionary<Operation,Scope> OperationsWithScope { get; set; }
         public List<Demo> DemosListResult { get; set; }
+        public Demo SingleDemoResult { get; set; }
         public Exception ExceptionResult { get; set; }
         public DemoContextMocks Mocks { get; }
 
