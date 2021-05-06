@@ -9,17 +9,17 @@ namespace Billing.Cmrr.Domain.Tests
         [Fact]
         public void ShouldReturnContractSituationHasUpsell()
         {
-            var contractSituation = new CmrrContratSituation
-            {
-                Contract = new CmrrContract
+            var contractSituation = new CmrrContratSituation(
+            
+                new CmrrContract
                 {
                     CreationCause = ContractCreationCause.Modification,
                     EnvironmentCreatedAt = new DateTime(2021, 01, 01),
                     StartDate = new DateTime(2022, 01, 01)
                 },
-                EndPeriodCount = new CmrrCount(),
-                StartPeriodCount = null
-            };
+                new CmrrCount(),
+                null
+            );
 
             contractSituation.LifeCycle.Should().Be(CmrrLifeCycle.Upsell);
         }
@@ -27,17 +27,17 @@ namespace Billing.Cmrr.Domain.Tests
         [Fact]
         public void ShouldReturnContractSituationHasCreation()
         {
-            var contractSitation = new CmrrContratSituation
-            {
-                Contract = new CmrrContract
+            var contractSitation = new CmrrContratSituation(
+            
+                new CmrrContract
                 {
                     CreationCause = ContractCreationCause.NewBooking,
                     EnvironmentCreatedAt = new DateTime(2021, 01, 01),
                     StartDate = new DateTime(2021, 01, 01)
                 },
-                EndPeriodCount = new CmrrCount(),
-                StartPeriodCount = null
-            };
+                null,
+                new CmrrCount()
+            );
 
             contractSitation.LifeCycle.Should().Be(CmrrLifeCycle.Creation);
         }
@@ -45,15 +45,14 @@ namespace Billing.Cmrr.Domain.Tests
         [Fact]
         public void ShouldReturnContractSituationHasTermination()
         {
-            var contractSituation = new CmrrContratSituation
-            {
-                Contract = new CmrrContract
+            var contractSituation = new CmrrContratSituation(
+                new CmrrContract
                 {
                     EndReason = ContractEndReason.Resiliation,
                 },
-                StartPeriodCount = new CmrrCount(),
-                EndPeriodCount = null
-            };
+                new CmrrCount(),
+                null
+            );
 
             contractSituation.LifeCycle.Should().Be(CmrrLifeCycle.Termination);
         }
@@ -61,15 +60,14 @@ namespace Billing.Cmrr.Domain.Tests
         [Fact]
         public void ShouldReturnContractSituationHasRetractionWithNoEndPeriodCount()
         {
-            var contractSituation = new CmrrContratSituation
-            {
-                Contract = new CmrrContract
+            var contractSituation = new CmrrContratSituation(
+                new CmrrContract
                 {
                     EndReason = ContractEndReason.Modification,
                 },
-                StartPeriodCount = new CmrrCount(),
-                EndPeriodCount = null
-            };
+                new CmrrCount(),
+                null
+            );
 
             contractSituation.LifeCycle.Should().Be(CmrrLifeCycle.Retraction);
         }
@@ -77,15 +75,14 @@ namespace Billing.Cmrr.Domain.Tests
         [Fact]
         public void ShouldReturnContractSituationHasRetractionWithEndPeriodCount()
         {
-            var contractSituation = new CmrrContratSituation
-            {
-                Contract = new CmrrContract
+            var contractSituation = new CmrrContratSituation(
+                new CmrrContract
                 {
                     EndReason = ContractEndReason.Modification,
                 },
-                StartPeriodCount = new CmrrCount { EuroTotal = 1500 },
-                EndPeriodCount = new CmrrCount { EuroTotal = 1000 }
-            };
+                new CmrrCount { EuroTotal = 1500 },
+                new CmrrCount { EuroTotal = 1000 }
+            );
 
             contractSituation.LifeCycle.Should().Be(CmrrLifeCycle.Retraction);
         }
@@ -93,15 +90,14 @@ namespace Billing.Cmrr.Domain.Tests
         [Fact]
         public void ShouldReturnContractSituationHasExpansion()
         {
-            var contractSituation = new CmrrContratSituation
-            {
-                Contract = new CmrrContract
+            var contractSituation = new CmrrContratSituation(
+                new CmrrContract
                 {
                     EndReason = ContractEndReason.Modification,
                 },
-                StartPeriodCount = new CmrrCount { EuroTotal = 1000 },
-                EndPeriodCount = new CmrrCount { EuroTotal = 1500 }
-            };
+                new CmrrCount { EuroTotal = 1000 },
+                new CmrrCount { EuroTotal = 1500 }
+            );
 
             contractSituation.LifeCycle.Should().Be(CmrrLifeCycle.Expansion);
         }

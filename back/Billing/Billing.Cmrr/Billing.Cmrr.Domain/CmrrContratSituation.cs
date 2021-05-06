@@ -2,34 +2,44 @@ namespace Billing.Cmrr.Domain
 {
     public class CmrrContratSituation
     {
-        public int ContractId { get; set; }
-        public CmrrContract Contract { get; set; }
+        public int ContractId { get; }
+        public CmrrContract Contract { get; }
 
-        public CmrrCount StartPeriodCount { get; set; }
-        public CmrrCount EndPeriodCount { get; set; }
+        public CmrrCount StartPeriodCount { get; }
+        public CmrrCount EndPeriodCount { get; }
 
-        public CmrrLifeCycle LifeCycle => GetCmrrLifeCycle();
+        public CmrrLifeCycle LifeCycle { get; }
 
-        private readonly int _maxMonthDurationForUpsell = 6;
-        
-        private CmrrLifeCycle GetCmrrLifeCycle()
+        private const int MaxMonthDurationForUpsell = 6;
+
+        public CmrrContratSituation(CmrrContract contract, CmrrCount startPeriodCount, CmrrCount endPeriodCount)
         {
-            if(EndPeriodCount is null)
+            Contract = contract;
+            ContractId = contract.Id;
+            StartPeriodCount = startPeriodCount;
+            EndPeriodCount = endPeriodCount;
+
+            LifeCycle = GetCmrrLifeCycle(contract, startPeriodCount, endPeriodCount);
+        }
+
+        private static CmrrLifeCycle GetCmrrLifeCycle(CmrrContract contract, CmrrCount startPeriodCount, CmrrCount endPeriodCount)
+        {
+            if (endPeriodCount is null)
             {
-                if (Contract.EndReason == ContractEndReason.Modification)
+                if (contract.EndReason == ContractEndReason.Modification)
                     return CmrrLifeCycle.Retraction;
                 return CmrrLifeCycle.Termination;
             }
 
-            if(StartPeriodCount is null)
+            if (startPeriodCount is null)
             {
-                var isModification = Contract.CreationCause == ContractCreationCause.Modification;
-                    if (isModification && Contract.EnvironmentCreatedAt.AddMonths(_maxMonthDurationForUpsell) < Contract.StartDate)
-                        return CmrrLifeCycle.Upsell;
+                var isModification = contract.CreationCause == ContractCreationCause.Modification;
+                if (!isModification && contract.EnvironmentCreatedAt.AddMonths(MaxMonthDurationForUpsell) < contract.StartDate)
+                    return CmrrLifeCycle.Upsell;
                 return CmrrLifeCycle.Creation;
             }
 
-            if(StartPeriodCount.EuroTotal >= EndPeriodCount.EuroTotal)
+            if (startPeriodCount.EuroTotal >= endPeriodCount.EuroTotal)
                 return CmrrLifeCycle.Retraction;
 
             return CmrrLifeCycle.Expansion;

@@ -1,4 +1,5 @@
 using Authentication.Web;
+using Billing.Cmrr.Infra.Storage;
 using Billing.Contracts.Infra.Storage;
 using Billing.Web;
 using Cache.Web;
@@ -189,6 +190,7 @@ namespace CloudControl.Web
             services.ConfigureContext<ContractsDbContext>(_hostingEnvironment);
             services.ConfigureContext<UsersDbContext>(_hostingEnvironment);
             services.ConfigureContext<InstancesDbContext>(_hostingEnvironment);
+            services.ConfigureContext<CmrrDbContext>(_hostingEnvironment);
         }
 
         public virtual void ConfigureSharedDomains(IServiceCollection services, AppConfiguration configuration)

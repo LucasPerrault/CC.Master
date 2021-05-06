@@ -19,6 +19,7 @@ namespace Billing.Cmrr.Application
             _contractsStore = contractsStore ?? throw new ArgumentNullException(nameof(contractsStore));
             _countsStore = countsStore ?? throw new ArgumentNullException(nameof(countsStore));
         }
+
         public async Task<List<CmrrContratSituation>> GetContractSituationsAsync(CmrrSituationFilter situationFilter)
         {
             ThrowIfDatesInvalid(situationFilter.StartPeriod, situationFilter.EndPeriod);
@@ -35,37 +36,25 @@ namespace Billing.Cmrr.Application
 
             var situations = CreateContractSituations(contracts, startPeriodCounts, endPeriodCounts);
 
-            return situations;
+            return situations.ToList();
         }
 
-        private static List<CmrrContratSituation> CreateContractSituations(IEnumerable<CmrrContract> contracts, List<CmrrCount> startPeriodCounts, List<CmrrCount> endPeriodCounts)
+        private static IEnumerable<CmrrContratSituation> CreateContractSituations(IEnumerable<CmrrContract> contracts, List<CmrrCount> startPeriodCounts, List<CmrrCount> endPeriodCounts)
         {
-            var situations = new List<CmrrContratSituation>();
-
             var startPeriodCountsByContractId = startPeriodCounts.ToDictionary(c => c.ContractId, c => c);
             var endPeriodCountsByContractId = endPeriodCounts.ToDictionary(c => c.ContractId, c => c);
 
             foreach (var contract in contracts)
             {
-                var situation = new CmrrContratSituation
-                {
-                    Contract = contract,
-                    ContractId = contract.Id
-                };
+                startPeriodCountsByContractId.TryGetValue(contract.Id, out var startPeriodCount);
 
-                if (startPeriodCountsByContractId.TryGetValue(contract.Id, out var startPeriodCount))
-                    situation.StartPeriodCount = startPeriodCount;
+                endPeriodCountsByContractId.TryGetValue(contract.Id, out var endPeriodCount);
 
-                if (endPeriodCountsByContractId.TryGetValue(contract.Id, out var endPeriodCount))
-                    situation.EndPeriodCount = endPeriodCount;
-
-                if (situation.StartPeriodCount is null && situation.EndPeriodCount is null)
+                if (startPeriodCount is null && endPeriodCount is null)
                     continue;
 
-                situations.Add(situation);
+                yield return new CmrrContratSituation(contract, startPeriodCount, endPeriodCount);
             }
-
-            return situations;
         }
 
         private void ThrowIfDatesInvalid(DateTime startPeriod, DateTime endPeriod)
