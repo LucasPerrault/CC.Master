@@ -2,8 +2,8 @@
 using Distributors.Domain.Models;
 using Instances.Application.Instances;
 using Instances.Domain.Demos;
-using Instances.Domain.Demos.Filtering;
 using Instances.Domain.Instances;
+using Rights.Domain.Filtering;
 using System;
 using System.Threading.Tasks;
 
@@ -99,7 +99,7 @@ namespace Instances.Application.Demos.Duplication
         private async Task<DemoDuplication> CreateDuplicationAsync(string requestedSubdomain)
         {
             var targetSubdomain = await _subdomainGenerator.GetSubdomainFromPrefixAsync(requestedSubdomain);
-            var demoToDuplicate = await _demosStore.GetActiveByIdAsync(DefaultSourceDemoId, DemoAccess.All);
+            var demoToDuplicate = await _demosStore.GetActiveByIdAsync(DefaultSourceDemoId, AccessRight.All);
             var targetCluster = await _clusterSelector.GetFillingCluster();
 
             var duplication = DuplicationFactory.New

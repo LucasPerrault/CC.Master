@@ -14,7 +14,6 @@
     <ProjectReference Include="..\..\Core\TeamNotification\TeamNotification.Abstractions\TeamNotification.Abstractions.csproj" />
     <ProjectReference Include="..\..\Core\Tools\Tools\Tools.csproj" />
     <ProjectReference Include="..\Instances.Domain\Instances.Domain.csproj" />
-    <ProjectReference Include="..\Instances.Infra\Instances.Infra.csproj" />
   </ItemGroup>
 
 </Project>
