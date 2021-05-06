@@ -5,7 +5,6 @@ namespace Instances.Domain.Instances
 {
     public static class SubdomainExtensions
     {
-
         public const int SubdomainMinLength = 2;
         public const int SubdomainMaxLength = 63;
 
@@ -26,18 +25,17 @@ namespace Instances.Domain.Instances
         }
 
         // https://fr.wikipedia.org/wiki/Normalisation_Unicode
-        static string SeparateDiacriticsFromLetters(this string text)
+        private static string SeparateDiacriticsFromLetters(this string text)
         {
             return text.Normalize(System.Text.NormalizationForm.FormD);
         }
 
-
-        static string Concat(this IEnumerable<char> chars)
+        private static string Concat(this IEnumerable<char> chars)
         {
             return string.Concat(chars);
         }
 
-        static IEnumerable<char> WithoutConsecutiveChars(this IEnumerable<char> chars, params char[] charsWithoutConsecutiveRepetition)
+        private static IEnumerable<char> WithoutConsecutiveChars(this IEnumerable<char> chars, params char[] charsWithoutConsecutiveRepetition)
         {
             char lastYieldedChar = default;
             bool isFirst = true;
@@ -55,7 +53,7 @@ namespace Instances.Domain.Instances
             }
         }
 
-        static IEnumerable<char> WithoutFirstChars(this IEnumerable<char> chars, params char[] charsThatShouldNotBeFirst)
+        private static IEnumerable<char> WithoutFirstChars(this IEnumerable<char> chars, params char[] charsThatShouldNotBeFirst)
         {
             bool isFirstYieldedChar = true;
 
@@ -71,7 +69,7 @@ namespace Instances.Domain.Instances
             }
         }
 
-        static IEnumerable<char> WithoutLastChars(this IEnumerable<char> chars, params char[] charsThatShouldNotBeLast)
+        private static IEnumerable<char> WithoutLastChars(this IEnumerable<char> chars, params char[] charsThatShouldNotBeLast)
         {
             return chars
                 .Reverse()
