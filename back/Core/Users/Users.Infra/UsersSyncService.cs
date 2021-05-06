@@ -1,11 +1,13 @@
 ﻿using Newtonsoft.Json;
 using Remote.Infra.Services;
+using Rights.Domain.Filtering;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Users.Domain;
+using Users.Domain.Filtering;
 using Users.Infra.Storage.Stores;
 
 namespace Users.Infra
@@ -27,7 +29,7 @@ namespace Users.Infra
         {
             var allUsersFromRemote = await GetUsersFromRemoteAsync();
 
-            var localUsers = await _store.GetAllAsync();
+            var localUsers = await _store.GetAllAsync(new UsersFilter(), AccessRight.All);
             var localUsersDict = localUsers.ToDictionary(u => u.Id, u => u);
 
             foreach (var remoteUser in allUsersFromRemote)

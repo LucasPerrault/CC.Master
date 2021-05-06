@@ -3,7 +3,8 @@ using Instances.Domain.Demos.Filtering;
 using Lucca.Core.Api.Abstractions.Paging;
 using Lucca.Core.Api.Queryable.Paging;
 using Microsoft.EntityFrameworkCore;
-using Storage.Infra.Stores;
+using Rights.Domain.Filtering;
+using Storage.Infra.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,21 +25,21 @@ namespace Instances.Infra.Storage.Stores
             _queryPager = queryPager ?? throw new ArgumentNullException(nameof(queryPager));
         }
 
-        public Task<List<Demo>> GetAsync(DemoFilter filter, DemoAccess access)
+        public Task<List<Demo>> GetAsync(DemoFilter filter, AccessRight access)
         {
             return Get(filter, access).ToListAsync();
         }
 
-        public Task<Page<Demo>> GetAsync(IPageToken pageToken, DemoFilter filter, DemoAccess access)
+        public Task<Page<Demo>> GetAsync(IPageToken pageToken, DemoFilter filter, AccessRight access)
         {
             return _queryPager.ToPageAsync(Get(filter, access), pageToken);
         }
 
-        public Task<Demo> GetActiveByIdAsync(int id, DemoAccess demoAccess)
+        public Task<Demo> GetActiveByIdAsync(int id, AccessRight access)
         {
             var isActiveFilter = new DemoFilter { IsActive = BoolCombination.TrueOnly };
 
-            return Get(isActiveFilter, demoAccess)
+            return Get(isActiveFilter, access)
                 .SingleOrDefaultAsync(d => d.Id == id);
         }
 
@@ -73,7 +74,7 @@ namespace Instances.Infra.Storage.Stores
             return Demos.Where(d => d.IsActive).GroupBy(d => d.Instance.Cluster).ToDictionaryAsync(g => g.Key, g => g.Count());
         }
 
-        private IQueryable<Demo> Get(DemoFilter filter, DemoAccess access)
+        private IQueryable<Demo> Get(DemoFilter filter, AccessRight access)
         {
             return Demos.Where(ToExpression(filter, access));
         }
@@ -82,25 +83,25 @@ namespace Instances.Infra.Storage.Stores
             .Include(d => d.Instance)
             .Include(d => d.Author);
 
-        private Expression<Func<Demo, bool>> ToExpression(DemoFilter filter, DemoAccess access)
+        private Expression<Func<Demo, bool>> ToExpression(DemoFilter filter, AccessRight access)
         {
             var filters = new List<Expression<Func<Demo, bool>>>();
 
             if (filter.IsActive != BoolCombination.Both)
             {
-                var boolean = ToBoolean(filter.IsActive);
+                var boolean = filter.IsActive.ToBoolean();
                 filters.Add(d => d.IsActive == boolean);
             }
 
             if (filter.IsTemplate != BoolCombination.Both)
             {
-                var boolean = ToBoolean(filter.IsTemplate);
+                var boolean = filter.IsTemplate.ToBoolean();
                 filters.Add(d => d.IsTemplate == boolean);
             }
 
             if (filter.IsProtected != BoolCombination.Both)
             {
-                var boolean = ToBoolean(filter.IsProtected);
+                var boolean = filter.IsProtected.ToBoolean();
                 filters.Add(d => d.Instance.IsProtected == boolean);
             }
 
@@ -111,7 +112,7 @@ namespace Instances.Infra.Storage.Stores
 
             if(!string.IsNullOrEmpty(filter.Search))
             {
-                filters.Add(d => filter.Search.Contains(d.Subdomain));
+                filters.Add(d => d.Subdomain.Contains(filter.Search));
             }
 
             if(!string.IsNullOrEmpty(filter.DistributorId))
@@ -129,23 +130,13 @@ namespace Instances.Infra.Storage.Stores
             return filters.ToArray().CombineSafely();
         }
 
-        private bool ToBoolean(BoolCombination boolCombination)
-        {
-            return boolCombination switch
-            {
-                BoolCombination.TrueOnly => true,
-                BoolCombination.FalseOnly => false,
-                _ => throw new ApplicationException($"Unexpected bool combination value {boolCombination}")
-            };
-        }
-
-        private Expression<Func<Demo, bool>> ToRightExpression(DemoAccess access)
+        private Expression<Func<Demo, bool>> ToRightExpression(AccessRight access)
         {
             return access switch
             {
-                NoDemosAccess _ => _ => false,
-                DistributorDemosAccess r => d => d.Distributor.Code == r.DistributorCode || d.IsTemplate,
-                AllDemosAccess _ => _ => true,
+                NoAccessRight _ => _ => false,
+                DistributorCodeAccessRight r => d => d.Distributor.Code == r.DistributorCode || d.IsTemplate,
+                AllAccessRight _ => _ => true,
                 _ => throw new ApplicationException($"Unknown type of demo filter right {access}")
             };
         }

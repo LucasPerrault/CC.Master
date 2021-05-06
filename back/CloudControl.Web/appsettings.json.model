@@ -19,10 +19,7 @@
         "AllUsersEndpointPath": "/api/v3/users",
         "ApiKeysEndpointPath": "/api/v3/apikeys",
         "RedirectEndpointPath": "/auth/userlogin",
-        "LogoutEndpointPath": "/logout",
-        "Hangfire": {
-            "SharedSecret": "{{ LuccaHangfire:CloudControlToken }}"
-        }
+        "LogoutEndpointPath": "/logout"
     },
     "Rights": {
         "ServerUri": "{{ CC.Master:PartenairesUri }}",

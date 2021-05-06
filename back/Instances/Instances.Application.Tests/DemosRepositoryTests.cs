@@ -9,6 +9,7 @@ using Lucca.Core.Rights.Abstractions;
 using Moq;
 using Rights.Domain;
 using Rights.Domain.Abstractions;
+using Rights.Domain.Filtering;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -60,7 +61,7 @@ namespace Instances.Application.Tests
             };
             var demos = new List<Demo> { demo };
 
-            _demosStoreMock.Setup(s => s.GetActiveByIdAsync(It.IsAny<int>(), It.IsAny<DemoAccess>()))
+            _demosStoreMock.Setup(s => s.GetActiveByIdAsync(It.IsAny<int>(), It.IsAny<AccessRight>()))
                 .ReturnsAsync(demo);
 
             await demosRepo.DeleteAsync(12);

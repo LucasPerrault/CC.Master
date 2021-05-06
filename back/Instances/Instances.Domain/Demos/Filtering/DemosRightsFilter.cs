@@ -2,6 +2,7 @@ using Authentication.Domain;
 using Lucca.Core.Rights.Abstractions;
 using Rights.Domain;
 using Rights.Domain.Abstractions;
+using Rights.Domain.Filtering;
 using System;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -17,7 +18,7 @@ namespace Instances.Domain.Demos.Filtering
             _rightsService = rightsService;
         }
 
-        public async Task<DemoAccess> GetReadAccessAsync(ClaimsPrincipal principal)
+        public async Task<AccessRight> GetReadAccessAsync(ClaimsPrincipal principal)
         {
             switch(principal)
             {
@@ -25,12 +26,12 @@ namespace Instances.Domain.Demos.Filtering
                     var currentUserScope = await _rightsService.GetUserOperationHighestScopeAsync(Operation.Demo);
                     return currentUserScope switch
                     {
-                        Scope.AllDepartments => DemoAccess.All,
-                        Scope.DepartmentOnly => DemoAccess.ForDistributor(userPrincipal.User.DepartmentCode),
+                        Scope.AllDepartments => AccessRight.All,
+                        Scope.DepartmentOnly => AccessRight.ForDistributor(userPrincipal.User.DepartmentCode),
                         _ => throw new ApplicationException($"Unhandled scope : {currentUserScope}")
                     };
                 case CloudControlApiKeyClaimsPrincipal _:
-                    return DemoAccess.All;
+                    return AccessRight.All;
                 default:
                     throw new ApplicationException("Unhandled ClaimsPrincipal type");
             };

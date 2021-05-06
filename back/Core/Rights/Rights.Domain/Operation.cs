@@ -56,5 +56,6 @@ namespace Rights.Domain
         EnvironmentLogTab = 39000,
         ContactRoles = 40000,
         EditClients = 41001,
+        HangfireNetcoreRequest = 52000
     }
 }

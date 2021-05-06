@@ -5,6 +5,7 @@ using Instances.Domain.Demos.Cleanup;
 using Instances.Domain.Demos.Filtering;
 using Instances.Domain.Instances;
 using Instances.Domain.Shared;
+using Rights.Domain.Filtering;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -53,7 +54,7 @@ namespace Instances.Application.Demos.Deletion
                 IsProtected = BoolCombination.FalseOnly
             };
 
-            var activeDemos = await _demosStore.GetAsync(filter, DemoAccess.All);
+            var activeDemos = await _demosStore.GetAsync(filter, AccessRight.All);
             var infoTasks = activeDemos
                 .Select(d => GetUpdatedCleanupInfoAsync(d, today));
 
