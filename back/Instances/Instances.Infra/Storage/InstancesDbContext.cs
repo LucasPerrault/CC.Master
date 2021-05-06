@@ -29,7 +29,7 @@ namespace Instances.Infra.Storage
         public class InstancesMigrationDefinition : CloudControlDbContextMigrationDefinition<InstancesDbContext>
         {
             public override string SchemaName => StorageSchemas.Instances.Value;
-            public override int Order => 1;
+            public override int Order => 2;
         }
     }
 }
