@@ -18,6 +18,7 @@ namespace Instances.Infra.Instances.Services
         {
             var uri = new Uri(href, "/api/v3/sessionlogs/latest");
             var dateTimeAsString = await _httpClient.GetStringAsync(uri);
+            dateTimeAsString = dateTimeAsString.Replace("\"", string.Empty);
             return DateTime.Parse(dateTimeAsString);
         }
     }

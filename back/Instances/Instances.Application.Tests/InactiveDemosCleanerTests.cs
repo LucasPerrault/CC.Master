@@ -116,7 +116,19 @@ namespace Instances.Application.Tests
             );
 
             await cleaner.CleanAsync();
-            _demosStoreMock.Verify(s => s.UpdateDeletionScheduleAsync(demo, new DateTime(2010, 03, 04)));
+
+            _demosStoreMock.Verify
+            (
+                s => s.UpdateDeletionScheduleAsync
+                    (
+                        It.Is<IEnumerable<DemoDeletionSchedule>>
+                            (
+                                schedules => schedules
+                                    .Single(s => s.Demo == demo)
+                                    .DeletionScheduledOn == new DateTime(2010, 03, 04)
+                            )
+                    )
+            );
         }
 
         [Fact]
@@ -154,7 +166,14 @@ namespace Instances.Application.Tests
             );
 
             await cleaner.CleanAsync();
-            _demosStoreMock.Verify(s => s.UpdateDeletionScheduleAsync(demo, new DateTime(2010, 02, 01)));
+            _demosStoreMock.Verify(s => s.UpdateDeletionScheduleAsync
+            (
+                It.Is<IEnumerable<DemoDeletionSchedule>>
+                (
+                    schedules => schedules
+                    .Single(s => s.Demo == demo).DeletionScheduledOn == new DateTime(2010, 02, 01))
+                )
+            );
         }
 
         [Fact]
@@ -193,7 +212,19 @@ namespace Instances.Application.Tests
             );
 
             await cleaner.CleanAsync();
-            _demosStoreMock.Verify(s => s.UpdateDeletionScheduleAsync(demo, new DateTime(2010, 03, 04)));
+
+            _demosStoreMock.Verify
+            (
+                s => s.UpdateDeletionScheduleAsync
+                    (
+                        It.Is<IEnumerable<DemoDeletionSchedule>>
+                            (
+                                schedules => schedules
+                                    .Single(s => s.Demo == demo)
+                                    .DeletionScheduledOn == new DateTime(2010, 03, 04)
+                            )
+                    )
+            );
         }
 
         [Fact]
