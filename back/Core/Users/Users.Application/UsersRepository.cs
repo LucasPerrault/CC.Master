@@ -10,17 +10,17 @@ namespace Users.Application
     {
         private readonly ClaimsPrincipal _principal;
         private readonly IUsersStore _usersStore;
-        private readonly UserRightsFilter _filter;
+        private readonly UserRightsFilter _rightsFilter;
 
-        public UsersRepository(ClaimsPrincipal principal, IUsersStore usersStore, UserRightsFilter filter)
+        public UsersRepository(ClaimsPrincipal principal, IUsersStore usersStore, UserRightsFilter rightsFilter)
         {
             _principal = principal;
             _usersStore = usersStore;
-            _filter = filter;
+            _rightsFilter = rightsFilter;
         }
         public async Task<List<SimpleUser>> GetAsync(UsersFilter filter)
         {
-            return await _usersStore.GetAllAsync(filter, await _filter.GetAccessAsync(_principal));
+            return await _usersStore.GetAllAsync(filter, await _rightsFilter.GetAccessAsync(_principal));
         }
     }
 }
