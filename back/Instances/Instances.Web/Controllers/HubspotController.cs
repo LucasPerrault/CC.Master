@@ -1,4 +1,5 @@
 using Instances.Application.Demos.Duplication;
+using Instances.Web.Controllers.Dtos;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -7,47 +8,27 @@ using System.Threading.Tasks;
 namespace Instances.Web.Controllers
 {
 
-    [ApiController, Microsoft.AspNetCore.Components.Route("/api/hubspot")]
+    [ApiController, Route("/api/hubspot/duplications")]
     public class HubspotController
     {
         private readonly HubspotDemoDuplicator _demoDuplicator;
+        private readonly IDemoDuplicationCompleter _duplicationCompleter;
 
-        public HubspotController(HubspotDemoDuplicator demoDuplicator)
+        public HubspotController(HubspotDemoDuplicator demoDuplicator, IDemoDuplicationCompleter duplicationCompleter)
         {
             _demoDuplicator = demoDuplicator;
+            _duplicationCompleter = duplicationCompleter;
         }
 
-        public class HubspotDemoDuplicationRequest
-        {
-            public int VId { get; set; }
-        }
-
-        [HttpPost("duplications/{instanceDuplicationId}/notify")]
+        [HttpPost("{instanceDuplicationId:guid}/notify")]
         public async Task<ActionResult> NotifyDuplicationEndAsync
         (
             [FromRoute]Guid instanceDuplicationId,
-            [FromQuery]bool isSuccessful
+            [FromBody]DuplicationCallbackPayload payload
         )
         {
-            await _demoDuplicator.MarkAsEndedAsync(instanceDuplicationId, isSuccessful);
-
-            return new StatusCodeResult(StatusCodes.Status202Accepted);
-        }
-
-        [HttpPost("/duplication-request")]
-        public async Task<ActionResult> RequestDuplicationAsync
-        (
-            [FromQuery]int successWorkflowId,
-            [FromQuery]int failWorkflowId,
-            [FromBody]HubspotDemoDuplicationRequest request
-        )
-        {
-            await _demoDuplicator.DuplicateAsync(new HubspotDemoDuplication
-            {
-                VId = request.VId,
-                SuccessWorkflowId = successWorkflowId,
-                FailureWorkflowId = failWorkflowId
-            });
+            await _duplicationCompleter.MarkDuplicationAsCompletedAsync(instanceDuplicationId, payload.Success);
+            await _demoDuplicator.MarkAsEndedAsync(instanceDuplicationId, payload.Success);
 
             return new StatusCodeResult(StatusCodes.Status202Accepted);
         }

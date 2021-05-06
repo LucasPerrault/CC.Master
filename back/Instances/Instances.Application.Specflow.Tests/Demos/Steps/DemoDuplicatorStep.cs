@@ -80,7 +80,7 @@ namespace Instances.Application.Specflow.Tests.Demos.Steps
 
             try
             {
-                await duplicator.CreateDuplicationAsync(duplication, DemoDuplicationRequestSource.Api);
+                await duplicator.CreateDuplicationAsync(duplication);
             }
             catch (ForbiddenException e)
             {
@@ -101,11 +101,57 @@ namespace Instances.Application.Specflow.Tests.Demos.Steps
         [When(@"I get notification that duplication '(.*)' has ended")]
         public async Task WhenIGetNotificationThatDuplicationHasEnded(Guid duplicationId)
         {
-            var duplicator = GetDuplicator();
-            await duplicator.MarkDuplicationAsCompletedAsync(duplicationId, true);
+            var completer = GetCompleter();
+            await completer.MarkDuplicationAsCompletedAsync(duplicationId, true);
         }
 
         private DemoDuplicator GetDuplicator()
+        {
+            var demosStore = new DemosStore(_demosContext.DbContext, new DummyQueryPager());
+            var demoDuplicationsStore = new DemoDuplicationsStore(_demosContext.DbContext);
+
+            _demosContext.Mocks.DistributorsStore
+                .Setup(s => s.GetByCodeAsync(It.IsAny<string>()))
+                .Returns<string>(distributor => Task.FromResult(new Distributor
+                {
+                    Id = distributor,
+                    Code = distributor
+                }));
+
+            _demosContext.Mocks.InstancesStore
+                .Setup(s => s.CreateForDemoAsync(It.IsAny<string>(), It.IsAny<string>()))
+                .Returns(Task.FromResult(new Instance { Id = 1}));
+
+            var rightsServiceMock = new Mock<IRightsService>();
+            rightsServiceMock.Setup(rs => rs.GetUserOperationHighestScopeAsync(It.IsAny<Operation>()))
+                .ReturnsAsync((Operation op) => _demosContext.OperationsWithScope[op]);
+
+            var envStoreMock = new Mock<IEnvironmentsStore>();
+            var ccDataServiceMock = new Mock<ICcDataService>();
+            var clusterSelectorMock = new Mock<IClusterSelector>();
+
+            return new DemoDuplicator
+                (
+                    _demosContext.Principal,
+                    new InstancesDuplicator(new SqlScriptPicker(
+                        new SqlScriptPickerConfiguration
+                        {
+                            JenkinsBaseUri = new Uri("http://localhost"),
+                            MonolithJobPath = "ilucca",
+                        }),
+                        ccDataServiceMock.Object
+                    ),
+                    demosStore,
+                    demoDuplicationsStore,
+                    rightsServiceMock.Object,
+                    _demosContext.Mocks.DistributorsStore.Object,
+                    new SubdomainGenerator(new SubdomainValidator(demosStore, envStoreMock.Object)),
+                    clusterSelectorMock.Object,
+                    new UsersPasswordHelper()
+                );
+        }
+
+        private DemoDuplicationCompleter GetCompleter()
         {
             var demosStore = new DemosStore(_demosContext.DbContext, new DummyQueryPager());
             var demoDuplicationsStore = new DemoDuplicationsStore(_demosContext.DbContext);
@@ -131,37 +177,16 @@ namespace Instances.Application.Specflow.Tests.Demos.Steps
             rightsServiceMock.Setup(rs => rs.GetUserOperationHighestScopeAsync(It.IsAny<Operation>()))
                 .ReturnsAsync((Operation op) => _demosContext.OperationsWithScope[op]);
 
-            var envStoreMock = new Mock<IEnvironmentsStore>();
-            var passwordResetMock = new Mock<IDemoUsersPasswordResetService>();
-            var authWsMock = new Mock<IWsAuthSynchronizer>();
-            var ccDataServiceMock = new Mock<ICcDataService>();
-            var clusterSelectorMock = new Mock<IClusterSelector>();
-            var logger = new Mock<ILogger<DemoDuplicator>>();
-
-            return new DemoDuplicator
+            return new DemoDuplicationCompleter
                 (
-                    _demosContext.Principal,
-                    new InstancesDuplicator(new SqlScriptPicker(
-                        new SqlScriptPickerConfiguration
-                        {
-                            JenkinsBaseUri = new Uri("http://localhost"),
-                            MonolithJobPath = "ilucca",
-                        }),
-                        ccDataServiceMock.Object
-                    ),
-                    demosStore,
                     demoDuplicationsStore,
                     instanceDuplicationsStore,
+                    demosStore,
                     _demosContext.Mocks.InstancesStore.Object,
-                    rightsServiceMock.Object,
-                    _demosContext.Mocks.DistributorsStore.Object,
-                    new SubdomainGenerator(new SubdomainValidator(demosStore, envStoreMock.Object)),
-                    clusterSelectorMock.Object,
-                    new UsersPasswordHelper(),
-                    passwordResetMock.Object,
-                    authWsMock.Object,
+                    new Mock<IWsAuthSynchronizer>().Object,
+                    new Mock<IDemoUsersPasswordResetService>().Object,
                     new Mock<IDemoDeletionCalculator>().Object,
-                    logger.Object
+                    new Mock<ILogger<DemoDuplicationCompleter>>().Object
                 );
         }
 

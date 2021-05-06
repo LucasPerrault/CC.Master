@@ -10,6 +10,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\Core\IpFilter\IpFilter.Domain\IpFilter.Domain.csproj" />
     <ProjectReference Include="..\..\Core\Rights\Rights.Web\Rights.Web.csproj" />
     <ProjectReference Include="..\..\Core\Tools\Tools.Web\Tools.Web.csproj" />
     <ProjectReference Include="..\..\Shared\Remote\Remote.Infra\Remote.Infra.csproj" />
