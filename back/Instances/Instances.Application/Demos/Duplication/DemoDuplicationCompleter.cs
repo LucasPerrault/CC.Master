@@ -1,8 +1,8 @@
-﻿using Instances.Domain.Demos;
+﻿using Instances.Application.Instances;
+using Instances.Domain.Demos;
 using Instances.Domain.Demos.Cleanup;
 using Instances.Domain.Instances;
 using Instances.Domain.Instances.Models;
-using Instances.Infra.WsAuth;
 using Lucca.Core.Shared.Domain.Exceptions;
 using Microsoft.Extensions.Logging;
 using System;

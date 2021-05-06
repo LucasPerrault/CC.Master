@@ -1,14 +1,10 @@
+using Instances.Application.Instances;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Threading.Tasks;
 
 namespace Instances.Infra.WsAuth
 {
-    public interface IWsAuthSynchronizer
-    {
-        Task SafeSynchronizeAsync(int instanceId);
-    }
-
     public class WsAuthSynchronizer : IWsAuthSynchronizer
     {
         private readonly WsAuthRemoteService _authWebservice;
