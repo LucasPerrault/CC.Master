@@ -49,9 +49,12 @@ namespace Instances.Infra.Storage.Stores
             await _dbContext.SaveChangesAsync();
         }
 
-        public async Task UpdateDeletionScheduleAsync(Demo demo, DateTime deletionScheduledOn)
+        public async Task UpdateDeletionScheduleAsync(IEnumerable<DemoDeletionSchedule> schedules)
         {
-            demo.DeletionScheduledOn = deletionScheduledOn;
+            foreach (var schedule in schedules)
+            {
+                schedule.Demo.DeletionScheduledOn = schedule.DeletionScheduledOn;
+            }
             await _dbContext.SaveChangesAsync();
         }
 

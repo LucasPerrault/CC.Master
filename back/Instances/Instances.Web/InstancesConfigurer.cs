@@ -56,6 +56,7 @@ namespace Instances.Web
             services.AddSingleton<IDemoDeletionCalculator, DemoDeletionCalculator>();
             services.AddSingleton<ISqlScriptPicker, SqlScriptPicker>();
 
+            services.AddScoped<InactiveDemosCleaner>();
             services.AddScoped<InstancesDuplicator>();
             services.AddScoped<DemoDuplicator>();
 

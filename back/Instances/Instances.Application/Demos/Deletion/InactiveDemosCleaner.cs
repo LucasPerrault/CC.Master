@@ -1,4 +1,4 @@
-﻿using Email.Domain;
+using Email.Domain;
 using Instances.Application.Demos.Emails;
 using Instances.Domain.Demos;
 using Instances.Domain.Demos.Cleanup;
@@ -46,22 +46,40 @@ namespace Instances.Application.Demos.Deletion
 
         public async Task CleanAsync()
         {
-            var today = _timeProvider.Today();
-            var filter = new DemoFilter
+            var eligibleDemos = new DemoFilter
             {
                 IsActive = BoolCombination.TrueOnly,
                 IsTemplate = BoolCombination.FalseOnly,
                 IsProtected = BoolCombination.FalseOnly
             };
+            var usages = await GetDemoUsagesAsync(eligibleDemos);
+            await UpdateDemosAsync(usages);
 
-            var activeDemos = await _demosStore.GetAsync(filter, AccessRight.All);
-            var infoTasks = activeDemos
-                .Select(d => GetUpdatedCleanupInfoAsync(d, today));
-
-            var infos = await Task.WhenAll(infoTasks);
-
-            await ReportCleanupIntentionsAsync(infos.Where(i => i.ShouldBeReported()));
+            var today = _timeProvider.Today();
+            var infos = await GetCleanupInfoAsync(usages, today);
+            await ReportCleanupIntentionsAsync(infos);
             await DeleteAllAsync(infos.Where(i => i.State == DemoState.DeletionScheduledToday));
+        }
+
+        private async Task<DemoLastUsageRetrieveAttempt[]> GetDemoUsagesAsync(DemoFilter filter)
+        {
+            var activeDemos = await _demosStore.GetAsync(filter, AccessRight.All);
+            var usagesTasks = activeDemos.Select(d => GetLastUsageAsync(d));
+            return await Task.WhenAll(usagesTasks);
+        }
+
+        private async Task UpdateDemosAsync(IEnumerable<DemoLastUsageRetrieveAttempt> usages)
+        {
+            var usableUsages = usages
+                .Where(a => a.Exception == null)
+                .Where(a => a.LastUsedOn.HasValue)
+                .Select(a => new DemoDeletionSchedule
+                {
+                    Demo = a.Demo,
+                    DeletionScheduledOn = _deletionCalculator.GetDeletionDate(a.Demo, a.LastUsedOn.Value)
+                }).ToList();
+
+            await _demosStore.UpdateDeletionScheduleAsync(usableUsages);
         }
 
         private async Task DeleteAllAsync(IEnumerable<DemoCleanupInfo> info)
@@ -85,28 +103,42 @@ namespace Instances.Application.Demos.Deletion
             );
         }
 
-        private async Task<DemoCleanupInfo> GetUpdatedCleanupInfoAsync(Demo demo, DateTime demoDeletionSchedule)
+        private async Task<IEnumerable<DemoCleanupInfo>> GetCleanupInfoAsync
+        (
+            IEnumerable<DemoLastUsageRetrieveAttempt> attempts,
+            DateTime today
+        )
+        {
+            return attempts.Select
+            (
+                a => a.Exception != null
+                    ? new DemoCleanupInfo(a.Demo, a.Exception, DemoState.ErrorAtStateEvaluation)
+                    : new DemoCleanupInfo(a.Demo, today)
+            );
+        }
+
+        private async Task<DemoLastUsageRetrieveAttempt> GetLastUsageAsync(Demo demo)
         {
             try
             {
-                await UpdateDeletionScheduleAsync(demo);
-                return new DemoCleanupInfo(demo, demoDeletionSchedule);
+                var latestConnection = await _sessionLogsService.GetLatestAsync(demo.Href);
+                var lastUsedOn = latestConnection == new DateTime(0001, 1, 1)
+                    ? demo.CreatedAt
+                    : latestConnection;
+
+                return new DemoLastUsageRetrieveAttempt { Demo = demo, LastUsedOn = lastUsedOn };
             }
             catch (Exception e)
             {
-                return new DemoCleanupInfo(demo, e, DemoState.ErrorAtStateEvaluation);
+                return new DemoLastUsageRetrieveAttempt { Demo = demo, Exception = e};
             }
         }
 
-        private async Task UpdateDeletionScheduleAsync(Demo demo)
+        private class DemoLastUsageRetrieveAttempt
         {
-            var latestConnection = await _sessionLogsService.GetLatestAsync(demo.Href);
-            var latestDemoUsage = latestConnection == new DateTime(0001, 1, 1)
-                ? demo.CreatedAt
-                : latestConnection;
-
-            var shouldBeDeletedAt = _deletionCalculator.GetDeletionDate(demo, latestDemoUsage);
-            await _demosStore.UpdateDeletionScheduleAsync(demo, shouldBeDeletedAt);
+            public Demo Demo { get; set; }
+            public DateTime? LastUsedOn { get; set; }
+            public Exception Exception { get; set; }
         }
     }
 }
