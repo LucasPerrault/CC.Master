@@ -77,10 +77,10 @@ namespace Billing.Cmrr.Application
                 throw new ArgumentNullException($"{nameof(endPeriod)} cannot be default value");
 
             if(!IsFirstDayOfMonth(startPeriod))
-                throw new ArgumentException($"{nameof(startPeriod)} must be on the day one of month");
+                throw new ArgumentException($"{nameof(startPeriod)} must be on the first day of month");
 
             if (!IsFirstDayOfMonth(endPeriod))
-                throw new ArgumentException($"{nameof(endPeriod)} must be on the day one of month");
+                throw new ArgumentException($"{nameof(endPeriod)} must be on the first day of month");
         }
     }
 }
