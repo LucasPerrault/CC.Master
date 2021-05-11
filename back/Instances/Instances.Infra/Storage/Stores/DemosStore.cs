@@ -106,9 +106,9 @@ namespace Instances.Infra.Storage.Stores
         public static IQueryable<Demo> WhereMatches(this IQueryable<Demo> demos, DemoFilter filter)
         {
             return demos
-                .WhenNotBoth(filter.IsActive).ApplyWhere(d => d.IsActive == filter.IsActive.ToBoolean())
-                .WhenNotBoth(filter.IsProtected).ApplyWhere(d => d.Instance.IsProtected == filter.IsProtected.ToBoolean())
-                .WhenNotBoth(filter.IsTemplate).ApplyWhere(d => d.IsTemplate == filter.IsTemplate.ToBoolean())
+                .When(filter.IsActive).ApplyWhere(d => d.IsActive)
+                .When(filter.IsProtected).ApplyWhere(d => d.Instance.IsProtected)
+                .When(filter.IsTemplate).ApplyWhere(d => d.IsTemplate)
                 .WhenNotNullOrEmpty(filter.Search).ApplyWhere(d => d.Subdomain.Contains(filter.Search))
                 .WhenNotNullOrEmpty(filter.Subdomain).ApplyWhere(d => d.Subdomain == filter.Subdomain)
                 .WhenNotNullOrEmpty(filter.DistributorId).ApplyWhere(d => d.DistributorID == filter.DistributorId)

@@ -7,7 +7,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
-using Tools;
 using Users.Domain;
 using Users.Domain.Filtering;
 
@@ -83,7 +82,7 @@ namespace Users.Infra.Storage.Stores
         public static IQueryable<SimpleUser> WhereMatches(this IQueryable<SimpleUser> users, UsersFilter filter)
         {
             return users
-                .WhenNotBoth(filter.IsActive).ApplyWhere(u => u.IsActive == filter.IsActive.ToBoolean())
+                .When(filter.IsActive).ApplyWhere(u => u.IsActive)
                 .WhenNotNullOrEmpty(filter.Search).ApplyWhere(u => u.FirstName.Contains(filter.Search) || u.LastName.Contains(filter.Search));
         }
     }
