@@ -44,7 +44,7 @@ namespace Users.Infra.Storage.Stores
         {
             return await _context
                 .Set<SimpleUser>()
-                .Where(ToExpression(filter))
+                .WhereMatches(filter)
                 .Where(await ToExpressionAsync(accessRight))
                 .ToListAsync();
         }
@@ -58,23 +58,6 @@ namespace Users.Infra.Storage.Stores
         {
             _context.Add(user);
             return SaveChangesAsync();
-        }
-
-        public Expression<Func<SimpleUser, bool>> ToExpression(UsersFilter filter)
-        {
-            var expressions = new List<Expression<Func<SimpleUser, bool>>>();
-
-            if (filter.IsActive != BoolCombination.Both)
-            {
-                expressions.Add(u => u.IsActive == filter.IsActive.ToBoolean());
-            }
-
-            if (!string.IsNullOrEmpty(filter.Search))
-            {
-                expressions.Add(u => u.FirstName.Contains(filter.Search) || u.LastName.Contains(filter.Search));
-            }
-
-            return expressions.ToArray().CombineSafely();
         }
 
         public async Task<Expression<Func<SimpleUser, bool>>> ToExpressionAsync(AccessRight accessRight)
@@ -92,6 +75,16 @@ namespace Users.Infra.Storage.Stores
         {
             var distributor = await _distributorsStore.GetByCodeAsync(distributorCode);
             return user => user.DepartmentId == distributor.DepartmentId;
+        }
+    }
+
+    internal static class UserQueryableExtensions
+    {
+        public static IQueryable<SimpleUser> WhereMatches(this IQueryable<SimpleUser> users, UsersFilter filter)
+        {
+            return users
+                .WhenNotBoth(filter.IsActive).ApplyWhere(u => u.IsActive == filter.IsActive.ToBoolean())
+                .WhenNotNullOrEmpty(filter.Search).ApplyWhere(u => u.FirstName.Contains(filter.Search) || u.LastName.Contains(filter.Search));
         }
     }
 }

@@ -79,59 +79,15 @@ namespace Instances.Infra.Storage.Stores
 
         private IQueryable<Demo> Get(DemoFilter filter, AccessRight access)
         {
-            return Demos.Where(ToExpression(filter, access));
+            return Demos
+                .WhereMatches(filter)
+                .Where(ToRightExpression(access));
         }
 
         private IQueryable<Demo> Demos => _dbContext.Set<Demo>()
             .Include(d => d.Instance)
             .Include(d => d.Author);
 
-        private Expression<Func<Demo, bool>> ToExpression(DemoFilter filter, AccessRight access)
-        {
-            var filters = new List<Expression<Func<Demo, bool>>>();
-
-            if (filter.IsActive != BoolCombination.Both)
-            {
-                var boolean = filter.IsActive.ToBoolean();
-                filters.Add(d => d.IsActive == boolean);
-            }
-
-            if (filter.IsTemplate != BoolCombination.Both)
-            {
-                var boolean = filter.IsTemplate.ToBoolean();
-                filters.Add(d => d.IsTemplate == boolean);
-            }
-
-            if (filter.IsProtected != BoolCombination.Both)
-            {
-                var boolean = filter.IsProtected.ToBoolean();
-                filters.Add(d => d.Instance.IsProtected == boolean);
-            }
-
-            if(!string.IsNullOrEmpty(filter.Subdomain))
-            {
-                filters.Add(d => d.Subdomain == filter.Subdomain);
-            }
-
-            if(!string.IsNullOrEmpty(filter.Search))
-            {
-                filters.Add(d => d.Subdomain.Contains(filter.Search));
-            }
-
-            if(!string.IsNullOrEmpty(filter.DistributorId))
-            {
-                filters.Add(d => d.DistributorID == filter.DistributorId);
-            }
-
-            if(filter.AuthorId != null)
-            {
-                filters.Add(d => d.AuthorId == filter.AuthorId.Value);
-            }
-
-            filters.Add(ToRightExpression(access));
-
-            return filters.ToArray().CombineSafely();
-        }
 
         private Expression<Func<Demo, bool>> ToRightExpression(AccessRight access)
         {
@@ -142,6 +98,21 @@ namespace Instances.Infra.Storage.Stores
                 AllAccessRight _ => _ => true,
                 _ => throw new ApplicationException($"Unknown type of demo filter right {access}")
             };
+        }
+    }
+
+    internal static class DemoQueryableExtensions
+    {
+        public static IQueryable<Demo> WhereMatches(this IQueryable<Demo> demos, DemoFilter filter)
+        {
+            return demos
+                .WhenNotBoth(filter.IsActive).ApplyWhere(d => d.IsActive == filter.IsActive.ToBoolean())
+                .WhenNotBoth(filter.IsProtected).ApplyWhere(d => d.Instance.IsProtected == filter.IsProtected.ToBoolean())
+                .WhenNotBoth(filter.IsTemplate).ApplyWhere(d => d.IsTemplate == filter.IsTemplate.ToBoolean())
+                .WhenNotNullOrEmpty(filter.Search).ApplyWhere(d => d.Subdomain.Contains(filter.Search))
+                .WhenNotNullOrEmpty(filter.Subdomain).ApplyWhere(d => d.Subdomain == filter.Subdomain)
+                .WhenNotNullOrEmpty(filter.DistributorId).ApplyWhere(d => d.DistributorID == filter.DistributorId)
+                .WhenHasValue(filter.AuthorId).ApplyWhere(d => d.AuthorId == filter.AuthorId.Value);
         }
     }
 }
