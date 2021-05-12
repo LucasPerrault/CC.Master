@@ -62,7 +62,7 @@ namespace Instances.Application.Tests
                 _deletionCalculatorMock.Object
             );
 
-            await cleaner.CleanAsync();
+            await cleaner.CleanAsync(new DemoCleanupParams { IsDryRun = false});
 
 
             _demosStoreMock.Verify
@@ -115,7 +115,7 @@ namespace Instances.Application.Tests
                 _deletionCalculatorMock.Object
             );
 
-            await cleaner.CleanAsync();
+            await cleaner.CleanAsync(new DemoCleanupParams { IsDryRun = false});
 
             _demosStoreMock.Verify
             (
@@ -165,7 +165,8 @@ namespace Instances.Application.Tests
                 _deletionCalculatorMock.Object
             );
 
-            await cleaner.CleanAsync();
+            await cleaner.CleanAsync(new DemoCleanupParams { IsDryRun = false});
+
             _demosStoreMock.Verify(s => s.UpdateDeletionScheduleAsync
             (
                 It.Is<IEnumerable<DemoDeletionSchedule>>
@@ -211,7 +212,7 @@ namespace Instances.Application.Tests
                 _deletionCalculatorMock.Object
             );
 
-            await cleaner.CleanAsync();
+            await cleaner.CleanAsync(new DemoCleanupParams { IsDryRun = false});
 
             _demosStoreMock.Verify
             (
@@ -257,7 +258,7 @@ namespace Instances.Application.Tests
                 _deletionCalculatorMock.Object
             );
 
-            await cleaner.CleanAsync();
+            await cleaner.CleanAsync(new DemoCleanupParams { IsDryRun = false});
 
             _ccDataServiceMock.Verify(s => s.DeleteInstancesAsync(
                     It.IsAny<IEnumerable<string>>(),
@@ -286,23 +287,62 @@ namespace Instances.Application.Tests
                 .ReturnsAsync(demos);
 
             var cleaner = new InactiveDemosCleaner
-            (
-                _timeProviderMock.Object,
-                _sessionLogsServiceMock.Object,
-                _demosStoreMock.Object,
-                _ccDataServiceMock.Object,
-                _emailServiceMock.Object,
-                _emailsMock.Object,
-                _deletionCalculatorMock.Object
-            );
+                (
+                    _timeProviderMock.Object,
+                    _sessionLogsServiceMock.Object,
+                    _demosStoreMock.Object,
+                    _ccDataServiceMock.Object,
+                    _emailServiceMock.Object,
+                    _emailsMock.Object,
+                    _deletionCalculatorMock.Object
+                );
 
-            await cleaner.CleanAsync();
+            await cleaner.CleanAsync(new DemoCleanupParams { IsDryRun = false});
 
             _ccDataServiceMock.Verify(s => s.DeleteInstancesAsync(
                     ItContainsSubdomains("inactive-for-too-long"),
                     It.IsAny<string>(),
                     It.IsAny<string>()
                 ), Times.Once);
+        }
+
+        [Fact]
+        public async Task CleanupShouldNotRequestDeletionOfInactiveDemosDuringDryRun()
+        {
+            var demos = new List<Demo>
+            {
+                new Demo
+                {
+                    Subdomain = "inactive-for-too-long",
+                    Instance = new Instance { IsProtected = false, Cluster = "mocked-demo-cluster"},
+                    DeletionScheduledOn = new DateTime(2010, 10, 01)
+                }
+            };
+
+            _timeProviderMock.Setup(p => p.Today()).Returns(new DateTime(2010, 10, 01));
+
+            _demosStoreMock
+                .Setup(s => s.GetAsync(It.Is<DemoFilter>(f => f.IsActive == BoolCombination.TrueOnly), It.IsAny<AccessRight>()))
+                .ReturnsAsync(demos);
+
+            var cleaner = new InactiveDemosCleaner
+                (
+                    _timeProviderMock.Object,
+                    _sessionLogsServiceMock.Object,
+                    _demosStoreMock.Object,
+                    _ccDataServiceMock.Object,
+                    _emailServiceMock.Object,
+                    _emailsMock.Object,
+                    _deletionCalculatorMock.Object
+                );
+
+            await cleaner.CleanAsync(new DemoCleanupParams { IsDryRun = true});
+
+            _ccDataServiceMock.Verify(s => s.DeleteInstancesAsync(
+                    It.IsAny<IEnumerable<string>>(),
+                    It.IsAny<string>(),
+                    It.IsAny<string>()
+                ), Times.Never);
         }
 
         [Fact]
@@ -347,7 +387,7 @@ namespace Instances.Application.Tests
                 _deletionCalculatorMock.Object
             );
 
-            await cleaner.CleanAsync();
+            await cleaner.CleanAsync(new DemoCleanupParams { IsDryRun = false});
 
             _ccDataServiceMock.Verify(s => s.DeleteInstancesAsync(
                     ItContainsSubdomains("d1-c1", "d2-c1"),

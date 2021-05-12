@@ -56,7 +56,12 @@ namespace Instances.Application.Demos.Emails
             {
                 var soonDeletions = infoPerState[DemoState.DeletionScheduledSoon];
                 builder.Add(new Paragraph(_translations.EmailsDemoCleanupIntentToBeScheduledCount(soonDeletions.Count)));
-                builder.AddHtmlList(soonDeletions.Select(d => $"{d.Demo.Subdomain} {d.DeletionScheduledDate.ToLongDateString()}"));
+                builder.AddHtmlList
+                (
+                    soonDeletions
+                        .OrderBy(d => d.DeletionScheduledDate)
+                        .Select(d => $"{d.Demo.Subdomain} {d.DeletionScheduledDate.ToLongDateString()}")
+                );
             }
             else
             {

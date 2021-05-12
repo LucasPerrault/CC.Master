@@ -14,6 +14,11 @@ using Tools;
 
 namespace Instances.Application.Demos.Deletion
 {
+    public class DemoCleanupParams
+    {
+        public bool IsDryRun { get; set; }
+    }
+
     public class InactiveDemosCleaner
     {
         private readonly ITimeProvider _timeProvider;
@@ -44,7 +49,7 @@ namespace Instances.Application.Demos.Deletion
             _deletionCalculator = deletionCalculator;
         }
 
-        public async Task CleanAsync()
+        public async Task CleanAsync(DemoCleanupParams demoCleanupParams)
         {
             var eligibleDemos = new DemoFilter
             {
@@ -57,7 +62,13 @@ namespace Instances.Application.Demos.Deletion
 
             var today = _timeProvider.Today();
             var infos = await GetCleanupInfoAsync(usages, today);
-            await ReportCleanupIntentionsAsync(infos);
+            await ReportCleanupIntentionsAsync(infos, demoCleanupParams.IsDryRun);
+
+            if (demoCleanupParams.IsDryRun)
+            {
+                return;
+            }
+
             await DeleteAllAsync(infos.Where(i => i.State == DemoState.DeletionScheduledToday));
         }
 
@@ -93,11 +104,12 @@ namespace Instances.Application.Demos.Deletion
             }
         }
 
-        private Task ReportCleanupIntentionsAsync(IEnumerable<DemoCleanupInfo> info)
+        private Task ReportCleanupIntentionsAsync(IEnumerable<DemoCleanupInfo> info, bool isDryRun)
         {
+            var displayName = isDryRun ? "Suppression des démos à blanc" : "Suppression des démos";
             return _emailService.SendAsync
             (
-                new SenderForm { DisplayName = "Suppression des démos" },
+                new SenderForm { DisplayName = displayName },
                 RecipientForm.FromContact(EmailContact.CloudControl),
                 _demoEmails.GetIntentEmail(_timeProvider.Today(), info).Content
             );
