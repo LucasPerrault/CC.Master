@@ -82,7 +82,7 @@ namespace Users.Infra.Storage.Stores
         public static IQueryable<SimpleUser> WhereMatches(this IQueryable<SimpleUser> users, UsersFilter filter)
         {
             return users
-                .When(filter.IsActive).ApplyWhere(u => u.IsActive)
+                .Apply(filter.IsActive).To(u => u.IsActive)
                 .WhenNotNullOrEmpty(filter.Search).ApplyWhere(u => u.FirstName.Contains(filter.Search) || u.LastName.Contains(filter.Search));
         }
     }

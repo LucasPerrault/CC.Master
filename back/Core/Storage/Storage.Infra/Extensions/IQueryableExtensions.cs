@@ -17,7 +17,7 @@ namespace Storage.Infra.Extensions
                 ? (IConditionalQueryableBuilder<T>)new ConditionalQueryableBuilder<T>(query)
                 : new BypassApplyQueryableBuilder<T>(query);
 
-        public static IConditionalQueryableBuilder<T> When<T>(this IQueryable<T> query, BoolCombination boolCombination) =>
+        public static IConditionalBoolQueryableBuilder<T> Apply<T>(this IQueryable<T> query, BoolCombination boolCombination) =>
             boolCombination switch
             {
                 BoolCombination.Both => new BypassApplyQueryableBuilder<T>(query),
@@ -37,25 +37,39 @@ namespace Storage.Infra.Extensions
             IQueryable<T> ApplyWhere(Expression<Func<T, bool>> expression);
         }
 
-        private class BypassApplyQueryableBuilder<T> : IConditionalQueryableBuilder<T>
+        public interface IConditionalBoolQueryableBuilder<T>
+        {
+            IQueryable<T> To(Expression<Func<T, bool>> expression);
+        }
+
+        private class BypassApplyQueryableBuilder<T> :
+            IConditionalQueryableBuilder<T>,
+            IConditionalBoolQueryableBuilder<T>
         {
             private readonly IQueryable<T> _query;
             public BypassApplyQueryableBuilder(IQueryable<T> query) => _query = query;
             public IQueryable<T> ApplyWhere(Expression<Func<T, bool>> expression) => _query;
+            public IQueryable<T> To(Expression<Func<T, bool>> expression) => ApplyWhere(expression);
         }
 
-        private class ConditionalQueryableBuilder<T> : IConditionalQueryableBuilder<T>
+        private class ConditionalQueryableBuilder<T> :
+            IConditionalQueryableBuilder<T>,
+            IConditionalBoolQueryableBuilder<T>
         {
             private readonly IQueryable<T> _query;
             public ConditionalQueryableBuilder(IQueryable<T> query) => _query = query;
             public IQueryable<T> ApplyWhere(Expression<Func<T, bool>> expression) => _query.Where(expression);
+            public IQueryable<T> To(Expression<Func<T, bool>> expression) => ApplyWhere(expression);
         }
 
-        private class InverseConditionalQueryableBuilder<T> : IConditionalQueryableBuilder<T>
+        private class InverseConditionalQueryableBuilder<T> :
+            IConditionalQueryableBuilder<T>,
+            IConditionalBoolQueryableBuilder<T>
         {
             private readonly IQueryable<T> _query;
             public InverseConditionalQueryableBuilder(IQueryable<T> query) => _query = query;
             public IQueryable<T> ApplyWhere(Expression<Func<T, bool>> expression) => _query.Where(expression.Inverse());
+            public IQueryable<T> To(Expression<Func<T, bool>> expression) => ApplyWhere(expression);
         }
     }
 }
