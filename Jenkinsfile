@@ -17,17 +17,14 @@ node(label: CI.getSelectedNode(script: this)) {
 	def projectTechnicalName = "CC.Master"
 	def slnFilepath = "back\\CC.Master.sln"
 	def repoName = "CC.Master"	
-    def reportFolderName = "CC.Master-${env.BUILD_NUMBER}-${UUID.randomUUID().toString()}"
+	def reportFolderName = "CC.Master-${env.BUILD_NUMBER}-${UUID.randomUUID().toString()}"
+	def frontDistPath = "${WORKSPACE}\\${CI.getPublishDirectory(this)}\\front\\wwwroot"
+	def spaSubPath = "cc-master"
 
 	/////////////////////////////////////////////////
 	// Fin des variables à ajuster pour le projet //
 	/////////////////////////////////////////////////
 
-
-
-	def prepareDirectory = '.prepare';
-	def buildDirectory = '.build';
-	def archiveDirectory = '.jenkins';
 
 	def isPr = false
 	def isMainBranch = false
@@ -53,38 +50,20 @@ node(label: CI.getSelectedNode(script: this)) {
 				slackBuildStart channel: slackChannel
 			}
 
-			loggableStage('1. Cleanup') {
-				if(fileExists(prepareDirectory)) {
-					dir(prepareDirectory) {
-						deleteDir()
-					}
-				}
-				if(fileExists(buildDirectory)) {
-					dir(buildDirectory) {
-						deleteDir()
-					}
-				}
-				if(fileExists(archiveDirectory)) {
-					dir(archiveDirectory) {
-						deleteDir()
-					}
-				}
-			}
+			cleanJenkins()
 
-			loggableStage('2. Prepare') {
-				// git
+			loggableStage('Checkout') {
 				scmVars = checkout scm
 				slackBuildStartUpdate scmVars: scmVars
-
-				computeVersion()
-
-				installDevtools()
-
-				setupFront(nodeJsVersion: "Node LTS v12.x.y")
-
 			}
-			
+
+			computeVersion()
+			installDevtools()
+
+			setupFront(nodeJsVersion: "Node LTS v12.x.y")
 			cleanBack(slnFilepath: slnFilepath)
+			restoreFront(spaSubPath: spaSubPath)
+
 			lokalise()
 
 			if(isPr || isMainBranch) {
@@ -120,13 +99,15 @@ node(label: CI.getSelectedNode(script: this)) {
 			}
 
 			if (!isPr) {
-				loggableStage('5. Build') {
-					// back
-					def webProjFile = findFiles(glob: "**/CloudControl.Web.csproj").first().path
-                    publishBack(startupProjFilepath: webProjFile, framework: "netcoreapp3.1")
-				}
+				// back
+				def webProjFile = findFiles(glob: "**/CloudControl.Web.csproj").first().path
+				publishBack(startupProjFilepath: webProjFile, framework: "netcoreapp3.1")
 
-				archiveElements(back: true, front: false)
+				sentryGenerate(spaSubPath: spaSubPath)
+				buildFront(spaSubPath: spaSubPath, outputPath: frontDistPath)
+				sentryPost(distPath: frontDistPath, spaSubPath: spaSubPath)
+
+				archiveElements(back: true, front: true)
 			}
 		}
 	} catch(err) {

@@ -1,0 +1,55 @@
+<div class="navSide-mainSection">
+  <nav class="navSide-scrollWrapper">
+    <ng-container *ngFor="let tab of tabs">
+      <div class="navSide-item" *ngIf="!tab.children; else withChildren">
+        <a *ngIf="!tab.isLegacy; else legacyLink" [routerLink]="[tab.url]" [routerLinkActive]="'is-active'"
+           class="navSide-item-link">
+          <span aria-hidden="true" class="lucca-icon" [ngClass]="getIconClass(tab)"></span>
+          <span class=" navSide-item-link-title">{{ tab.name | translate }}</span>
+        </a>
+
+        <ng-template #legacyLink>
+          <a [attr.href]="tab.url" class="navSide-item-link">
+            <span aria-hidden="true" class="lucca-icon" [ngClass]="getIconClass(tab)"></span>
+            <span class="navSide-item-link-title">{{ tab.name | translate }}</span>
+          </a>
+        </ng-template>
+      </div>
+
+      <ng-template #withChildren>
+        <div class="navSide-item is-active" [class.is-open]="isOpen(tab)">
+          <a class="navSide-item-link" (click)="toggleAndRefreshAsync(tab)">
+            <span aria-hidden="true" class="lucca-icon" [ngClass]="getIconClass(tab)"></span>
+            <span class=" navSide-item-link-title">{{ tab.name | translate }}</span>
+            <span aria-hidden="true" class="navSide-item-arrow lucca-icon icon-arrowEast"></span>
+          </a>
+          <nav class="navSide-item-subMenu">
+            <ng-container *ngFor="let child of tab.children">
+              <a *ngIf="!child.isLegacy; else legacyLink" [routerLink]="[tab.url, child.url]"
+                 [routerLinkActive]="'is-active'" class="navSide-item-subMenu-link">
+                {{ child.name | translate }}
+                <span class="navSide-item-alert" *ngIf="getAlert(tab, child); let alert">{{ alert }}</span>
+              </a>
+
+              <ng-template #legacyLink>
+                <a [attr.href]="getChildrenUrl(tab, child)" class="navSide-item-subMenu-link">
+                  {{ child.name | translate }}
+                  <span class="navSide-item-alert" *ngIf="getAlert(tab, child); let alert">{{ alert }}</span>
+                </a>
+              </ng-template>
+            </ng-container>
+          </nav>
+        </div>
+      </ng-template>
+    </ng-container>
+  </nav>
+</div>
+
+<div class="navSide-bottomSection">
+  <div class="navSide-item">
+    <a class="navSide-item-link" (click)="toggleHelp()">
+      <span aria-hidden="true" class="lucca-icon icon-help"></span>
+      <span class="navSide-item-link-title">{{ "front_navigation_helpTab" | translate }}</span>
+    </a>
+  </div>
+</div>

@@ -13,11 +13,11 @@ namespace Proxy.Tests
         [InlineData("/api/workerprocesses/blablabla")]
         [InlineData("/")]
         [InlineData("")]
-        public void ShouldRedirectApiCalls(string url)
+        public void ShouldRedirect(string url)
         {
             var context = new DefaultHttpContext();
             context.Request.Path = url;
-            Assert.True(context.IsRedirectableCall());
+            Assert.True(context.ShouldRedirect());
         }
 
         [Theory]
@@ -27,11 +27,12 @@ namespace Proxy.Tests
         [InlineData("/api")]
         [InlineData("/ping")]
         [InlineData("/healthz")]
-        public void ShouldNotRedirectApiCalls(string url)
+        [InlineData("/logs")]
+        public void ShouldNotRedirect(string url)
         {
             var context = new DefaultHttpContext();
             context.Request.Path = url;
-            Assert.False(context.IsRedirectableCall());
+            Assert.False(context.ShouldRedirect());
         }
     }
 }

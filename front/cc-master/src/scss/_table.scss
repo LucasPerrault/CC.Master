@@ -1,0 +1,16 @@
+.table.mod-stickyFooter {
+  position: sticky;
+  bottom: 0;
+  border-top: 1px solid _theme("commons.divider.color");
+  margin-top: -1px;
+}
+
+.table-body-row-cell {
+  &.size-smallest { min-width: 50px; }
+  &.size-smaller { min-width: 100px; }
+  &.size-small { min-width: 150px; }
+  &.size-medium { min-width: 200px; }
+  &.size-big { min-width: 300px; }
+  &.size-bigger { min-width: 350px; }
+  &.size-biggest { min-width: 400px; }
+}

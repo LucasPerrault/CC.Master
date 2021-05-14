@@ -1,0 +1,42 @@
+<table class="table">
+  <thead class="table-head">
+  <tr class="table-head-row u-nowrap">
+    <th class="table-head-row-cell mod-sortable"
+        [class.is-sorted-descending]="activeAscOrDescIcon('userId', sortOrder.Asc)"
+        [class.is-sorted-ascending]="activeAscOrDescIcon('userId', sortOrder.Desc)"
+        (click)="sortBy('userId')">
+      {{ 'front_logPage_columnTable_collaborator' | translate }}
+    </th>
+    <th class="table-head-row-cell">{{ 'front_logPage_columnTable_action' | translate }}</th>
+    <th class="table-head-row-cell">{{ 'front_logPage_columnTable_instance' | translate }}</th>
+    <th class="table-head-row-cell mod-sortable"
+        [class.is-sorted-descending]="activeAscOrDescIcon('createdOn', sortOrder.Asc)"
+        [class.is-sorted-ascending]="activeAscOrDescIcon('createdOn', sortOrder.Desc)"
+        (click)="sortBy('createdOn')">{{ 'front_logPage_columnTable_date' | translate }}</th>
+    <th class="table-head-row-cell">{{ 'front_logPage_columnTable_anonymized' | translate }}</th>
+    <th class="table-head-row-cell">{{ 'front_logPage_columnTable_justification' | translate }}</th>
+  </tr>
+  </thead>
+  <tbody class="table-body">
+  <tr *ngFor="let log of logs" class="table-body-row">
+    <td class="table-body-row-cell">{{ log.user.name }}</td>
+    <td class="table-body-row-cell size-bigger">{{ log.activity }}</td>
+    <td class="table-body-row-cell">{{ getInstanceName(log.environment) }}</td>
+    <td class="table-body-row-cell size-medium">
+      {{ log.createdOn | date: 'shortDate' }} {{ log.createdOn | date: 'mediumTime' }}
+    </td>
+    <td class="table-body-row-cell size-smallest">
+      <span *ngIf="log.isAnonymizedData; else nonAnonymized">{{ "front_logPage_columnTable_isAnonymized_true" | translate }}</span>
+      <ng-template #nonAnonymized>{{ "front_logPage_columnTable_isAnonymized_false" | translate }}</ng-template>
+    </td>
+    <td class="table-body-row-cell size-smaller">{{ getNonAnonymizedActionExplanation(log) }}</td>
+  </tr>
+  </tbody>
+</table>
+
+<div *ngIf="isLoadingMore" class="loading u-right"></div>
+
+<section *ngIf="!logs.length && isIdle" class="emptyState">
+  <h3 class="emptyState-title">{{ 'front_logPage_emptyState_title' | translate }}</h3>
+  <p class="emptyState-description">{{ 'front_logPage_emptyState_information' | translate }}</p>
+</section>
