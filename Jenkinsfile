@@ -58,57 +58,65 @@ node(label: CI.getSelectedNode(script: this)) {
 			}
 
 			computeVersion()
-			installDevtools()
-
-			setupFront(nodeJsVersion: "Node LTS v12.x.y")
-			cleanBack(slnFilepath: slnFilepath)
-			restoreFront(spaSubPath: spaSubPath)
 
 			lokalise()
 
-			if(isPr || isMainBranch) {
-				sonar(
-					repoName: repoName,
-					sonarProjectName: projectTechnicalName,
-					exclusions: "**/Migrations/**",
-				) {
-					cleanBack(slnFilepath: slnFilepath)
-					buildBack(slnFilepath: slnFilepath)
-					testBack(slnFilepath: slnFilepath)
-				}
-
-				loggableStage('Living Doc') {
-					dir("${WORKSPACE}@tmp") {
-						bat "dotnet tool install --no-cache --tool-path=${WORKSPACE}\\.jenkins\\tools SpecFlow.Plus.LivingDoc.CLI"
+			parallel(
+				front: {
+					if (!isPr) {
+						setupFront(nodeJsVersion: "Node LTS v12.x.y")
+						restoreFront(spaSubPath: spaSubPath)
+						sentryGenerate(spaSubPath: spaSubPath)
+						buildFront(spaSubPath: spaSubPath, outputPath: frontDistPath)
+						sentryPost(distPath: frontDistPath, spaSubPath: spaSubPath)
 					}
+				},
+				back: {
+					cleanBack(slnFilepath: slnFilepath)
+					if(isPr || isMainBranch) {
+						sonar(
+							repoName: repoName,
+							sonarProjectName: projectTechnicalName,
+							exclusions: "**/Migrations/**",
+						) {
+							cleanBack(slnFilepath: slnFilepath)
+							buildBack(slnFilepath: slnFilepath)
+							testBack(slnFilepath: slnFilepath)
+						}
 
-					bat """
-						node back\\Tools\\livingdoc.js
-						livingdoc feature-folder back\\ -t testexecution.json --title ${repoName}
-						exit /b 0
-					"""
+						loggableStage('Living Doc') {
+							dir("${WORKSPACE}@tmp") {
+								bat "dotnet tool install --no-cache --tool-path=${WORKSPACE}\\.jenkins\\tools SpecFlow.Plus.LivingDoc.CLI"
+							}
 
-					bat """
-						mkdir \\\\labs2\\c\$\\d\\sites\\recette-auto\\${reportFolderName}\\
-						copy LivingDoc.html \\\\labs2\\c\$\\d\\sites\\recette-auto\\${reportFolderName}\\
-						echo "https://recette-auto.lucca.fr/${reportFolderName}/LivingDoc.html"
-						exit /b 0
-					"""
-					slackWarning channel: "cc-ci-cd", message: "${env.BRANCH_NAME} (livingdoc)\n https://recette-auto.lucca.fr/${reportFolderName}/LivingDoc.html"
-				}				
-			}
+							bat """
+								node back\\Tools\\livingdoc.js
+								livingdoc feature-folder back\\ -t testexecution.json --title ${repoName}
+								exit /b 0
+							"""
+
+							bat """
+								mkdir \\\\labs2\\c\$\\d\\sites\\recette-auto\\${reportFolderName}\\
+								copy LivingDoc.html \\\\labs2\\c\$\\d\\sites\\recette-auto\\${reportFolderName}\\
+								echo "https://recette-auto.lucca.fr/${reportFolderName}/LivingDoc.html"
+								exit /b 0
+							"""
+							slackWarning channel: "cc-ci-cd", message: "${env.BRANCH_NAME} (livingdoc)\n https://recette-auto.lucca.fr/${reportFolderName}/LivingDoc.html"
+						}				
+					}
+					if (!isPr) {
+						// back
+						def webProjFile = findFiles(glob: "**/CloudControl.Web.csproj").first().path
+						publishBack(startupProjFilepath: webProjFile, framework: "netcoreapp3.1")
+					}
+				},
+				failFast: true
+			)
 
 			if (!isPr) {
-				// back
-				def webProjFile = findFiles(glob: "**/CloudControl.Web.csproj").first().path
-				publishBack(startupProjFilepath: webProjFile, framework: "netcoreapp3.1")
-
-				sentryGenerate(spaSubPath: spaSubPath)
-				buildFront(spaSubPath: spaSubPath, outputPath: frontDistPath)
-				sentryPost(distPath: frontDistPath, spaSubPath: spaSubPath)
-
 				archiveElements(back: true, front: true)
 			}
+
 		}
 	} catch(err) {
 		println err
