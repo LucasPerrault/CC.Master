@@ -1,15 +1,17 @@
-﻿using Instances.Application.Demos;
+using Authentication.Domain;
+using Instances.Application.Demos;
 using Instances.Domain.Demos;
+using Instances.Domain.Demos.Filtering;
 using Instances.Domain.Instances;
 using Instances.Domain.Instances.Models;
 using Instances.Domain.Shared;
-using MockQueryable.Moq;
+using Lucca.Core.Rights.Abstractions;
 using Moq;
+using Rights.Domain;
+using Rights.Domain.Abstractions;
+using Rights.Domain.Filtering;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Security.Claims;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -19,41 +21,48 @@ namespace Instances.Application.Tests
     {
         private readonly Mock<IDemosStore> _demosStoreMock;
         private readonly Mock<IInstancesStore> _instancesStoreMock;
-        private readonly Mock<IDemoRightsFilter> _rightsFilterMock;
+        private readonly Mock<IRightsService> _rightsServiceMock;
         private readonly Mock<ICcDataService> _iCcDataServiceMock;
 
         public DemosRepositoryTests()
         {
             _demosStoreMock = new Mock<IDemosStore>();
             _instancesStoreMock = new Mock<IInstancesStore>();
-            _rightsFilterMock = new Mock<IDemoRightsFilter>();
+            _rightsServiceMock = new Mock<IRightsService>();
             _iCcDataServiceMock = new Mock<ICcDataService>();
         }
 
         [Fact]
         public async Task ShouldDeleteOnLocalAndRemoteAsync()
         {
-            var demosRepo = new DemosRepository
-            (
-                new ClaimsPrincipal(),
+            var claimsPrincipal = new CloudControlApiKeyClaimsPrincipal(new ApiKey
+            {
+                Name = "Mocked Api Key",
+                Token = Guid.NewGuid()
+            });
+
+            var demosRepo = new DemosRepository(
+                claimsPrincipal,
                 _demosStoreMock.Object,
                 _instancesStoreMock.Object,
-                _rightsFilterMock.Object,
+                new DemoRightsFilter(_rightsServiceMock.Object),
                 _iCcDataServiceMock.Object
             );
 
-            var demos = new List<Demo>()
-            {
-                new Demo
-                {
-                    Id = 12,
-                    Subdomain = "aperture-science",
-                    Instance = new Instance { Id = 123456, IsProtected = false, Cluster = "c1000"}
-                }
-            };
+            _rightsServiceMock
+                .Setup(s => s.GetUserOperationHighestScopeAsync(Operation.Demo))
+                .ReturnsAsync(Scope.AllDepartments);
 
-            _demosStoreMock.Setup(s => s.GetAsync(It.IsAny<Expression<Func<Demo, bool>>[]>()))
-                .Returns(Task.FromResult(demos.AsQueryable().BuildMock().Object));
+            var demo = new Demo
+            {
+                Id = 12,
+                Subdomain = "aperture-science",
+                Instance = new Instance { Id = 123456, IsProtected = false, Cluster = "c1000" }
+            };
+            var demos = new List<Demo> { demo };
+
+            _demosStoreMock.Setup(s => s.GetActiveByIdAsync(It.IsAny<int>(), It.IsAny<AccessRight>()))
+                .ReturnsAsync(demo);
 
             await demosRepo.DeleteAsync(12);
 

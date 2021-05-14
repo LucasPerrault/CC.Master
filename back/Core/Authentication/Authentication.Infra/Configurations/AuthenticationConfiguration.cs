@@ -11,11 +11,5 @@ namespace Authentication.Infra.Configurations
         public string RedirectEndpointPath { get; set; }
         public string LogoutEndpointPath { get; set; }
         public Guid ApiKeysFetcherToken { get; set; }
-        public HangfireAuthenticationConfiguration Hangfire { get; set; }
-    }
-
-    public class HangfireAuthenticationConfiguration
-    {
-        public Guid SharedSecret { get; set; }
     }
 }

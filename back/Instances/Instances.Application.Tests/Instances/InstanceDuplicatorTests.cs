@@ -1,18 +1,9 @@
-using Instances.Application.Demos;
-using Instances.Application.Demos.Duplication;
 using Instances.Application.Instances;
-using Instances.Domain.Demos;
 using Instances.Domain.Instances;
-using Instances.Domain.Instances.Models;
 using Instances.Domain.Shared;
 using Instances.Infra.DataDuplication;
-using MockQueryable.Moq;
 using Moq;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Security.Claims;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -44,7 +35,7 @@ namespace Instances.Application.Tests
                     MonolithJobPath = "MO-NO-LI-TH"
                 }),
                 _ccDataServiceMock.Object);
-            await instanceDuplicator.RequestRemoteDuplicationAsync(duplication, DemoDuplicationRequestSource.Api);
+            await instanceDuplicator.RequestRemoteDuplicationAsync(duplication, "callback/path");
 
             _ccDataServiceMock.Verify(ccDataService => ccDataService.StartDuplicateInstanceAsync(It.IsAny<DuplicateInstanceRequestDto>(), duplication.TargetCluster, It.IsAny<string>()), Times.Once);
         }

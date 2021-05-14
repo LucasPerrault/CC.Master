@@ -1,7 +1,6 @@
 using Cache.Abstractions;
 using Instances.Domain.Demos;
 using Moq;
-using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Xunit;
