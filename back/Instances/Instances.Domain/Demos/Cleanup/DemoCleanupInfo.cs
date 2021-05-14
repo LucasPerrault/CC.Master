@@ -47,10 +47,5 @@ namespace Instances.Domain.Demos.Cleanup
             State = errorState;
             Message = exception.Message;
         }
-
-        public bool ShouldBeReported()
-        {
-            return State != DemoState.AliveAndWell;
-        }
     }
 }

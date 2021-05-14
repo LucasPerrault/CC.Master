@@ -1,3 +1,5 @@
+using Instances.Application.Instances;
+using Instances.Domain.Instances;
 using Remote.Infra.Extensions;
 using Remote.Infra.Services;
 using System;
@@ -6,10 +8,6 @@ using System.Threading.Tasks;
 
 namespace Instances.Infra.Instances.Services
 {
-    public interface IUsersPasswordResetService
-    {
-        Task ResetPasswordAsync(Uri uri, string password);
-    }
 
     public class UsersPasswordResetService : IUsersPasswordResetService
     {

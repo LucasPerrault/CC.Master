@@ -17,7 +17,6 @@ namespace Authentication.Web
     {
         public static void ConfigureServices(IServiceCollection services, AuthenticationConfiguration config)
         {
-            services.AddSingleton(new HangfireAuthorizationService(config.Hangfire, new SignatureAuthenticationService()));
             services.AddSingleton(config);
             services.AddTransient
                 (

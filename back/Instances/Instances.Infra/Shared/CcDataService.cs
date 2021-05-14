@@ -98,6 +98,7 @@ namespace Instances.Infra.Shared
             return $"Cloudcontrol application={_ccDataConfiguration.InboundToken}";
         }
 
+        // Changements à reporter dans le CClithe
         public Uri GetCcDataBaseUri(string cluster)
         {
             var parsedCluster = GetParsedCluster(cluster);
@@ -113,6 +114,7 @@ namespace Instances.Infra.Shared
             return GetClusterName(parsedCluster) + GetClusterNumber(parsedCluster);
         }
 
+        // Changements à reporter dans le CClithe
         private string GetCcDataSubdomainPart()
         {
             return _ccDataConfiguration.ShouldTargetBeta
@@ -120,13 +122,14 @@ namespace Instances.Infra.Shared
                 : "cc-data";
         }
 
+        // Changements à reporter dans le CClithe
         private static string GetClusterName(ParsedCluster context)
         {
             return context.Name switch
             {
                 "cluster" => "c",
                 "demo" => "dm",
-                "preview" => "pm",
+                "preview" => "pw",
                 "formation" => "fm",
                 "green" => "ch",
                 "security" => "se",
@@ -135,6 +138,7 @@ namespace Instances.Infra.Shared
             };
         }
 
+        // Changements à reporter dans le CClithe
         private string GetClusterNumber(ParsedCluster context)
         {
             return context.Name switch

@@ -6,8 +6,8 @@ using Instances.Domain.Demos;
 using Instances.Infra.DataDuplication;
 using Instances.Infra.Demos;
 using Instances.Infra.Instances;
-using Instances.Infra.WsAuth;
 using Instances.Infra.Shared;
+using Instances.Infra.WsAuth;
 using Instances.Web;
 using IpFilter.Infra.Storage;
 using IpFilter.Web;
@@ -71,10 +71,6 @@ namespace CloudControl.Web.Tests.Mocks
                     ServerUri = new Uri("https://mocked-partenaires.local"),
                     LogoutEndpointPath = "/logout",
                     RedirectEndpointPath = "/login",
-                    Hangfire = new HangfireAuthenticationConfiguration
-                    {
-                        SharedSecret = Guid.Empty
-                    }
                 }
             });
         }

@@ -6,7 +6,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\..\..\Core\Authentication\Authentication.Domain\Authentication.Domain.csproj" />
-      <ProjectReference Include="..\Environments.Infra\Environments.Infra.csproj" />
+      <ProjectReference Include="..\Environments.Domain\Environments.Domain.csproj" />
     </ItemGroup>
 
 </Project>

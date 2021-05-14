@@ -1,3 +1,4 @@
+using Instances.Domain.Instances;
 using Instances.Infra.Resources;
 using Lucca.Core.Shared.Domain.Exceptions;
 using System;
@@ -6,12 +7,6 @@ using System.Text.RegularExpressions;
 
 namespace Instances.Infra.Instances.Services
 {
-    public interface IUsersPasswordHelper
-    {
-        void ThrowIfInvalid(string password);
-        string Generate();
-    }
-
     public class UsersPasswordHelper : IUsersPasswordHelper
     {
         private static readonly Regex Regex = new Regex

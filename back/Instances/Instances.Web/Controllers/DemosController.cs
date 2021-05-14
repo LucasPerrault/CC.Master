@@ -1,7 +1,9 @@
 using Instances.Application.Demos;
 using Instances.Application.Demos.Deletion;
+using Instances.Application.Demos.Dtos;
 using Instances.Application.Demos.Duplication;
 using Instances.Domain.Demos;
+using Instances.Web.Controllers.Dtos;
 using Lucca.Core.Api.Abstractions.Paging;
 using Lucca.Core.Api.Web.ModelBinding.Sorting;
 using Microsoft.AspNetCore.Mvc;
@@ -18,32 +20,42 @@ namespace Instances.Web.Controllers
     {
         private readonly DemosRepository _demosRepository;
         private readonly DemoDuplicator _duplicator;
+        private readonly IDemoDuplicationCompleter _duplicationCompleter;
         private readonly DeletionCallbackNotifier _notifier;
 
         public DemosController
         (
             DemosRepository demosRepository,
             DemoDuplicator duplicator,
-            DeletionCallbackNotifier notifier
+            DeletionCallbackNotifier notifier,
+            IDemoDuplicationCompleter duplicationCompleter
         )
         {
             _demosRepository = demosRepository;
             _duplicator = duplicator;
             _notifier = notifier;
+            _duplicationCompleter = duplicationCompleter;
         }
 
         [HttpGet]
         [ForbidIfMissing(Operation.Demo)]
         public Task<Page<Demo>> GetAsync([FromQuery]DemoListQuery query)
         {
-            return _demosRepository.GetDemosAsync(query);
+            return _demosRepository.GetDemosAsync(query.Page, query.ToDemoFilter());
+        }
+
+        [HttpPut("{id:int}")]
+        [ForbidIfMissing(Operation.Demo)]
+        public Task<Demo> PutAsync([FromRoute]int id, [FromBody]DemoPutPayload payload)
+        {
+            return _demosRepository.UpdateDemoAsync(id, payload);
         }
 
         [HttpPost("duplicate")]
         [ForbidIfMissing(Operation.Demo)]
         public Task<DemoDuplication> Duplicate(DemoDuplicationRequest request)
         {
-            return _duplicator.CreateDuplicationAsync(request, DemoDuplicationRequestSource.Api);
+            return _duplicator.CreateDuplicationAsync(request);
         }
 
         [HttpDelete("{id:int}")]
@@ -55,9 +67,13 @@ namespace Instances.Web.Controllers
 
         [HttpPost("duplications/{duplicationId:guid}/notify")]
         [ForbidIfMissing(Operation.Demo)]
-        public Task DuplicationReport([FromRoute]Guid duplicationId, [FromBody]DuplicationCallbackPayload payload)
+        public Task DuplicationReport
+        (
+            [FromRoute]Guid duplicationId,
+            [FromBody]DuplicationCallbackPayload payload
+        )
         {
-            return _duplicator.MarkDuplicationAsCompletedAsync(duplicationId, payload.Success);
+            return _duplicationCompleter.MarkDuplicationAsCompletedAsync(duplicationId, payload.Success);
         }
 
         [HttpPost("deletion-report/{clusterName}")]
@@ -66,11 +82,5 @@ namespace Instances.Web.Controllers
         {
             return _notifier.NotifyDemoDeletionReportAsync(clusterName, deletionReport);
         }
-    }
-
-    public class DuplicationCallbackPayload
-    {
-        public bool Success { get; set; }
-        public string Error { get; set; }
     }
 }

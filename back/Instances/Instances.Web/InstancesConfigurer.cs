@@ -5,6 +5,7 @@ using Instances.Application.Demos.Emails;
 using Instances.Application.Instances;
 using Instances.Domain.Demos;
 using Instances.Domain.Demos.Cleanup;
+using Instances.Domain.Demos.Filtering;
 using Instances.Domain.Instances;
 using Instances.Domain.Shared;
 using Instances.Infra.DataDuplication;
@@ -55,13 +56,16 @@ namespace Instances.Web
             services.AddSingleton<IDemoDeletionCalculator, DemoDeletionCalculator>();
             services.AddSingleton<ISqlScriptPicker, SqlScriptPicker>();
 
+            services.AddScoped<InactiveDemosCleaner>();
             services.AddScoped<InstancesDuplicator>();
             services.AddScoped<DemoDuplicator>();
+            services.AddScoped<HubspotDemoDuplicator>();
+            services.AddScoped<IDemoDuplicationCompleter, DemoDuplicationCompleter>();
 
             services.AddScoped<IDemosStore, DemosStore>();
             services.AddScoped<IInstanceDuplicationsStore, InstanceDuplicationsStore>();
             services.AddScoped<IDemoDuplicationsStore, DemoDuplicationsStore>();
-            services.AddScoped<IDemoRightsFilter, DemoRightsFilter>();
+            services.AddScoped<DemoRightsFilter>();
             services.AddScoped<DemosRepository>();
             services.AddScoped<InstanceDuplicationsRepository>();
             services.AddScoped<InstanceDuplicationsRepository>();
@@ -120,7 +124,8 @@ namespace Instances.Web
             luccaApiBuilder.ConfigureSorting<Demo>()
                 .Allow(d => d.DeletionScheduledOn)
                 .Allow(d => d.Id)
-                .Allow(d => d.CreatedAt);
+                .Allow(d => d.CreatedAt)
+                .Allow(d => d.Subdomain);
             return luccaApiBuilder;
         }
     }

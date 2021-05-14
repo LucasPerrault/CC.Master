@@ -1,5 +1,5 @@
-﻿using Instances.Domain.Demos;
-using Instances.Infra.Instances.Services;
+﻿using Instances.Application.Instances;
+using Instances.Domain.Demos;
 using Lucca.Core.Shared.Domain.Exceptions;
 using System.Threading.Tasks;
 

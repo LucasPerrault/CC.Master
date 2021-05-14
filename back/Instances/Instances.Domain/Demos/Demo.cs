@@ -1,6 +1,7 @@
 using Distributors.Domain.Models;
 using Instances.Domain.Instances.Models;
 using System;
+using Users.Domain;
 
 namespace Instances.Domain.Demos
 {
@@ -14,6 +15,7 @@ namespace Instances.Domain.Demos
         public DateTime DeletionScheduledOn { get; set; }
         public bool IsActive { get; set; }
         public int AuthorId { get; set; }
+        public SimpleUser Author { get; set; }
         public int InstanceID { get; set; }
         public Instance Instance { get; set; }
         public string DistributorID { get; set; }
