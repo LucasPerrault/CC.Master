@@ -193,8 +193,7 @@ namespace CloudControl.Web.Tests.Mocks
                     },
                     WsAuth = new WsAuthConfiguration
                     {
-                        ServerUri = new Uri("https://mocked-ws-auth.ilucca.local"),
-                        EndpointPath = "/sync",
+                        ServerApiEndpoint = "https://mocked-ws-auth.ilucca.local/sync-v2/api",
                         Token = new Guid("deadbeef-0000-0000-0000-000000000000")
                     },
                     CcData = new CcDataConfiguration
