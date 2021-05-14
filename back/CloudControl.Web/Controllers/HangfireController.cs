@@ -20,9 +20,9 @@ namespace CloudControl.Web.Controllers
         }
 
         [HttpPost("cleanup-demos")]
-        public async Task CleanupDemosAsync()
+        public async Task CleanupDemosAsync([FromQuery]bool isDryRun)
         {
-            await _cleaner.CleanAsync();
+            await _cleaner.CleanAsync(new DemoCleanupParams { IsDryRun = isDryRun});
         }
 
         [HttpPost("sync-users")]
