@@ -99,7 +99,7 @@ namespace Instances.Web
             services.AddHttpClient<WsAuthRemoteService>(client =>
             {
                 client.WithUserAgent(nameof(WsAuthRemoteService))
-                    .WithBaseAddress(configuration.WsAuth.ServerUri, configuration.WsAuth.EndpointPath)
+                    .WithBaseAddress(configuration.WsAuth.ServerApiEndpoint)
                     .WithAuthScheme("Lucca").AuthenticateAsWebService(configuration.WsAuth.Token);
             });
 
