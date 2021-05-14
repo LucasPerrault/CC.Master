@@ -14,7 +14,9 @@ export class OperationsPageGuard implements CanActivate {
 
   canActivate(next: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean | UrlTree {
     const navigationTabs = next.data.tabs as INavigationTab[] | [];
-    const activatedTab = navigationTabs.find((tab: INavigationTab) => tab.url === state.url.slice(1));
+
+    const activatedTabPath = next.firstChild?.routeConfig.path;
+    const activatedTab = navigationTabs.find((tab: INavigationTab) => tab.url === activatedTabPath);
 
     if (!activatedTab) {
       return this.router.parseUrl(NoNavPath.NotFound);

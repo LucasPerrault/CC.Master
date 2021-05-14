@@ -34,6 +34,7 @@ namespace Core.Proxy.Infra.Extensions
             "/warmup",
 
             // front
+            "/cc-master",
             "/logs",
         };
 

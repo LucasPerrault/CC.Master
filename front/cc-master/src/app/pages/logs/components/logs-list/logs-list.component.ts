@@ -6,6 +6,7 @@ import { EnvironmentLogMessageType, IEnvironment, IEnvironmentLog } from '@cc/do
 @Component({
   selector: 'cc-logs-list',
   templateUrl: './logs-list.component.html',
+  styleUrls: ['./logs-list.component.scss'],
 })
 export class LogsListComponent implements OnInit {
   @Input() public logs: IEnvironmentLog[];
@@ -43,20 +44,11 @@ export class LogsListComponent implements OnInit {
     this.updateSort.emit(this.sortParams);
   }
 
-  public get isLoading(): boolean {
-    return this.isUpdateData || this.isLoadMore;
-  }
-
   public get isIdle(): boolean {
     return this.state === PaginatedListState.Idle || this.state === PaginatedListState.Error;
   }
 
-  public get isUpdateData(): boolean {
-    return this.state === PaginatedListState.Update;
-  }
-
-  public get isLoadMore(): boolean {
+  public get isLoadingMore(): boolean {
     return this.state === PaginatedListState.LoadMore;
   }
-
 }

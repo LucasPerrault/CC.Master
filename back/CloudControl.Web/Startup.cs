@@ -38,11 +38,8 @@ namespace CloudControl.Web
 
             app.UseHealthChecks();
 
-			app.UseFrontStaticFiles();
-			app.UseFileServer();
-			
-			app.UseCertificateForwarding();
-			app.UseRouting();
+            app.UseCertificateForwarding();
+            app.UseRouting();
 
             app.UseHttpsRedirection();
 
@@ -51,6 +48,9 @@ namespace CloudControl.Web
             app.UseLegacyCloudControlWebSocketProxy();
             app.UseLegacyCloudControlHttpProxy();
 
+            app.UseFrontStaticFiles();
+            app.UseFileServer();
+
             app.UseAuthentication();
 
             app.UseMiddleware<UnauthorizedAccessMiddleware>();
@@ -58,8 +58,8 @@ namespace CloudControl.Web
 
             app.UseEndpoints(e => e.MapControllers());
 
-			app.UseMiddleware<FrontRequestFilterMiddleware>();
-			app.UseFrontApplication(env);
-		}
-	}
+            app.UseMiddleware<FrontRequestFilterMiddleware>();
+            app.UseFrontApplication(env);
+        }
+    }
 }

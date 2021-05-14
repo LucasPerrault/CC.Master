@@ -1,5 +1,4 @@
-import { DOCUMENT } from '@angular/common';
-import { Directive, EventEmitter, HostListener, Inject, Output } from '@angular/core';
+import { Directive, ElementRef, EventEmitter, HostListener, Output } from '@angular/core';
 
 @Directive({
   selector: '[ccInfiniteScroll]',
@@ -7,10 +6,10 @@ import { Directive, EventEmitter, HostListener, Inject, Output } from '@angular/
 export class InfiniteScrollDirective {
   @Output() bottomReached: EventEmitter<void> = new EventEmitter<void>();
 
-  constructor(@Inject(DOCUMENT) private document: Document) {}
+  constructor(private element: ElementRef) {}
 
-  @HostListener('document:scroll') public scroll(): void {
-    const isBottomReached = this.getScrollPosition() >= this.document.documentElement.scrollHeight;
+  @HostListener('scroll') public scroll(): void {
+    const isBottomReached = this.getScrollPosition() >= this.element.nativeElement.scrollHeight;
 
     if (isBottomReached) {
       this.bottomReached.emit();
@@ -18,6 +17,6 @@ export class InfiniteScrollDirective {
   }
 
   private getScrollPosition(): number {
-    return Math.ceil(this.document.documentElement.offsetHeight + this.document.scrollingElement.scrollTop);
+    return Math.ceil(this.element.nativeElement.offsetHeight + this.element.nativeElement.scrollTop);
   }
 }
