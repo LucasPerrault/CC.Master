@@ -122,7 +122,7 @@ namespace Instances.Application.Specflow.Tests.Demos.Steps
 
             var rightsServiceMock = new Mock<IRightsService>();
             rightsServiceMock.Setup(rs => rs.GetUserOperationHighestScopeAsync(It.IsAny<Operation>()))
-                .ReturnsAsync((Operation op) => _demosContext.OperationsWithScope[op]);
+                .ReturnsAsync((Operation op) => _demosContext.TestPrincipal.OperationsWithScope[op]);
 
             var envStoreMock = new Mock<IEnvironmentsStore>();
             var ccDataServiceMock = new Mock<ICcDataService>();
@@ -130,7 +130,7 @@ namespace Instances.Application.Specflow.Tests.Demos.Steps
 
             return new DemoDuplicator
                 (
-                    _demosContext.Principal,
+                    _demosContext.TestPrincipal.Principal,
                     new InstancesDuplicator(new SqlScriptPicker(
                         new SqlScriptPickerConfiguration
                         {
@@ -172,7 +172,7 @@ namespace Instances.Application.Specflow.Tests.Demos.Steps
 
             var rightsServiceMock = new Mock<IRightsService>();
             rightsServiceMock.Setup(rs => rs.GetUserOperationHighestScopeAsync(It.IsAny<Operation>()))
-                .ReturnsAsync((Operation op) => _demosContext.OperationsWithScope[op]);
+                .ReturnsAsync((Operation op) => _demosContext.TestPrincipal.OperationsWithScope[op]);
 
             return new DemoDuplicationCompleter
                 (
