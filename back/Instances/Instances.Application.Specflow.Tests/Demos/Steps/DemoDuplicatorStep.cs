@@ -84,11 +84,11 @@ namespace Instances.Application.Specflow.Tests.Demos.Steps
             }
             catch (ForbiddenException e)
             {
-                _demosContext.ExceptionResult = e;
+                _demosContext.Results.Exception = e;
             }
             catch (BadRequestException e)
             {
-                _demosContext.ExceptionResult = e;
+                _demosContext.Results.Exception = e;
             }
         }
 

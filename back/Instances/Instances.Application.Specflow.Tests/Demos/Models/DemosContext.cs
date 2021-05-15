@@ -14,9 +14,6 @@ namespace Instances.Application.Specflow.Tests.Demos.Models
         public InstancesDbContext DbContext { get; set; }
         public ClaimsPrincipal Principal { get; set; }
         public Dictionary<Operation,Scope> OperationsWithScope { get; set; }
-        public List<Demo> DemosListResult { get; set; }
-        public Demo SingleDemoResult { get; set; }
-        public Exception ExceptionResult { get; set; }
         public DemoTestResults Results { get; } = new DemoTestResults();
 
         public void Dispose()
@@ -28,5 +25,8 @@ namespace Instances.Application.Specflow.Tests.Demos.Models
     public class DemoTestResults
     {
         public List<Instance> CreatedInstances { get; } = new List<Instance>();
+        public List<Demo> Demos { get; set; } = new List<Demo>();
+        public Demo SingleDemo { get; set; }
+        public Exception Exception { get; set; }
     }
 }
