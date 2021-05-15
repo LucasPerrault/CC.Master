@@ -7,10 +7,12 @@
     <ItemGroup>
       <ProjectReference Include="..\..\Authentication\Authentication.Domain\Authentication.Domain.csproj" />
       <ProjectReference Include="..\..\Rights\Rights.Domain\Rights.Domain.csproj" />
+      <ProjectReference Include="..\..\Storage\Storage.Infra\Storage.Infra.csproj" />
     </ItemGroup>
 
     <ItemGroup>
       <PackageReference Include="Lucca.Core.Rights.Abstractions" Version="6.1.1" />
+      <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="3.1.12" />
     </ItemGroup>
 
 </Project>
