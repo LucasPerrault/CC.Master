@@ -1,3 +1,4 @@
+using Distributors.Domain;
 using Distributors.Domain.Models;
 using Environments.Domain.Storage;
 using Instances.Application.Demos;
@@ -14,7 +15,6 @@ using Instances.Infra.DataDuplication;
 using Instances.Infra.Demos;
 using Instances.Infra.Instances.Services;
 using Instances.Infra.Storage.Stores;
-using Instances.Infra.WsAuth;
 using Lucca.Core.Shared.Domain.Exceptions;
 using Microsoft.Extensions.Logging;
 using Moq;
@@ -110,17 +110,15 @@ namespace Instances.Application.Specflow.Tests.Demos.Steps
             var demosStore = new DemosStore(_demosContext.DbContext, new DummyQueryPager());
             var demoDuplicationsStore = new DemoDuplicationsStore(_demosContext.DbContext);
 
-            _demosContext.Mocks.DistributorsStore
+            var distributorsStoreMock = new Mock<IDistributorsStore>();
+
+            distributorsStoreMock
                 .Setup(s => s.GetByCodeAsync(It.IsAny<string>()))
                 .Returns<string>(distributor => Task.FromResult(new Distributor
                 {
                     Id = distributor,
                     Code = distributor
                 }));
-
-            _demosContext.Mocks.InstancesStore
-                .Setup(s => s.CreateForDemoAsync(It.IsAny<string>(), It.IsAny<string>()))
-                .Returns(Task.FromResult(new Instance { Id = 1}));
 
             var rightsServiceMock = new Mock<IRightsService>();
             rightsServiceMock.Setup(rs => rs.GetUserOperationHighestScopeAsync(It.IsAny<Operation>()))
@@ -144,7 +142,7 @@ namespace Instances.Application.Specflow.Tests.Demos.Steps
                     demosStore,
                     demoDuplicationsStore,
                     rightsServiceMock.Object,
-                    _demosContext.Mocks.DistributorsStore.Object,
+                    distributorsStoreMock.Object,
                     new SubdomainGenerator(new SubdomainValidator(demosStore, envStoreMock.Object)),
                     clusterSelectorMock.Object,
                     new UsersPasswordHelper()
@@ -161,16 +159,15 @@ namespace Instances.Application.Specflow.Tests.Demos.Steps
                 new Mock<ITimeProvider>().Object
             );
 
-            _demosContext.Mocks.DistributorsStore
-                .Setup(s => s.GetByCodeAsync(It.IsAny<string>()))
-                .Returns<string>(distributor => Task.FromResult(new Distributor
-                {
-                    Id = distributor,
-                    Code = distributor
-                }));
-
-            _demosContext.Mocks.InstancesStore
+            var instancesStoreMock = new Mock<IInstancesStore>();
+            instancesStoreMock
                 .Setup(s => s.CreateForDemoAsync(It.IsAny<string>(), It.IsAny<string>()))
+                .Callback<string,string>(
+                    (password, cluster) =>
+                    {
+                        _demosContext.Results.CreatedInstances
+                            .Add(new Instance { AllUsersImposedPassword = password, Cluster = cluster});
+                    })
                 .Returns(Task.FromResult(new Instance { Id = 1}));
 
             var rightsServiceMock = new Mock<IRightsService>();
@@ -182,7 +179,7 @@ namespace Instances.Application.Specflow.Tests.Demos.Steps
                     demoDuplicationsStore,
                     instanceDuplicationsStore,
                     demosStore,
-                    _demosContext.Mocks.InstancesStore.Object,
+                    instancesStoreMock.Object,
                     new Mock<IWsAuthSynchronizer>().Object,
                     new Mock<IDemoUsersPasswordResetService>().Object,
                     new Mock<IDemoDeletionCalculator>().Object,
@@ -193,8 +190,7 @@ namespace Instances.Application.Specflow.Tests.Demos.Steps
         [Then(@"duplication '(.*)' should result in instance creation")]
         public void ThenDuplicationShouldResultInInstanceCreation(Guid duplicationId)
         {
-            _demosContext.Mocks.InstancesStore
-                .Verify(s => s.CreateForDemoAsync(It.IsAny<string>(), It.IsAny<string>()), Times.Once);
+            Assert.Single(_demosContext.Results.CreatedInstances);
         }
     }
 }
