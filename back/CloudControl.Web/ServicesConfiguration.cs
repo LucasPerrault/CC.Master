@@ -1,6 +1,7 @@
 using Authentication.Web;
 using Billing.Cmrr.Infra.Storage;
 using Billing.Contracts.Infra.Storage;
+using Billing.Products.Infra.Storage;
 using Billing.Web;
 using Cache.Web;
 using CloudControl.Web.Configuration;
@@ -152,7 +153,7 @@ namespace CloudControl.Web
             })
             .AddMvcOptions(
                 options => options.Filters.Add<HandleDomainExceptionsFilter>()
-            );
+            ).AddNewtonsoftJson();
         }
 
         public virtual void ConfigureCache(IServiceCollection services, AppConfiguration configuration)
