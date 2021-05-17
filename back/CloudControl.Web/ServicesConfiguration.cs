@@ -191,6 +191,7 @@ namespace CloudControl.Web
             services.ConfigureContext<UsersDbContext>(_hostingEnvironment);
             services.ConfigureContext<InstancesDbContext>(_hostingEnvironment);
             services.ConfigureContext<CmrrDbContext>(_hostingEnvironment);
+            services.ConfigureContext<ProductDbContext>(_hostingEnvironment);
         }
 
         public virtual void ConfigureSharedDomains(IServiceCollection services, AppConfiguration configuration)

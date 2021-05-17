@@ -35,6 +35,7 @@ namespace Billing.Web
             services.AddScoped<ClientsRepository>();
 
             ConfigureCmrr(services);
+            ConfigureProduct(services);
         }
 
         private static void ConfigureCmrr(IServiceCollection services)
@@ -43,6 +44,12 @@ namespace Billing.Web
             services.AddScoped<ICmrrCountsStore, CmrrCountsStore>();
 
             services.AddScoped<ICmrrSituationsService, CmrrSituationsService>();
+        }
+
+        private static void ConfigureProduct(IServiceCollection services)
+        {
+            services.AddScoped<IProductsStore, ProductsStore>();
+
         }
     }
 }
