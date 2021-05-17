@@ -3,7 +3,8 @@ using Instances.Domain.Instances.Models;
 using Instances.Infra.Storage;
 using System;
 using System.Collections.Generic;
-using Tools.Specflow;
+using Testing.Infra;
+using Testing.Specflow;
 
 namespace Instances.Application.Specflow.Tests.Demos.Models
 {
@@ -24,6 +25,6 @@ namespace Instances.Application.Specflow.Tests.Demos.Models
         public List<Instance> CreatedInstances { get; } = new List<Instance>();
         public List<Demo> Demos { get; set; } = new List<Demo>();
         public Demo SingleDemo { get; set; }
-        public Exception Exception { get; set; }
+        public ExceptionResult ExceptionResult { get; set; }
     }
 }

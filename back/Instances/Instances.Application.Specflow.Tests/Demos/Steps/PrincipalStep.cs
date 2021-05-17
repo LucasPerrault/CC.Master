@@ -1,10 +1,9 @@
 using Instances.Application.Specflow.Tests.Demos.Models;
 using Lucca.Core.Rights.Abstractions;
 using Rights.Domain;
-using System.Collections;
 using System.Collections.Generic;
 using TechTalk.SpecFlow;
-using Tools.Specflow;
+using Testing.Infra;
 
 namespace Instances.Application.Specflow.Tests.Demos.Steps
 {

@@ -16,13 +16,13 @@ namespace Instances.Application.Specflow.Tests.Demos.Steps
         [Then(@"user should get error containing '(.*)'")]
         public void ThenUserShouldGetErrorContainingAsync(string errorMessageExtract)
         {
-            Assert.Contains(errorMessageExtract, _demosContext.Results.Exception.Message);
+            Assert.Contains(errorMessageExtract, _demosContext.Results.ExceptionResult.Exception.Message);
         }
 
         [Then(@"user should not get error")]
         public void ThenUserShouldNotGetError()
         {
-            Assert.Null(_demosContext.Results.Exception);
+            Assert.Null(_demosContext.Results.ExceptionResult.Exception);
         }
     }
 }

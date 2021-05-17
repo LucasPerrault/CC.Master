@@ -74,7 +74,7 @@ namespace Instances.Application.Specflow.Tests.Demos.Steps
             }
             catch (Exception e)
             {
-                _demosContext.Results.Exception = e;
+                _demosContext.Results.ExceptionResult.Exception = e;
             }
         }
 
@@ -94,7 +94,7 @@ namespace Instances.Application.Specflow.Tests.Demos.Steps
             }
             catch (Exception e)
             {
-                _demosContext.Results.Exception = e;
+                _demosContext.Results.ExceptionResult.Exception = e;
             }
         }
 

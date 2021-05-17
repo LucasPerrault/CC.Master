@@ -1,9 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System;
 
-namespace Tools.Specflow
+namespace Testing.Infra
 {
-    public static class StartupContextHelper
+    public static class InMemoryDbHelper
     {
         private static string GetNameUniqueForTestContext(string name)
         {

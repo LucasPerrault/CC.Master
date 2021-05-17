@@ -5,7 +5,7 @@ using Instances.Domain.Demos;
 using Instances.Domain.Instances.Models;
 using Instances.Infra.Storage;
 using TechTalk.SpecFlow;
-using Tools.Specflow;
+using Testing.Infra;
 using Users.Domain;
 
 namespace Instances.Application.Specflow.Tests.Demos.Steps
@@ -25,8 +25,9 @@ namespace Instances.Application.Specflow.Tests.Demos.Steps
         {
             var demosContext = new DemosContext();
             _objectContainer.RegisterInstanceAs(demosContext);
+            _objectContainer.RegisterInstanceAs(demosContext.Results.ExceptionResult);
 
-            demosContext.DbContext = StartupContextHelper.InitialiseDb<InstancesDbContext>(o => new InstancesDbContext(o));
+            demosContext.DbContext = InMemoryDbHelper.InitialiseDb<InstancesDbContext>(o => new InstancesDbContext(o));
             var luccaDistributor = new Distributor
             {
                 Id = "1",
