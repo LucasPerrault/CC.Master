@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Mvc;
 using Rights.Domain;
 using Rights.Web.Attributes;
 using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Billing.Web.Controllers
@@ -20,9 +19,9 @@ namespace Billing.Web.Controllers
         }
 
         [HttpGet, ForbidIfMissing(Operation.ReadCMRR)]
-        public async Task<List<CmrrContratSituation>> GetAsync([FromQuery] CmrrSituationFilter situationFilter)
+        public async Task<CmrrSituation> GetAsync([FromQuery] CmrrSituationFilter situationFilter)
         {
-            var result = await _cmrrSituationService.GetContractSituationsAsync(situationFilter);
+            var result = await _cmrrSituationService.GetSituationAsync(CmrrAxis.Product, situationFilter);
             return result;
         }
     }
