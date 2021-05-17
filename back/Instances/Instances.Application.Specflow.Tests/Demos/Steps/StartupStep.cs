@@ -27,7 +27,7 @@ namespace Instances.Application.Specflow.Tests.Demos.Steps
             _objectContainer.RegisterInstanceAs(demosContext);
             _objectContainer.RegisterInstanceAs(demosContext.Results.ExceptionResult);
 
-            demosContext.DbContext = InMemoryDbHelper.InitialiseDb<InstancesDbContext>(o => new InstancesDbContext(o));
+            demosContext.DbContext = InMemoryDbHelper.InitialiseDb<InstancesDbContext>("Instances", o => new InstancesDbContext(o));
             var luccaDistributor = new Distributor
             {
                 Id = "1",

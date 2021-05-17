@@ -10,11 +10,11 @@ namespace Testing.Infra
             return $"{name}-{Guid.NewGuid()}";
         }
 
-        public static TDbContext InitialiseDb<TDbContext>(Func<DbContextOptions<TDbContext>, TDbContext> newDbContext)
+        public static TDbContext InitialiseDb<TDbContext>(string name, Func<DbContextOptions<TDbContext>, TDbContext> newDbContext)
             where TDbContext : DbContext
         {
             var options = new DbContextOptionsBuilder<TDbContext>()
-                .UseInMemoryDatabase(GetNameUniqueForTestContext("Instances"))
+                .UseInMemoryDatabase(GetNameUniqueForTestContext(name))
                 .Options;
 
             var context = newDbContext(options);
