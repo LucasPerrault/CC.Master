@@ -5,6 +5,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Lucca.Core.Shared.Domain" Version="2.0.13" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Billing.Products\Billing.Products.Domain\Billing.Products.Domain.csproj" />
     <ProjectReference Include="..\Billing.Cmrr.Domain\Billing.Cmrr.Domain.csproj" />
   </ItemGroup>
 

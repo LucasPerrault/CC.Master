@@ -1,6 +1,6 @@
 namespace Billing.Cmrr.Domain
 {
-    public class CmrrContratSituation
+    public class CmrrContractSituation
     {
         public int ContractId { get; }
         public CmrrContract Contract { get; }
@@ -12,7 +12,7 @@ namespace Billing.Cmrr.Domain
 
         private const int MaxMonthDurationForUpsell = 6;
 
-        public CmrrContratSituation(CmrrContract contract, CmrrCount startPeriodCount, CmrrCount endPeriodCount)
+        public CmrrContractSituation(CmrrContract contract, CmrrCount startPeriodCount, CmrrCount endPeriodCount)
         {
             Contract = contract;
             ContractId = contract.Id;
