@@ -25,6 +25,7 @@ using Salesforce.Infra.Configurations;
 using System;
 using System.Collections.Generic;
 using TeamNotification.Web;
+using Testing.Infra;
 using Users.Infra.Storage;
 
 namespace CloudControl.Web.Tests.Mocks
@@ -218,8 +219,8 @@ namespace CloudControl.Web.Tests.Mocks
         public static void AddMockDbContext<TDbContext>(this IServiceCollection services, string dbName, Func<DbContextOptions<TDbContext>, TDbContext> createDbContext)
             where TDbContext : DbContext
         {
-            var dbOptions = new DbContextOptionsBuilder<TDbContext>().UseInMemoryDatabase(dbName).Options;
-            services.AddSingleton(createDbContext(dbOptions));
+            var dbContext = InMemoryDbHelper.InitialiseDb("Mocked", createDbContext);
+            services.AddSingleton(dbContext);
         }
     }
 }
