@@ -100,6 +100,7 @@ namespace Instances.Infra.Tests.Demos
 
         [Theory]
         [InlineData("-aperture-science")]
+        [InlineData("aperture-science-")]
         [InlineData("aperture#science")]
         [InlineData("aperture-scìence")]
         [InlineData("aperture\u1F91science")]
