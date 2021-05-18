@@ -19,14 +19,14 @@ namespace Testing.Specflow
             _exceptionResult = exceptionResult;
         }
 
-        [Then(@"user should get error containing '(.*)'")]
-        public void ThenUserShouldGetErrorContainingAsync(string errorMessageExtract)
+        [Then(@"user should get an error containing '(.*)'")]
+        public void ThenUserShouldGetErrorContaining(string errorMessageExtract)
         {
             Assert.NotNull(_exceptionResult.Exception);
             Assert.Contains(errorMessageExtract, _exceptionResult.Exception.Message);
         }
 
-        [Then(@"user should not get error")]
+        [Then(@"user should not get an error")]
         public void ThenUserShouldNotGetError()
         {
             Assert.Null(_exceptionResult.Exception);

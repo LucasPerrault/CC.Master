@@ -40,7 +40,8 @@ namespace Instances.Application.Specflow.Tests.Demos.Steps
                 IsTemplate = new HashSet<bool> { isTemplate }.ToBoolCombination(),
             };
             var demosRepository = GetNewRepository();
-            _demosContext.Results.Demos = (await demosRepository.GetDemosAsync(null, demoFilter)).Items.ToList();
+            var demoPage = await demosRepository.GetDemosAsync(null, demoFilter);
+            _demosContext.Results.Demos.AddRange(demoPage.Items);
         }
 
         [When("I get the list of demos (.*)")]
@@ -51,7 +52,8 @@ namespace Instances.Application.Specflow.Tests.Demos.Steps
                 Subdomain = selection.Subdomain,
             };
             var demosRepository = GetNewRepository();
-            _demosContext.Results.Demos = (await demosRepository.GetDemosAsync(null, demoFilter)).Items.ToList();
+            var demoPage = await demosRepository.GetDemosAsync(null, demoFilter);
+            _demosContext.Results.Demos.AddRange(demoPage.Items);
         }
 
         [When("I update the comment to '(.*)' on (.*) demo (.*)")]
@@ -106,7 +108,8 @@ namespace Instances.Application.Specflow.Tests.Demos.Steps
                 IsActive = BoolCombination.TrueOnly,
             };
             var demosRepository = GetNewRepository();
-            _demosContext.Results.Demos = (await demosRepository.GetDemosAsync(null, demoFilter)).Items.ToList();
+            var demoPage = await demosRepository.GetDemosAsync(null, demoFilter);
+            _demosContext.Results.Demos.AddRange(demoPage.Items);
         }
 
         [Then("it should contain (.*) demos")]
