@@ -1,4 +1,5 @@
 using Lucca.Core.Api.Abstractions.Paging;
+using Lucca.Core.Api.Web.ModelBinding.Sorting;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 using Tools;
@@ -9,6 +10,7 @@ using Users.Domain.Filtering;
 namespace Users.Web
 {
     [ApiController, Route("/api/users")]
+    [ApiSort("FirstName,LastName")]
     public class UsersController
     {
         private readonly UsersRepository _repository;
