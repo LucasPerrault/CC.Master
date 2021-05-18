@@ -4,9 +4,8 @@ using Instances.Application.Specflow.Tests.Demos.Models;
 using Instances.Domain.Demos;
 using Instances.Domain.Instances.Models;
 using Instances.Infra.Storage;
-using Microsoft.EntityFrameworkCore;
-using System;
 using TechTalk.SpecFlow;
+using Testing.Infra;
 using Users.Domain;
 
 namespace Instances.Application.Specflow.Tests.Demos.Steps
@@ -21,33 +20,21 @@ namespace Instances.Application.Specflow.Tests.Demos.Steps
             _objectContainer = objectContainer;
         }
 
-        private static string GetNameUniqueForTestContext(string name)
-        {
-            return $"{name}-{Guid.NewGuid()}";
-        }
-
         [BeforeScenario]
         public void InitializeScenario()
         {
             var demosContext = new DemosContext();
-            _objectContainer.RegisterInstanceAs<DemosContext>(demosContext);
+            _objectContainer.RegisterInstanceAs(demosContext);
+            _objectContainer.RegisterInstanceAs(demosContext.Results.ExceptionResult);
 
-            var options = new DbContextOptionsBuilder<InstancesDbContext>()
-                .UseInMemoryDatabase(GetNameUniqueForTestContext("Instances"))
-                .Options;
-
-            var context = new InstancesDbContext(options);
-            context.Database.EnsureDeleted();
-            context.Database.EnsureCreated();
-
-            demosContext.DbContext = context;
-            var luccaDistributor = new Distributor()
+            demosContext.DbContext = InMemoryDbHelper.InitialiseDb<InstancesDbContext>("Instances", o => new InstancesDbContext(o));
+            var luccaDistributor = new Distributor
             {
                 Id = "1",
                 Code = "LUCCA",
                 Name = "Lucca",
             };
-            context.Add(luccaDistributor);
+            demosContext.DbContext.Add(luccaDistributor);
             var otherDistributor = new Distributor()
             {
                 Id = "2",
@@ -64,7 +51,7 @@ namespace Instances.Application.Specflow.Tests.Demos.Steps
                 LastName = "Houx"
             };
 
-            context.Add(new Demo()
+            demosContext.DbContext.Add(new Demo()
             {
                 Id = 1,
                 Subdomain = "virgin",
@@ -84,7 +71,7 @@ namespace Instances.Application.Specflow.Tests.Demos.Steps
                 AuthorId = luccaUser.Id,
                 Author = luccaUser
             });
-            context.Add(new Demo()
+            demosContext.DbContext.Add(new Demo()
             {
                 Id = 2,
                 Subdomain = "demo-lucca",
@@ -104,7 +91,7 @@ namespace Instances.Application.Specflow.Tests.Demos.Steps
                 AuthorId = luccaUser.Id,
                 Author = luccaUser
             });
-            context.Add(new Demo()
+            demosContext.DbContext.Add(new Demo()
             {
                 Id = 3,
                 Subdomain = "demo-distributor",

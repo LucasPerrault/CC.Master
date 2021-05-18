@@ -26,6 +26,7 @@
     <ItemGroup>
       <ProjectReference Include="..\CloudControl.Web\CloudControl.Web.csproj" />
       <ProjectReference Include="..\Core\Authentication\Authentication.Domain\Authentication.Domain.csproj" />
+      <ProjectReference Include="..\Core\Testing\Testing.Infra\Testing.Infra.csproj" />
     </ItemGroup>
 
 </Project>

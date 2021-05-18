@@ -15,7 +15,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Xunit;
 
-namespace Instances.Application.Tests
+namespace Instances.Application.Tests.Demos
 {
     public class DemosRepositoryTests
     {

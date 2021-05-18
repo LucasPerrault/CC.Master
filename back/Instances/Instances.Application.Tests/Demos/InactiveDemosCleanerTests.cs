@@ -16,7 +16,7 @@ using System.Threading.Tasks;
 using Tools;
 using Xunit;
 
-namespace Instances.Application.Tests
+namespace Instances.Application.Tests.Demos
 {
     public class InactiveDemosCleanerTests
     {
