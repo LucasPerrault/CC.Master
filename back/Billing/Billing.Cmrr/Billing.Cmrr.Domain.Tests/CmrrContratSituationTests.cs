@@ -9,16 +9,16 @@ namespace Billing.Cmrr.Domain.Tests
         [Fact]
         public void ShouldReturnContractSituationHasUpsell()
         {
-            var contractSituation = new CmrrContratSituation(
+            var contractSituation = new CmrrContractSituation(
             
                 new CmrrContract
                 {
-                    CreationCause = ContractCreationCause.Modification,
+                    CreationCause = ContractCreationCause.NewBooking,
                     EnvironmentCreatedAt = new DateTime(2021, 01, 01),
                     StartDate = new DateTime(2022, 01, 01)
                 },
-                new CmrrCount(),
-                null
+                null,
+                new CmrrCount()
             );
 
             contractSituation.LifeCycle.Should().Be(CmrrLifeCycle.Upsell);
@@ -27,7 +27,7 @@ namespace Billing.Cmrr.Domain.Tests
         [Fact]
         public void ShouldReturnContractSituationHasCreation()
         {
-            var contractSitation = new CmrrContratSituation(
+            var contractSitation = new CmrrContractSituation(
             
                 new CmrrContract
                 {
@@ -45,7 +45,7 @@ namespace Billing.Cmrr.Domain.Tests
         [Fact]
         public void ShouldReturnContractSituationHasTermination()
         {
-            var contractSituation = new CmrrContratSituation(
+            var contractSituation = new CmrrContractSituation(
                 new CmrrContract
                 {
                     EndReason = ContractEndReason.Resiliation,
@@ -60,7 +60,7 @@ namespace Billing.Cmrr.Domain.Tests
         [Fact]
         public void ShouldReturnContractSituationHasRetractionWithNoEndPeriodCount()
         {
-            var contractSituation = new CmrrContratSituation(
+            var contractSituation = new CmrrContractSituation(
                 new CmrrContract
                 {
                     EndReason = ContractEndReason.Modification,
@@ -75,7 +75,7 @@ namespace Billing.Cmrr.Domain.Tests
         [Fact]
         public void ShouldReturnContractSituationHasRetractionWithEndPeriodCount()
         {
-            var contractSituation = new CmrrContratSituation(
+            var contractSituation = new CmrrContractSituation(
                 new CmrrContract
                 {
                     EndReason = ContractEndReason.Modification,
@@ -90,7 +90,7 @@ namespace Billing.Cmrr.Domain.Tests
         [Fact]
         public void ShouldReturnContractSituationHasExpansion()
         {
-            var contractSituation = new CmrrContratSituation(
+            var contractSituation = new CmrrContractSituation(
                 new CmrrContract
                 {
                     EndReason = ContractEndReason.Modification,

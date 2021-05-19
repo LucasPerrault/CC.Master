@@ -51,7 +51,7 @@ namespace Billing.Cmrr.Domain
             Breakdown = breakdown;
             ContractSituation = contractSituation;
 
-            PartialDiff = breakdown.Ratio * (contractSituation.EndPeriodCount?.EuroTotal ?? 0 - contractSituation.StartPeriodCount?.EuroTotal ?? 0);
+            PartialDiff = breakdown.Ratio * ((contractSituation.EndPeriodCount?.EuroTotal ?? 0) - (contractSituation.StartPeriodCount?.EuroTotal ?? 0));
         }
     }
 
