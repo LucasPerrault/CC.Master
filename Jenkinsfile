@@ -1,4 +1,4 @@
-@Library('Lucca@compat-volta')
+@Library('Lucca@v0.28.7') _
 
 import hudson.Util;
 import fr.lucca.CI;
