@@ -1,3 +1,7 @@
+using Billing.Cmrr.Application;
+using Billing.Cmrr.Application.Interfaces;
+using Billing.Cmrr.Domain.Interfaces;
+using Billing.Cmrr.Infra.Storage.Stores;
 using Billing.Contracts.Application.Clients;
 using Billing.Contracts.Domain.Clients.Interfaces;
 using Billing.Contracts.Domain.Contracts.Interfaces;
@@ -29,6 +33,16 @@ namespace Billing.Web
             });
 
             services.AddScoped<ClientsRepository>();
+
+            ConfigureCmrr(services);
+        }
+
+        private static void ConfigureCmrr(IServiceCollection services)
+        {
+            services.AddScoped<ICmrrContractsStore, CmrrContractsStore>();
+            services.AddScoped<ICmrrCountsStore, CmrrCountsStore>();
+
+            services.AddScoped<ICmrrSituationsService, CmrrSituationsService>();
         }
     }
 }
