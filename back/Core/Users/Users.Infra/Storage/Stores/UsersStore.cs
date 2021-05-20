@@ -1,4 +1,6 @@
-﻿using Distributors.Domain;
+using Distributors.Domain;
+using Lucca.Core.Api.Abstractions.Paging;
+using Lucca.Core.Api.Queryable.Paging;
 using Microsoft.EntityFrameworkCore;
 using Rights.Domain.Filtering;
 using Storage.Infra.Extensions;
@@ -16,36 +18,39 @@ namespace Users.Infra.Storage.Stores
     {
         private readonly UsersDbContext _context;
         private readonly IDistributorsStore _distributorsStore;
+        private readonly IQueryPager _queryPager;
 
-        public UsersStore(UsersDbContext context, IDistributorsStore distributorsStore)
+        public UsersStore(UsersDbContext context, IDistributorsStore distributorsStore, IQueryPager queryPager)
         {
             _context = context;
             _distributorsStore = distributorsStore;
+            _queryPager = queryPager;
+        }
+
+        public async Task<Page<SimpleUser>> GetAsync(IPageToken pageToken, UsersFilter filter, AccessRight access)
+        {
+            var queryable = await GetQueryableAsync(filter, access);
+            return await _queryPager.ToPageAsync(queryable, pageToken);
+        }
+
+        public async Task<List<SimpleUser>> GetAllAsync(UsersFilter filter, AccessRight accessRight)
+        {
+            var queryable = await GetQueryableAsync(filter, accessRight);
+            return queryable.ToList();
         }
 
         public async Task<SimpleUser> GetByIdAsync(int id, AccessRight accessRight)
         {
-            return await _context
-                .Set<SimpleUser>()
+            return await Users
                 .Where(await ToExpressionAsync(accessRight))
                 .SingleOrDefaultAsync(u => u.Id == id);
         }
 
         public async Task<bool> ExistsByIdAsync(int userId, AccessRight accessRight)
         {
-            return await _context
-                .Set<SimpleUser>()
+            return await Users
                 .Where(await ToExpressionAsync(accessRight))
                 .AnyAsync(u => u.Id == userId);
-        }
-
-        public async Task<List<SimpleUser>> GetAllAsync(UsersFilter filter, AccessRight accessRight)
-        {
-            return await _context
-                .Set<SimpleUser>()
-                .WhereMatches(filter)
-                .Where(await ToExpressionAsync(accessRight))
-                .ToListAsync();
         }
 
         internal async Task SaveChangesAsync()
@@ -59,7 +64,17 @@ namespace Users.Infra.Storage.Stores
             return SaveChangesAsync();
         }
 
-        public async Task<Expression<Func<SimpleUser, bool>>> ToExpressionAsync(AccessRight accessRight)
+        private IQueryable<SimpleUser> Users => _context
+            .Set<SimpleUser>();
+
+        private async Task<IQueryable<SimpleUser>> GetQueryableAsync(UsersFilter filter, AccessRight accessRight)
+        {
+            return Users
+                .WhereMatches(filter)
+                .Where(await ToExpressionAsync(accessRight));
+        }
+
+        private async Task<Expression<Func<SimpleUser, bool>>> ToExpressionAsync(AccessRight accessRight)
         {
             return accessRight switch
             {

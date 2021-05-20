@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+using Lucca.Core.Api.Abstractions.Paging;
+using System.Collections.Generic;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Users.Domain;
@@ -18,9 +19,9 @@ namespace Users.Application
             _usersStore = usersStore;
             _rightsFilter = rightsFilter;
         }
-        public async Task<List<SimpleUser>> GetAsync(UsersFilter filter)
+        public async Task<Page<SimpleUser>> GetAsync(IPageToken pageToken, UsersFilter filter)
         {
-            return await _usersStore.GetAllAsync(filter, await _rightsFilter.GetAccessAsync(_principal));
+            return await _usersStore.GetAsync(pageToken, filter, await _rightsFilter.GetAccessAsync(_principal));
         }
     }
 }

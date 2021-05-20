@@ -1,5 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using System.Collections.Generic;
+using Lucca.Core.Api.Abstractions.Paging;
+using Lucca.Core.Api.Web.ModelBinding.Sorting;
+using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 using Tools;
 using Users.Application;
@@ -8,8 +9,8 @@ using Users.Domain.Filtering;
 
 namespace Users.Web
 {
-
     [ApiController, Route("/api/users")]
+    [ApiSort("FirstName,LastName")]
     public class UsersController
     {
         private readonly UsersRepository _repository;
@@ -20,10 +21,10 @@ namespace Users.Web
         }
 
         [HttpGet]
-        public Task<List<SimpleUser>> GetUsersAsync([FromQuery]UsersQuery query)
+        public Task<Page<SimpleUser>> GetUsersAsync([FromQuery]UsersQuery query)
         {
             var filter = ToFilter(query);
-            return _repository.GetAsync(filter);
+            return _repository.GetAsync(query.Page, filter);
         }
 
         private UsersFilter ToFilter(UsersQuery query)
@@ -38,6 +39,7 @@ namespace Users.Web
 
     public class UsersQuery
     {
+        public IPageToken Page { get; set; } = null;
         public string Search { get; set; } = null;
     }
 }
