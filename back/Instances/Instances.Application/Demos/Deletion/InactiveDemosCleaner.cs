@@ -5,6 +5,7 @@ using Instances.Domain.Demos.Cleanup;
 using Instances.Domain.Demos.Filtering;
 using Instances.Domain.Instances;
 using Instances.Domain.Shared;
+using MoreLinq.Extensions;
 using Rights.Domain.Filtering;
 using System;
 using System.Collections.Generic;
@@ -21,6 +22,9 @@ namespace Instances.Application.Demos.Deletion
 
     public class InactiveDemosCleaner
     {
+        private const int MaxConcurrentDemoUsageRetrievalAttempts = 200;
+        private static readonly TimeSpan DelayBetweenConcurrentDemoUsageRetrievalAttempts = TimeSpan.FromMilliseconds(500);
+
         private readonly ITimeProvider _timeProvider;
         private readonly IInstanceSessionLogsService _sessionLogsService;
         private readonly IDemosStore _demosStore;
@@ -72,11 +76,25 @@ namespace Instances.Application.Demos.Deletion
             await DeleteAllAsync(infos.Where(i => i.State == DemoState.DeletionScheduledToday));
         }
 
-        private async Task<DemoLastUsageRetrieveAttempt[]> GetDemoUsagesAsync(DemoFilter filter)
+        private async Task<List<DemoLastUsageRetrieveAttempt>> GetDemoUsagesAsync(DemoFilter filter)
         {
+            var result = new List<DemoLastUsageRetrieveAttempt>();
             var activeDemos = await _demosStore.GetAsync(filter, AccessRight.All);
-            var usagesTasks = activeDemos.Select(d => GetLastUsageAsync(d));
-            return await Task.WhenAll(usagesTasks);
+
+            foreach (var batch in activeDemos.Batch(MaxConcurrentDemoUsageRetrievalAttempts))
+            {
+                result.AddRange(await GetDemoUsagesWithoutHarassingPlatformAsync(batch));
+            }
+            return result;
+        }
+
+        private async Task<DemoLastUsageRetrieveAttempt[]> GetDemoUsagesWithoutHarassingPlatformAsync(IEnumerable<Demo> demos)
+        {
+            var delayTask = Task.Delay(DelayBetweenConcurrentDemoUsageRetrievalAttempts);
+            var usagesTasks = demos.Select(d => GetLastUsageAsync(d));
+            var usages = await Task.WhenAll(usagesTasks);
+            await delayTask;
+            return usages;
         }
 
         private async Task UpdateDemosAsync(IEnumerable<DemoLastUsageRetrieveAttempt> usages)
