@@ -120,6 +120,8 @@ namespace Instances.Application.Demos.Deletion
             {
                 await _ccDataService.DeleteInstancesAsync(batch.Value, batch.Key, $"/api/demos/deletion-report/{batch.Key}");
             }
+
+            _demosStore.DeleteAsync(info.Select(i => i.Demo));
         }
 
         private Task ReportCleanupIntentionsAsync(IEnumerable<DemoCleanupInfo> info, bool isDryRun)

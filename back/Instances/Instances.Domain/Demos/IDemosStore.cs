@@ -17,6 +17,7 @@ namespace Instances.Domain.Demos
         Task UpdateDeletionScheduleAsync(IEnumerable<DemoDeletionSchedule> schedules);
         Task UpdateCommentAsync(Demo demo, string comment);
         Task DeleteAsync(Demo demo);
+        Task DeleteAsync(IEnumerable<Demo> demos);
     }
 
     public class DemoDeletionSchedule

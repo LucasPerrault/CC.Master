@@ -304,6 +304,8 @@ namespace Instances.Application.Tests.Demos
                     It.IsAny<string>(),
                     It.IsAny<string>()
                 ), Times.Once);
+
+            _demosStoreMock.Verify(s => s.DeleteAsync(It.Is<IEnumerable<Demo>>(ds => ds.All(d => demos.Contains(d)))), Times.Once);
         }
 
         [Fact]
@@ -343,6 +345,8 @@ namespace Instances.Application.Tests.Demos
                     It.IsAny<string>(),
                     It.IsAny<string>()
                 ), Times.Never);
+
+            _demosStoreMock.Verify(s => s.DeleteAsync(It.IsAny<IEnumerable<Demo>>()), Times.Never);
         }
 
         [Fact]

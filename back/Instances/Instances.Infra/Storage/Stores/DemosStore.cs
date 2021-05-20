@@ -43,9 +43,17 @@ namespace Instances.Infra.Storage.Stores
                 .SingleOrDefaultAsync(d => d.Id == id);
         }
 
-        public async Task DeleteAsync(Demo demo)
+        public Task DeleteAsync(Demo demo)
         {
-            demo.IsActive = false;
+            return DeleteAsync(new [] { demo });
+        }
+
+        public async Task DeleteAsync(IEnumerable<Demo> demos)
+        {
+            foreach (var demo in demos)
+            {
+                demo.IsActive = false;
+            }
             await _dbContext.SaveChangesAsync();
         }
 
