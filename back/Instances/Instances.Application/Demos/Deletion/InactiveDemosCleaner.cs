@@ -32,6 +32,7 @@ namespace Instances.Application.Demos.Deletion
         private readonly IEmailService _emailService;
         private readonly IDemoEmails _demoEmails;
         private readonly IDemoDeletionCalculator _deletionCalculator;
+        private readonly IInstancesStore _instancesStore;
 
         public InactiveDemosCleaner
         (
@@ -41,7 +42,8 @@ namespace Instances.Application.Demos.Deletion
             ICcDataService ccDataService,
             IEmailService emailService,
             IDemoEmails demoEmails,
-            IDemoDeletionCalculator deletionCalculator
+            IDemoDeletionCalculator deletionCalculator,
+            IInstancesStore instancesStore
         )
         {
             _timeProvider = timeProvider;
@@ -51,6 +53,7 @@ namespace Instances.Application.Demos.Deletion
             _emailService = emailService;
             _demoEmails = demoEmails;
             _deletionCalculator = deletionCalculator;
+            _instancesStore = instancesStore;
         }
 
         public async Task CleanAsync(DemoCleanupParams demoCleanupParams)
@@ -121,7 +124,8 @@ namespace Instances.Application.Demos.Deletion
                 await _ccDataService.DeleteInstancesAsync(batch.Value, batch.Key, $"/api/demos/deletion-report/{batch.Key}");
             }
 
-            _demosStore.DeleteAsync(info.Select(i => i.Demo));
+            await _demosStore.DeleteAsync(info.Select(i => i.Demo));
+            await _instancesStore.DeleteForDemoAsync(info.Select(i => i.Demo.Instance));
         }
 
         private Task ReportCleanupIntentionsAsync(IEnumerable<DemoCleanupInfo> info, bool isDryRun)
