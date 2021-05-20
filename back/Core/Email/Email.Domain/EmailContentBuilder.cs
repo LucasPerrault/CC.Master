@@ -37,7 +37,7 @@ namespace Email.Domain
             return this;
         }
 
-        public EmailContentBuilder AddHtmlList(IEnumerable<string> elements)
+        public EmailContentBuilder AddList(IEnumerable<string> elements)
         {
             Add(new Paragraph("<ul>"));
             foreach (var element in elements)

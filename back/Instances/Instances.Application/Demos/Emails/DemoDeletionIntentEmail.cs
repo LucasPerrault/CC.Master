@@ -38,14 +38,14 @@ namespace Instances.Application.Demos.Emails
             {
                 var unknownState = infoPerState[DemoState.ErrorAtStateEvaluation];
                 builder.Add(new Paragraph(_translations.EmailsDemoCleanupIntentUndeterminedCount(unknownState.Count)));
-                builder.AddHtmlList(unknownState.Select(d => d.Demo.Subdomain));
+                builder.AddList(unknownState.Select(d => $"<b>{ d.Demo.Subdomain }</b> : { d.Message }"));
             }
 
             if (infoPerState.ContainsKey(DemoState.DeletionScheduledToday))
             {
                 var deletions = infoPerState[DemoState.DeletionScheduledToday];
-                builder.Add(new Paragraph(_translations.EmailsDemoCleanupIntentUndeterminedCount(deletions.Count)));
-                builder.AddHtmlList(deletions.Select(d => d.Demo.Subdomain));
+                builder.Add(new Paragraph(_translations.EmailsDemoCleanupIntentTriggeredCount(deletions.Count)));
+                builder.AddList(deletions.Select(d => $"<b>{ d.Demo.Subdomain }</b>"));
             }
             else
             {
@@ -56,11 +56,11 @@ namespace Instances.Application.Demos.Emails
             {
                 var soonDeletions = infoPerState[DemoState.DeletionScheduledSoon];
                 builder.Add(new Paragraph(_translations.EmailsDemoCleanupIntentToBeScheduledCount(soonDeletions.Count)));
-                builder.AddHtmlList
+                builder.AddList
                 (
                     soonDeletions
                         .OrderBy(d => d.DeletionScheduledDate)
-                        .Select(d => $"{d.Demo.Subdomain} {d.DeletionScheduledDate.ToLongDateString()}")
+                        .Select(d => $"<b>{ d.Demo.Subdomain }</b> {d.DeletionScheduledDate.ToLongDateString()}")
                 );
             }
             else
