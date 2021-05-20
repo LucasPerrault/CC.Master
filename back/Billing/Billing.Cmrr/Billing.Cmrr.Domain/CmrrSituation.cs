@@ -10,7 +10,7 @@ namespace Billing.Cmrr.Domain
         public DateTime EndPeriod { get; set; }
 
         public CmrrAxis Axis { get; set; }
-        public List<CmrrAxisSection> Sections;
+        public List<CmrrAxisSection> Sections { get; set; }
     }
 
     public class CmrrAxisSection
@@ -67,10 +67,18 @@ namespace Billing.Cmrr.Domain
 
         public string Name { get; set; }
 
-        protected override IEnumerable<object> GetEqualityComponents()
+        protected override IEnumerable<object> EqualityComponents
         {
-            yield return Id;
-            yield return Name;
+            get
+            {
+                yield return Id;
+                yield return Name;
+            }
+            set
+            {
+                EqualityComponents = value;
+            }
+            
         }
     }
 }

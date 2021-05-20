@@ -20,7 +20,7 @@ namespace Tools
             return !(EqualOperator(left, right));
         }
 
-        protected abstract IEnumerable<object> GetEqualityComponents();
+        protected abstract IEnumerable<object> EqualityComponents { get; set; }
 
         public override bool Equals(object obj)
         {
@@ -31,12 +31,12 @@ namespace Tools
 
             var other = (ValueObject)obj;
 
-            return this.GetEqualityComponents().SequenceEqual(other.GetEqualityComponents());
+            return this.EqualityComponents.SequenceEqual(other.EqualityComponents);
         }
 
         public override int GetHashCode()
         {
-            return GetEqualityComponents()
+            return EqualityComponents
                 .Select(x => x != null ? x.GetHashCode() : 0)
                 .Aggregate((x, y) => x ^ y);
         }

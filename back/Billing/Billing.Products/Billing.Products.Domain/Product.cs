@@ -1,5 +1,5 @@
+
 using System.Collections.Generic;
-using System.Linq;
 
 namespace Billing.Products.Domain
 {
@@ -11,10 +11,8 @@ namespace Billing.Products.Domain
 
         public int FamilyId { get; set; }
         public ProductFamily Family { get; set; }
-
-        public List<Solution> Solutions => ProductSolutions?.Select(x => x.Solution).ToList();
-
         public List<ProductSolution> ProductSolutions { get; set; }
+
     }
 
     public class ProductSolution
