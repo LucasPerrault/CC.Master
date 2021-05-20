@@ -26,6 +26,7 @@ namespace Instances.Application.Tests.Demos
         private readonly Mock<IInstanceSessionLogsService> _sessionLogsServiceMock;
         private readonly Mock<ITimeProvider> _timeProviderMock;
         private readonly Mock<IDemoEmails> _emailsMock;
+        private readonly Mock<IInstancesStore> _instancesStoreMock;
         private readonly Mock<IDemoDeletionCalculator> _deletionCalculatorMock;
 
         public InactiveDemosCleanerTests()
@@ -36,6 +37,7 @@ namespace Instances.Application.Tests.Demos
             _ccDataServiceMock = new Mock<ICcDataService>();
             _emailServiceMock = new Mock<IEmailService>();
             _emailsMock = new Mock<IDemoEmails>();
+            _instancesStoreMock = new Mock<IInstancesStore>();
             _deletionCalculatorMock = new Mock<IDemoDeletionCalculator>();
 
             _emailsMock.Setup(e => e.GetIntentEmail(It.IsAny<DateTime>(), It.IsAny<IEnumerable<DemoCleanupInfo>>()))
@@ -59,7 +61,8 @@ namespace Instances.Application.Tests.Demos
                 _ccDataServiceMock.Object,
                 _emailServiceMock.Object,
                 _emailsMock.Object,
-                _deletionCalculatorMock.Object
+                _deletionCalculatorMock.Object,
+                _instancesStoreMock.Object
             );
 
             await cleaner.CleanAsync(new DemoCleanupParams { IsDryRun = false});
@@ -112,7 +115,8 @@ namespace Instances.Application.Tests.Demos
                 _ccDataServiceMock.Object,
                 _emailServiceMock.Object,
                 _emailsMock.Object,
-                _deletionCalculatorMock.Object
+                _deletionCalculatorMock.Object,
+                _instancesStoreMock.Object
             );
 
             await cleaner.CleanAsync(new DemoCleanupParams { IsDryRun = false});
@@ -162,7 +166,8 @@ namespace Instances.Application.Tests.Demos
                 _ccDataServiceMock.Object,
                 _emailServiceMock.Object,
                 _emailsMock.Object,
-                _deletionCalculatorMock.Object
+                _deletionCalculatorMock.Object,
+                _instancesStoreMock.Object
             );
 
             await cleaner.CleanAsync(new DemoCleanupParams { IsDryRun = false});
@@ -209,7 +214,8 @@ namespace Instances.Application.Tests.Demos
                 _ccDataServiceMock.Object,
                 _emailServiceMock.Object,
                 _emailsMock.Object,
-                _deletionCalculatorMock.Object
+                _deletionCalculatorMock.Object,
+                _instancesStoreMock.Object
             );
 
             await cleaner.CleanAsync(new DemoCleanupParams { IsDryRun = false});
@@ -255,7 +261,8 @@ namespace Instances.Application.Tests.Demos
                 _ccDataServiceMock.Object,
                 _emailServiceMock.Object,
                 _emailsMock.Object,
-                _deletionCalculatorMock.Object
+                _deletionCalculatorMock.Object,
+                _instancesStoreMock.Object
             );
 
             await cleaner.CleanAsync(new DemoCleanupParams { IsDryRun = false});
@@ -294,7 +301,8 @@ namespace Instances.Application.Tests.Demos
                     _ccDataServiceMock.Object,
                     _emailServiceMock.Object,
                     _emailsMock.Object,
-                    _deletionCalculatorMock.Object
+                    _deletionCalculatorMock.Object,
+                    _instancesStoreMock.Object
                 );
 
             await cleaner.CleanAsync(new DemoCleanupParams { IsDryRun = false});
@@ -306,6 +314,12 @@ namespace Instances.Application.Tests.Demos
                 ), Times.Once);
 
             _demosStoreMock.Verify(s => s.DeleteAsync(It.Is<IEnumerable<Demo>>(ds => ds.All(d => demos.Contains(d)))), Times.Once);
+            _instancesStoreMock.Verify(s => s.DeleteForDemoAsync
+                (
+                    It.Is<IEnumerable<Instance>>(instances => instances.All(i => demos.Any(d => d.Instance == i)))
+                ),
+                Times.Once
+            );
         }
 
         [Fact]
@@ -335,7 +349,8 @@ namespace Instances.Application.Tests.Demos
                     _ccDataServiceMock.Object,
                     _emailServiceMock.Object,
                     _emailsMock.Object,
-                    _deletionCalculatorMock.Object
+                    _deletionCalculatorMock.Object,
+                    _instancesStoreMock.Object
                 );
 
             await cleaner.CleanAsync(new DemoCleanupParams { IsDryRun = true});
@@ -347,6 +362,7 @@ namespace Instances.Application.Tests.Demos
                 ), Times.Never);
 
             _demosStoreMock.Verify(s => s.DeleteAsync(It.IsAny<IEnumerable<Demo>>()), Times.Never);
+            _instancesStoreMock.Verify(s => s.DeleteForDemoAsync(It.IsAny<IEnumerable<Instance>>()), Times.Never);
         }
 
         [Fact]
@@ -388,7 +404,8 @@ namespace Instances.Application.Tests.Demos
                 _ccDataServiceMock.Object,
                 _emailServiceMock.Object,
                 _emailsMock.Object,
-                _deletionCalculatorMock.Object
+                _deletionCalculatorMock.Object,
+                _instancesStoreMock.Object
             );
 
             await cleaner.CleanAsync(new DemoCleanupParams { IsDryRun = false});

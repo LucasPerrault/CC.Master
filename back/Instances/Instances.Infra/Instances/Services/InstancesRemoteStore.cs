@@ -2,6 +2,7 @@
 using Instances.Domain.Instances.Models;
 using Newtonsoft.Json;
 using Remote.Infra.Services;
+using System;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -48,6 +49,14 @@ namespace Instances.Infra.Instances.Services
                 new DeleteForDemoDto { Id =  demoInstance.Id },
                 new Dictionary<string, string>()
             );
+        }
+
+        public async Task DeleteForDemoAsync(IEnumerable<Instance> demoInstances)
+        {
+            foreach (var demoInstance in demoInstances)
+            {
+                await DeleteForDemoAsync(demoInstance);
+            }
         }
     }
 }
