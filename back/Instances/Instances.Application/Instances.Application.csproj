@@ -6,6 +6,7 @@
 
   <ItemGroup>
     <PackageReference Include="Lucca.Core.Api.Abstractions" Version="0.3.4" />
+    <PackageReference Include="morelinq" Version="3.3.2" />
   </ItemGroup>
 
   <ItemGroup>
