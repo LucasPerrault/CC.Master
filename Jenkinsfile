@@ -1,4 +1,4 @@
-@Library('Lucca@v0.28.3')
+@Library('Lucca@v0.28.7') _
 
 import hudson.Util;
 import fr.lucca.CI;
@@ -64,7 +64,6 @@ node(label: CI.getSelectedNode(script: this)) {
 			parallel(
 				front: {
 					if (!isPr) {
-						setupFront(nodeJsVersion: "Node LTS v12.x.y")
 						restoreFront(spaSubPath: spaSubPath)
 						sentryGenerate(spaSubPath: spaSubPath)
 						buildFront(spaSubPath: spaSubPath, outputPath: frontDistPath)
