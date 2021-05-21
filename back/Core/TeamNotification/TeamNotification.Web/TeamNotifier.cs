@@ -19,7 +19,7 @@ namespace TeamNotification.Web
         public Task NotifyAsync(Team team, string message)
         {
             var slackHook = GetHook(team);
-            var content = new { Text = message };
+            var content = new { text = message };
             return _httpClient.PostAsync(slackHook, content.ToJsonPayload());
         }
 
