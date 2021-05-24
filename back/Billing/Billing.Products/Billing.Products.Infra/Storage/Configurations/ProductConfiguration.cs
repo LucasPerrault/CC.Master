@@ -42,11 +42,23 @@ namespace Billing.Products.Infra.Storage.Configurations
         public void Configure(EntityTypeBuilder<Solution> builder)
         {
             builder.ToTable("Solutions");
+            builder.HasKey(s => s.Id);
+            builder.Property(s => s.Name).HasColumnName("Name");
+            builder.Property(s => s.Code).HasColumnName("Code");
+            builder.Property(s => s.ParentId).HasColumnName("ParentId");
+            builder.Property(s => s.IsContactNeeded).HasColumnName("IsContactNeeded");
+
+            builder.HasOne(s => s.BusinessUnit).WithMany(bu => bu.Solutions).HasForeignKey(s => s.BusinessUnitId);
+        }
+    }
+
+    public class BusinessUnitConfiguration : IEntityTypeConfiguration<BusinessUnit>
+    {
+        public void Configure(EntityTypeBuilder<BusinessUnit> builder)
+        {
+            builder.ToTable("BusinessUnits");
             builder.HasKey(p => p.Id);
             builder.Property(p => p.Name).HasColumnName("Name");
-            builder.Property(p => p.Code).HasColumnName("Code");
-            builder.Property(p => p.ParentId).HasColumnName("ParentId");
-            builder.Property(p => p.IsContactNeeded).HasColumnName("IsContactNeeded");
         }
     }
 
