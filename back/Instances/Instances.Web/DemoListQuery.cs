@@ -12,7 +12,7 @@ namespace Instances.Web
         public HashSet<bool> IsActive { get; set; } = new HashSet<bool> { true };
         public string Search { get; set; } = null;
         public int? AuthorId { get; set; } = null;
-        public string DistributorId { get; set; } = null;
+        public int? DistributorId { get; set; } = null;
         public string Subdomain { get; set; } = null;
         public HashSet<bool> IsTemplate { get; set; } = new HashSet<bool>();
         public DemoListInstance Instance { get; set; } = new DemoListInstance();

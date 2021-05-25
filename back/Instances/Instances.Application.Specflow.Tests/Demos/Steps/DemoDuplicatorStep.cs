@@ -95,7 +95,8 @@ namespace Instances.Application.Specflow.Tests.Demos.Steps
         [Then(@"demo duplication should exist (.*)")]
         public void ThenDemoDuplicationShouldExist(DistributorSelection selection)
         {
-            Assert.Equal(selection.Code, _demosContext.DbContext.Set<DemoDuplication>().Single().DistributorId);
+            var distributor = _demosContext.DbContext.Set<Distributor>().Single(d => d.Code == selection.Code);
+            Assert.Equal(distributor.Id, _demosContext.DbContext.Set<DemoDuplication>().Single().DistributorId);
         }
 
         [When(@"I get notification that duplication '(.*)' has ended")]
@@ -114,11 +115,7 @@ namespace Instances.Application.Specflow.Tests.Demos.Steps
 
             distributorsStoreMock
                 .Setup(s => s.GetByCodeAsync(It.IsAny<string>()))
-                .Returns<string>(distributor => Task.FromResult(new Distributor
-                {
-                    Id = distributor,
-                    Code = distributor
-                }));
+                .Returns<string>(distributor => Task.FromResult(_demosContext.DbContext.Set<Distributor>().Single(d => d.Code == distributor)));
 
             var rightsServiceMock = new Mock<IRightsService>();
             rightsServiceMock.Setup(rs => rs.GetUserOperationHighestScopeAsync(It.IsAny<Operation>()))

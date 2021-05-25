@@ -86,7 +86,7 @@ namespace Instances.Application.Demos.Duplication
             var demo = new Demo
             {
                 Subdomain = duplication.InstanceDuplication.TargetSubdomain,
-                DistributorID = duplication.DistributorId,
+                DistributorId = duplication.DistributorId,
                 Comment = duplication.Comment,
                 CreatedAt = DateTime.Now,
                 AuthorId = duplication.AuthorId,

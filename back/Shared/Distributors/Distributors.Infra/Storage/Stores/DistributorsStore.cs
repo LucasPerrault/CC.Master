@@ -14,7 +14,7 @@ namespace Distributors.Infra.Storage.Stores
             _dbContext = dbContext;
         }
 
-        public Task<Distributor> GetByIdAsync(string id)
+        public Task<Distributor> GetByIdAsync(int id)
         {
             return _dbContext.Set<Distributor>().FirstOrDefaultAsync(d => d.Id == id);
         }
