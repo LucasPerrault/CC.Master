@@ -5,6 +5,6 @@ namespace Billing.Products.Domain.Interfaces
 {
     public interface IProductsStore
     {
-        Task<List<Product>> GetProductsAsync();
+        Task<List<Product>> GetNonFreeProductsAsync();
     }
 }

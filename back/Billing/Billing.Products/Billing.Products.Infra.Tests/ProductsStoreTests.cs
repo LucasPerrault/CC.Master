@@ -43,7 +43,7 @@ namespace Billing.Products.Infra.Tests
 
             var sut = new ProductsStore(_dbContext);
 
-            var result = await sut.GetProductsAsync();
+            var result = await sut.GetNonFreeProductsAsync();
         }
     }
 }

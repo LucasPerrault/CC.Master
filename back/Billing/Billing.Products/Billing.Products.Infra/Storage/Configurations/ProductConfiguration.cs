@@ -11,6 +11,7 @@ namespace Billing.Products.Infra.Storage.Configurations
             builder.ToTable("Products");
             builder.HasKey(p => p.Id);
             builder.Property(p => p.Name).HasColumnName("Name");
+            builder.Property(p => p.IsFreeUse).HasColumnName("IsFreeUse");
             builder.Property(p => p.FamilyId).HasColumnName("FamilyId");
 
             builder.HasOne(p => p.Family).WithMany().HasForeignKey(p => p.FamilyId);
@@ -21,7 +22,7 @@ namespace Billing.Products.Infra.Storage.Configurations
     {
         public void Configure(EntityTypeBuilder<ProductSolution> builder)
         {
-            builder.ToTable("ProductSolutions");
+            builder.ToTable("ProductsSolutions");
             builder.HasKey(ps => new { ps.ProductId, ps.SolutionId });
             builder.HasOne(ps => ps.Product).WithMany(p => p.ProductSolutions).HasForeignKey(ps => ps.ProductId);
             builder.HasOne(ps => ps.Solution).WithMany(s => s.ProductSolutions).HasForeignKey(ps => ps.SolutionId);

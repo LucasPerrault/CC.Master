@@ -36,7 +36,7 @@ namespace Billing.Cmrr.Application
 
         private async Task<Dictionary<int, List<Breakdown>>> GetBreakdownsPerProductIdAsync(CmrrAxis axis)
         {
-            var products = await _productsStore.GetProductsAsync();
+            var products = await _productsStore.GetNonFreeProductsAsync();
 
             return products.ToDictionary(p => p.Id, GetBreakdownsForProduct(axis));
         }

@@ -9,6 +9,7 @@ namespace Billing.Products.Domain
 
         public string Name { get; set; }
 
+        public bool IsFreeUse { get; set; }
         public int FamilyId { get; set; }
         public ProductFamily Family { get; set; }
         public List<ProductSolution> ProductSolutions { get; set; }
