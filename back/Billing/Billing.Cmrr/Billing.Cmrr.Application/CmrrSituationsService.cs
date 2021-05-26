@@ -65,17 +65,11 @@ namespace Billing.Cmrr.Application
 
         private void ThrowIfDatesInvalid(DateTime startPeriod, DateTime endPeriod)
         {
-            if (startPeriod == default)
-                throw new ArgumentNullException($"{nameof(startPeriod)} cannot be default value");
-
-            if (endPeriod == default)
-                throw new ArgumentNullException($"{nameof(endPeriod)} cannot be default value");
-
             if (!IsFirstDayOfMonth(startPeriod))
-                throw new ArgumentException($"{nameof(startPeriod)} must be on the day one of month");
+                throw new ArgumentException($"{nameof(startPeriod)} must be on the first day of month");
 
             if (!IsFirstDayOfMonth(endPeriod))
-                throw new ArgumentException($"{nameof(endPeriod)} must be on the day one of month");
+                throw new ArgumentException($"{nameof(endPeriod)} must be on the first day of month");
         }
 
         private static IEnumerable<CmrrContractSituation> CreateContractSituations(IEnumerable<CmrrContract> contracts, List<CmrrCount> startPeriodCounts, List<CmrrCount> endPeriodCounts)
