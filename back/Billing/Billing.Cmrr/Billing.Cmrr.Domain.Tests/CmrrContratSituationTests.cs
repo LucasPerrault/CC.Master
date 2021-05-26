@@ -28,12 +28,30 @@ namespace Billing.Cmrr.Domain.Tests
         public void ShouldReturnContractSituationHasCreation()
         {
             var contractSitation = new CmrrContractSituation(
-            
+
                 new CmrrContract
                 {
                     CreationCause = ContractCreationCause.NewBooking,
                     EnvironmentCreatedAt = new DateTime(2021, 01, 01),
                     StartDate = new DateTime(2021, 01, 01)
+                },
+                null,
+                new CmrrCount()
+            );
+
+            contractSitation.LifeCycle.Should().Be(CmrrLifeCycle.Creation);
+        }
+
+        [Fact]
+        public void ShouldReturnContractSituationHasCreationWithContractModification()
+        {
+            var contractSitation = new CmrrContractSituation(
+
+                new CmrrContract
+                {
+                    CreationCause = ContractCreationCause.Modification,
+                    EnvironmentCreatedAt = new DateTime(2021, 01, 01),
+                    StartDate = new DateTime(2022, 01, 01)
                 },
                 null,
                 new CmrrCount()
