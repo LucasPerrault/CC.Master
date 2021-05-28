@@ -44,7 +44,7 @@ namespace Instances.Infra.Tests.Demos
             _demosStoreMock
                 .Setup(s => s.GetAsync(It.Is<DemoFilter>(d => d.IsActive == BoolCombination.TrueOnly), It.IsAny<AccessRight>()))
                 .ReturnsAsync(new List<Demo>());
-            _envStoreMock.Setup(s => s.GetAll()).Returns(envs.AsQueryable().BuildMock().Object);
+            _envStoreMock.Setup(s => s.GetFiltered(It.IsAny<EnvironmentAccessRight>())).Returns(envs.AsQueryable().BuildMock().Object);
             var subdomainValidator = new SubdomainValidator(_demosStoreMock.Object, _envStoreMock.Object);
 
             Assert.True(await subdomainValidator.IsAvailableAsync("aperture-science"));
@@ -61,7 +61,7 @@ namespace Instances.Infra.Tests.Demos
             _demosStoreMock
                 .Setup(s => s.GetAsync(It.Is<DemoFilter>(d => d.IsActive == BoolCombination.TrueOnly), It.IsAny<AccessRight>()))
                 .ReturnsAsync(demos);
-            _envStoreMock.Setup(s => s.GetAll()).Returns(new List<Environment>().AsQueryable().BuildMock().Object);
+            _envStoreMock.Setup(s => s.GetFiltered(It.IsAny<EnvironmentAccessRight>())).Returns(new List<Environment>().AsQueryable().BuildMock().Object);
             var subdomainValidator = new SubdomainValidator(_demosStoreMock.Object, _envStoreMock.Object);
 
             Assert.False(await subdomainValidator.IsAvailableAsync("aperture-science"));
@@ -82,7 +82,7 @@ namespace Instances.Infra.Tests.Demos
                 .Setup(s => s.GetAsync(It.Is<DemoFilter>(d => d.IsActive == BoolCombination.TrueOnly), It.IsAny<AccessRight>()))
                 .ReturnsAsync(new List<Demo>());
 
-            _envStoreMock.Setup(s => s.GetAll()).Returns(envs.AsQueryable().BuildMock().Object);
+            _envStoreMock.Setup(s => s.GetFiltered(It.IsAny<EnvironmentAccessRight>())).Returns(envs.AsQueryable().BuildMock().Object);
             var subdomainValidator = new SubdomainValidator(_demosStoreMock.Object, _envStoreMock.Object);
 
             Assert.False(await subdomainValidator.IsAvailableAsync("aperture-science"));

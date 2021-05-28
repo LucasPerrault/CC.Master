@@ -71,7 +71,7 @@ namespace Instances.Infra.Demos
         public async Task<bool> IsAvailableAsync(string subdomain)
         {
             return
-                _environmentsStore.GetAll()
+                _environmentsStore.GetFiltered(EnvironmentAccessRight.All)
                     .Where(e => e.IsActive)
                     .All(e => e.Subdomain.ToLower() != subdomain)
                 && (await _demosStore.GetAsync(DemoFilter.Active(), AccessRight.All))
@@ -80,7 +80,7 @@ namespace Instances.Infra.Demos
 
         private async Task<HashSet<string>> GetUsedSubdomainsByPrefixAsync(string prefix)
         {
-            var usedSubdomainsEnvs = _environmentsStore.GetAll()
+            var usedSubdomainsEnvs = _environmentsStore.GetFiltered(EnvironmentAccessRight.All)
                 .Where(e => e.IsActive)
                 .Where(e => e.Subdomain.StartsWith(prefix))
                 .Select(e => e.Subdomain);
