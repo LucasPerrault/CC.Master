@@ -48,10 +48,10 @@ namespace Environments.Infra.Tests
             var envs = await store.GetAsync(new List<EnvironmentAccessRight>
             {
                 new EnvironmentAccessRight
-                {
-                    Purposes = PurposeAccessRight.ForSome(EnvironmentPurpose.Lucca),
-                    AccessRight = AccessRight.All
-                }
+                (
+                    AccessRight.All,
+                    PurposeAccessRight.ForSome(EnvironmentPurpose.Lucca)
+                )
             }, new EnvironmentFilter());
             Assert.Single(envs);
         }
@@ -73,10 +73,10 @@ namespace Environments.Infra.Tests
             var envs = await store.GetAsync(new List<EnvironmentAccessRight>
             {
                 new EnvironmentAccessRight
-                {
-                    Purposes = PurposeAccessRight.ForSome(EnvironmentPurpose.InternalTest),
-                    AccessRight = AccessRight.All
-                }
+                (
+                    AccessRight.All,
+                    PurposeAccessRight.ForSome(EnvironmentPurpose.InternalTest)
+                )
             }, new EnvironmentFilter());
             Assert.Empty(envs);
         }
@@ -101,10 +101,10 @@ namespace Environments.Infra.Tests
             var envs = await store.GetAsync(new List<EnvironmentAccessRight>
             {
                 new EnvironmentAccessRight
-                {
-                    Purposes = PurposeAccessRight.ForAll,
-                    AccessRight = AccessRight.ForDistributor("ApertureScience")
-                }
+                (
+                    AccessRight.ForDistributor("ApertureScience"),
+                    PurposeAccessRight.ForAll
+                )
             }, new EnvironmentFilter());
             Assert.Single(envs);
         }
@@ -129,10 +129,10 @@ namespace Environments.Infra.Tests
             var envs = await store.GetAsync(new List<EnvironmentAccessRight>
             {
                 new EnvironmentAccessRight
-                {
-                    Purposes = PurposeAccessRight.ForAll,
-                    AccessRight = AccessRight.ForDistributor("BlackMesa")
-                }
+                (
+                    AccessRight.ForDistributor("BlackMesa"),
+                    PurposeAccessRight.ForAll
+                )
             }, new EnvironmentFilter());
             Assert.Empty(envs);
         }
@@ -158,10 +158,10 @@ namespace Environments.Infra.Tests
             var envs = await store.GetAsync(new List<EnvironmentAccessRight>
             {
                 new EnvironmentAccessRight
-                {
-                    Purposes = PurposeAccessRight.ForSome(EnvironmentPurpose.Lucca),
-                    AccessRight = AccessRight.ForDistributor("ApertureScience")
-                },
+                (
+                    AccessRight.ForDistributor("ApertureScience"),
+                    PurposeAccessRight.ForSome(EnvironmentPurpose.Lucca)
+                )
             }, new EnvironmentFilter());
             Assert.Single(envs);
         }
@@ -187,15 +187,15 @@ namespace Environments.Infra.Tests
             var envs = await store.GetAsync(new List<EnvironmentAccessRight>
             {
                 new EnvironmentAccessRight
-                {
-                    Purposes = PurposeAccessRight.ForSome(EnvironmentPurpose.Lucca),
-                    AccessRight = AccessRight.ForDistributor("BlackMesa")
-                },
+                (
+                    AccessRight.ForDistributor("BlackMesa"),
+                    PurposeAccessRight.ForSome(EnvironmentPurpose.Lucca)
+                ),
                 new EnvironmentAccessRight
-                {
-                    Purposes = PurposeAccessRight.ForSome(EnvironmentPurpose.Contractual),
-                    AccessRight = AccessRight.ForDistributor("ApertureScience")
-                },
+                (
+                    AccessRight.ForDistributor("ApertureScience"),
+                    PurposeAccessRight.ForSome(EnvironmentPurpose.Contractual)
+                ),
             }, new EnvironmentFilter());
             Assert.Empty(envs);
         }

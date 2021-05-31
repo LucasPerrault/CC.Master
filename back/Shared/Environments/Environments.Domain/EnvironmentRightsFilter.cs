@@ -30,11 +30,7 @@ namespace Environments.Domain
                     var purposes = await _rightsService.GetEnvironmentPurposesAsync(operation);
                     return new List<EnvironmentAccessRight>
                     {
-                        new EnvironmentAccessRight
-                        {
-                            AccessRight = AccessRight.All,
-                            Purposes = PurposeAccessRight.ForSome(purposes)
-                        }
+                        new EnvironmentAccessRight(AccessRight.All, PurposeAccessRight.ForSome(purposes))
                     };
                 }
                 case CloudControlUserClaimsPrincipal user:
@@ -43,15 +39,15 @@ namespace Environments.Domain
                     return permissions.Select
                     (
                         p => new EnvironmentAccessRight
-                        {
-                            AccessRight = p.Scope switch
+                        (
+                            p.Scope switch
                             {
                                 Scope.AllDepartments => AccessRight.All,
                                 Scope.DepartmentOnly => AccessRight.ForDistributor(user.User.DepartmentCode),
                             },
-                            Purposes = PurposeAccessRight.ForSome(p.EnvironmentPurposes),
-                        }
-                    ).ToList();
+                            PurposeAccessRight.ForSome(p.EnvironmentPurposes)
+                        )
+                        ).ToList();
                 }
                 default:
                     throw new ApplicationException("Unhandled ClaimsPrincipal type");
