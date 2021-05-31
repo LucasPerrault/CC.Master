@@ -74,14 +74,14 @@ namespace Instances.Infra.Demos
             (
                 AccessRight.All, PurposeAccessRight.ForAll, new EnvironmentFilter
                 {
-                    IsActive = BoolCombination.TrueOnly,
+                    IsActive = CompareBoolean.TrueOnly,
                     Subdomain = CompareString.Equals(subdomain),
                 }
             );
 
             var demosTask = _demosStore.GetAsync(new DemoFilter
             {
-                IsActive = BoolCombination.TrueOnly,
+                IsActive = CompareBoolean.TrueOnly,
                 Subdomain = CompareString.Equals(subdomain),
             }, AccessRight.All);
 
@@ -93,7 +93,7 @@ namespace Instances.Infra.Demos
             var envsWithSubdomain = await _environmentsStore
                 .GetAsync(AccessRight.All, PurposeAccessRight.ForAll, new EnvironmentFilter
                 {
-                    IsActive = BoolCombination.TrueOnly,
+                    IsActive = CompareBoolean.TrueOnly,
                     Subdomain = CompareString.StartsWith(prefix)
                 });
 
@@ -101,7 +101,7 @@ namespace Instances.Infra.Demos
 
             var filter = new DemoFilter
             {
-                IsActive = BoolCombination.TrueOnly,
+                IsActive = CompareBoolean.TrueOnly,
                 Search = prefix,
                 Subdomain = CompareString.StartsWith(prefix)
             };

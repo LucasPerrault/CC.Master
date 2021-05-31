@@ -34,7 +34,7 @@ namespace Instances.Infra.Tests.Demos
         public async Task IsAvailableAsync_ShouldReturnTrue_WhenSubdomainIsNotTaken(string takenSubdomain)
         {
             _demosStoreMock
-                .Setup(s => s.GetAsync(It.Is<DemoFilter>(d => d.IsActive == BoolCombination.TrueOnly), It.IsAny<AccessRight>()))
+                .Setup(s => s.GetAsync(It.Is<DemoFilter>(d => d.IsActive == CompareBoolean.TrueOnly), It.IsAny<AccessRight>()))
                 .ReturnsAsync(new List<Demo>());
             _envStoreMock
                 .Setup(s => s.GetAsync(It.IsAny<AccessRight>(), It.IsAny<PurposeAccessRight>(), It.IsAny<EnvironmentFilter>()))
@@ -53,7 +53,7 @@ namespace Instances.Infra.Tests.Demos
             var demos = new List<Demo> { new Demo { Subdomain = takenSubdomain } };
 
             _demosStoreMock
-                .Setup(s => s.GetAsync(It.Is<DemoFilter>(d => d.IsActive == BoolCombination.TrueOnly), It.IsAny<AccessRight>()))
+                .Setup(s => s.GetAsync(It.Is<DemoFilter>(d => d.IsActive == CompareBoolean.TrueOnly), It.IsAny<AccessRight>()))
                 .ReturnsAsync(demos);
             _envStoreMock.Setup(s => s.GetAsync(It.IsAny<AccessRight>(), It.IsAny<PurposeAccessRight>(), It.IsAny<EnvironmentFilter>())).ReturnsAsync(new List<Environment>());
             var subdomainValidator = new SubdomainValidator(_demosStoreMock.Object, _envStoreMock.Object);
@@ -73,7 +73,7 @@ namespace Instances.Infra.Tests.Demos
             };
 
             _demosStoreMock
-                .Setup(s => s.GetAsync(It.Is<DemoFilter>(d => d.IsActive == BoolCombination.TrueOnly), It.IsAny<AccessRight>()))
+                .Setup(s => s.GetAsync(It.Is<DemoFilter>(d => d.IsActive == CompareBoolean.TrueOnly), It.IsAny<AccessRight>()))
                 .ReturnsAsync(new List<Demo>());
 
             _envStoreMock.Setup(s => s.GetAsync(It.IsAny<AccessRight>(), It.IsAny<PurposeAccessRight>(), It.IsAny<EnvironmentFilter>())).ReturnsAsync(envs);
@@ -135,7 +135,7 @@ namespace Instances.Infra.Tests.Demos
             }
 
             _demosStoreMock
-                .Setup(ds => ds.GetAsync(It.Is<DemoFilter>(d => d.IsActive == BoolCombination.TrueOnly), It.IsAny<AccessRight>()))
+                .Setup(ds => ds.GetAsync(It.Is<DemoFilter>(d => d.IsActive == CompareBoolean.TrueOnly), It.IsAny<AccessRight>()))
                 .ReturnsAsync(existingDemos);
 
             _envStoreMock
@@ -166,7 +166,7 @@ namespace Instances.Infra.Tests.Demos
             }
             _demosStoreMock.Setup(ds => ds.GetAsync
                 (
-                    It.Is<DemoFilter>(d => d.IsActive == BoolCombination.TrueOnly),
+                    It.Is<DemoFilter>(d => d.IsActive == CompareBoolean.TrueOnly),
                     It.IsAny<AccessRight>()
                 ))
                 .ReturnsAsync(existingDemos);

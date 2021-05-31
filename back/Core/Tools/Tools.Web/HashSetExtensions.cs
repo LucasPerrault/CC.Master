@@ -5,16 +5,16 @@ namespace Tools.Web
 {
     public static class HashSetExtensions
     {
-        public static BoolCombination ToBoolCombination(this HashSet<bool> bools)
+        public static CompareBoolean ToBoolCombination(this HashSet<bool> bools)
         {
             if (bools.Count == 1)
             {
                 return bools.Single()
-                    ? BoolCombination.TrueOnly
-                    : BoolCombination.FalseOnly;
+                    ? CompareBoolean.TrueOnly
+                    : CompareBoolean.FalseOnly;
             }
 
-            return BoolCombination.Both;
+            return CompareBoolean.Bypass;
         }
     }
 }

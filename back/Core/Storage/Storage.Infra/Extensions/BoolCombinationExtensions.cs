@@ -5,13 +5,13 @@ namespace Storage.Infra.Extensions
 {
     public static class BoolCombinationExtensions
     {
-        public static bool ToBoolean(this BoolCombination boolCombination)
+        public static bool ToBoolean(this CompareBoolean compareBoolean)
         {
-            return boolCombination switch
+            return compareBoolean switch
             {
-                BoolCombination.TrueOnly => true,
-                BoolCombination.FalseOnly => false,
-                _ => throw new ApplicationException($"Unexpected bool combination value {boolCombination}")
+                CompareBoolean.TrueOnly => true,
+                CompareBoolean.FalseOnly => false,
+                _ => throw new ApplicationException($"Unexpected bool combination value {compareBoolean}")
             };
         }
     }

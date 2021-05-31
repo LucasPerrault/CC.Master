@@ -11,7 +11,7 @@ namespace Storage.Infra.Extensions
         {
             return comparison.Type switch
             {
-                CompareStringType.MatchAll => new BypassCompareStringQueryableBuilder<T>(query),
+                CompareStringType.Bypass => new BypassCompareStringQueryableBuilder<T>(query),
                 CompareStringType.Equals => new CompareEqualStringQueryableBuilder<T>(query, comparison.Value),
                 CompareStringType.DoesNotEqual => new CompareNotEqualStringQueryableBuilder<T>(query, comparison.Value),
                 CompareStringType.StartsWith => new CompareStartsWithStringQueryableBuilder<T>(query, comparison.Value),

@@ -105,7 +105,7 @@ namespace Instances.Application.Specflow.Tests.Demos.Steps
         {
             var demoFilter = new DemoFilter()
             {
-                IsActive = BoolCombination.TrueOnly,
+                IsActive = CompareBoolean.TrueOnly,
             };
             var demosRepository = GetNewRepository();
             var demoPage = await demosRepository.GetDemosAsync(null, demoFilter);

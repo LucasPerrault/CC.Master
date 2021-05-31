@@ -4,14 +4,14 @@ namespace Instances.Domain.Demos.Filtering
 {
     public class DemoFilter
     {
-        public CompareString Subdomain { get; set; } = CompareString.MatchAll;
+        public CompareString Subdomain { get; set; } = CompareString.Bypass;
         public string Search { get; set; }
-        public BoolCombination IsActive { get; set; } = BoolCombination.Both;
-        public BoolCombination IsTemplate { get; set; } = BoolCombination.Both;
-        public BoolCombination IsProtected { get; set; } = BoolCombination.Both;
+        public CompareBoolean IsActive { get; set; } = CompareBoolean.Bypass;
+        public CompareBoolean IsTemplate { get; set; } = CompareBoolean.Bypass;
+        public CompareBoolean IsProtected { get; set; } = CompareBoolean.Bypass;
         public string DistributorId { get; set; }
         public int? AuthorId { get; set; }
 
-        public static DemoFilter Active() => new DemoFilter { IsActive = BoolCombination.TrueOnly };
+        public static DemoFilter Active() => new DemoFilter { IsActive = CompareBoolean.TrueOnly };
     }
 }

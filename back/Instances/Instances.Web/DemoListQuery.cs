@@ -26,8 +26,8 @@ namespace Instances.Web
                 IsTemplate = IsTemplate.ToBoolCombination(),
                 DistributorId = DistributorId,
                 AuthorId = AuthorId,
-                Subdomain = string.IsNullOrEmpty(Subdomain)  ? CompareString.MatchAll : CompareString.Equals(Subdomain),
-                IsProtected = Instance?.IsProtected?.ToBoolCombination() ?? BoolCombination.Both,
+                Subdomain = string.IsNullOrEmpty(Subdomain)  ? CompareString.Bypass : CompareString.Equals(Subdomain),
+                IsProtected = Instance?.IsProtected?.ToBoolCombination() ?? CompareBoolean.Bypass,
             };
         }
     }
