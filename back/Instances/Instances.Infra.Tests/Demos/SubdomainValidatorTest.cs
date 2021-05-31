@@ -33,16 +33,12 @@ namespace Instances.Infra.Tests.Demos
         [InlineData("APERTURE-SCIENCE")]
         public async Task IsAvailableAsync_ShouldReturnTrue_WhenSubdomainIsNotTaken(string takenSubdomain)
         {
-
-            var envs = new List<Environment>
-            {
-                new Environment { Subdomain = takenSubdomain, IsActive = false}
-            };
-
             _demosStoreMock
                 .Setup(s => s.GetAsync(It.Is<DemoFilter>(d => d.IsActive == BoolCombination.TrueOnly), It.IsAny<AccessRight>()))
                 .ReturnsAsync(new List<Demo>());
-            _envStoreMock.Setup(s => s.GetFilteredAsync(It.IsAny<EnvironmentAccessRight>(), It.IsAny<EnvironmentFilter>())).ReturnsAsync(envs);
+            _envStoreMock
+                .Setup(s => s.GetFilteredAsync(It.IsAny<AccessRight>(), It.IsAny<PurposeAccessRight>(), It.IsAny<EnvironmentFilter>()))
+                .ReturnsAsync(new List<Environment>());
             var subdomainValidator = new SubdomainValidator(_demosStoreMock.Object, _envStoreMock.Object);
 
             Assert.True(await subdomainValidator.IsAvailableAsync("aperture-science"));
@@ -59,7 +55,7 @@ namespace Instances.Infra.Tests.Demos
             _demosStoreMock
                 .Setup(s => s.GetAsync(It.Is<DemoFilter>(d => d.IsActive == BoolCombination.TrueOnly), It.IsAny<AccessRight>()))
                 .ReturnsAsync(demos);
-            _envStoreMock.Setup(s => s.GetFilteredAsync(It.IsAny<EnvironmentAccessRight>(), It.IsAny<EnvironmentFilter>())).ReturnsAsync(new List<Environment>());
+            _envStoreMock.Setup(s => s.GetFilteredAsync(It.IsAny<AccessRight>(), It.IsAny<PurposeAccessRight>(), It.IsAny<EnvironmentFilter>())).ReturnsAsync(new List<Environment>());
             var subdomainValidator = new SubdomainValidator(_demosStoreMock.Object, _envStoreMock.Object);
 
             Assert.False(await subdomainValidator.IsAvailableAsync("aperture-science"));
@@ -80,7 +76,7 @@ namespace Instances.Infra.Tests.Demos
                 .Setup(s => s.GetAsync(It.Is<DemoFilter>(d => d.IsActive == BoolCombination.TrueOnly), It.IsAny<AccessRight>()))
                 .ReturnsAsync(new List<Demo>());
 
-            _envStoreMock.Setup(s => s.GetFilteredAsync(It.IsAny<EnvironmentAccessRight>(), It.IsAny<EnvironmentFilter>())).ReturnsAsync(envs);
+            _envStoreMock.Setup(s => s.GetFilteredAsync(It.IsAny<AccessRight>(), It.IsAny<PurposeAccessRight>(), It.IsAny<EnvironmentFilter>())).ReturnsAsync(envs);
             var subdomainValidator = new SubdomainValidator(_demosStoreMock.Object, _envStoreMock.Object);
 
             Assert.False(await subdomainValidator.IsAvailableAsync("aperture-science"));
@@ -142,6 +138,11 @@ namespace Instances.Infra.Tests.Demos
                 .Setup(ds => ds.GetAsync(It.Is<DemoFilter>(d => d.IsActive == BoolCombination.TrueOnly), It.IsAny<AccessRight>()))
                 .ReturnsAsync(existingDemos);
 
+            _envStoreMock
+                .Setup(s => s.GetFilteredAsync(It.IsAny<AccessRight>(), It.IsAny<PurposeAccessRight>(), It.IsAny<EnvironmentFilter>()))
+                .ReturnsAsync(new List<Environment>());
+
+
             var subdomainValidator = new SubdomainValidator(_demosStoreMock.Object, _envStoreMock.Object);
             var availableSubdomain = await subdomainValidator.GetAvailableSubdomainByPrefixAsync(prefix);
             Func<Task> act = async () => await subdomainValidator.ThrowIfInvalidAsync(availableSubdomain);
@@ -169,6 +170,10 @@ namespace Instances.Infra.Tests.Demos
                     It.IsAny<AccessRight>()
                 ))
                 .ReturnsAsync(existingDemos);
+
+            _envStoreMock
+                .Setup(s => s.GetFilteredAsync(It.IsAny<AccessRight>(), It.IsAny<PurposeAccessRight>(), It.IsAny<EnvironmentFilter>()))
+                .ReturnsAsync(new List<Environment>());
 
             var subdomainValidator = new SubdomainValidator(_demosStoreMock.Object, _envStoreMock.Object);
             var availableSubdomain = await subdomainValidator.GetAvailableSubdomainByPrefixAsync(prefix);

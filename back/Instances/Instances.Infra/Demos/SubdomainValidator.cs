@@ -70,19 +70,25 @@ namespace Instances.Infra.Demos
 
         public async Task<bool> IsAvailableAsync(string subdomain)
         {
-            return !(await _environmentsStore.GetFilteredAsync(EnvironmentAccessRight.All, new EnvironmentFilter
-                       {
-                           Subdomain = CompareString.Equals(subdomain),
-                           IsActive = BoolCombination.TrueOnly
-                       })).Any()
-                   && (await _demosStore.GetAsync(DemoFilter.Active(), AccessRight.All))
-                   .All(d => d.Subdomain.ToLower() != subdomain);
+            var envsTask = _environmentsStore.GetFilteredAsync
+            (
+                AccessRight.All, PurposeAccessRight.ForAll, new EnvironmentFilter
+                {
+                    Subdomain = CompareString.Equals(subdomain),
+                    IsActive = BoolCombination.TrueOnly
+                }
+            );
+
+            var demosTask = _demosStore.GetAsync(DemoFilter.Active(), AccessRight.All);
+
+            return !(await envsTask).Any()
+                   && (await demosTask).All(d => d.Subdomain.ToLower() != subdomain);
         }
 
         private async Task<HashSet<string>> GetUsedSubdomainsByPrefixAsync(string prefix)
         {
             var envsWithSubdomain = await _environmentsStore
-                .GetFilteredAsync(EnvironmentAccessRight.All, new EnvironmentFilter
+                .GetFilteredAsync(AccessRight.All, PurposeAccessRight.ForAll, new EnvironmentFilter
                 {
                     IsActive = BoolCombination.TrueOnly,
                     Subdomain = CompareString.StartsWith(prefix)

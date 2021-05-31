@@ -19,10 +19,11 @@ namespace Environments.Infra.Storage.Stores
             _dbContext = dbContext;
         }
 
-        public Task<List<Environment>> GetFilteredAsync(EnvironmentAccessRight accessRight, EnvironmentFilter filter)
+        public Task<List<Environment>> GetFilteredAsync(AccessRight accessRight, PurposeAccessRight purposeAccessRight, EnvironmentFilter filter)
         {
             return _dbContext.Set<Environment>()
-                .FilteredByRights(accessRight)
+                .ForRights(accessRight)
+                .WithPurposes(purposeAccessRight)
                 .FilterBy(filter)
                 .ToListAsync();
         }
@@ -36,15 +37,7 @@ namespace Environments.Infra.Storage.Stores
                 .WhereStringCompares(filter.Subdomain, e => e.Subdomain)
                 .Apply(filter.IsActive).To(e => e.IsActive);
         }
-
-        public static IQueryable<Environment> FilteredByRights(this IQueryable<Environment> environments, EnvironmentAccessRight environmentAccessRight)
-        {
-            return environments
-                .FilteredByStandardRights(environmentAccessRight.AccessRight)
-                .FilteredByPurposes(environmentAccessRight.Purposes);
-        }
-
-        private static IQueryable<Environment> FilteredByStandardRights(this IQueryable<Environment> environments, AccessRight accessRight)
+        public static IQueryable<Environment> ForRights(this IQueryable<Environment> environments, AccessRight accessRight)
         {
             return accessRight switch
             {
@@ -55,7 +48,7 @@ namespace Environments.Infra.Storage.Stores
             };
         }
 
-        private static IQueryable<Environment> FilteredByPurposes(this IQueryable<Environment> environments, PurposeAccessRight accessRight)
+        public static IQueryable<Environment> WithPurposes(this IQueryable<Environment> environments, PurposeAccessRight accessRight)
         {
             return accessRight switch
             {

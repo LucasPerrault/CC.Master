@@ -1,20 +1,8 @@
-﻿using Rights.Domain.Filtering;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 
 namespace Environments.Domain.Storage
 {
-    public class EnvironmentAccessRight
-    {
-        public PurposeAccessRight Purposes { get; set; }
-        public AccessRight AccessRight { get; set; }
-
-        public static EnvironmentAccessRight All => new EnvironmentAccessRight
-        {
-            Purposes = PurposeAccessRight.ForAll,
-            AccessRight = AccessRight.All
-        };
-    }
 
     public abstract class PurposeAccessRight
     {

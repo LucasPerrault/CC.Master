@@ -20,12 +20,15 @@ using Microsoft.Extensions.Logging;
 using Moq;
 using Rights.Domain;
 using Rights.Domain.Abstractions;
+using Rights.Domain.Filtering;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using TechTalk.SpecFlow;
 using Tools;
 using Xunit;
+using Environment = Environments.Domain.Environment;
 
 namespace Instances.Application.Specflow.Tests.Demos.Steps
 {
@@ -109,6 +112,10 @@ namespace Instances.Application.Specflow.Tests.Demos.Steps
         {
             var demosStore = new DemosStore(_demosContext.DbContext, new DummyQueryPager());
             var demoDuplicationsStore = new DemoDuplicationsStore(_demosContext.DbContext);
+            var envStoreMock = new Mock<IEnvironmentsStore>();
+            envStoreMock
+                .Setup(s => s.GetFilteredAsync(It.IsAny<AccessRight>(), It.IsAny<PurposeAccessRight>(), It.IsAny<EnvironmentFilter>()))
+                .ReturnsAsync(new List<Environment>());
 
             var distributorsStoreMock = new Mock<IDistributorsStore>();
 
@@ -123,8 +130,6 @@ namespace Instances.Application.Specflow.Tests.Demos.Steps
             var rightsServiceMock = new Mock<IRightsService>();
             rightsServiceMock.Setup(rs => rs.GetUserOperationHighestScopeAsync(It.IsAny<Operation>()))
                 .ReturnsAsync((Operation op) => _demosContext.TestPrincipal.OperationsWithScope[op]);
-
-            var envStoreMock = new Mock<IEnvironmentsStore>();
             var ccDataServiceMock = new Mock<ICcDataService>();
             var clusterSelectorMock = new Mock<IClusterSelector>();
 

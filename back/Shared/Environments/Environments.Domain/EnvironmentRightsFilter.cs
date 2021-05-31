@@ -3,12 +3,8 @@ using Environments.Domain.Storage;
 using Rights.Domain;
 using Rights.Domain.Abstractions;
 using Rights.Domain.Filtering;
-using System;
-using System.Linq;
-using System.Linq.Expressions;
 using System.Security.Claims;
 using System.Threading.Tasks;
-using Users.Domain;
 
 namespace Environments.Domain
 {
@@ -21,18 +17,17 @@ namespace Environments.Domain
             _rightsService = rightsService;
         }
 
-        public async Task<EnvironmentAccessRight> GetAccessRightAsync(ClaimsPrincipal principal, Operation operation)
+        public AccessRight GetAccessRight(ClaimsPrincipal principal)
         {
-            var purposes = await _rightsService.GetEnvironmentPurposesAsync(operation);
-            var access = principal is CloudControlUserClaimsPrincipal userClaimsPrincipal
+            return principal is CloudControlUserClaimsPrincipal userClaimsPrincipal
                 ? AccessRight.ForDistributor(userClaimsPrincipal.User.DepartmentCode)
                 : AccessRight.All;
+        }
 
-            return new EnvironmentAccessRight
-            {
-                Purposes = PurposeAccessRight.ForSome(purposes),
-                AccessRight = access
-            };
+        public async Task<PurposeAccessRight> GetPurposesAccessRightAsync(Operation operation)
+        {
+            var purposes = await _rightsService.GetEnvironmentPurposesAsync(operation);
+            return PurposeAccessRight.ForSome(purposes);
         }
     }
 }
