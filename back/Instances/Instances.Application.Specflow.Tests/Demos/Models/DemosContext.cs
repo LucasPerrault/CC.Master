@@ -23,6 +23,7 @@ namespace Instances.Application.Specflow.Tests.Demos.Models
     public class DemoTestResults
     {
         public List<Instance> CreatedInstances { get; } = new List<Instance>();
+        public List<Instance> DeleteInstances { get; } = new List<Instance>();
         public List<Demo> Demos { get; } = new List<Demo>();
         public Demo SingleDemo { get; set; }
         public ExceptionResult ExceptionResult { get; } = new ExceptionResult();
