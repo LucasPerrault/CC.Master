@@ -1,9 +1,10 @@
-using System.Linq;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Environments.Domain.Storage
 {
     public interface IEnvironmentsStore
     {
-        IQueryable<Environment> GetFiltered(EnvironmentAccessRight accessRight);
+        Task<List<Environment>> GetFilteredAsync(EnvironmentAccessRight accessRight, EnvironmentFilter filter);
     }
 }

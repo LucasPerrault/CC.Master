@@ -2,7 +2,6 @@ using Environments.Domain;
 using Environments.Domain.Storage;
 using Rights.Domain;
 using System.Collections.Generic;
-using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 
@@ -23,8 +22,8 @@ namespace Environments.Application
 
         public async Task<List<Environment>> GetAsync()
         {
-            var accessRight = await _filter.GetAccessRightAsync(_principal, Operation.ReadEnvironments);
-            return _store.GetFiltered(accessRight).ToList();
+            var accessRight = await _rightsFilter.GetAccessRightAsync(_principal, Operation.ReadEnvironments);
+            return await _store.GetFilteredAsync(accessRight, new EnvironmentFilter());
         }
     }
 }
