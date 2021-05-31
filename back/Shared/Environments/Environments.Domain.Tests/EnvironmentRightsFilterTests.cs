@@ -6,7 +6,6 @@ using Rights.Domain;
 using Rights.Domain.Abstractions;
 using Rights.Domain.Filtering;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Users.Domain;
 using Xunit;
@@ -18,25 +17,13 @@ namespace Environments.Domain.Tests
 
         private readonly Mock<IRightsService> _rightsServiceMock = new Mock<IRightsService>();
 
-        [Fact]
-        public async Task ShouldReturnProperAccessRight()
+        [Theory]
+        [MemberData(nameof(TestData))]
+        public async Task ShouldReturnProperAccessRight(List<ScopedPermission> input, List<EnvironmentAccessRight> output)
         {
             _rightsServiceMock.Setup(s => s.GetScopedPermissionsAsync(Operation.ReadEnvironments))
-                .ReturnsAsync
-                (
-                    new List<ScopedPermission>
-                    {
-                        new ScopedPermission
-                        {
-                            Operation = Operation.ReadEnvironments,
-                            Scope = Scope.AllDepartments,
-                            EnvironmentPurposes = new HashSet<int>
-                            {
-                                (int)EnvironmentPurpose.Contractual
-                            }
-                        }
-                    }
-                );
+                .ReturnsAsync(input);
+
             var envRightsFilter = new EnvironmentRightsFilter(_rightsServiceMock.Object);
 
             var principal = new CloudControlUserClaimsPrincipal(new Principal
@@ -50,16 +37,32 @@ namespace Environments.Domain.Tests
             });
 
             var accessRights = await envRightsFilter.GetAccessRightAsync(principal, Operation.ReadEnvironments);
+            Assert.Equal(output, accessRights);
+        }
 
-            Assert.Single(accessRights);
-
-            Assert.Equal(
-                new EnvironmentAccessRight
-                (
-                    AccessRight.All,
-                    PurposeAccessRight.ForSome(EnvironmentPurpose.Contractual)
-                ),
-                accessRights.Single());
+        public static IEnumerable<object[]> TestData() {
+            yield return new object[]
+            {
+                new List<ScopedPermission>
+                {
+                    new ScopedPermission
+                    {
+                        Operation = Operation.ReadEnvironments,
+                        Scope = Scope.AllDepartments,
+                        EnvironmentPurposes = new HashSet<int>
+                        {
+                            (int)EnvironmentPurpose.Contractual
+                        }
+                    }
+                }, new List<EnvironmentAccessRight>
+                {
+                    new EnvironmentAccessRight
+                    (
+                        AccessRight.All,
+                        PurposeAccessRight.ForSome(EnvironmentPurpose.Contractual)
+                    )
+                }
+            };
         }
     }
 }
