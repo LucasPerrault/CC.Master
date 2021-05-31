@@ -1,10 +1,12 @@
 using Environments.Domain.Storage;
+using Lucca.Core.Shared.Domain.Expressions;
 using Microsoft.EntityFrameworkCore;
 using Rights.Domain.Filtering;
 using Storage.Infra.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Environment = Environments.Domain.Environment;
 
@@ -19,11 +21,10 @@ namespace Environments.Infra.Storage.Stores
             _dbContext = dbContext;
         }
 
-        public Task<List<Environment>> GetAsync(AccessRight accessRight, PurposeAccessRight purposeAccessRight, EnvironmentFilter filter)
+        public Task<List<Environment>> GetAsync(List<EnvironmentAccessRight> rights, EnvironmentFilter filter)
         {
             return _dbContext.Set<Environment>()
-                .ForRights(accessRight)
-                .WithPurposes(purposeAccessRight)
+                .ForRights(rights)
                 .FilterBy(filter)
                 .ToListAsync();
         }
@@ -38,23 +39,40 @@ namespace Environments.Infra.Storage.Stores
                 .Apply(filter.IsActive).To(e => e.IsActive);
         }
 
-        public static IQueryable<Environment> ForRights(this IQueryable<Environment> environments, AccessRight accessRight)
+        public static IQueryable<Environment> ForRights
+        (
+            this IQueryable<Environment> environments,
+            List<EnvironmentAccessRight> accessRights
+        )
+        {
+            if (!accessRights.Any())
+            {
+                return new List<Environment>().AsQueryable();
+            }
+
+            var expressions = accessRights
+                .Select(r => WithPurposes(r.Purposes).SmartAndAlso(WithAccessRight(r.AccessRight)))
+                .ToArray();
+
+            return environments.Where(expressions.CombineSafelyOr());
+        }
+
+        public static Expression<Func<Environment, bool>> WithPurposes(PurposeAccessRight accessRight)
         {
             return accessRight switch
             {
-                NoAccessRight _ => new List<Environment>().AsQueryable(),
-                DistributorCodeAccessRight r => environments.Where(e => e.ActiveAccesses.Any(a => a.ConsumerId == r.DistributorCode)),
-                AllAccessRight _ => environments,
-                _ => throw new ApplicationException($"Unknown type of access right {accessRight}")
+                AllPurposeAccessRight _ => e => true,
+                SomePurposesAccessRight r => e => r.Purposes.Contains(e.Purpose),
+                _ => throw new ApplicationException($"Unknown type of purpose access right {accessRight}")
             };
         }
 
-        public static IQueryable<Environment> WithPurposes(this IQueryable<Environment> environments, PurposeAccessRight accessRight)
+        public static Expression<Func<Environment, bool>> WithAccessRight(AccessRight accessRight)
         {
             return accessRight switch
             {
-                AllPurposeAccessRight _ => environments,
-                SomePurposesAccessRight r => environments.Where(e => r.Purposes.Contains(e.Purpose)),
+                NoAccessRight _ => e => false,
+                DistributorCodeAccessRight r => e => e.ActiveAccesses.Any(a => a.ConsumerId == r.DistributorCode),
                 _ => throw new ApplicationException($"Unknown type of purpose access right {accessRight}")
             };
         }

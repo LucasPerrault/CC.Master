@@ -1,16 +1,28 @@
-﻿using System.Collections.Generic;
+﻿using Rights.Domain.Filtering;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Environments.Domain.Storage
 {
+    public class EnvironmentAccessRight
+    {
+        public AccessRight AccessRight { get; set; }
+        public PurposeAccessRight Purposes { get; set; }
+
+        public static List<EnvironmentAccessRight> Everything = new List<EnvironmentAccessRight>
+        {
+            new EnvironmentAccessRight
+            {
+                Purposes = PurposeAccessRight.ForAll,
+                AccessRight = AccessRight.All
+            }
+        };
+    }
 
     public abstract class PurposeAccessRight
     {
         public static PurposeAccessRight ForAll => new AllPurposeAccessRight();
         public static PurposeAccessRight ForSome(IEnumerable<int> purposes) => new SomePurposesAccessRight(purposes);
-
-        protected PurposeAccessRight()
-        { }
     }
 
     public class AllPurposeAccessRight : PurposeAccessRight

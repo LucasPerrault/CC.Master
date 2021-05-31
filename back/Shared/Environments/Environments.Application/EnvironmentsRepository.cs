@@ -22,9 +22,8 @@ namespace Environments.Application
 
         public async Task<List<Environment>> GetAsync()
         {
-            var accessRight = _rightsFilter.GetAccessRight(_principal);
-            var purposeAccessRight = await _rightsFilter.GetPurposesAccessRightAsync(Operation.ReadEnvironments);
-            return await _store.GetAsync(accessRight, purposeAccessRight, new EnvironmentFilter());
+            var rights = await _rightsFilter.GetAccessRightAsync(_principal, Operation.ReadEnvironments);
+            return await _store.GetAsync(rights, new EnvironmentFilter());
         }
     }
 }

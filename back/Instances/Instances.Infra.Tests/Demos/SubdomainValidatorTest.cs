@@ -37,7 +37,7 @@ namespace Instances.Infra.Tests.Demos
                 .Setup(s => s.GetAsync(It.Is<DemoFilter>(d => d.IsActive == CompareBoolean.TrueOnly), It.IsAny<AccessRight>()))
                 .ReturnsAsync(new List<Demo>());
             _envStoreMock
-                .Setup(s => s.GetAsync(It.IsAny<AccessRight>(), It.IsAny<PurposeAccessRight>(), It.IsAny<EnvironmentFilter>()))
+                .Setup(s => s.GetAsync(It.IsAny<List<EnvironmentAccessRight>>(), It.IsAny<EnvironmentFilter>()))
                 .ReturnsAsync(new List<Environment>());
             var subdomainValidator = new SubdomainValidator(_demosStoreMock.Object, _envStoreMock.Object);
 
@@ -55,7 +55,7 @@ namespace Instances.Infra.Tests.Demos
             _demosStoreMock
                 .Setup(s => s.GetAsync(It.Is<DemoFilter>(d => d.IsActive == CompareBoolean.TrueOnly), It.IsAny<AccessRight>()))
                 .ReturnsAsync(demos);
-            _envStoreMock.Setup(s => s.GetAsync(It.IsAny<AccessRight>(), It.IsAny<PurposeAccessRight>(), It.IsAny<EnvironmentFilter>())).ReturnsAsync(new List<Environment>());
+            _envStoreMock.Setup(s => s.GetAsync(It.IsAny<List<EnvironmentAccessRight>>(), It.IsAny<EnvironmentFilter>())).ReturnsAsync(new List<Environment>());
             var subdomainValidator = new SubdomainValidator(_demosStoreMock.Object, _envStoreMock.Object);
 
             Assert.False(await subdomainValidator.IsAvailableAsync("aperture-science"));
@@ -76,7 +76,7 @@ namespace Instances.Infra.Tests.Demos
                 .Setup(s => s.GetAsync(It.Is<DemoFilter>(d => d.IsActive == CompareBoolean.TrueOnly), It.IsAny<AccessRight>()))
                 .ReturnsAsync(new List<Demo>());
 
-            _envStoreMock.Setup(s => s.GetAsync(It.IsAny<AccessRight>(), It.IsAny<PurposeAccessRight>(), It.IsAny<EnvironmentFilter>())).ReturnsAsync(envs);
+            _envStoreMock.Setup(s => s.GetAsync(It.IsAny<List<EnvironmentAccessRight>>(), It.IsAny<EnvironmentFilter>())).ReturnsAsync(envs);
             var subdomainValidator = new SubdomainValidator(_demosStoreMock.Object, _envStoreMock.Object);
 
             Assert.False(await subdomainValidator.IsAvailableAsync("aperture-science"));
@@ -139,7 +139,7 @@ namespace Instances.Infra.Tests.Demos
                 .ReturnsAsync(existingDemos);
 
             _envStoreMock
-                .Setup(s => s.GetAsync(It.IsAny<AccessRight>(), It.IsAny<PurposeAccessRight>(), It.IsAny<EnvironmentFilter>()))
+                .Setup(s => s.GetAsync(It.IsAny<List<EnvironmentAccessRight>>(), It.IsAny<EnvironmentFilter>()))
                 .ReturnsAsync(new List<Environment>());
 
 
@@ -172,7 +172,7 @@ namespace Instances.Infra.Tests.Demos
                 .ReturnsAsync(existingDemos);
 
             _envStoreMock
-                .Setup(s => s.GetAsync(It.IsAny<AccessRight>(), It.IsAny<PurposeAccessRight>(), It.IsAny<EnvironmentFilter>()))
+                .Setup(s => s.GetAsync(It.IsAny<List<EnvironmentAccessRight>>(), It.IsAny<EnvironmentFilter>()))
                 .ReturnsAsync(new List<Environment>());
 
             var subdomainValidator = new SubdomainValidator(_demosStoreMock.Object, _envStoreMock.Object);

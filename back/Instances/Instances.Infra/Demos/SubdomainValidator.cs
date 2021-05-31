@@ -72,7 +72,8 @@ namespace Instances.Infra.Demos
         {
             var envsTask = _environmentsStore.GetAsync
             (
-                AccessRight.All, PurposeAccessRight.ForAll, new EnvironmentFilter
+                EnvironmentAccessRight.Everything,
+                new EnvironmentFilter
                 {
                     IsActive = CompareBoolean.TrueOnly,
                     Subdomain = CompareString.Equals(subdomain),
@@ -91,11 +92,15 @@ namespace Instances.Infra.Demos
         private async Task<HashSet<string>> GetUsedSubdomainsByPrefixAsync(string prefix)
         {
             var envsWithSubdomain = await _environmentsStore
-                .GetAsync(AccessRight.All, PurposeAccessRight.ForAll, new EnvironmentFilter
-                {
-                    IsActive = CompareBoolean.TrueOnly,
-                    Subdomain = CompareString.StartsWith(prefix)
-                });
+                .GetAsync
+                (
+                    EnvironmentAccessRight.Everything,
+                    new EnvironmentFilter
+                    {
+                        IsActive = CompareBoolean.TrueOnly,
+                        Subdomain = CompareString.StartsWith(prefix)
+                    }
+                );
 
             var usedSubdomainsEnvs = envsWithSubdomain.Select(e => e.Subdomain);
 

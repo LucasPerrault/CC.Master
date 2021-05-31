@@ -105,6 +105,26 @@ namespace Rights.Infra.Services
             };
         }
 
+        public async Task<List<ScopedPermission>> GetScopedPermissionsAsync(Operation operation)
+        {
+            var operationsSet = new HashSet<int> { (int)operation };
+            return _principal switch
+            {
+                CloudControlUserClaimsPrincipal userPrincipal =>
+                    (await _permissionsStore.GetUserPermissionsAsync(userPrincipal.User.Id, RightsHelper.CloudControlAppInstanceId, operationsSet))
+                    .GroupBy(up => up.Scope)
+                    .Select(group => new ScopedPermission
+                    {
+                        Scope = group.Key,
+                        Operation = (Operation)group.First().OperationId,
+                        EnvironmentPurposes = group.Select(up => up.ExternalEntityId).ToHashSet()
+                    })
+                    .ToList(),
+                CloudControlApiKeyClaimsPrincipal _ => throw new ApplicationException("ApiKeys don't have scopes"),
+                _ => throw new ApplicationException("Unhandled ClaimsPrincipal type")
+            };
+        }
+
         private Scope GetHighestScope(IGrouping<Operation, IUserPermission> permissions)
         {
             return permissions.Select(p => p.Scope).OrderBy(GetRank).First();

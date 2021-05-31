@@ -12,5 +12,6 @@ namespace Rights.Domain.Abstractions
         Task<Scope> GetUserOperationHighestScopeAsync(Operation operation);
         Task<Dictionary<Operation, Scope>> GetUserOperationsHighestScopeAsync(params Operation[] operations);
         Task<ISet<int>> GetEnvironmentPurposesAsync(params Operation[] operations);
+        Task<List<ScopedPermission>> GetScopedPermissionsAsync(Operation operation);
     }
 }

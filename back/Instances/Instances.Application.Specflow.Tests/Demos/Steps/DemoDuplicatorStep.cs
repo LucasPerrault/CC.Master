@@ -114,7 +114,7 @@ namespace Instances.Application.Specflow.Tests.Demos.Steps
             var demoDuplicationsStore = new DemoDuplicationsStore(_demosContext.DbContext);
             var envStoreMock = new Mock<IEnvironmentsStore>();
             envStoreMock
-                .Setup(s => s.GetAsync(It.IsAny<AccessRight>(), It.IsAny<PurposeAccessRight>(), It.IsAny<EnvironmentFilter>()))
+                .Setup(s => s.GetAsync(It.IsAny<List<EnvironmentAccessRight>>(), It.IsAny<EnvironmentFilter>()))
                 .ReturnsAsync(new List<Environment>());
 
             var distributorsStoreMock = new Mock<IDistributorsStore>();
