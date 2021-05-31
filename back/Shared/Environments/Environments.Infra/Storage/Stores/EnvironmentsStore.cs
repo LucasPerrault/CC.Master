@@ -73,6 +73,7 @@ namespace Environments.Infra.Storage.Stores
             {
                 NoAccessRight _ => e => false,
                 DistributorCodeAccessRight r => e => e.ActiveAccesses.Any(a => a.ConsumerId == r.DistributorCode),
+                AllAccessRight _ => e => true,
                 _ => throw new ApplicationException($"Unknown type of purpose access right {accessRight}")
             };
         }

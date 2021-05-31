@@ -23,6 +23,7 @@ namespace Environments.Domain.Storage
     {
         public static PurposeAccessRight ForAll => new AllPurposeAccessRight();
         public static PurposeAccessRight ForSome(IEnumerable<int> purposes) => new SomePurposesAccessRight(purposes);
+        public static PurposeAccessRight ForSome(params EnvironmentPurpose[] purposes) => new SomePurposesAccessRight(purposes.ToHashSet());
     }
 
     public class AllPurposeAccessRight : PurposeAccessRight
