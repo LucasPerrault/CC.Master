@@ -74,15 +74,18 @@ namespace Instances.Infra.Demos
             (
                 AccessRight.All, PurposeAccessRight.ForAll, new EnvironmentFilter
                 {
+                    IsActive = BoolCombination.TrueOnly,
                     Subdomain = CompareString.Equals(subdomain),
-                    IsActive = BoolCombination.TrueOnly
                 }
             );
 
-            var demosTask = _demosStore.GetAsync(DemoFilter.Active(), AccessRight.All);
+            var demosTask = _demosStore.GetAsync(new DemoFilter
+            {
+                IsActive = BoolCombination.TrueOnly,
+                Subdomain = CompareString.Equals(subdomain),
+            }, AccessRight.All);
 
-            return !(await envsTask).Any()
-                   && (await demosTask).All(d => d.Subdomain.ToLower() != subdomain);
+            return !(await envsTask).Any() && !(await demosTask).Any();
         }
 
         private async Task<HashSet<string>> GetUsedSubdomainsByPrefixAsync(string prefix)
@@ -99,10 +102,10 @@ namespace Instances.Infra.Demos
             var filter = new DemoFilter
             {
                 IsActive = BoolCombination.TrueOnly,
-                Search = prefix
+                Search = prefix,
+                Subdomain = CompareString.StartsWith(prefix)
             };
             var usedSubdomainsDemos = (await _demosStore.GetAsync(filter, AccessRight.All))
-                .Where(d => d.Subdomain.StartsWith(prefix))
                 .Select(e => e.Subdomain);
 
             var usedSubdomains = usedSubdomainsEnvs.ToList();

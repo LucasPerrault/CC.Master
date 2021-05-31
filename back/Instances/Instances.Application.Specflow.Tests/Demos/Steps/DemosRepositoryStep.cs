@@ -49,7 +49,7 @@ namespace Instances.Application.Specflow.Tests.Demos.Steps
         {
             var demoFilter = new DemoFilter()
             {
-                Subdomain = selection.Subdomain,
+                Subdomain = CompareString.Equals(selection.Subdomain),
             };
             var demosRepository = GetNewRepository();
             var demoPage = await demosRepository.GetDemosAsync(null, demoFilter);

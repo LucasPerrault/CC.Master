@@ -6,9 +6,7 @@
         public CompareStringType Type { get; set; }
 
         private CompareString()
-        {
-
-        }
+        { }
 
         public static CompareString MatchAll => new CompareString { Type = CompareStringType.MatchAll };
         public static CompareString Equals(string value) => new CompareString { Type = CompareStringType.Equals, Value = value };

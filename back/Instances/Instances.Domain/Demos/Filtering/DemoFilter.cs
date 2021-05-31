@@ -4,7 +4,7 @@ namespace Instances.Domain.Demos.Filtering
 {
     public class DemoFilter
     {
-        public string Subdomain { get; set; }
+        public CompareString Subdomain { get; set; } = CompareString.MatchAll;
         public string Search { get; set; }
         public BoolCombination IsActive { get; set; } = BoolCombination.Both;
         public BoolCombination IsTemplate { get; set; } = BoolCombination.Both;
