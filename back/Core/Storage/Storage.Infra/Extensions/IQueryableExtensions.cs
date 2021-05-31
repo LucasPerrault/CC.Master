@@ -32,14 +32,6 @@ namespace Storage.Infra.Extensions
         public static IConditionalQueryableBuilder<T> WhenHasValue<T, TStruct>(this IQueryable<T> query, TStruct? nullable)
             where TStruct : struct => query.When(nullable.HasValue);
 
-        public static IQueryable<T> WhereStringCompares<T>(this IQueryable<T> queryable, CompareString comparison, Expression<Func<T,string>> getString)
-        {
-            return queryable
-                .When(comparison.Type == CompareStringType.Equals).ApplyWhere(getString.Chain(s => s == comparison.Value))
-                .When(comparison.Type == CompareStringType.DoesNotEqual).ApplyWhere(getString.Chain(s => s == comparison.Value))
-                .When(comparison.Type == CompareStringType.StartsWith).ApplyWhere(getString.Chain(s => s == comparison.Value));
-        }
-
         public interface IConditionalQueryableBuilder<T>
         {
             IQueryable<T> ApplyWhere(Expression<Func<T, bool>> expression);

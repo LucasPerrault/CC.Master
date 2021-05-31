@@ -34,9 +34,10 @@ namespace Environments.Infra.Storage.Stores
         public static IQueryable<Environment> FilterBy(this IQueryable<Environment> environments, EnvironmentFilter filter)
         {
             return environments
-                .WhereStringCompares(filter.Subdomain, e => e.Subdomain)
+                .Apply(filter.Subdomain).To(e => e.Subdomain)
                 .Apply(filter.IsActive).To(e => e.IsActive);
         }
+
         public static IQueryable<Environment> ForRights(this IQueryable<Environment> environments, AccessRight accessRight)
         {
             return accessRight switch

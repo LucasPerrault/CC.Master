@@ -118,10 +118,9 @@ namespace Instances.Infra.Storage.Stores
                 .Apply(filter.IsProtected).To(d => d.Instance.IsProtected)
                 .Apply(filter.IsTemplate).To(d => d.IsTemplate)
                 .WhenNotNullOrEmpty(filter.Search).ApplyWhere(d => d.Subdomain.Contains(filter.Search))
-                .WhereStringCompares(filter.Subdomain, d => d.Subdomain)
+                .Apply(filter.Subdomain).To(d => d.Subdomain)
                 .WhenNotNullOrEmpty(filter.DistributorId).ApplyWhere(d => d.DistributorID == filter.DistributorId)
                 .WhenHasValue(filter.AuthorId).ApplyWhere(d => d.AuthorId == filter.AuthorId.Value);
         }
     }
 }
-
