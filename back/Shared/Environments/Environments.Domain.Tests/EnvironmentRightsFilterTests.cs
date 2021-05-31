@@ -16,6 +16,7 @@ namespace Environments.Domain.Tests
     {
 
         private readonly Mock<IRightsService> _rightsServiceMock = new Mock<IRightsService>();
+        private const string DepartmentCode = "DepCode";
 
         [Theory]
         [MemberData(nameof(TestData))]
@@ -32,7 +33,8 @@ namespace Environments.Domain.Tests
                 User = new User
                 {
                     FirstName = "Bernard",
-                    LastName = "Martin"
+                    LastName = "Martin",
+                    DepartmentCode = DepartmentCode
                 }
             });
 
@@ -47,7 +49,6 @@ namespace Environments.Domain.Tests
                 {
                     new ScopedPermission
                     {
-                        Operation = Operation.ReadEnvironments,
                         Scope = Scope.AllDepartments,
                         EnvironmentPurposes = new HashSet<int>
                         {
@@ -63,6 +64,67 @@ namespace Environments.Domain.Tests
                     )
                 }
             };
+
+            yield return new object[]
+            {
+                new List<ScopedPermission>
+                {
+                    new ScopedPermission
+                    {
+                        Scope = Scope.DepartmentOnly,
+                        EnvironmentPurposes = new HashSet<int>
+                        {
+                            (int)EnvironmentPurpose.InternalUse
+                        }
+                    }
+                }, new List<EnvironmentAccessRight>
+                {
+                    new EnvironmentAccessRight
+                    (
+                        AccessRight.ForDistributor(DepartmentCode),
+                        PurposeAccessRight.ForSome(EnvironmentPurpose.InternalUse)
+                    )
+                }
+            };
+
+            yield return new object[]
+            {
+                new List<ScopedPermission>
+                {
+                    new ScopedPermission
+                    {
+                        Scope = Scope.AllDepartments,
+                        EnvironmentPurposes = new HashSet<int>
+                        {
+                            (int)EnvironmentPurpose.Contractual
+                        }
+                    },
+                    new ScopedPermission
+                    {
+                        Scope = Scope.DepartmentOnly,
+                        EnvironmentPurposes = new HashSet<int>
+                        {
+                            (int)EnvironmentPurpose.Lucca,
+                            (int)EnvironmentPurpose.Security,
+                            (int)EnvironmentPurpose.Virgin
+                        }
+                    }
+                }, new List<EnvironmentAccessRight>
+                {
+                    new EnvironmentAccessRight
+                    (
+                        AccessRight.All,
+                        PurposeAccessRight.ForSome(EnvironmentPurpose.Contractual)
+                    ),
+                    new EnvironmentAccessRight
+                    (
+                        AccessRight.ForDistributor(DepartmentCode),
+                        PurposeAccessRight.ForSome(EnvironmentPurpose.Lucca, EnvironmentPurpose.Security, EnvironmentPurpose.Virgin)
+                    )
+                }
+            };
+
+            yield return new object[] { new List<ScopedPermission>(), new List<EnvironmentAccessRight>() };
         }
     }
 }
