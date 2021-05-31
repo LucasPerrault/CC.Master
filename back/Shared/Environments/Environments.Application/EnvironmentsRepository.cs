@@ -24,7 +24,7 @@ namespace Environments.Application
         {
             var accessRight = _rightsFilter.GetAccessRight(_principal);
             var purposeAccessRight = await _rightsFilter.GetPurposesAccessRightAsync(Operation.ReadEnvironments);
-            return await _store.GetFilteredAsync(accessRight, purposeAccessRight, new EnvironmentFilter());
+            return await _store.GetAsync(accessRight, purposeAccessRight, new EnvironmentFilter());
         }
     }
 }

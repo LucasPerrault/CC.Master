@@ -19,7 +19,7 @@ namespace Environments.Infra.Storage.Stores
             _dbContext = dbContext;
         }
 
-        public Task<List<Environment>> GetFilteredAsync(AccessRight accessRight, PurposeAccessRight purposeAccessRight, EnvironmentFilter filter)
+        public Task<List<Environment>> GetAsync(AccessRight accessRight, PurposeAccessRight purposeAccessRight, EnvironmentFilter filter)
         {
             return _dbContext.Set<Environment>()
                 .ForRights(accessRight)
