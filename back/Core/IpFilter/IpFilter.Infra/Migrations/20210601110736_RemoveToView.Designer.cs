@@ -4,14 +4,16 @@ using IpFilter.Infra.Storage;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace IpFilter.Infra.Migrations
 {
     [DbContext(typeof(IpFilterDbContext))]
-    partial class IpFilterDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210601110736_RemoveToView")]
+    partial class RemoveToView
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

@@ -1,9 +1,13 @@
 using Environments.Domain;
 using Environments.Domain.Storage;
 using Lucca.Core.Api.Abstractions.Paging;
+using Lucca.Core.Shared.Domain.Exceptions;
 using Rights.Domain;
+using System.Collections.Generic;
+using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using Tools;
 
 namespace Environments.Application
 {
@@ -24,6 +28,32 @@ namespace Environments.Application
         {
             var rights = await _rightsFilter.GetAccessRightAsync(_principal, Operation.ReadEnvironments);
             return await _store.GetAsync(page, rights, filter);
+        }
+
+        public async Task<HashSet<DistributorWithAccess>> GetAccessesAsync(string subdomain)
+        {
+            var rights = await _rightsFilter.GetAccessRightAsync(_principal, Operation.ReadEnvironments);
+            var envs = await _store.GetAsync(rights, new EnvironmentFilter
+            {
+                Subdomain = CompareString.Equals(subdomain),
+                IsActive = CompareBoolean.TrueOnly
+            });
+
+            var env = envs.FirstOrDefault();
+
+            if (env is null)
+            {
+                throw new NotFoundException($"No active environment with subdomain {subdomain} was found");
+            }
+
+            return env.ActiveAccesses.Select
+            (
+                a => new DistributorWithAccess
+                {
+                    AccessType = a.Access.Type,
+                    DistributorCode = a.Consumer.Code
+                }
+            ).ToHashSet();
         }
     }
 }
