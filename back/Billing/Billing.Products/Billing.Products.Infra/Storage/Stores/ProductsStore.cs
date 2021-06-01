@@ -20,7 +20,7 @@ namespace Billing.Products.Infra.Storage.Stores
         {
             return _dbContext.Set<Product>()
                 .Include(p => p.Family)
-                .Include(p => p.ProductSolutions).ThenInclude(ps => ps.Solution)
+                .Include(p => p.ProductSolutions).ThenInclude(ps => ps.Solution).ThenInclude(s => s.BusinessUnit)
                 .Where(p => !p.IsFreeUse)
                 .ToListAsync();
         }

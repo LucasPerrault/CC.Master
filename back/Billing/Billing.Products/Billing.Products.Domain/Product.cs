@@ -10,7 +10,7 @@ namespace Billing.Products.Domain
         public string Name { get; set; }
         public string Code { get; set; }
         public string ApplicationCode { get; set; }
-        public int ParentId { get; set; }
+        public int? ParentId { get; set; }
         public bool IsEligibleToMinimalBilling { get; set; }
         public bool IsMultiSuite { get; set; }
         public bool IsPromoted { get; set; }

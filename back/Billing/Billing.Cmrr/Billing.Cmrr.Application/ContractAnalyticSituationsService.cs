@@ -47,8 +47,18 @@ namespace Billing.Cmrr.Application
             {
                 CmrrAxis.Product => p => new List<Breakdown>(1) { new Breakdown { AxisSection = new AxisSection { Id = p.FamilyId, Name = p.Family.Name }, Ratio = 1 } },
                 CmrrAxis.Solution => p => GetSolutionBreakdowns(p),
+                CmrrAxis.BusinessUnit => p => GetBusinessUnitBreakdowns(p),
                 _ => throw new BadRequestException($"Axis {axis} has no corresponding breakdowns")
             };
+        }
+
+        private List<Breakdown> GetBusinessUnitBreakdowns(Product p)
+        {
+            var shares = p.ProductSolutions.Select(ps => ps.Solution).Select(s => s.BusinessUnit)
+                .Select(bu => new BreakdownShare(new AxisSection { Id = bu.Id, Name = bu.Name }, 1))
+                .ToList();
+
+            return ToBreakdowns(shares).ToList();
         }
 
         private List<Breakdown> GetSolutionBreakdowns(Product p)
