@@ -1,6 +1,5 @@
 using Authentication.Domain;
 using Environments.Domain.Storage;
-using Lucca.Core.Rights.Abstractions;
 using Moq;
 using Rights.Domain;
 using Rights.Domain.Abstractions;
@@ -49,7 +48,7 @@ namespace Environments.Domain.Tests
                 {
                     new ScopedPermission
                     {
-                        Scope = Scope.AllDepartments,
+                        Scope = AccessRightScope.AllDistributors,
                         EnvironmentPurposes = new HashSet<int>
                         {
                             (int)EnvironmentPurpose.Contractual
@@ -71,7 +70,7 @@ namespace Environments.Domain.Tests
                 {
                     new ScopedPermission
                     {
-                        Scope = Scope.DepartmentOnly,
+                        Scope = AccessRightScope.OwnDistributorOnly,
                         EnvironmentPurposes = new HashSet<int>
                         {
                             (int)EnvironmentPurpose.InternalUse
@@ -93,7 +92,7 @@ namespace Environments.Domain.Tests
                 {
                     new ScopedPermission
                     {
-                        Scope = Scope.AllDepartments,
+                        Scope = AccessRightScope.AllDistributors,
                         EnvironmentPurposes = new HashSet<int>
                         {
                             (int)EnvironmentPurpose.Contractual
@@ -101,7 +100,7 @@ namespace Environments.Domain.Tests
                     },
                     new ScopedPermission
                     {
-                        Scope = Scope.DepartmentOnly,
+                        Scope = AccessRightScope.OwnDistributorOnly,
                         EnvironmentPurposes = new HashSet<int>
                         {
                             (int)EnvironmentPurpose.Lucca,

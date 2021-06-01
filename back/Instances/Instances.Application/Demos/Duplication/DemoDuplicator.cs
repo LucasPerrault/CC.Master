@@ -4,7 +4,6 @@ using Instances.Application.Instances;
 using Instances.Domain.Demos;
 using Instances.Domain.Demos.Filtering;
 using Instances.Domain.Instances;
-using Lucca.Core.Rights.Abstractions;
 using Lucca.Core.Shared.Domain.Exceptions;
 using Rights.Domain;
 using Rights.Domain.Abstractions;
@@ -127,7 +126,7 @@ namespace Instances.Application.Demos.Duplication
             }
 
             var scope = await _rightsService.GetUserOperationHighestScopeAsync(Operation.Demo);
-            if (scope != Scope.AllDepartments)
+            if (scope != AccessRightScope.AllDistributors)
             {
                 throw new ForbiddenException("Insufficient rights to duplicate demo for another department than your own");
             }

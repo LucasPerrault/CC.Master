@@ -4,9 +4,11 @@ using Lucca.Core.Rights.Abstractions.Permissions;
 using Lucca.Core.Rights.Abstractions.Stores;
 using Moq;
 using Rights.Domain;
+using Rights.Domain.Abstractions;
 using Rights.Infra.Services;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
 using Users.Domain;
@@ -58,7 +60,7 @@ namespace Rights.Infra.Tests.Services
                 }),
                 permissionStoreMock.Object);
 
-            Assert.All(await rightsService.GetUserOperationsHighestScopeAsync(Operation.Demo, Operation.ReadCMRR), kvp => Assert.Equal(Scope.AllDepartments, kvp.Value));
+            Assert.All(await rightsService.GetUserOperationsHighestScopeAsync(Operation.Demo, Operation.ReadCMRR), kvp => Assert.Equal(AccessRightScope.AllDistributors, kvp.Value));
         }
 
         [Fact]
@@ -99,7 +101,7 @@ namespace Rights.Infra.Tests.Services
                 }),
                 permissionStoreMock.Object);
 
-            Assert.Equal(Scope.AllDepartments, await rightsService.GetUserOperationHighestScopeAsync(Operation.Demo));
+            Assert.Equal(AccessRightScope.AllDistributors, await rightsService.GetUserOperationHighestScopeAsync(Operation.Demo));
         }
 
         [Fact]
@@ -131,7 +133,7 @@ namespace Rights.Infra.Tests.Services
                     }
                 }),
                 permissionStoreMock.Object);
-            await Assert.ThrowsAsync<ApplicationException>(async () => await rightsService.GetUserOperationsHighestScopeAsync(Operation.Demo, Operation.ReadCMRR));
+            await Assert.ThrowsAsync<InvalidEnumArgumentException>(async () => await rightsService.GetUserOperationsHighestScopeAsync(Operation.Demo, Operation.ReadCMRR));
         }
 
         [Fact]
@@ -172,7 +174,7 @@ namespace Rights.Infra.Tests.Services
                 }),
                 permissionStoreMock.Object);
 
-            await Assert.ThrowsAsync<ApplicationException>(async () => await rightsService.GetUserOperationHighestScopeAsync(Operation.Demo));
+            await Assert.ThrowsAsync<InvalidEnumArgumentException>(async () => await rightsService.GetUserOperationHighestScopeAsync(Operation.Demo));
         }
 
 

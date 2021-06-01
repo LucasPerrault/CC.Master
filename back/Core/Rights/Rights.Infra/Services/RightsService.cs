@@ -8,6 +8,7 @@ using Rights.Domain.Abstractions;
 using Rights.Domain.Exceptions;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -20,10 +21,10 @@ namespace Rights.Infra.Services
         private readonly ClaimsPrincipal _principal;
         private readonly IPermissionsStore _permissionsStore;
 
-        private readonly static Dictionary<Scope, int> ScopeRankings = new Dictionary<Scope, int>
+        private static readonly Dictionary<AccessRightScope, int> ScopeRankings = new Dictionary<AccessRightScope, int>
         {
-            { Scope.AllDepartments, 0 },
-            { Scope.DepartmentOnly, 1 },
+            [AccessRightScope.AllDistributors] = 0,
+            [AccessRightScope.OwnDistributorOnly] = 1,
         };
 
         public RightsService(ClaimsPrincipalRightsHelper rightsHelper, ClaimsPrincipal principal, IPermissionsStore permissionsStore)
@@ -67,12 +68,12 @@ namespace Rights.Infra.Services
             return await _rightsHelper.HasOperationAsync(_principal, RightsHelper.CloudControlAppInstanceId, (int)operation);
         }
 
-        public async Task<Scope> GetUserOperationHighestScopeAsync(Operation operation)
+        public async Task<AccessRightScope> GetUserOperationHighestScopeAsync(Operation operation)
         {
             return (await GetUserOperationsHighestScopeAsync(operation)).Select(kvp => kvp.Value).FirstOrDefault();
         }
 
-        public async Task<Dictionary<Operation, Scope>> GetUserOperationsHighestScopeAsync(params Operation[] operations)
+        public async Task<Dictionary<Operation, AccessRightScope>> GetUserOperationsHighestScopeAsync(params Operation[] operations)
         {
             var operationsSet = operations.Select(o => (int)o).ToHashSet();
             switch(_principal)
@@ -112,7 +113,7 @@ namespace Rights.Infra.Services
             {
                 CloudControlUserClaimsPrincipal userPrincipal =>
                     (await _permissionsStore.GetUserPermissionsAsync(userPrincipal.User.Id, RightsHelper.CloudControlAppInstanceId, operationsSet))
-                    .GroupBy(up => up.Scope)
+                    .GroupBy(up => up.Scope.ToAccessRightScope())
                     .Select(group => new ScopedPermission
                     {
                         Scope = group.Key,
@@ -125,18 +126,31 @@ namespace Rights.Infra.Services
             };
         }
 
-        private Scope GetHighestScope(IGrouping<Operation, IUserPermission> permissions)
+        private AccessRightScope GetHighestScope(IGrouping<Operation, IUserPermission> permissions)
         {
-            return permissions.Select(p => p.Scope).OrderBy(GetRank).First();
+            return permissions.Select(p => p.Scope.ToAccessRightScope()).OrderBy(GetRank).First();
         }
 
-        private static int GetRank(Scope scope)
+        private static int GetRank(AccessRightScope scope)
         {
             if(!ScopeRankings.ContainsKey(scope))
             {
                 throw new ApplicationException($"Scope non pris en charge : '{scope}'");
             }
             return ScopeRankings[scope];
+        }
+    }
+
+    internal static class ScopeExtensions
+    {
+        public static AccessRightScope ToAccessRightScope(this Scope scope)
+        {
+            return scope switch
+            {
+                Scope.AllDepartments => AccessRightScope.AllDistributors,
+                Scope.DepartmentOnly => AccessRightScope.OwnDistributorOnly,
+                _ => throw new InvalidEnumArgumentException(nameof(scope), (int)scope, typeof(Scope))
+            };
         }
     }
 }

@@ -1,6 +1,5 @@
 using Authentication.Domain;
 using Environments.Domain.Storage;
-using Lucca.Core.Rights.Abstractions;
 using Rights.Domain;
 using Rights.Domain.Abstractions;
 using Rights.Domain.Filtering;
@@ -42,8 +41,8 @@ namespace Environments.Domain
                         (
                             p.Scope switch
                             {
-                                Scope.AllDepartments => AccessRight.All,
-                                Scope.DepartmentOnly => AccessRight.ForDistributor(user.User.DepartmentCode),
+                                AccessRightScope.AllDistributors => AccessRight.All,
+                                AccessRightScope.OwnDistributorOnly => AccessRight.ForDistributor(user.User.DepartmentCode)
                             },
                             PurposeAccessRight.ForSome(p.EnvironmentPurposes)
                         )

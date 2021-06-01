@@ -16,9 +16,9 @@ namespace Environments.Infra.Tests
     {
         private readonly Mock<IQueryPager> _queryPager;
 
-        public EnvironmentStoreTests(Mock<IQueryPager> queryPager)
+        public EnvironmentStoreTests()
         {
-            _queryPager = queryPager;
+            _queryPager = new Mock<IQueryPager>();
         }
 
         [Fact]
@@ -193,6 +193,7 @@ namespace Environments.Infra.Tests
             await dbContext.SaveChangesAsync();
 
             var store = new EnvironmentsStore(dbContext, _queryPager.Object);
+
             var envs = await store.GetAsync(new List<EnvironmentAccessRight>
             {
                 new EnvironmentAccessRight
