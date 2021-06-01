@@ -2,6 +2,8 @@ using Environments.Domain;
 using Environments.Domain.Storage;
 using Environments.Infra.Storage;
 using Environments.Infra.Storage.Stores;
+using Lucca.Core.Api.Queryable.Paging;
+using Moq;
 using Rights.Domain.Filtering;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -12,6 +14,13 @@ namespace Environments.Infra.Tests
 {
     public class EnvironmentStoreTests
     {
+        private readonly Mock<IQueryPager> _queryPager;
+
+        public EnvironmentStoreTests(Mock<IQueryPager> queryPager)
+        {
+            _queryPager = queryPager;
+        }
+
         [Fact]
         public async Task ShouldReturnEnvironmentWithoutAccessRights()
         {
@@ -26,7 +35,7 @@ namespace Environments.Infra.Tests
             );
             await dbContext.SaveChangesAsync();
 
-            var store = new EnvironmentsStore(dbContext);
+            var store = new EnvironmentsStore(dbContext, _queryPager.Object);
             var envs = await store.GetAsync(EnvironmentAccessRight.Everything, new EnvironmentFilter());
             Assert.Single(envs);
         }
@@ -44,7 +53,7 @@ namespace Environments.Infra.Tests
             );
             await dbContext.SaveChangesAsync();
 
-            var store = new EnvironmentsStore(dbContext);
+            var store = new EnvironmentsStore(dbContext, _queryPager.Object);
             var envs = await store.GetAsync(new List<EnvironmentAccessRight>
             {
                 new EnvironmentAccessRight
@@ -69,7 +78,7 @@ namespace Environments.Infra.Tests
             );
             await dbContext.SaveChangesAsync();
 
-            var store = new EnvironmentsStore(dbContext);
+            var store = new EnvironmentsStore(dbContext, _queryPager.Object);
             var envs = await store.GetAsync(new List<EnvironmentAccessRight>
             {
                 new EnvironmentAccessRight
@@ -97,7 +106,7 @@ namespace Environments.Infra.Tests
             );
             await dbContext.SaveChangesAsync();
 
-            var store = new EnvironmentsStore(dbContext);
+            var store = new EnvironmentsStore(dbContext, _queryPager.Object);
             var envs = await store.GetAsync(new List<EnvironmentAccessRight>
             {
                 new EnvironmentAccessRight
@@ -125,7 +134,7 @@ namespace Environments.Infra.Tests
             );
             await dbContext.SaveChangesAsync();
 
-            var store = new EnvironmentsStore(dbContext);
+            var store = new EnvironmentsStore(dbContext, _queryPager.Object);
             var envs = await store.GetAsync(new List<EnvironmentAccessRight>
             {
                 new EnvironmentAccessRight
@@ -154,7 +163,7 @@ namespace Environments.Infra.Tests
             );
             await dbContext.SaveChangesAsync();
 
-            var store = new EnvironmentsStore(dbContext);
+            var store = new EnvironmentsStore(dbContext, _queryPager.Object);
             var envs = await store.GetAsync(new List<EnvironmentAccessRight>
             {
                 new EnvironmentAccessRight
@@ -183,7 +192,7 @@ namespace Environments.Infra.Tests
             );
             await dbContext.SaveChangesAsync();
 
-            var store = new EnvironmentsStore(dbContext);
+            var store = new EnvironmentsStore(dbContext, _queryPager.Object);
             var envs = await store.GetAsync(new List<EnvironmentAccessRight>
             {
                 new EnvironmentAccessRight

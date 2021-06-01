@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel;
+using System.Text.Json.Serialization;
 
 namespace Environments.Domain
 {
@@ -13,6 +14,7 @@ namespace Environments.Domain
 
         public string ProductionHost => $"https://{Subdomain}.{GetDomainAsString(Domain)}";
 
+        [JsonIgnore]
         public ICollection<EnvironmentSharedAccess> ActiveAccesses { get; set; }
 
         private static string GetDomainAsString(EnvironmentDomain domain)

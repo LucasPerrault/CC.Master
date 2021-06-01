@@ -1,7 +1,7 @@
 using Environments.Domain;
 using Environments.Domain.Storage;
+using Lucca.Core.Api.Abstractions.Paging;
 using Rights.Domain;
-using System.Collections.Generic;
 using System.Security.Claims;
 using System.Threading.Tasks;
 
@@ -20,10 +20,10 @@ namespace Environments.Application
             _rightsFilter = rightsFilter;
         }
 
-        public async Task<List<Environment>> GetAsync()
+        public async Task<Page<Environment>> GetAsync(IPageToken page, EnvironmentFilter filter)
         {
             var rights = await _rightsFilter.GetAccessRightAsync(_principal, Operation.ReadEnvironments);
-            return await _store.GetAsync(rights, new EnvironmentFilter());
+            return await _store.GetAsync(page, rights, filter);
         }
     }
 }

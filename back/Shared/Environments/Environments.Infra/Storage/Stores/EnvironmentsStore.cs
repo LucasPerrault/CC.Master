@@ -1,4 +1,6 @@
 using Environments.Domain.Storage;
+using Lucca.Core.Api.Abstractions.Paging;
+using Lucca.Core.Api.Queryable.Paging;
 using Lucca.Core.Shared.Domain.Expressions;
 using Microsoft.EntityFrameworkCore;
 using Rights.Domain.Filtering;
@@ -15,18 +17,29 @@ namespace Environments.Infra.Storage.Stores
     public class EnvironmentsStore : IEnvironmentsStore
     {
         private readonly EnvironmentsDbContext _dbContext;
+        private readonly IQueryPager _queryPager;
 
-        public EnvironmentsStore(EnvironmentsDbContext dbContext)
+        public EnvironmentsStore(EnvironmentsDbContext dbContext, IQueryPager queryPager)
         {
             _dbContext = dbContext;
+            _queryPager = queryPager;
         }
 
         public Task<List<Environment>> GetAsync(List<EnvironmentAccessRight> rights, EnvironmentFilter filter)
         {
+            return GetQueryable(rights, filter).ToListAsync();
+        }
+
+        public Task<Page<Environment>> GetAsync(IPageToken page, List<EnvironmentAccessRight> rights, EnvironmentFilter filter)
+        {
+            return _queryPager.ToPageAsync(GetQueryable(rights, filter), page);
+        }
+
+        private IQueryable<Environment> GetQueryable(List<EnvironmentAccessRight> rights, EnvironmentFilter filter)
+        {
             return _dbContext.Set<Environment>()
                 .ForRights(rights)
-                .FilterBy(filter)
-                .ToListAsync();
+                .FilterBy(filter);
         }
     }
 
