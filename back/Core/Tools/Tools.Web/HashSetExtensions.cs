@@ -5,7 +5,7 @@ namespace Tools.Web
 {
     public static class HashSetExtensions
     {
-        public static CompareBoolean ToBoolCombination(this HashSet<bool> bools)
+        public static CompareBoolean ToCompareBoolean(this HashSet<bool> bools)
         {
             if (bools.Count == 1)
             {

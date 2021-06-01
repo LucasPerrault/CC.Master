@@ -37,7 +37,7 @@ namespace Instances.Application.Specflow.Tests.Demos.Steps
         {
             var demoFilter = new DemoFilter()
             {
-                IsTemplate = new HashSet<bool> { isTemplate }.ToBoolCombination(),
+                IsTemplate = new HashSet<bool> { isTemplate }.ToCompareBoolean(),
             };
             var demosRepository = GetNewRepository();
             var demoPage = await demosRepository.GetDemosAsync(null, demoFilter);

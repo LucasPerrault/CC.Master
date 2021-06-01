@@ -11,6 +11,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\..\..\Core\Rights\Rights.Web\Rights.Web.csproj" />
+      <ProjectReference Include="..\..\..\Core\Tools\Tools.Web\Tools.Web.csproj" />
       <ProjectReference Include="..\Environments.Application\Environments.Application.csproj" />
       <ProjectReference Include="..\Environments.Domain\Environments.Domain.csproj" />
       <ProjectReference Include="..\Environments.Infra\Environments.Infra.csproj" />

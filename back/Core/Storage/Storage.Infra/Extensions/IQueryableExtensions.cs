@@ -23,7 +23,7 @@ namespace Storage.Infra.Extensions
                 CompareBoolean.Bypass => new BypassApplyQueryableBuilder<T>(query),
                 CompareBoolean.TrueOnly => new CompareQueryableBuilder<T>(query),
                 CompareBoolean.FalseOnly => new InverseCompareQueryableBuilder<T>(query),
-                _ => throw new ApplicationException($"Could not get querying strategy for boolCombination {compareBoolean}")
+                _ => throw new ApplicationException($"Could not get querying strategy for CompareBoolean {compareBoolean}")
             };
 
         public static IConditionalQueryableBuilder<T> WhenNotNullOrEmpty<T>(this IQueryable<T> query, string s) =>

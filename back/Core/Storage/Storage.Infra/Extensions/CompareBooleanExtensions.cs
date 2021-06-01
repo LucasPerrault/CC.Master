@@ -3,7 +3,7 @@ using Tools;
 
 namespace Storage.Infra.Extensions
 {
-    public static class BoolCombinationExtensions
+    public static class CompareBooleanExtensions
     {
         public static bool ToBoolean(this CompareBoolean compareBoolean)
         {
