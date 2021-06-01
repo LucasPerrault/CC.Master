@@ -1,11 +1,33 @@
-﻿using System;
+﻿using Lucca.Core.Shared.Domain.Expressions;
+using System;
+using System.Linq;
 using System.Linq.Expressions;
 
 namespace Storage.Infra.Extensions
 {
-    internal static class ExpressionExtensions
+    public static class ExpressionExtensions
     {
-        public static Expression<Func<TIn, TOut>> Chain<TIn, TInterstitial, TOut>(
+        public static Expression<Func<T, bool>> CombineSafelyAnd<T>(this Expression<Func<T, bool>>[] filters)
+        {
+            return filters.Length switch
+            {
+                0 => c => true,
+                1 => filters[0],
+                _ => filters.Aggregate((e1, e2) => e1.AndAlso(e2))
+            };
+        }
+
+        public static Expression<Func<T, bool>> CombineSafelyOr<T>(this Expression<Func<T, bool>>[] filters)
+        {
+            return filters.Length switch
+            {
+                0 => c => false,
+                1 => filters[0],
+                _ => filters.Aggregate((e1, e2) => e1.SmartOrElse(e2))
+            };
+        }
+
+        internal static Expression<Func<TIn, TOut>> Chain<TIn, TInterstitial, TOut>(
             this Expression<Func<TIn, TInterstitial>> inner,
             Expression<Func<TInterstitial, TOut>> outer)
         {
