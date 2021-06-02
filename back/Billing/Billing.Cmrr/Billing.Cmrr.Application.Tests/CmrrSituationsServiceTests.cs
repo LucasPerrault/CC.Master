@@ -1,7 +1,11 @@
 using Billing.Cmrr.Application.Interfaces;
 using Billing.Cmrr.Domain;
 using Billing.Cmrr.Domain.Interfaces;
+using Billing.Products.Domain;
+using Billing.Products.Infra.Storage;
+using Billing.Products.Infra.Storage.Stores;
 using FluentAssertions;
+using Microsoft.EntityFrameworkCore;
 using Moq;
 using System;
 using System.Collections.Generic;
@@ -13,46 +17,15 @@ namespace Billing.Cmrr.Application.Tests
 {
     public class CmrrSituationsServiceTests
     {
-        [Fact]
-        public void ShouldThrowWhenStartPeriodIsDefault()
+        private readonly ProductDbContext _dbContext;
+
+        public CmrrSituationsServiceTests()
         {
-            var startPeriod = default(DateTime);
-            var endPeriod = new DateTime(2021, 01, 01);
-            var situationFilter = new CmrrSituationFilter
-            {
-                StartPeriod = startPeriod,
-                EndPeriod = endPeriod
-            };
+            var options = new DbContextOptionsBuilder<ProductDbContext>()
+                               .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
+                               .Options;
 
-            var cmrrContractsStoreMock = new Mock<ICmrrContractsStore>();
-            var cmrrCountsStoreMock = new Mock<ICmrrCountsStore>();
-
-            var sut = new CmrrSituationsService(cmrrContractsStoreMock.Object, cmrrCountsStoreMock.Object);
-
-            Func<Task<List<CmrrContratSituation>>> func = () => sut.GetContractSituationsAsync(situationFilter);
-
-            func.Should().ThrowExactly<ArgumentNullException>().WithMessage("*startPeriod*");
-        }
-
-        [Fact]
-        public void ShouldThrowWhenEndPeriodIsDefault()
-        {
-            var startPeriod = new DateTime(2021, 01, 01);
-            var endPeriod = default(DateTime);
-            var situationFilter = new CmrrSituationFilter
-            {
-                StartPeriod = startPeriod,
-                EndPeriod = endPeriod
-            };
-
-            var cmrrContractsStoreMock = new Mock<ICmrrContractsStore>();
-            var cmrrCountsStoreMock = new Mock<ICmrrCountsStore>();
-
-            var sut = new CmrrSituationsService(cmrrContractsStoreMock.Object, cmrrCountsStoreMock.Object);
-
-            Func<Task<List<CmrrContratSituation>>> func = () => sut.GetContractSituationsAsync(situationFilter);
-
-            func.Should().ThrowExactly<ArgumentNullException>().WithMessage("*endPeriod*");
+            _dbContext = new ProductDbContext(options);
         }
 
         [Fact]
@@ -69,9 +42,9 @@ namespace Billing.Cmrr.Application.Tests
             var cmrrContractsStoreMock = new Mock<ICmrrContractsStore>();
             var cmrrCountsStoreMock = new Mock<ICmrrCountsStore>();
 
-            var sut = new CmrrSituationsService(cmrrContractsStoreMock.Object, cmrrCountsStoreMock.Object);
+            var sut = new CmrrSituationsService(cmrrContractsStoreMock.Object, cmrrCountsStoreMock.Object, null);
 
-            Func<Task<List<CmrrContratSituation>>> func = () => sut.GetContractSituationsAsync(situationFilter);
+            Func<Task<CmrrSituation>> func = () => sut.GetSituationAsync(CmrrAxis.Product, situationFilter);
 
             func.Should().ThrowExactly<ArgumentException>().WithMessage("*startPeriod*");
         }
@@ -90,15 +63,15 @@ namespace Billing.Cmrr.Application.Tests
             var cmrrContractsStoreMock = new Mock<ICmrrContractsStore>();
             var cmrrCountsStoreMock = new Mock<ICmrrCountsStore>();
 
-            var sut = new CmrrSituationsService(cmrrContractsStoreMock.Object, cmrrCountsStoreMock.Object);
+            var sut = new CmrrSituationsService(cmrrContractsStoreMock.Object, cmrrCountsStoreMock.Object, null);
 
-            Func<Task<List<CmrrContratSituation>>> func = () => sut.GetContractSituationsAsync(situationFilter);
+            Func<Task<CmrrSituation>> func = () => sut.GetSituationAsync(CmrrAxis.Product, situationFilter);
 
             func.Should().ThrowExactly<ArgumentException>().WithMessage("*endPeriod*");
         }
 
         [Fact]
-        public async Task ShouldReturnContractSituationAsync()
+        public async Task ShouldReturnSituationAsync()
         {
             // Arrange
             var startPeriod = new DateTime(2021, 01, 01);
@@ -115,68 +88,83 @@ namespace Billing.Cmrr.Application.Tests
             {
                 var cmrrContracts = new List<CmrrContract>
                  {
-                    new CmrrContract { Id = 10 },
-                    new CmrrContract { Id = 11 }
+                    new CmrrContract { Id = 10, ProductId = 1 },
+                    new CmrrContract { Id = 11, ProductId = 1}
                  };
                 return cmrrContracts;
             });
 
             var cmrrCountsStoreMock = new Mock<ICmrrCountsStore>();
-
-            cmrrCountsStoreMock.Setup(x => x.GetByPeriodAsync(startPeriod)).ReturnsAsync(() =>
-            {
-                var cmrrCounts = new List<CmrrCount>
+            var startCmrrCounts = new List<CmrrCount>
                 {
                     new CmrrCount
                     {
                         CountPeriod = startPeriod,
                         ContractId = 10,
+                        EuroTotal = 10,
                         Id = 1
                     },
                     new CmrrCount
                     {
                         CountPeriod = startPeriod,
                         ContractId = 11,
+                        EuroTotal = 11,
                         Id = 2
                     }
                 };
-                return cmrrCounts;
-            });
+            cmrrCountsStoreMock.Setup(x => x.GetByPeriodAsync(startPeriod)).ReturnsAsync(() => startCmrrCounts);
 
-            cmrrCountsStoreMock.Setup(x => x.GetByPeriodAsync(endPeriod)).ReturnsAsync(() =>
-            {
-                var cmrrCounts = new List<CmrrCount>
+            var endCmrrCounts = new List<CmrrCount>
                 {
                     new CmrrCount
                     {
                         CountPeriod = endPeriod,
                         ContractId = 10,
+                        EuroTotal = 110,
                         Id = 3
                     }
                 };
-                return cmrrCounts;
-            });
+
+            cmrrCountsStoreMock.Setup(x => x.GetByPeriodAsync(endPeriod)).ReturnsAsync(() => endCmrrCounts);
+
+            var product = new Product { Id = 1, Name = "figgo", FamilyId = 1 };
+            await _dbContext.AddAsync(product);
+
+            var family = new ProductFamily { Id = 1, Name = "figgo family" };
+            await _dbContext.AddAsync(family);
+            await _dbContext.SaveChangesAsync();
+            var contractAnalyticSituationsService = new ContractAnalyticSituationsService(new ProductsStore(_dbContext));
 
             // Act
-            var sut = new CmrrSituationsService(cmrrContractsStoreMock.Object, cmrrCountsStoreMock.Object);
-    
-            var cmrrContractSituations = await sut.GetContractSituationsAsync(situationFilter);
+            var sut = new CmrrSituationsService(cmrrContractsStoreMock.Object, cmrrCountsStoreMock.Object, contractAnalyticSituationsService);
+
+            var cmrrContractSituations = await sut.GetSituationAsync(CmrrAxis.Product, situationFilter);
 
             // Assert
-            cmrrContractSituations.Should().NotBeNullOrEmpty();
-            cmrrContractSituations.Should().HaveCount(2);
+            cmrrContractSituations.Sections.Should().NotBeNullOrEmpty();
+            cmrrContractSituations.Sections.Should().HaveCount(1);
 
-            var contract10 = cmrrContractSituations.First(s => s.EndPeriodCount != null);
+            var section = cmrrContractSituations.Sections.First(s => s.Name == family.Name);
 
-            contract10.ContractId.Should().Be(10);
-            contract10.EndPeriodCount.Id.Should().Be(3);
-            contract10.StartPeriodCount.Id.Should().Be(1);
+            section.TotalFrom.Should().Be(startCmrrCounts.Sum(c => c.EuroTotal));
+            section.TotalTo.Should().Be(endCmrrCounts.Sum(c => c.EuroTotal));
 
-            var contract11 = cmrrContractSituations.First(s => s.EndPeriodCount is null);
+            var startCountForContract10 = startCmrrCounts.First(c => c.ContractId == 10);
+            var endCountForContract10 = endCmrrCounts.First(c => c.ContractId == 10);
+            var cmrrContractSituation10 = section.Expansion.Top.First(c => c.ContractSituation.ContractId == 10);
 
-            contract11.ContractId.Should().Be(11);
-            contract11.EndPeriodCount.Should().BeNull();
-            contract11.StartPeriodCount.Id.Should().Be(2);
+            section.Expansion.Amount.Should().Be(endCountForContract10.EuroTotal - startCountForContract10.EuroTotal);
+            cmrrContractSituation10.ContractSituation.ContractId.Should().Be(10);
+            cmrrContractSituation10.ContractSituation.EndPeriodCount.Id.Should().Be(3);
+            cmrrContractSituation10.ContractSituation.StartPeriodCount.Id.Should().Be(1);
+
+            var startCountForContract11 = startCmrrCounts.First(c => c.ContractId == 11);
+            var cmrrContractSituation11 = section.Termination.Top.First(c => c.ContractSituation.ContractId == 11);
+
+            section.Termination.Amount.Should().Be(-startCountForContract11.EuroTotal);
+            cmrrContractSituation11.ContractSituation.ContractId.Should().Be(11);
+            cmrrContractSituation11.ContractSituation.EndPeriodCount.Should().BeNull();
+            cmrrContractSituation11.ContractSituation.StartPeriodCount.Id.Should().Be(2);
         }
 
         [Fact]
@@ -206,14 +194,22 @@ namespace Billing.Cmrr.Application.Tests
 
             cmrrCountsStoreMock.Setup(x => x.GetByPeriodAsync(It.IsAny<DateTime>())).ReturnsAsync(new List<CmrrCount>());
 
-            // Act
-            var sut = new CmrrSituationsService(cmrrContractsStoreMock.Object, cmrrCountsStoreMock.Object);
+            var product = new Product { Id = 1, Name = "figgo", FamilyId = 1 };
+            await _dbContext.AddAsync(product);
 
-            var cmrrContractSituations = await sut.GetContractSituationsAsync(situationFilter);
+            var family = new ProductFamily { Id = 1, Name = "figgo family" };
+            await _dbContext.AddAsync(family);
+            await _dbContext.SaveChangesAsync();
+            var contractAnalyticSituationsService = new ContractAnalyticSituationsService(new ProductsStore(_dbContext));
+
+            // Act
+            var sut = new CmrrSituationsService(cmrrContractsStoreMock.Object, cmrrCountsStoreMock.Object, contractAnalyticSituationsService);
+
+            var cmrrContractSituations = await sut.GetSituationAsync(CmrrAxis.Product, situationFilter);
 
             // Assert
             cmrrContractSituations.Should().NotBeNull();
-            cmrrContractSituations.Should().HaveCount(0);
+            cmrrContractSituations.Sections.Should().BeNullOrEmpty();
         }
 
         [Fact]
@@ -235,62 +231,70 @@ namespace Billing.Cmrr.Application.Tests
             {
                 var cmrrContracts = new List<CmrrContract>
                  {
-                    new CmrrContract { Id = 10, ClientId = 100 },
-                    new CmrrContract { Id = 11, ClientId = 101 }
+                    new CmrrContract { Id = 10, ClientId = 100, ProductId = 1},
+                    new CmrrContract { Id = 11, ClientId = 101, ProductId = 1 }
                  };
                 return cmrrContracts;
             });
 
             var cmrrCountsStoreMock = new Mock<ICmrrCountsStore>();
 
-            cmrrCountsStoreMock.Setup(x => x.GetByPeriodAsync(startPeriod)).ReturnsAsync(() =>
-            {
-                var cmrrCounts = new List<CmrrCount>
+            var startCmrrCounts = new List<CmrrCount>
                 {
                     new CmrrCount
                     {
                         CountPeriod = startPeriod,
                         ContractId = 10,
+                        EuroTotal = 10,
                         Id = 1
                     },
                     new CmrrCount
                     {
                         CountPeriod = startPeriod,
                         ContractId = 11,
+                        EuroTotal = 11,
                         Id = 2
                     }
                 };
-                return cmrrCounts;
-            });
+            cmrrCountsStoreMock.Setup(x => x.GetByPeriodAsync(startPeriod)).ReturnsAsync(() => startCmrrCounts);
 
-            cmrrCountsStoreMock.Setup(x => x.GetByPeriodAsync(endPeriod)).ReturnsAsync(() =>
-            {
-                var cmrrCounts = new List<CmrrCount>
+            var endCmrrCounts = new List<CmrrCount>
                 {
                     new CmrrCount
                     {
                         CountPeriod = endPeriod,
                         ContractId = 10,
+                        EuroTotal = 110,
                         Id = 3
                     }
                 };
-                return cmrrCounts;
-            });
+
+            cmrrCountsStoreMock.Setup(x => x.GetByPeriodAsync(endPeriod)).ReturnsAsync(() => endCmrrCounts);
+
+            var product = new Product { Id = 1, Name = "figgo", FamilyId = 1 };
+            await _dbContext.AddAsync(product);
+
+            var family = new ProductFamily { Id = 1, Name = "figgo family" };
+            await _dbContext.AddAsync(family);
+            await _dbContext.SaveChangesAsync();
+            var contractAnalyticSituationsService = new ContractAnalyticSituationsService(new ProductsStore(_dbContext));
 
             // Act
-            var sut = new CmrrSituationsService(cmrrContractsStoreMock.Object, cmrrCountsStoreMock.Object);
+            var sut = new CmrrSituationsService(cmrrContractsStoreMock.Object, cmrrCountsStoreMock.Object, contractAnalyticSituationsService);
 
-            var cmrrContractSituations = await sut.GetContractSituationsAsync(situationFilter);
+            var cmrrContractSituations = await sut.GetSituationAsync(CmrrAxis.Product, situationFilter);
 
             // Assert
-            cmrrContractSituations.Should().NotBeNullOrEmpty();
-            cmrrContractSituations.Should().HaveCount(1);
+            cmrrContractSituations.Sections.Should().NotBeNullOrEmpty();
+            cmrrContractSituations.Sections.Should().HaveCount(1);
 
-            var contract10 = cmrrContractSituations.First(s => s.EndPeriodCount != null);
+            var section = cmrrContractSituations.Sections.First(s => s.Name == family.Name);
 
-            contract10.ContractId.Should().Be(10);
-            contract10.EndPeriodCount.Id.Should().Be(3);
-            contract10.StartPeriodCount.Id.Should().Be(1);
+            section.Termination.Top.Should().NotContain(c => c.ContractSituation.ContractId == 11);
+            section.Retraction.Top.Should().NotContain(c => c.ContractSituation.ContractId == 11);
+            section.Upsell.Top.Should().NotContain(c => c.ContractSituation.ContractId == 11);
+            section.Expansion.Top.Should().NotContain(c => c.ContractSituation.ContractId == 11);
+            section.Creation.Top.Should().NotContain(c => c.ContractSituation.ContractId == 11);
         }
 
         [Fact]
@@ -312,62 +316,71 @@ namespace Billing.Cmrr.Application.Tests
             {
                 var cmrrContracts = new List<CmrrContract>
                  {
-                    new CmrrContract { Id = 10, DistributorId = "100" },
-                    new CmrrContract { Id = 11, DistributorId = "101" }
+                    new CmrrContract { Id = 10, DistributorId = "100", ProductId = 1 },
+                    new CmrrContract { Id = 11, DistributorId = "101", ProductId = 1 }
                  };
                 return cmrrContracts;
             });
 
             var cmrrCountsStoreMock = new Mock<ICmrrCountsStore>();
 
-            cmrrCountsStoreMock.Setup(x => x.GetByPeriodAsync(startPeriod)).ReturnsAsync(() =>
-            {
-                var cmrrCounts = new List<CmrrCount>
+
+            var startCmrrCounts = new List<CmrrCount>
                 {
                     new CmrrCount
                     {
                         CountPeriod = startPeriod,
                         ContractId = 10,
+                        EuroTotal = 10,
                         Id = 1
                     },
                     new CmrrCount
                     {
                         CountPeriod = startPeriod,
                         ContractId = 11,
+                        EuroTotal = 11,
                         Id = 2
                     }
                 };
-                return cmrrCounts;
-            });
+            cmrrCountsStoreMock.Setup(x => x.GetByPeriodAsync(startPeriod)).ReturnsAsync(() => startCmrrCounts);
 
-            cmrrCountsStoreMock.Setup(x => x.GetByPeriodAsync(endPeriod)).ReturnsAsync(() =>
-            {
-                var cmrrCounts = new List<CmrrCount>
+            var endCmrrCounts = new List<CmrrCount>
                 {
                     new CmrrCount
                     {
                         CountPeriod = endPeriod,
                         ContractId = 10,
+                        EuroTotal = 110,
                         Id = 3
                     }
                 };
-                return cmrrCounts;
-            });
+
+            cmrrCountsStoreMock.Setup(x => x.GetByPeriodAsync(endPeriod)).ReturnsAsync(() => endCmrrCounts);
+
+            var product = new Product { Id = 1, Name = "figgo", FamilyId = 1 };
+            await _dbContext.AddAsync(product);
+
+            var family = new ProductFamily { Id = 1, Name = "figgo family" };
+            await _dbContext.AddAsync(family);
+            await _dbContext.SaveChangesAsync();
+            var contractAnalyticSituationsService = new ContractAnalyticSituationsService(new ProductsStore(_dbContext));
 
             // Act
-            var sut = new CmrrSituationsService(cmrrContractsStoreMock.Object, cmrrCountsStoreMock.Object);
+            var sut = new CmrrSituationsService(cmrrContractsStoreMock.Object, cmrrCountsStoreMock.Object, contractAnalyticSituationsService);
 
-            var cmrrContractSituations = await sut.GetContractSituationsAsync(situationFilter);
+            var cmrrContractSituations = await sut.GetSituationAsync(CmrrAxis.Product, situationFilter);
 
             // Assert
-            cmrrContractSituations.Should().NotBeNullOrEmpty();
-            cmrrContractSituations.Should().HaveCount(1);
+            cmrrContractSituations.Sections.Should().NotBeNullOrEmpty();
+            cmrrContractSituations.Sections.Should().HaveCount(1);
 
-            var contract10 = cmrrContractSituations.First(s => s.EndPeriodCount != null);
+            var section = cmrrContractSituations.Sections.First(s => s.Name == family.Name);
 
-            contract10.ContractId.Should().Be(10);
-            contract10.EndPeriodCount.Id.Should().Be(3);
-            contract10.StartPeriodCount.Id.Should().Be(1);
+            section.Termination.Top.Should().NotContain(c => c.ContractSituation.ContractId == 11);
+            section.Retraction.Top.Should().NotContain(c => c.ContractSituation.ContractId == 11);
+            section.Upsell.Top.Should().NotContain(c => c.ContractSituation.ContractId == 11);
+            section.Expansion.Top.Should().NotContain(c => c.ContractSituation.ContractId == 11);
+            section.Creation.Top.Should().NotContain(c => c.ContractSituation.ContractId == 11);
         }
     }
 }

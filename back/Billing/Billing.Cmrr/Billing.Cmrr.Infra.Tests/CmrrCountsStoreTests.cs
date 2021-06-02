@@ -18,7 +18,7 @@ namespace Billing.Cmrr.Infra.Tests
         public CmrrCountsStoreTests()
         {
             var options = new DbContextOptionsBuilder<CmrrDbContext>()
-                               .UseInMemoryDatabase(databaseName: "Test")
+                               .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
                                .Options;
 
             _dbContext = new CmrrDbContext(options);

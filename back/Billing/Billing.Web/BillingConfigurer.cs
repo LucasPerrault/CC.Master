@@ -10,6 +10,8 @@ using Billing.Contracts.Infra.Configurations;
 using Billing.Contracts.Infra.Legacy;
 using Billing.Contracts.Infra.Services;
 using Billing.Contracts.Infra.Storage.Stores;
+using Billing.Products.Domain.Interfaces;
+using Billing.Products.Infra.Storage.Stores;
 using Core.Proxy.Infra.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Remote.Infra.Extensions;
@@ -35,6 +37,7 @@ namespace Billing.Web
             services.AddScoped<ClientsRepository>();
 
             ConfigureCmrr(services);
+            ConfigureProduct(services);
         }
 
         private static void ConfigureCmrr(IServiceCollection services)
@@ -43,6 +46,13 @@ namespace Billing.Web
             services.AddScoped<ICmrrCountsStore, CmrrCountsStore>();
 
             services.AddScoped<ICmrrSituationsService, CmrrSituationsService>();
+            services.AddScoped<IContractAnalyticSituationsService, ContractAnalyticSituationsService>();
+        }
+
+        private static void ConfigureProduct(IServiceCollection services)
+        {
+            services.AddScoped<IProductsStore, ProductsStore>();
+
         }
     }
 }

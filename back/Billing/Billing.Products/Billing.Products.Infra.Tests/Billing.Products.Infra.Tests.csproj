@@ -7,19 +7,16 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="FluentAssertions" Version="5.10.3" />
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.5.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="3.1.12" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="3.1.12" />
-    <PackageReference Include="Moq" Version="4.16.1" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.5.0" />
     <PackageReference Include="xunit" Version="2.4.0" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.4.0" />
     <PackageReference Include="coverlet.collector" Version="1.2.0" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Billing.Products\Billing.Products.Infra\Billing.Products.Infra.csproj" />
-    <ProjectReference Include="..\Billing.Cmrr.Application\Billing.Cmrr.Application.csproj" />
-    <ProjectReference Include="..\Billing.Cmrr.Infra\Billing.Cmrr.Infra.csproj" />
+    <ProjectReference Include="..\Billing.Products.Infra\Billing.Products.Infra.csproj" />
   </ItemGroup>
 
 </Project>
