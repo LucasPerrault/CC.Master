@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace TeamNotification.Web
+﻿namespace TeamNotification.Web
 {
     public class SlackConfiguration
     {
@@ -9,7 +7,7 @@ namespace TeamNotification.Web
 
     public class SlackHooks
     {
-        public Uri DemosMaintainers { get; set; }
-        public Uri CloudControlTeam { get; set; }
+        public string DemosMaintainers { get; set; }
+        public string CloudControlTeam { get; set; }
     }
 }

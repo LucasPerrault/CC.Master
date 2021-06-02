@@ -17,12 +17,16 @@
           <PrivateAssets>all</PrivateAssets>
           <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
-        <PackageReference Include="coverlet.collector" Version="1.2.0" />
+        <PackageReference Include="coverlet.collector" Version="1.3.0">
+          <PrivateAssets>all</PrivateAssets>
+          <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
     </ItemGroup>
 
     <ItemGroup>
       <ProjectReference Include="..\CloudControl.Web\CloudControl.Web.csproj" />
       <ProjectReference Include="..\Core\Authentication\Authentication.Domain\Authentication.Domain.csproj" />
+      <ProjectReference Include="..\Core\Testing\Testing.Infra\Testing.Infra.csproj" />
     </ItemGroup>
 
 </Project>

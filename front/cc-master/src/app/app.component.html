@@ -1,0 +1,8 @@
+<aside class="navSide mod-withBanner mod-withBottomSection" *ngIf="isNavigationDisplayed">
+  <cc-navigation></cc-navigation>
+</aside>
+
+<div class="main-content mod-noScroll mod-withoutScroll">
+  <router-outlet (activate)="updateNavigationVisibility($event)"></router-outlet>
+</div>
+<cc-toasts></cc-toasts>

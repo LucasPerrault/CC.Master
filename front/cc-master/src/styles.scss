@@ -1,0 +1,18 @@
+$noCssVar: true;
+
+@import '~@lucca-front/scss/src/theming.overridable';
+@import '~@lucca-front/scss/src/mixins/cssvars';
+
+@import "~@lucca-front/scss/src/main.overridable";
+@import "~@lucca-front/ng/style/main.overridable";
+
+@import './scss/header';
+@import './scss/layout';
+@import './scss/shame';
+@import './scss/table';
+@import './error-page';
+
+:root {
+	@include generateCSSVarsFromTheme($theme);
+}
+

@@ -1,8 +1,5 @@
-using Instances.Application.Demos;
-using Instances.Application.Demos.Duplication;
 using Instances.Domain.Instances;
 using Instances.Domain.Shared;
-using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -20,7 +17,7 @@ namespace Instances.Application.Instances
         }
 
         internal Task RequestRemoteDuplicationAsync
-            (InstanceDuplication duplication, DemoDuplicationRequestSource source)
+            (InstanceDuplication duplication, string callbackPath)
         {
             var scripts = _scriptPicker.GetForDuplication(duplication);
 
@@ -43,22 +40,8 @@ namespace Instances.Application.Instances
             (
                 duplicateInstanceRequest,
                 duplication.TargetCluster,
-                GetCallbackPath(duplication, source)
+                callbackPath
             );
-        }
-
-        private string GetCallbackPath
-        (
-            InstanceDuplication duplication,
-            DemoDuplicationRequestSource source
-        )
-        {
-            return source switch
-            {
-                DemoDuplicationRequestSource.Hubspot => $"/api/hubspot/duplications/{duplication.Id}/notify",
-                DemoDuplicationRequestSource.Api => $"/api/demos/duplications/{duplication.Id}/notify",
-                _ => throw new InvalidEnumArgumentException(nameof(source), (int)source, typeof(DemoDuplicationRequestSource))
-            };
         }
     }
 }

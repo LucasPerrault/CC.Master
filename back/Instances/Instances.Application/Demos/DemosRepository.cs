@@ -1,11 +1,10 @@
+using Instances.Application.Demos.Dtos;
 using Instances.Domain.Demos;
+using Instances.Domain.Demos.Filtering;
 using Instances.Domain.Instances;
 using Instances.Domain.Shared;
 using Lucca.Core.Api.Abstractions.Paging;
 using Lucca.Core.Shared.Domain.Exceptions;
-using System;
-using System.Linq;
-using System.Linq.Expressions;
 using System.Security.Claims;
 using System.Threading.Tasks;
 
@@ -16,7 +15,7 @@ namespace Instances.Application.Demos
         private readonly ClaimsPrincipal _principal;
         private readonly IDemosStore _demosStore;
         private readonly IInstancesStore _instancesStore;
-        private readonly IDemoRightsFilter _rightsFilter;
+        private readonly DemoRightsFilter _rightsFilter;
         private readonly ICcDataService _ccDataService;
 
         public DemosRepository
@@ -24,7 +23,7 @@ namespace Instances.Application.Demos
             ClaimsPrincipal principal,
             IDemosStore demosStore,
             IInstancesStore instancesStore,
-            IDemoRightsFilter rightsFilters,
+            DemoRightsFilter rightsFilters,
             ICcDataService ccDataService
         )
         {
@@ -35,34 +34,38 @@ namespace Instances.Application.Demos
             _ccDataService = ccDataService;
         }
 
-        public async Task<Page<Demo>> GetDemosAsync(DemoListQuery query)
+        public async Task<Page<Demo>> GetDemosAsync(IPageToken pageToken, DemoFilter filter)
         {
-            Expression<Func<Demo, bool>> activeFilter = (d => true);
-                if(query.IsActive.Count == 1)
-            {
-                activeFilter = (d => d.IsActive == query.IsActive.Single());
-            }
-            return await _demosStore.GetAsync(
-                query.Page,
-                activeFilter,
-                await _rightsFilter.GetDefaultReadFilterAsync(_principal)
+            var access = await _rightsFilter.GetReadAccessAsync(_principal);
+            return await _demosStore.GetAsync
+            (
+                pageToken,
+                filter,
+                access
             );
+        }
+
+        public async Task<Demo> UpdateDemoAsync(int id, DemoPutPayload payload)
+        {
+            var demo = await GetSingleActiveDemoAsync(id);
+
+            if (demo.IsTemplate)
+            {
+                throw new ForbiddenException("Template demos cannot be updated");
+            }
+
+            if (payload.Comment == null)
+            {
+                throw new BadRequestException("Missing payload field 'Comment'");
+            }
+
+            await _demosStore.UpdateCommentAsync(demo, payload.Comment);
+            return demo;
         }
 
         public async Task<Demo> DeleteAsync(int id)
         {
-            var activeDemosInScope = await _demosStore.GetAsync
-            (
-                await _rightsFilter.GetDefaultReadFilterAsync(_principal),
-                d => d.IsActive
-            );
-
-            var demo = activeDemosInScope.SingleOrDefault(d => d.Id == id);
-
-            if (demo == null)
-            {
-                throw new NotFoundException();
-            }
+            var demo = await GetSingleActiveDemoAsync(id);
 
             if (demo.IsTemplate)
             {
@@ -76,7 +79,20 @@ namespace Instances.Application.Demos
 
             await _instancesStore.DeleteForDemoAsync(demo.Instance);
             await _demosStore.DeleteAsync(demo);
-            await _ccDataService.DeleteInstanceAsync(demo.Subdomain, demo.Instance.Cluster, String.Empty);
+            await _ccDataService.DeleteInstanceAsync(demo.Subdomain, demo.Instance.Cluster, string.Empty);
+            return demo;
+        }
+
+        private async Task<Demo> GetSingleActiveDemoAsync(int id)
+        {
+            var access = await _rightsFilter.GetReadAccessAsync(_principal);
+
+            var demo = await _demosStore.GetActiveByIdAsync(id, access);
+            if (demo == null)
+            {
+                throw new NotFoundException();
+            }
+
             return demo;
         }
     }

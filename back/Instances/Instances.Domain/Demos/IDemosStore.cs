@@ -1,21 +1,28 @@
+using Instances.Domain.Demos.Filtering;
 using Lucca.Core.Api.Abstractions.Paging;
+using Rights.Domain.Filtering;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
 using System.Threading.Tasks;
 
 namespace Instances.Domain.Demos
 {
     public interface IDemosStore
     {
-        Task<Page<Demo>> GetAsync(IPageToken token, params Expression<Func<Demo, bool>>[] filters);
-        Task<IQueryable<Demo>> GetAsync(params Expression<Func<Demo, bool>>[] filters);
-        Task<Demo> GetByInstanceIdAsync(int instanceId);
-        Task<Demo> CreateAsync(Demo demo);
-        Task<IQueryable<Demo>> GetActiveAsync(params Expression<Func<Demo, bool>>[] filters);
+        Task<List<Demo>> GetAsync(DemoFilter filter, AccessRight access);
+        Task<Page<Demo>> GetAsync(IPageToken pageToken, DemoFilter filter, AccessRight access);
+        Task<Demo> GetActiveByIdAsync(int id, AccessRight access);
         Task<Dictionary<string, int>> GetNumberOfActiveDemosByCluster();
+        Task<Demo> CreateAsync(Demo demo);
+        Task UpdateDeletionScheduleAsync(IEnumerable<DemoDeletionSchedule> schedules);
+        Task UpdateCommentAsync(Demo demo, string comment);
         Task DeleteAsync(Demo demo);
-        Task UpdateDeletionScheduleAsync(Demo demo, DateTime deletionScheduledOn);
+        Task DeleteAsync(IEnumerable<Demo> demos);
+    }
+
+    public class DemoDeletionSchedule
+    {
+        public Demo Demo { get; set; }
+        public DateTime DeletionScheduledOn { get; set; }
     }
 }

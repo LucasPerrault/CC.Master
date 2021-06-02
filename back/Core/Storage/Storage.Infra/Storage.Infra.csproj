@@ -16,4 +16,8 @@
       <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="3.1.10" />
     </ItemGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\..\Tools\Tools\Tools.csproj" />
+    </ItemGroup>
+
 </Project>

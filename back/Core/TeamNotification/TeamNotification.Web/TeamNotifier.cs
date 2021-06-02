@@ -1,5 +1,4 @@
 ﻿using Remote.Infra.Extensions;
-using System;
 using System.Net.Http;
 using System.Threading.Tasks;
 using TeamNotification.Abstractions;
@@ -20,11 +19,11 @@ namespace TeamNotification.Web
         public Task NotifyAsync(Team team, string message)
         {
             var slackHook = GetHook(team);
-            var content = new { Text = message };
+            var content = new { text = message };
             return _httpClient.PostAsync(slackHook, content.ToJsonPayload());
         }
 
-        private Uri GetHook(Team team)
+        private string GetHook(Team team)
         {
             return team switch
             {

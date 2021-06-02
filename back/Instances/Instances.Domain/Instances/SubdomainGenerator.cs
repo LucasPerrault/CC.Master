@@ -5,7 +5,8 @@ namespace Instances.Domain.Instances
 {
     public interface ISubdomainGenerator
     {
-        Task<string> GetSubdomainAsync(string candidate, bool useAsPrefix);
+        Task ThrowIfNotUsable(string candidate);
+        Task<string> GetSubdomainFromPrefixAsync(string candidate);
     }
 
     public class SubdomainGenerator : ISubdomainGenerator
@@ -17,18 +18,23 @@ namespace Instances.Domain.Instances
             _validator = validator;
         }
 
-        public async Task<string> GetSubdomainAsync(string candidate, bool useAsPrefix)
+        public async Task ThrowIfNotUsable(string candidate)
+        {
+            await _validator.ThrowIfInvalidAsync(candidate);
+
+            if (!await _validator.IsAvailableAsync(candidate))
+            {
+                throw new BadRequestException($"Subdomain {candidate} is not available");
+            }
+        }
+
+        public async Task<string> GetSubdomainFromPrefixAsync(string candidate)
         {
             await _validator.ThrowIfInvalidAsync(candidate);
 
             if (await _validator.IsAvailableAsync(candidate))
             {
                 return candidate;
-            }
-
-            if (!useAsPrefix)
-            {
-                throw new BadRequestException($"Subdomain {candidate} is not available");
             }
 
             var availableSubdomain = await _validator.GetAvailableSubdomainByPrefixAsync(candidate);

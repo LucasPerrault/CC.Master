@@ -7,7 +7,7 @@ namespace Instances.Domain.Demos
 {
     public interface IClusterSelector
     {
-        Task<string> GetFillingCluster();
+        Task<string> GetFillingClusterAsync();
     }
 
     public class ClusterSelectorConfiguration
@@ -26,9 +26,9 @@ namespace Instances.Domain.Demos
 
     public class ClusterSelector : IClusterSelector
     {
-        private ClusterSelectorConfiguration _configuration;
-        private IDemosStore _demosStore;
-        private ICacheService _cacheService;
+        private readonly ClusterSelectorConfiguration _configuration;
+        private readonly IDemosStore _demosStore;
+        private readonly ICacheService _cacheService;
 
         public ClusterSelector(ClusterSelectorConfiguration configuration, IDemosStore demosStore, ICacheService cacheService)
         {
@@ -37,7 +37,7 @@ namespace Instances.Domain.Demos
             _cacheService = cacheService;
         }
 
-        public async Task<string> GetFillingCluster()
+        public async Task<string> GetFillingClusterAsync()
         {
             if(_configuration.UseFixedCluster)
             {

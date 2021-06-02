@@ -1,7 +1,6 @@
 using Cache.Abstractions;
 using Instances.Domain.Demos;
 using Moq;
-using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Xunit;
@@ -30,7 +29,7 @@ namespace Instances.Domain.Tests
             cacheServiceMock.Setup(cs => cs.GetAsync<string>(It.IsAny<CacheKey<string>>())).ReturnsAsync("my-cached-cluster");
             var clusterSelector = new ClusterSelector(config, demoStoreMock.Object, cacheServiceMock.Object);
 
-            Assert.Equal(config.FixedClusterName, await clusterSelector.GetFillingCluster());
+            Assert.Equal(config.FixedClusterName, await clusterSelector.GetFillingClusterAsync());
             demoStoreMock.Verify(ds => ds.GetNumberOfActiveDemosByCluster(), Times.Never);
         }
 
@@ -54,7 +53,7 @@ namespace Instances.Domain.Tests
             cacheServiceMock.Setup(cs => cs.GetAsync<string>(It.IsAny<CacheKey<string>>())).ReturnsAsync("my-cached-cluster");
             var clusterSelector = new ClusterSelector(config, demoStoreMock.Object, cacheServiceMock.Object);
 
-            Assert.NotEqual(config.FixedClusterName, await clusterSelector.GetFillingCluster());
+            Assert.NotEqual(config.FixedClusterName, await clusterSelector.GetFillingClusterAsync());
         }
 
         [Fact]
@@ -78,7 +77,7 @@ namespace Instances.Domain.Tests
             cacheServiceMock.Setup(cs => cs.GetAsync<string>(It.IsAny<CacheKey<string>>())).ReturnsAsync(cachedCluster);
             var clusterSelector = new ClusterSelector(config, demoStoreMock.Object, cacheServiceMock.Object);
 
-            Assert.Equal(cachedCluster, await clusterSelector.GetFillingCluster());
+            Assert.Equal(cachedCluster, await clusterSelector.GetFillingClusterAsync());
             demoStoreMock.Verify(ds => ds.GetNumberOfActiveDemosByCluster(), Times.Never);
         }
 
@@ -105,7 +104,7 @@ namespace Instances.Domain.Tests
             cacheServiceMock.Setup(cs => cs.GetAsync<string>(It.IsAny<CacheKey<string>>())).ReturnsAsync(cachedCluster);
             var clusterSelector = new ClusterSelector(config, demoStoreMock.Object, cacheServiceMock.Object);
 
-            Assert.Equal(leastUsedClusterName, await clusterSelector.GetFillingCluster());
+            Assert.Equal(leastUsedClusterName, await clusterSelector.GetFillingClusterAsync());
             demoStoreMock.Verify(ds => ds.GetNumberOfActiveDemosByCluster(), Times.Once);
         }
     }

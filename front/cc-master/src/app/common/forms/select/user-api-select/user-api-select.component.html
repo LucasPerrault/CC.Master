@@ -1,0 +1,29 @@
+<label class="textfield" [ngClass]="class">
+  <lu-select [(ngModel)]="usersSelected"
+             (ngModelChange)="safeOnChange($event)"
+             class="textfield-input"
+             [placeholder]="'front_filterLabel_collaborators' | translate"
+             (onOpen)="setUsersDisplayed()"
+             multiple>
+    <ng-container *luDisplayer="let users; multiple: true">
+      <span *ngIf="users?.length !== 1; else: singleView">
+        <span class="label">{{ users.length }}</span>
+        {{ 'front_filterSelection_collaborator' | translate: { count: users.length } }}
+      </span>
+      <ng-template #singleView>{{users[0].name }}</ng-template>
+    </ng-container>
+    <lu-option-picker-advanced>
+      <header class="lu-picker-header">
+        <lu-api-paged-searcher [api]="apiUrl" [filters]="filtersToExcludeSelection"></lu-api-paged-searcher>
+      </header>
+      <lu-option-pager></lu-option-pager>
+      <lu-option *ngFor="let userSelected of usersSelectionDisplayed"
+                 [value]="userSelected"
+                 selected>
+        {{ userSelected.name }}
+      </lu-option>
+      <lu-option *luForOptions="let user; trackBy: trackBy" [value]="user">{{user.name}}</lu-option>
+    </lu-option-picker-advanced>
+    <lu-input-clearer></lu-input-clearer>
+  </lu-select>
+</label>

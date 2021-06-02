@@ -1,3 +1,4 @@
+using Distributors.Domain;
 using Distributors.Domain.Models;
 using Environments.Domain.Storage;
 using Instances.Application.Demos;
@@ -14,7 +15,6 @@ using Instances.Infra.DataDuplication;
 using Instances.Infra.Demos;
 using Instances.Infra.Instances.Services;
 using Instances.Infra.Storage.Stores;
-using Instances.Infra.WsAuth;
 using Lucca.Core.Shared.Domain.Exceptions;
 using Microsoft.Extensions.Logging;
 using Moq;
@@ -80,15 +80,15 @@ namespace Instances.Application.Specflow.Tests.Demos.Steps
 
             try
             {
-                await duplicator.CreateDuplicationAsync(duplication, DemoDuplicationRequestSource.Api);
+                await duplicator.CreateDuplicationAsync(duplication);
             }
             catch (ForbiddenException e)
             {
-                _demosContext.ExceptionResult = e;
+                _demosContext.Results.ExceptionResult.Exception = e;
             }
             catch (BadRequestException e)
             {
-                _demosContext.ExceptionResult = e;
+                _demosContext.Results.ExceptionResult.Exception = e;
             }
         }
 
@@ -101,21 +101,25 @@ namespace Instances.Application.Specflow.Tests.Demos.Steps
         [When(@"I get notification that duplication '(.*)' has ended")]
         public async Task WhenIGetNotificationThatDuplicationHasEnded(Guid duplicationId)
         {
-            var duplicator = GetDuplicator();
-            await duplicator.MarkDuplicationAsCompletedAsync(duplicationId, true);
+            var completer = GetCompleter(DemoCompleterSetup.HappyPath);
+            await completer.MarkDuplicationAsCompletedAsync(duplicationId, true);
+        }
+
+        [When(@"I duplication '(.*)' ends but password reset fails")]
+        public async Task WhenDuplicationEndsButPasswordFails(Guid duplicationId)
+        {
+            var completer = GetCompleter(new DemoCompleterSetup { WillPasswordResetFail = true });
+            await completer.MarkDuplicationAsCompletedAsync(duplicationId, true);
         }
 
         private DemoDuplicator GetDuplicator()
         {
             var demosStore = new DemosStore(_demosContext.DbContext, new DummyQueryPager());
             var demoDuplicationsStore = new DemoDuplicationsStore(_demosContext.DbContext);
-            var instanceDuplicationsStore = new InstanceDuplicationsStore
-            (
-                _demosContext.DbContext,
-                new Mock<ITimeProvider>().Object
-            );
 
-            _demosContext.Mocks.DistributorsStore
+            var distributorsStoreMock = new Mock<IDistributorsStore>();
+
+            distributorsStoreMock
                 .Setup(s => s.GetByCodeAsync(It.IsAny<string>()))
                 .Returns<string>(distributor => Task.FromResult(new Distributor
                 {
@@ -123,24 +127,17 @@ namespace Instances.Application.Specflow.Tests.Demos.Steps
                     Code = distributor
                 }));
 
-            _demosContext.Mocks.InstancesStore
-                .Setup(s => s.CreateForDemoAsync(It.IsAny<string>(), It.IsAny<string>()))
-                .Returns(Task.FromResult(new Instance { Id = 1}));
-
             var rightsServiceMock = new Mock<IRightsService>();
             rightsServiceMock.Setup(rs => rs.GetUserOperationHighestScopeAsync(It.IsAny<Operation>()))
-                .ReturnsAsync((Operation op) => _demosContext.OperationsWithScope[op]);
+                .ReturnsAsync((Operation op) => _demosContext.TestPrincipal.OperationsWithScope[op]);
 
             var envStoreMock = new Mock<IEnvironmentsStore>();
-            var passwordResetMock = new Mock<IDemoUsersPasswordResetService>();
-            var authWsMock = new Mock<IWsAuthSynchronizer>();
             var ccDataServiceMock = new Mock<ICcDataService>();
             var clusterSelectorMock = new Mock<IClusterSelector>();
-            var logger = new Mock<ILogger<DemoDuplicator>>();
 
             return new DemoDuplicator
                 (
-                    _demosContext.Principal,
+                    _demosContext.TestPrincipal.Principal,
                     new InstancesDuplicator(new SqlScriptPicker(
                         new SqlScriptPickerConfiguration
                         {
@@ -151,26 +148,93 @@ namespace Instances.Application.Specflow.Tests.Demos.Steps
                     ),
                     demosStore,
                     demoDuplicationsStore,
-                    instanceDuplicationsStore,
-                    _demosContext.Mocks.InstancesStore.Object,
                     rightsServiceMock.Object,
-                    _demosContext.Mocks.DistributorsStore.Object,
+                    distributorsStoreMock.Object,
                     new SubdomainGenerator(new SubdomainValidator(demosStore, envStoreMock.Object)),
                     clusterSelectorMock.Object,
-                    new UsersPasswordHelper(),
-                    new DemoRightsFilter(rightsServiceMock.Object),
-                    passwordResetMock.Object,
-                    authWsMock.Object,
+                    new UsersPasswordHelper()
+                );
+        }
+
+        private DemoDuplicationCompleter GetCompleter(DemoCompleterSetup setup)
+        {
+            var demosStore = new DemosStore(_demosContext.DbContext, new DummyQueryPager());
+            var demoDuplicationsStore = new DemoDuplicationsStore(_demosContext.DbContext);
+            var instanceDuplicationsStore = new InstanceDuplicationsStore
+            (
+                _demosContext.DbContext,
+                new Mock<ITimeProvider>().Object
+            );
+
+            var instancesStoreMock = new Mock<IInstancesStore>();
+            instancesStoreMock
+                .Setup(s => s.CreateForDemoAsync(It.IsAny<string>(), It.IsAny<string>()))
+                .Callback<string,string>(
+                    (password, cluster) =>
+                    {
+                        _demosContext.Results.CreatedInstances
+                            .Add(new Instance { AllUsersImposedPassword = password, Cluster = cluster});
+                    })
+                .Returns(Task.FromResult(new Instance { Id = 1 }));
+
+            instancesStoreMock
+                .Setup(s => s.DeleteForDemoAsync(It.IsAny<Instance>()))
+                .Callback<Instance>(
+                    instance =>
+                    {
+                        _demosContext.Results.DeleteInstances
+                            .Add(instance);
+                    })
+                .Returns(Task.FromResult(new Instance { Id = 1}));
+
+            var rightsServiceMock = new Mock<IRightsService>();
+            rightsServiceMock.Setup(rs => rs.GetUserOperationHighestScopeAsync(It.IsAny<Operation>()))
+                .ReturnsAsync((Operation op) => _demosContext.TestPrincipal.OperationsWithScope[op]);
+
+            var passwordResetServiceMock = new Mock<IDemoUsersPasswordResetService>();
+            if (setup.WillPasswordResetFail)
+            {
+                passwordResetServiceMock
+                    .Setup(s => s.ResetPasswordAsync(It.IsAny<Demo>(), It.IsAny<string>()))
+                    .ThrowsAsync(new Exception("OUCH"));
+            }
+
+
+            return new DemoDuplicationCompleter
+                (
+                    demoDuplicationsStore,
+                    instanceDuplicationsStore,
+                    demosStore,
+                    instancesStoreMock.Object,
+                    new Mock<IWsAuthSynchronizer>().Object,
+                    passwordResetServiceMock.Object,
                     new Mock<IDemoDeletionCalculator>().Object,
-                    logger.Object
+                    new Mock<ILogger<DemoDuplicationCompleter>>().Object
                 );
         }
 
         [Then(@"duplication '(.*)' should result in instance creation")]
         public void ThenDuplicationShouldResultInInstanceCreation(Guid duplicationId)
         {
-            _demosContext.Mocks.InstancesStore
-                .Verify(s => s.CreateForDemoAsync(It.IsAny<string>(), It.IsAny<string>()), Times.Once);
+            Assert.Single(_demosContext.Results.CreatedInstances);
+        }
+
+        [Then(@"duplication '(.*)' should result in instance deletion")]
+        public void ThenDuplicationShouldResultInInstanceDeletion(Guid duplicationId)
+        {
+            Assert.Single(_demosContext.Results.DeleteInstances);
+        }
+
+        [Then(@"duplication '(.*)' should not result in instance deletion")]
+        public void ThenDuplicationShouldNotResultInInstanceDeletion(Guid duplicationId)
+        {
+            Assert.Empty(_demosContext.Results.DeleteInstances);
+        }
+
+        private class DemoCompleterSetup
+        {
+            public bool WillPasswordResetFail { get; set; }
+            public static DemoCompleterSetup HappyPath => new DemoCompleterSetup { WillPasswordResetFail = false };
         }
     }
 }

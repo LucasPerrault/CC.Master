@@ -1,0 +1,19 @@
+<form [formGroup]="dateRangeSelected" class="u-displayInlineFlex u-alignItemsCenter u-flexWrapWrap u-middle">
+  <label class="textfield" [ngClass]="class">
+    <lu-date-select class="textfield-input"
+                    formControlName="startDate"
+                    [max]="endDate || todayDate"
+                    [placeholder]="'front_filterLabel_startDate' | translate">
+    </lu-date-select>
+  </label>
+
+  <label class="textfield" [ngClass]="class">
+    <lu-date-select class="textfield-input"
+                    formControlName="endDate"
+                    [min]="startDate"
+                    [max]="todayDate"
+                    [placeholder]="'front_filterLabel_endDate' | translate">
+    </lu-date-select>
+  </label>
+</form>
+

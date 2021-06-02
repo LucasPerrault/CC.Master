@@ -1,4 +1,3 @@
-using Authentication.Domain;
 using Rights.Domain;
 using Rights.Domain.Abstractions;
 using System;

@@ -1,5 +1,4 @@
 ﻿using Email.Domain;
-using Instances.Domain.Demos;
 using Instances.Domain.Demos.Cleanup;
 using Lucca.Emails.Client.Contracts.Fragments;
 using Resources.Translations;
@@ -39,14 +38,14 @@ namespace Instances.Application.Demos.Emails
             {
                 var unknownState = infoPerState[DemoState.ErrorAtStateEvaluation];
                 builder.Add(new Paragraph(_translations.EmailsDemoCleanupIntentUndeterminedCount(unknownState.Count)));
-                builder.AddHtmlList(unknownState.Select(d => d.Demo.Subdomain));
+                builder.AddList(unknownState.Select(d => $"<b>{ d.Demo.Subdomain }</b> : { d.Message }"));
             }
 
             if (infoPerState.ContainsKey(DemoState.DeletionScheduledToday))
             {
                 var deletions = infoPerState[DemoState.DeletionScheduledToday];
-                builder.Add(new Paragraph(_translations.EmailsDemoCleanupIntentUndeterminedCount(deletions.Count)));
-                builder.AddHtmlList(deletions.Select(d => d.Demo.Subdomain));
+                builder.Add(new Paragraph(_translations.EmailsDemoCleanupIntentTriggeredCount(deletions.Count)));
+                builder.AddList(deletions.Select(d => $"<b>{ d.Demo.Subdomain }</b>"));
             }
             else
             {
@@ -57,7 +56,12 @@ namespace Instances.Application.Demos.Emails
             {
                 var soonDeletions = infoPerState[DemoState.DeletionScheduledSoon];
                 builder.Add(new Paragraph(_translations.EmailsDemoCleanupIntentToBeScheduledCount(soonDeletions.Count)));
-                builder.AddHtmlList(soonDeletions.Select(d => $"{d.Demo.Subdomain} {d.DeletionScheduledDate.ToLongDateString()}"));
+                builder.AddList
+                (
+                    soonDeletions
+                        .OrderBy(d => d.DeletionScheduledDate)
+                        .Select(d => $"<b>{ d.Demo.Subdomain }</b> {d.DeletionScheduledDate.ToLongDateString()}")
+                );
             }
             else
             {

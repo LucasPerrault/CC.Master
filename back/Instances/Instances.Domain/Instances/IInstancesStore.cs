@@ -1,4 +1,5 @@
 ﻿using Instances.Domain.Instances.Models;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Instances.Domain.Instances
@@ -7,5 +8,6 @@ namespace Instances.Domain.Instances
     {
         Task<Instance> CreateForDemoAsync(string password, string cluster);
         Task DeleteForDemoAsync(Instance demoInstance);
+        Task DeleteForDemoAsync(IEnumerable<Instance> demoInstances);
     }
 }

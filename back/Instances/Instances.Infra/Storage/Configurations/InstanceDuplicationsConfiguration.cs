@@ -1,5 +1,4 @@
 using Instances.Domain.Instances;
-using Instances.Infra.Demos;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -18,12 +17,12 @@ namespace Instances.Infra.Storage.Configurations
 
             builder.Property(d => d.SourceSubdomain)
                 .HasColumnName("sourceSubdomain")
-                .HasMaxLength(SubdomainValidator.SubdomainMaxLength)
+                .HasMaxLength(200)
                 .IsRequired();
 
             builder.Property(d => d.TargetSubdomain)
                 .HasColumnName("targetSubdomain")
-                .HasMaxLength(SubdomainValidator.SubdomainMaxLength)
+                .HasMaxLength(200)
                 .IsRequired();
 
             builder.Property(d => d.SourceCluster)

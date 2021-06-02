@@ -6,8 +6,8 @@ using Instances.Domain.Demos;
 using Instances.Infra.DataDuplication;
 using Instances.Infra.Demos;
 using Instances.Infra.Instances;
-using Instances.Infra.WsAuth;
 using Instances.Infra.Shared;
+using Instances.Infra.WsAuth;
 using Instances.Web;
 using IpFilter.Infra.Storage;
 using IpFilter.Web;
@@ -25,6 +25,7 @@ using Salesforce.Infra.Configurations;
 using System;
 using System.Collections.Generic;
 using TeamNotification.Web;
+using Testing.Infra;
 using Users.Infra.Storage;
 
 namespace CloudControl.Web.Tests.Mocks
@@ -71,10 +72,6 @@ namespace CloudControl.Web.Tests.Mocks
                     ServerUri = new Uri("https://mocked-partenaires.local"),
                     LogoutEndpointPath = "/logout",
                     RedirectEndpointPath = "/login",
-                    Hangfire = new HangfireAuthenticationConfiguration
-                    {
-                        SharedSecret = Guid.Empty
-                    }
                 }
             });
         }
@@ -197,8 +194,7 @@ namespace CloudControl.Web.Tests.Mocks
                     },
                     WsAuth = new WsAuthConfiguration
                     {
-                        ServerUri = new Uri("https://mocked-ws-auth.ilucca.local"),
-                        EndpointPath = "/sync",
+                        ServerApiEndpoint = "https://mocked-ws-auth.ilucca.local/sync-v2/api",
                         Token = new Guid("deadbeef-0000-0000-0000-000000000000")
                     },
                     CcData = new CcDataConfiguration
@@ -223,8 +219,8 @@ namespace CloudControl.Web.Tests.Mocks
         public static void AddMockDbContext<TDbContext>(this IServiceCollection services, string dbName, Func<DbContextOptions<TDbContext>, TDbContext> createDbContext)
             where TDbContext : DbContext
         {
-            var dbOptions = new DbContextOptionsBuilder<TDbContext>().UseInMemoryDatabase(dbName).Options;
-            services.AddSingleton(createDbContext(dbOptions));
+            var dbContext = InMemoryDbHelper.InitialiseDb("Mocked", createDbContext);
+            services.AddSingleton(dbContext);
         }
     }
 }

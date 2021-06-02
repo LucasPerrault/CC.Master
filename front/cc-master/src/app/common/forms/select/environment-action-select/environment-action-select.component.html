@@ -1,0 +1,26 @@
+<label class="textfield" [ngClass]="class">
+  <lu-select [(ngModel)]="actionsSelected"
+             (ngModelChange)="safeOnChange($event)"
+             class="textfield-input"
+             [placeholder]="'front_filterLabel_action' | translate"
+             (onOpen)="sort(actions)"
+             multiple>
+    <ng-container *luDisplayer="let actions; multiple: true">
+      <span *ngIf="actions?.length !== 1; else: singleView">
+        <span class="label">{{ actions.length }}</span>
+        {{ 'front_filterSelection_action' | translate: { count: actions.length } }}
+      </span>
+      <ng-template #singleView>{{ actions[0].name | translate }}</ng-template>
+    </ng-container>
+    <lu-option-picker-advanced>
+      <lu-option-feeder [options]="actions"></lu-option-feeder>
+      <header class="lu-picker-header">
+        <lu-option-searcher [searchFn]="searchFn"></lu-option-searcher>
+      </header>
+      <lu-option *luForOptions="let action; trackBy: trackBy" [value]="action">
+        {{ action.name | translate }}
+      </lu-option>
+    </lu-option-picker-advanced>
+    <lu-input-clearer></lu-input-clearer>
+  </lu-select>
+</label>

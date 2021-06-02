@@ -1,0 +1,36 @@
+<div class="radioButtons palette-grey mod-outlined">
+  <div class="radioButtons-item">
+    <input type="radio"
+           class="radioButtons-item-input"
+           id="all"
+           [(ngModel)]="isAnonymized"
+           (ngModelChange)="safeOnChange($event)"
+           [value]="null"
+           checked>
+    <label class="radioButtons-item-label" for="all">
+      {{ 'front_filterLabel_all' | translate }}
+    </label>
+  </div>
+  <div class="radioButtons-item">
+    <input type="radio"
+           class="radioButtons-item-input"
+           id="anonymized"
+           [(ngModel)]="isAnonymized"
+           (ngModelChange)="safeOnChange($event)"
+           [value]="true">
+    <label class="radioButtons-item-label" for="anonymized">
+      {{ 'front_filterLabel_anonymized' | translate }}
+    </label>
+  </div>
+  <div class="radioButtons-item">
+    <input type="radio"
+           class="radioButtons-item-input"
+           id="non-anonymized"
+           [(ngModel)]="isAnonymized"
+           (ngModelChange)="safeOnChange($event)"
+           [value]="false">
+    <label class="radioButtons-item-label" for="non-anonymized">
+      {{ 'front_filterLabel_nonAnonymized' | translate }}
+    </label>
+  </div>
+</div>

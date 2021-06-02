@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -7,7 +8,7 @@ namespace CloudControl.Web.Middlewares
 {
     public class FrontRequestFilterMiddleware
     {
-        private static readonly List<string> _nonFrontRequestPrefixes = new List<string> {  "/api" };
+        private static readonly HashSet<string> _nonFrontRequestPrefixes = new HashSet<string>(StringComparer.OrdinalIgnoreCase) {  "/api" };
 
         private readonly RequestDelegate _next;
 

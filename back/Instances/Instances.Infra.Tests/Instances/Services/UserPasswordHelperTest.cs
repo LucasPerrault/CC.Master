@@ -1,22 +1,13 @@
 using FluentAssertions;
 using Instances.Infra.Instances.Services;
 using Lucca.Core.Shared.Domain.Exceptions;
-using MockQueryable.Moq;
-using Moq;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Xunit;
 
 namespace Instances.Infra.Tests.Instances
 {
     public class UserPasswordHelperTest
     {
-        public UserPasswordHelperTest()
-        {
-        }
-
 
         [Theory]
         [InlineData("")]

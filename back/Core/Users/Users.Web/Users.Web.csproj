@@ -5,12 +5,14 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <PackageReference Include="Lucca.Core.Api.Web" Version="0.3.4" />
         <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.2.0" />
         <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="3.1.10" />
         <PackageReference Include="Microsoft.Extensions.Http" Version="2.2.0" />
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\Users.Application\Users.Application.csproj" />
       <ProjectReference Include="..\Users.Domain\Users.Domain.csproj" />
       <ProjectReference Include="..\Users.Infra\Users.Infra.csproj" />
     </ItemGroup>
