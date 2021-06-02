@@ -138,9 +138,7 @@ namespace Environments.Infra.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ConsumerId")
-                        .IsUnique()
-                        .HasFilter("[ConsumerId] IS NOT NULL");
+                    b.HasIndex("ConsumerId");
 
                     b.HasIndex("EnvironmentId");
 
@@ -150,8 +148,8 @@ namespace Environments.Infra.Migrations
             modelBuilder.Entity("Environments.Domain.EnvironmentSharedAccess", b =>
                 {
                     b.HasOne("Distributors.Domain.Models.Distributor", "Consumer")
-                        .WithOne()
-                        .HasForeignKey("Environments.Domain.EnvironmentSharedAccess", "ConsumerId");
+                        .WithMany()
+                        .HasForeignKey("ConsumerId");
 
                     b.HasOne("Environments.Domain.Environment", null)
                         .WithMany("ActiveAccesses")
@@ -160,8 +158,8 @@ namespace Environments.Infra.Migrations
                         .IsRequired();
 
                     b.HasOne("Environments.Domain.EnvironmentAccess", "Access")
-                        .WithOne()
-                        .HasForeignKey("Environments.Domain.EnvironmentSharedAccess", "Id")
+                        .WithMany()
+                        .HasForeignKey("Id")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });

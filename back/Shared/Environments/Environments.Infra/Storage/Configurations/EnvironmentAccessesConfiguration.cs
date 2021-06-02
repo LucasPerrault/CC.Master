@@ -37,8 +37,8 @@ namespace Environments.Infra.Storage.Configurations
             builder.Property(d => d.EnvironmentId).HasColumnName("EnvironmentId");
             builder.Property(d => d.ConsumerId).HasColumnName("ConsumerId");
 
-            builder.HasOne(d => d.Access).WithOne().HasForeignKey<EnvironmentSharedAccess>(d => d.Id);
-            builder.HasOne(d => d.Consumer).WithOne().HasForeignKey<EnvironmentSharedAccess>(d => d.ConsumerId);
+            builder.HasOne(d => d.Access).WithMany().HasForeignKey(d => d.Id);
+            builder.HasOne(d => d.Consumer).WithMany().HasForeignKey(d => d.ConsumerId);
         }
     }
 }
