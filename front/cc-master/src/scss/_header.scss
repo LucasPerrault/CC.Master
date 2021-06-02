@@ -1,0 +1,10 @@
+.header.header {
+    box-shadow: none;
+    background-color: _color("grey", 50);
+    padding-top: _theme("spacings.small");
+    padding-bottom: _theme("spacings.small");
+}
+
+.header-contentLeft {
+    align-items: center;
+}

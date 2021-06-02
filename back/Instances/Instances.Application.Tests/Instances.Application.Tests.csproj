@@ -23,6 +23,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\Instances.Application\Instances.Application.csproj" />
+      <ProjectReference Include="..\Instances.Infra\Instances.Infra.csproj" />
     </ItemGroup>
 
 </Project>

@@ -1,11 +1,9 @@
-using Authentication.Domain;
 using Instances.Application.Specflow.Tests.Demos.Models;
 using Lucca.Core.Rights.Abstractions;
 using Rights.Domain;
 using System.Collections.Generic;
 using TechTalk.SpecFlow;
-using Users.Domain;
-using Xunit;
+using Testing.Infra;
 
 namespace Instances.Application.Specflow.Tests.Demos.Steps
 {
@@ -22,33 +20,12 @@ namespace Instances.Application.Specflow.Tests.Demos.Steps
         [Given("a user with department code '(.*)' and operation '(.*)' and scope '(.*)'")]
         public void GivenAUserWithOperationAndScope(string departmentCode, Operation op, Scope scope)
         {
-            _demosContext.OperationsWithScope = new Dictionary<Operation, Scope>
+            var operationDict = new Dictionary<Operation, Scope>
             {
-                { op, scope }
+                [op] = scope
             };
 
-            _demosContext.Principal = new CloudControlUserClaimsPrincipal(new Principal()
-            {
-                UserId = 1,
-                User = new User()
-                {
-                    DepartmentCode = departmentCode,
-                    FirstName = "Jean",
-                    LastName = "Bombeur",
-                }
-            });
-        }
-
-        [Then(@"user should get error containing '(.*)'")]
-        public void ThenUserShouldGetErrorContainingAsync(string errorMessageExtract)
-        {
-            Assert.Contains(errorMessageExtract, _demosContext.ExceptionResult.Message);
-        }
-
-        [Then(@"user should not get error")]
-        public void ThenUserShouldNotGetError()
-        {
-            Assert.Null(_demosContext.ExceptionResult);
+            _demosContext.TestPrincipal = new TestPrincipal(departmentCode, operationDict);
         }
     }
 }

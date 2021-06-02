@@ -1,0 +1,12 @@
+{
+    "environmentFilePath": "src/environments/environment.prod.ts",
+    "releaseFilePath": "release.txt",
+    "skipVersionGeneration": false,
+    "distDeployUrl" : "~/cc-master",
+    "distPath": "dist",
+    "skipSourcemapsDeletion": false,
+    "sentryInstanceUrl": "https://sentry.io/",
+    "organization": "lucca",
+    "projectName": "cloudcontrol"
+}
+

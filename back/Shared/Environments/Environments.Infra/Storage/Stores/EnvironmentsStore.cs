@@ -1,6 +1,6 @@
 using Environments.Domain;
 using Environments.Domain.Storage;
-using Storage.Infra.Stores;
+using Storage.Infra.Extensions;
 using System.Linq;
 using System.Linq.Expressions;
 

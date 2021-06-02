@@ -1,14 +1,16 @@
 using Instances.Domain.Demos;
+using Instances.Domain.Demos.Filtering;
 using Lucca.Core.Api.Abstractions.Paging;
 using Lucca.Core.Api.Queryable.Paging;
-using Lucca.Core.Shared.Domain.Expressions;
 using Microsoft.EntityFrameworkCore;
-using Storage.Infra.Stores;
+using Rights.Domain.Filtering;
+using Storage.Infra.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
+using Tools;
 
 namespace Instances.Infra.Storage.Stores
 {
@@ -23,46 +25,51 @@ namespace Instances.Infra.Storage.Stores
             _queryPager = queryPager ?? throw new ArgumentNullException(nameof(queryPager));
         }
 
-        public Task<Page<Demo>> GetAsync(IPageToken token, params Expression<Func<Demo, bool>>[] filters)
+        public Task<List<Demo>> GetAsync(DemoFilter filter, AccessRight access)
         {
-            return GetAsync(token, filters.CombineSafely());
+            return Get(filter, access).ToListAsync();
         }
 
-        public Task<IQueryable<Demo>> GetActiveAsync(params Expression<Func<Demo, bool>>[] filters)
+        public Task<Page<Demo>> GetAsync(IPageToken pageToken, DemoFilter filter, AccessRight access)
         {
-            return GetActiveAsync(filters.CombineSafely());
+            return _queryPager.ToPageAsync(Get(filter, access), pageToken);
         }
 
-        private Task<IQueryable<Demo>> GetActiveAsync(Expression<Func<Demo, bool>> filter)
+        public Task<Demo> GetActiveByIdAsync(int id, AccessRight access)
         {
-            return GetAsync(filter.SmartAndAlso(d => d.IsActive));
+            var isActiveFilter = new DemoFilter { IsActive = BoolCombination.TrueOnly };
+
+            return Get(isActiveFilter, access)
+                .SingleOrDefaultAsync(d => d.Id == id);
         }
 
-        public async Task DeleteAsync(Demo demo)
+        public Task DeleteAsync(Demo demo)
         {
-            demo.IsActive = false;
+            return DeleteAsync(new [] { demo });
+        }
+
+        public async Task DeleteAsync(IEnumerable<Demo> demos)
+        {
+            foreach (var demo in demos)
+            {
+                demo.IsActive = false;
+            }
             await _dbContext.SaveChangesAsync();
         }
 
-        public async Task UpdateDeletionScheduleAsync(Demo demo, DateTime deletionScheduledOn)
+        public async Task UpdateDeletionScheduleAsync(IEnumerable<DemoDeletionSchedule> schedules)
         {
-            demo.DeletionScheduledOn = deletionScheduledOn;
+            foreach (var schedule in schedules)
+            {
+                schedule.Demo.DeletionScheduledOn = schedule.DeletionScheduledOn;
+            }
             await _dbContext.SaveChangesAsync();
         }
 
-        public async Task<Page<Demo>> GetAsync(IPageToken token, Expression<Func<Demo, bool>> filter)
+        public async Task UpdateCommentAsync(Demo demo, string comment)
         {
-            return await _queryPager.ToPageAsync(await GetAsync(filter), token);
-        }
-
-        public Task<IQueryable<Demo>> GetAsync(params Expression<Func<Demo, bool>>[] filters)
-        {
-            return Task.FromResult(Demos.Where(filters.CombineSafely()));
-        }
-
-        public Task<Demo> GetByInstanceIdAsync(int instanceId)
-        {
-            return Demos.SingleOrDefaultAsync(d => d.InstanceID == instanceId);
+            demo.Comment = comment;
+            await _dbContext.SaveChangesAsync();
         }
 
         public async Task<Demo> CreateAsync(Demo demo)
@@ -78,6 +85,42 @@ namespace Instances.Infra.Storage.Stores
             return Demos.Where(d => d.IsActive).GroupBy(d => d.Instance.Cluster).ToDictionaryAsync(g => g.Key, g => g.Count());
         }
 
-        private IQueryable<Demo> Demos => _dbContext.Set<Demo>().Include(d => d.Instance);
+        private IQueryable<Demo> Get(DemoFilter filter, AccessRight access)
+        {
+            return Demos
+                .WhereMatches(filter)
+                .Where(ToRightExpression(access));
+        }
+
+        private IQueryable<Demo> Demos => _dbContext.Set<Demo>()
+            .Include(d => d.Instance)
+            .Include(d => d.Author);
+
+
+        private Expression<Func<Demo, bool>> ToRightExpression(AccessRight access)
+        {
+            return access switch
+            {
+                NoAccessRight _ => _ => false,
+                DistributorCodeAccessRight r => d => d.Distributor.Code == r.DistributorCode || d.IsTemplate,
+                AllAccessRight _ => _ => true,
+                _ => throw new ApplicationException($"Unknown type of demo filter right {access}")
+            };
+        }
+    }
+
+    internal static class DemoQueryableExtensions
+    {
+        public static IQueryable<Demo> WhereMatches(this IQueryable<Demo> demos, DemoFilter filter)
+        {
+            return demos
+                .Apply(filter.IsActive).To(d => d.IsActive)
+                .Apply(filter.IsProtected).To(d => d.Instance.IsProtected)
+                .Apply(filter.IsTemplate).To(d => d.IsTemplate)
+                .WhenNotNullOrEmpty(filter.Search).ApplyWhere(d => d.Subdomain.Contains(filter.Search))
+                .WhenNotNullOrEmpty(filter.Subdomain).ApplyWhere(d => d.Subdomain == filter.Subdomain)
+                .WhenNotNullOrEmpty(filter.DistributorId).ApplyWhere(d => d.DistributorID == filter.DistributorId)
+                .WhenHasValue(filter.AuthorId).ApplyWhere(d => d.AuthorId == filter.AuthorId.Value);
+        }
     }
 }

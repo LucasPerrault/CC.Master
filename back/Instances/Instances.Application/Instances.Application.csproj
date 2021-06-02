@@ -6,6 +6,7 @@
 
   <ItemGroup>
     <PackageReference Include="Lucca.Core.Api.Abstractions" Version="0.3.4" />
+    <PackageReference Include="morelinq" Version="3.3.2" />
   </ItemGroup>
 
   <ItemGroup>
@@ -14,7 +15,6 @@
     <ProjectReference Include="..\..\Core\TeamNotification\TeamNotification.Abstractions\TeamNotification.Abstractions.csproj" />
     <ProjectReference Include="..\..\Core\Tools\Tools\Tools.csproj" />
     <ProjectReference Include="..\Instances.Domain\Instances.Domain.csproj" />
-    <ProjectReference Include="..\Instances.Infra\Instances.Infra.csproj" />
   </ItemGroup>
 
 </Project>

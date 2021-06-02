@@ -16,7 +16,7 @@ namespace Instances.Infra.Migrations
 #pragma warning disable 612, 618
             modelBuilder
                 .HasDefaultSchema("instances")
-                .HasAnnotation("ProductVersion", "3.1.7")
+                .HasAnnotation("ProductVersion", "3.1.10")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
@@ -85,6 +85,8 @@ namespace Instances.Infra.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("AuthorId");
 
                     b.HasIndex("DistributorID");
 
@@ -233,8 +235,46 @@ namespace Instances.Infra.Migrations
                     b.ToTable("Instances");
                 });
 
+            modelBuilder.Entity("Users.Domain.SimpleUser", b =>
+                {
+                    b.Property<int>("Id")
+                        .HasColumnName("PartenairesId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("DepartmentId")
+                        .HasColumnName("DepartmentId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("FirstName")
+                        .HasColumnName("FirstName")
+                        .HasColumnType("nvarchar(300)")
+                        .HasMaxLength(300);
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnName("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("LastName")
+                        .HasColumnName("LastName")
+                        .HasColumnType("nvarchar(300)")
+                        .HasMaxLength(300);
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Id")
+                        .IsUnique();
+
+                    b.ToTable("Users","shared");
+                });
+
             modelBuilder.Entity("Instances.Domain.Demos.Demo", b =>
                 {
+                    b.HasOne("Users.Domain.SimpleUser", "Author")
+                        .WithMany()
+                        .HasForeignKey("AuthorId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("Distributors.Domain.Models.Distributor", "Distributor")
                         .WithMany()
                         .HasForeignKey("DistributorID");

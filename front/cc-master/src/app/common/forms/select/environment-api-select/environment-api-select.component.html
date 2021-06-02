@@ -1,0 +1,32 @@
+<label class="textfield" [ngClass]="class">
+  <lu-select [(ngModel)]="environmentsSelected"
+             (ngModelChange)="safeOnChange($event)"
+             class="textfield-input"
+             [placeholder]="'front_filterLabel_subdomain' | translate"
+             (onOpen)="setEnvironmentsDisplayed()"
+             multiple>
+    <ng-container *luDisplayer="let environments; multiple: true">
+      <span *ngIf="environments?.length !== 1; else: singleView">
+        <span class="label">{{ environments.length }}</span>
+        {{ 'front_filterSelection_subdomain' | translate: { count: environments.length } }}
+      </span>
+      <ng-template #singleView>{{ environments[0].subDomain }}</ng-template>
+    </ng-container>
+    <lu-option-picker-advanced>
+      <header class="lu-picker-header">
+        <lu-api-paged-searcher [api]="apiUrl" [fields]="apiFields" [orderBy]="apiOrderBy" [filters]="filtersToExcludeSelection"></lu-api-paged-searcher>
+      </header>
+      <lu-option-pager></lu-option-pager>
+      <lu-option *ngFor="let environmentSelected of environmentsSelectionDisplayed"
+                 [value]="environmentSelected"
+                 selected>
+        {{ environmentSelected.subDomain }}
+      </lu-option>
+      <lu-option *luForOptions="let environmentNotSelected; trackBy: trackBy" [value]="environmentNotSelected">
+          {{ environmentNotSelected.subDomain }}
+      </lu-option>
+    </lu-option-picker-advanced>
+    <lu-input-clearer></lu-input-clearer>
+  </lu-select>
+</label>
+

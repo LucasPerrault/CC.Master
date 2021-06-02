@@ -19,10 +19,7 @@
         "AllUsersEndpointPath": "/api/v3/users",
         "ApiKeysEndpointPath": "/api/v3/apikeys",
         "RedirectEndpointPath": "/auth/userlogin",
-        "LogoutEndpointPath": "/logout",
-        "Hangfire": {
-            "SharedSecret": "{{ LuccaHangfire:CloudControlToken }}"
-        }
+        "LogoutEndpointPath": "/logout"
     },
     "Rights": {
         "ServerUri": "{{ CC.Master:PartenairesUri }}",
@@ -82,8 +79,7 @@
             "TokenRequestRoute": "/identity/connect/token"
         },
         "WsAuth": {
-            "ServerUri": "{{ shared:LuccaAuthSyncBaseUrl }}",
-            "EndpointPath": "/api",
+            "ServerApiEndpoint": "{{ shared:LuccaAuthSyncBaseUrl }}/api",
             "Token": "{{ Lucca.Auth.Sync:CloudControlToken }}"
         },
         "CcData": {

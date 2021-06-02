@@ -1,7 +1,6 @@
 using Lucca.Core.Shared.Domain.Exceptions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
-using System.Globalization;
 using System.Threading.Tasks;
 
 namespace CloudControl.Web.Exceptions

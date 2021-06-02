@@ -33,6 +33,6 @@
             EmailAddress = emailAddress;
         }
 
-        public static EmailContact CloudControl => new EmailContact("cc@ilucca.net");
+        public static EmailContact CloudControl => new EmailContact("cc@lucca.fr");
     }
 }

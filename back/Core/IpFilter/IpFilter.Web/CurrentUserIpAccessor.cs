@@ -2,7 +2,6 @@
 using IpFilter.Domain;
 using Lucca.Core.AspNetCore.Middlewares;
 using Microsoft.AspNetCore.Http;
-using Microsoft.Net.Http.Headers;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;

@@ -33,6 +33,12 @@ namespace Remote.Infra.Extensions
             return httpClient;
         }
 
+        public static HttpClient WithBaseAddress(this HttpClient httpClient, string hostAndEndpoint)
+        {
+            httpClient.BaseAddress = new Uri(hostAndEndpoint.AsSafeEndpoint());
+            return httpClient;
+        }
+
         public static HttpClientAuthenticator WithAuthScheme(this HttpClient httpClient, string scheme)
         {
             return new HttpClientAuthenticator(httpClient, scheme);

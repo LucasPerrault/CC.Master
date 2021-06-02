@@ -3,6 +3,7 @@ using Instances.Infra.Storage.Configurations;
 using Microsoft.EntityFrameworkCore;
 using Storage.Infra.Context;
 using Storage.Infra.Migrations;
+using Users.Infra.Storage.Configurations;
 
 namespace Instances.Infra.Storage
 {
@@ -22,12 +23,13 @@ namespace Instances.Infra.Storage
 
             // shared
             modelBuilder.ApplyConfiguration(new DistributorsConfiguration());
+            modelBuilder.ApplyConfiguration(new SimpleUsersConfiguration());
         }
 
         public class InstancesMigrationDefinition : CloudControlDbContextMigrationDefinition<InstancesDbContext>
         {
             public override string SchemaName => StorageSchemas.Instances.Value;
-            public override int Order => 1;
+            public override int Order => 2;
         }
     }
 }

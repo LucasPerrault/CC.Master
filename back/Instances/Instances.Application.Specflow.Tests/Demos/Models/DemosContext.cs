@@ -1,29 +1,18 @@
-using Distributors.Domain;
 using Instances.Domain.Demos;
-using Instances.Domain.Instances;
+using Instances.Domain.Instances.Models;
 using Instances.Infra.Storage;
-using Lucca.Core.Rights.Abstractions;
-using Moq;
-using Rights.Domain;
 using System;
 using System.Collections.Generic;
-using System.Security.Claims;
+using Testing.Infra;
+using Testing.Specflow;
 
 namespace Instances.Application.Specflow.Tests.Demos.Models
 {
     public class DemosContext : IDisposable
     {
         public InstancesDbContext DbContext { get; set; }
-        public ClaimsPrincipal Principal { get; set; }
-        public Dictionary<Operation,Scope> OperationsWithScope { get; set; }
-        public List<Demo> DemosListResult { get; set; }
-        public Exception ExceptionResult { get; set; }
-        public DemoContextMocks Mocks { get; }
-
-        public DemosContext()
-        {
-            Mocks = new DemoContextMocks();
-        }
+        public TestPrincipal TestPrincipal { get; set; }
+        public DemoTestResults Results { get; } = new DemoTestResults();
 
         public void Dispose()
         {
@@ -31,15 +20,12 @@ namespace Instances.Application.Specflow.Tests.Demos.Models
         }
     }
 
-    public class DemoContextMocks
+    public class DemoTestResults
     {
-        public Mock<IInstancesStore> InstancesStore { get; }
-        public Mock<IDistributorsStore> DistributorsStore { get; }
-
-        public DemoContextMocks()
-        {
-            InstancesStore = new Mock<IInstancesStore>();
-            DistributorsStore = new Mock<IDistributorsStore>();
-        }
+        public List<Instance> CreatedInstances { get; } = new List<Instance>();
+        public List<Instance> DeleteInstances { get; } = new List<Instance>();
+        public List<Demo> Demos { get; } = new List<Demo>();
+        public Demo SingleDemo { get; set; }
+        public ExceptionResult ExceptionResult { get; } = new ExceptionResult();
     }
 }
