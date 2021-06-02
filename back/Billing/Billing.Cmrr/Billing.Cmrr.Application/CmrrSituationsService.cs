@@ -22,13 +22,13 @@ namespace Billing.Cmrr.Application
             _analyticSituationsService = analyticSituationsService;
         }
 
-        public async Task<CmrrSituation> GetSituationAsync(CmrrAxis axis, CmrrSituationFilter situationFilter)
+        public async Task<CmrrSituation> GetSituationAsync(CmrrSituationFilter situationFilter)
         {
-            var sections = await GetSectionsAsync(axis, situationFilter);
+            var sections = await GetSectionsAsync(situationFilter);
             var situation = new CmrrSituation
             {
                 Sections = sections,
-                Axis = axis,
+                Axis = situationFilter.Axis,
                 StartPeriod = situationFilter.StartPeriod,
                 EndPeriod = situationFilter.EndPeriod
             };
@@ -36,11 +36,11 @@ namespace Billing.Cmrr.Application
             return situation;
         }
 
-        private async Task<List<CmrrAxisSection>> GetSectionsAsync(CmrrAxis axis, CmrrSituationFilter situationFilter)
+        private async Task<List<CmrrAxisSection>> GetSectionsAsync(CmrrSituationFilter situationFilter)
         {
             var contractSituations = await GetContractSituationsAsync(situationFilter);
 
-            var orderedAnalyticSituations = await _analyticSituationsService.GetOrderedSituationsAsync(axis, contractSituations);
+            var orderedAnalyticSituations = await _analyticSituationsService.GetOrderedSituationsAsync(situationFilter.Axis, contractSituations);
 
             return orderedAnalyticSituations.Select(group => GetCmrrAxisSection(group)).ToList();
         }

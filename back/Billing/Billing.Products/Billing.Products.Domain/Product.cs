@@ -8,10 +8,19 @@ namespace Billing.Products.Domain
         public int Id { get; set; }
 
         public string Name { get; set; }
-
+        public string Code { get; set; }
+        public string ApplicationCode { get; set; }
+        public int? ParentId { get; set; }
+        public bool IsEligibleToMinimalBilling { get; set; }
+        public bool IsMultiSuite { get; set; }
+        public bool IsPromoted { get; set; }
+        public string SalesForceCode { get; set; }
         public bool IsFreeUse { get; set; }
+        public string DeployRoute { get; set; }
+
         public int FamilyId { get; set; }
         public ProductFamily Family { get; set; }
+
         public List<ProductSolution> ProductSolutions { get; set; }
 
     }

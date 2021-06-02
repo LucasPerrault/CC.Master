@@ -44,7 +44,7 @@ namespace Billing.Cmrr.Application.Tests
 
             var sut = new CmrrSituationsService(cmrrContractsStoreMock.Object, cmrrCountsStoreMock.Object, null);
 
-            Func<Task<CmrrSituation>> func = () => sut.GetSituationAsync(CmrrAxis.Product, situationFilter);
+            Func<Task<CmrrSituation>> func = () => sut.GetSituationAsync(situationFilter);
 
             func.Should().ThrowExactly<ArgumentException>().WithMessage("*startPeriod*");
         }
@@ -65,7 +65,7 @@ namespace Billing.Cmrr.Application.Tests
 
             var sut = new CmrrSituationsService(cmrrContractsStoreMock.Object, cmrrCountsStoreMock.Object, null);
 
-            Func<Task<CmrrSituation>> func = () => sut.GetSituationAsync(CmrrAxis.Product, situationFilter);
+            Func<Task<CmrrSituation>> func = () => sut.GetSituationAsync(situationFilter);
 
             func.Should().ThrowExactly<ArgumentException>().WithMessage("*endPeriod*");
         }
@@ -138,7 +138,7 @@ namespace Billing.Cmrr.Application.Tests
             // Act
             var sut = new CmrrSituationsService(cmrrContractsStoreMock.Object, cmrrCountsStoreMock.Object, contractAnalyticSituationsService);
 
-            var cmrrContractSituations = await sut.GetSituationAsync(CmrrAxis.Product, situationFilter);
+            var cmrrContractSituations = await sut.GetSituationAsync(situationFilter);
 
             // Assert
             cmrrContractSituations.Sections.Should().NotBeNullOrEmpty();
@@ -205,7 +205,7 @@ namespace Billing.Cmrr.Application.Tests
             // Act
             var sut = new CmrrSituationsService(cmrrContractsStoreMock.Object, cmrrCountsStoreMock.Object, contractAnalyticSituationsService);
 
-            var cmrrContractSituations = await sut.GetSituationAsync(CmrrAxis.Product, situationFilter);
+            var cmrrContractSituations = await sut.GetSituationAsync(situationFilter);
 
             // Assert
             cmrrContractSituations.Should().NotBeNull();
@@ -282,7 +282,7 @@ namespace Billing.Cmrr.Application.Tests
             // Act
             var sut = new CmrrSituationsService(cmrrContractsStoreMock.Object, cmrrCountsStoreMock.Object, contractAnalyticSituationsService);
 
-            var cmrrContractSituations = await sut.GetSituationAsync(CmrrAxis.Product, situationFilter);
+            var cmrrContractSituations = await sut.GetSituationAsync(situationFilter);
 
             // Assert
             cmrrContractSituations.Sections.Should().NotBeNullOrEmpty();
@@ -368,7 +368,7 @@ namespace Billing.Cmrr.Application.Tests
             // Act
             var sut = new CmrrSituationsService(cmrrContractsStoreMock.Object, cmrrCountsStoreMock.Object, contractAnalyticSituationsService);
 
-            var cmrrContractSituations = await sut.GetSituationAsync(CmrrAxis.Product, situationFilter);
+            var cmrrContractSituations = await sut.GetSituationAsync(situationFilter);
 
             // Assert
             cmrrContractSituations.Sections.Should().NotBeNullOrEmpty();
