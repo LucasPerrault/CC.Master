@@ -25,6 +25,7 @@ namespace Environments.Infra.Storage.Configurations
             builder.Property(d => d.RevocationComment).HasColumnName("RevocationComment");
             builder.Property(d => d.Lifecycle).HasComputedColumnSql("Lifecycle");
 
+            builder.HasIndex(d => d.EnvironmentId);
         }
     }
 
