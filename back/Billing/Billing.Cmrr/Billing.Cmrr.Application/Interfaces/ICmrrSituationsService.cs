@@ -7,7 +7,7 @@ namespace Billing.Cmrr.Application.Interfaces
 {
     public interface ICmrrSituationsService
     {
-        Task<CmrrSituation> GetSituationAsync(CmrrAxis axis, CmrrSituationFilter situationFilter);
+        Task<CmrrSituation> GetSituationAsync(CmrrSituationFilter situationFilter);
     }
 
     public class CmrrSituationFilter

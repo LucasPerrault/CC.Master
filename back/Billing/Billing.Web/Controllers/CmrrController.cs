@@ -21,7 +21,7 @@ namespace Billing.Web.Controllers
         [HttpGet, ForbidIfMissing(Operation.ReadCMRR)]
         public async Task<CmrrSituation> GetAsync([FromQuery] CmrrSituationListQuery situationListQuery)
         {
-            var result = await _cmrrSituationService.GetSituationAsync(CmrrAxis.Product, situationListQuery.ToCmrrSituationFilter());
+            var result = await _cmrrSituationService.GetSituationAsync(situationListQuery.ToCmrrSituationFilter());
             return result;
         }
     }
