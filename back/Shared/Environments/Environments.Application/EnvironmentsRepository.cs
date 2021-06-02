@@ -46,14 +46,10 @@ namespace Environments.Application
                 throw new NotFoundException($"No active environment with subdomain {subdomain} was found");
             }
 
-            return env.ActiveAccesses.Select
-            (
-                a => new DistributorWithAccess
-                {
-                    AccessType = a.Access.Type,
-                    DistributorCode = a.Consumer.Code
-                }
-            ).ToHashSet();
+            return env.ActiveAccesses
+                .GroupBy(a => a.Consumer.Code)
+                .Select(group => new DistributorWithAccess(group.Key, group.Select(i => i.Access.Type).ToHashSet()))
+                .ToHashSet();
         }
     }
 }

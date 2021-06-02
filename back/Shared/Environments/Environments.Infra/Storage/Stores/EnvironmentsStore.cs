@@ -38,6 +38,8 @@ namespace Environments.Infra.Storage.Stores
         private IQueryable<Environment> GetQueryable(List<EnvironmentAccessRight> rights, EnvironmentFilter filter)
         {
             return _dbContext.Set<Environment>()
+                .Include(e => e.ActiveAccesses).ThenInclude(a => a.Consumer)
+                .Include(e => e.ActiveAccesses).ThenInclude(a => a.Access)
                 .ForRights(rights)
                 .FilterBy(filter);
         }
@@ -71,7 +73,7 @@ namespace Environments.Infra.Storage.Stores
             return environments.Where(expressions.CombineSafelyOr());
         }
 
-        public static Expression<Func<Environment, bool>> WithPurposes(PurposeAccessRight accessRight)
+        private static Expression<Func<Environment, bool>> WithPurposes(PurposeAccessRight accessRight)
         {
             return accessRight switch
             {
@@ -81,7 +83,7 @@ namespace Environments.Infra.Storage.Stores
             };
         }
 
-        public static Expression<Func<Environment, bool>> WithAccessRight(AccessRight accessRight)
+        private static Expression<Func<Environment, bool>> WithAccessRight(AccessRight accessRight)
         {
             return accessRight switch
             {
