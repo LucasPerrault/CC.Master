@@ -29,48 +29,6 @@ namespace Billing.Cmrr.Application.Tests
         }
 
         [Fact]
-        public void ShouldThrowWhenStartPeriodIsDefault()
-        {
-            var startPeriod = default(DateTime);
-            var endPeriod = new DateTime(2021, 01, 01);
-            var situationFilter = new CmrrSituationFilter
-            {
-                StartPeriod = startPeriod,
-                EndPeriod = endPeriod
-            };
-
-            var cmrrContractsStoreMock = new Mock<ICmrrContractsStore>();
-            var cmrrCountsStoreMock = new Mock<ICmrrCountsStore>();
-
-            var sut = new CmrrSituationsService(cmrrContractsStoreMock.Object, cmrrCountsStoreMock.Object, null);
-
-            Func<Task<CmrrSituation>> func = () => sut.GetSituationAsync(CmrrAxis.Product, situationFilter);
-
-            func.Should().ThrowExactly<ArgumentNullException>().WithMessage("*startPeriod*");
-        }
-
-        [Fact]
-        public void ShouldThrowWhenEndPeriodIsDefault()
-        {
-            var startPeriod = new DateTime(2021, 01, 01);
-            var endPeriod = default(DateTime);
-            var situationFilter = new CmrrSituationFilter
-            {
-                StartPeriod = startPeriod,
-                EndPeriod = endPeriod
-            };
-
-            var cmrrContractsStoreMock = new Mock<ICmrrContractsStore>();
-            var cmrrCountsStoreMock = new Mock<ICmrrCountsStore>();
-
-            var sut = new CmrrSituationsService(cmrrContractsStoreMock.Object, cmrrCountsStoreMock.Object, null);
-
-            Func<Task<CmrrSituation>> func = () => sut.GetSituationAsync(CmrrAxis.Product, situationFilter);
-
-            func.Should().ThrowExactly<ArgumentNullException>().WithMessage("*endPeriod*");
-        }
-
-        [Fact]
         public void ShouldThrowWhenStartPeriodIsNotOnDayOneOfMonth()
         {
             var startPeriod = new DateTime(2021, 01, 02);
