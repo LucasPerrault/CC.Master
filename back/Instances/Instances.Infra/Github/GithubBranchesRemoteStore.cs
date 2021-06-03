@@ -1,6 +1,5 @@
 ﻿using Instances.Domain.CodeSources;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
 using Remote.Infra.Exceptions;
 using Remote.Infra.Services;
 using System.Collections.Generic;
@@ -14,8 +13,7 @@ namespace Instances.Infra.Github
         private readonly ILogger<GithubBranchesRemoteStore> _logger;
         protected override string RemoteApiDescription => "Legacy cloudcontrol github branches api";
 
-        public GithubBranchesRemoteStore(HttpClient httpClient, JsonSerializer jsonSerializer, ILogger<GithubBranchesRemoteStore> logger)
-            : base(httpClient, jsonSerializer)
+        public GithubBranchesRemoteStore(HttpClient httpClient, ILogger<GithubBranchesRemoteStore> logger) : base(httpClient)
         {
             _logger = logger;
         }

@@ -1,16 +1,15 @@
 using FluentAssertions;
-using FluentAssertions.Json;
 using Instances.Domain.Shared;
 using Instances.Infra.Shared;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Moq;
 using Moq.Protected;
-using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
+using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using Xunit;
@@ -92,8 +91,8 @@ namespace Instances.Infra.Tests.Shared
             captureMessage.Method.Should().Be(HttpMethod.Post);
             captureMessage.RequestUri.Should().Be("http://cc-data.c5.lucca.local/api/v1/duplicate-instance");
 
-            var body = JToken.Parse(await captureMessage.Content.ReadAsStringAsync());
-            body.Should().BeEquivalentTo(JToken.Parse($@"{{
+            var body = JsonDocument.Parse(await captureMessage.Content.ReadAsStringAsync());
+            body.Should().BeEquivalentTo(JsonDocument.Parse($@"{{
                 ""CallbackUri"": ""https://cc.ilucca.local/callback/path/return"",
                 ""CallbackAuthorizationHeader"": ""{ callbackAuthHeader }"",
                 ""SourceTenant"": {{

@@ -1,15 +1,15 @@
-﻿using Newtonsoft.Json;
-using Remote.Infra.DTOs;
+﻿using Remote.Infra.DTOs;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
+using Tools;
 
 namespace Remote.Infra.Services
 {
     public abstract class RestApiV3HostRemoteService : HostRemoteService
     {
-        protected RestApiV3HostRemoteService(HttpClient httpClient, JsonSerializer jsonSerializer)
-            : base(httpClient, jsonSerializer)
+        protected RestApiV3HostRemoteService(HttpClient httpClient)
+            : base(httpClient)
         { }
 
         protected Task<RestApiV3Response<T>> GetObjectResponseAsync<T>(Dictionary<string, string> queryParams)
@@ -47,9 +47,9 @@ namespace Remote.Infra.Services
             return PostGenericObjectResponseAsync<TForm, RestApiV3Response<TResult>>(content, queryParams);
         }
 
-        protected override string GetErrorMessage(JsonTextReader jsonTextReader)
+        protected override string GetErrorMessage(string s)
         {
-            var error = _jsonSerializer.Deserialize<RestApiV3Error>(jsonTextReader);
+            var error = Serializer.Deserialize<RestApiV3Error>(s);
             return error.Message;
         }
     }

@@ -1,6 +1,6 @@
-﻿using Newtonsoft.Json.Linq;
-using System.Net.Http;
+﻿using System.Net.Http;
 using System.Text;
+using Tools;
 
 namespace Remote.Infra.Extensions
 {
@@ -8,8 +8,7 @@ namespace Remote.Infra.Extensions
     {
         public static StringContent ToJsonPayload(this object content)
         {
-            var jObject = JObject.FromObject(content);
-            return new StringContent(jObject.ToString(), Encoding.UTF8, "application/json");
+            return new StringContent(Serializer.Serialize(content), Encoding.UTF8, "application/json");
         }
     }
 }

@@ -1,5 +1,4 @@
-﻿using Newtonsoft.Json;
-using Remote.Infra.Services;
+﻿using Remote.Infra.Services;
 using Rights.Domain.Filtering;
 using System;
 using System.Collections.Generic;
@@ -19,8 +18,8 @@ namespace Users.Infra
         private readonly UsersStore _store;
         protected override string RemoteApiDescription => "Partenaires users";
 
-        public UsersSyncService(HttpClient httpClient, JsonSerializer jsonSerializer, UsersStore store)
-            : base(httpClient, jsonSerializer)
+        public UsersSyncService(HttpClient httpClient, UsersStore store)
+            : base(httpClient)
         {
             _store = store;
         }

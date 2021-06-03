@@ -1,4 +1,3 @@
-using Newtonsoft.Json;
 using Partenaires.Infra.Services;
 using Rights.Infra.Models;
 using Rights.Infra.Services;
@@ -12,8 +11,7 @@ namespace Rights.Infra.Remote
     public class UserPermissionsRemoteService : PartenairesService
     {
         protected override string RemoteApiDescription => "Partenaires users permissions";
-        public UserPermissionsRemoteService(HttpClient httpClient, JsonSerializer jsonSerializer)
-            : base(httpClient, jsonSerializer)
+        public UserPermissionsRemoteService(HttpClient httpClient) : base(httpClient)
         { }
 
         internal async Task<IReadOnlyCollection<Permission>> GetUserPermissionsAsync(int principalId)

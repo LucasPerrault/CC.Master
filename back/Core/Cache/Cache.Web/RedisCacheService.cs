@@ -1,8 +1,8 @@
 ﻿using Cache.Abstractions;
-using Newtonsoft.Json;
 using StackExchange.Redis;
 using System;
 using System.Threading.Tasks;
+using Tools;
 
 namespace Cache.Web
 {
@@ -31,7 +31,7 @@ namespace Cache.Web
                 return default;
             }
             var serializedValue = await GetSerializedValueAsync(key.Key);
-            return serializedValue.HasValue ? JsonConvert.DeserializeObject<T>(serializedValue) : default;
+            return serializedValue.HasValue ? Serializer.Deserialize<T>(serializedValue) : default;
         }
 
         public Task SetAsync<T>(CacheKey<T> key, T nonSerializedObject, CacheInvalidation invalidation)
@@ -40,7 +40,7 @@ namespace Cache.Web
             {
                 return Task.CompletedTask;
             }
-            var serialized = JsonConvert.SerializeObject(nonSerializedObject);
+            var serialized = Serializer.Serialize(nonSerializedObject);
             return SetSerializedValueAsync(key.Key, serialized, invalidation);
         }
 

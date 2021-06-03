@@ -1,5 +1,4 @@
 ﻿using Microsoft.Extensions.Diagnostics.HealthChecks;
-using Newtonsoft.Json;
 using Remote.Infra.Services;
 using System;
 using System.Collections.Generic;
@@ -14,8 +13,8 @@ namespace Core.Proxy.Infra.Services
 
         protected override string RemoteApiDescription => "Legacy Healthz";
 
-        public LegacyHealthzService(HttpClient httpClient, JsonSerializer jsonSerializer)
-            : base(httpClient, jsonSerializer)
+        public LegacyHealthzService(HttpClient httpClient)
+            : base(httpClient)
         { }
 
         internal async Task<HealthCheckResult> GetLegacyHealthAsync()
@@ -35,7 +34,7 @@ namespace Core.Proxy.Infra.Services
             }
         }
 
-        protected override string GetErrorMessage(JsonTextReader jsonTextReader)
+        protected override string GetErrorMessage(string s)
         {
             throw new NotImplementedException();
         }

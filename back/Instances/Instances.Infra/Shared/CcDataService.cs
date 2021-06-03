@@ -1,7 +1,6 @@
 using Instances.Domain.Shared;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json.Linq;
 using Remote.Infra.Extensions;
 using System;
 using System.Collections.Generic;
@@ -17,6 +16,23 @@ namespace Instances.Infra.Shared
         public List<string> Tenants { get; set; }
         public Uri CallbackUri { get; set; }
         public string CallbackAuthorizationHeader { get; set; }
+    }
+
+
+    internal class DuplicateInstanceRequestDtoWithCallback
+    {
+        public TenantDto SourceTenant { get; set; }
+        public string TargetTenant { get; set; }
+        public List<UriLinkDto> PostRestoreScripts { get; set; }
+        public Uri CallbackUri { get; set; }
+        public string CallbackAuthorizationHeader { get; set; }
+
+        public DuplicateInstanceRequestDtoWithCallback(DuplicateInstanceRequestDto dto)
+        {
+            SourceTenant = dto.SourceTenant;
+            TargetTenant = dto.TargetTenant;
+            PostRestoreScripts = dto.PostRestoreScripts;
+        }
     }
 
     public class CcDataService : ICcDataService
@@ -42,15 +58,16 @@ namespace Instances.Infra.Shared
 
         public async Task StartDuplicateInstanceAsync(DuplicateInstanceRequestDto duplicateInstanceRequest, string cluster, string callbackPath)
         {
-            var body = JToken.FromObject(duplicateInstanceRequest);
-            body["CallbackUri"] = GetCallbackUri(callbackPath);
-            body["CallbackAuthorizationHeader"] = GetCallbackAuthHeader();
+            var requestWithCallback = new DuplicateInstanceRequestDtoWithCallback(duplicateInstanceRequest)
+            {
+                CallbackUri = GetCallbackUri(callbackPath),
+                CallbackAuthorizationHeader = GetCallbackAuthHeader()
+            };
 
             var uri = new Uri(GetCcDataBaseUri(cluster), "/api/v1/duplicate-instance");
             try
             {
-
-                var result = await _httpClient.PostAsync(uri, body.ToJsonPayload());
+                var result = await _httpClient.PostAsync(uri, requestWithCallback.ToJsonPayload());
 
                 result.EnsureSuccessStatusCode();
             }

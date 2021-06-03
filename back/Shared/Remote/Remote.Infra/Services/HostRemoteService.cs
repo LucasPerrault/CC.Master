@@ -1,12 +1,12 @@
 using Microsoft.AspNetCore.WebUtilities;
-using Newtonsoft.Json;
 using Remote.Infra.Exceptions;
 using Remote.Infra.Extensions;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Net.Http;
+using System.Text.Json;
 using System.Threading.Tasks;
+using Tools;
 using HttpClientExtensions = Remote.Infra.Extensions.HttpClientExtensions;
 
 namespace Remote.Infra.Services
@@ -14,14 +14,12 @@ namespace Remote.Infra.Services
     public abstract class HostRemoteService
     {
         private readonly HttpClient _httpClient;
-        protected readonly JsonSerializer _jsonSerializer;
 
         protected abstract string RemoteApiDescription { get; }
 
-        protected HostRemoteService(HttpClient httpClient, JsonSerializer jsonSerializer)
+        protected HostRemoteService(HttpClient httpClient)
         {
             _httpClient = httpClient;
-            _jsonSerializer = jsonSerializer ?? throw new ArgumentNullException(nameof(jsonSerializer));
         }
 
         protected Task<TResult> GetGenericObjectResponseAsync<TResult>(Dictionary<string, string> queryParams)
@@ -69,7 +67,7 @@ namespace Remote.Infra.Services
             return GetRequestWithContentResponseAsync<TForm, TResult>(HttpMethod.Put, id, queryParams, content);
         }
 
-        protected abstract string GetErrorMessage(JsonTextReader jsonTextReader);
+        protected abstract string GetErrorMessage(string responseAsString);
 
         protected void ApplyLateHttpClientAuthentication
         (
@@ -113,17 +111,14 @@ namespace Remote.Infra.Services
 
         private async Task<TResponse> ParseResponseAsync<TResponse>(HttpResponseMessage response)
         {
-            await using var responseStream = await response.Content.ReadAsStreamAsync();
-            using var streamReader = new StreamReader(responseStream);
-            using var jsonTextReader = new JsonTextReader(streamReader);
+            var responseString = await response.Content.ReadAsStringAsync();
 
             if (!response.IsSuccessStatusCode)
             {
-                var msg = GetErrorMessage(jsonTextReader);
-                throw new RemoteServiceException(RemoteApiDescription, response.StatusCode, msg);
+                throw new RemoteServiceException(RemoteApiDescription, response.StatusCode, GetErrorMessage(responseString));
             }
 
-            return _jsonSerializer.Deserialize<TResponse>(jsonTextReader);
+            return Serializer.Deserialize<TResponse>(responseString);
         }
     }
 }

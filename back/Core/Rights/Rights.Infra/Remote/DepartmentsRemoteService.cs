@@ -1,4 +1,3 @@
-using Newtonsoft.Json;
 using Partenaires.Infra.Services;
 using Rights.Infra.Models;
 using System.Collections.Generic;
@@ -10,8 +9,7 @@ namespace Rights.Infra.Remote
 {
     public class DepartmentsRemoteService : PartenairesService
     {
-        public DepartmentsRemoteService(HttpClient httpClient, JsonSerializer jsonSerializer)
-            : base(httpClient, jsonSerializer)
+        public DepartmentsRemoteService(HttpClient httpClient) : base(httpClient)
         { }
 
         protected override string RemoteApiDescription => "Partenaires departments";

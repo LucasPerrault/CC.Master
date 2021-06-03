@@ -1,8 +1,6 @@
 ﻿using Instances.Domain.Instances;
 using Instances.Domain.Instances.Models;
-using Newtonsoft.Json;
 using Remote.Infra.Services;
-using System;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -14,7 +12,7 @@ namespace Instances.Infra.Instances.Services
 
         protected override string RemoteApiDescription => "Legacy cloudcontrol instances api";
 
-        public InstancesRemoteStore(HttpClient httpClient, JsonSerializer jsonSerializer) : base(httpClient, jsonSerializer)
+        public InstancesRemoteStore(HttpClient httpClient) : base(httpClient)
         { }
 
         private class CreateForDemoDto

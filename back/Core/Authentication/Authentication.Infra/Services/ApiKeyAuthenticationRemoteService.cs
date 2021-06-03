@@ -1,7 +1,6 @@
 ﻿using Authentication.Domain;
 using Authentication.Infra.DTOs;
 using Cache.Abstractions;
-using Newtonsoft.Json;
 using Remote.Infra.Services;
 using System;
 using System.Collections.Generic;
@@ -26,12 +25,7 @@ namespace Authentication.Infra.Services
         private readonly ApiKeyInMemoryCache _cache;
         protected override string RemoteApiDescription => "Partenaires";
 
-        public ApiKeyAuthenticationRemoteService
-        (
-            HttpClient httpClient,
-            JsonSerializer jsonSerializer,
-            ApiKeyInMemoryCache cache
-        ) : base(httpClient, jsonSerializer)
+        public ApiKeyAuthenticationRemoteService(HttpClient httpClient, ApiKeyInMemoryCache cache) : base(httpClient)
         {
             _cache = cache;
         }

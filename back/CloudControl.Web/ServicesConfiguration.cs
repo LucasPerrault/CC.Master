@@ -31,7 +31,6 @@ using Microsoft.AspNetCore.Localization;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Newtonsoft.Json;
 using Proxy.Web;
 using Remote.Infra;
 using Rights.Web;
@@ -41,6 +40,7 @@ using Storage.Web;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Text.Encodings.Web;
 using System.Text.Json.Serialization;
 using TeamNotification.Web;
 using Tools.Web;
@@ -118,7 +118,6 @@ namespace CloudControl.Web
         public virtual void ConfigureHttpContext(IServiceCollection services)
         {
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
-            services.AddSingleton<JsonSerializer>();
         }
 
         public virtual void ConfigureHealthCheck(IServiceCollection services, AppConfiguration configuration)
@@ -150,13 +149,25 @@ namespace CloudControl.Web
                     .AddEntityFrameworkQuerying()
                     .ConfigureLuccaApiForInstances();
             });
-            services.AddMvc().AddLuccaApi(o =>
-            {
-                o.ShouldIncludeFullExceptionDetails = _hostingEnvironment.IsDevelopment();
-            })
-            .AddMvcOptions(
-                options => options.Filters.Add<HandleDomainExceptionsFilter>()
-            ).AddNewtonsoftJson();
+            services.AddMvc().AddLuccaApi
+                (
+                    o =>
+                    {
+                        o.ShouldIncludeFullExceptionDetails = _hostingEnvironment.IsDevelopment();
+                    }
+                )
+                .AddMvcOptions(options => options.Filters.Add<HandleDomainExceptionsFilter>())
+                // this json config affects mvc auto serialization
+                // but does not affect our own use of JsonSerializer
+                // and we'll still need to specify case insensitivity manually
+                .AddJsonOptions
+                (
+                    o =>
+                    {
+                        o.JsonSerializerOptions.PropertyNameCaseInsensitive = true;
+                        o.JsonSerializerOptions.Encoder = JavaScriptEncoder.Default;
+                    }
+                );
         }
 
         public virtual void ConfigureCache(IServiceCollection services, AppConfiguration configuration)

@@ -9,6 +9,7 @@ using System.Net.Http;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
+using Tools;
 
 namespace Instances.Infra.CodeSources
 {
@@ -52,10 +53,7 @@ namespace Instances.Infra.CodeSources
         public async Task<IEnumerable<CodeSource>> FetchAsync(string repoUrl)
         {
             var productionFileAsString = await _githubService.GetFileContentAsync(repoUrl, CodeSourceConfigFilePath);
-            var productionFile = JsonSerializer.Deserialize<ContinuousDeploymentProductionFile>(productionFileAsString, new JsonSerializerOptions
-            {
-                PropertyNameCaseInsensitive = true
-            });
+            var productionFile = Serializer.Deserialize<ContinuousDeploymentProductionFile>(productionFileAsString);
 
             return await CreateCodeSourcesFromFetchedAppsAsync(productionFile.Apps, repoUrl);
         }

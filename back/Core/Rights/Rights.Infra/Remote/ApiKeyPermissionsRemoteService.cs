@@ -1,5 +1,4 @@
 using Authentication.Domain;
-using Newtonsoft.Json;
 using Partenaires.Infra.Services;
 using Rights.Infra.Models;
 using Rights.Infra.Services;
@@ -17,9 +16,7 @@ namespace Rights.Infra.Remote
         private readonly ClaimsPrincipal _claimsPrincipal;
         protected override string RemoteApiDescription => "Partenaires api keys";
 
-        public ApiKeyPermissionsRemoteService
-            (HttpClient httpClient, JsonSerializer jsonSerializer, ClaimsPrincipal claimsPrincipal)
-            : base(httpClient, jsonSerializer)
+        public ApiKeyPermissionsRemoteService(HttpClient httpClient, ClaimsPrincipal claimsPrincipal) : base(httpClient)
         {
             _claimsPrincipal = claimsPrincipal;
         }

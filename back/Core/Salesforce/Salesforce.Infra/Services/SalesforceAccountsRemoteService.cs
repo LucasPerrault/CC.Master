@@ -1,11 +1,11 @@
-﻿using Newtonsoft.Json;
-using Remote.Infra.Services;
+﻿using Remote.Infra.Services;
 using Salesforce.Domain.Interfaces;
 using Salesforce.Domain.Models;
 using Salesforce.Infra.DTOs;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
+using Tools;
 
 namespace Salesforce.Infra.Services
 {
@@ -13,8 +13,7 @@ namespace Salesforce.Infra.Services
     {
         protected override string RemoteApiDescription => "Salesforce Service";
 
-        public SalesforceAccountsRemoteService(HttpClient httpClient, JsonSerializer jsonSerializer)
-            : base(httpClient, jsonSerializer)
+        public SalesforceAccountsRemoteService(HttpClient httpClient) : base(httpClient)
         { }
 
         public Task UpdateAccountAsync(string clientSalesforceId, SalesforceAccount account)
@@ -23,9 +22,9 @@ namespace Salesforce.Infra.Services
             return PutGenericObjectResponseAsync<SalesforceAccount, SalesforceAccount>(clientSalesforceId, account, queryParams);
         }
 
-        protected override string GetErrorMessage(JsonTextReader jsonTextReader)
+        protected override string GetErrorMessage(string s)
         {
-            var error = _jsonSerializer.Deserialize<SalesforceErrorDto>(jsonTextReader);
+            var error = Serializer.Deserialize<SalesforceErrorDto>(s);
             return error?.Message;
         }
     }
