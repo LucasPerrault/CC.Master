@@ -15,6 +15,8 @@ namespace Billing.Cmrr.Domain
         public ContractEndReason EndReason { get; set; }
 
         public int ClientId { get; set; }
+        public string ClientName { get; set; }
+
         public string DistributorId { get; set; }
 
         public int EnvironmentId { get; set; }
