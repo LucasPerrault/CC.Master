@@ -46,8 +46,7 @@ namespace Billing.Cmrr.Application
             return axis switch
             {
                 CmrrAxis.Product => p => new List<Breakdown>(1) { new Breakdown { AxisSection = new AxisSection { Id = p.FamilyId, Name = p.Family.Name }, Ratio = 1 } },
-                CmrrAxis.Solution => p => GetSolutionBreakdowns(p),
-                CmrrAxis.BusinessUnit => p => GetBusinessUnitBreakdowns(p),
+                CmrrAxis.BusinessUnit => GetBusinessUnitBreakdowns,
                 _ => throw new BadRequestException($"Axis {axis} has no corresponding breakdowns")
             };
         }
