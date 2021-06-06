@@ -146,8 +146,8 @@ namespace Billing.Cmrr.Application.Tests
 
             var section = cmrrContractSituations.Sections.First(s => s.Name == family.Name);
 
-            section.TotalFrom.Should().Be(startCmrrCounts.Sum(c => c.EuroTotal));
-            section.TotalTo.Should().Be(endCmrrCounts.Sum(c => c.EuroTotal));
+            section.TotalFrom.Amount.Should().Be(startCmrrCounts.Sum(c => c.EuroTotal));
+            section.TotalTo.Amount.Should().Be(endCmrrCounts.Sum(c => c.EuroTotal));
 
             var startCountForContract10 = startCmrrCounts.First(c => c.ContractId == 10);
             var endCountForContract10 = endCmrrCounts.First(c => c.ContractId == 10);
