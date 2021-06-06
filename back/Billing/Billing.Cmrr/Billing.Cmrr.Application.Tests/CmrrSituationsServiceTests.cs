@@ -141,10 +141,10 @@ namespace Billing.Cmrr.Application.Tests
             var cmrrContractSituations = await sut.GetSituationAsync(situationFilter);
 
             // Assert
-            cmrrContractSituations.Sections.Should().NotBeNullOrEmpty();
-            cmrrContractSituations.Sections.Should().HaveCount(1);
+            cmrrContractSituations.Lines.Should().NotBeNullOrEmpty();
+            cmrrContractSituations.Lines.Should().HaveCount(1);
 
-            var section = cmrrContractSituations.Sections.First(s => s.Name == family.Name);
+            var section = cmrrContractSituations.Lines.First(s => s.Section.Name == family.Name).Section;
 
             section.TotalFrom.Amount.Should().Be(startCmrrCounts.Sum(c => c.EuroTotal));
             section.TotalTo.Amount.Should().Be(endCmrrCounts.Sum(c => c.EuroTotal));
@@ -209,7 +209,7 @@ namespace Billing.Cmrr.Application.Tests
 
             // Assert
             cmrrContractSituations.Should().NotBeNull();
-            cmrrContractSituations.Sections.Should().BeNullOrEmpty();
+            cmrrContractSituations.Lines.Should().BeNullOrEmpty();
         }
 
         [Fact]
@@ -285,10 +285,10 @@ namespace Billing.Cmrr.Application.Tests
             var cmrrContractSituations = await sut.GetSituationAsync(situationFilter);
 
             // Assert
-            cmrrContractSituations.Sections.Should().NotBeNullOrEmpty();
-            cmrrContractSituations.Sections.Should().HaveCount(1);
+            cmrrContractSituations.Lines.Should().NotBeNullOrEmpty();
+            cmrrContractSituations.Lines.Should().HaveCount(1);
 
-            var section = cmrrContractSituations.Sections.First(s => s.Name == family.Name);
+            var section = cmrrContractSituations.Lines.First(s => s.Section.Name == family.Name).Section;
 
             section.Termination.Top.Should().NotContain(c => c.ContractSituation.ContractId == 11);
             section.Retraction.Top.Should().NotContain(c => c.ContractSituation.ContractId == 11);
@@ -371,10 +371,10 @@ namespace Billing.Cmrr.Application.Tests
             var cmrrContractSituations = await sut.GetSituationAsync(situationFilter);
 
             // Assert
-            cmrrContractSituations.Sections.Should().NotBeNullOrEmpty();
-            cmrrContractSituations.Sections.Should().HaveCount(1);
+            cmrrContractSituations.Lines.Should().NotBeNullOrEmpty();
+            cmrrContractSituations.Lines.Should().HaveCount(1);
 
-            var section = cmrrContractSituations.Sections.First(s => s.Name == family.Name);
+            var section = cmrrContractSituations.Lines.First(s => s.Section.Name == family.Name).Section;
 
             section.Termination.Top.Should().NotContain(c => c.ContractSituation.ContractId == 11);
             section.Retraction.Top.Should().NotContain(c => c.ContractSituation.ContractId == 11);

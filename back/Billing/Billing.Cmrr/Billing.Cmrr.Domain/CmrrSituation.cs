@@ -10,7 +10,18 @@ namespace Billing.Cmrr.Domain
         public DateTime EndPeriod { get; set; }
 
         public CmrrAxis Axis { get; set; }
-        public List<CmrrAxisSection> Sections { get; set; }
+        public List<CmrrLine> Lines { get; set; }
+    }
+
+    public class CmrrLine
+    {
+        public CmrrAxisSection Section { get; }
+        public Dictionary<string, CmrrAxisSection> SubSections { get; } = new Dictionary<string, CmrrAxisSection>();
+
+        public CmrrLine(string name)
+        {
+            Section = new CmrrAxisSection(name);
+        }
     }
 
     public class CmrrAxisSection
@@ -63,6 +74,7 @@ namespace Billing.Cmrr.Domain
     {
         public AxisSection AxisSection { get; set; }
         public decimal Ratio { get; set; }
+        public string SubSection { get; set; }
     }
 
     public class AxisSection : ValueObject

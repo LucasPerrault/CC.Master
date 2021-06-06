@@ -24,10 +24,10 @@ namespace Billing.Cmrr.Application
 
         public async Task<CmrrSituation> GetSituationAsync(CmrrSituationFilter situationFilter)
         {
-            var sections = await GetSectionsAsync(situationFilter);
+            var lines = await GetLinesAsync(situationFilter);
             var situation = new CmrrSituation
             {
-                Sections = sections,
+                Lines = lines,
                 Axis = situationFilter.Axis,
                 StartPeriod = situationFilter.StartPeriod,
                 EndPeriod = situationFilter.EndPeriod
@@ -36,13 +36,13 @@ namespace Billing.Cmrr.Application
             return situation;
         }
 
-        private async Task<List<CmrrAxisSection>> GetSectionsAsync(CmrrSituationFilter situationFilter)
+        private async Task<List<CmrrLine>> GetLinesAsync(CmrrSituationFilter situationFilter)
         {
             var contractSituations = await GetContractSituationsAsync(situationFilter);
 
             var orderedAnalyticSituations = await _analyticSituationsService.GetOrderedSituationsAsync(situationFilter.Axis, contractSituations);
 
-            return orderedAnalyticSituations.Select(group => GetCmrrAxisSection(group)).ToList();
+            return orderedAnalyticSituations.Select(GetCmrrLines).ToList();
         }
 
         private async Task<List<CmrrContractSituation>> GetContractSituationsAsync(CmrrSituationFilter situationFilter)
@@ -90,36 +90,45 @@ namespace Billing.Cmrr.Application
             }
         }
 
-        private CmrrAxisSection GetCmrrAxisSection(IGrouping<AxisSection, ContractAxisSectionSituation> group)
+        private CmrrLine GetCmrrLines(IGrouping<AxisSection, ContractAxisSectionSituation> group)
         {
-            var section = new CmrrAxisSection(group.Key.Name);
+            var line = new CmrrLine(group.Key.Name);
 
             foreach (var analyticSituation in group)
             {
-                switch (analyticSituation.ContractSituation.LifeCycle)
-                {
-                    case CmrrLifeCycle.Creation:
-                        UpdateCmrrAmount(section.Creation, analyticSituation, s => s.PartialDiff);
-                        break;
-                    case CmrrLifeCycle.Expansion:
-                        UpdateCmrrAmount(section.Expansion, analyticSituation, s => s.PartialDiff);
-                        break;
-                    case CmrrLifeCycle.Retraction:
-                        UpdateCmrrAmount(section.Retraction, analyticSituation, s => s.PartialDiff);
-                        break;
-                    case CmrrLifeCycle.Termination:
-                        UpdateCmrrAmount(section.Termination, analyticSituation, s => s.PartialDiff);
-                        break;
-                    case CmrrLifeCycle.Upsell:
-                        UpdateCmrrAmount(section.Upsell, analyticSituation, s => s.PartialDiff);
-                        break;
-                }
-
-                UpdateCmrrAmount(section.TotalFrom, analyticSituation, s => s.StartPeriodAmount);
-                UpdateCmrrAmount(section.TotalTo, analyticSituation, s => s.EndPeriodAmount);
+                Add(line.Section, analyticSituation);
+                var subSectionName = analyticSituation.Breakdown.SubSection;
+                line.SubSections.TryAdd(subSectionName, new CmrrAxisSection(subSectionName));
+                var subSection = line.SubSections[subSectionName];
+                Add(subSection, analyticSituation);
             }
 
-            return section;
+            return line;
+        }
+
+        private void Add(CmrrAxisSection section, ContractAxisSectionSituation situation)
+        {
+            switch (situation.ContractSituation.LifeCycle)
+            {
+                case CmrrLifeCycle.Creation:
+                    UpdateCmrrAmount(section.Creation, situation, s => s.PartialDiff);
+                    break;
+                case CmrrLifeCycle.Expansion:
+                    UpdateCmrrAmount(section.Expansion, situation, s => s.PartialDiff);
+                    break;
+                case CmrrLifeCycle.Retraction:
+                    UpdateCmrrAmount(section.Retraction, situation, s => s.PartialDiff);
+                    break;
+                case CmrrLifeCycle.Termination:
+                    UpdateCmrrAmount(section.Termination, situation, s => s.PartialDiff);
+                    break;
+                case CmrrLifeCycle.Upsell:
+                    UpdateCmrrAmount(section.Upsell, situation, s => s.PartialDiff);
+                    break;
+            }
+
+            UpdateCmrrAmount(section.TotalFrom, situation, s => s.StartPeriodAmount);
+            UpdateCmrrAmount(section.TotalTo, situation, s => s.EndPeriodAmount);
         }
 
         private void UpdateCmrrAmount(CmrrAmount amount, ContractAxisSectionSituation axisSectionSituation, Func<ContractAxisSectionSituation, decimal> amountFunc)

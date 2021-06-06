@@ -45,7 +45,7 @@ namespace Billing.Cmrr.Application
         {
             return axis switch
             {
-                CmrrAxis.Product => p => new List<Breakdown>(1) { new Breakdown { AxisSection = new AxisSection { Id = p.FamilyId, Name = p.Family.Name }, Ratio = 1 } },
+                CmrrAxis.Product => p => new List<Breakdown>(1) { new Breakdown { AxisSection = new AxisSection { Id = p.FamilyId, Name = p.Family.Name }, Ratio = 1, SubSection = p.Name } },
                 CmrrAxis.BusinessUnit => GetBusinessUnitBreakdowns,
                 _ => throw new BadRequestException($"Axis {axis} has no corresponding breakdowns")
             };
@@ -53,17 +53,8 @@ namespace Billing.Cmrr.Application
 
         private List<Breakdown> GetBusinessUnitBreakdowns(Product p)
         {
-            var shares = p.ProductSolutions.Select(ps => ps.Solution).Select(s => s.BusinessUnit)
-                .Select(bu => new BreakdownShare(new AxisSection { Id = bu.Id, Name = bu.Name }, 1))
-                .ToList();
-
-            return ToBreakdowns(shares).ToList();
-        }
-
-        private List<Breakdown> GetSolutionBreakdowns(Product p)
-        {
-            var shares = p.ProductSolutions
-                .Select(ps => new BreakdownShare(new AxisSection { Id = ps.SolutionId, Name = ps.Solution.Name }, 1))
+            var shares = p.ProductSolutions.Select(ps => ps.Solution)
+                .Select(s => new BreakdownShare(new AxisSection { Id = s.BusinessUnitId, Name = s.BusinessUnit.Name }, s.Name, 1))
                 .ToList();
 
             return ToBreakdowns(shares).ToList();
@@ -79,7 +70,7 @@ namespace Billing.Cmrr.Application
                 var breakdownShare = sharePerIds[i];
                 var ratio = breakdownShare.Share / sum;
                 ratioPartialSum += ratio;
-                yield return new Breakdown { AxisSection = breakdownShare.AxisSection, Ratio = ratio };
+                yield return new Breakdown { AxisSection = breakdownShare.AxisSection, Ratio = ratio, SubSection = breakdownShare.SubSection};
             }
 
             var lastBreakdownShare = sharePerIds.Last();
@@ -90,14 +81,17 @@ namespace Billing.Cmrr.Application
 
         private class BreakdownShare
         {
-            public AxisSection AxisSection { get; set; }
+            public AxisSection AxisSection { get; }
 
-            public int Share { get; set; }
+            public int Share { get; }
 
-            public BreakdownShare(AxisSection axisSection, int share)
+            public string SubSection { get; }
+
+            public BreakdownShare(AxisSection axisSection, string subSection, int share)
             {
                 AxisSection = axisSection;
                 Share = share;
+                SubSection = subSection;
             }
         }
     }
