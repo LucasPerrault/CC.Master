@@ -2,6 +2,7 @@ using Authentication.Domain;
 using Distributors.Domain.Models;
 using Environments.Domain;
 using Environments.Domain.Storage;
+using Lucca.Core.Shared.Domain.Exceptions;
 using Moq;
 using Rights.Domain;
 using Rights.Domain.Abstractions;
@@ -22,6 +23,18 @@ namespace Environments.Application.Tests
             _rightServiceMock
                 .Setup(s => s.GetScopedPermissionsAsync(Operation.ReadEnvironments))
                 .ReturnsAsync(new List<ScopedPermission>());
+        }
+
+        [Fact]
+        public async Task ShouldThrowWhenNotFound()
+        {
+            _envStoreMock
+                .Setup(e => e.GetAsync(It.IsAny<List<EnvironmentAccessRight>>(), It.IsAny<EnvironmentFilter>()))
+                .ReturnsAsync(new List<Environment>());
+
+            var repository = NewRepository();
+
+            await Assert.ThrowsAsync<NotFoundException>(() => repository.GetAccessesAsync("aperture-science"));
         }
 
         [Fact]
