@@ -134,8 +134,8 @@ namespace Billing.Cmrr.Application
         private void UpdateCmrrAmount(CmrrAmount amount, ContractAxisSectionSituation axisSectionSituation, Func<ContractAxisSectionSituation, decimal> amountFunc)
         {
             amount.Amount += amountFunc(axisSectionSituation);
-            if (amount.Top.Count < CmrrAmount.TopCount)
-                amount.Top.Add(axisSectionSituation);
+            if (amount.Top.Count < CmrrAmountTopElement.TopCount)
+                amount.Top.Add(CmrrAmountTopElement.FromSituation(axisSectionSituation));
         }
     }
 }

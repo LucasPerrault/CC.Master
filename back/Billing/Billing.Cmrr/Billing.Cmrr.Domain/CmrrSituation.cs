@@ -45,9 +45,70 @@ namespace Billing.Cmrr.Domain
 
     public class CmrrAmount
     {
-        public const int TopCount = 10;
         public decimal Amount { get; set; }
-        public List<ContractAxisSectionSituation> Top { get; } = new List<ContractAxisSectionSituation>();
+        public List<CmrrAmountTopElement> Top { get; } = new List<CmrrAmountTopElement>();
+    }
+
+    public class CmrrAmountTopElement
+    {
+        public const int TopCount = 10;
+        public Breakdown Breakdown { get; private set; }
+        public CmrrAmountTopElementContract Contract { get; private set; }
+        public CmrrAmountTopElementCount StartPeriodCount { get; private set; }
+        public CmrrAmountTopElementCount EndPeriodCount { get; private set; }
+
+        private CmrrAmountTopElement()
+        { }
+
+        public static CmrrAmountTopElement FromSituation(ContractAxisSectionSituation situation)
+        {
+            return new CmrrAmountTopElement
+            {
+                Breakdown = situation.Breakdown,
+                Contract = CmrrAmountTopElementContract.FromContract(situation.ContractSituation.Contract),
+                StartPeriodCount = CmrrAmountTopElementCount.FromCount(situation.ContractSituation.StartPeriodCount),
+                EndPeriodCount = CmrrAmountTopElementCount.FromCount(situation.ContractSituation.EndPeriodCount),
+            };
+        }
+    }
+
+    public class CmrrAmountTopElementCount
+    {
+        public int? Id { get; private set; }
+        public int AccountingNumber { get; private set; }
+
+        private CmrrAmountTopElementCount()
+        { }
+
+        public static CmrrAmountTopElementCount FromCount(CmrrCount count)
+        {
+            return new CmrrAmountTopElementCount
+            {
+                Id = count?.Id,
+                AccountingNumber = count?.AccountingNumber ?? 0,
+            };
+        }
+    }
+
+    public class CmrrAmountTopElementContract
+    {
+
+        public int Id { get; private set; }
+        public int ClientId { get; private set; }
+        public string ClientName { get; private set; }
+
+        private CmrrAmountTopElementContract()
+        { }
+
+        public static CmrrAmountTopElementContract FromContract(CmrrContract contract)
+        {
+            return new CmrrAmountTopElementContract
+            {
+                ClientName = contract.ClientName,
+                ClientId = contract.ClientId,
+                Id = contract.Id
+            };
+        }
     }
 
     public class ContractAxisSectionSituation

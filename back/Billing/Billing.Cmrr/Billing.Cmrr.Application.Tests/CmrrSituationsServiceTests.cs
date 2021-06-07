@@ -151,20 +151,20 @@ namespace Billing.Cmrr.Application.Tests
 
             var startCountForContract10 = startCmrrCounts.First(c => c.ContractId == 10);
             var endCountForContract10 = endCmrrCounts.First(c => c.ContractId == 10);
-            var cmrrContractSituation10 = section.Expansion.Top.First(c => c.ContractSituation.ContractId == 10);
+            var cmrrContractSituation10 = section.Expansion.Top.First(c => c.Contract.Id == 10);
 
             section.Expansion.Amount.Should().Be(endCountForContract10.EuroTotal - startCountForContract10.EuroTotal);
-            cmrrContractSituation10.ContractSituation.ContractId.Should().Be(10);
-            cmrrContractSituation10.ContractSituation.EndPeriodCount.Id.Should().Be(3);
-            cmrrContractSituation10.ContractSituation.StartPeriodCount.Id.Should().Be(1);
+            cmrrContractSituation10.Contract.Id.Should().Be(10);
+            cmrrContractSituation10.EndPeriodCount.Id.Should().Be(3);
+            cmrrContractSituation10.StartPeriodCount.Id.Should().Be(1);
 
             var startCountForContract11 = startCmrrCounts.First(c => c.ContractId == 11);
-            var cmrrContractSituation11 = section.Termination.Top.First(c => c.ContractSituation.ContractId == 11);
+            var cmrrContractSituation11 = section.Termination.Top.First(c => c.Contract.Id == 11);
 
             section.Termination.Amount.Should().Be(-startCountForContract11.EuroTotal);
-            cmrrContractSituation11.ContractSituation.ContractId.Should().Be(11);
-            cmrrContractSituation11.ContractSituation.EndPeriodCount.Should().BeNull();
-            cmrrContractSituation11.ContractSituation.StartPeriodCount.Id.Should().Be(2);
+            cmrrContractSituation11.Contract.Id.Should().Be(11);
+            cmrrContractSituation11.EndPeriodCount.Id.Should().BeNull();
+            cmrrContractSituation11.StartPeriodCount.Id.Should().Be(2);
         }
 
         [Fact]
@@ -290,11 +290,11 @@ namespace Billing.Cmrr.Application.Tests
 
             var section = cmrrContractSituations.Lines.First(s => s.Section.Name == family.Name).Section;
 
-            section.Termination.Top.Should().NotContain(c => c.ContractSituation.ContractId == 11);
-            section.Retraction.Top.Should().NotContain(c => c.ContractSituation.ContractId == 11);
-            section.Upsell.Top.Should().NotContain(c => c.ContractSituation.ContractId == 11);
-            section.Expansion.Top.Should().NotContain(c => c.ContractSituation.ContractId == 11);
-            section.Creation.Top.Should().NotContain(c => c.ContractSituation.ContractId == 11);
+            section.Termination.Top.Should().NotContain(c => c.Contract.Id == 11);
+            section.Retraction.Top.Should().NotContain(c => c.Contract.Id == 11);
+            section.Upsell.Top.Should().NotContain(c => c.Contract.Id == 11);
+            section.Expansion.Top.Should().NotContain(c => c.Contract.Id == 11);
+            section.Creation.Top.Should().NotContain(c => c.Contract.Id == 11);
         }
 
         [Fact]
@@ -376,11 +376,11 @@ namespace Billing.Cmrr.Application.Tests
 
             var section = cmrrContractSituations.Lines.First(s => s.Section.Name == family.Name).Section;
 
-            section.Termination.Top.Should().NotContain(c => c.ContractSituation.ContractId == 11);
-            section.Retraction.Top.Should().NotContain(c => c.ContractSituation.ContractId == 11);
-            section.Upsell.Top.Should().NotContain(c => c.ContractSituation.ContractId == 11);
-            section.Expansion.Top.Should().NotContain(c => c.ContractSituation.ContractId == 11);
-            section.Creation.Top.Should().NotContain(c => c.ContractSituation.ContractId == 11);
+            section.Termination.Top.Should().NotContain(c => c.Contract.Id == 11);
+            section.Retraction.Top.Should().NotContain(c => c.Contract.Id == 11);
+            section.Upsell.Top.Should().NotContain(c => c.Contract.Id == 11);
+            section.Expansion.Top.Should().NotContain(c => c.Contract.Id == 11);
+            section.Creation.Top.Should().NotContain(c => c.Contract.Id == 11);
         }
     }
 }
