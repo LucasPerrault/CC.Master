@@ -33,7 +33,7 @@ namespace Environments.Domain.Tests
                 {
                     FirstName = "Bernard",
                     LastName = "Martin",
-                    DepartmentCode = DepartmentCode
+                    DistributorCode = DepartmentCode
                 }
             });
 

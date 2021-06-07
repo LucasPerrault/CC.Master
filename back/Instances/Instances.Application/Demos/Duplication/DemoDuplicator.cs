@@ -120,7 +120,7 @@ namespace Instances.Application.Demos.Duplication
                 throw new ApplicationException("Unsupported claims principal type");
             }
 
-            if (user.User.DepartmentCode == request.DistributorCode)
+            if (user.User.DistributorCode == request.DistributorCode)
             {
                 return;
             }

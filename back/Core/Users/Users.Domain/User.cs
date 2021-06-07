@@ -12,8 +12,8 @@ namespace Users.Domain
         public string LastName { get; set; }
         public string Mail { get; set; }
         public string Login { get; set; }
-        public string DepartmentCode { get; set; }
-        public bool IsLuccaUser => DepartmentCode == LuccaDepartmentCode;
+        public string DistributorCode { get; set; }
+        public bool IsLuccaUser => DistributorCode == LuccaDepartmentCode;
         public int? ManagerId { get; set; }
         public int DepartmentId { get; set; }
         public int LegalEntityId { get; set; }

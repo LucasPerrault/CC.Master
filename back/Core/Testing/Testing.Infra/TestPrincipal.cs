@@ -23,7 +23,7 @@ namespace Testing.Infra
                 UserId = 1,
                 User = new User
                 {
-                    DepartmentCode = departmentCode,
+                    DistributorCode = departmentCode,
                     FirstName = "Jean",
                     LastName = "Bombeur",
                 }
