@@ -113,10 +113,10 @@ namespace Rights.Infra.Services
             {
                 CloudControlUserClaimsPrincipal userPrincipal =>
                     (await _permissionsStore.GetUserPermissionsAsync(userPrincipal.User.Id, RightsHelper.CloudControlAppInstanceId, operationsSet))
-                    .GroupBy(up => up.Scope.ToAccessRightScope())
+                    .GroupBy(up => up.Scope)
                     .Select(group => new ScopedPermission
                     {
-                        Scope = group.Key,
+                        Scope = group.Key.ToAccessRightScope(),
                         Operation = (Operation)group.First().OperationId,
                         EnvironmentPurposes = group.Select(up => up.ExternalEntityId).ToHashSet()
                     })
