@@ -96,7 +96,6 @@ namespace Billing.Cmrr.Application
 
             foreach (var analyticSituation in group)
             {
-                Add(line.Section, analyticSituation);
                 var subSectionName = analyticSituation.Breakdown.SubSection;
                 line.SubSections.TryAdd(subSectionName, new CmrrAxisSection(subSectionName));
                 var subSection = line.SubSections[subSectionName];

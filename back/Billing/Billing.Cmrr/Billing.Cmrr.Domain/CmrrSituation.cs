@@ -15,12 +15,12 @@ namespace Billing.Cmrr.Domain
 
     public class CmrrLine
     {
-        public CmrrAxisSection Section { get; }
+        public string Name { get; }
         public Dictionary<string, CmrrAxisSection> SubSections { get; } = new Dictionary<string, CmrrAxisSection>();
 
         public CmrrLine(string name)
         {
-            Section = new CmrrAxisSection(name);
+            Name = name;
         }
     }
 

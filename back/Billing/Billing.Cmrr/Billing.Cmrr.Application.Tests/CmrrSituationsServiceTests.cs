@@ -144,7 +144,9 @@ namespace Billing.Cmrr.Application.Tests
             cmrrContractSituations.Lines.Should().NotBeNullOrEmpty();
             cmrrContractSituations.Lines.Should().HaveCount(1);
 
-            var section = cmrrContractSituations.Lines.First(s => s.Section.Name == family.Name).Section;
+            var line = cmrrContractSituations.Lines.First(s => s.Name == family.Name);
+            Assert.Single(line.SubSections);
+            var section = line.SubSections.Single(s => s.Key == product.Name).Value;
 
             section.TotalFrom.Amount.Should().Be(startCmrrCounts.Sum(c => c.EuroTotal));
             section.TotalTo.Amount.Should().Be(endCmrrCounts.Sum(c => c.EuroTotal));
@@ -288,7 +290,9 @@ namespace Billing.Cmrr.Application.Tests
             cmrrContractSituations.Lines.Should().NotBeNullOrEmpty();
             cmrrContractSituations.Lines.Should().HaveCount(1);
 
-            var section = cmrrContractSituations.Lines.First(s => s.Section.Name == family.Name).Section;
+            var line = cmrrContractSituations.Lines.First(s => s.Name == family.Name);
+            Assert.Single(line.SubSections);
+            var section = line.SubSections.Single(s => s.Key == product.Name).Value;
 
             section.Termination.Top.Should().NotContain(c => c.Contract.Id == 11);
             section.Retraction.Top.Should().NotContain(c => c.Contract.Id == 11);
@@ -374,7 +378,9 @@ namespace Billing.Cmrr.Application.Tests
             cmrrContractSituations.Lines.Should().NotBeNullOrEmpty();
             cmrrContractSituations.Lines.Should().HaveCount(1);
 
-            var section = cmrrContractSituations.Lines.First(s => s.Section.Name == family.Name).Section;
+            var line = cmrrContractSituations.Lines.First(s => s.Name == family.Name);
+            Assert.Single(line.SubSections);
+            var section = line.SubSections.Single(s => s.Key == product.Name).Value;
 
             section.Termination.Top.Should().NotContain(c => c.Contract.Id == 11);
             section.Retraction.Top.Should().NotContain(c => c.Contract.Id == 11);
