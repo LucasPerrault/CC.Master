@@ -133,7 +133,8 @@ namespace Billing.Cmrr.Application.Tests
             var family = new ProductFamily { Id = 1, Name = "figgo family" };
             await _dbContext.AddAsync(family);
             await _dbContext.SaveChangesAsync();
-            var contractAxisSectionSituationsService = new ContractAxisSectionSituationsService(new ProductsStore(_dbContext));
+            var productStore = new ProductsStore(_dbContext);
+            var contractAxisSectionSituationsService = new ContractAxisSectionSituationsService(productStore, new BreakdownService(productStore));
 
             // Act
             var sut = new CmrrSituationsService(cmrrContractsStoreMock.Object, cmrrCountsStoreMock.Object, contractAxisSectionSituationsService);
@@ -202,7 +203,8 @@ namespace Billing.Cmrr.Application.Tests
             var family = new ProductFamily { Id = 1, Name = "figgo family" };
             await _dbContext.AddAsync(family);
             await _dbContext.SaveChangesAsync();
-            var contractAxisSectionSituationsService = new ContractAxisSectionSituationsService(new ProductsStore(_dbContext));
+            var productStore = new ProductsStore(_dbContext);
+            var contractAxisSectionSituationsService = new ContractAxisSectionSituationsService(productStore, new BreakdownService(productStore));
 
             // Act
             var sut = new CmrrSituationsService(cmrrContractsStoreMock.Object, cmrrCountsStoreMock.Object, contractAxisSectionSituationsService);
@@ -279,7 +281,8 @@ namespace Billing.Cmrr.Application.Tests
             var family = new ProductFamily { Id = 1, Name = "figgo family" };
             await _dbContext.AddAsync(family);
             await _dbContext.SaveChangesAsync();
-            var contractAxisSectionSituationsService = new ContractAxisSectionSituationsService(new ProductsStore(_dbContext));
+            var productStore = new ProductsStore(_dbContext);
+            var contractAxisSectionSituationsService = new ContractAxisSectionSituationsService(productStore, new BreakdownService(productStore));
 
             // Act
             var sut = new CmrrSituationsService(cmrrContractsStoreMock.Object, cmrrCountsStoreMock.Object, contractAxisSectionSituationsService);
@@ -367,7 +370,8 @@ namespace Billing.Cmrr.Application.Tests
             var family = new ProductFamily { Id = 1, Name = "figgo family" };
             await _dbContext.AddAsync(family);
             await _dbContext.SaveChangesAsync();
-            var contractAxisSectionSituationsService = new ContractAxisSectionSituationsService(new ProductsStore(_dbContext));
+            var productStore = new ProductsStore(_dbContext);
+            var contractAxisSectionSituationsService = new ContractAxisSectionSituationsService(productStore, new BreakdownService(productStore));
 
             // Act
             var sut = new CmrrSituationsService(cmrrContractsStoreMock.Object, cmrrCountsStoreMock.Object, contractAxisSectionSituationsService);

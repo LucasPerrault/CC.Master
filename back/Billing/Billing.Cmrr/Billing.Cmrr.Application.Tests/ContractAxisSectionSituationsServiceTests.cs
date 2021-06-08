@@ -3,11 +3,10 @@ using Billing.Products.Domain;
 using Billing.Products.Infra.Storage;
 using Billing.Products.Infra.Storage.Stores;
 using FluentAssertions;
-using Microsoft.EntityFrameworkCore;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Testing.Infra;
 using Xunit;
 
 namespace Billing.Cmrr.Application.Tests
@@ -18,11 +17,7 @@ namespace Billing.Cmrr.Application.Tests
 
         public ContractAxisSectionSituationsServiceTests()
         {
-            var options = new DbContextOptionsBuilder<ProductDbContext>()
-                               .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
-                               .Options;
-
-            _dbContext = new ProductDbContext(options);
+            _dbContext = InMemoryDbHelper.InitialiseDb<ProductDbContext>("products", o => new ProductDbContext(o));
         }
 
         [Fact]
@@ -62,8 +57,8 @@ namespace Billing.Cmrr.Application.Tests
                 new CmrrContractSituation(contract3, null, null),
             };
 
-
-            var sut = new ContractAxisSectionSituationsService(new ProductsStore(_dbContext));
+            var productStore = new ProductsStore(_dbContext);
+            var sut = new ContractAxisSectionSituationsService(productStore, new BreakdownService(productStore));
 
             var situations = (await sut.GetAxisSectionSituationsAsync(CmrrAxis.Product, contractSituations)).ToList();
 
@@ -128,8 +123,9 @@ namespace Billing.Cmrr.Application.Tests
                 new CmrrContractSituation(contract3, null, null),
             };
 
+            var productStore = new ProductsStore(_dbContext);
 
-            var sut = new ContractAxisSectionSituationsService(new ProductsStore(_dbContext));
+            var sut = new ContractAxisSectionSituationsService(productStore, new BreakdownService(productStore));
 
             var situations = (await sut.GetAxisSectionSituationsAsync(CmrrAxis.BusinessUnit, contractSituations)).ToList();
 
