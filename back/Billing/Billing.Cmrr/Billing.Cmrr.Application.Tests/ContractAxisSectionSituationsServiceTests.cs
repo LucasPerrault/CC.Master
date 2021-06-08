@@ -12,11 +12,11 @@ using Xunit;
 
 namespace Billing.Cmrr.Application.Tests
 {
-    public class ContractAnalyticSituationsServiceTests
+    public class ContractAxisSectionSituationsServiceTests
     {
         private readonly ProductDbContext _dbContext;
 
-        public ContractAnalyticSituationsServiceTests()
+        public ContractAxisSectionSituationsServiceTests()
         {
             var options = new DbContextOptionsBuilder<ProductDbContext>()
                                .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())

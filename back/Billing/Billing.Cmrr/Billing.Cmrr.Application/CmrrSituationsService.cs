@@ -41,14 +41,14 @@ namespace Billing.Cmrr.Application
         {
             var contractSituations = await GetContractSituationsAsync(situationFilter);
 
-            var orderedAnalyticSituations = await _axisSectionSituationsService
+            var axisSectionSituations = await _axisSectionSituationsService
                 .GetAxisSectionSituationsAsync(situationFilter.Axis, contractSituations);
 
-            var groupedAnalyticsSituations = orderedAnalyticSituations
-                .GroupBy(analyticSituation => analyticSituation.Breakdown.AxisSection)
+            var groupedSituations = axisSectionSituations
+                .GroupBy(situation => situation.Breakdown.AxisSection)
                 .ToDictionary(g => g.Key, g => g.ToList());
 
-            return groupedAnalyticsSituations.Select(a => GetCmrrLines(a.Key, a.Value)).ToList();
+            return groupedSituations.Select(a => GetCmrrLines(a.Key, a.Value)).ToList();
         }
 
         private async Task<List<CmrrContractSituation>> GetContractSituationsAsync(CmrrSituationFilter situationFilter)
