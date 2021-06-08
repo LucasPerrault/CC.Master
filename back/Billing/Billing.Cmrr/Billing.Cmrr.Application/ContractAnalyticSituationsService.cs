@@ -19,7 +19,7 @@ namespace Billing.Cmrr.Application
             _productsStore = productsStore;
         }
 
-        public async Task<IEnumerable<IGrouping<AxisSection, ContractAnalyticSituation>>> GetOrderedSituationsAsync(CmrrAxis axis, IEnumerable<CmrrContractSituation> contractSituation)
+        public async Task<IEnumerable<IGrouping<AxisSection, ContractAxisSectionSituation>>> GetOrderedSituationsAsync(CmrrAxis axis, IEnumerable<CmrrContractSituation> contractSituation)
         {
             var breakdowns = await GetBreakdownsPerProductIdAsync(axis);
 
@@ -29,9 +29,9 @@ namespace Billing.Cmrr.Application
                 .GroupBy(analyticSituation => analyticSituation.Breakdown.AxisSection);
         }
 
-        private IEnumerable<ContractAnalyticSituation> ToAnalyticSituations(CmrrContractSituation contractSituation, List<Breakdown> breakdowns)
+        private IEnumerable<ContractAxisSectionSituation> ToAnalyticSituations(CmrrContractSituation contractSituation, List<Breakdown> breakdowns)
         {
-            return breakdowns.Select(b => new ContractAnalyticSituation(b, contractSituation));
+            return breakdowns.Select(b => new ContractAxisSectionSituation(b, contractSituation));
         }
 
         private async Task<Dictionary<int, List<Breakdown>>> GetBreakdownsPerProductIdAsync(CmrrAxis axis)

@@ -22,8 +22,8 @@ namespace Billing.Cmrr.Domain
 
         public string Name { get; }
 
-        public decimal TotalFrom { get; set; }
-        public decimal TotalTo { get; set; }
+        public CmrrAmount TotalFrom { get; set; } = new CmrrAmount();
+        public CmrrAmount TotalTo { get; set; } = new CmrrAmount();
 
         public CmrrAmount Upsell { get; set; } = new CmrrAmount();
         public CmrrAmount Creation { get; set; } = new CmrrAmount();
@@ -36,22 +36,26 @@ namespace Billing.Cmrr.Domain
     {
         public const int TopCount = 10;
         public decimal Amount { get; set; }
-        public List<ContractAnalyticSituation> Top { get; set; } = new List<ContractAnalyticSituation>();
+        public List<ContractAxisSectionSituation> Top { get; } = new List<ContractAxisSectionSituation>();
     }
 
-    public class ContractAnalyticSituation
+    public class ContractAxisSectionSituation
     {
         public Breakdown Breakdown { get; }
         public CmrrContractSituation ContractSituation { get; }
 
-        public decimal PartialDiff { get; }
+        public decimal StartPeriodAmount { get; }
 
-        public ContractAnalyticSituation(Breakdown breakdown, CmrrContractSituation contractSituation)
+        public decimal EndPeriodAmount { get; }
+        public decimal PartialDiff => EndPeriodAmount - StartPeriodAmount;
+
+        public ContractAxisSectionSituation(Breakdown breakdown, CmrrContractSituation contractSituation)
         {
             Breakdown = breakdown;
             ContractSituation = contractSituation;
 
-            PartialDiff = breakdown.Ratio * ((contractSituation.EndPeriodCount?.EuroTotal ?? 0) - (contractSituation.StartPeriodCount?.EuroTotal ?? 0));
+            StartPeriodAmount = breakdown.Ratio * contractSituation.StartPeriodCount?.EuroTotal ?? 0;
+            EndPeriodAmount = breakdown.Ratio * contractSituation.EndPeriodCount?.EuroTotal ?? 0;
         }
     }
 
@@ -78,7 +82,6 @@ namespace Billing.Cmrr.Domain
             {
                 EqualityComponents = value;
             }
-            
         }
     }
 }

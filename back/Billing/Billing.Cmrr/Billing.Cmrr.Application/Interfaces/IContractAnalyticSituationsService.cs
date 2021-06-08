@@ -7,6 +7,6 @@ namespace Billing.Cmrr.Application.Interfaces
 {
     public interface IContractAnalyticSituationsService
     {
-        Task<IEnumerable<IGrouping<AxisSection, ContractAnalyticSituation>>> GetOrderedSituationsAsync(CmrrAxis axis, IEnumerable<CmrrContractSituation> contractSituation);
+        Task<IEnumerable<IGrouping<AxisSection, ContractAxisSectionSituation>>> GetOrderedSituationsAsync(CmrrAxis axis, IEnumerable<CmrrContractSituation> contractSituation);
     }
 }

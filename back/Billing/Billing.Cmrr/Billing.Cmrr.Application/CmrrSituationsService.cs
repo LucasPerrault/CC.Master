@@ -90,7 +90,7 @@ namespace Billing.Cmrr.Application
             }
         }
 
-        private CmrrAxisSection GetCmrrAxisSection(IGrouping<AxisSection, ContractAnalyticSituation> group)
+        private CmrrAxisSection GetCmrrAxisSection(IGrouping<AxisSection, ContractAxisSectionSituation> group)
         {
             var section = new CmrrAxisSection(group.Key.Name);
 
@@ -99,35 +99,34 @@ namespace Billing.Cmrr.Application
                 switch (analyticSituation.ContractSituation.LifeCycle)
                 {
                     case CmrrLifeCycle.Creation:
-                        UpdateCmrrAmount(section.Creation, analyticSituation);
+                        UpdateCmrrAmount(section.Creation, analyticSituation, s => s.PartialDiff);
                         break;
                     case CmrrLifeCycle.Expansion:
-                        UpdateCmrrAmount(section.Expansion, analyticSituation);
+                        UpdateCmrrAmount(section.Expansion, analyticSituation, s => s.PartialDiff);
                         break;
                     case CmrrLifeCycle.Retraction:
-                        UpdateCmrrAmount(section.Retraction, analyticSituation);
+                        UpdateCmrrAmount(section.Retraction, analyticSituation, s => s.PartialDiff);
                         break;
                     case CmrrLifeCycle.Termination:
-                        UpdateCmrrAmount(section.Termination, analyticSituation);
+                        UpdateCmrrAmount(section.Termination, analyticSituation, s => s.PartialDiff);
                         break;
                     case CmrrLifeCycle.Upsell:
-                        UpdateCmrrAmount(section.Upsell, analyticSituation);
+                        UpdateCmrrAmount(section.Upsell, analyticSituation, s => s.PartialDiff);
                         break;
                 }
 
-                section.TotalFrom += analyticSituation.ContractSituation.StartPeriodCount?.EuroTotal ?? 0;
-                section.TotalTo += analyticSituation.ContractSituation.EndPeriodCount?.EuroTotal ?? 0;
+                UpdateCmrrAmount(section.TotalFrom, analyticSituation, s => s.StartPeriodAmount);
+                UpdateCmrrAmount(section.TotalTo, analyticSituation, s => s.EndPeriodAmount);
             }
 
             return section;
         }
 
-        private void UpdateCmrrAmount(CmrrAmount amount, ContractAnalyticSituation analyticSituation)
+        private void UpdateCmrrAmount(CmrrAmount amount, ContractAxisSectionSituation axisSectionSituation, Func<ContractAxisSectionSituation, decimal> amountFunc)
         {
-            amount.Amount += analyticSituation.PartialDiff;
+            amount.Amount += amountFunc(axisSectionSituation);
             if (amount.Top.Count < CmrrAmount.TopCount)
-                amount.Top.Add(analyticSituation);
-
+                amount.Top.Add(axisSectionSituation);
         }
     }
 }

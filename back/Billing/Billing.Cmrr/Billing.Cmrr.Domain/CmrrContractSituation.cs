@@ -4,10 +4,8 @@ namespace Billing.Cmrr.Domain
     {
         public int ContractId { get; }
         public CmrrContract Contract { get; }
-
         public CmrrCount StartPeriodCount { get; }
         public CmrrCount EndPeriodCount { get; }
-
         public CmrrLifeCycle LifeCycle { get; }
 
         private const int MaxMonthDurationForUpsell = 6;

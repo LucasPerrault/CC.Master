@@ -32,7 +32,6 @@ namespace Billing.Cmrr.Domain
 
     public enum ContractEndReason
     {
-        EnCours = 0,
         Modification = 1,
         Resiliation = 2
     };
