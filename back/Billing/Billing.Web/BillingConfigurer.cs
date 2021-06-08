@@ -46,7 +46,7 @@ namespace Billing.Web
             services.AddScoped<ICmrrCountsStore, CmrrCountsStore>();
 
             services.AddScoped<ICmrrSituationsService, CmrrSituationsService>();
-            services.AddScoped<IContractAnalyticSituationsService, ContractAnalyticSituationsService>();
+            services.AddScoped<IContractAxisSectionSituationsService, ContractAxisSectionSituationsService>();
         }
 
         private static void ConfigureProduct(IServiceCollection services)

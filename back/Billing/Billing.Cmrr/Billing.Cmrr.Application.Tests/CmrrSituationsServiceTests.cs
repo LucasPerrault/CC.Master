@@ -133,7 +133,7 @@ namespace Billing.Cmrr.Application.Tests
             var family = new ProductFamily { Id = 1, Name = "figgo family" };
             await _dbContext.AddAsync(family);
             await _dbContext.SaveChangesAsync();
-            var contractAnalyticSituationsService = new ContractAnalyticSituationsService(new ProductsStore(_dbContext));
+            var contractAnalyticSituationsService = new ContractAxisSectionSituationsService(new ProductsStore(_dbContext));
 
             // Act
             var sut = new CmrrSituationsService(cmrrContractsStoreMock.Object, cmrrCountsStoreMock.Object, contractAnalyticSituationsService);
@@ -202,7 +202,7 @@ namespace Billing.Cmrr.Application.Tests
             var family = new ProductFamily { Id = 1, Name = "figgo family" };
             await _dbContext.AddAsync(family);
             await _dbContext.SaveChangesAsync();
-            var contractAnalyticSituationsService = new ContractAnalyticSituationsService(new ProductsStore(_dbContext));
+            var contractAnalyticSituationsService = new ContractAxisSectionSituationsService(new ProductsStore(_dbContext));
 
             // Act
             var sut = new CmrrSituationsService(cmrrContractsStoreMock.Object, cmrrCountsStoreMock.Object, contractAnalyticSituationsService);
@@ -279,7 +279,7 @@ namespace Billing.Cmrr.Application.Tests
             var family = new ProductFamily { Id = 1, Name = "figgo family" };
             await _dbContext.AddAsync(family);
             await _dbContext.SaveChangesAsync();
-            var contractAnalyticSituationsService = new ContractAnalyticSituationsService(new ProductsStore(_dbContext));
+            var contractAnalyticSituationsService = new ContractAxisSectionSituationsService(new ProductsStore(_dbContext));
 
             // Act
             var sut = new CmrrSituationsService(cmrrContractsStoreMock.Object, cmrrCountsStoreMock.Object, contractAnalyticSituationsService);
@@ -367,7 +367,7 @@ namespace Billing.Cmrr.Application.Tests
             var family = new ProductFamily { Id = 1, Name = "figgo family" };
             await _dbContext.AddAsync(family);
             await _dbContext.SaveChangesAsync();
-            var contractAnalyticSituationsService = new ContractAnalyticSituationsService(new ProductsStore(_dbContext));
+            var contractAnalyticSituationsService = new ContractAxisSectionSituationsService(new ProductsStore(_dbContext));
 
             // Act
             var sut = new CmrrSituationsService(cmrrContractsStoreMock.Object, cmrrCountsStoreMock.Object, contractAnalyticSituationsService);

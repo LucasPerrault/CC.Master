@@ -10,26 +10,24 @@ using System.Threading.Tasks;
 
 namespace Billing.Cmrr.Application
 {
-    public class ContractAnalyticSituationsService : IContractAnalyticSituationsService
+    public class ContractAxisSectionSituationsService : IContractAxisSectionSituationsService
     {
         private readonly IProductsStore _productsStore;
 
-        public ContractAnalyticSituationsService(IProductsStore productsStore)
+        public ContractAxisSectionSituationsService(IProductsStore productsStore)
         {
             _productsStore = productsStore;
         }
 
-        public async Task<IEnumerable<IGrouping<AxisSection, ContractAxisSectionSituation>>> GetOrderedSituationsAsync(CmrrAxis axis, IEnumerable<CmrrContractSituation> contractSituation)
+        public async Task<IEnumerable<ContractAxisSectionSituation>> GetAxisSectionSituationsAsync(CmrrAxis axis, IEnumerable<CmrrContractSituation> contractSituation)
         {
             var breakdowns = await GetBreakdownsPerProductIdAsync(axis);
 
             return contractSituation
-                .SelectMany(s => ToAnalyticSituations(s, breakdowns[s.Contract.ProductId]))
-                .OrderByDescending(s => s.PartialDiff)
-                .GroupBy(analyticSituation => analyticSituation.Breakdown.AxisSection);
+                .SelectMany(s => ToAxisSectionSituations(s, breakdowns[s.Contract.ProductId]));
         }
 
-        private IEnumerable<ContractAxisSectionSituation> ToAnalyticSituations(CmrrContractSituation contractSituation, List<Breakdown> breakdowns)
+        private IEnumerable<ContractAxisSectionSituation> ToAxisSectionSituations(CmrrContractSituation contractSituation, List<Breakdown> breakdowns)
         {
             return breakdowns.Select(b => new ContractAxisSectionSituation(b, contractSituation));
         }

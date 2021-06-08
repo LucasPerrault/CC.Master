@@ -12,14 +12,14 @@ namespace Billing.Cmrr.Application
     {
         private readonly ICmrrContractsStore _contractsStore;
         private readonly ICmrrCountsStore _countsStore;
-        private readonly IContractAnalyticSituationsService _analyticSituationsService;
+        private readonly IContractAxisSectionSituationsService _axisSectionSituationsService;
 
         private bool IsFirstDayOfMonth(DateTime date) => date.Day == 1;
-        public CmrrSituationsService(ICmrrContractsStore contractsStore, ICmrrCountsStore countsStore, IContractAnalyticSituationsService analyticSituationsService)
+        public CmrrSituationsService(ICmrrContractsStore contractsStore, ICmrrCountsStore countsStore, IContractAxisSectionSituationsService axisSectionSituationsService)
         {
             _contractsStore = contractsStore;
             _countsStore = countsStore;
-            _analyticSituationsService = analyticSituationsService;
+            _axisSectionSituationsService = axisSectionSituationsService;
         }
 
         public async Task<CmrrSituation> GetSituationAsync(CmrrSituationFilter situationFilter)
@@ -40,9 +40,14 @@ namespace Billing.Cmrr.Application
         {
             var contractSituations = await GetContractSituationsAsync(situationFilter);
 
-            var orderedAnalyticSituations = await _analyticSituationsService.GetOrderedSituationsAsync(situationFilter.Axis, contractSituations);
+            var orderedAnalyticSituations = await _axisSectionSituationsService
+                .GetAxisSectionSituationsAsync(situationFilter.Axis, contractSituations);
 
-            return orderedAnalyticSituations.Select(GetCmrrLines).ToList();
+            var groupedAnalyticsSituations = orderedAnalyticSituations
+                .OrderByDescending(s => s.PartialDiff)
+                .GroupBy(analyticSituation => analyticSituation.Breakdown.AxisSection);
+
+            return groupedAnalyticsSituations.Select(GetCmrrLines).ToList();
         }
 
         private async Task<List<CmrrContractSituation>> GetContractSituationsAsync(CmrrSituationFilter situationFilter)

@@ -63,13 +63,13 @@ namespace Billing.Cmrr.Application.Tests
             };
 
 
-            var sut = new ContractAnalyticSituationsService(new ProductsStore(_dbContext));
+            var sut = new ContractAxisSectionSituationsService(new ProductsStore(_dbContext));
 
-            var situations = await sut.GetOrderedSituationsAsync(CmrrAxis.Product, contractSituations);
+            var situations = (await sut.GetAxisSectionSituationsAsync(CmrrAxis.Product, contractSituations)).ToList();
 
-            situations.Should().HaveCount(2);
-            situations.First(s => s.Key.Name == family.Name).Should().HaveCount(2);
-            situations.First(s => s.Key.Name == family2.Name).Should().HaveCount(1);
+            situations.Should().HaveCount(3);
+            situations.Where(s => s.Breakdown.AxisSection.Name == family.Name).Should().HaveCount(2);
+            situations.Where(s => s.Breakdown.AxisSection.Name == family2.Name).Should().HaveCount(1);
         }
 
         [Fact]
@@ -129,13 +129,13 @@ namespace Billing.Cmrr.Application.Tests
             };
 
 
-            var sut = new ContractAnalyticSituationsService(new ProductsStore(_dbContext));
+            var sut = new ContractAxisSectionSituationsService(new ProductsStore(_dbContext));
 
-            var situations = await sut.GetOrderedSituationsAsync(CmrrAxis.BusinessUnit, contractSituations);
+            var situations = (await sut.GetAxisSectionSituationsAsync(CmrrAxis.BusinessUnit, contractSituations)).ToList();
 
-            situations.Should().HaveCount(2);
-            situations.First(s => s.Key.Name == businessUnit100.Name).Should().HaveCount(2);
-            situations.First(s => s.Key.Name == businessUnit101.Name).Should().HaveCount(1);
+            situations.Should().HaveCount(3);
+            situations.Where(s => s.Breakdown.AxisSection.Name == businessUnit100.Name).Should().HaveCount(2);
+            situations.Where(s => s.Breakdown.AxisSection.Name == businessUnit101.Name).Should().HaveCount(1);
         }
     }
 }
