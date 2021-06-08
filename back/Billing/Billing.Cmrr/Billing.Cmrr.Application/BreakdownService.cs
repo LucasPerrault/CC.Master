@@ -1,14 +1,19 @@
 ﻿using Billing.Cmrr.Domain;
 using Billing.Products.Domain;
 using Billing.Products.Domain.Interfaces;
-using Lucca.Core.Shared.Domain.Exceptions;
-using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Billing.Cmrr.Application
 {
-    public class BreakdownService
+    public interface IBreakdownService
+    {
+        Task<List<Breakdown>> GetAllBreakdownsAsync(CmrrAxis axis);
+    }
+
+    public class BreakdownService : IBreakdownService
     {
         private readonly IProductsStore _productsStore;
 
@@ -17,41 +22,69 @@ namespace Billing.Cmrr.Application
             _productsStore = productsStore;
         }
 
-        public Func<Product, List<Breakdown>> GetBreakdownsForProduct(CmrrAxis axis)
+        public async Task<List<Breakdown>> GetAllBreakdownsAsync(CmrrAxis axis)
+        {
+            var products = await _productsStore.GetNonFreeProductsAsync();
+
+            return products
+                .SelectMany(p => p.ProductSolutions)
+                .Select(ps => ToBreakdownShare(axis, ps))
+                .GroupBy(share => share.Product.Id)
+                .SelectMany(shares => ToBreakdowns(shares.ToList()))
+                .ToList();
+        }
+
+        private BreakdownShare ToBreakdownShare(CmrrAxis axis, ProductSolution ps)
         {
             return axis switch
             {
-                CmrrAxis.Product => p => new List<Breakdown>(1) { new Breakdown { AxisSection = new AxisSection { Id = p.FamilyId, Name = p.Family.Name }, Ratio = 1, SubSection = p.Name } },
-                CmrrAxis.BusinessUnit => GetBusinessUnitBreakdowns,
-                _ => throw new BadRequestException($"Axis {axis} has no corresponding breakdowns")
+                CmrrAxis.BusinessUnit => new BreakdownShare
+                (
+                    new AxisSection { Id = ps.Solution.BusinessUnitId, Name = ps.Solution.BusinessUnit.Name },
+                    ps.Product.Name,
+                    ps.Product,
+                    1
+                )
+                ,
+                CmrrAxis.Product =>  new BreakdownShare
+                (
+                    new AxisSection { Id = ps.Product.FamilyId, Name = ps.Product.Family.Name },
+                    ps.Solution.Name,
+                    ps.Product,
+                    1
+                ),
+                _ => throw new InvalidEnumArgumentException(nameof(axis), (int)axis, typeof(CmrrAxis))
             };
         }
-        private List<Breakdown> GetBusinessUnitBreakdowns(Product p)
-        {
-            var shares = p.ProductSolutions.Select(ps => ps.Solution)
-                .Select(s => new BreakdownShare(new AxisSection { Id = s.BusinessUnitId, Name = s.BusinessUnit.Name }, s.Name, 1))
-                .ToList();
 
-            return ToBreakdowns(shares).ToList();
-        }
-
-        private IEnumerable<Breakdown> ToBreakdowns(List<BreakdownShare> sharePerIds)
+        private IEnumerable<Breakdown> ToBreakdowns(List<BreakdownShare> shares)
         {
-            var sum = sharePerIds.Sum(s => s.Share);
+            decimal sum = shares.Sum(s => s.Share);
             var ratioPartialSum = 0m;
 
-            for (var i = 0; i < sharePerIds.Count - 1; i++)
+            for (var i = 0; i < shares.Count - 1; i++)
             {
-                var breakdownShare = sharePerIds[i];
+                var breakdownShare = shares[i];
                 var ratio = breakdownShare.Share / sum;
                 ratioPartialSum += ratio;
-                yield return new Breakdown { AxisSection = breakdownShare.AxisSection, Ratio = ratio, SubSection = breakdownShare.SubSection};
+                yield return new Breakdown
+                {
+                    AxisSection = breakdownShare.AxisSection,
+                    Ratio = ratio,
+                    ProductId = breakdownShare.Product.Id,
+                    SubSection = breakdownShare.SubSection
+                };
             }
 
-            var lastBreakdownShare = sharePerIds.Last();
+            var lastBreakdownShare = shares.Last();
 
-            yield return new Breakdown { AxisSection = lastBreakdownShare.AxisSection, Ratio = 1 - ratioPartialSum };
-
+            yield return new Breakdown
+            {
+                AxisSection = lastBreakdownShare.AxisSection,
+                Ratio = 1 - ratioPartialSum,
+                ProductId = lastBreakdownShare.Product.Id,
+                SubSection = lastBreakdownShare.SubSection
+            };
         }
 
         private class BreakdownShare
@@ -61,12 +94,14 @@ namespace Billing.Cmrr.Application
             public int Share { get; }
 
             public string SubSection { get; }
+            public Product Product { get; }
 
-            public BreakdownShare(AxisSection axisSection, string subSection, int share)
+            public BreakdownShare(AxisSection axisSection, string subSection, Product product, int share)
             {
                 AxisSection = axisSection;
                 Share = share;
                 SubSection = subSection;
+                Product = product;
             }
         }
     }

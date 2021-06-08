@@ -131,11 +131,27 @@ namespace Billing.Cmrr.Domain
         }
     }
 
-    public class Breakdown
+    public class Breakdown : ValueObject
     {
         public AxisSection AxisSection { get; set; }
+        public int ProductId { get; set; }
         public decimal Ratio { get; set; }
         public string SubSection { get; set; }
+
+        protected override IEnumerable<object> EqualityComponents
+        {
+            get
+            {
+                yield return AxisSection;
+                yield return Ratio;
+                yield return SubSection;
+                yield return ProductId;
+            }
+            set
+            {
+                EqualityComponents = value;
+            }
+        }
     }
 
     public class AxisSection : ValueObject

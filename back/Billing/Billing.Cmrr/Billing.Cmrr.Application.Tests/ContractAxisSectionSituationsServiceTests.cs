@@ -23,8 +23,26 @@ namespace Billing.Cmrr.Application.Tests
         [Fact]
         public async Task ShouldGetOrderedSituationsGroupedPerProductAsync()
         {
-            var product = new Product { Id = 1, Name = "figgo", FamilyId = 1 };
-            var product2 = new Product { Id = 2, Name = "cleemy", FamilyId = 2 };
+            var product = new Product
+            {
+                Id = 1,
+                Name = "figgo",
+                FamilyId = 1,
+                ProductSolutions = new List<ProductSolution>
+                {
+                    new ProductSolution { Solution = new Solution { Id = 10, Name = "Figgo"}}
+                }
+            };
+            var product2 = new Product
+            {
+                Id = 2,
+                Name = "cleemy",
+                FamilyId = 2,
+                ProductSolutions = new List<ProductSolution>
+                {
+                    new ProductSolution { Solution = new Solution { Id = 20, Name = "Cleemy"}}
+                }
+            };
             await _dbContext.AddAsync(product);
             await _dbContext.AddAsync(product2);
 
@@ -58,7 +76,7 @@ namespace Billing.Cmrr.Application.Tests
             };
 
             var productStore = new ProductsStore(_dbContext);
-            var sut = new ContractAxisSectionSituationsService(productStore, new BreakdownService(productStore));
+            var sut = new ContractAxisSectionSituationsService(new BreakdownService(productStore));
 
             var situations = (await sut.GetAxisSectionSituationsAsync(CmrrAxis.Product, contractSituations)).ToList();
 
@@ -125,7 +143,7 @@ namespace Billing.Cmrr.Application.Tests
 
             var productStore = new ProductsStore(_dbContext);
 
-            var sut = new ContractAxisSectionSituationsService(productStore, new BreakdownService(productStore));
+            var sut = new ContractAxisSectionSituationsService(new BreakdownService(productStore));
 
             var situations = (await sut.GetAxisSectionSituationsAsync(CmrrAxis.BusinessUnit, contractSituations)).ToList();
 
