@@ -103,7 +103,8 @@ namespace Billing.Cmrr.Application
             foreach (var situation in situations.OrderByDescending(s => s.PartialDiff))
             {
                 var subSection = GetSubSection(line, situation);
-                UpdateLifeCycleAmounts(subSection, situation, s => s.PartialDiff);
+                var amount = GetAmount(subSection, situation);
+                UpdateCmrrAmount(amount, situation, s => s.PartialDiff);
             }
 
             foreach (var situation in situations.OrderByDescending(s => s.StartPeriodAmount))
@@ -135,28 +136,17 @@ namespace Billing.Cmrr.Application
                 amount.Top.Add(CmrrAmountTopElement.FromSituation(axisSectionSituation));
         }
 
-        private void UpdateLifeCycleAmounts( CmrrAxisSection section, ContractAxisSectionSituation situation, Func<ContractAxisSectionSituation, decimal> amountFunc)
+        private CmrrAmount GetAmount(CmrrAxisSection section, ContractAxisSectionSituation situation)
         {
-            switch (situation.ContractSituation.LifeCycle)
+            return situation.ContractSituation.LifeCycle switch
             {
-                case CmrrLifeCycle.Creation:
-                    UpdateCmrrAmount(section.Creation, situation, amountFunc);
-                    break;
-                case CmrrLifeCycle.Expansion:
-                    UpdateCmrrAmount(section.Expansion, situation, amountFunc);
-                    break;
-                case CmrrLifeCycle.Retraction:
-                    UpdateCmrrAmount(section.Retraction, situation, amountFunc);
-                    break;
-                case CmrrLifeCycle.Termination:
-                    UpdateCmrrAmount(section.Termination, situation, amountFunc);
-                    break;
-                case CmrrLifeCycle.Upsell:
-                    UpdateCmrrAmount(section.Upsell, situation, amountFunc);
-                    break;
-                default:
-                    throw new InvalidEnumArgumentException(nameof(situation.ContractSituation.LifeCycle), (int)situation.ContractSituation.LifeCycle, typeof(CmrrLifeCycle));
-            }
+                CmrrLifeCycle.Creation => section.Creation,
+                CmrrLifeCycle.Expansion => section.Expansion,
+                CmrrLifeCycle.Retraction => section.Retraction,
+                CmrrLifeCycle.Termination => section.Termination,
+                CmrrLifeCycle.Upsell => section.Upsell,
+                _ => throw new InvalidEnumArgumentException(nameof(situation.ContractSituation.LifeCycle), (int)situation.ContractSituation.LifeCycle, typeof(CmrrLifeCycle))
+            };
         }
     }
 }
