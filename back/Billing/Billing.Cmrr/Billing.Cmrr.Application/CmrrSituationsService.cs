@@ -46,9 +46,11 @@ namespace Billing.Cmrr.Application
 
             var groupedSituations = axisSectionSituations
                 .GroupBy(situation => situation.Breakdown.AxisSection)
-                .ToDictionary(g => g.Key, g => g.ToList());
+                .OrderBy(section => section.Key.Order);
 
-            return groupedSituations.Select(a => GetCmrrLines(a.Key, a.Value)).ToList();
+            return groupedSituations
+                .Select(a => GetCmrrLines(a.Key, a.ToList()))
+                .ToList();
         }
 
         private async Task<List<CmrrContractSituation>> GetContractSituationsAsync(CmrrSituationFilter situationFilter)

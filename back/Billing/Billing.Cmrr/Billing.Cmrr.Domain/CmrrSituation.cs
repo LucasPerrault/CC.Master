@@ -1,3 +1,4 @@
+using Billing.Products.Domain;
 using System;
 using System.Collections.Generic;
 using Tools;
@@ -156,9 +157,9 @@ namespace Billing.Cmrr.Domain
 
     public class AxisSection : ValueObject
     {
-        public int Id { get; set; }
-
-        public string Name { get; set; }
+        public int Id { get; }
+        public string Name { get; }
+        public int Order { get; }
 
         protected override IEnumerable<object> EqualityComponents
         {
@@ -166,11 +167,22 @@ namespace Billing.Cmrr.Domain
             {
                 yield return Id;
                 yield return Name;
+                yield return Order;
             }
             set
             {
                 EqualityComponents = value;
             }
         }
+
+        private AxisSection(int id, string name, int order)
+        {
+            Id = id;
+            Name = name;
+            Order = order;
+        }
+
+        public static AxisSection ForBusinessUnit(BusinessUnit bu) => new AxisSection(bu.Id, bu.Name, bu.DisplayOrder);
+        public static AxisSection ForProductFamily(ProductFamily family) => new AxisSection(family.Id, family.Name, family.DisplayOrder);
     }
 }

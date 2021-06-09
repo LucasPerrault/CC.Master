@@ -61,6 +61,7 @@ namespace Billing.Products.Infra.Storage.Configurations
             builder.ToTable("BusinessUnits");
             builder.HasKey(p => p.Id);
             builder.Property(p => p.Name).HasColumnName("Name");
+            builder.Property(p => p.DisplayOrder).HasColumnName("DisplayOrder");
         }
     }
 
@@ -71,6 +72,7 @@ namespace Billing.Products.Infra.Storage.Configurations
             builder.ToTable("ProductFamilies");
             builder.HasKey(f => f.Id);
             builder.Property(f => f.Name).HasColumnName("Name");
+            builder.Property(p => p.DisplayOrder).HasColumnName("DisplayOrder");
         }
     }
 }

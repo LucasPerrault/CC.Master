@@ -40,14 +40,14 @@ namespace Billing.Cmrr.Application
             {
                 CmrrAxis.BusinessUnit => new BreakdownShare
                 (
-                    new AxisSection { Id = ps.Solution.BusinessUnitId, Name = ps.Solution.BusinessUnit.Name },
+                    AxisSection.ForBusinessUnit(ps.Solution.BusinessUnit),
                     ps.Product.Name,
                     ps.Product,
                     ps.Share
                 ),
                 CmrrAxis.Product =>  new BreakdownShare
                 (
-                    new AxisSection { Id = ps.Product.FamilyId, Name = ps.Product.Family.Name },
+                    AxisSection.ForProductFamily(ps.Product.Family),
                     ps.Solution.Name,
                     ps.Product,
                     ps.Share
@@ -89,9 +89,7 @@ namespace Billing.Cmrr.Application
         private class BreakdownShare
         {
             public AxisSection AxisSection { get; }
-
             public int Share { get; }
-
             public string SubSection { get; }
             public Product Product { get; }
 
