@@ -104,31 +104,31 @@ namespace Billing.Cmrr.Application
 
             foreach (var situation in situations.OrderByDescending(s => s.PartialDiff))
             {
-                var subSection = GetSubSection(line, situation);
-                var amount = GetAmount(subSection, situation);
+                var subLine = GetSubLine(line, situation);
+                var amount = GetAmount(subLine, situation);
                 UpdateCmrrAmount(amount, situation, s => s.PartialDiff);
             }
 
             foreach (var situation in situations.OrderByDescending(s => s.StartPeriodAmount))
             {
-                var subSection = GetSubSection(line, situation);
-                UpdateCmrrAmount(subSection.TotalFrom, situation, s => s.StartPeriodAmount);
+                var subLine = GetSubLine(line, situation);
+                UpdateCmrrAmount(subLine.TotalFrom, situation, s => s.StartPeriodAmount);
             }
 
             foreach (var situation in situations.OrderByDescending(s => s.EndPeriodAmount))
             {
-                var subSection = GetSubSection(line, situation);
-                UpdateCmrrAmount(subSection.TotalTo, situation, s => s.EndPeriodAmount);
+                var subLine = GetSubLine(line, situation);
+                UpdateCmrrAmount(subLine.TotalTo, situation, s => s.EndPeriodAmount);
             }
 
             return line;
         }
 
-        private CmrrAxisSection GetSubSection(CmrrLine line, ContractAxisSectionSituation situation)
+        private CmrrSubLine GetSubLine(CmrrLine line, ContractAxisSectionSituation situation)
         {
             var subSectionName = situation.Breakdown.SubSection;
-            line.SubSections.TryAdd(subSectionName, new CmrrAxisSection(subSectionName));
-            return line.SubSections[subSectionName];
+            line.SubLines.TryAdd(subSectionName, new CmrrSubLine(subSectionName));
+            return line.SubLines[subSectionName];
         }
 
         private void UpdateCmrrAmount(CmrrAmount amount, ContractAxisSectionSituation axisSectionSituation, Func<ContractAxisSectionSituation, decimal> amountFunc)
@@ -138,7 +138,7 @@ namespace Billing.Cmrr.Application
                 amount.Top.Add(CmrrAmountTopElement.FromSituation(axisSectionSituation));
         }
 
-        private CmrrAmount GetAmount(CmrrAxisSection section, ContractAxisSectionSituation situation)
+        private CmrrAmount GetAmount(CmrrSubLine section, ContractAxisSectionSituation situation)
         {
             return situation.ContractSituation.LifeCycle switch
             {

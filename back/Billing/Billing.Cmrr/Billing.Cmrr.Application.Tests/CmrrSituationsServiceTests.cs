@@ -155,8 +155,8 @@ namespace Billing.Cmrr.Application.Tests
             cmrrContractSituations.Lines.Should().HaveCount(1);
 
             var line = cmrrContractSituations.Lines.First(s => s.Name == family.Name);
-            Assert.Single(line.SubSections);
-            var section = line.SubSections.Single(s => s.Key == product.ProductSolutions.Single().Solution.Name).Value;
+            Assert.Single(line.SubLines);
+            var section = line.SubLines.Single(s => s.Key == product.ProductSolutions.Single().Solution.Name).Value;
 
             section.TotalFrom.Amount.Should().Be(startCmrrCounts.Sum(c => c.EuroTotal));
             section.TotalTo.Amount.Should().Be(endCmrrCounts.Sum(c => c.EuroTotal));
@@ -314,8 +314,8 @@ namespace Billing.Cmrr.Application.Tests
             cmrrContractSituations.Lines.Should().HaveCount(1);
 
             var line = cmrrContractSituations.Lines.First(s => s.Name == family.Name);
-            Assert.Single(line.SubSections);
-            var section = line.SubSections.Single(s => s.Key == product.ProductSolutions.Single().Solution.Name).Value;
+            Assert.Single(line.SubLines);
+            var section = line.SubLines.Single(s => s.Key == product.ProductSolutions.Single().Solution.Name).Value;
 
             section.Termination.Top.Should().NotContain(c => c.Contract.Id == 11);
             section.Retraction.Top.Should().NotContain(c => c.Contract.Id == 11);
@@ -412,8 +412,8 @@ namespace Billing.Cmrr.Application.Tests
             cmrrContractSituations.Lines.Should().HaveCount(1);
 
             var line = cmrrContractSituations.Lines.First(s => s.Name == family.Name);
-            Assert.Single(line.SubSections);
-            var section = line.SubSections.Single(s => s.Key == product.ProductSolutions.Single().Solution.Name).Value;
+            Assert.Single(line.SubLines);
+            var section = line.SubLines.Single(s => s.Key == product.ProductSolutions.Single().Solution.Name).Value;
 
             section.Termination.Top.Should().NotContain(c => c.Contract.Id == 11);
             section.Retraction.Top.Should().NotContain(c => c.Contract.Id == 11);

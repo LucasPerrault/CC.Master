@@ -17,7 +17,7 @@ namespace Billing.Cmrr.Domain
     public class CmrrLine
     {
         public string Name { get; }
-        public Dictionary<string, CmrrAxisSection> SubSections { get; } = new Dictionary<string, CmrrAxisSection>();
+        public Dictionary<string, CmrrSubLine> SubLines { get; } = new Dictionary<string, CmrrSubLine>();
 
         public CmrrLine(string name)
         {
@@ -25,9 +25,9 @@ namespace Billing.Cmrr.Domain
         }
     }
 
-    public class CmrrAxisSection
+    public class CmrrSubLine
     {
-        public CmrrAxisSection(string name)
+        public CmrrSubLine(string name)
         {
             Name = name;
         }
