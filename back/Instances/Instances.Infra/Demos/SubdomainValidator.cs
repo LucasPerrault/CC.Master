@@ -70,28 +70,47 @@ namespace Instances.Infra.Demos
 
         public async Task<bool> IsAvailableAsync(string subdomain)
         {
-            return
-                _environmentsStore.GetAll()
-                    .Where(e => e.IsActive)
-                    .All(e => e.Subdomain.ToLower() != subdomain)
-                && (await _demosStore.GetAsync(DemoFilter.Active(), AccessRight.All))
-                    .All(d => d.Subdomain.ToLower() != subdomain);
+            var envsTask = _environmentsStore.GetAsync
+            (
+                EnvironmentAccessRight.Everything,
+                new EnvironmentFilter
+                {
+                    IsActive = CompareBoolean.TrueOnly,
+                    Subdomain = CompareString.Equals(subdomain),
+                }
+            );
+
+            var demosTask = _demosStore.GetAsync(new DemoFilter
+            {
+                IsActive = CompareBoolean.TrueOnly,
+                Subdomain = CompareString.Equals(subdomain),
+            }, AccessRight.All);
+
+            return !(await envsTask).Any() && !(await demosTask).Any();
         }
 
         private async Task<HashSet<string>> GetUsedSubdomainsByPrefixAsync(string prefix)
         {
-            var usedSubdomainsEnvs = _environmentsStore.GetAll()
-                .Where(e => e.IsActive)
-                .Where(e => e.Subdomain.StartsWith(prefix))
-                .Select(e => e.Subdomain);
+            var envsWithSubdomain = await _environmentsStore
+                .GetAsync
+                (
+                    EnvironmentAccessRight.Everything,
+                    new EnvironmentFilter
+                    {
+                        IsActive = CompareBoolean.TrueOnly,
+                        Subdomain = CompareString.StartsWith(prefix)
+                    }
+                );
+
+            var usedSubdomainsEnvs = envsWithSubdomain.Select(e => e.Subdomain);
 
             var filter = new DemoFilter
             {
-                IsActive = BoolCombination.TrueOnly,
-                Search = prefix
+                IsActive = CompareBoolean.TrueOnly,
+                Search = prefix,
+                Subdomain = CompareString.StartsWith(prefix)
             };
             var usedSubdomainsDemos = (await _demosStore.GetAsync(filter, AccessRight.All))
-                .Where(d => d.Subdomain.StartsWith(prefix))
                 .Select(e => e.Subdomain);
 
             var usedSubdomains = usedSubdomainsEnvs.ToList();

@@ -39,6 +39,7 @@ using Storage.Web;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Text.Json.Serialization;
 using TeamNotification.Web;
 using Tools.Web;
 using Users.Infra.Storage;
@@ -135,7 +136,9 @@ namespace CloudControl.Web
 
         public virtual void ConfigureApi(IServiceCollection services)
         {
-            services.AddControllers();
+            services
+                .AddControllers()
+                .AddJsonOptions(o => o.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));
 
             services.AddLuccaApi(luccaApiBuilder =>
             {

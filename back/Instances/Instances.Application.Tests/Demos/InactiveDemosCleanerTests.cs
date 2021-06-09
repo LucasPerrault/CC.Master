@@ -72,9 +72,9 @@ namespace Instances.Application.Tests.Demos
             (
                 s => s.GetAsync
                 (
-                    It.Is<DemoFilter>(f => f.IsActive == BoolCombination.TrueOnly
-                        && f.IsTemplate == BoolCombination.FalseOnly
-                        && f.IsProtected == BoolCombination.FalseOnly
+                    It.Is<DemoFilter>(f => f.IsActive == CompareBoolean.TrueOnly
+                        && f.IsTemplate == CompareBoolean.FalseOnly
+                        && f.IsProtected == CompareBoolean.FalseOnly
                     ),
                     It.IsAny<AccessRight>()
                 ),
@@ -102,7 +102,7 @@ namespace Instances.Application.Tests.Demos
             _demosStoreMock
                 .Setup(s => s.GetAsync
                 (
-                    It.Is<DemoFilter>(d => d.IsActive == BoolCombination.TrueOnly),
+                    It.Is<DemoFilter>(d => d.IsActive == CompareBoolean.TrueOnly),
                     It.IsAny<AccessRight>()
                 ))
                 .ReturnsAsync(demos);
@@ -155,7 +155,7 @@ namespace Instances.Application.Tests.Demos
                 .Returns(new DateTime(2010, 02, 01));
 
             _demosStoreMock
-                .Setup(s => s.GetAsync(It.Is<DemoFilter>(f => f.IsActive == BoolCombination.TrueOnly), It.IsAny<AccessRight>()))
+                .Setup(s => s.GetAsync(It.Is<DemoFilter>(f => f.IsActive == CompareBoolean.TrueOnly), It.IsAny<AccessRight>()))
                 .ReturnsAsync(demos);
 
             var cleaner = new InactiveDemosCleaner
@@ -203,7 +203,7 @@ namespace Instances.Application.Tests.Demos
                 .Returns(new DateTime(2010, 03, 04));
 
             _demosStoreMock
-                .Setup(s => s.GetAsync(It.Is<DemoFilter>(f => f.IsActive == BoolCombination.TrueOnly), It.IsAny<AccessRight>()))
+                .Setup(s => s.GetAsync(It.Is<DemoFilter>(f => f.IsActive == CompareBoolean.TrueOnly), It.IsAny<AccessRight>()))
                 .ReturnsAsync(demos);
 
             var cleaner = new InactiveDemosCleaner
@@ -250,7 +250,7 @@ namespace Instances.Application.Tests.Demos
             _timeProviderMock.Setup(p => p.Today()).Returns(new DateTime(2010, 10, 01));
 
             _demosStoreMock
-                .Setup(s => s.GetAsync(It.Is<DemoFilter>(f => f.IsActive == BoolCombination.TrueOnly), It.IsAny<AccessRight>()))
+                .Setup(s => s.GetAsync(It.Is<DemoFilter>(f => f.IsActive == CompareBoolean.TrueOnly), It.IsAny<AccessRight>()))
                 .ReturnsAsync(demos);
 
             var cleaner = new InactiveDemosCleaner
@@ -290,7 +290,7 @@ namespace Instances.Application.Tests.Demos
             _timeProviderMock.Setup(p => p.Today()).Returns(new DateTime(2010, 10, 01));
 
             _demosStoreMock
-                .Setup(s => s.GetAsync(It.Is<DemoFilter>(f => f.IsActive == BoolCombination.TrueOnly), It.IsAny<AccessRight>()))
+                .Setup(s => s.GetAsync(It.Is<DemoFilter>(f => f.IsActive == CompareBoolean.TrueOnly), It.IsAny<AccessRight>()))
                 .ReturnsAsync(demos);
 
             var cleaner = new InactiveDemosCleaner
@@ -338,7 +338,7 @@ namespace Instances.Application.Tests.Demos
             _timeProviderMock.Setup(p => p.Today()).Returns(new DateTime(2010, 10, 01));
 
             _demosStoreMock
-                .Setup(s => s.GetAsync(It.Is<DemoFilter>(f => f.IsActive == BoolCombination.TrueOnly), It.IsAny<AccessRight>()))
+                .Setup(s => s.GetAsync(It.Is<DemoFilter>(f => f.IsActive == CompareBoolean.TrueOnly), It.IsAny<AccessRight>()))
                 .ReturnsAsync(demos);
 
             var cleaner = new InactiveDemosCleaner
@@ -393,7 +393,7 @@ namespace Instances.Application.Tests.Demos
             _timeProviderMock.Setup(p => p.Today()).Returns(new DateTime(2010, 10, 01));
 
             _demosStoreMock
-                .Setup(s => s.GetAsync(It.Is<DemoFilter>(f => f.IsActive == BoolCombination.TrueOnly), It.IsAny<AccessRight>()))
+                .Setup(s => s.GetAsync(It.Is<DemoFilter>(f => f.IsActive == CompareBoolean.TrueOnly), It.IsAny<AccessRight>()))
                 .ReturnsAsync(demos);
 
             var cleaner = new InactiveDemosCleaner

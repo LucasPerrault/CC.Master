@@ -10,10 +10,9 @@ namespace Environments.Web
     {
         public static void ConfigureEnvironments(IServiceCollection services)
         {
-            services.AddSingleton<IEnvironmentFilter, EnvironmentFilter>();
-
             services.AddScoped<IEnvironmentsStore, EnvironmentsStore>();
             services.AddScoped<EnvironmentsRepository>();
+            services.AddScoped<EnvironmentRightsFilter>();
         }
     }
 }

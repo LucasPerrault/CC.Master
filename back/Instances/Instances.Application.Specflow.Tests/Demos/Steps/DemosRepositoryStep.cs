@@ -37,7 +37,7 @@ namespace Instances.Application.Specflow.Tests.Demos.Steps
         {
             var demoFilter = new DemoFilter()
             {
-                IsTemplate = new HashSet<bool> { isTemplate }.ToBoolCombination(),
+                IsTemplate = new HashSet<bool> { isTemplate }.ToCompareBoolean(),
             };
             var demosRepository = GetNewRepository();
             var demoPage = await demosRepository.GetDemosAsync(null, demoFilter);
@@ -49,7 +49,7 @@ namespace Instances.Application.Specflow.Tests.Demos.Steps
         {
             var demoFilter = new DemoFilter()
             {
-                Subdomain = selection.Subdomain,
+                Subdomain = CompareString.Equals(selection.Subdomain),
             };
             var demosRepository = GetNewRepository();
             var demoPage = await demosRepository.GetDemosAsync(null, demoFilter);
@@ -105,7 +105,7 @@ namespace Instances.Application.Specflow.Tests.Demos.Steps
         {
             var demoFilter = new DemoFilter()
             {
-                IsActive = BoolCombination.TrueOnly,
+                IsActive = CompareBoolean.TrueOnly,
             };
             var demosRepository = GetNewRepository();
             var demoPage = await demosRepository.GetDemosAsync(null, demoFilter);

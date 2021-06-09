@@ -5,7 +5,6 @@ using Instances.Domain.Demos.Filtering;
 using Instances.Domain.Instances;
 using Instances.Domain.Instances.Models;
 using Instances.Domain.Shared;
-using Lucca.Core.Rights.Abstractions;
 using Moq;
 using Rights.Domain;
 using Rights.Domain.Abstractions;
@@ -51,7 +50,7 @@ namespace Instances.Application.Tests.Demos
 
             _rightsServiceMock
                 .Setup(s => s.GetUserOperationHighestScopeAsync(Operation.Demo))
-                .ReturnsAsync(Scope.AllDepartments);
+                .ReturnsAsync(AccessRightScope.AllDistributors);
 
             var demo = new Demo
             {

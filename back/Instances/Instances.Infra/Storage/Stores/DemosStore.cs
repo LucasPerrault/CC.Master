@@ -37,7 +37,7 @@ namespace Instances.Infra.Storage.Stores
 
         public Task<Demo> GetActiveByIdAsync(int id, AccessRight access)
         {
-            var isActiveFilter = new DemoFilter { IsActive = BoolCombination.TrueOnly };
+            var isActiveFilter = new DemoFilter { IsActive = CompareBoolean.TrueOnly };
 
             return Get(isActiveFilter, access)
                 .SingleOrDefaultAsync(d => d.Id == id);
@@ -117,8 +117,8 @@ namespace Instances.Infra.Storage.Stores
                 .Apply(filter.IsActive).To(d => d.IsActive)
                 .Apply(filter.IsProtected).To(d => d.Instance.IsProtected)
                 .Apply(filter.IsTemplate).To(d => d.IsTemplate)
+                .Apply(filter.Subdomain).To(d => d.Subdomain)
                 .WhenNotNullOrEmpty(filter.Search).ApplyWhere(d => d.Subdomain.Contains(filter.Search))
-                .WhenNotNullOrEmpty(filter.Subdomain).ApplyWhere(d => d.Subdomain == filter.Subdomain)
                 .WhenNotNullOrEmpty(filter.DistributorId).ApplyWhere(d => d.DistributorID == filter.DistributorId)
                 .WhenHasValue(filter.AuthorId).ApplyWhere(d => d.AuthorId == filter.AuthorId.Value);
         }

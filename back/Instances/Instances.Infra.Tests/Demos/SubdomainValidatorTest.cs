@@ -4,12 +4,10 @@ using Instances.Domain.Demos;
 using Instances.Domain.Demos.Filtering;
 using Instances.Infra.Demos;
 using Lucca.Core.Shared.Domain.Exceptions;
-using MockQueryable.Moq;
 using Moq;
 using Rights.Domain.Filtering;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Tools;
 using Xunit;
@@ -35,16 +33,12 @@ namespace Instances.Infra.Tests.Demos
         [InlineData("APERTURE-SCIENCE")]
         public async Task IsAvailableAsync_ShouldReturnTrue_WhenSubdomainIsNotTaken(string takenSubdomain)
         {
-
-            var envs = new List<Environment>
-            {
-                new Environment { Subdomain = takenSubdomain, IsActive = false}
-            };
-
             _demosStoreMock
-                .Setup(s => s.GetAsync(It.Is<DemoFilter>(d => d.IsActive == BoolCombination.TrueOnly), It.IsAny<AccessRight>()))
+                .Setup(s => s.GetAsync(It.Is<DemoFilter>(d => d.IsActive == CompareBoolean.TrueOnly), It.IsAny<AccessRight>()))
                 .ReturnsAsync(new List<Demo>());
-            _envStoreMock.Setup(s => s.GetAll()).Returns(envs.AsQueryable().BuildMock().Object);
+            _envStoreMock
+                .Setup(s => s.GetAsync(It.IsAny<List<EnvironmentAccessRight>>(), It.IsAny<EnvironmentFilter>()))
+                .ReturnsAsync(new List<Environment>());
             var subdomainValidator = new SubdomainValidator(_demosStoreMock.Object, _envStoreMock.Object);
 
             Assert.True(await subdomainValidator.IsAvailableAsync("aperture-science"));
@@ -59,9 +53,9 @@ namespace Instances.Infra.Tests.Demos
             var demos = new List<Demo> { new Demo { Subdomain = takenSubdomain } };
 
             _demosStoreMock
-                .Setup(s => s.GetAsync(It.Is<DemoFilter>(d => d.IsActive == BoolCombination.TrueOnly), It.IsAny<AccessRight>()))
+                .Setup(s => s.GetAsync(It.Is<DemoFilter>(d => d.IsActive == CompareBoolean.TrueOnly), It.IsAny<AccessRight>()))
                 .ReturnsAsync(demos);
-            _envStoreMock.Setup(s => s.GetAll()).Returns(new List<Environment>().AsQueryable().BuildMock().Object);
+            _envStoreMock.Setup(s => s.GetAsync(It.IsAny<List<EnvironmentAccessRight>>(), It.IsAny<EnvironmentFilter>())).ReturnsAsync(new List<Environment>());
             var subdomainValidator = new SubdomainValidator(_demosStoreMock.Object, _envStoreMock.Object);
 
             Assert.False(await subdomainValidator.IsAvailableAsync("aperture-science"));
@@ -79,10 +73,10 @@ namespace Instances.Infra.Tests.Demos
             };
 
             _demosStoreMock
-                .Setup(s => s.GetAsync(It.Is<DemoFilter>(d => d.IsActive == BoolCombination.TrueOnly), It.IsAny<AccessRight>()))
+                .Setup(s => s.GetAsync(It.Is<DemoFilter>(d => d.IsActive == CompareBoolean.TrueOnly), It.IsAny<AccessRight>()))
                 .ReturnsAsync(new List<Demo>());
 
-            _envStoreMock.Setup(s => s.GetAll()).Returns(envs.AsQueryable().BuildMock().Object);
+            _envStoreMock.Setup(s => s.GetAsync(It.IsAny<List<EnvironmentAccessRight>>(), It.IsAny<EnvironmentFilter>())).ReturnsAsync(envs);
             var subdomainValidator = new SubdomainValidator(_demosStoreMock.Object, _envStoreMock.Object);
 
             Assert.False(await subdomainValidator.IsAvailableAsync("aperture-science"));
@@ -141,8 +135,13 @@ namespace Instances.Infra.Tests.Demos
             }
 
             _demosStoreMock
-                .Setup(ds => ds.GetAsync(It.Is<DemoFilter>(d => d.IsActive == BoolCombination.TrueOnly), It.IsAny<AccessRight>()))
+                .Setup(ds => ds.GetAsync(It.Is<DemoFilter>(d => d.IsActive == CompareBoolean.TrueOnly), It.IsAny<AccessRight>()))
                 .ReturnsAsync(existingDemos);
+
+            _envStoreMock
+                .Setup(s => s.GetAsync(It.IsAny<List<EnvironmentAccessRight>>(), It.IsAny<EnvironmentFilter>()))
+                .ReturnsAsync(new List<Environment>());
+
 
             var subdomainValidator = new SubdomainValidator(_demosStoreMock.Object, _envStoreMock.Object);
             var availableSubdomain = await subdomainValidator.GetAvailableSubdomainByPrefixAsync(prefix);
@@ -167,10 +166,14 @@ namespace Instances.Infra.Tests.Demos
             }
             _demosStoreMock.Setup(ds => ds.GetAsync
                 (
-                    It.Is<DemoFilter>(d => d.IsActive == BoolCombination.TrueOnly),
+                    It.Is<DemoFilter>(d => d.IsActive == CompareBoolean.TrueOnly),
                     It.IsAny<AccessRight>()
                 ))
                 .ReturnsAsync(existingDemos);
+
+            _envStoreMock
+                .Setup(s => s.GetAsync(It.IsAny<List<EnvironmentAccessRight>>(), It.IsAny<EnvironmentFilter>()))
+                .ReturnsAsync(new List<Environment>());
 
             var subdomainValidator = new SubdomainValidator(_demosStoreMock.Object, _envStoreMock.Object);
             var availableSubdomain = await subdomainValidator.GetAvailableSubdomainByPrefixAsync(prefix);
