@@ -148,10 +148,6 @@ namespace Billing.Cmrr.Domain
                 yield return SubSection;
                 yield return ProductId;
             }
-            set
-            {
-                EqualityComponents = value;
-            }
         }
     }
 
@@ -168,10 +164,6 @@ namespace Billing.Cmrr.Domain
                 yield return Id;
                 yield return Name;
                 yield return Order;
-            }
-            set
-            {
-                EqualityComponents = value;
             }
         }
 

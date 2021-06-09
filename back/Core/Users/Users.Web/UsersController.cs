@@ -31,7 +31,7 @@ namespace Users.Web
         {
             return new UsersFilter
             {
-                IsActive = BoolCombination.TrueOnly,
+                IsActive = CompareBoolean.TrueOnly,
                 Search = query.Search
             };
         }

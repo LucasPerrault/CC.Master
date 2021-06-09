@@ -5,7 +5,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Lucca.Core.Rights.Abstractions" Version="6.1.1" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="3.1.12" />
   </ItemGroup>
 

@@ -39,7 +39,7 @@ namespace Users.Infra
                 LastName = user.LastName,
                 Mail = user.Mail,
                 Login = user.Login,
-                DepartmentCode = user.Department.Code,
+                DistributorCode = user.Department.Code,
                 ManagerId = user.ManagerId,
                 DepartmentId = user.DepartmentId,
                 LegalEntityId = user.LegalEntityId,

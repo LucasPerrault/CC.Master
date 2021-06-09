@@ -21,13 +21,13 @@ namespace Instances.Web
         {
             return new DemoFilter
             {
-                IsActive = IsActive.ToBoolCombination(),
+                IsActive = IsActive.ToCompareBoolean(),
                 Search = Search,
-                IsTemplate = IsTemplate.ToBoolCombination(),
+                IsTemplate = IsTemplate.ToCompareBoolean(),
                 DistributorId = DistributorId,
                 AuthorId = AuthorId,
-                Subdomain = Subdomain,
-                IsProtected = Instance?.IsProtected?.ToBoolCombination() ?? BoolCombination.Both,
+                Subdomain = string.IsNullOrEmpty(Subdomain)  ? CompareString.Bypass : CompareString.Equals(Subdomain),
+                IsProtected = Instance?.IsProtected?.ToCompareBoolean() ?? CompareBoolean.Bypass,
             };
         }
     }

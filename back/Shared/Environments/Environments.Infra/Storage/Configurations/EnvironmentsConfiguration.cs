@@ -9,7 +9,7 @@ namespace Environments.Infra.Storage.Configurations
     {
         public void Configure(EntityTypeBuilder<Environment> builder)
         {
-            builder.ToView("Environments", StorageSchemas.Shared.Value);
+            builder.ToTable("Environments", StorageSchemas.Shared.Value);
             builder.HasKey(d => d.Id);
             builder.Property(d => d.Subdomain).HasColumnName("Subdomain");
             builder.Property(d => d.Domain).HasColumnName("Domain");

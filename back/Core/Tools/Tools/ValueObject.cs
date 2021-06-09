@@ -1,5 +1,4 @@
-using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 
 namespace Tools
@@ -20,7 +19,7 @@ namespace Tools
             return !(EqualOperator(left, right));
         }
 
-        protected abstract IEnumerable<object> EqualityComponents { get; set; }
+        protected abstract IEnumerable<object> EqualityComponents { get; }
 
         public override bool Equals(object obj)
         {

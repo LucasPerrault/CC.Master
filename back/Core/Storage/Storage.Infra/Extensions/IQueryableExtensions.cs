@@ -14,16 +14,16 @@ namespace Storage.Infra.Extensions
 
         public static IConditionalQueryableBuilder<T> When<T>(this IQueryable<T> query, bool condition) =>
             condition
-                ? (IConditionalQueryableBuilder<T>)new ConditionalQueryableBuilder<T>(query)
+                ? (IConditionalQueryableBuilder<T>)new CompareQueryableBuilder<T>(query)
                 : new BypassApplyQueryableBuilder<T>(query);
 
-        public static IConditionalBoolQueryableBuilder<T> Apply<T>(this IQueryable<T> query, BoolCombination boolCombination) =>
-            boolCombination switch
+        public static ICompareBoolQueryableBuilder<T> Apply<T>(this IQueryable<T> query, CompareBoolean compareBoolean) =>
+            compareBoolean switch
             {
-                BoolCombination.Both => new BypassApplyQueryableBuilder<T>(query),
-                BoolCombination.TrueOnly => new ConditionalQueryableBuilder<T>(query),
-                BoolCombination.FalseOnly => new InverseConditionalQueryableBuilder<T>(query),
-                _ => throw new ApplicationException($"Could not get querying strategy for boolCombination {boolCombination}")
+                CompareBoolean.Bypass => new BypassApplyQueryableBuilder<T>(query),
+                CompareBoolean.TrueOnly => new CompareQueryableBuilder<T>(query),
+                CompareBoolean.FalseOnly => new InverseCompareQueryableBuilder<T>(query),
+                _ => throw new ApplicationException($"Could not get querying strategy for CompareBoolean {compareBoolean}")
             };
 
         public static IConditionalQueryableBuilder<T> WhenNotNullOrEmpty<T>(this IQueryable<T> query, string s) =>
@@ -37,14 +37,14 @@ namespace Storage.Infra.Extensions
             IQueryable<T> ApplyWhere(Expression<Func<T, bool>> expression);
         }
 
-        public interface IConditionalBoolQueryableBuilder<T>
+        public interface ICompareBoolQueryableBuilder<T>
         {
             IQueryable<T> To(Expression<Func<T, bool>> expression);
         }
 
         private class BypassApplyQueryableBuilder<T> :
             IConditionalQueryableBuilder<T>,
-            IConditionalBoolQueryableBuilder<T>
+            ICompareBoolQueryableBuilder<T>
         {
             private readonly IQueryable<T> _query;
             public BypassApplyQueryableBuilder(IQueryable<T> query) => _query = query;
@@ -52,22 +52,22 @@ namespace Storage.Infra.Extensions
             public IQueryable<T> To(Expression<Func<T, bool>> expression) => ApplyWhere(expression);
         }
 
-        private class ConditionalQueryableBuilder<T> :
+        private class CompareQueryableBuilder<T> :
             IConditionalQueryableBuilder<T>,
-            IConditionalBoolQueryableBuilder<T>
+            ICompareBoolQueryableBuilder<T>
         {
             private readonly IQueryable<T> _query;
-            public ConditionalQueryableBuilder(IQueryable<T> query) => _query = query;
+            public CompareQueryableBuilder(IQueryable<T> query) => _query = query;
             public IQueryable<T> ApplyWhere(Expression<Func<T, bool>> expression) => _query.Where(expression);
             public IQueryable<T> To(Expression<Func<T, bool>> expression) => ApplyWhere(expression);
         }
 
-        private class InverseConditionalQueryableBuilder<T> :
+        private class InverseCompareQueryableBuilder<T> :
             IConditionalQueryableBuilder<T>,
-            IConditionalBoolQueryableBuilder<T>
+            ICompareBoolQueryableBuilder<T>
         {
             private readonly IQueryable<T> _query;
-            public InverseConditionalQueryableBuilder(IQueryable<T> query) => _query = query;
+            public InverseCompareQueryableBuilder(IQueryable<T> query) => _query = query;
             public IQueryable<T> ApplyWhere(Expression<Func<T, bool>> expression) => _query.Where(expression.Inverse());
             public IQueryable<T> To(Expression<Func<T, bool>> expression) => ApplyWhere(expression);
         }
