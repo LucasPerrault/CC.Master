@@ -1,12 +1,15 @@
 using Authentication.Domain;
+using FluentAssertions;
 using Lucca.Core.Rights.Abstractions;
 using Lucca.Core.Rights.Abstractions.Permissions;
 using Lucca.Core.Rights.Abstractions.Stores;
 using Moq;
 using Rights.Domain;
+using Rights.Domain.Abstractions;
 using Rights.Infra.Services;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
 using Users.Domain;
@@ -16,8 +19,64 @@ namespace Rights.Infra.Tests.Services
 {
     public class RightsServiceTests
     {
-        public RightsServiceTests()
+
+        [Fact]
+        public async Task GetScopedPermissionsAsync_ShouldReturnScopedPermissions()
         {
+            var permissionStoreMock = new Mock<IPermissionsStore>();
+            permissionStoreMock
+                .Setup(ps => ps.GetUserPermissionsAsync(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<ISet<int>>()))
+                .ReturnsAsync((int principalId, int appInstanceId, ISet<int> operations) => operations.SelectMany(o => new List<IUserPermission> {
+                    new PurposePermission {
+                        OperationId = o,
+                        Scope = Scope.DepartmentOnly,
+                        ExternalEntityId = 2
+                    },
+                    new PurposePermission {
+                        OperationId = o,
+                        Scope = Scope.AllDepartments,
+                        ExternalEntityId = 2
+                    },
+                    new PurposePermission {
+                        OperationId = o,
+                        Scope = Scope.DepartmentOnly,
+                        ExternalEntityId = 2
+                    },
+                }).ToList());
+
+            var rightsService = new RightsService(
+                new RightsHelper((new Mock<IServiceProvider>()).Object),
+                new CloudControlUserClaimsPrincipal(new Principal()
+                {
+                    Token = Guid.NewGuid(),
+                    UserId = 1,
+                    User = new User()
+                    {
+                        Id = 1,
+                        DepartmentId = 1,
+                        LegalEntityId = 1,
+                        ManagerId = 0,
+                    }
+                }),
+                permissionStoreMock.Object);
+
+            var scopedPermissions = await rightsService.GetScopedPermissionsAsync(Operation.Demo);
+
+            scopedPermissions.Should().BeEquivalentTo
+            (
+                new ScopedPermission
+                {
+                    Operation = Operation.Demo,
+                    Scope = AccessRightScope.AllDistributors,
+                    EnvironmentPurposes = new HashSet<int> { 2 }
+                },
+                new ScopedPermission
+                {
+                    Operation = Operation.Demo,
+                    Scope = AccessRightScope.OwnDistributorOnly,
+                    EnvironmentPurposes = new HashSet<int> { 2 }
+                }
+            );
         }
 
         [Fact]
@@ -58,7 +117,7 @@ namespace Rights.Infra.Tests.Services
                 }),
                 permissionStoreMock.Object);
 
-            Assert.All(await rightsService.GetUserOperationsHighestScopeAsync(Operation.Demo, Operation.ReadCMRR), kvp => Assert.Equal(Scope.AllDepartments, kvp.Value));
+            Assert.All(await rightsService.GetUserOperationsHighestScopeAsync(Operation.Demo, Operation.ReadCMRR), kvp => Assert.Equal(AccessRightScope.AllDistributors, kvp.Value));
         }
 
         [Fact]
@@ -99,7 +158,7 @@ namespace Rights.Infra.Tests.Services
                 }),
                 permissionStoreMock.Object);
 
-            Assert.Equal(Scope.AllDepartments, await rightsService.GetUserOperationHighestScopeAsync(Operation.Demo));
+            Assert.Equal(AccessRightScope.AllDistributors, await rightsService.GetUserOperationHighestScopeAsync(Operation.Demo));
         }
 
         [Fact]
@@ -131,7 +190,7 @@ namespace Rights.Infra.Tests.Services
                     }
                 }),
                 permissionStoreMock.Object);
-            await Assert.ThrowsAsync<ApplicationException>(async () => await rightsService.GetUserOperationsHighestScopeAsync(Operation.Demo, Operation.ReadCMRR));
+            await Assert.ThrowsAsync<InvalidEnumArgumentException>(async () => await rightsService.GetUserOperationsHighestScopeAsync(Operation.Demo, Operation.ReadCMRR));
         }
 
         [Fact]
@@ -172,7 +231,7 @@ namespace Rights.Infra.Tests.Services
                 }),
                 permissionStoreMock.Object);
 
-            await Assert.ThrowsAsync<ApplicationException>(async () => await rightsService.GetUserOperationHighestScopeAsync(Operation.Demo));
+            await Assert.ThrowsAsync<InvalidEnumArgumentException>(async () => await rightsService.GetUserOperationHighestScopeAsync(Operation.Demo));
         }
 
 
@@ -183,6 +242,24 @@ namespace Rights.Infra.Tests.Services
             public int? LegalEntityId => throw new NotImplementedException();
 
             public int ExternalEntityId => throw new NotImplementedException();
+
+            public Scope Scope { get; set; }
+
+            public int? SpecificDepartmentId => throw new NotImplementedException();
+
+            public int? SpecificUserId => throw new NotImplementedException();
+
+            public bool HasContextualLegalEntityAssociation => throw new NotImplementedException();
+        }
+
+
+        private class PurposePermission : IUserPermission
+        {
+            public int OperationId { get; set; }
+
+            public int? LegalEntityId => throw new NotImplementedException();
+
+            public int ExternalEntityId { get; set; }
 
             public Scope Scope { get; set; }
 

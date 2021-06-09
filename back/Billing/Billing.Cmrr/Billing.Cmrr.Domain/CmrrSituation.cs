@@ -74,11 +74,6 @@ namespace Billing.Cmrr.Domain
                 yield return Id;
                 yield return Name;
             }
-            set
-            {
-                EqualityComponents = value;
-            }
-            
         }
     }
 }

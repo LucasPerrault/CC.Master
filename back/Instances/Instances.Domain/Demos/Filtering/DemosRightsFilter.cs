@@ -1,5 +1,4 @@
 using Authentication.Domain;
-using Lucca.Core.Rights.Abstractions;
 using Rights.Domain;
 using Rights.Domain.Abstractions;
 using Rights.Domain.Filtering;
@@ -26,8 +25,8 @@ namespace Instances.Domain.Demos.Filtering
                     var currentUserScope = await _rightsService.GetUserOperationHighestScopeAsync(Operation.Demo);
                     return currentUserScope switch
                     {
-                        Scope.AllDepartments => AccessRight.All,
-                        Scope.DepartmentOnly => AccessRight.ForDistributor(userPrincipal.User.DepartmentCode),
+                        AccessRightScope.AllDistributors => AccessRight.All,
+                        AccessRightScope.OwnDistributorOnly => AccessRight.ForDistributor(userPrincipal.User.DistributorCode),
                         _ => throw new ApplicationException($"Unhandled scope : {currentUserScope}")
                     };
                 case CloudControlApiKeyClaimsPrincipal _:

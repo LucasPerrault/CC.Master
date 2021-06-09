@@ -4,7 +4,7 @@ namespace Users.Domain.Filtering
 {
     public class UsersFilter
     {
-        public BoolCombination IsActive { get; set; } = BoolCombination.Both;
+        public CompareBoolean IsActive { get; set; } = CompareBoolean.Bypass;
         public string Search { get; set; } = null;
     }
 }

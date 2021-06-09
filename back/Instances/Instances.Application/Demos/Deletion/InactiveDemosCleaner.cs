@@ -60,9 +60,9 @@ namespace Instances.Application.Demos.Deletion
         {
             var eligibleDemos = new DemoFilter
             {
-                IsActive = BoolCombination.TrueOnly,
-                IsTemplate = BoolCombination.FalseOnly,
-                IsProtected = BoolCombination.FalseOnly
+                IsActive = CompareBoolean.TrueOnly,
+                IsTemplate = CompareBoolean.FalseOnly,
+                IsProtected = CompareBoolean.FalseOnly
             };
             var usages = await GetDemoUsagesAsync(eligibleDemos);
             await UpdateDemosAsync(usages);

@@ -9,7 +9,7 @@ namespace Environments.Infra.Storage.Configurations
     {
         public void Configure(EntityTypeBuilder<EnvironmentAccess> builder)
         {
-            builder.ToView("EnvironmentAccesses", StorageSchemas.Shared.Value);
+            builder.ToTable("EnvironmentAccesses", StorageSchemas.Shared.Value);
             builder.HasKey(d => d.Id);
             builder.Property(d => d.DistributorId).HasColumnName("DistributorId");
             builder.Property(d => d.EnvironmentId).HasColumnName("EnvironmentId");
@@ -25,6 +25,7 @@ namespace Environments.Infra.Storage.Configurations
             builder.Property(d => d.RevocationComment).HasColumnName("RevocationComment");
             builder.Property(d => d.Lifecycle).HasComputedColumnSql("Lifecycle");
 
+            builder.HasIndex(d => d.EnvironmentId);
         }
     }
 
@@ -32,13 +33,13 @@ namespace Environments.Infra.Storage.Configurations
     {
         public void Configure(EntityTypeBuilder<EnvironmentSharedAccess> builder)
         {
-            builder.ToView("EnvironmentSharedAccesses", StorageSchemas.Shared.Value);
+            builder.ToTable("EnvironmentSharedAccesses", StorageSchemas.Shared.Value);
             builder.HasKey(d => d.Id);
             builder.Property(d => d.EnvironmentId).HasColumnName("EnvironmentId");
             builder.Property(d => d.ConsumerId).HasColumnName("ConsumerId");
 
-            builder.HasOne(d => d.Access).WithOne().HasForeignKey<EnvironmentSharedAccess>(d => d.Id);
-            builder.HasOne(d => d.Consumer).WithOne().HasForeignKey<EnvironmentSharedAccess>(d => d.ConsumerId);
+            builder.HasOne(d => d.Access).WithMany().HasForeignKey(d => d.Id);
+            builder.HasOne(d => d.Consumer).WithMany().HasForeignKey(d => d.ConsumerId);
         }
     }
 }
