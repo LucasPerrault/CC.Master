@@ -206,7 +206,14 @@ namespace Billing.Cmrr.Application.Tests
 
             cmrrCountsStoreMock.Setup(x => x.GetByPeriodAsync(It.IsAny<DateTime>())).ReturnsAsync(new List<CmrrCount>());
 
-            var product = new Product { Id = 1, Name = "figgo", FamilyId = 1 };
+            var product = new Product { Id = 1, Name = "figgo", FamilyId = 1, ProductSolutions = new List<ProductSolution>
+            {
+                new ProductSolution
+                {
+                    Share = 1,
+                    Solution = new Solution { Id = 1, Name = "Figgo" }
+                }
+            }};
             await _dbContext.AddAsync(product);
 
             var family = new ProductFamily { Id = 1, Name = "figgo family" };

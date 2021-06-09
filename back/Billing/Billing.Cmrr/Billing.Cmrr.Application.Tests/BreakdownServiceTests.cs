@@ -38,14 +38,14 @@ namespace Billing.Cmrr.Application.Tests
                 Id = 1,
                 Name = "figgo",
                 Family = figgoFamily,
-                ProductSolutions = new List<ProductSolution> { new ProductSolution { Solution = solutionFiggo}}
+                ProductSolutions = new List<ProductSolution> { new ProductSolution { Solution = solutionFiggo, Share = 1 }}
             };
             var cleemy = new Product
             {
                 Id = 2,
                 Name = "cleemy",
                 Family = cleemyFamily,
-                ProductSolutions = new List<ProductSolution> { new ProductSolution { Solution = solutionCleemy}}
+                ProductSolutions = new List<ProductSolution> { new ProductSolution { Solution = solutionCleemy, Share = 1 }}
 
             };
             var suite = new Product
@@ -55,8 +55,8 @@ namespace Billing.Cmrr.Application.Tests
                 Family = suiteFamily,
                 ProductSolutions = new List<ProductSolution>
                 {
-                    new ProductSolution { Solution = solutionFiggo},
-                    new ProductSolution { Solution = solutionCleemy},
+                    new ProductSolution { Solution = solutionFiggo, Share = 1 },
+                    new ProductSolution { Solution = solutionCleemy, Share = 1 },
                 }
             };
 
@@ -103,9 +103,9 @@ namespace Billing.Cmrr.Application.Tests
                 Family = suiteFamily,
                 ProductSolutions = new List<ProductSolution>
                 {
-                    new ProductSolution { Solution = solutionFiggo },
-                    new ProductSolution { Solution = solutionCleemy },
-                    new ProductSolution { Solution = solutionCleemyProc },
+                    new ProductSolution { Solution = solutionFiggo, Share = 1 },
+                    new ProductSolution { Solution = solutionCleemy, Share = 1 },
+                    new ProductSolution { Solution = solutionCleemyProc, Share = 1 },
                 }
             };
 
@@ -142,14 +142,14 @@ namespace Billing.Cmrr.Application.Tests
                 Id = 1,
                 Name = "figgo",
                 Family = figgoFamily,
-                ProductSolutions = new List<ProductSolution> { new ProductSolution { Solution = solutionFiggo}}
+                ProductSolutions = new List<ProductSolution> { new ProductSolution { Solution = solutionFiggo, Share = 1 }}
             };
             var cleemy = new Product
             {
                 Id = 2,
                 Name = "cleemy",
                 Family = cleemyFamily,
-                ProductSolutions = new List<ProductSolution> { new ProductSolution { Solution = solutionCleemy}}
+                ProductSolutions = new List<ProductSolution> { new ProductSolution { Solution = solutionCleemy, Share = 1 }}
 
             };
             var suite = new Product
@@ -159,8 +159,8 @@ namespace Billing.Cmrr.Application.Tests
                 Family = suiteFamily,
                 ProductSolutions = new List<ProductSolution>
                 {
-                    new ProductSolution { Solution = solutionFiggo},
-                    new ProductSolution { Solution = solutionCleemy},
+                    new ProductSolution { Solution = solutionFiggo, Share = 1 },
+                    new ProductSolution { Solution = solutionCleemy, Share = 1 },
                 }
             };
 
