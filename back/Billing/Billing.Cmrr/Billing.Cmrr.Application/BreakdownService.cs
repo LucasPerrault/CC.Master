@@ -43,15 +43,14 @@ namespace Billing.Cmrr.Application
                     new AxisSection { Id = ps.Solution.BusinessUnitId, Name = ps.Solution.BusinessUnit.Name },
                     ps.Product.Name,
                     ps.Product,
-                    1
-                )
-                ,
+                    ps.Share
+                ),
                 CmrrAxis.Product =>  new BreakdownShare
                 (
                     new AxisSection { Id = ps.Product.FamilyId, Name = ps.Product.Family.Name },
                     ps.Solution.Name,
                     ps.Product,
-                    1
+                    ps.Share
                 ),
                 _ => throw new InvalidEnumArgumentException(nameof(axis), (int)axis, typeof(CmrrAxis))
             };
