@@ -31,6 +31,8 @@ namespace Billing.Products.Domain
         public Product Product { get; set; }
         public int SolutionId { get; set; }
         public Solution Solution { get; set; }
+
+        public int Share { get; set; }
     }
 
     public class ProductFamily

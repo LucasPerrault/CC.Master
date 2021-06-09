@@ -9,6 +9,7 @@ namespace Billing.Products.Domain
         public string Code { get; set; }
         public int ParentId { get; set; }
         public bool IsContactNeeded { get; set; }
+        public int DefaultBreakdownShare { get; set; }
 
         public int BusinessUnitId { get; set; }
         public BusinessUnit BusinessUnit { get; set; }
