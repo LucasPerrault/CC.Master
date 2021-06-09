@@ -27,9 +27,7 @@ namespace Billing.Cmrr.Application
             var products = await _productsStore.GetNonFreeProductsAsync();
 
             return products
-                .SelectMany(p => p.ProductSolutions)
-                .Select(ps => ToBreakdownShare(axis, ps))
-                .GroupBy(share => share.Product.Id)
+                .Select(p => p.ProductSolutions.Select(ps => ToBreakdownShare(axis, ps)))
                 .SelectMany(shares => ToBreakdowns(shares.ToList()))
                 .ToList();
         }
