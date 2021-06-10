@@ -1,21 +1,23 @@
 ﻿using Instances.Domain.CodeSources;
+using Instances.Infra.Storage.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Instances.Infra.Storage.Configurations
 {
-    public class CodeSourcesConfiguration : IEntityTypeConfiguration<CodeSource>
+    public class CodeSourcesConfiguration : IEntityTypeConfiguration<StoredCodeSource>
     {
-        public void Configure(EntityTypeBuilder<CodeSource> builder)
+        public void Configure(EntityTypeBuilder<StoredCodeSource> builder)
         {
             builder.ToTable("CodeSources");
+            builder.HasKey(cs => cs.Id);
             builder.Property(cs => cs.Code).HasColumnName("Code");
             builder.Property(cs => cs.Name).HasColumnName("Name");
             builder.Property(cs => cs.JenkinsProjectName).HasColumnName("JenkinsProjectName");
             builder.Property(cs => cs.Type).HasColumnName("Type");
             builder.Property(cs => cs.GithubRepo).HasColumnName("GithubRepo");
             builder.Property(cs => cs.Lifecycle).HasColumnName("Lifecycle");
-
+            builder.HasOne(cs => cs.Config).WithOne().HasForeignKey<CodeSourceConfig>(c => c.CodeSourceId);
             builder.HasMany(cs => cs.ProductionVersions).WithOne().HasForeignKey(pv => pv.CodeSourceId);
         }
     }
@@ -30,7 +32,6 @@ namespace Instances.Infra.Storage.Configurations
             builder.Property(c => c.Subdomain).HasColumnName("Subdomain");
             builder.Property(c => c.IisServerPath).HasColumnName("IisServerPath");
             builder.Property(c => c.IsPrivate).HasColumnName("IsPrivate");
-            builder.HasOne(c => c.CodeSource).WithOne(cs => cs.Config).HasForeignKey<CodeSourceConfig>(c => c.CodeSourceId);
 
         }
     }

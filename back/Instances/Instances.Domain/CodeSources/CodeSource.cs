@@ -35,8 +35,6 @@ namespace Instances.Domain.CodeSources
         public CodeSourceLifecycleStep Lifecycle { get; set; }
         public CodeSourceConfig Config { get; set; }
 
-        public CodeSourceProductionVersion CurrentProductionVersion => ProductionVersions.OrderByDescending(cspv => cspv.Id).FirstOrDefault();
-
-        public List<CodeSourceProductionVersion> ProductionVersions { get; set; }
+        public CodeSourceProductionVersion CurrentProductionVersion { get; set; }
     }
 }
