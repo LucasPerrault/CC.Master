@@ -15,6 +15,8 @@ namespace Billing.Cmrr.Domain
         public ContractEndReason EndReason { get; set; }
 
         public int ClientId { get; set; }
+        public string ClientName { get; set; }
+
         public string DistributorId { get; set; }
 
         public int EnvironmentId { get; set; }
@@ -32,7 +34,6 @@ namespace Billing.Cmrr.Domain
 
     public enum ContractEndReason
     {
-        EnCours = 0,
         Modification = 1,
         Resiliation = 2
     };

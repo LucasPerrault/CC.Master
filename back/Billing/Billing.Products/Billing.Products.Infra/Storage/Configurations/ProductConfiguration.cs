@@ -32,6 +32,7 @@ namespace Billing.Products.Infra.Storage.Configurations
         {
             builder.ToTable("ProductsSolutions");
             builder.HasKey(ps => new { ps.ProductId, ps.SolutionId });
+            builder.Property(ps => ps.Share).HasColumnName("share");
             builder.HasOne(ps => ps.Product).WithMany(p => p.ProductSolutions).HasForeignKey(ps => ps.ProductId);
             builder.HasOne(ps => ps.Solution).WithMany(s => s.ProductSolutions).HasForeignKey(ps => ps.SolutionId);
         }
@@ -47,6 +48,7 @@ namespace Billing.Products.Infra.Storage.Configurations
             builder.Property(s => s.Code).HasColumnName("Code");
             builder.Property(s => s.ParentId).HasColumnName("ParentId");
             builder.Property(s => s.IsContactNeeded).HasColumnName("IsContactNeeded");
+            builder.Property(s => s.DefaultBreakdownShare).HasColumnName("defaultBreakdownShare");
 
             builder.HasOne(s => s.BusinessUnit).WithMany(bu => bu.Solutions).HasForeignKey(s => s.BusinessUnitId);
         }
@@ -59,6 +61,7 @@ namespace Billing.Products.Infra.Storage.Configurations
             builder.ToTable("BusinessUnits");
             builder.HasKey(p => p.Id);
             builder.Property(p => p.Name).HasColumnName("Name");
+            builder.Property(p => p.DisplayOrder).HasColumnName("DisplayOrder");
         }
     }
 
@@ -69,6 +72,7 @@ namespace Billing.Products.Infra.Storage.Configurations
             builder.ToTable("ProductFamilies");
             builder.HasKey(f => f.Id);
             builder.Property(f => f.Name).HasColumnName("Name");
+            builder.Property(p => p.DisplayOrder).HasColumnName("DisplayOrder");
         }
     }
 }

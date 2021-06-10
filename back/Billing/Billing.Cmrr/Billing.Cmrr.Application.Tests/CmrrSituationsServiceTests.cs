@@ -127,44 +127,56 @@ namespace Billing.Cmrr.Application.Tests
 
             cmrrCountsStoreMock.Setup(x => x.GetByPeriodAsync(endPeriod)).ReturnsAsync(() => endCmrrCounts);
 
-            var product = new Product { Id = 1, Name = "figgo", FamilyId = 1 };
+            var product = new Product
+            {
+                Id = 1,
+                Name = "figgo",
+                FamilyId = 1,
+                ProductSolutions = new List<ProductSolution>
+                {
+                    new ProductSolution {Solution = new Solution { Name = "Figgo"} }
+                }
+            };
             await _dbContext.AddAsync(product);
 
             var family = new ProductFamily { Id = 1, Name = "figgo family" };
             await _dbContext.AddAsync(family);
             await _dbContext.SaveChangesAsync();
-            var contractAnalyticSituationsService = new ContractAnalyticSituationsService(new ProductsStore(_dbContext));
+            var productStore = new ProductsStore(_dbContext);
+            var contractAxisSectionSituationsService = new ContractAxisSectionSituationsService(new BreakdownService(productStore));
 
             // Act
-            var sut = new CmrrSituationsService(cmrrContractsStoreMock.Object, cmrrCountsStoreMock.Object, contractAnalyticSituationsService);
+            var sut = new CmrrSituationsService(cmrrContractsStoreMock.Object, cmrrCountsStoreMock.Object, contractAxisSectionSituationsService);
 
             var cmrrContractSituations = await sut.GetSituationAsync(situationFilter);
 
             // Assert
-            cmrrContractSituations.Sections.Should().NotBeNullOrEmpty();
-            cmrrContractSituations.Sections.Should().HaveCount(1);
+            cmrrContractSituations.Lines.Should().NotBeNullOrEmpty();
+            cmrrContractSituations.Lines.Should().HaveCount(1);
 
-            var section = cmrrContractSituations.Sections.First(s => s.Name == family.Name);
+            var line = cmrrContractSituations.Lines.First(s => s.Name == family.Name);
+            Assert.Single(line.SubLines);
+            var section = line.SubLines.Single(s => s.Key == product.ProductSolutions.Single().Solution.Name).Value;
 
-            section.TotalFrom.Should().Be(startCmrrCounts.Sum(c => c.EuroTotal));
-            section.TotalTo.Should().Be(endCmrrCounts.Sum(c => c.EuroTotal));
+            section.TotalFrom.Amount.Should().Be(startCmrrCounts.Sum(c => c.EuroTotal));
+            section.TotalTo.Amount.Should().Be(endCmrrCounts.Sum(c => c.EuroTotal));
 
             var startCountForContract10 = startCmrrCounts.First(c => c.ContractId == 10);
             var endCountForContract10 = endCmrrCounts.First(c => c.ContractId == 10);
-            var cmrrContractSituation10 = section.Expansion.Top.First(c => c.ContractSituation.ContractId == 10);
+            var cmrrContractSituation10 = section.Expansion.Top.First(c => c.Contract.Id == 10);
 
             section.Expansion.Amount.Should().Be(endCountForContract10.EuroTotal - startCountForContract10.EuroTotal);
-            cmrrContractSituation10.ContractSituation.ContractId.Should().Be(10);
-            cmrrContractSituation10.ContractSituation.EndPeriodCount.Id.Should().Be(3);
-            cmrrContractSituation10.ContractSituation.StartPeriodCount.Id.Should().Be(1);
+            cmrrContractSituation10.Contract.Id.Should().Be(10);
+            cmrrContractSituation10.EndPeriodCount.Id.Should().Be(3);
+            cmrrContractSituation10.StartPeriodCount.Id.Should().Be(1);
 
             var startCountForContract11 = startCmrrCounts.First(c => c.ContractId == 11);
-            var cmrrContractSituation11 = section.Termination.Top.First(c => c.ContractSituation.ContractId == 11);
+            var cmrrContractSituation11 = section.Termination.Top.First(c => c.Contract.Id == 11);
 
             section.Termination.Amount.Should().Be(-startCountForContract11.EuroTotal);
-            cmrrContractSituation11.ContractSituation.ContractId.Should().Be(11);
-            cmrrContractSituation11.ContractSituation.EndPeriodCount.Should().BeNull();
-            cmrrContractSituation11.ContractSituation.StartPeriodCount.Id.Should().Be(2);
+            cmrrContractSituation11.Contract.Id.Should().Be(11);
+            cmrrContractSituation11.EndPeriodCount.Id.Should().BeNull();
+            cmrrContractSituation11.StartPeriodCount.Id.Should().Be(2);
         }
 
         [Fact]
@@ -194,22 +206,30 @@ namespace Billing.Cmrr.Application.Tests
 
             cmrrCountsStoreMock.Setup(x => x.GetByPeriodAsync(It.IsAny<DateTime>())).ReturnsAsync(new List<CmrrCount>());
 
-            var product = new Product { Id = 1, Name = "figgo", FamilyId = 1 };
+            var product = new Product { Id = 1, Name = "figgo", FamilyId = 1, ProductSolutions = new List<ProductSolution>
+            {
+                new ProductSolution
+                {
+                    Share = 1,
+                    Solution = new Solution { Id = 1, Name = "Figgo" }
+                }
+            }};
             await _dbContext.AddAsync(product);
 
             var family = new ProductFamily { Id = 1, Name = "figgo family" };
             await _dbContext.AddAsync(family);
             await _dbContext.SaveChangesAsync();
-            var contractAnalyticSituationsService = new ContractAnalyticSituationsService(new ProductsStore(_dbContext));
+            var productStore = new ProductsStore(_dbContext);
+            var contractAxisSectionSituationsService = new ContractAxisSectionSituationsService(new BreakdownService(productStore));
 
             // Act
-            var sut = new CmrrSituationsService(cmrrContractsStoreMock.Object, cmrrCountsStoreMock.Object, contractAnalyticSituationsService);
+            var sut = new CmrrSituationsService(cmrrContractsStoreMock.Object, cmrrCountsStoreMock.Object, contractAxisSectionSituationsService);
 
             var cmrrContractSituations = await sut.GetSituationAsync(situationFilter);
 
             // Assert
             cmrrContractSituations.Should().NotBeNull();
-            cmrrContractSituations.Sections.Should().BeNullOrEmpty();
+            cmrrContractSituations.Lines.Should().BeNullOrEmpty();
         }
 
         [Fact]
@@ -271,30 +291,37 @@ namespace Billing.Cmrr.Application.Tests
 
             cmrrCountsStoreMock.Setup(x => x.GetByPeriodAsync(endPeriod)).ReturnsAsync(() => endCmrrCounts);
 
-            var product = new Product { Id = 1, Name = "figgo", FamilyId = 1 };
+            var product = new Product { Id = 1, Name = "figgo", FamilyId = 1,
+                ProductSolutions = new List<ProductSolution>
+                {
+                    new ProductSolution {Solution = new Solution { Name = "Figgo"} }
+                } };
             await _dbContext.AddAsync(product);
 
             var family = new ProductFamily { Id = 1, Name = "figgo family" };
             await _dbContext.AddAsync(family);
             await _dbContext.SaveChangesAsync();
-            var contractAnalyticSituationsService = new ContractAnalyticSituationsService(new ProductsStore(_dbContext));
+            var productStore = new ProductsStore(_dbContext);
+            var contractAxisSectionSituationsService = new ContractAxisSectionSituationsService(new BreakdownService(productStore));
 
             // Act
-            var sut = new CmrrSituationsService(cmrrContractsStoreMock.Object, cmrrCountsStoreMock.Object, contractAnalyticSituationsService);
+            var sut = new CmrrSituationsService(cmrrContractsStoreMock.Object, cmrrCountsStoreMock.Object, contractAxisSectionSituationsService);
 
             var cmrrContractSituations = await sut.GetSituationAsync(situationFilter);
 
             // Assert
-            cmrrContractSituations.Sections.Should().NotBeNullOrEmpty();
-            cmrrContractSituations.Sections.Should().HaveCount(1);
+            cmrrContractSituations.Lines.Should().NotBeNullOrEmpty();
+            cmrrContractSituations.Lines.Should().HaveCount(1);
 
-            var section = cmrrContractSituations.Sections.First(s => s.Name == family.Name);
+            var line = cmrrContractSituations.Lines.First(s => s.Name == family.Name);
+            Assert.Single(line.SubLines);
+            var section = line.SubLines.Single(s => s.Key == product.ProductSolutions.Single().Solution.Name).Value;
 
-            section.Termination.Top.Should().NotContain(c => c.ContractSituation.ContractId == 11);
-            section.Retraction.Top.Should().NotContain(c => c.ContractSituation.ContractId == 11);
-            section.Upsell.Top.Should().NotContain(c => c.ContractSituation.ContractId == 11);
-            section.Expansion.Top.Should().NotContain(c => c.ContractSituation.ContractId == 11);
-            section.Creation.Top.Should().NotContain(c => c.ContractSituation.ContractId == 11);
+            section.Termination.Top.Should().NotContain(c => c.Contract.Id == 11);
+            section.Retraction.Top.Should().NotContain(c => c.Contract.Id == 11);
+            section.Upsell.Top.Should().NotContain(c => c.Contract.Id == 11);
+            section.Expansion.Top.Should().NotContain(c => c.Contract.Id == 11);
+            section.Creation.Top.Should().NotContain(c => c.Contract.Id == 11);
         }
 
         [Fact]
@@ -357,30 +384,42 @@ namespace Billing.Cmrr.Application.Tests
 
             cmrrCountsStoreMock.Setup(x => x.GetByPeriodAsync(endPeriod)).ReturnsAsync(() => endCmrrCounts);
 
-            var product = new Product { Id = 1, Name = "figgo", FamilyId = 1 };
+            var product = new Product
+            {
+                Id = 1,
+                Name = "figgo",
+                FamilyId = 1,
+                ProductSolutions = new List<ProductSolution>
+                {
+                    new ProductSolution {Solution = new Solution { Name = "Figgo"} }
+                }
+            };
             await _dbContext.AddAsync(product);
 
             var family = new ProductFamily { Id = 1, Name = "figgo family" };
             await _dbContext.AddAsync(family);
             await _dbContext.SaveChangesAsync();
-            var contractAnalyticSituationsService = new ContractAnalyticSituationsService(new ProductsStore(_dbContext));
+            var productStore = new ProductsStore(_dbContext);
+            var contractAxisSectionSituationsService = new ContractAxisSectionSituationsService(new BreakdownService(productStore));
 
             // Act
-            var sut = new CmrrSituationsService(cmrrContractsStoreMock.Object, cmrrCountsStoreMock.Object, contractAnalyticSituationsService);
+            var sut = new CmrrSituationsService(cmrrContractsStoreMock.Object, cmrrCountsStoreMock.Object, contractAxisSectionSituationsService);
 
             var cmrrContractSituations = await sut.GetSituationAsync(situationFilter);
 
             // Assert
-            cmrrContractSituations.Sections.Should().NotBeNullOrEmpty();
-            cmrrContractSituations.Sections.Should().HaveCount(1);
+            cmrrContractSituations.Lines.Should().NotBeNullOrEmpty();
+            cmrrContractSituations.Lines.Should().HaveCount(1);
 
-            var section = cmrrContractSituations.Sections.First(s => s.Name == family.Name);
+            var line = cmrrContractSituations.Lines.First(s => s.Name == family.Name);
+            Assert.Single(line.SubLines);
+            var section = line.SubLines.Single(s => s.Key == product.ProductSolutions.Single().Solution.Name).Value;
 
-            section.Termination.Top.Should().NotContain(c => c.ContractSituation.ContractId == 11);
-            section.Retraction.Top.Should().NotContain(c => c.ContractSituation.ContractId == 11);
-            section.Upsell.Top.Should().NotContain(c => c.ContractSituation.ContractId == 11);
-            section.Expansion.Top.Should().NotContain(c => c.ContractSituation.ContractId == 11);
-            section.Creation.Top.Should().NotContain(c => c.ContractSituation.ContractId == 11);
+            section.Termination.Top.Should().NotContain(c => c.Contract.Id == 11);
+            section.Retraction.Top.Should().NotContain(c => c.Contract.Id == 11);
+            section.Upsell.Top.Should().NotContain(c => c.Contract.Id == 11);
+            section.Expansion.Top.Should().NotContain(c => c.Contract.Id == 11);
+            section.Creation.Top.Should().NotContain(c => c.Contract.Id == 11);
         }
     }
 }

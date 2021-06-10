@@ -3,6 +3,7 @@ using Billing.Cmrr.Domain;
 using Billing.Cmrr.Domain.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -12,22 +13,22 @@ namespace Billing.Cmrr.Application
     {
         private readonly ICmrrContractsStore _contractsStore;
         private readonly ICmrrCountsStore _countsStore;
-        private readonly IContractAnalyticSituationsService _analyticSituationsService;
+        private readonly IContractAxisSectionSituationsService _axisSectionSituationsService;
 
         private bool IsFirstDayOfMonth(DateTime date) => date.Day == 1;
-        public CmrrSituationsService(ICmrrContractsStore contractsStore, ICmrrCountsStore countsStore, IContractAnalyticSituationsService analyticSituationsService)
+        public CmrrSituationsService(ICmrrContractsStore contractsStore, ICmrrCountsStore countsStore, IContractAxisSectionSituationsService axisSectionSituationsService)
         {
             _contractsStore = contractsStore;
             _countsStore = countsStore;
-            _analyticSituationsService = analyticSituationsService;
+            _axisSectionSituationsService = axisSectionSituationsService;
         }
 
         public async Task<CmrrSituation> GetSituationAsync(CmrrSituationFilter situationFilter)
         {
-            var sections = await GetSectionsAsync(situationFilter);
+            var lines = await GetLinesAsync(situationFilter);
             var situation = new CmrrSituation
             {
-                Sections = sections,
+                Lines = lines,
                 Axis = situationFilter.Axis,
                 StartPeriod = situationFilter.StartPeriod,
                 EndPeriod = situationFilter.EndPeriod
@@ -36,13 +37,20 @@ namespace Billing.Cmrr.Application
             return situation;
         }
 
-        private async Task<List<CmrrAxisSection>> GetSectionsAsync(CmrrSituationFilter situationFilter)
+        private async Task<List<CmrrLine>> GetLinesAsync(CmrrSituationFilter situationFilter)
         {
             var contractSituations = await GetContractSituationsAsync(situationFilter);
 
-            var orderedAnalyticSituations = await _analyticSituationsService.GetOrderedSituationsAsync(situationFilter.Axis, contractSituations);
+            var axisSectionSituations = await _axisSectionSituationsService
+                .GetAxisSectionSituationsAsync(situationFilter.Axis, contractSituations);
 
-            return orderedAnalyticSituations.Select(group => GetCmrrAxisSection(group)).ToList();
+            var groupedSituations = axisSectionSituations
+                .GroupBy(situation => situation.Breakdown.AxisSection)
+                .OrderBy(section => section.Key.Order);
+
+            return groupedSituations
+                .Select(a => GetCmrrLines(a.Key, a.ToList()))
+                .ToList();
         }
 
         private async Task<List<CmrrContractSituation>> GetContractSituationsAsync(CmrrSituationFilter situationFilter)
@@ -90,44 +98,57 @@ namespace Billing.Cmrr.Application
             }
         }
 
-        private CmrrAxisSection GetCmrrAxisSection(IGrouping<AxisSection, ContractAnalyticSituation> group)
+        private CmrrLine GetCmrrLines(AxisSection axisSection, List<ContractAxisSectionSituation> situations)
         {
-            var section = new CmrrAxisSection(group.Key.Name);
+            var line = new CmrrLine(axisSection.Name);
 
-            foreach (var analyticSituation in group)
+            foreach (var situation in situations.OrderByDescending(s => s.PartialDiff))
             {
-                switch (analyticSituation.ContractSituation.LifeCycle)
-                {
-                    case CmrrLifeCycle.Creation:
-                        UpdateCmrrAmount(section.Creation, analyticSituation);
-                        break;
-                    case CmrrLifeCycle.Expansion:
-                        UpdateCmrrAmount(section.Expansion, analyticSituation);
-                        break;
-                    case CmrrLifeCycle.Retraction:
-                        UpdateCmrrAmount(section.Retraction, analyticSituation);
-                        break;
-                    case CmrrLifeCycle.Termination:
-                        UpdateCmrrAmount(section.Termination, analyticSituation);
-                        break;
-                    case CmrrLifeCycle.Upsell:
-                        UpdateCmrrAmount(section.Upsell, analyticSituation);
-                        break;
-                }
-
-                section.TotalFrom += analyticSituation.ContractSituation.StartPeriodCount?.EuroTotal ?? 0;
-                section.TotalTo += analyticSituation.ContractSituation.EndPeriodCount?.EuroTotal ?? 0;
+                var subLine = GetSubLine(line, situation);
+                var amount = GetAmount(subLine, situation);
+                UpdateCmrrAmount(amount, situation, s => s.PartialDiff);
             }
 
-            return section;
+            foreach (var situation in situations.OrderByDescending(s => s.StartPeriodAmount))
+            {
+                var subLine = GetSubLine(line, situation);
+                UpdateCmrrAmount(subLine.TotalFrom, situation, s => s.StartPeriodAmount);
+            }
+
+            foreach (var situation in situations.OrderByDescending(s => s.EndPeriodAmount))
+            {
+                var subLine = GetSubLine(line, situation);
+                UpdateCmrrAmount(subLine.TotalTo, situation, s => s.EndPeriodAmount);
+            }
+
+            return line;
         }
 
-        private void UpdateCmrrAmount(CmrrAmount amount, ContractAnalyticSituation analyticSituation)
+        private CmrrSubLine GetSubLine(CmrrLine line, ContractAxisSectionSituation situation)
         {
-            amount.Amount += analyticSituation.PartialDiff;
-            if (amount.Top.Count < CmrrAmount.TopCount)
-                amount.Top.Add(analyticSituation);
+            var subSectionName = situation.Breakdown.SubSection;
+            line.SubLines.TryAdd(subSectionName, new CmrrSubLine(subSectionName));
+            return line.SubLines[subSectionName];
+        }
 
+        private void UpdateCmrrAmount(CmrrAmount amount, ContractAxisSectionSituation axisSectionSituation, Func<ContractAxisSectionSituation, decimal> amountFunc)
+        {
+            amount.Amount += amountFunc(axisSectionSituation);
+            if (amount.Top.Count < CmrrAmountTopElement.TopCount)
+                amount.Top.Add(CmrrAmountTopElement.FromSituation(axisSectionSituation));
+        }
+
+        private CmrrAmount GetAmount(CmrrSubLine section, ContractAxisSectionSituation situation)
+        {
+            return situation.ContractSituation.LifeCycle switch
+            {
+                CmrrLifeCycle.Creation => section.Creation,
+                CmrrLifeCycle.Expansion => section.Expansion,
+                CmrrLifeCycle.Retraction => section.Retraction,
+                CmrrLifeCycle.Termination => section.Termination,
+                CmrrLifeCycle.Upsell => section.Upsell,
+                _ => throw new InvalidEnumArgumentException(nameof(situation.ContractSituation.LifeCycle), (int)situation.ContractSituation.LifeCycle, typeof(CmrrLifeCycle))
+            };
         }
     }
 }

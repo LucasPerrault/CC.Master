@@ -8,7 +8,7 @@ namespace Billing.Cmrr.Infra.Migrations
         {
             migrationBuilder.Sql($@"
                 CREATE VIEW [billing].[CmrrContracts] WITH SCHEMABINDING AS
-                    SELECT 
+                    SELECT
                         c.idContract id,
                         o.productId productId,
                         c.creationDate creationDate,
@@ -18,12 +18,14 @@ namespace Billing.Cmrr.Infra.Migrations
                         c.endContractReason endReason,
                         c.clientId clientId,
                         c.idDistributor distributorId,
-                        c.environmentID environmentId, 
+                        c.environmentID environmentId,
                         e.dtCreation environmentCreatedAt,
+                        cl.name clientName,
                         CAST(CASE WHEN c.ArchivedAt is null THEN 0 ELSE 1 END AS bit) AS isArchived
                     FROM [dbo].[Contracts] c
                     INNER JOIN [dbo].[CommercialOffers] o on c.idCommercialOffer = o.idCommercialOffer
                     INNER JOIN [dbo].[Environments] e on c.environmentID = e.id
+                    INNER JOIN [dbo].[Clients] cl on c.clientId = cl.id
             ");
         }
 

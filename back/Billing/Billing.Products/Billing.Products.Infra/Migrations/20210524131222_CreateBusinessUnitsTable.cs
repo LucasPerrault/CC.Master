@@ -41,14 +41,14 @@ namespace Billing.Products.Infra.Migrations
                 ('Talent'),
                 ('Pay'),
                 ('Core'),
-                ('Employee Engagement'),
-                ('Others')
+                ('Engagement'),
+                ('Autres')
                 ");
 
             migrationBuilder.Sql(@"
                 UPDATE [CLOUDCONTROL].[billing].[Solutions]
                 SET BusinessUnitId = (
-                CASE [Solutions].name 
+                CASE [Solutions].name
                        WHEN 'Figgo' THEN 1
                        WHEN 'Cleemy' THEN 2
                        WHEN 'Pagga' THEN 4
