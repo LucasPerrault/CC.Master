@@ -17,7 +17,7 @@ namespace Billing.Cmrr.Application
 
         public async Task<IEnumerable<ContractAxisSectionSituation>> GetAxisSectionSituationsAsync(CmrrAxis axis, IEnumerable<CmrrContractSituation> contractSituation)
         {
-            var breakdowns = await _breakdownService.GetAllBreakdownsAsync(axis);
+            var breakdowns = await _breakdownService.GetBreakdownsAsync(axis);
             var breakdownsPerProductId = breakdowns
                 .GroupBy(b => b.ProductId)
                 .ToDictionary(g => g.Key, g => g.ToList());

@@ -10,7 +10,7 @@ namespace Billing.Cmrr.Application
 {
     public interface IBreakdownService
     {
-        Task<List<Breakdown>> GetAllBreakdownsAsync(CmrrAxis axis);
+        Task<List<Breakdown>> GetBreakdownsAsync(CmrrAxis axis);
     }
 
     public class BreakdownService : IBreakdownService
@@ -22,7 +22,7 @@ namespace Billing.Cmrr.Application
             _productsStore = productsStore;
         }
 
-        public async Task<List<Breakdown>> GetAllBreakdownsAsync(CmrrAxis axis)
+        public async Task<List<Breakdown>> GetBreakdownsAsync(CmrrAxis axis)
         {
             var products = await _productsStore.GetNonFreeProductsAsync();
 

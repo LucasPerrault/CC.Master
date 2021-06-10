@@ -66,7 +66,7 @@ namespace Billing.Cmrr.Application.Tests
             await _dbContext.SaveChangesAsync();
 
             var service = new BreakdownService(new ProductsStore(_dbContext));
-            var allBreakdowns = await service.GetAllBreakdownsAsync(CmrrAxis.Product);
+            var allBreakdowns = await service.GetBreakdownsAsync(CmrrAxis.Product);
 
             allBreakdowns.Should().HaveCount(4);
 
@@ -113,7 +113,7 @@ namespace Billing.Cmrr.Application.Tests
             await _dbContext.SaveChangesAsync();
 
             var service = new BreakdownService(new ProductsStore(_dbContext));
-            var allBreakdowns = await service.GetAllBreakdownsAsync(CmrrAxis.Product);
+            var allBreakdowns = await service.GetBreakdownsAsync(CmrrAxis.Product);
 
             allBreakdowns.Should().HaveCount(3);
 
@@ -170,7 +170,7 @@ namespace Billing.Cmrr.Application.Tests
             await _dbContext.SaveChangesAsync();
 
             var service = new BreakdownService(new ProductsStore(_dbContext));
-            var allBreakdowns = await service.GetAllBreakdownsAsync(CmrrAxis.BusinessUnit);
+            var allBreakdowns = await service.GetBreakdownsAsync(CmrrAxis.BusinessUnit);
 
             allBreakdowns.Should().HaveCount(4);
 
