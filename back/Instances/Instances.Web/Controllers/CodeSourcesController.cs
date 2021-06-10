@@ -29,6 +29,14 @@ namespace Instances.Web.Controllers
             return new FetchedCodeSources { CodeSources = codeSources.ToList() };
         }
 
+        [HttpGet("{id:int}")]
+        [ForbidIfMissing(Operation.ReadCodeSources)]
+        public async Task<FetchedCodeSources> GetAsync(int id)
+        {
+            var codeSources = await _appController.GetAsync(CodeSourceFilter.ById(id));
+            return new FetchedCodeSources { CodeSources = codeSources.ToList() };
+        }
+
         [HttpPost]
         [ForbidIfMissing(Operation.EditCodeSources)]
         public async Task<CodeSource> CreateAsync([FromBody]CodeSource codeSource)
