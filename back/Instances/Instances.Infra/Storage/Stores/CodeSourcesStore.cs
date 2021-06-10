@@ -44,11 +44,6 @@ namespace Instances.Infra.Storage.Stores
             codeSource.Lifecycle = lifecycleStep;
         }
 
-        public Task<CodeSource> GetNonDeletedByCodeAsync(string code)
-        {
-            return Get(CodeSourceFilter.ByCode(code)).SingleOrDefaultAsync();
-        }
-
         public Task AddProductionVersionAsync(CodeSource codeSource, CodeSourceProductionVersion productionVersion)
         {
             productionVersion.CodeSourceId = codeSource.Id;

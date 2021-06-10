@@ -29,9 +29,9 @@ namespace Instances.Infra.CodeSources
     {
         public const string CodeSourceConfigFilePath = ".cd/production.json";
 
-        private GithubService _githubService;
+        private readonly IGithubService _githubService;
 
-        public CodeSourceFetcherService(GithubService githubService)
+        public CodeSourceFetcherService(IGithubService githubService)
         {
             _githubService = githubService;
         }

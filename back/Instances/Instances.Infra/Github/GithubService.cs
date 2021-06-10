@@ -8,7 +8,12 @@ using System.Threading.Tasks;
 
 namespace Instances.Infra.Github
 {
-    public class GithubService
+    public interface IGithubService
+    {
+        Task<string> GetFileContentAsync(string repoUrl, string filepath);
+    }
+
+    public class GithubService : IGithubService
     {
         private static readonly List<string> GithubAllowedOwners = new List<string> { "LuccaSA" };
         private const string GithubUrlBaseSecured = "https://github.com/";

@@ -23,9 +23,9 @@ namespace Instances.Web.Controllers
 
         [HttpGet]
         [ForbidIfMissing(Operation.ReadCodeSources)]
-        public async Task<FetchedCodeSources> GetAsync([FromQuery]CodeSourceFilter filter)
+        public async Task<FetchedCodeSources> GetAsync([FromQuery]CodeSourceQuery query)
         {
-            var codeSources = await _appController.GetAsync(filter);
+            var codeSources = await _appController.GetAsync(query.ToFilter());
             return new FetchedCodeSources { CodeSources = codeSources.ToList() };
         }
 
@@ -76,5 +76,24 @@ namespace Instances.Web.Controllers
         {
             public List<CodeSource> CodeSources { get; set; }
         }
+    }
+
+    public class CodeSourceQuery
+    {
+        public CodeSourceFilter ToFilter() => new CodeSourceFilter
+        {
+            Code = Code,
+            Id = Id,
+            Search = Search,
+            Lifecycle = Lifecycle
+        };
+
+        public HashSet<CodeSourceLifecycleStep> Lifecycle { get; set; } = CodeSource.ActiveSteps;
+
+        public string Search { get; set; }
+
+        public HashSet<int> Id { get; set; }
+
+        public string Code { get; set; }
     }
 }

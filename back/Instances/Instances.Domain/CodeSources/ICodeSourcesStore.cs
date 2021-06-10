@@ -10,7 +10,6 @@ namespace Instances.Domain.CodeSources
         Task<CodeSource> GetByIdAsync(int id);
         Task<CodeSource> CreateAsync(CodeSource codeSource);
         Task UpdateLifecycleAsync(CodeSource codeSource, CodeSourceLifecycleStep lifecycleStep);
-        Task<CodeSource> GetNonDeletedByCodeAsync(string code);
         Task AddProductionVersionAsync(CodeSource codeSource, CodeSourceProductionVersion productionVersion);
     }
 }

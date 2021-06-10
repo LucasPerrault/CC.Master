@@ -3,6 +3,7 @@ using Instances.Domain.CodeSources.Filtering;
 using Lucca.Core.Shared.Domain.Exceptions;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Instances.Application.CodeSources
@@ -15,7 +16,7 @@ namespace Instances.Application.CodeSources
         public string CommitHash { get; set; }
     }
 
-    public interface CodeSourceUpdate
+    public class CodeSourceUpdate
     {
         public CodeSourceLifecycleStep Lifecycle { get; set; }
     }
@@ -48,9 +49,9 @@ namespace Instances.Application.CodeSources
 
         public async Task<CodeSource> UpdateAsync(int id, CodeSourceUpdate codeSourceUpdate)
         {
-            var codeSource = await _codeSourcesStore.GetByIdAsync(id);
-            await _codeSourcesStore.UpdateLifecycleAsync(codeSource, codeSourceUpdate.Lifecycle);
-            return codeSource;
+            var source = await GetSingleOrDefaultAsync(CodeSourceFilter.ById(id));
+            await _codeSourcesStore.UpdateLifecycleAsync(source, codeSourceUpdate.Lifecycle);
+            return source;
         }
 
         public async Task<IEnumerable<CodeSource>> FetchFromRepoAsync(string repoUrl)
@@ -60,11 +61,7 @@ namespace Instances.Application.CodeSources
 
         public async Task UpdateProductionVersionAsync(CodeSourceProductionVersionDto dto)
         {
-            var codeSource = await _codeSourcesStore.GetNonDeletedByCodeAsync(dto.CodeSourceCode);
-            if (codeSource == null)
-            {
-                throw new BadRequestException($"Unknown code source with code {dto.CodeSourceCode}");
-            }
+            var source = await GetSingleOrDefaultAsync(CodeSourceFilter.ActiveByCode(dto.CodeSourceCode));
 
             var productionVersion = new CodeSourceProductionVersion
             {
@@ -74,7 +71,19 @@ namespace Instances.Application.CodeSources
                 Date = DateTime.Now
             };
 
-            await _codeSourcesStore.AddProductionVersionAsync(codeSource, productionVersion);
+            await _codeSourcesStore.AddProductionVersionAsync(source, productionVersion);
+        }
+
+        private async Task<CodeSource> GetSingleOrDefaultAsync(CodeSourceFilter filter)
+        {
+            var codeSources = await _codeSourcesStore.GetAsync(filter);
+            var source = codeSources.SingleOrDefault();
+            if (source == null)
+            {
+                throw new NotFoundException("Unknown code source");
+            }
+
+            return source;
         }
     }
 }

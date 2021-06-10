@@ -71,7 +71,7 @@ namespace Instances.Web
                     };
                     return client;
                 });
-            services.AddSingleton<GithubService>();
+            services.AddSingleton<IGithubService, GithubService>();
 
             services.AddScoped<InactiveDemosCleaner>();
             services.AddScoped<InstancesDuplicator>();
