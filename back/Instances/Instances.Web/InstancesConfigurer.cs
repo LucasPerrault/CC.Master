@@ -1,15 +1,19 @@
+using Instances.Application.CodeSources;
 using Instances.Application.Demos;
 using Instances.Application.Demos.Deletion;
 using Instances.Application.Demos.Duplication;
 using Instances.Application.Demos.Emails;
 using Instances.Application.Instances;
+using Instances.Domain.CodeSources;
 using Instances.Domain.Demos;
 using Instances.Domain.Demos.Cleanup;
 using Instances.Domain.Demos.Filtering;
 using Instances.Domain.Instances;
 using Instances.Domain.Shared;
+using Instances.Infra.CodeSources;
 using Instances.Infra.DataDuplication;
 using Instances.Infra.Demos;
+using Instances.Infra.Github;
 using Instances.Infra.Instances;
 using Instances.Infra.Instances.Services;
 using Instances.Infra.Shared;
@@ -18,6 +22,7 @@ using Instances.Infra.WsAuth;
 using Lucca.Core.Api.Abstractions;
 using Lucca.Core.Api.Web;
 using Microsoft.Extensions.DependencyInjection;
+using Octokit;
 using Remote.Infra.Extensions;
 using Resources.Translations;
 using System;
@@ -42,6 +47,7 @@ namespace Instances.Web
             public HubspotConfiguration Hubspot { get; set; }
             public SqlScriptPickerConfiguration SqlScriptPicker { get; set; }
             public ClusterSelectorConfiguration DemoClusterSelection { get; set; }
+            public GithubConfiguration Github { get; set; }
         }
 
         public static void ConfigureServices(IServiceCollection services, InstancesConfiguration configuration)
@@ -56,11 +62,25 @@ namespace Instances.Web
             services.AddSingleton<IDemoDeletionCalculator, DemoDeletionCalculator>();
             services.AddSingleton<ISqlScriptPicker, SqlScriptPicker>();
 
+            services.AddSingleton(
+                sp =>
+                {
+                    var client = new GitHubClient(new ProductHeaderValue(configuration.Github.ProductHeaderValue))
+                    {
+                        Credentials = new Credentials(configuration.Github.Token)
+                    };
+                    return client;
+                });
+            services.AddSingleton<GithubService>();
+
             services.AddScoped<InactiveDemosCleaner>();
             services.AddScoped<InstancesDuplicator>();
             services.AddScoped<DemoDuplicator>();
             services.AddScoped<HubspotDemoDuplicator>();
             services.AddScoped<IDemoDuplicationCompleter, DemoDuplicationCompleter>();
+
+            services.AddScoped<CodeSourcesAppController>();
+            services.AddScoped<ICodeSourceFetcherService, CodeSourceFetcherService>();
 
             services.AddScoped<IDemosStore, DemosStore>();
             services.AddScoped<IInstanceDuplicationsStore, InstanceDuplicationsStore>();
@@ -72,6 +92,7 @@ namespace Instances.Web
             services.AddScoped<ISubdomainGenerator, SubdomainGenerator>();
             services.AddScoped<ISubdomainValidator, SubdomainValidator>();
             services.AddScoped<IClusterSelector, ClusterSelector>();
+            services.AddScoped<ICodeSourcesStore, CodeSourcesStore>();
 
             services.AddScoped<IDemoEmails, DemoEmails>();
 

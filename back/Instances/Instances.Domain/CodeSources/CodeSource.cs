@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -25,6 +26,11 @@ namespace Instances.Domain.CodeSources
 
     public class CodeSource
     {
+        public static readonly HashSet<CodeSourceLifecycleStep> ActiveSteps = Enum
+            .GetValues(typeof(CodeSourceLifecycleStep))
+            .Cast<CodeSourceLifecycleStep>()
+            .Except(new [] { CodeSourceLifecycleStep.Deleted })
+            .ToHashSet();
 
         public int Id { get; set; }
         public string Name { get; set; }

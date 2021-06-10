@@ -101,6 +101,9 @@
             "UseFixedCluster": "{{ CC.Master:UseFixedClusterForDemos }}",
             "FixedClusterName": "{{ CC.Master:FixedClusterName }}",
             "ClusterChoiceCacheRetentionInHours": 24
+        },
+        "Github": {
+            "Token": "{{ CC.Master:GithubToken }}"
         }
     }
 }
