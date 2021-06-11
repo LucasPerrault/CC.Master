@@ -23,18 +23,18 @@ namespace Instances.Web.Controllers
 
         [HttpGet]
         [ForbidIfMissing(Operation.ReadCodeSources)]
-        public async Task<FetchedCodeSources> GetAsync([FromQuery]CodeSourceQuery query)
+        public async Task<CodeSourceItems> GetAsync([FromQuery]CodeSourceQuery query)
         {
             var codeSources = await _appController.GetAsync(query.ToFilter());
-            return new FetchedCodeSources { CodeSources = codeSources.ToList() };
+            return new CodeSourceItems { Items = codeSources.ToList() };
         }
 
         [HttpGet("{id:int}")]
         [ForbidIfMissing(Operation.ReadCodeSources)]
-        public async Task<FetchedCodeSources> GetAsync(int id)
+        public async Task<CodeSourceItems> GetAsync(int id)
         {
             var codeSources = await _appController.GetAsync(CodeSourceFilter.ById(id));
-            return new FetchedCodeSources { CodeSources = codeSources.ToList() };
+            return new CodeSourceItems { Items = codeSources.ToList() };
         }
 
         [HttpPost]
@@ -53,18 +53,18 @@ namespace Instances.Web.Controllers
 
         [HttpPost("update-production-version")]
         [ForbidIfMissing(Operation.EditCodeSources)]
-        public async Task<ActionResult> UpdateProductionVersionAsync([FromBody]CodeSourceProductionVersionDto codeSourceProductionVersionDto)
+        public async Task<ActionResult> UpdateProductionVersionAsync([FromBody]CodeSourceProductionVersionDto dto)
         {
-            await _appController.UpdateProductionVersionAsync(codeSourceProductionVersionDto);
+            await _appController.UpdateProductionVersionAsync(dto);
             return new StatusCodeResult(StatusCodes.Status202Accepted);
         }
 
         [HttpPost("fetch-from-github")]
         [ForbidIfMissing(Operation.ReadCodeSources)]
-        public async Task<FetchedCodeSources> FetchFromGithubAsync([FromBody]CodeSourceFetchDto dto)
+        public async Task<CodeSourceItems> FetchFromGithubAsync([FromBody]CodeSourceFetchDto dto)
         {
             var codeSources = await _appController.FetchFromRepoAsync(dto.RepoUrl);
-            return new FetchedCodeSources { CodeSources = codeSources.ToList() };
+            return new CodeSourceItems { Items = codeSources.ToList() };
         }
 
         public class CodeSourceFetchDto
@@ -72,14 +72,23 @@ namespace Instances.Web.Controllers
             public string RepoUrl { get; set; }
         }
 
-        public class FetchedCodeSources
+        public class CodeSourceItems
         {
-            public List<CodeSource> CodeSources { get; set; }
+            public List<CodeSource> Items { get; set; }
         }
     }
 
     public class CodeSourceQuery
     {
+
+        public HashSet<CodeSourceLifecycleStep> Lifecycle { get; set; } = CodeSource.ActiveSteps;
+
+        public string Search { get; set; }
+
+        public HashSet<int> Id { get; set; } = new HashSet<int>();
+
+        public string Code { get; set; }
+
         public CodeSourceFilter ToFilter() => new CodeSourceFilter
         {
             Code = Code,
@@ -87,13 +96,5 @@ namespace Instances.Web.Controllers
             Search = Search,
             Lifecycle = Lifecycle
         };
-
-        public HashSet<CodeSourceLifecycleStep> Lifecycle { get; set; } = CodeSource.ActiveSteps;
-
-        public string Search { get; set; }
-
-        public HashSet<int> Id { get; set; }
-
-        public string Code { get; set; }
     }
 }
