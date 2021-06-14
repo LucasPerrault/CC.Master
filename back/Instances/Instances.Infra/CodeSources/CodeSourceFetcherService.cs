@@ -54,7 +54,7 @@ namespace Instances.Infra.CodeSources
                 Type = GetCodeSourceTypeFromProjectType(app.ProjectType),
                 Lifecycle = CodeSourceLifecycleStep.Referenced,
                 JenkinsProjectName = app.JenkinsProjectName,
-                Config = new CodeSourceConfig()
+                Config = new CodeSourceConfig
                 {
                     IsPrivate = app.IsPrivate,
                     IisServerPath = app.Path,
