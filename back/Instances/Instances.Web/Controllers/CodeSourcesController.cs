@@ -14,18 +14,18 @@ namespace Instances.Web.Controllers
     [ApiController, Route("/api/code-sources")]
     public class CodeSourcesController
     {
-        private readonly CodeSourcesAppController _appController;
+        private readonly CodeSourcesRepository _repository;
 
-        public CodeSourcesController(CodeSourcesAppController appController)
+        public CodeSourcesController(CodeSourcesRepository repository)
         {
-            _appController = appController;
+            _repository = repository;
         }
 
         [HttpGet]
         [ForbidIfMissing(Operation.ReadCodeSources)]
         public async Task<CodeSourceItems> GetAsync([FromQuery]CodeSourceQuery query)
         {
-            var codeSources = await _appController.GetAsync(query.ToFilter());
+            var codeSources = await _repository.GetAsync(query.ToFilter());
             return new CodeSourceItems { Items = codeSources.ToList() };
         }
 
@@ -33,7 +33,7 @@ namespace Instances.Web.Controllers
         [ForbidIfMissing(Operation.ReadCodeSources)]
         public async Task<CodeSourceItems> GetAsync(int id)
         {
-            var codeSources = await _appController.GetAsync(CodeSourceFilter.ById(id));
+            var codeSources = await _repository.GetAsync(CodeSourceFilter.ById(id));
             return new CodeSourceItems { Items = codeSources.ToList() };
         }
 
@@ -41,21 +41,21 @@ namespace Instances.Web.Controllers
         [ForbidIfMissing(Operation.EditCodeSources)]
         public async Task<CodeSource> CreateAsync([FromBody]CodeSource codeSource)
         {
-            return await _appController.CreateAsync(codeSource);
+            return await _repository.CreateAsync(codeSource);
         }
 
         [HttpPut("{id:int}")]
         [ForbidIfMissing(Operation.EditCodeSources)]
         public async Task<CodeSource> UpdateAsync([FromRoute] int id, [FromBody]CodeSourceUpdate codeSourceUpdate)
         {
-            return await _appController.UpdateAsync(id, codeSourceUpdate);
+            return await _repository.UpdateAsync(id, codeSourceUpdate);
         }
 
         [HttpPost("update-production-version")]
         [ForbidIfMissing(Operation.EditCodeSources)]
         public async Task<ActionResult> UpdateProductionVersionAsync([FromBody]CodeSourceProductionVersionDto dto)
         {
-            await _appController.UpdateProductionVersionAsync(dto);
+            await _repository.UpdateProductionVersionAsync(dto);
             return new StatusCodeResult(StatusCodes.Status202Accepted);
         }
 
@@ -63,7 +63,7 @@ namespace Instances.Web.Controllers
         [ForbidIfMissing(Operation.ReadCodeSources)]
         public async Task<CodeSourceItems> FetchFromGithubAsync([FromBody]CodeSourceFetchDto dto)
         {
-            var codeSources = await _appController.FetchFromRepoAsync(dto.RepoUrl);
+            var codeSources = await _repository.FetchFromRepoAsync(dto.RepoUrl);
             return new CodeSourceItems { Items = codeSources.ToList() };
         }
 

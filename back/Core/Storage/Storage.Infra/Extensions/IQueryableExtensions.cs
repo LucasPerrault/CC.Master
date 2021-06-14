@@ -30,8 +30,8 @@ namespace Storage.Infra.Extensions
         public static IConditionalQueryableBuilder<T> WhenNotNullOrEmpty<T>(this IQueryable<T> query, string s) =>
             query.When(!string.IsNullOrEmpty(s));
 
-        public static IConditionalQueryableBuilder<T> WhenNotEmpty<T, U>(this IQueryable<T> query, IReadOnlyCollection<U> collection) =>
-            query.When(collection.Any());
+        public static IConditionalQueryableBuilder<T> WhenNotNullOrEmpty<T, U>(this IQueryable<T> query, IReadOnlyCollection<U> collection) =>
+            query.When(collection?.Any() ?? false);
 
         public static IConditionalQueryableBuilder<T> WhenHasValue<T, TStruct>(this IQueryable<T> query, TStruct? nullable)
             where TStruct : struct => query.When(nullable.HasValue);

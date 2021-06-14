@@ -22,12 +22,12 @@ namespace Instances.Application.CodeSources
     }
 
 
-    public class CodeSourcesAppController
+    public class CodeSourcesRepository
     {
         private readonly ICodeSourcesStore _codeSourcesStore;
         private readonly ICodeSourceFetcherService _fetcherService;
 
-        public CodeSourcesAppController
+        public CodeSourcesRepository
         (
             ICodeSourcesStore codeSourcesStore,
             ICodeSourceFetcherService fetcherService

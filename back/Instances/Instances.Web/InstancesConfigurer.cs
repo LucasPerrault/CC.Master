@@ -79,7 +79,7 @@ namespace Instances.Web
             services.AddScoped<HubspotDemoDuplicator>();
             services.AddScoped<IDemoDuplicationCompleter, DemoDuplicationCompleter>();
 
-            services.AddScoped<CodeSourcesAppController>();
+            services.AddScoped<CodeSourcesRepository>();
             services.AddScoped<ICodeSourceFetcherService, CodeSourceFetcherService>();
 
             services.AddScoped<IDemosStore, DemosStore>();
