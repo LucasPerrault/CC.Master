@@ -1,1 +1,3 @@
-<p>sources works!</p>
+<div class="loading mod-fullPage" *ngIf="isLoading$ | async; else isNotLoading"></div>
+<ng-template #isNotLoading>
+</ng-template>
