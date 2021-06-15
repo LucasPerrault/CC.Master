@@ -1,3 +1,4 @@
 <div class="loading mod-fullPage" *ngIf="isLoading$ | async; else isNotLoading"></div>
 <ng-template #isNotLoading>
+  <cc-code-sources-list [codeSources]="codeSources$ | async"></cc-code-sources-list>
 </ng-template>
