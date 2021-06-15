@@ -1,0 +1,11 @@
+<div class="loading mod-dialog" *ngIf="isLoading$ | async; else isNotLoading"></div>
+<ng-template #isNotLoading>
+  <cc-code-source-select [formControl]="codeSourceSelected"></cc-code-source-select>
+
+  <label class="textfield mod-search palette-grey mod-block">
+    <input class="textfield-input" type="text" [disabled]="true" [value]="githubRepo">
+    <span class="textfield-label">{{ 'front_sourcePage_form_label_githubRepoUrl' | translate }}</span>
+  </label>
+
+  <cc-code-source-form [canEditLifecycle]="true" [formControl]="codeSourceForm"></cc-code-source-form>
+</ng-template>

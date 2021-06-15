@@ -30,4 +30,9 @@ export class CodeSourcesService {
   public create$(codeSource: ICodeSource): Observable<void> {
     return this.httpClient.post<void>(this.codeSourcesEndpoint, codeSource);
   }
+
+  public edit$(codeSourceId: number, lifecycle: LifecycleStep): Observable<void> {
+    const url = `${ this.codeSourcesEndpoint }/${ codeSourceId }`;
+    return this.httpClient.put<void>(url, { lifecycle });
+  }
 }
