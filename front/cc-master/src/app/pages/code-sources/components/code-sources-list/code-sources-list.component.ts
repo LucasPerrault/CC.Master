@@ -7,6 +7,7 @@ import { ICodeSource } from '../../models/code-source.interface';
 @Component({
   selector: 'cc-code-sources-list',
   templateUrl: './code-sources-list.component.html',
+  styleUrls: ['./code-sources-list.component.scss'],
 })
 export class CodeSourcesListComponent {
   @Input() public codeSources: ICodeSource[];
