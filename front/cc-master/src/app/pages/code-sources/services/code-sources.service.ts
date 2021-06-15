@@ -26,4 +26,8 @@ export class CodeSourcesService {
     const url = `${ this.codeSourcesEndpoint }/${ id }`;
     return this.httpClient.get<ICodeSource>(url);
   }
+
+  public create$(codeSource: ICodeSource): Observable<void> {
+    return this.httpClient.post<void>(this.codeSourcesEndpoint, codeSource);
+  }
 }
