@@ -10,10 +10,48 @@ namespace Instances.Infra.Migrations
                 ALTER SCHEMA instances TRANSFER dbo.CodeSources;
             ");
             migrationBuilder.Sql($@"
+                create view [dbo].[CodeSources] with schemabinding as
+                    select
+                        id,
+                        name,
+                        code,
+                        jenkinsProjectName,
+                        type,
+                        githubRepo,
+                        lifecycle
+                    from
+                        [instances].[CodeSources]
+            ");
+
+            migrationBuilder.Sql($@"
                 ALTER SCHEMA instances TRANSFER dbo.CodeSourceConfigs;
             ");
             migrationBuilder.Sql($@"
+                create view [dbo].[CodeSourceConfigs] with schemabinding as
+                    select
+                        codeSourceId,
+                        appPath,
+                        subdomain,
+                        iisServerPath,
+                        isPrivate
+                    from
+                        [instances].[CodeSourceConfigs]
+            ");
+
+            migrationBuilder.Sql($@"
                 ALTER SCHEMA instances TRANSFER dbo.CodeSourcesProductionVersions;
+            ");
+            migrationBuilder.Sql($@"
+                create view [dbo].[CodeSourcesProductionVersions] with schemabinding as
+                    select
+                        id,
+                        date,
+                        branchName,
+                        JenkinsBuildNumber,
+                        CommitHash,
+                        CodeSourceId
+                    from
+                        [instances].[CodeSourcesProductionVersions]
             ");
 
             migrationBuilder.CreateIndex(
