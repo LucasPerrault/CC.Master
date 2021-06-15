@@ -135,6 +135,28 @@ namespace Instances.Application.Tests.CodeSources
         }
 
         [Fact]
+        public async Task ShouldMarkAsInProd()
+        {
+            await _instancesDbContext.AddAsync(new StoredCodeSource { Id = 1, Code = "source-code"});
+            await _instancesDbContext.SaveChangesAsync();
+            var repository = new CodeSourcesRepository
+            (
+                new CodeSourcesStore(_instancesDbContext),
+                _githubBranchesStoreMock.Object,
+                _fetcherServiceMock.Object
+            );
+
+            await repository.UpdateProductionVersionAsync(new CodeSourceProductionVersionDto
+            {
+                CodeSourceCode = "source-code",
+                BranchName = "main-branch-in-production"
+            });
+
+            var source = (await repository.GetAsync(CodeSourceFilter.ById(1))).SingleOrDefault();
+            source.Lifecycle.Should().Be(CodeSourceLifecycleStep.InProduction);
+        }
+
+        [Fact]
         public async Task ShouldThrowWhenUpdatingProdVersionOfUnknownSource()
         {
             var repository = new CodeSourcesRepository

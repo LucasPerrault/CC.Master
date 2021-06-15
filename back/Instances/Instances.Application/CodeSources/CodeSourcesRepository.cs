@@ -77,6 +77,10 @@ namespace Instances.Application.CodeSources
             };
 
             await _codeSourcesStore.AddProductionVersionAsync(source, productionVersion);
+            if (source.Lifecycle != CodeSourceLifecycleStep.InProduction)
+            {
+                await _codeSourcesStore.UpdateLifecycleAsync(source, CodeSourceLifecycleStep.InProduction);
+            }
         }
 
         private async Task<CodeSource> GetSingleOrDefaultAsync(CodeSourceFilter filter)
