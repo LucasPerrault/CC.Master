@@ -30,8 +30,10 @@ namespace Instances.Infra.Storage.Stores
 
         public async Task<CodeSource> CreateAsync(CodeSource codeSource)
         {
-            _dbContext.Add(StoredCodeSource.FromCodeSource(codeSource));
+            var storedCodeSource = StoredCodeSource.FromCodeSource(codeSource);
+            _dbContext.Add(storedCodeSource);
             await _dbContext.SaveChangesAsync();
+            codeSource.Id = storedCodeSource.Id;
             return codeSource;
         }
 

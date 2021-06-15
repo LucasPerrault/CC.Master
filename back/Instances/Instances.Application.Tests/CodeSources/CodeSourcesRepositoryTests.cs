@@ -19,9 +19,11 @@ namespace Instances.Application.Tests.CodeSources
     {
         private readonly Mock<ICodeSourceFetcherService> _fetcherServiceMock;
         private readonly InstancesDbContext _instancesDbContext;
+        private readonly Mock<IGithubBranchesStore> _githubBranchesStoreMock;
 
         public CodeSourcesRepositoryTests()
         {
+            _githubBranchesStoreMock = new Mock<IGithubBranchesStore>();
             _fetcherServiceMock = new Mock<ICodeSourceFetcherService>();
             _instancesDbContext = InMemoryDbHelper.InitialiseDb<InstancesDbContext>("Instances", o => new InstancesDbContext(o));
         }
@@ -33,7 +35,7 @@ namespace Instances.Application.Tests.CodeSources
             await _instancesDbContext.AddAsync(new StoredCodeSource  { Id = 2, Lifecycle = CodeSourceLifecycleStep.Referenced });
             await _instancesDbContext.SaveChangesAsync();
 
-            var repository = new CodeSourcesRepository(new CodeSourcesStore(_instancesDbContext), _fetcherServiceMock.Object);
+            var repository = new CodeSourcesRepository(new CodeSourcesStore(_instancesDbContext), _githubBranchesStoreMock.Object, _fetcherServiceMock.Object );
             var filter = new CodeSourceFilter {Lifecycle = new HashSet<CodeSourceLifecycleStep> { CodeSourceLifecycleStep.Referenced }};
             var codeSources = await repository.GetAsync(filter);
             codeSources.Single().Id.Should().Be(2);
@@ -58,6 +60,7 @@ namespace Instances.Application.Tests.CodeSources
             var repository = new CodeSourcesRepository
             (
                 new CodeSourcesStore(_instancesDbContext),
+                _githubBranchesStoreMock.Object,
                 _fetcherServiceMock.Object
             );
             var filter = new CodeSourceFilter { Lifecycle = CodeSource.ActiveSteps };
@@ -73,6 +76,7 @@ namespace Instances.Application.Tests.CodeSources
             var repository = new CodeSourcesRepository
             (
                 new CodeSourcesStore(_instancesDbContext),
+                _githubBranchesStoreMock.Object,
                 _fetcherServiceMock.Object
             );
             await repository.FetchFromRepoAsync(repoUrl);
@@ -85,6 +89,7 @@ namespace Instances.Application.Tests.CodeSources
             var repository = new CodeSourcesRepository
             (
                 new CodeSourcesStore(_instancesDbContext),
+                _githubBranchesStoreMock.Object,
                 _fetcherServiceMock.Object
             );
             var ex = await Assert.ThrowsAsync<NotFoundException>(() => repository.UpdateAsync(1, new CodeSourceUpdate { Lifecycle = CodeSourceLifecycleStep.InProduction }));
@@ -99,6 +104,7 @@ namespace Instances.Application.Tests.CodeSources
             var repository = new CodeSourcesRepository
             (
                 new CodeSourcesStore(_instancesDbContext),
+                _githubBranchesStoreMock.Object,
                 _fetcherServiceMock.Object
             );
 
@@ -114,6 +120,7 @@ namespace Instances.Application.Tests.CodeSources
             var repository = new CodeSourcesRepository
             (
                 new CodeSourcesStore(_instancesDbContext),
+                _githubBranchesStoreMock.Object,
                 _fetcherServiceMock.Object
             );
 
@@ -133,6 +140,7 @@ namespace Instances.Application.Tests.CodeSources
             var repository = new CodeSourcesRepository
             (
                 new CodeSourcesStore(_instancesDbContext),
+                _githubBranchesStoreMock.Object,
                 _fetcherServiceMock.Object
             );
 
@@ -141,6 +149,21 @@ namespace Instances.Application.Tests.CodeSources
                 CodeSourceCode = "source-code"
             }));
             ex.Message.Should().Contain("Unknown code source");
+        }
+
+        [Fact]
+        public async Task ShouldCreateDefaultBranchAfterSourceCreation()
+        {
+            var source = new CodeSource();
+            var repository = new CodeSourcesRepository
+            (
+                new CodeSourcesStore(_instancesDbContext),
+                _githubBranchesStoreMock.Object,
+                _fetcherServiceMock.Object
+            );
+
+            await repository.CreateAsync(source);
+            _githubBranchesStoreMock.Verify(s => s.CreateForNewSourceCodeAsync(source), Times.Once);
         }
     }
 }

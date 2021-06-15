@@ -25,15 +25,18 @@ namespace Instances.Application.CodeSources
     public class CodeSourcesRepository
     {
         private readonly ICodeSourcesStore _codeSourcesStore;
+        private readonly IGithubBranchesStore _githubBranchesStore;
         private readonly ICodeSourceFetcherService _fetcherService;
 
         public CodeSourcesRepository
         (
             ICodeSourcesStore codeSourcesStore,
+            IGithubBranchesStore githubBranchesStore,
             ICodeSourceFetcherService fetcherService
         )
         {
             _codeSourcesStore = codeSourcesStore;
+            _githubBranchesStore = githubBranchesStore;
             _fetcherService = fetcherService;
         }
 
@@ -44,7 +47,9 @@ namespace Instances.Application.CodeSources
 
         public async Task<CodeSource> CreateAsync(CodeSource codeSource)
         {
-            return await _codeSourcesStore.CreateAsync(codeSource);
+            await _codeSourcesStore.CreateAsync(codeSource);
+            await _githubBranchesStore.CreateForNewSourceCodeAsync(codeSource);
+            return codeSource;
         }
 
         public async Task<CodeSource> UpdateAsync(int id, CodeSourceUpdate codeSourceUpdate)
