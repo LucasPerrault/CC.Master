@@ -31,7 +31,7 @@ namespace Instances.Web
 {
     public static class InstancesConfigurer
     {
-        public class InstancesStoreConfiguration
+        public class LegacyCloudControlEndpointConfiguration
         {
             public Uri Host { get; set; }
             public string Endpoint { get; set; }
@@ -40,7 +40,8 @@ namespace Instances.Web
 
         public class InstancesConfiguration
         {
-            public InstancesStoreConfiguration InstancesStore { get; set; }
+            public LegacyCloudControlEndpointConfiguration InstancesStore { get; set; }
+            public LegacyCloudControlEndpointConfiguration CodeSourcesStore { get; set; }
             public IdentityAuthenticationConfig Identity { get; set; }
             public CcDataConfiguration CcData { get; set; }
             public WsAuthConfiguration WsAuth { get; set; }
@@ -115,6 +116,13 @@ namespace Instances.Web
                     .WithBaseAddress(configuration.InstancesStore.Host, configuration.InstancesStore.Endpoint)
                     .WithAuthScheme("CloudControl").AuthenticateAsApplication(configuration.InstancesStore.Token);
 
+            });
+
+            services.AddHttpClient<IGithubBranchesStore, GithubBranchesRemoteStore>(client =>
+            {
+                client.WithUserAgent(nameof(InstancesRemoteStore))
+                    .WithBaseAddress(configuration.CodeSourcesStore.Host, configuration.CodeSourcesStore.Endpoint)
+                    .WithAuthScheme("CloudControl").AuthenticateAsApplication(configuration.CodeSourcesStore.Token);
             });
 
             services.AddHttpClient<WsAuthRemoteService>(client =>

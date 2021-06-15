@@ -73,6 +73,11 @@
             "Endpoint": "/api/v3/instances",
             "Token": "{{ CC.Master:LegacyCommunicationToken }}"
         },
+        "CodeSourceStore": {
+            "Host": "http://{{ CC.Master:LegacyCloudControlHost }}",
+            "Endpoint": "/api/v3/codeSources",
+            "Token": "{{ CC.Master:LegacyCommunicationToken }}"
+        },
         "Identity": {
             "ClientId": "{{ luccaidentity:CloudControlClientId }}",
             "ClientSecret": "{{ luccaidentity:CloudControlClientSecret }}",
