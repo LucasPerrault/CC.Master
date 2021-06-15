@@ -1,3 +1,5 @@
+import { ILifecycleStep } from '../models/lifecycle-step.interface';
+
 export enum LifecycleStep {
   Referenced = 'Referenced',
   Preview = 'Preview',
@@ -25,3 +27,30 @@ export const getLifecycleStepName = (lifecycle: LifecycleStep): string => {
       return 'front_sourcePage_lifecycleStep_unknown';
   }
 };
+
+export const lifecycles: ILifecycleStep[] = [
+  {
+    id: LifecycleStep.Referenced,
+    name: getLifecycleStepName(LifecycleStep.Referenced),
+  },
+  {
+    id: LifecycleStep.Preview,
+    name: getLifecycleStepName(LifecycleStep.Preview),
+  },
+  {
+    id: LifecycleStep.ReadyForDeploy,
+    name: getLifecycleStepName(LifecycleStep.ReadyForDeploy),
+  },
+  {
+    id: LifecycleStep.InProduction,
+    name: getLifecycleStepName(LifecycleStep.InProduction),
+  },
+  {
+    id: LifecycleStep.ToDelete,
+    name: getLifecycleStepName(LifecycleStep.ToDelete),
+  },
+  {
+    id: LifecycleStep.Deleted,
+    name: getLifecycleStepName(LifecycleStep.Deleted),
+  },
+];
