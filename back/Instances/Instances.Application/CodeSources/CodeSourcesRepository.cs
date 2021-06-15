@@ -64,6 +64,11 @@ namespace Instances.Application.CodeSources
             return await _fetcherService.FetchAsync(repoUrl);
         }
 
+        public async Task<CodeSource> GetByIdAsync(int id)
+        {
+            return await GetSingleOrDefaultAsync(CodeSourceFilter.ById(id));
+        }
+
         public async Task UpdateProductionVersionAsync(CodeSourceProductionVersionDto dto)
         {
             var source = await GetSingleOrDefaultAsync(CodeSourceFilter.ActiveByCode(dto.CodeSourceCode));

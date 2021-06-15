@@ -31,10 +31,9 @@ namespace Instances.Web.Controllers
 
         [HttpGet("{id:int}")]
         [ForbidIfMissing(Operation.ReadCodeSources)]
-        public async Task<CodeSourceItems> GetAsync(int id)
+        public async Task<CodeSource> GetAsync(int id)
         {
-            var codeSources = await _repository.GetAsync(CodeSourceFilter.ById(id));
-            return new CodeSourceItems { Items = codeSources.ToList() };
+            return await _repository.GetByIdAsync(id);
         }
 
         [HttpPost]
