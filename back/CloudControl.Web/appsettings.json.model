@@ -73,7 +73,7 @@
             "Endpoint": "/api/v3/instances",
             "Token": "{{ CC.Master:LegacyCommunicationToken }}"
         },
-        "CodeSourceStore": {
+        "CodeSourcesStore": {
             "Host": "http://{{ CC.Master:LegacyCloudControlHost }}",
             "Endpoint": "/api/v3/codeSources",
             "Token": "{{ CC.Master:LegacyCommunicationToken }}"
