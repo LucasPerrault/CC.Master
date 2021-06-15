@@ -29,7 +29,7 @@ namespace Instances.Domain.CodeSources
         public static HashSet<CodeSourceLifecycleStep> ActiveSteps => Enum
             .GetValues(typeof(CodeSourceLifecycleStep))
             .Cast<CodeSourceLifecycleStep>()
-            .Except(new[] { CodeSourceLifecycleStep.Deleted })
+            .Except(new[] { CodeSourceLifecycleStep.Deleted, CodeSourceLifecycleStep.ToDelete })
             .ToHashSet();
 
         public int Id { get; set; }

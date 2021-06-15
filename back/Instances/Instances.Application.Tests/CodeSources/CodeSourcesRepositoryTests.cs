@@ -45,11 +45,11 @@ namespace Instances.Application.Tests.CodeSources
         public async Task ShouldFilterOutDeletedLifeCycleByDefault()
         {
             await _instancesDbContext.AddAsync(new StoredCodeSource { Id = 1, Lifecycle = CodeSourceLifecycleStep.Deleted });
+            await _instancesDbContext.AddAsync(new StoredCodeSource { Id = 2, Lifecycle = CodeSourceLifecycleStep.ToDelete });
 
             var activeSources = new List<StoredCodeSource>
             {
-                new StoredCodeSource { Id = 2, Lifecycle = CodeSourceLifecycleStep.ReadyForDeploy },
-                new StoredCodeSource { Id = 3, Lifecycle = CodeSourceLifecycleStep.ToDelete },
+                new StoredCodeSource { Id = 3, Lifecycle = CodeSourceLifecycleStep.ReadyForDeploy },
                 new StoredCodeSource { Id = 4, Lifecycle = CodeSourceLifecycleStep.Preview },
                 new StoredCodeSource { Id = 5, Lifecycle = CodeSourceLifecycleStep.Referenced },
                 new StoredCodeSource { Id = 6, Lifecycle = CodeSourceLifecycleStep.InProduction },
@@ -65,8 +65,9 @@ namespace Instances.Application.Tests.CodeSources
             );
             var filter = new CodeSourceFilter { Lifecycle = CodeSource.ActiveSteps };
             var codeSources = await repository.GetAsync(filter);
-            codeSources.Count().Should().Be(5);
+            codeSources.Count().Should().Be(4);
             codeSources.Should().NotContain(a => a.Lifecycle == CodeSourceLifecycleStep.Deleted);
+            codeSources.Should().NotContain(a => a.Lifecycle == CodeSourceLifecycleStep.ToDelete);
         }
 
         [Fact]

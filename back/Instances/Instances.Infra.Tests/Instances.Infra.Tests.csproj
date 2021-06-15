@@ -29,8 +29,4 @@
       <ProjectReference Include="..\Instances.Infra\Instances.Infra.csproj" />
     </ItemGroup>
 
-    <ItemGroup>
-      <Folder Include="CodeSources" />
-    </ItemGroup>
-
 </Project>
