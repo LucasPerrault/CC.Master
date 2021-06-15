@@ -1,0 +1,29 @@
+import { HttpClient, HttpParams } from '@angular/common/http';
+import { Injectable } from '@angular/core';
+import { IHttpApiV4CollectionResponse } from '@cc/common/queries';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
+
+import { LifecycleStep } from '../constants/lifecycle-step.enum';
+import { ICodeSource } from '../models/code-source.interface';
+
+@Injectable()
+export class CodeSourcesService {
+  private readonly codeSourcesEndpoint = '/api/code-sources';
+
+  constructor(private httpClient: HttpClient) {}
+
+  public getCodeSources$(): Observable<ICodeSource[]> {
+    const params = new HttpParams()
+      .set('lifecycle', `${Object.keys(LifecycleStep)}`)
+      .set('orderBy', 'code,asc');
+
+    return this.httpClient.get<IHttpApiV4CollectionResponse<ICodeSource>>(this.codeSourcesEndpoint, { params })
+      .pipe(map(response => response.items));
+  }
+
+  public getCodeSource$(id: number): Observable<ICodeSource> {
+    const url = `${ this.codeSourcesEndpoint }/${ id }`;
+    return this.httpClient.get<ICodeSource>(url);
+  }
+}
