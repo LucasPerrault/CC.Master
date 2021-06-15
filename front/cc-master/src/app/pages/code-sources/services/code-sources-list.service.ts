@@ -21,4 +21,19 @@ export class CodeSourcesListService {
     return this.httpClient.get<IHttpApiV4CollectionResponse<ICodeSource>>(this.codeSourcesEndpoint, { params })
       .pipe(map(response => response.items));
   }
+
+  public getActiveCodeSources(sources: ICodeSource[]): ICodeSource[] {
+    return sources.filter(cs => cs.lifecycle === LifecycleStep.Preview
+      || cs.lifecycle === LifecycleStep.ReadyForDeploy
+      || cs.lifecycle === LifecycleStep.InProduction,
+    );
+  }
+
+  public getReferencedCodeSources(sources: ICodeSource[]): ICodeSource[] {
+    return sources.filter(cs => cs.lifecycle === LifecycleStep.Referenced);
+  }
+
+  public getDeletedCodeSources(sources: ICodeSource[]): ICodeSource[] {
+    return sources.filter(cs => cs.lifecycle === LifecycleStep.ToDelete || cs.lifecycle === LifecycleStep.Deleted);
+  }
 }
