@@ -5,6 +5,8 @@ import { ForbiddenComponent, NotFoundComponent } from '@cc/common/error-redirect
 import { NavigationPath, navigationTabs } from '@cc/common/navigation';
 import { NoNavPath } from '@cc/common/routing';
 
+import { CodeSourcesComponent } from './pages/code-sources/code-sources.component';
+import { CodeSourcesModule } from './pages/code-sources/code-sources.module';
 import { LogsComponent } from './pages/logs/logs.component';
 import { LogsModule } from './pages/logs/logs.module';
 
@@ -12,6 +14,10 @@ const pageRoutes: Routes = [
   {
     path: NavigationPath.Logs,
     component: LogsComponent,
+  },
+  {
+    path: NavigationPath.CodeSources,
+    component: CodeSourcesComponent,
   },
 ];
 
@@ -26,6 +32,7 @@ const routes: Routes = [
   imports: [
     RouterModule.forRoot(routes),
     LogsModule,
+    CodeSourcesModule,
   ],
   exports: [RouterModule],
 })
