@@ -10,6 +10,7 @@ import { ICodeSource } from '../../models/code-source.interface';
   styleUrls: ['./code-sources-list.component.scss'],
 })
 export class CodeSourcesListComponent {
+  @Input() public canEditCodeSources: boolean;
   @Input() public codeSources: ICodeSource[];
 
   private readonly githubUrl = 'https://github.com/';

@@ -35,7 +35,7 @@
         {{ codeSource.config.iisServerPath }}
       </td>
       <td class="table-body-row-cell mod-actions">
-        <button class="actionIcon palette-grey" [routerLink]="[codeSource.id, 'edit']">
+        <button class="actionIcon palette-grey" [routerLink]="[codeSource.id, 'edit']" *ngIf="canEditCodeSources">
           <span aria-hidden="true" class="lucca-icon icon-edit"></span>
         </button>
         <button class="actionIcon palette-grey"

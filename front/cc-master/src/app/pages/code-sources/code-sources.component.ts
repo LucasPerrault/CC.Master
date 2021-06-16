@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
+import { Operation, RightsService } from '@cc/aspects/rights';
 import { Observable, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
@@ -18,7 +19,10 @@ export class CodeSourcesComponent implements OnInit, OnDestroy {
 
   private destroy$: Subject<void> = new Subject<void>();
 
-  constructor(private codeSourcesListService: CodeSourcesListService) { }
+  constructor(
+    private codeSourcesListService: CodeSourcesListService,
+    private rightsService: RightsService,
+  ) { }
 
   public ngOnInit(): void {
     this.lifecycleFilter.valueChanges
@@ -45,5 +49,9 @@ export class CodeSourcesComponent implements OnInit, OnDestroy {
 
   public get isLoading$(): Observable<boolean> {
     return this.codeSourcesListService.isLoading$;
+  }
+
+  public get canEditCodeSources(): boolean {
+    return this.rightsService.hasOperation(Operation.EditCodeSources);
   }
 }

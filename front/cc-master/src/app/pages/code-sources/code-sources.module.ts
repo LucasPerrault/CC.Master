@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule, Routes } from '@angular/router';
+import { Operation, OperationsGuard } from '@cc/aspects/rights';
 import { TranslateModule } from '@cc/aspects/translate';
 import { NavigationPath } from '@cc/common/navigation';
 import { LuSidepanelModule } from '@lucca-front/ng/sidepanel';
@@ -33,10 +34,14 @@ const routes: Routes = [
       {
         path: 'create',
         component: CodeSourceCreationEntryModalComponent,
+        canActivate: [OperationsGuard],
+        data: { operations: [Operation.EditCodeSources] },
       },
       {
         path: ':id/edit',
         component: CodeSourceEditionEntryModalComponent,
+        canActivate: [OperationsGuard],
+        data: { operations: [Operation.EditCodeSources] },
       },
     ],
   },
