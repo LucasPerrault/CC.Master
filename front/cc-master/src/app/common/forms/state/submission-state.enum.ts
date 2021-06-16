@@ -17,7 +17,7 @@ export const toSubmissionState = (): UnaryFunction<Observable<any>, Observable<S
   );
 
 const idleAfter$ = (dueTime: number, state: SubmissionState): Observable<SubmissionState> =>
-  timer(1000).pipe(
+  timer(dueTime).pipe(
     take(1),
     map(() => SubmissionState.Idle),
     startWith(state),
