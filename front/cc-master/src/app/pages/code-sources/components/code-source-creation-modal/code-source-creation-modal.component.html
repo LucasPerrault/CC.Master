@@ -5,7 +5,7 @@
 </label>
 <div>
   <button class="button u-marginTopSmall u-right"
-          *ngIf="!codeSourceForm.value"
+          *ngIf="!(codeSourcesFetched$ | async)"
           [ngClass]="fetchButtonState$ | async"
           [disabled]="!githubRepoUrlControl.value"
           (click)="fetchGithubData(githubRepoUrlControl.value)">
