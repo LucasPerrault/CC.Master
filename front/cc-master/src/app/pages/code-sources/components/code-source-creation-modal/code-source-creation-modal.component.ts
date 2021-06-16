@@ -5,7 +5,7 @@ import { TranslatePipe } from '@cc/aspects/translate';
 import { getButtonState, toSubmissionState } from '@cc/common/forms';
 import { ILuSidepanelContent, LuSidepanel } from '@lucca-front/ng/sidepanel';
 import { Observable, ReplaySubject, Subject } from 'rxjs';
-import { map, share, take, takeUntil } from 'rxjs/operators';
+import { map, share, startWith, take, takeUntil, tap } from 'rxjs/operators';
 
 import { ICodeSource } from '../../models/code-source.interface';
 import { CodeSourcesService } from '../../services/code-sources.service';
@@ -53,6 +53,7 @@ export class CodeSourceCreationModalComponent implements OnInit, OnDestroy, ILuS
   public codeSourceSelected: FormControl = new FormControl();
 
   public codeSourcesFetched$: ReplaySubject<ICodeSource[]> = new ReplaySubject<ICodeSource[]>(1);
+  public hasCodeSourcesFetched$: Observable<boolean>;
   public fetchButtonState$: Subject<string> = new Subject<string>();
   public githubRepoUrlControl: FormControl = new FormControl('');
 
@@ -74,6 +75,11 @@ export class CodeSourceCreationModalComponent implements OnInit, OnDestroy, ILuS
     this.codeSourceSelected.valueChanges
       .pipe(takeUntil(this.destroy$))
       .subscribe(cs => this.codeSourceForm.patchValue(cs));
+
+    this.hasCodeSourcesFetched$ = this.codeSourcesFetched$.pipe(
+      map(cs => !!cs && !!cs.length),
+      startWith(false),
+    );
   }
 
   public ngOnDestroy(): void {
@@ -106,9 +112,5 @@ export class CodeSourceCreationModalComponent implements OnInit, OnDestroy, ILuS
     sourcesFetched$
       .pipe(take(1), toSubmissionState(), map(state => getButtonState(state)))
       .subscribe(state => this.fetchButtonState$.next(state));
-  }
-
-  public get hasCodeSourcesFetched$(): Observable<boolean> {
-    return this.codeSourcesFetched$.pipe(map(cs => !!cs && !!cs.length));
   }
 }
