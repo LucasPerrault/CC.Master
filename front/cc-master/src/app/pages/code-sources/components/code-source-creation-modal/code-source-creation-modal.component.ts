@@ -50,7 +50,7 @@ export class CodeSourceCreationModalComponent implements OnInit, OnDestroy, ILuS
   public submitLabel: string;
   public submitDisabled = true;
 
-  public codeSourceForm: FormControl = new FormControl();
+  public codeSourceForm: FormControl = new FormControl({ value: null, disabled: true });
   public codeSourceSelected: FormControl = new FormControl();
 
   public codeSourcesFetched$: ReplaySubject<ICodeSource[]> = new ReplaySubject<ICodeSource[]>(1);
