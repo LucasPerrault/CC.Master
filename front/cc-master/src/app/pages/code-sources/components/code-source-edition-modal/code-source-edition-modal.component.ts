@@ -6,9 +6,9 @@ import { ILuSidepanelContent, LU_SIDEPANEL_DATA, LuSidepanel } from '@lucca-fron
 import { combineLatest, Observable, ReplaySubject, Subject } from 'rxjs';
 import { finalize, take, takeUntil } from 'rxjs/operators';
 
+import { CodeSourceFormKey } from '../../constants/code-source-form-key.enum';
 import { CodeSourcesService } from '../../services/code-sources.service';
 import { CodeSourcesListService } from '../../services/code-sources-list.service';
-import { CodeSourceFormKey } from '../../constants/code-source-form-key.enum';
 
 @Component({
   selector: 'cc-code-sources-edition-entry-modal',

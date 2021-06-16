@@ -5,7 +5,7 @@ import { TranslatePipe } from '@cc/aspects/translate';
 import { getButtonState, toSubmissionState } from '@cc/common/forms';
 import { ILuSidepanelContent, LuSidepanel } from '@lucca-front/ng/sidepanel';
 import { Observable, ReplaySubject, Subject } from 'rxjs';
-import { filter, map, share, take, takeUntil } from 'rxjs/operators';
+import { map, share, take, takeUntil } from 'rxjs/operators';
 
 import { ICodeSource } from '../../models/code-source.interface';
 import { CodeSourcesService } from '../../services/code-sources.service';
@@ -108,6 +108,10 @@ export class CodeSourceCreationModalComponent implements OnInit, OnDestroy, ILuS
     sourcesFetched$
       .pipe(take(1), toSubmissionState(), map(state => getButtonState(state)))
       .subscribe(state => this.fetchButtonState$.next(state));
+  }
+
+  public get hasCodeSourcesFetched$(): Observable<boolean> {
+    return this.codeSourcesFetched$.pipe(map(cs => !!cs && !!cs.length));
   }
 
 }
