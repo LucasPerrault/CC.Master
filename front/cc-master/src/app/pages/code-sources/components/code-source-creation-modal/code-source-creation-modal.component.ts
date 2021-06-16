@@ -9,7 +9,6 @@ import { map, share, take, takeUntil } from 'rxjs/operators';
 
 import { ICodeSource } from '../../models/code-source.interface';
 import { CodeSourcesService } from '../../services/code-sources.service';
-import { CodeSourcesFetchingService } from '../../services/code-sources-fetching.service';
 import { CodeSourcesListService } from '../../services/code-sources-list.service';
 
 @Component({
@@ -61,7 +60,6 @@ export class CodeSourceCreationModalComponent implements OnInit, OnDestroy, ILuS
 
   constructor(
     private translatePipe: TranslatePipe,
-    private codeSourcesFetchingService: CodeSourcesFetchingService,
     private codeSourcesService: CodeSourcesService,
   ) {
     this.title = this.translatePipe.transform('front_sourcePage_creationModal_title');
@@ -92,7 +90,7 @@ export class CodeSourceCreationModalComponent implements OnInit, OnDestroy, ILuS
   }
 
   public fetchGithubData(githubRepoUrl: string): void {
-    const sourcesFetched$ = this.codeSourcesFetchingService.getDataFromGithub$(githubRepoUrl)
+    const sourcesFetched$ = this.codeSourcesService.getDataFromGithub$(githubRepoUrl)
       .pipe(take(1), share());
 
     sourcesFetched$

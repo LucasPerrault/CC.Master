@@ -22,7 +22,6 @@ import { CodeSourcesListComponent } from './components/code-sources-list/code-so
 import { LifecycleButtonGroupComponent } from './components/lifecycle-button-group/lifecycle-button-group.component';
 import { LifecycleSelectModule } from './components/lifecycle-select/lifecycle-select.module';
 import { CodeSourcesService } from './services/code-sources.service';
-import { CodeSourcesFetchingService } from './services/code-sources-fetching.service';
 import { CodeSourcesListService } from './services/code-sources-list.service';
 
 @NgModule({
@@ -50,7 +49,6 @@ import { CodeSourcesListService } from './services/code-sources-list.service';
   ],
   providers: [
     CodeSourcesListService,
-    CodeSourcesFetchingService,
     CodeSourcesService,
   ],
 })

@@ -25,6 +25,12 @@ export class CodeSourcesService {
     return this.httpClient.get<ICodeSource>(url);
   }
 
+  public getDataFromGithub$(repoUrl: string): Observable<ICodeSource[]> {
+    const url = `${ this.codeSourcesEndpoint }/fetch-from-github`;
+    return this.httpClient.post<IHttpApiV4CollectionResponse<ICodeSource>>(url, { repoUrl })
+      .pipe(map(result => result.items));
+  }
+
   public create$(codeSource: ICodeSource): Observable<void> {
     return this.httpClient.post<void>(this.codeSourcesEndpoint, codeSource);
   }
