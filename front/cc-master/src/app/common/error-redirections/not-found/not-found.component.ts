@@ -6,4 +6,7 @@ import { NoNavComponent } from '@cc/common/routing';
     templateUrl: './not-found.component.html',
 })
 export class NotFoundComponent extends NoNavComponent {
+  public goBack(): void {
+    window.history.back();
+  }
 }

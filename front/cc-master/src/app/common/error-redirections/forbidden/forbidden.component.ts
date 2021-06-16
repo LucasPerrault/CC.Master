@@ -6,4 +6,7 @@ import { NoNavComponent } from '@cc/common/routing';
   templateUrl: './forbidden.component.html',
 })
 export class ForbiddenComponent extends NoNavComponent {
+  public goBack(): void {
+    window.history.go(-2);
+  }
 }
