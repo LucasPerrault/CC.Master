@@ -5,6 +5,8 @@ using Instances.Domain.CodeSources.Filtering;
 using Instances.Infra.Storage;
 using Instances.Infra.Storage.Models;
 using Instances.Infra.Storage.Stores;
+using Lucca.Core.Api.Abstractions.Paging;
+using Lucca.Core.Api.Queryable.Paging;
 using Lucca.Core.Shared.Domain.Exceptions;
 using Moq;
 using System.Collections.Generic;
@@ -20,10 +22,17 @@ namespace Instances.Application.Tests.CodeSources
         private readonly Mock<ICodeSourceFetcherService> _fetcherServiceMock;
         private readonly InstancesDbContext _instancesDbContext;
         private readonly Mock<IGithubBranchesStore> _githubBranchesStoreMock;
+        private readonly Mock<IQueryPager> _queryPagerMock;
 
         public CodeSourcesRepositoryTests()
         {
             _githubBranchesStoreMock = new Mock<IGithubBranchesStore>();
+            _queryPagerMock = new Mock<IQueryPager>();
+            _queryPagerMock
+                .Setup(p => p.ToPageAsync(It.IsAny<IQueryable<StoredCodeSource>>(), It.IsAny<IPageToken>()))
+                .Returns<IQueryable<StoredCodeSource>, IPageToken>(
+                    (queryable, pageToken) => Task.FromResult(new Page<StoredCodeSource> { Items = queryable.ToList() })
+                );
             _fetcherServiceMock = new Mock<ICodeSourceFetcherService>();
             _instancesDbContext = InMemoryDbHelper.InitialiseDb<InstancesDbContext>("Instances", o => new InstancesDbContext(o));
         }
@@ -35,10 +44,10 @@ namespace Instances.Application.Tests.CodeSources
             await _instancesDbContext.AddAsync(new StoredCodeSource  { Id = 2, Lifecycle = CodeSourceLifecycleStep.Referenced });
             await _instancesDbContext.SaveChangesAsync();
 
-            var repository = new CodeSourcesRepository(new CodeSourcesStore(_instancesDbContext), _githubBranchesStoreMock.Object, _fetcherServiceMock.Object );
+            var repository = new CodeSourcesRepository(new CodeSourcesStore(_instancesDbContext, _queryPagerMock.Object), _githubBranchesStoreMock.Object, _fetcherServiceMock.Object );
             var filter = new CodeSourceFilter {Lifecycle = new HashSet<CodeSourceLifecycleStep> { CodeSourceLifecycleStep.Referenced }};
-            var codeSources = await repository.GetAsync(filter);
-            codeSources.Single().Id.Should().Be(2);
+            var codeSources = await repository.GetAsync(new NumberPageToken(),filter);
+            codeSources.Items.Single().Id.Should().Be(2);
         }
 
         [Fact]
@@ -59,15 +68,15 @@ namespace Instances.Application.Tests.CodeSources
 
             var repository = new CodeSourcesRepository
             (
-                new CodeSourcesStore(_instancesDbContext),
+                new CodeSourcesStore(_instancesDbContext, _queryPagerMock.Object),
                 _githubBranchesStoreMock.Object,
                 _fetcherServiceMock.Object
             );
             var filter = new CodeSourceFilter { Lifecycle = CodeSource.ActiveSteps };
-            var codeSources = await repository.GetAsync(filter);
-            codeSources.Count().Should().Be(4);
-            codeSources.Should().NotContain(a => a.Lifecycle == CodeSourceLifecycleStep.Deleted);
-            codeSources.Should().NotContain(a => a.Lifecycle == CodeSourceLifecycleStep.ToDelete);
+            var codeSources = await repository.GetAsync(new NumberPageToken(),filter);
+            codeSources.Items.Count().Should().Be(4);
+            codeSources.Items.Should().NotContain(a => a.Lifecycle == CodeSourceLifecycleStep.Deleted);
+            codeSources.Items.Should().NotContain(a => a.Lifecycle == CodeSourceLifecycleStep.ToDelete);
         }
 
         [Fact]
@@ -76,7 +85,7 @@ namespace Instances.Application.Tests.CodeSources
             var repoUrl = "https://github.com/aperture-science/glados";
             var repository = new CodeSourcesRepository
             (
-                new CodeSourcesStore(_instancesDbContext),
+                new CodeSourcesStore(_instancesDbContext, _queryPagerMock.Object),
                 _githubBranchesStoreMock.Object,
                 _fetcherServiceMock.Object
             );
@@ -89,7 +98,7 @@ namespace Instances.Application.Tests.CodeSources
         {
             var repository = new CodeSourcesRepository
             (
-                new CodeSourcesStore(_instancesDbContext),
+                new CodeSourcesStore(_instancesDbContext, _queryPagerMock.Object),
                 _githubBranchesStoreMock.Object,
                 _fetcherServiceMock.Object
             );
@@ -104,7 +113,7 @@ namespace Instances.Application.Tests.CodeSources
             await _instancesDbContext.SaveChangesAsync();
             var repository = new CodeSourcesRepository
             (
-                new CodeSourcesStore(_instancesDbContext),
+                new CodeSourcesStore(_instancesDbContext, _queryPagerMock.Object),
                 _githubBranchesStoreMock.Object,
                 _fetcherServiceMock.Object
             );
@@ -120,7 +129,7 @@ namespace Instances.Application.Tests.CodeSources
             await _instancesDbContext.SaveChangesAsync();
             var repository = new CodeSourcesRepository
             (
-                new CodeSourcesStore(_instancesDbContext),
+                new CodeSourcesStore(_instancesDbContext, _queryPagerMock.Object),
                 _githubBranchesStoreMock.Object,
                 _fetcherServiceMock.Object
             );
@@ -131,7 +140,7 @@ namespace Instances.Application.Tests.CodeSources
                 BranchName = "main-branch-in-production"
             });
 
-            var source = (await repository.GetAsync(CodeSourceFilter.ById(1))).SingleOrDefault();
+            var source = (await repository.GetAsync(new NumberPageToken(),CodeSourceFilter.ById(1))).Items.SingleOrDefault();
             source.CurrentProductionVersion.BranchName.Should().Be("main-branch-in-production");
         }
 
@@ -142,7 +151,7 @@ namespace Instances.Application.Tests.CodeSources
             await _instancesDbContext.SaveChangesAsync();
             var repository = new CodeSourcesRepository
             (
-                new CodeSourcesStore(_instancesDbContext),
+                new CodeSourcesStore(_instancesDbContext, _queryPagerMock.Object),
                 _githubBranchesStoreMock.Object,
                 _fetcherServiceMock.Object
             );
@@ -153,7 +162,7 @@ namespace Instances.Application.Tests.CodeSources
                 BranchName = "main-branch-in-production"
             });
 
-            var source = (await repository.GetAsync(CodeSourceFilter.ById(1))).SingleOrDefault();
+            var source = (await repository.GetAsync(new NumberPageToken(), CodeSourceFilter.ById(1))).Items.SingleOrDefault();
             source.Lifecycle.Should().Be(CodeSourceLifecycleStep.InProduction);
         }
 
@@ -162,7 +171,7 @@ namespace Instances.Application.Tests.CodeSources
         {
             var repository = new CodeSourcesRepository
             (
-                new CodeSourcesStore(_instancesDbContext),
+                new CodeSourcesStore(_instancesDbContext, _queryPagerMock.Object),
                 _githubBranchesStoreMock.Object,
                 _fetcherServiceMock.Object
             );
@@ -180,7 +189,7 @@ namespace Instances.Application.Tests.CodeSources
             var source = new CodeSource();
             var repository = new CodeSourcesRepository
             (
-                new CodeSourcesStore(_instancesDbContext),
+                new CodeSourcesStore(_instancesDbContext, _queryPagerMock.Object),
                 _githubBranchesStoreMock.Object,
                 _fetcherServiceMock.Object
             );

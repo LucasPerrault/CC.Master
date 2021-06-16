@@ -1,9 +1,10 @@
 ﻿using Instances.Domain.CodeSources;
 using Instances.Domain.CodeSources.Filtering;
 using Instances.Infra.Storage.Models;
+using Lucca.Core.Api.Abstractions.Paging;
+using Lucca.Core.Api.Queryable.Paging;
 using Microsoft.EntityFrameworkCore;
 using Storage.Infra.Extensions;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -12,20 +13,24 @@ namespace Instances.Infra.Storage.Stores
     public class CodeSourcesStore : ICodeSourcesStore
     {
         private readonly InstancesDbContext _dbContext;
+        private readonly IQueryPager _queryPager;
 
-        public CodeSourcesStore(InstancesDbContext dbContext)
+        public CodeSourcesStore(InstancesDbContext dbContext, IQueryPager queryPager)
         {
             _dbContext = dbContext;
+            _queryPager = queryPager;
         }
 
-        public Task<List<CodeSource>> GetAsync(CodeSourceFilter filter)
+        public async Task<Page<CodeSource>> GetAsync(IPageToken pageToken, CodeSourceFilter filter)
         {
-            return Get(filter).ToListAsync();
-        }
-
-        public Task<CodeSource> GetByIdAsync(int id)
-        {
-            return Get(CodeSourceFilter.ById(id)).SingleOrDefaultAsync();
+            var page = await _queryPager.ToPageAsync(Get(filter), pageToken);
+            return new Page<CodeSource>
+            {
+                Count = page.Count,
+                Items = page.Items.Select(s => s.ToCodeSource()),
+                Next = page.Next,
+                Prev = page.Prev
+            };
         }
 
         public async Task<CodeSource> CreateAsync(CodeSource codeSource)
@@ -53,14 +58,13 @@ namespace Instances.Infra.Storage.Stores
             return _dbContext.SaveChangesAsync();
         }
 
-        private IQueryable<CodeSource> Get(CodeSourceFilter filter)
+        private IQueryable<StoredCodeSource> Get(CodeSourceFilter filter)
         {
             return _dbContext
                 .Set<StoredCodeSource>()
                 .Include(cs => cs.ProductionVersions)
                 .Include(cs => cs.Config)
-                .WhereMatches(filter)
-                .Select(cs => cs.ToCodeSource());
+                .WhereMatches(filter);
         }
     }
 

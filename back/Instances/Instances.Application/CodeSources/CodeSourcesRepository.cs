@@ -1,5 +1,8 @@
 ﻿using Instances.Domain.CodeSources;
 using Instances.Domain.CodeSources.Filtering;
+using Lucca.Core.Api.Abstractions.Fields;
+using Lucca.Core.Api.Abstractions.Paging;
+using Lucca.Core.Api.Abstractions.Sorting;
 using Lucca.Core.Shared.Domain.Exceptions;
 using System;
 using System.Collections.Generic;
@@ -40,9 +43,9 @@ namespace Instances.Application.CodeSources
             _fetcherService = fetcherService;
         }
 
-        public async Task<IEnumerable<CodeSource>> GetAsync(CodeSourceFilter filter)
+        public async Task<Page<CodeSource>> GetAsync(IPageToken pageToken, CodeSourceFilter codeSourceFilter)
         {
-            return await _codeSourcesStore.GetAsync(filter);
+            return await _codeSourcesStore.GetAsync(pageToken, codeSourceFilter);
         }
 
         public async Task<CodeSource> CreateAsync(CodeSource codeSource)
@@ -90,8 +93,8 @@ namespace Instances.Application.CodeSources
 
         private async Task<CodeSource> GetSingleOrDefaultAsync(CodeSourceFilter filter)
         {
-            var codeSources = await _codeSourcesStore.GetAsync(filter);
-            var source = codeSources.SingleOrDefault();
+            var codeSources = await _codeSourcesStore.GetAsync(new NumberPageToken(new SortingQuery(), 1, 1, RootFields.None), filter);
+            var source = codeSources.Items.SingleOrDefault();
             if (source == null)
             {
                 throw new NotFoundException("Unknown code source");

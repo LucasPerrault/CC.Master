@@ -1,6 +1,8 @@
 ﻿using Instances.Application.CodeSources;
 using Instances.Domain.CodeSources;
 using Instances.Domain.CodeSources.Filtering;
+using Lucca.Core.Api.Abstractions.Paging;
+using Lucca.Core.Api.Web.ModelBinding.Sorting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Rights.Domain;
@@ -12,6 +14,7 @@ using System.Threading.Tasks;
 namespace Instances.Web.Controllers
 {
     [ApiController, Route("/api/code-sources")]
+    [ApiSort("Code")]
     public class CodeSourcesController
     {
         private readonly CodeSourcesRepository _repository;
@@ -23,10 +26,9 @@ namespace Instances.Web.Controllers
 
         [HttpGet]
         [ForbidIfMissing(Operation.ReadCodeSources)]
-        public async Task<CodeSourceItems> GetAsync([FromQuery]CodeSourceQuery query)
+        public async Task<Page<CodeSource>> GetAsync([FromQuery]CodeSourceQuery query)
         {
-            var codeSources = await _repository.GetAsync(query.ToFilter());
-            return new CodeSourceItems { Items = codeSources.ToList() };
+            return await _repository.GetAsync(query.Page, query.ToFilter());
         }
 
         [HttpGet("{id:int}")]
@@ -60,26 +62,25 @@ namespace Instances.Web.Controllers
 
         [HttpPost("fetch-from-github")]
         [ForbidIfMissing(Operation.ReadCodeSources)]
-        public async Task<CodeSourceItems> FetchFromGithubAsync([FromBody]CodeSourceFetchDto dto)
+        public async Task<Page<CodeSource>> FetchFromGithubAsync([FromBody]CodeSourceFetchDto dto)
         {
             var codeSources = await _repository.FetchFromRepoAsync(dto.RepoUrl);
-            return new CodeSourceItems { Items = codeSources.ToList() };
+            return new Page<CodeSource>
+            {
+                Count = codeSources.Count(),
+                Items = codeSources
+            };
         }
 
         public class CodeSourceFetchDto
         {
             public string RepoUrl { get; set; }
         }
-
-        public class CodeSourceItems
-        {
-            public List<CodeSource> Items { get; set; }
-        }
     }
 
     public class CodeSourceQuery
     {
-
+        public IPageToken Page { get; set; } = null;
         public HashSet<CodeSourceLifecycleStep> Lifecycle { get; set; } = CodeSource.ActiveSteps;
 
         public string Search { get; set; }
