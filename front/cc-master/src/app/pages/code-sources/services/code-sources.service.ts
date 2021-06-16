@@ -14,9 +14,7 @@ export class CodeSourcesService {
   constructor(private httpClient: HttpClient) {}
 
   public getCodeSources$(): Observable<ICodeSource[]> {
-    const params = new HttpParams()
-      .set('lifecycle', `${Object.keys(LifecycleStep)}`)
-      .set('orderBy', 'code,asc');
+    const params = new HttpParams().set('lifecycle', `${Object.keys(LifecycleStep)}`);
 
     return this.httpClient.get<IHttpApiV4CollectionResponse<ICodeSource>>(this.codeSourcesEndpoint, { params })
       .pipe(map(response => response.items));
