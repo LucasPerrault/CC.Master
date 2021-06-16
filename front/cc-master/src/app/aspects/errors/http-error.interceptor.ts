@@ -33,9 +33,18 @@ export class HttpErrorInterceptor implements HttpInterceptor {
   }
 
   private getServerSideErrorMessage(httpErrorResponse: HttpErrorResponse): string {
-    const message = httpErrorResponse.error.Message;
+    const message = this.getHttpErrorMessage(httpErrorResponse);
     const status = httpErrorResponse.status;
     const statusText = httpErrorResponse.statusText;
-    return `${status} ${statusText} : ${message}`;
+    return `${status} ${statusText} ${message}`;
+  }
+
+  private getHttpErrorMessage(httpErrorResponse: HttpErrorResponse): string {
+    const message = httpErrorResponse.error?.Message
+      || httpErrorResponse.error?.message
+      || httpErrorResponse.error?.Detail
+      || httpErrorResponse.error?.detail;
+
+    return !!message ? `: ${ message }` : '';
   }
 }
