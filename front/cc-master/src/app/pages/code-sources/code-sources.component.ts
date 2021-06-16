@@ -19,10 +19,7 @@ export class CodeSourcesComponent implements OnInit, OnDestroy {
 
   private destroy$: Subject<void> = new Subject<void>();
 
-  constructor(
-    private codeSourcesListService: CodeSourcesListService,
-    private rightsService: RightsService,
-  ) { }
+  constructor(private codeSourcesListService: CodeSourcesListService, private rightsService: RightsService) { }
 
   public ngOnInit(): void {
     this.lifecycleFilter.valueChanges

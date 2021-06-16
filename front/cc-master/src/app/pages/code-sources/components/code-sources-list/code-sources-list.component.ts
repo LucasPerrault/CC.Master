@@ -1,6 +1,5 @@
 import { Component, Input } from '@angular/core';
 
-import { CodeSourceType } from '../../constants/code-source-type.enum';
 import { getLifecycleStepName, LifecycleStep } from '../../constants/lifecycle-step.enum';
 import { ICodeSource } from '../../models/code-source.interface';
 
@@ -30,12 +29,7 @@ export class CodeSourcesListComponent {
     return `${ subdomain }.ilucca.net${ appPath }`;
   }
 
-  public isApp(type: CodeSourceType): boolean {
-    return type === CodeSourceType.App;
-  }
-
   public accessGithub(codeSource: ICodeSource): void {
     window.open(codeSource.githubRepo);
   }
-
 }

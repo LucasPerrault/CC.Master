@@ -111,5 +111,4 @@ export class CodeSourceCreationModalComponent implements OnInit, OnDestroy, ILuS
   public get hasCodeSourcesFetched$(): Observable<boolean> {
     return this.codeSourcesFetched$.pipe(map(cs => !!cs && !!cs.length));
   }
-
 }
