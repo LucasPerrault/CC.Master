@@ -84,7 +84,11 @@ export class CodeSourceCreationModalComponent implements OnInit, OnDestroy, ILuS
   }
 
   public submitAction(): Observable<void> {
-    return this.codeSourcesService.create$(this.codeSourceForm.value);
+    return this.codeSourcesService.create$({
+      name: this.codeSourceSelected.value.name,
+      githubRepo: this.githubRepoUrlControl.value,
+      ...this.codeSourceForm.value,
+    });
   }
 
   public fetchGithubData(githubRepoUrl: string): void {
