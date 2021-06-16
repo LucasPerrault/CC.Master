@@ -8,6 +8,7 @@ import { finalize, take, takeUntil } from 'rxjs/operators';
 
 import { CodeSourcesService } from '../../services/code-sources.service';
 import { CodeSourcesListService } from '../../services/code-sources-list.service';
+import { CodeSourceFormKey } from '../../constants/code-source-form-key.enum';
 
 @Component({
   selector: 'cc-code-sources-edition-entry-modal',
@@ -56,6 +57,7 @@ export class CodeSourceEditionModalComponent implements OnInit, OnDestroy, ILuSi
   public submitDisabled = true;
 
   public codeSourceForm: FormControl = new FormControl({ value: null, disabled: true });
+  public codeSourceFormKey = CodeSourceFormKey;
   public codeSourceSelected: FormControl = new FormControl({ value: null, disabled: true });
   public isLoading$: ReplaySubject<boolean> = new ReplaySubject<boolean>(1);
 

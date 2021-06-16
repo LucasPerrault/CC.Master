@@ -7,5 +7,5 @@
     <span class="textfield-label">{{ 'front_sourcePage_form_label_githubRepoUrl' | translate }}</span>
   </label>
 
-  <cc-code-source-form [canEditLifecycle]="true" [formControl]="codeSourceForm"></cc-code-source-form>
+  <cc-code-source-form [formControl]="codeSourceForm" [enabledExceptions]="[codeSourceFormKey.Lifecycle]"></cc-code-source-form>
 </ng-template>

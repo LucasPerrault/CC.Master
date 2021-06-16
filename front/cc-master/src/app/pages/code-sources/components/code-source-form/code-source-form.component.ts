@@ -12,19 +12,8 @@ import {
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
+import { CodeSourceFormKey } from '../../constants/code-source-form-key.enum';
 import { ICodeSource } from '../../models/code-source.interface';
-
-enum CodeSourceFormKey {
-  Code = 'code',
-  Type = 'type',
-  Lifecycle = 'lifecycle',
-  JenkinsProjectName = 'jenkinsProjectName',
-  Config = 'config',
-  AppPath = 'appPath',
-  Subdomain = 'subdomain',
-  IisServerPath = 'iisServerPath',
-  IsPrivate = 'isPrivate',
-}
 
 @Component({
   selector: 'cc-code-source-form',
@@ -45,7 +34,7 @@ enum CodeSourceFormKey {
 })
 export class CodeSourceFormComponent implements ControlValueAccessor, Validator, OnInit, OnDestroy {
   @Input() public codeSourcesFetched: ICodeSource[];
-  @Input() public set canEditLifecycle(isEnabled: boolean) { this.setLifecycleState(!isEnabled); }
+  @Input() public enabledExceptions: CodeSourceFormKey[] = [];
   @Input()
   public set disabled(isDisabled: boolean) {
     this.setDisabledState(isDisabled);
@@ -100,25 +89,20 @@ export class CodeSourceFormComponent implements ControlValueAccessor, Validator,
   }
 
   public setDisabledState(isDisabled: boolean) {
-    if (isDisabled) {
-      this.formGroup.disable();
-      return;
-    }
-    this.formGroup.enable();
+    const controlKeys = Object.keys(this.formGroup.controls);
+    controlKeys.forEach((key: CodeSourceFormKey) => {
+      if (isDisabled && !this.enabledExceptions.includes(key)) {
+        this.formGroup.get(key).disable();
+        return;
+      }
+
+      this.formGroup.get(key).enable();
+    });
   }
 
   public validate(control: AbstractControl): ValidationErrors | null {
     if (this.formGroup.invalid) {
       return { invalid: true };
     }
-  }
-
-  private setLifecycleState(isDisabled: boolean) {
-    if (isDisabled) {
-      this.formGroup.get(CodeSourceFormKey.Lifecycle).disable({ emitEvent: false });
-      return;
-    }
-
-    this.formGroup.get(CodeSourceFormKey.Lifecycle).enable({ emitEvent: false });
   }
 }
