@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
+
 namespace Remote.Infra.Services
 {
     public class RestApiV3HttpClientHelper : HttpClientHelper<RestApiV3Error>

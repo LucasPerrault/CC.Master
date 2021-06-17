@@ -21,7 +21,6 @@ using Microsoft.Extensions.Logging;
 using Moq;
 using Rights.Domain;
 using Rights.Domain.Abstractions;
-using Rights.Domain.Filtering;
 using System;
 using System.Collections.Generic;
 using System.Linq;
