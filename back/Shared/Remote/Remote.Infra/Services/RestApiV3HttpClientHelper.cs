@@ -2,15 +2,12 @@
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
-using Tools;
-
 namespace Remote.Infra.Services
 {
-    public class RestApiV3HttpClientHelper : HttpClientHelper
+    public class RestApiV3HttpClientHelper : HttpClientHelper<RestApiV3Error>
     {
-
         public RestApiV3HttpClientHelper(HttpClient httpClient, string remoteApiDescription)
-            : base(httpClient, remoteApiDescription)
+            : base(httpClient, remoteApiDescription, e => e.Message)
         { }
 
         public Task<RestApiV3Response<T>> GetObjectResponseAsync<T>(Dictionary<string, string> queryParams)

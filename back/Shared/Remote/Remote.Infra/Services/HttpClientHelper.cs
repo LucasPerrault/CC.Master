@@ -10,16 +10,18 @@ using HttpClientExtensions = Remote.Infra.Extensions.HttpClientExtensions;
 
 namespace Remote.Infra.Services
 {
-    public class HttpClientHelper
+    public class HttpClientHelper<TError> where TError : class
     {
         private readonly HttpClient _httpClient;
+        private readonly Func<TError, string> _errorMessageFunc;
 
         private string RemoteApiDescription { get; }
 
-        public HttpClientHelper(HttpClient httpClient, string remoteApiDescription)
+        public HttpClientHelper(HttpClient httpClient, string remoteApiDescription, Func<TError, string> errorMessageFunc)
         {
             _httpClient = httpClient;
             RemoteApiDescription = remoteApiDescription;
+            _errorMessageFunc = errorMessageFunc;
         }
 
         public Task<TResult> GetGenericObjectResponseAsync<TResult>(Dictionary<string, string> queryParams)
@@ -111,12 +113,14 @@ namespace Remote.Infra.Services
         {
             var responseString = await response.Content.ReadAsStringAsync();
 
-            if (!response.IsSuccessStatusCode)
+            if (response.IsSuccessStatusCode)
             {
-                throw new RemoteServiceException(RemoteApiDescription, response.StatusCode, "TODO"); // GetErrorMessage(responseString));
+                return Serializer.Deserialize<TResponse>(responseString);
             }
 
-            return Serializer.Deserialize<TResponse>(responseString);
+            var errorMessage = _errorMessageFunc(Serializer.Deserialize<TError>(responseString));
+            throw new RemoteServiceException(RemoteApiDescription, response.StatusCode, errorMessage);
+
         }
     }
 }

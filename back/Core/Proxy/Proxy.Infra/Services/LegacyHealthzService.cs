@@ -6,15 +6,20 @@ using System.Threading.Tasks;
 
 namespace Core.Proxy.Infra.Services
 {
+    internal class LegacyHealthzErrorMessage
+    {
+        public string Message { get; set; }
+    }
+
     public class LegacyHealthzService
     {
         private const string HealthzSubroute = "healthz";
 
-        private readonly HttpClientHelper _httpClientHelper;
+        private readonly HttpClientHelper<LegacyHealthzErrorMessage> _httpClientHelper;
 
         public LegacyHealthzService(HttpClient httpClient)
         {
-            _httpClientHelper = new RestApiV3HttpClientHelper(httpClient, "Legacy Healthz");
+            _httpClientHelper = new HttpClientHelper<LegacyHealthzErrorMessage>(httpClient, "Legacy Healthz", e => e.Message);
         }
 
         internal async Task<HealthCheckResult> GetLegacyHealthAsync()

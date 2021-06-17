@@ -5,13 +5,18 @@ using System.Threading.Tasks;
 
 namespace Instances.Infra.WsAuth
 {
+    internal class WsAuthErrorMessage
+    {
+        public string Details { get; set; }
+    }
+
     public class WsAuthRemoteService
     {
-        private readonly HttpClientHelper _httpClientHelper;
+        private readonly HttpClientHelper<WsAuthErrorMessage> _httpClientHelper;
 
         public WsAuthRemoteService(HttpClient httpClient)
         {
-            _httpClientHelper = new HttpClientHelper(httpClient, "Auth WS");
+            _httpClientHelper = new HttpClientHelper<WsAuthErrorMessage>(httpClient, "Auth WS", m => m.Details);
         }
 
         public Task PostAsync(string subroute)
