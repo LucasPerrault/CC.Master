@@ -9,23 +9,19 @@ using Tools;
 
 namespace Salesforce.Infra.Services
 {
-    public class SalesforceAccountsRemoteService : HostRemoteService, ISalesforceAccountsRemoteService
+    public class SalesforceAccountsRemoteService : ISalesforceAccountsRemoteService
     {
-        protected override string RemoteApiDescription => "Salesforce Service";
+        private readonly HttpClientHelper _httpClientHelper;
 
-        public SalesforceAccountsRemoteService(HttpClient httpClient) : base(httpClient)
-        { }
+        public SalesforceAccountsRemoteService(HttpClient httpClient)
+        {
+            _httpClientHelper = new HttpClientHelper(httpClient, "Salesforce Service");
+        }
 
         public Task UpdateAccountAsync(string clientSalesforceId, SalesforceAccount account)
         {
             var queryParams = new Dictionary<string, string>();
-            return PutGenericObjectResponseAsync<SalesforceAccount, SalesforceAccount>(clientSalesforceId, account, queryParams);
-        }
-
-        protected override string GetErrorMessage(string s)
-        {
-            var error = Serializer.Deserialize<SalesforceErrorDto>(s);
-            return error?.Message;
+            return _httpClientHelper.PutGenericObjectResponseAsync<SalesforceAccount, SalesforceAccount>(clientSalesforceId, account, queryParams);
         }
     }
 }

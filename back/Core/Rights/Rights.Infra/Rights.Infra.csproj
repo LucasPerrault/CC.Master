@@ -9,8 +9,9 @@
     </ItemGroup>
 
     <ItemGroup>
+        <ProjectReference Include="..\..\..\Shared\Remote\Remote.Infra\Remote.Infra.csproj" />
+        <ProjectReference Include="..\..\Authentication\Authentication.Domain\Authentication.Domain.csproj" />
         <ProjectReference Include="..\Rights.Domain\Rights.Domain.csproj" />
-        <ProjectReference Include="..\..\Partenaires\Partenaires.Infra\Partenaires.Infra.csproj" />
     </ItemGroup>
 
 </Project>

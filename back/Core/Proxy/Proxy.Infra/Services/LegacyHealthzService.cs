@@ -1,21 +1,21 @@
 ﻿using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Remote.Infra.Services;
-using System;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace Core.Proxy.Infra.Services
 {
-    public class LegacyHealthzService : HostRemoteService
+    public class LegacyHealthzService
     {
         private const string HealthzSubroute = "healthz";
 
-        protected override string RemoteApiDescription => "Legacy Healthz";
+        private readonly HttpClientHelper _httpClientHelper;
 
         public LegacyHealthzService(HttpClient httpClient)
-            : base(httpClient)
-        { }
+        {
+            _httpClientHelper = new RestApiV3HttpClientHelper(httpClient, "Legacy Healthz");
+        }
 
         internal async Task<HealthCheckResult> GetLegacyHealthAsync()
         {
@@ -25,18 +25,13 @@ namespace Core.Proxy.Infra.Services
             };
             try
             {
-                var legacyHealthzReponse = await GetGenericObjectResponseAsync<LegacyHealthz>(HealthzSubroute, queryParams);
-                return legacyHealthzReponse.GetHealthCheckResult();
+                var legacyHealthzResponse = await _httpClientHelper.GetGenericObjectResponseAsync<LegacyHealthz>(HealthzSubroute, queryParams);
+                return legacyHealthzResponse.GetHealthCheckResult();
             }
             catch
             {
                 return HealthCheckResult.Unhealthy();
             }
-        }
-
-        protected override string GetErrorMessage(string s)
-        {
-            throw new NotImplementedException();
         }
 
         private class LegacyHealthz

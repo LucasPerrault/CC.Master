@@ -6,17 +6,19 @@ using System.Threading.Tasks;
 
 namespace Billing.Contracts.Infra.Legacy
 {
-    public class LegacyClientsRemoteService : RestApiV3HostRemoteService, ILegacyClientsRemoteService
+    public class LegacyClientsRemoteService : ILegacyClientsRemoteService
     {
-        protected override string RemoteApiDescription => "Legacy clients api";
+        private readonly RestApiV3HttpClientHelper _httpClientHelper;
+
         public LegacyClientsRemoteService(HttpClient httpClient)
-            : base(httpClient)
-        { }
+        {
+            _httpClientHelper = new RestApiV3HttpClientHelper(httpClient, "Legacy clients api");
+        }
 
         public Task SyncAsync()
         {
             var queryParams = new Dictionary<string, string>();
-            return GetObjectResponseAsync<object>("sync", queryParams);
+            return _httpClientHelper.GetObjectResponseAsync<object>("sync", queryParams);
         }
     }
 }

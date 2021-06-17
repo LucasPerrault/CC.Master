@@ -1,6 +1,4 @@
-﻿using System.Text.Json;
-
-namespace Remote.Infra.Extensions
+﻿namespace Remote.Infra.Extensions
 {
     public static class StringExtensions
     {

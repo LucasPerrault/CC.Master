@@ -7,18 +7,21 @@ using Users.Domain;
 
 namespace Users.Infra
 {
-    public class UsersService : RestApiV3HostRemoteService, IUsersService
+    public class UsersService : IUsersService
     {
-        protected override string RemoteApiDescription => "Partenaires users";
-        public UsersService(HttpClient httpClient) : base(httpClient)
-        { }
+        private readonly RestApiV3HttpClientHelper _httpClientHelper;
+
+        public UsersService(HttpClient httpClient)
+        {
+            _httpClientHelper = new RestApiV3HttpClientHelper(httpClient, "Partenaires users");
+        }
 
         public async Task<User> GetByTokenAsync(Guid token)
         {
-            ApplyLateHttpClientAuthentication("Lucca", a => a.AuthenticateAsUser(token));
+            _httpClientHelper.ApplyLateHttpClientAuthentication("Lucca", a => a.AuthenticateAsUser(token));
 
             var queryParams = new Dictionary<string, string> { { "fields", LuccaUser.ApiFields } };
-            var luccaUser = await GetObjectResponseAsync<LuccaUser>(queryParams);
+            var luccaUser = await _httpClientHelper.GetObjectResponseAsync<LuccaUser>(queryParams);
             return luccaUser.Data.ToUser();
         }
 

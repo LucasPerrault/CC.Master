@@ -1,4 +1,4 @@
-using Partenaires.Infra.Services;
+using Remote.Infra.Services;
 using Rights.Infra.Models;
 using Rights.Infra.Services;
 using System.Collections.Generic;
@@ -8,11 +8,14 @@ using System.Threading.Tasks;
 
 namespace Rights.Infra.Remote
 {
-    public class UserPermissionsRemoteService : PartenairesService
+    public class UserPermissionsRemoteService
     {
-        protected override string RemoteApiDescription => "Partenaires users permissions";
-        public UserPermissionsRemoteService(HttpClient httpClient) : base(httpClient)
-        { }
+        private readonly RestApiV3HttpClientHelper _httpClientHelper;
+
+        public UserPermissionsRemoteService(HttpClient httpClient)
+        {
+            _httpClientHelper = new RestApiV3HttpClientHelper(httpClient, "Partenaires users permissions");
+        }
 
         internal async Task<IReadOnlyCollection<Permission>> GetUserPermissionsAsync(int principalId)
         {
@@ -29,7 +32,7 @@ namespace Rights.Infra.Remote
                 { "fields", Permission.ApiFields }
             };
 
-            var userPermissions = await GetObjectCollectionResponseAsync<Permission>(queryParams);
+            var userPermissions = await _httpClientHelper.GetObjectCollectionResponseAsync<Permission>(queryParams);
             return userPermissions.Data.Items;
         }
     }

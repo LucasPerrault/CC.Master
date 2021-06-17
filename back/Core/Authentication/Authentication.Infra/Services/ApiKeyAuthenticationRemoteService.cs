@@ -20,13 +20,15 @@ namespace Authentication.Infra.Services
     {
         Task<ApiKey> GetApiKeyPrincipalAsync(Guid token);
     }
-    public class ApiKeyAuthenticationRemoteService : RestApiV3HostRemoteService, IApiKeyAuthenticationRemoteService
+
+    public class ApiKeyAuthenticationRemoteService : IApiKeyAuthenticationRemoteService
     {
         private readonly ApiKeyInMemoryCache _cache;
-        protected override string RemoteApiDescription => "Partenaires";
+        private readonly RestApiV3HttpClientHelper _httpClientHelper;
 
-        public ApiKeyAuthenticationRemoteService(HttpClient httpClient, ApiKeyInMemoryCache cache) : base(httpClient)
+        public ApiKeyAuthenticationRemoteService(HttpClient httpClient, ApiKeyInMemoryCache cache)
         {
+            _httpClientHelper = new RestApiV3HttpClientHelper(httpClient, "Partenaires");
             _cache = cache;
         }
 
@@ -42,7 +44,7 @@ namespace Authentication.Infra.Services
                 { "fields", LuccaApiKey.ApiFields }
             };
 
-            var luccaUser = await GetObjectResponseAsync<LuccaApiKey>(token.ToString(), queryParams);
+            var luccaUser = await _httpClientHelper.GetObjectResponseAsync<LuccaApiKey>(token.ToString(), queryParams);
             var luccaApiKey = luccaUser.Data;
 
             if (luccaApiKey.Token == default || string.IsNullOrEmpty(luccaApiKey.Name))

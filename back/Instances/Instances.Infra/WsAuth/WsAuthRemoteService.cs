@@ -1,26 +1,22 @@
 using Remote.Infra.Services;
-using System;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace Instances.Infra.WsAuth
 {
-    public class WsAuthRemoteService : HostRemoteService
+    public class WsAuthRemoteService
     {
-        protected override string RemoteApiDescription => "Auth WS";
+        private readonly HttpClientHelper _httpClientHelper;
 
-        public WsAuthRemoteService(HttpClient httpClient) : base(httpClient)
-        { }
+        public WsAuthRemoteService(HttpClient httpClient)
+        {
+            _httpClientHelper = new HttpClientHelper(httpClient, "Auth WS");
+        }
 
         public Task PostAsync(string subroute)
         {
-            return PostAsync(subroute, new Dictionary<string, string>());
-        }
-
-        protected override string GetErrorMessage(string s)
-        {
-            throw new NotImplementedException();
+            return _httpClientHelper.PostAsync(subroute, new Dictionary<string, string>());
         }
     }
 }
