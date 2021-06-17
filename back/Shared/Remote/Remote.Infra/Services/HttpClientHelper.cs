@@ -69,6 +69,11 @@ namespace Remote.Infra.Services
             return GetRequestWithContentResponseAsync<TForm, TResult>(HttpMethod.Put, id, queryParams, content);
         }
 
+        public Task<TResult> PutGenericObjectResponseAsync<TForm, TResult>(string id, TForm content)
+        {
+            return PutGenericObjectResponseAsync<TForm, TResult>(id, content, new Dictionary<string, string>());
+        }
+
         public void ApplyLateHttpClientAuthentication
         (
             string scheme,

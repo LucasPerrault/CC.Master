@@ -20,8 +20,7 @@ namespace Salesforce.Infra.Services
 
         public Task UpdateAccountAsync(string clientSalesforceId, SalesforceAccount account)
         {
-            var queryParams = new Dictionary<string, string>();
-            return _httpClientHelper.PutGenericObjectResponseAsync<SalesforceAccount, SalesforceAccount>(clientSalesforceId, account, queryParams);
+            return _httpClientHelper.PutGenericObjectResponseAsync<SalesforceAccount, SalesforceAccount>(clientSalesforceId, account);
         }
     }
 }

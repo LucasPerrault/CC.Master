@@ -17,9 +17,8 @@ namespace Rights.Infra.Remote
 
         internal async Task<IReadOnlyCollection<Department>> GetDepartmentsAsync()
         {
-            var queryParams = new Dictionary<string, string>();
 
-            var departmentsResponse = await _httpClientHelper.GetObjectCollectionResponseAsync<Department>(queryParams);
+            var departmentsResponse = await _httpClientHelper.GetObjectCollectionResponseAsync<Department>();
 
             return departmentsResponse.Data.Items.ToList();
         }

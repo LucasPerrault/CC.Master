@@ -16,6 +16,11 @@ namespace Remote.Infra.Services
             return GetGenericObjectResponseAsync<RestApiV3Response<T>>(queryParams);
         }
 
+        public Task<RestApiV3Response<T>> GetObjectResponseAsync<T>(string id)
+        {
+            return GetObjectResponseAsync<T>(id, new Dictionary<string, string>());
+        }
+
         public Task<RestApiV3Response<T>> GetObjectResponseAsync<T>(string id, Dictionary<string, string> queryParams)
         {
             return GetGenericObjectResponseAsync<RestApiV3Response<T>>(id, queryParams);
@@ -24,6 +29,11 @@ namespace Remote.Infra.Services
         public Task<RestApiV3CollectionResponse<T>> GetObjectCollectionResponseAsync<T>(Dictionary<string, string> queryParams)
         {
             return GetGenericObjectResponseAsync<RestApiV3CollectionResponse<T>>(queryParams);
+        }
+
+        public Task<RestApiV3CollectionResponse<T>> GetObjectCollectionResponseAsync<T>()
+        {
+            return GetObjectCollectionResponseAsync<T>(new Dictionary<string, string>());
         }
 
         public Task<RestApiV3CollectionResponse<T>> GetObjectCollectionResponseAsync<T>(string subRoute, Dictionary<string, string> queryParams)
