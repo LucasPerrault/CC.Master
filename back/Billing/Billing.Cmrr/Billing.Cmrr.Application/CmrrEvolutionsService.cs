@@ -45,13 +45,15 @@ namespace Billing.Cmrr.Application
             var countsByCountKey = counts.ToDictionary(c => new CountKey(c.CountPeriod, c.ContractId), c => c);
 
             var contracts = await GetContractsAsync(evolutionFilter);
-
+            
+            var previousTotal = counts.Where(x => x.CountPeriod == evolutionFilter.StartPeriod.AddMonths(-1)).Sum(c => c.EuroTotal); 
             for (var i = 0; i < CmrrDateTimeHelper.MonthDifference(evolutionFilter.EndPeriod, evolutionFilter.StartPeriod) + 1; i++)
             {
                 var currentCountPeriod = evolutionFilter.StartPeriod.AddMonths(1 * i);
                 var previousCountPeriod = currentCountPeriod.AddMonths(-1);
-
-                yield return GetEvolutionLine(currentCountPeriod, previousCountPeriod, countsByCountKey, contracts);
+                var evolutionLine = GetEvolutionLine(currentCountPeriod, previousCountPeriod, countsByCountKey, contracts, previousTotal);
+                previousTotal = evolutionLine.TotalAmount;
+                yield return evolutionLine;
             }
         }
 
@@ -68,10 +70,10 @@ namespace Billing.Cmrr.Application
             return contracts.ToList();
         }
 
-        private CmrrEvolutionLine GetEvolutionLine(DateTime currentCountPeriod, DateTime previousCountPeriod, Dictionary<CountKey, CmrrCount> countsByCountKey, List<CmrrContract> contracts)
+        private CmrrEvolutionLine GetEvolutionLine(DateTime currentCountPeriod, DateTime previousCountPeriod, Dictionary<CountKey, CmrrCount> countsByCountKey, List<CmrrContract> contracts, decimal previousTotal)
         {
             var line = new CmrrEvolutionLine(currentCountPeriod);
-
+            
             foreach (var contract in contracts)
             {
                 countsByCountKey.TryGetValue(new CountKey(previousCountPeriod, contract.Id), out var previousPeriodCount);
@@ -81,11 +83,13 @@ namespace Billing.Cmrr.Application
                     continue;
 
                 var contractSituation = new CmrrContractSituation(contract, previousPeriodCount, currentPeriodCount);
+                line.TotalAmount += contractSituation.EndPeriodCount?.EuroTotal ?? 0;
                 var amount = (contractSituation.EndPeriodCount?.EuroTotal ?? 0) - (contractSituation.StartPeriodCount?.EuroTotal ?? 0);
                 line.Amount += amount;
                 ApplyAmountAccordingToLifeCycle(line, contractSituation.LifeCycle, amount);
             }
 
+            line.TotalAmountVariation = Math.Round(((line.TotalAmount - previousTotal) / previousTotal)*100, 2);
             return line;
         }
 
