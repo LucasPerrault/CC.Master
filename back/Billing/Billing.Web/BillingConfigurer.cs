@@ -47,6 +47,7 @@ namespace Billing.Web
             services.AddScoped<IBreakdownService, BreakdownService>();
 
             services.AddScoped<ICmrrSituationsService, CmrrSituationsService>();
+            services.AddScoped<ICmrrEvolutionsService, CmrrEvolutionsService>();
             services.AddScoped<IContractAxisSectionSituationsService, ContractAxisSectionSituationsService>();
         }
 

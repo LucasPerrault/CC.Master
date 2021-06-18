@@ -15,7 +15,6 @@ namespace Billing.Cmrr.Application
         private readonly ICmrrCountsStore _countsStore;
         private readonly IContractAxisSectionSituationsService _axisSectionSituationsService;
 
-        private bool IsFirstDayOfMonth(DateTime date) => date.Day == 1;
         public CmrrSituationsService(ICmrrContractsStore contractsStore, ICmrrCountsStore countsStore, IContractAxisSectionSituationsService axisSectionSituationsService)
         {
             _contractsStore = contractsStore;
@@ -55,7 +54,7 @@ namespace Billing.Cmrr.Application
 
         private async Task<List<CmrrContractSituation>> GetContractSituationsAsync(CmrrSituationFilter situationFilter)
         {
-            ThrowIfDatesInvalid(situationFilter.StartPeriod, situationFilter.EndPeriod);
+            CmrrDateTimeHelper.ThrowIfDatesAreNotAtFirstDayOfMonth(situationFilter.StartPeriod, situationFilter.EndPeriod);
 
             var startPeriodCounts = await _countsStore.GetByPeriodAsync(situationFilter.StartPeriod);
             var endPeriodCounts = await _countsStore.GetByPeriodAsync(situationFilter.EndPeriod);
@@ -69,15 +68,6 @@ namespace Billing.Cmrr.Application
                 contracts = contracts.Where(c => situationFilter.DistributorsId.Contains(c.DistributorId));
 
             return CreateContractSituations(contracts, startPeriodCounts, endPeriodCounts).ToList();
-        }
-
-        private void ThrowIfDatesInvalid(DateTime startPeriod, DateTime endPeriod)
-        {
-            if (!IsFirstDayOfMonth(startPeriod))
-                throw new ArgumentException($"{nameof(startPeriod)} must be on the first day of month");
-
-            if (!IsFirstDayOfMonth(endPeriod))
-                throw new ArgumentException($"{nameof(endPeriod)} must be on the first day of month");
         }
 
         private static IEnumerable<CmrrContractSituation> CreateContractSituations(IEnumerable<CmrrContract> contracts, List<CmrrCount> startPeriodCounts, List<CmrrCount> endPeriodCounts)
