@@ -92,20 +92,20 @@ namespace Billing.Cmrr.Application
         {
             var line = new CmrrLine(axisSection.Name);
 
-            foreach (var situation in situations.OrderByDescending(s => s.PartialDiff))
+            foreach (var situation in situations.OrderByDescending(s => Math.Abs(s.PartialDiff)))
             {
                 var subLine = GetSubLine(line, situation);
                 var amount = GetAmount(subLine, situation);
                 UpdateCmrrAmount(amount, situation, s => s.PartialDiff);
             }
 
-            foreach (var situation in situations.OrderByDescending(s => s.StartPeriodAmount))
+            foreach (var situation in situations.OrderByDescending(s => Math.Abs(s.StartPeriodAmount)))
             {
                 var subLine = GetSubLine(line, situation);
                 UpdateCmrrAmount(subLine.TotalFrom, situation, s => s.StartPeriodAmount);
             }
 
-            foreach (var situation in situations.OrderByDescending(s => s.EndPeriodAmount))
+            foreach (var situation in situations.OrderByDescending(s => Math.Abs(s.EndPeriodAmount)))
             {
                 var subLine = GetSubLine(line, situation);
                 UpdateCmrrAmount(subLine.TotalTo, situation, s => s.EndPeriodAmount);
