@@ -5,6 +5,7 @@ using Lucca.Core.Api.Abstractions.Paging;
 using Lucca.Core.Api.Queryable.Paging;
 using Microsoft.EntityFrameworkCore;
 using Storage.Infra.Extensions;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -31,6 +32,13 @@ namespace Instances.Infra.Storage.Stores
                 Next = page.Next,
                 Prev = page.Prev
             };
+        }
+
+        public Task<List<CodeSource>> GetAsync(CodeSourceFilter filter)
+        {
+            return Get(filter)
+                .Select(s => s.ToCodeSource())
+                .ToListAsync();
         }
 
         public async Task<CodeSource> CreateAsync(CodeSource codeSource)
