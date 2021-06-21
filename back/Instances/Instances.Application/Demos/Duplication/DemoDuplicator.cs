@@ -59,7 +59,7 @@ namespace Instances.Application.Demos.Duplication
 
             var demoToDuplicate = await GetDemoToDuplicateAsync(request.SourceId);
             var distributor = await _distributorsStore.GetByCodeAsync(request.DistributorCode);
-            var targetCluster = await _clusterSelector.GetFillingClusterAsync();
+            var targetCluster = await _clusterSelector.GetFillingClusterAsync(request.Subdomain);
 
             var duplication = DuplicationFactory.New
             (
