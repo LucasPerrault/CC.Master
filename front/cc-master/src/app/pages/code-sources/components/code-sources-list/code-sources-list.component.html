@@ -1,0 +1,50 @@
+<table class="table mod-small">
+  <thead class="table-head">
+    <tr class="table-head-row">
+      <th class="table-head-row-cell mod-columnFixed size-medium">{{ 'front_sourcesPage_column_code' | translate }}</th>
+      <th class="table-head-row-cell mod-columnFixed size-medium">{{ 'front_sourcesPage_column_name' | translate }}</th>
+      <th class="table-head-row-cell">{{ 'front_sourcesPage_column_type' | translate }}</th>
+      <th class="table-head-row-cell size-medium">{{ 'front_sourcesPage_column_lifecycle' | translate }}</th>
+      <th class="table-head-row-cell">{{ 'front_sourcesPage_column_subdomainAndAppPath' | translate }}</th>
+      <th class="table-head-row-cell">{{ 'front_sourcesPage_column_jenkins' | translate }}</th>
+      <th class="table-head-row-cell">{{ 'front_sourcesPage_column_private' | translate}}</th>
+      <th class="table-head-row-cell">{{ 'front_sourcesPage_column_serverPath' | translate }}</th>
+      <th class="table-head-row-cell mod-actions"></th>
+    </tr>
+  </thead>
+  <tbody class="table-body">
+    <tr class="table-body-row" *ngFor="let codeSource of codeSources">
+      <td class="table-body-row-cell mod-columnFixed size-medium">{{ codeSource.code }}</td>
+      <td class="table-body-row-cell mod-columnFixed size-medium">{{ codeSource.name }}</td>
+      <td class="table-body-row-cell">{{ codeSource.type }}</td>
+      <td class="table-body-row-cell size-medium">
+        {{ getLifecycleName(codeSource.lifecycle) | translate }}
+      </td>
+      <td class="table-body-row-cell">
+        {{ getSubdomainAndAppPath(codeSource) }}
+      </td>
+      <td class="table-body-row-cell">
+        {{ codeSource.jenkinsProjectName }}
+      </td>
+      <td class="table-body-row-cell">
+        <ng-container *ngIf="codeSource.config.isPrivate">
+          <span aria-hidden="true" class="lucca-icon icon-tick"></span>
+        </ng-container>
+      </td>
+      <td class="table-body-row-cell">
+        {{ codeSource.config.iisServerPath }}
+      </td>
+      <td class="table-body-row-cell mod-actions">
+        <button class="actionIcon palette-grey" [routerLink]="[codeSource.id, 'edit']" *ngIf="canEditCodeSources">
+          <span aria-hidden="true" class="lucca-icon icon-edit"></span>
+        </button>
+        <button class="actionIcon palette-grey"
+                (click)="accessGithub(codeSource)"
+                [luTooltip]="'front_sourcePage_action_redirectToGithubPath' | translate : { githubPath: getRepoName(codeSource.githubRepo) }"
+                luTooltipPosition="before">
+          <span aria-hidden="true" class="lucca-icon icon-outside"></span>
+        </button>
+      </td>
+    </tr>
+  </tbody>
+</table>

@@ -16,7 +16,6 @@ export const navigationTabs: INavigationTab[] = [
       name: 'front_navigation_sourcesTab',
       url: NavigationPath.CodeSources,
       icon: 'branch',
-      isLegacy: true,
       restriction: { operations: [Operation.ReadCodeSources] },
     },
     {

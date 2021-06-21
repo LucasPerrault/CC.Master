@@ -1,0 +1,11 @@
+<label class="textfield palette-grey mod-block">
+  <lu-select [formControl]="lifecycleSelected" class="textfield-input">
+    <ng-container *luDisplayer="let lifecycle">{{ lifecycle.name }}</ng-container>
+    <lu-option-picker-advanced>
+      <lu-option-feeder [options]="translatedLifecycles"></lu-option-feeder>
+      <lu-option *luForOptions="let lifecycle; trackBy: trackBy" [value]="lifecycle">{{ lifecycle.name }}</lu-option>
+    </lu-option-picker-advanced>
+    <lu-input-clearer></lu-input-clearer>
+  </lu-select>
+  <span class="textfield-label">{{ 'front_sourcePage_form_label_lifecycle' | translate }}</span>
+</label>
