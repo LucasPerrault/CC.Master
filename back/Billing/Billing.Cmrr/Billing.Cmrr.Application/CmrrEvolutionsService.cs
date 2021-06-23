@@ -42,11 +42,17 @@ namespace Billing.Cmrr.Application
             CmrrDateTimeHelper.ThrowIfDatesAreNotAtFirstDayOfMonth(evolutionFilter.StartPeriod, evolutionFilter.EndPeriod);
 
             var counts = await _countsStore.GetBetweenAsync(evolutionFilter.StartPeriod.AddMonths(-1), evolutionFilter.EndPeriod);
+
+            if (evolutionFilter.BillingStrategies.Any())
+            {
+                counts = counts.Where(c => evolutionFilter.BillingStrategies.Contains(c.BillingStrategy)).ToList();
+            }
+
             var countsByCountKey = counts.ToDictionary(c => new CountKey(c.CountPeriod, c.ContractId), c => c);
 
             var contracts = await GetContractsAsync(evolutionFilter);
-            
-            var previousTotal = counts.Where(x => x.CountPeriod == evolutionFilter.StartPeriod.AddMonths(-1)).Sum(c => c.EuroTotal); 
+
+            var previousTotal = counts.Where(x => x.CountPeriod == evolutionFilter.StartPeriod.AddMonths(-1)).Sum(c => c.EuroTotal);
             for (var i = 0; i < CmrrDateTimeHelper.MonthDifference(evolutionFilter.EndPeriod, evolutionFilter.StartPeriod) + 1; i++)
             {
                 var currentCountPeriod = evolutionFilter.StartPeriod.AddMonths(1 * i);
@@ -73,7 +79,7 @@ namespace Billing.Cmrr.Application
         private CmrrEvolutionLine GetEvolutionLine(DateTime currentCountPeriod, DateTime previousCountPeriod, Dictionary<CountKey, CmrrCount> countsByCountKey, List<CmrrContract> contracts, decimal previousTotal)
         {
             var line = new CmrrEvolutionLine(currentCountPeriod);
-            
+
             foreach (var contract in contracts)
             {
                 countsByCountKey.TryGetValue(new CountKey(previousCountPeriod, contract.Id), out var previousPeriodCount);
@@ -116,7 +122,7 @@ namespace Billing.Cmrr.Application
                     throw new InvalidEnumArgumentException(nameof(lifeCycle), (int)lifeCycle, typeof(CmrrLifeCycle));
             }
         }
-        
+
 
         private class CountKey : ValueObject
         {

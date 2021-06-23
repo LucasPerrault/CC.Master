@@ -14,6 +14,7 @@ namespace Billing.Web
 
         public HashSet<int> ClientId { get; set; } = new HashSet<int>();
         public HashSet<string> DistributorId { get; set; } = new HashSet<string>();
+        public HashSet<BillingStrategy> BillingStrategy { get; set; } = new HashSet<BillingStrategy>();
 
         public CmrrSituationFilter ToCmrrSituationFilter()
         {
@@ -28,7 +29,8 @@ namespace Billing.Web
                 EndPeriod = EndPeriod.Value,
                 Axis = Axis ?? CmrrAxis.Product,
                 ClientId = ClientId,
-                DistributorsId = DistributorId
+                DistributorsId = DistributorId,
+                BillingStrategies = BillingStrategy
             };
         }
     }

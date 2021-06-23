@@ -59,6 +59,13 @@ namespace Billing.Cmrr.Application
             var startPeriodCounts = await _countsStore.GetByPeriodAsync(situationFilter.StartPeriod);
             var endPeriodCounts = await _countsStore.GetByPeriodAsync(situationFilter.EndPeriod);
 
+
+            if (situationFilter.BillingStrategies.Any())
+            {
+                startPeriodCounts = startPeriodCounts.Where(c => situationFilter.BillingStrategies.Contains(c.BillingStrategy)).ToList();
+                endPeriodCounts = endPeriodCounts.Where(c => situationFilter.BillingStrategies.Contains(c.BillingStrategy)).ToList();
+            }
+
             IEnumerable<CmrrContract> contracts = await _contractsStore.GetContractsNotEndedAtAsync(situationFilter.StartPeriod, situationFilter.EndPeriod);
 
             if (situationFilter.ClientId.Any())

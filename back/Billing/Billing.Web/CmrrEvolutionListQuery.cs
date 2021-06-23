@@ -1,4 +1,5 @@
 using Billing.Cmrr.Application.Interfaces;
+using Billing.Cmrr.Domain;
 using System;
 using System.Collections.Generic;
 
@@ -9,6 +10,7 @@ namespace Billing.Web
         public DateTime? StartPeriod { get; set; }
         public DateTime? EndPeriod { get; set; }
 
+        public HashSet<BillingStrategy> BillingStrategy { get; set; } = new HashSet<BillingStrategy>();
         public HashSet<int> ClientId { get; set; } = new HashSet<int>();
         public HashSet<string> DistributorId { get; set; } = new HashSet<string>();
 
@@ -24,7 +26,8 @@ namespace Billing.Web
                 StartPeriod = StartPeriod.Value,
                 EndPeriod = EndPeriod.Value,
                 ClientId = ClientId,
-                DistributorsId = DistributorId
+                DistributorsId = DistributorId,
+                BillingStrategies = BillingStrategy
             };
         }
     }

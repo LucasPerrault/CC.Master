@@ -17,5 +17,6 @@ namespace Billing.Cmrr.Application.Interfaces
 
         public HashSet<int> ClientId { get; set; } = new HashSet<int>();
         public HashSet<string> DistributorsId { get; set; } = new HashSet<string>();
+        public HashSet<BillingStrategy> BillingStrategies { get; set; } = new HashSet<BillingStrategy>();
     }
 }
