@@ -46,7 +46,7 @@ namespace Billing.Cmrr.Application.Tests
 
             Func<Task<CmrrSituation>> func = () => sut.GetSituationAsync(situationFilter);
 
-            func.Should().ThrowExactly<ArgumentException>().WithMessage("*startPeriod*");
+            func.Should().ThrowExactly<ArgumentException>().WithMessage("*date*");
         }
 
         [Fact]
@@ -67,7 +67,7 @@ namespace Billing.Cmrr.Application.Tests
 
             Func<Task<CmrrSituation>> func = () => sut.GetSituationAsync(situationFilter);
 
-            func.Should().ThrowExactly<ArgumentException>().WithMessage("*endPeriod*");
+            func.Should().ThrowExactly<ArgumentException>().WithMessage("*date*");
         }
 
         [Fact]

@@ -17,6 +17,13 @@ namespace Billing.Cmrr.Infra.Storage.Stores
             _dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
         }
 
+        public Task<List<CmrrCount>> GetBetweenAsync(DateTime start, DateTime end)
+        {
+            return _dbContext.Set<CmrrCount>()
+                .Where(c => c.CountPeriod >= start && c.CountPeriod <= end)
+                .ToListAsync();
+        }
+
         public Task<List<CmrrCount>> GetByPeriodAsync(DateTime period)
         {
             return _dbContext.Set<CmrrCount>()
