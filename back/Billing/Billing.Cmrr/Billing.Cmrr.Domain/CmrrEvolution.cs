@@ -17,7 +17,7 @@ namespace Billing.Cmrr.Domain
         public decimal Creation { get; set; }
         public decimal Termination { get; set; }
         public decimal Expansion { get; set; }
-        public decimal Retraction { get; set; }
+        public decimal Contraction { get; set; }
 
         public decimal TotalAmount { get; set; }
         public decimal TotalAmountVariation { get; set; }

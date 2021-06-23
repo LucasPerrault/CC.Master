@@ -112,8 +112,8 @@ namespace Billing.Cmrr.Application
                 case CmrrLifeCycle.Expansion:
                     line.Expansion += amount;
                     break;
-                case CmrrLifeCycle.Retraction:
-                    line.Retraction += amount;
+                case CmrrLifeCycle.Contraction:
+                    line.Contraction += amount;
                     break;
                 case CmrrLifeCycle.Termination:
                     line.Termination += amount;

@@ -127,7 +127,7 @@ namespace Billing.Cmrr.Application.Tests
                 };
 
             cmrrCountsStoreMock.Setup(x => x.GetBetweenAsync(startPeriod.AddMonths(-1), endPeriod)).ReturnsAsync(() => counts);
-            
+
             var sut = new CmrrEvolutionsService(cmrrContractsStoreMock.Object, cmrrCountsStoreMock.Object);
 
             var cmrrEvolution = await sut.GetEvolutionAsync(evolutionFilter);
@@ -149,7 +149,7 @@ namespace Billing.Cmrr.Application.Tests
             var secondMonthLine = cmrrEvolution.Lines.Single(l => l.Period == startPeriod.AddMonths(1));
             secondMonthLine.Amount.Should().Be(100 - 15);
             secondMonthLine.Expansion.Should().Be(100);
-            secondMonthLine.Retraction.Should().Be(-15);
+            secondMonthLine.Contraction.Should().Be(-15);
 
             var thirdMonthLine = cmrrEvolution.Lines.Single(l => l.Period == startPeriod.AddMonths(2));
             thirdMonthLine.Amount.Should().Be(150 - 5);

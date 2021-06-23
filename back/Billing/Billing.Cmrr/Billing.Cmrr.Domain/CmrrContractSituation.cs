@@ -25,7 +25,7 @@ namespace Billing.Cmrr.Domain
             if (endPeriodCount is null)
             {
                 if (contract.EndReason == ContractEndReason.Modification)
-                    return CmrrLifeCycle.Retraction;
+                    return CmrrLifeCycle.Contraction;
                 return CmrrLifeCycle.Termination;
             }
 
@@ -38,7 +38,7 @@ namespace Billing.Cmrr.Domain
             }
 
             if (startPeriodCount.EuroTotal >= endPeriodCount.EuroTotal)
-                return CmrrLifeCycle.Retraction;
+                return CmrrLifeCycle.Contraction;
 
             return CmrrLifeCycle.Expansion;
         }

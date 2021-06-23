@@ -141,7 +141,7 @@ namespace Billing.Cmrr.Application
             {
                 CmrrLifeCycle.Creation => section.Creation,
                 CmrrLifeCycle.Expansion => section.Expansion,
-                CmrrLifeCycle.Retraction => section.Retraction,
+                CmrrLifeCycle.Contraction => section.Contraction,
                 CmrrLifeCycle.Termination => section.Termination,
                 CmrrLifeCycle.Upsell => section.Upsell,
                 _ => throw new InvalidEnumArgumentException(nameof(situation.ContractSituation.LifeCycle), (int)situation.ContractSituation.LifeCycle, typeof(CmrrLifeCycle))

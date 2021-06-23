@@ -318,7 +318,7 @@ namespace Billing.Cmrr.Application.Tests
             var section = line.SubLines.Single(s => s.Key == product.ProductSolutions.Single().Solution.Name).Value;
 
             section.Termination.Top.Should().NotContain(c => c.Contract.Id == 11);
-            section.Retraction.Top.Should().NotContain(c => c.Contract.Id == 11);
+            section.Contraction.Top.Should().NotContain(c => c.Contract.Id == 11);
             section.Upsell.Top.Should().NotContain(c => c.Contract.Id == 11);
             section.Expansion.Top.Should().NotContain(c => c.Contract.Id == 11);
             section.Creation.Top.Should().NotContain(c => c.Contract.Id == 11);
@@ -416,7 +416,7 @@ namespace Billing.Cmrr.Application.Tests
             var section = line.SubLines.Single(s => s.Key == product.ProductSolutions.Single().Solution.Name).Value;
 
             section.Termination.Top.Should().NotContain(c => c.Contract.Id == 11);
-            section.Retraction.Top.Should().NotContain(c => c.Contract.Id == 11);
+            section.Contraction.Top.Should().NotContain(c => c.Contract.Id == 11);
             section.Upsell.Top.Should().NotContain(c => c.Contract.Id == 11);
             section.Expansion.Top.Should().NotContain(c => c.Contract.Id == 11);
             section.Creation.Top.Should().NotContain(c => c.Contract.Id == 11);

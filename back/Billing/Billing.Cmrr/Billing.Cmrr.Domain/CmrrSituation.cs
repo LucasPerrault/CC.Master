@@ -41,7 +41,7 @@ namespace Billing.Cmrr.Domain
         public CmrrAmount Creation { get; set; } = new CmrrAmount();
         public CmrrAmount Termination { get; set; } = new CmrrAmount();
         public CmrrAmount Expansion { get; set; } = new CmrrAmount();
-        public CmrrAmount Retraction { get; set; } = new CmrrAmount();
+        public CmrrAmount Contraction { get; set; } = new CmrrAmount();
     }
 
     public class CmrrAmount
