@@ -19,8 +19,8 @@ namespace Billing.Web.Controllers
             _cmrrEvolutionsService = cmrrEvolutionsService;
         }
 
-        [HttpGet, ForbidIfMissing(Operation.ReadCMRR)]
-        public async Task<CmrrSituation> GetAsync([FromQuery] CmrrSituationListQuery situationListQuery)
+        [HttpGet("situation"), ForbidIfMissing(Operation.ReadCMRR)]
+        public async Task<CmrrSituation> GetSituationAsync([FromQuery] CmrrSituationListQuery situationListQuery)
         {
             var result = await _cmrrSituationsService.GetSituationAsync(situationListQuery.ToCmrrSituationFilter());
             return result;
