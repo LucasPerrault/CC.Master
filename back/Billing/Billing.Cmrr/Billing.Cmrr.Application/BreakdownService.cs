@@ -24,7 +24,7 @@ namespace Billing.Cmrr.Application
 
         public async Task<List<Breakdown>> GetBreakdownsAsync(CmrrAxis axis)
         {
-            var products = await _productsStore.GetNonFreeProductsAsync();
+            var products = await _productsStore.GetAsync(new ProductsFilter { NonFreeOnly = true}, ProductsIncludes.All);
 
             return products
                 .Select(p => p.ProductSolutions.Select(ps => ToBreakdownShare(axis, ps)))

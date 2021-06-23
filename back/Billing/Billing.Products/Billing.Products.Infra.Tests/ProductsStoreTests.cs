@@ -1,4 +1,5 @@
 using Billing.Products.Domain;
+using Billing.Products.Domain.Interfaces;
 using Billing.Products.Infra.Storage;
 using Billing.Products.Infra.Storage.Stores;
 using FluentAssertions;
@@ -55,7 +56,7 @@ namespace Billing.Products.Infra.Tests
 
             var sut = new ProductsStore(_dbContext);
 
-            var result = await sut.GetNonFreeProductsAsync();
+            var result = await sut.GetAsync(new ProductsFilter { NonFreeOnly = true }, ProductsIncludes.All);
 
             result.Should().NotBeEmpty();
             result.Should().HaveCount(2);
