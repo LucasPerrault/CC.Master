@@ -54,7 +54,7 @@ namespace Billing.Web
         private static void ConfigureProduct(IServiceCollection services)
         {
             services.AddScoped<IProductsStore, ProductsStore>();
-
+            services.AddScoped<IBusinessUnitsStore, BusinessUnitsStore>();
         }
     }
 }
