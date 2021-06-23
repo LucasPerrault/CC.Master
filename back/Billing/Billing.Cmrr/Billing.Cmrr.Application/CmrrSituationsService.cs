@@ -45,6 +45,7 @@ namespace Billing.Cmrr.Application
 
             var groupedSituations = axisSectionSituations
                 .GroupBy(situation => situation.Breakdown.AxisSection)
+                .Where(a => !situationFilter.Sections.Any() || situationFilter.Sections.Contains(a.Key.Name))
                 .OrderBy(section => section.Key.Order);
 
             return groupedSituations
