@@ -10,7 +10,7 @@ namespace Billing.Web
         public DateTime? EndPeriod { get; set; }
 
         public HashSet<int> ClientId { get; set; } = new HashSet<int>();
-        public HashSet<string> DistributorsId { get; set; } = new HashSet<string>();
+        public HashSet<string> DistributorId { get; set; } = new HashSet<string>();
 
         public CmrrEvolutionFilter ToCmrrEvolutionFilter()
         {
@@ -24,7 +24,7 @@ namespace Billing.Web
                 StartPeriod = StartPeriod.Value,
                 EndPeriod = EndPeriod.Value,
                 ClientId = ClientId,
-                DistributorsId = DistributorsId
+                DistributorsId = DistributorId
             };
         }
     }

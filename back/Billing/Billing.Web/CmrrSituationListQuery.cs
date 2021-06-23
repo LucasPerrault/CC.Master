@@ -13,7 +13,7 @@ namespace Billing.Web
         public CmrrAxis? Axis { get; set; }
 
         public HashSet<int> ClientId { get; set; } = new HashSet<int>();
-        public HashSet<string> DistributorsId { get; set; } = new HashSet<string>();
+        public HashSet<string> DistributorId { get; set; } = new HashSet<string>();
 
         public CmrrSituationFilter ToCmrrSituationFilter()
         {
@@ -28,7 +28,7 @@ namespace Billing.Web
                 EndPeriod = EndPeriod.Value,
                 Axis = Axis ?? CmrrAxis.Product,
                 ClientId = ClientId,
-                DistributorsId = DistributorsId
+                DistributorsId = DistributorId
             };
         }
     }
