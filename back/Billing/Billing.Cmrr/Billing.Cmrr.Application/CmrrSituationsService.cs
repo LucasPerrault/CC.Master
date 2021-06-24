@@ -104,19 +104,19 @@ namespace Billing.Cmrr.Application
             {
                 var subLine = GetSubLine(line, situation);
                 var amount = GetAmount(subLine, situation);
-                UpdateCmrrAmount(amount, situation, s => s.PartialDiff);
+                UpdateCmrrAmount(amount, situation, s => s.PartialDiff, s => s.EndPeriodUserCount);
             }
 
             foreach (var situation in situations.OrderByDescending(s => Math.Abs(s.StartPeriodAmount)))
             {
                 var subLine = GetSubLine(line, situation);
-                UpdateCmrrAmount(subLine.TotalFrom, situation, s => s.StartPeriodAmount);
+                UpdateCmrrAmount(subLine.TotalFrom, situation, s => s.StartPeriodAmount, s => s.StartPeriodUserCount);
             }
 
             foreach (var situation in situations.OrderByDescending(s => Math.Abs(s.EndPeriodAmount)))
             {
                 var subLine = GetSubLine(line, situation);
-                UpdateCmrrAmount(subLine.TotalTo, situation, s => s.EndPeriodAmount);
+                UpdateCmrrAmount(subLine.TotalTo, situation, s => s.EndPeriodAmount, s => s.EndPeriodUserCount);
             }
 
             return line;
@@ -129,9 +129,13 @@ namespace Billing.Cmrr.Application
             return line.SubLines[subSectionName];
         }
 
-        private void UpdateCmrrAmount(CmrrAmount amount, ContractAxisSectionSituation axisSectionSituation, Func<ContractAxisSectionSituation, decimal> amountFunc)
+        private void UpdateCmrrAmount(CmrrAmount amount, ContractAxisSectionSituation axisSectionSituation, Func<ContractAxisSectionSituation, decimal> amountFunc, Func<ContractAxisSectionSituation, int> userCountFunc)
         {
             amount.Amount += amountFunc(axisSectionSituation);
+            amount.ContractCount++;
+            amount.UserCount += userCountFunc(axisSectionSituation);
+
+            amount.AddClient(axisSectionSituation.ContractSituation.Contract.ClientId);
             if (amount.Top.Count < CmrrAmountTopElement.TopCount)
                 amount.Top.Add(CmrrAmountTopElement.FromSituation(axisSectionSituation));
         }

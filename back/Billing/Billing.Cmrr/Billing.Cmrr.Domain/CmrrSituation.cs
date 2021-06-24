@@ -47,7 +47,18 @@ namespace Billing.Cmrr.Domain
     public class CmrrAmount
     {
         public decimal Amount { get; set; }
+        public int ContractCount { get; set; }
+        public int ClientCount => ClientIds.Count;
+
         public List<CmrrAmountTopElement> Top { get; } = new List<CmrrAmountTopElement>();
+
+        private HashSet<int> ClientIds { get; } = new HashSet<int>();
+        public int UserCount { get; set; }
+
+        public void AddClient(int clientId)
+        {
+            ClientIds.Add(clientId);
+        }
     }
 
     public class CmrrAmountTopElement
@@ -120,9 +131,12 @@ namespace Billing.Cmrr.Domain
         public CmrrContractSituation ContractSituation { get; }
 
         public decimal StartPeriodAmount { get; }
-
         public decimal EndPeriodAmount { get; }
         public decimal PartialDiff => EndPeriodAmount - StartPeriodAmount;
+
+        public int StartPeriodUserCount { get; }
+        public int EndPeriodUserCount { get; }
+        public int UserCountDiff => EndPeriodUserCount - StartPeriodUserCount;
 
         public ContractAxisSectionSituation(Breakdown breakdown, CmrrContractSituation contractSituation)
         {
@@ -131,6 +145,9 @@ namespace Billing.Cmrr.Domain
 
             StartPeriodAmount = breakdown.Ratio * contractSituation.StartPeriodCount?.EuroTotal ?? 0;
             EndPeriodAmount = breakdown.Ratio * contractSituation.EndPeriodCount?.EuroTotal ?? 0;
+
+            StartPeriodUserCount = contractSituation.StartPeriodCount?.AccountingNumber ?? 0;
+            EndPeriodUserCount = contractSituation.EndPeriodCount?.AccountingNumber ?? 0;
         }
     }
 
