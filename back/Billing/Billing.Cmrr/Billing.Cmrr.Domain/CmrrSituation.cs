@@ -11,17 +11,21 @@ namespace Billing.Cmrr.Domain
         public DateTime EndPeriod { get; set; }
 
         public CmrrAxis Axis { get; set; }
+
+        public CmrrSubLine Total { get; set; }
         public List<CmrrLine> Lines { get; set; }
     }
 
     public class CmrrLine
     {
         public string Name { get; }
+        public CmrrSubLine Total { get; }
         public Dictionary<string, CmrrSubLine> SubLines { get; } = new Dictionary<string, CmrrSubLine>();
 
         public CmrrLine(string name)
         {
             Name = name;
+            Total = new CmrrSubLine(Name);
         }
     }
 
@@ -47,17 +51,24 @@ namespace Billing.Cmrr.Domain
     public class CmrrAmount
     {
         public decimal Amount { get; set; }
-        public int ContractCount { get; set; }
+        public int ContractCount => ContractIds.Count;
         public int ClientCount => ClientIds.Count;
 
         public List<CmrrAmountTopElement> Top { get; } = new List<CmrrAmountTopElement>();
 
-        private HashSet<int> ClientIds { get; } = new HashSet<int>();
+        internal HashSet<int> ClientIds { get; } = new HashSet<int>();
+        internal HashSet<int> ContractIds { get; } = new HashSet<int>();
+
         public int UserCount { get; set; }
 
         public void AddClient(int clientId)
         {
             ClientIds.Add(clientId);
+        }
+
+        public void AddContract(int contractId)
+        {
+            ContractIds.Add(contractId);
         }
     }
 
@@ -195,5 +206,34 @@ namespace Billing.Cmrr.Domain
 
         public static AxisSection ForBusinessUnit(BusinessUnit bu) => new AxisSection(bu.Id, bu.Name, bu.DisplayOrder);
         public static AxisSection ForProductFamily(ProductFamily family) => new AxisSection(family.Id, family.Name, family.DisplayOrder);
+    }
+
+    public static class CmrrSubLinesExtensions
+    {
+        public static CmrrSubLine GetTotal(this IEnumerable<CmrrSubLine> lines)
+        {
+            var total = new CmrrSubLine("Total");
+
+            foreach (var line in lines)
+            {
+                Aggregate(total.TotalFrom, line.TotalFrom);
+                Aggregate(total.TotalTo, line.TotalTo);
+                Aggregate(total.Creation, line.Creation);
+                Aggregate(total.Upsell, line.Upsell);
+                Aggregate(total.Expansion, line.Expansion);
+                Aggregate(total.Contraction, line.Contraction);
+                Aggregate(total.Termination, line.Termination);
+            }
+
+            return total;
+        }
+
+        private static void Aggregate(CmrrAmount aggregate, CmrrAmount amount)
+        {
+            aggregate.Amount += amount.Amount;
+            aggregate.UserCount += amount.UserCount;
+            aggregate.ClientIds.UnionWith(amount.ClientIds);
+            aggregate.ContractIds.UnionWith(amount.ContractIds);
+        }
     }
 }
