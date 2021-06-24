@@ -79,7 +79,7 @@
             "TokenRequestRoute": "/identity/connect/token"
         },
         "WsAuth": {
-            "ServerApiEndpoint": "{{ shared:LuccaAuthSyncBaseUrl }}/api",
+            "ServerApiEndpoint": "{{ Lucca.Auth.Sync:scheme }}://{{ Lucca.Auth.Sync:tenant }}.{{ Lucca.Auth.Sync:domain }}{{ Lucca.Auth.Sync:AppPath }}/api",
             "Token": "{{ Lucca.Auth.Sync:CloudControlToken }}"
         },
         "CcData": {
