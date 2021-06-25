@@ -54,7 +54,7 @@ namespace Instances.Domain.Demos
                 );
 
             var existingDemo = demos
-                .OrderBy(d => d.CreatedAt)
+                .OrderByDescending(d => d.CreatedAt)
                 .FirstOrDefault();
 
             if (existingDemo != null)

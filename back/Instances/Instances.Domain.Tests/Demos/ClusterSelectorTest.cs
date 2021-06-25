@@ -146,8 +146,8 @@ namespace Instances.Domain.Tests
                 .Setup(ds => ds.GetAsync(It.IsAny<DemoFilter>(), It.IsAny<AccessRight>()))
                 .ReturnsAsync(new List<Demo>
                 {
-                    new Demo { CreatedAt = new DateTime(2020, 01, 01), Instance = new Instance { Cluster = "use-me"}},
-                    new Demo { CreatedAt = new DateTime(2021, 01, 01), Instance = new Instance { Cluster = "do-not-use-me"}},
+                    new Demo { CreatedAt = new DateTime(2020, 01, 01), Instance = new Instance { Cluster = "too-old-to-be-used"}},
+                    new Demo { CreatedAt = new DateTime(2021, 01, 01), Instance = new Instance { Cluster = "use-me"}},
                 });
             var cacheServiceMock = new Mock<ICacheService>();
             string cachedCluster = null;
