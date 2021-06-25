@@ -15,7 +15,6 @@
     <ProjectReference Include="..\..\Core\Tools\Tools.Web\Tools.Web.csproj" />
     <ProjectReference Include="..\..\Shared\Remote\Remote.Infra\Remote.Infra.csproj" />
     <ProjectReference Include="..\Instances.Application\Instances.Application.csproj" />
-    <ProjectReference Include="..\Instances.Domain\Instances.Domain.csproj" />
     <ProjectReference Include="..\Instances.Infra\Instances.Infra.csproj" />
   </ItemGroup>
 

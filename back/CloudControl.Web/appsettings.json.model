@@ -73,6 +73,11 @@
             "Endpoint": "/api/v3/instances",
             "Token": "{{ CC.Master:LegacyCommunicationToken }}"
         },
+        "CodeSourcesStore": {
+            "Host": "http://{{ CC.Master:LegacyCloudControlHost }}",
+            "Endpoint": "/api/v3/codeSources",
+            "Token": "{{ CC.Master:LegacyCommunicationToken }}"
+        },
         "Identity": {
             "ClientId": "{{ luccaidentity:CloudControlClientId }}",
             "ClientSecret": "{{ luccaidentity:CloudControlClientSecret }}",
@@ -101,6 +106,9 @@
             "UseFixedCluster": "{{ CC.Master:UseFixedClusterForDemos }}",
             "FixedClusterName": "{{ CC.Master:FixedClusterName }}",
             "ClusterChoiceCacheRetentionInHours": 24
+        },
+        "Github": {
+            "Token": "{{ CC.Master:GithubToken }}"
         }
     }
 }

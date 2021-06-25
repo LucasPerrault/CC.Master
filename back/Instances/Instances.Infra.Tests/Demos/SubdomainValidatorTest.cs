@@ -41,7 +41,7 @@ namespace Instances.Infra.Tests.Demos
                 .ReturnsAsync(new List<Environment>());
             var subdomainValidator = new SubdomainValidator(_demosStoreMock.Object, _envStoreMock.Object);
 
-            Assert.True(await subdomainValidator.IsAvailableAsync("aperture-science"));
+            Assert.True(await subdomainValidator.IsAvailableAsync(takenSubdomain));
         }
 
         [Theory]

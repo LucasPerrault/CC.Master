@@ -1,0 +1,25 @@
+<div class="page mod-fullWidth mod-withFullwidthTable">
+  <header class="page-header blockWithFixedSizeInFlex">
+    <h1>{{ "front_sourcePage_title" | translate }}</h1>
+    <button class="button" routerLink="create" *ngIf="canEditCodeSources">
+      {{ "front_sourcePage_createButton_label" | translate }}
+    </button>
+  </header>
+
+  <cc-lifecycle-button-group class="header blockWithFixedSizeInFlex"
+                             [formControl]="lifecycleFilter"
+                             [codeSourcesFiltered]="codeSourcesFiltered$ | async">
+  </cc-lifecycle-button-group>
+
+  <div class="loading mod-fullPage" *ngIf="isLoading$ | async; else isNotLoading"></div>
+  <ng-template #isNotLoading>
+    <cc-code-sources-list [canEditCodeSources]="canEditCodeSources"
+                          [codeSources]="codeSources$ | async">
+    </cc-code-sources-list>
+  </ng-template>
+
+  <router-outlet></router-outlet>
+</div>
+
+
+

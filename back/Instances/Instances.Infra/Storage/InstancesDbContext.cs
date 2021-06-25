@@ -21,6 +21,10 @@ namespace Instances.Infra.Storage
             modelBuilder.ApplyConfiguration(new DemosConfiguration());
             modelBuilder.ApplyConfiguration(new DemoDuplicationsConfiguration());
 
+            modelBuilder.ApplyConfiguration(new CodeSourcesConfiguration());
+            modelBuilder.ApplyConfiguration(new CodeSourceConfigsConfiguration());
+            modelBuilder.ApplyConfiguration(new CodeSourceProductionVersionsConfiguration());
+
             // shared
             modelBuilder.ApplyConfiguration(new DistributorsConfiguration());
             modelBuilder.ApplyConfiguration(new SimpleUsersConfiguration());

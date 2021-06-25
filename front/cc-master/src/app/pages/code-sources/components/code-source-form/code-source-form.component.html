@@ -1,0 +1,40 @@
+<form [formGroup]="formGroup">
+  <label class="textfield palette-grey mod-block">
+    <input class="textfield-input" type="text" [formControlName]="formGroupKey.Code">
+    <span class="textfield-label">{{ 'front_sourcePage_form_label_code' | translate }}</span>
+  </label>
+
+  <label class="textfield palette-grey mod-block">
+    <input class="textfield-input" type="text" [formControlName]="formGroupKey.Type">
+    <span class="textfield-label">{{ 'front_sourcePage_form_label_type' | translate }}</span>
+  </label>
+
+  <cc-lifecycle-select [formControlName]="formGroupKey.Lifecycle"></cc-lifecycle-select>
+
+  <label class="textfield palette-grey mod-block">
+    <input class="textfield-input" type="text" [formControlName]="formGroupKey.JenkinsProjectName">
+    <span class="textfield-label">{{ 'front_sourcePage_form_label_jenkins' | translate }}</span>
+  </label>
+
+  <div [formGroupName]="formGroupKey.Config">
+    <label class="textfield palette-grey mod-block">
+      <input class="textfield-input" type="text" [formControlName]="formGroupKey.AppPath">
+      <span class="textfield-label">{{ 'front_sourcePage_form_label_appPath' | translate }}</span>
+    </label>
+
+    <label class="textfield palette-grey mod-block">
+      <input class="textfield-input" type="text" [formControlName]="formGroupKey.Subdomain">
+      <span class="textfield-label">{{ 'front_sourcePage_form_label_subdomain' | translate }}</span>
+    </label>
+
+    <label class="textfield palette-grey mod-block">
+      <input class="textfield-input" type="text" [formControlName]="formGroupKey.IisServerPath">
+      <span class="textfield-label">{{ 'front_sourcePage_form_label_serverPath' | translate }}</span>
+    </label>
+
+    <label class="checkbox u-marginTopSmallest">
+      <input class="checkbox-input" [formControlName]="formGroupKey.IsPrivate" type="checkbox" name="isPrivate" id="isPrivate">
+      <span class="checkbox-label" for="isPrivate">{{ 'front_sourcePage_form_label_isPrivate' | translate }}</span>
+    </label>
+  </div>
+</form>
