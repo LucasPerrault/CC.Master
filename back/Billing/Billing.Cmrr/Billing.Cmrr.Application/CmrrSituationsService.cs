@@ -99,31 +99,31 @@ namespace Billing.Cmrr.Application
             {
                 var subLine = GetSubLine(line, situation);
                 var amount = GetAmount(subLine, situation);
-                UpdateCmrrAmount(amount, situation, s => s.PartialDiff, s => s.EndPeriodUserCount);
+                UpdateCmrrAmount(amount, situation, s => s.PartialDiff, s => s.UserCountDiff, _ => true);
 
                 var totalAmount = GetAmount(line.Total, situation);
-                UpdateCmrrAmount(totalAmount, situation, s => s.PartialDiff, s => s.EndPeriodUserCount);
+                UpdateCmrrAmount(totalAmount, situation, s => s.PartialDiff, s => s.UserCountDiff, _ => true);
 
                 var grandTotalAmount = GetAmount(grandTotal, situation);
-                UpdateCmrrAmount(grandTotalAmount, situation, s => s.PartialDiff, s => s.EndPeriodUserCount);
+                UpdateCmrrAmount(grandTotalAmount, situation, s => s.PartialDiff, s => s.UserCountDiff, _ => true);
             }
 
             foreach (var situation in situations.OrderByDescending(s => Math.Abs(s.StartPeriodAmount)))
             {
                 var subLine = GetSubLine(line, situation);
-                UpdateCmrrAmount(subLine.TotalFrom, situation, s => s.StartPeriodAmount, s => s.StartPeriodUserCount);
+                UpdateCmrrAmount(subLine.TotalFrom, situation, s => s.StartPeriodAmount, s => s.StartPeriodUserCount, s => s.ContractSituation.StartPeriodCount != null);
 
-                UpdateCmrrAmount(line.Total.TotalFrom, situation, s => s.StartPeriodAmount, s => s.StartPeriodUserCount);
-                UpdateCmrrAmount(grandTotal.TotalFrom, situation, s => s.StartPeriodAmount, s => s.StartPeriodUserCount);
+                UpdateCmrrAmount(line.Total.TotalFrom, situation, s => s.StartPeriodAmount, s => s.StartPeriodUserCount, s => s.ContractSituation.StartPeriodCount != null);
+                UpdateCmrrAmount(grandTotal.TotalFrom, situation, s => s.StartPeriodAmount, s => s.StartPeriodUserCount, s => s.ContractSituation.StartPeriodCount != null);
             }
 
             foreach (var situation in situations.OrderByDescending(s => Math.Abs(s.EndPeriodAmount)))
             {
                 var subLine = GetSubLine(line, situation);
-                UpdateCmrrAmount(subLine.TotalTo, situation, s => s.EndPeriodAmount, s => s.EndPeriodUserCount);
+                UpdateCmrrAmount(subLine.TotalTo, situation, s => s.EndPeriodAmount, s => s.EndPeriodUserCount, s => s.ContractSituation.EndPeriodCount != null);
 
-                UpdateCmrrAmount(line.Total.TotalTo, situation, s => s.EndPeriodAmount, s => s.EndPeriodUserCount);
-                UpdateCmrrAmount(grandTotal.TotalTo, situation, s => s.EndPeriodAmount, s => s.EndPeriodUserCount);
+                UpdateCmrrAmount(line.Total.TotalTo, situation, s => s.EndPeriodAmount, s => s.EndPeriodUserCount, s => s.ContractSituation.EndPeriodCount != null);
+                UpdateCmrrAmount(grandTotal.TotalTo, situation, s => s.EndPeriodAmount, s => s.EndPeriodUserCount, s => s.ContractSituation.EndPeriodCount != null);
             }
 
             return line;
@@ -136,13 +136,23 @@ namespace Billing.Cmrr.Application
             return line.SubLines[subSectionName];
         }
 
-        private void UpdateCmrrAmount(CmrrAmount amount, ContractAxisSectionSituation axisSectionSituation, Func<ContractAxisSectionSituation, decimal> amountFunc, Func<ContractAxisSectionSituation, int> userCountFunc)
+        private void UpdateCmrrAmount
+         (
+            CmrrAmount amount,
+            ContractAxisSectionSituation axisSectionSituation,
+            Func<ContractAxisSectionSituation, decimal> amountFunc,
+            Func<ContractAxisSectionSituation, int> userCountFunc,
+            Func<ContractAxisSectionSituation, bool> shouldCountClientAndContracts
+        )
         {
             amount.Amount += amountFunc(axisSectionSituation);
             amount.UserCount += userCountFunc(axisSectionSituation);
 
-            amount.AddClient(axisSectionSituation.ContractSituation.Contract.ClientId);
-            amount.AddContract(axisSectionSituation.ContractSituation.ContractId);
+            if (shouldCountClientAndContracts(axisSectionSituation))
+            {
+                amount.AddClient(axisSectionSituation.ContractSituation.Contract.ClientId);
+                amount.AddContract(axisSectionSituation.ContractSituation.ContractId);
+            }
 
             if (amount.Top.Count < CmrrAmountTopElement.TopCount)
                 amount.Top.Add(CmrrAmountTopElement.FromSituation(axisSectionSituation));
