@@ -19,8 +19,6 @@ namespace Billing.Cmrr.Domain
         public decimal Expansion { get; set; }
         public decimal Contraction { get; set; }
 
-        public decimal TotalAmount { get; set; }
-        public decimal TotalAmountVariation { get; set; }
         public CmrrEvolutionLine(DateTime period)
         {
             Period = period;
