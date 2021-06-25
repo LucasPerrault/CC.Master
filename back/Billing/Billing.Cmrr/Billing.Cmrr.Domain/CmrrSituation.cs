@@ -76,7 +76,7 @@ namespace Billing.Cmrr.Domain
     {
         public const int TopCount = 10;
         public Breakdown Breakdown { get; private set; }
-        public decimal PartialDiff { get; private set; }
+        public decimal Amount { get; private set; }
         public CmrrAmountTopElementContract Contract { get; private set; }
         public CmrrAmountTopElementCount StartPeriodCount { get; private set; }
         public CmrrAmountTopElementCount EndPeriodCount { get; private set; }
@@ -84,7 +84,7 @@ namespace Billing.Cmrr.Domain
         private CmrrAmountTopElement()
         { }
 
-        public static CmrrAmountTopElement FromSituation(ContractAxisSectionSituation situation)
+        public static CmrrAmountTopElement FromSituation(ContractAxisSectionSituation situation, decimal amount)
         {
             return new CmrrAmountTopElement
             {
@@ -92,7 +92,7 @@ namespace Billing.Cmrr.Domain
                 Contract = CmrrAmountTopElementContract.FromContract(situation.ContractSituation.Contract),
                 StartPeriodCount = CmrrAmountTopElementCount.FromCount(situation.ContractSituation.StartPeriodCount),
                 EndPeriodCount = CmrrAmountTopElementCount.FromCount(situation.ContractSituation.EndPeriodCount),
-                PartialDiff = situation.PartialDiff,
+                Amount = amount,
             };
         }
     }
