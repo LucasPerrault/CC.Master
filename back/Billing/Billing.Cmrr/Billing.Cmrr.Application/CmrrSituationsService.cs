@@ -97,7 +97,12 @@ namespace Billing.Cmrr.Application
         {
             foreach (var situation in situations.OrderByDescending(s => Math.Abs(s.PartialDiff)))
             {
-                var line = cmrrSituation.Lines.Single(l => l.Name == situation.Breakdown.AxisSection.Name);
+                var line = cmrrSituation.Lines.SingleOrDefault(l => l.Name == situation.Breakdown.AxisSection.Name);
+                if (line is null)
+                {
+                    continue;
+                }
+
                 var subLine = GetSubLine(line, situation);
                 var amount = GetAmount(subLine, situation);
                 UpdateLifecycleAmount(amount, situation);
@@ -111,9 +116,13 @@ namespace Billing.Cmrr.Application
 
             foreach (var situation in situations.OrderByDescending(s => Math.Abs(s.StartPeriodAmount)))
             {
-                var line = cmrrSituation.Lines.Single(l => l.Name == situation.Breakdown.AxisSection.Name);
-                var subLine = GetSubLine(line, situation);
+                var line = cmrrSituation.Lines.SingleOrDefault(l => l.Name == situation.Breakdown.AxisSection.Name);
+                if (line is null)
+                {
+                    continue;
+                }
 
+                var subLine = GetSubLine(line, situation);
                 UpdateStartAmount(subLine.TotalFrom, situation);
                 UpdateStartAmount(line.Total.TotalFrom, situation);
                 UpdateStartAmount(cmrrSituation.Total.TotalFrom, situation);
@@ -121,9 +130,13 @@ namespace Billing.Cmrr.Application
 
             foreach (var situation in situations.OrderByDescending(s => Math.Abs(s.EndPeriodAmount)))
             {
-                var line = cmrrSituation.Lines.Single(l => l.Name == situation.Breakdown.AxisSection.Name);
-                var subLine = GetSubLine(line, situation);
+                var line = cmrrSituation.Lines.SingleOrDefault(l => l.Name == situation.Breakdown.AxisSection.Name);
+                if (line is null)
+                {
+                    continue;
+                }
 
+                var subLine = GetSubLine(line, situation);
                 UpdateEndAmount(subLine.TotalTo, situation);
                 UpdateEndAmount(line.Total.TotalTo, situation);
                 UpdateEndAmount(cmrrSituation.Total.TotalTo, situation);
