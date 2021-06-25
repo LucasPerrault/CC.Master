@@ -82,6 +82,7 @@ namespace Instances.Web.Controllers
     {
         public IPageToken Page { get; set; } = null;
         public HashSet<CodeSourceLifecycleStep> Lifecycle { get; set; } = CodeSource.ActiveSteps;
+        public HashSet<CodeSourceType> Type { get; set; } = new HashSet<CodeSourceType>();
 
         public string Search { get; set; }
 
@@ -94,7 +95,8 @@ namespace Instances.Web.Controllers
             Code = Code,
             Id = Id,
             Search = Search,
-            Lifecycle = Lifecycle
+            Lifecycle = Lifecycle,
+            Type = Type
         };
     }
 }

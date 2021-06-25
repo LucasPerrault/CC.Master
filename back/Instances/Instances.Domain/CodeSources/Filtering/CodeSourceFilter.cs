@@ -8,6 +8,7 @@ namespace Instances.Domain.CodeSources.Filtering
         public string Search { get; set; }
         public string Code { get; set; }
         public HashSet<CodeSourceLifecycleStep> Lifecycle { get; set; } = new HashSet<CodeSourceLifecycleStep>();
+        public HashSet<CodeSourceType> Type { get; set; } = new HashSet<CodeSourceType>();
 
         public static CodeSourceFilter ById(int id) => new CodeSourceFilter { Id = new HashSet<int> { id } };
         public static CodeSourceFilter ActiveByCode(string code) => new CodeSourceFilter

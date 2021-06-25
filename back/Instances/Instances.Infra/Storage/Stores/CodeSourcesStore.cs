@@ -84,6 +84,7 @@ namespace Instances.Infra.Storage.Stores
                 .WhenNotNullOrEmpty(filter.Search).ApplyWhere(cs => cs.Name.Contains(filter.Search))
                 .WhenNotNullOrEmpty(filter.Code).ApplyWhere(cs => cs.Code == filter.Code)
                 .WhenNotNullOrEmpty(filter.Lifecycle).ApplyWhere(cs => filter.Lifecycle.Contains(cs.Lifecycle))
+                .WhenNotNullOrEmpty(filter.Type).ApplyWhere(cs => filter.Type.Contains(cs.Type))
                 .WhenNotNullOrEmpty(filter.Id).ApplyWhere(cs => filter.Id.Contains(cs.Id));
         }
     }
