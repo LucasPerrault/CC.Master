@@ -156,7 +156,7 @@ namespace Billing.Cmrr.Application
             }
 
             if (amount.Top.Count < CmrrAmountTopElement.TopCount)
-                amount.Top.Add(CmrrAmountTopElement.FromSituation(axisSectionSituation, amountFunc(axisSectionSituation)));
+                amount.Top.Add(CmrrAmountTopElement.FromSituation(axisSectionSituation, amountFunc(axisSectionSituation), userCountFunc(axisSectionSituation)));
         }
 
         private CmrrAmount GetAmount(CmrrSubLine section, ContractAxisSectionSituation situation)
