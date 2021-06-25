@@ -1,13 +1,16 @@
 using Cache.Abstractions;
+using Instances.Domain.Demos.Filtering;
+using Rights.Domain.Filtering;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using Tools;
 
 namespace Instances.Domain.Demos
 {
     public interface IClusterSelector
     {
-        Task<string> GetFillingClusterAsync();
+        Task<string> GetFillingClusterAsync(string subdomain);
     }
 
     public class ClusterSelectorConfiguration
@@ -37,8 +40,28 @@ namespace Instances.Domain.Demos
             _cacheService = cacheService;
         }
 
-        public async Task<string> GetFillingClusterAsync()
+        public async Task<string> GetFillingClusterAsync(string subdomain)
         {
+            var demos = await _demosStore
+                .GetAsync
+                (
+                    new DemoFilter
+                    {
+                        Subdomain = CompareString.Equals(subdomain),
+                        IsActive = CompareBoolean.FalseOnly
+                    },
+                    AccessRight.All
+                );
+
+            var existingDemo = demos
+                .OrderByDescending(d => d.CreatedAt)
+                .FirstOrDefault();
+
+            if (existingDemo != null)
+            {
+                return existingDemo.Instance.Cluster;
+            }
+
             if(_configuration.UseFixedCluster)
             {
                 return _configuration.FixedClusterName;
