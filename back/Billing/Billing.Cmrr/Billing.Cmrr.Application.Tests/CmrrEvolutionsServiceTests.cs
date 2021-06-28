@@ -73,7 +73,7 @@ namespace Billing.Cmrr.Application.Tests
                 var cmrrContracts = new List<CmrrContract>
                  {
                     new CmrrContract { Id = 10, ProductId = 1 },
-                    new CmrrContract { Id = 11, ProductId = 1}
+                    new CmrrContract { Id = 11, ProductId = 1 },
                  };
                 return cmrrContracts;
             });
@@ -141,18 +141,18 @@ namespace Billing.Cmrr.Application.Tests
             cmrrEvolution.Lines.Should().HaveCount(3);
 
             var firstMonthLine = cmrrEvolution.Lines.Single(l => l.Period == startPeriod);
-            firstMonthLine.Amount.Should().Be(10 + 100);
+            firstMonthLine.Amount.Should().Be(100 + 20);
             firstMonthLine.Expansion.Should().Be(10);
             firstMonthLine.Creation.Should().Be(100);
 
 
             var secondMonthLine = cmrrEvolution.Lines.Single(l => l.Period == startPeriod.AddMonths(1));
-            secondMonthLine.Amount.Should().Be(100 - 15);
+            secondMonthLine.Amount.Should().Be(200 + 5);
             secondMonthLine.Expansion.Should().Be(100);
             secondMonthLine.Contraction.Should().Be(-15);
 
             var thirdMonthLine = cmrrEvolution.Lines.Single(l => l.Period == startPeriod.AddMonths(2));
-            thirdMonthLine.Amount.Should().Be(150 - 5);
+            thirdMonthLine.Amount.Should().Be(350);
             thirdMonthLine.Expansion.Should().Be(150);
             thirdMonthLine.Termination.Should().Be(-5);
         }
