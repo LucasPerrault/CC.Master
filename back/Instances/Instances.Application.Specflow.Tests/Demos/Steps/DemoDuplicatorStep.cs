@@ -237,11 +237,20 @@ namespace Instances.Application.Specflow.Tests.Demos.Steps
             _demosContext.DbContext.Set<InstanceDuplication>().Single(i => i.Id == duplicationId).Progress.Should().Be(progress);
         }
 
-        [Then(@"no demo '(.*)' should be active")]
-        public void ThenDuplicationShouldResultInInstanceDeletion(string subdomain)
+        [Then(@"(no|one) demo '(.*)' should be active")]
+        public void ThenDuplicationShouldResultInInstanceDeletion(string demoExistenceKeyword, string subdomain)
         {
             var demos = _demosContext.DbContext.Set<Demo>().Where(d => d.Subdomain == subdomain && d.IsActive);
-            demos.Should().BeEmpty();
+
+            switch (demoExistenceKeyword)
+            {
+                case "no":
+                    demos.Should().BeEmpty();
+                    break;
+                case "one":
+                    demos.Should().HaveCount(1);
+                    break;
+            }
         }
 
         [Then(@"duplication '(.*)' should not result in instance deletion")]
