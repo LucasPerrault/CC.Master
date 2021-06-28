@@ -1,6 +1,7 @@
 using Distributors.Domain;
 using Distributors.Domain.Models;
 using Environments.Domain.Storage;
+using FluentAssertions;
 using Instances.Application.Demos;
 using Instances.Application.Demos.Duplication;
 using Instances.Application.Instances;
@@ -108,7 +109,7 @@ namespace Instances.Application.Specflow.Tests.Demos.Steps
             await completer.MarkDuplicationAsCompletedAsync(duplicationId, true);
         }
 
-        [When(@"I duplication '(.*)' ends but password reset fails")]
+        [When(@"duplication '(.*)' ends but password reset fails")]
         public async Task WhenDuplicationEndsButPasswordFails(Guid duplicationId)
         {
             var completer = GetCompleter(new DemoCompleterSetup { WillPasswordResetFail = true });
@@ -228,6 +229,19 @@ namespace Instances.Application.Specflow.Tests.Demos.Steps
         public void ThenDuplicationShouldResultInInstanceDeletion(Guid duplicationId)
         {
             Assert.Single(_demosContext.Results.DeleteInstances);
+        }
+
+        [Then(@"duplication '(.*)' should be marked as (.*)")]
+        public void ThenDuplicationShouldResultInInstanceDeletion(Guid duplicationId, InstanceDuplicationProgress progress)
+        {
+            _demosContext.DbContext.Set<InstanceDuplication>().Single(i => i.Id == duplicationId).Progress.Should().Be(progress);
+        }
+
+        [Then(@"no demo '(.*)' should be active")]
+        public void ThenDuplicationShouldResultInInstanceDeletion(string subdomain)
+        {
+            var demos = _demosContext.DbContext.Set<Demo>().Where(d => d.Subdomain == subdomain && d.IsActive);
+            demos.Should().BeEmpty();
         }
 
         [Then(@"duplication '(.*)' should not result in instance deletion")]

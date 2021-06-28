@@ -72,9 +72,9 @@ namespace Instances.Application.Demos.Duplication
 
         private async Task CreateAndStoreDemoAsync(DemoDuplication duplication, Instance instance)
         {
+            var demo = BuildDemo(duplication, instance);
             try
             {
-                var demo = BuildDemo(duplication, instance);
                 await _demosStore.CreateAsync(demo);
                 await _demoUsersPasswordResetService.ResetPasswordAsync(demo, duplication.Password);
                 await _wsAuthSynchronizer.SafeSynchronizeAsync(instance.Id);
@@ -83,6 +83,8 @@ namespace Instances.Application.Demos.Duplication
             {
                 _logger.LogError(e, "Could not create demo, following instance duplication");
                 await _instancesStore.DeleteForDemoAsync(instance);
+                await _demosStore.DeleteAsync(demo);
+                throw;
             }
         }
 
