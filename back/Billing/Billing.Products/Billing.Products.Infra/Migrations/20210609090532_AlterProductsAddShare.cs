@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Billing.Products.Infra.Migrations
 {
@@ -41,6 +41,7 @@ namespace Billing.Products.Infra.Migrations
                        WHEN 'Synchronisation Figgo/GXP' THEN 10
                        WHEN 'Poplee Entretiens & Objectifs' THEN 100
                        WHEN 'Signature Electronique' THEN 10
+                       WHEN 'Bloom At Work' THEN 100
                 END)");
 
         }
