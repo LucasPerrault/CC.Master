@@ -208,6 +208,7 @@ namespace Billing.Cmrr.Domain
 
         public static AxisSection ForBusinessUnit(BusinessUnit bu) => new AxisSection(bu.Id, bu.Name, bu.DisplayOrder);
         public static AxisSection ForProductFamily(ProductFamily family) => new AxisSection(family.Id, family.Name, family.DisplayOrder);
+        public static AxisSection ForSolution(Solution solution) => new AxisSection(solution.Id, solution.Name, 1);
     }
 
     public static class CmrrSubLinesExtensions

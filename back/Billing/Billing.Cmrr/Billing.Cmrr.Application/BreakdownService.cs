@@ -1,4 +1,4 @@
-﻿using Billing.Cmrr.Domain;
+using Billing.Cmrr.Domain;
 using Billing.Products.Domain;
 using Billing.Products.Domain.Interfaces;
 using System.Collections.Generic;
@@ -47,6 +47,13 @@ namespace Billing.Cmrr.Application
                 (
                     AxisSection.ForProductFamily(ps.Product.Family),
                     ps.Solution.Name,
+                    ps.Product,
+                    ps.Share
+                ),
+                CmrrAxis.Solution => new BreakdownShare
+                (
+                    AxisSection.ForSolution(ps.Solution),
+                    ps.Product.Name,
                     ps.Product,
                     ps.Share
                 ),
