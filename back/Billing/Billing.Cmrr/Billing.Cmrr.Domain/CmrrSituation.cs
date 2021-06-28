@@ -209,33 +209,4 @@ namespace Billing.Cmrr.Domain
         public static AxisSection ForBusinessUnit(BusinessUnit bu) => new AxisSection(bu.Id, bu.Name, bu.DisplayOrder);
         public static AxisSection ForProductFamily(ProductFamily family) => new AxisSection(family.Id, family.Name, family.DisplayOrder);
     }
-
-    public static class CmrrSubLinesExtensions
-    {
-        public static CmrrSubLine GetTotal(this IEnumerable<CmrrSubLine> lines)
-        {
-            var total = new CmrrSubLine("Total");
-
-            foreach (var line in lines)
-            {
-                Aggregate(total.TotalFrom, line.TotalFrom);
-                Aggregate(total.TotalTo, line.TotalTo);
-                Aggregate(total.Creation, line.Creation);
-                Aggregate(total.Upsell, line.Upsell);
-                Aggregate(total.Expansion, line.Expansion);
-                Aggregate(total.Contraction, line.Contraction);
-                Aggregate(total.Termination, line.Termination);
-            }
-
-            return total;
-        }
-
-        private static void Aggregate(CmrrAmount aggregate, CmrrAmount amount)
-        {
-            aggregate.Amount += amount.Amount;
-            aggregate.UserCount += amount.UserCount;
-            aggregate.ClientIds.UnionWith(amount.ClientIds);
-            aggregate.ContractIds.UnionWith(amount.ContractIds);
-        }
-    }
 }
