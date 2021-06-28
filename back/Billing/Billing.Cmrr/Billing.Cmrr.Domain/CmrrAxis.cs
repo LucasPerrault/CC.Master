@@ -4,5 +4,6 @@ namespace Billing.Cmrr.Domain
     {
         Product = 1,
         BusinessUnit = 2,
+        Solution = 3,
     }
 }

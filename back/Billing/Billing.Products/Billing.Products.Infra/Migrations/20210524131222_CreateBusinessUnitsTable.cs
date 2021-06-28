@@ -73,6 +73,7 @@ namespace Billing.Products.Infra.Migrations
                        WHEN 'Synchronisation Figgo/GXP' THEN 1
                        WHEN 'Poplee Entretiens & Objectifs' THEN 3
                        WHEN 'Signature Electronique' THEN 5
+                       WHEN 'Bloom At Work' THEN 6
                 END
                 )
                 ");
