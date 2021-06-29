@@ -13,17 +13,24 @@ namespace Instances.Infra.Dns
     public class DnsService : IDnsService
     {
         private readonly InternalDnsService _internalDnsService;
-        private readonly DnsZonesConfiguration _dnsZonesConfiguration;
+        private readonly DnsZonesConfiguration _dnsZones;
 
-        public DnsService(InternalDnsService internalDnsService, DnsZonesConfiguration dnsZonesConfiguration)
+        public DnsService(InternalDnsService internalDnsService, DnsZonesConfiguration dnsZones)
         {
             _internalDnsService = internalDnsService;
-            _dnsZonesConfiguration = dnsZonesConfiguration;
+            _dnsZones = dnsZones;
         }
 
         public Task CreateAsync(DnsEntry entry)
         {
-            _internalDnsService.AddNewCname(GetDomain(entry), entry.Cluster);
+            var creation = new DnsEntryCreation
+            {
+                Subdomain = entry.Subdomain,
+                DnsZone = GetDnsZoneAsString(entry),
+                Cluster = entry.Cluster,
+            };
+
+            _internalDnsService.AddNewCname(creation);
             return Task.CompletedTask;
         }
 
@@ -31,22 +38,25 @@ namespace Instances.Infra.Dns
         {
             foreach (var entry in entries)
             {
-                _internalDnsService.DeleteCname(entry.Subdomain);
+                var deletion = new DnsEntryDeletion { Subdomain = entry.Subdomain, DnsZone = GetDnsZoneAsString(entry) };
+                _internalDnsService.DeleteCname(deletion);
             }
+
             return Task.CompletedTask;
         }
 
         public Task DeleteAsync(DnsEntry entry)
         {
-            _internalDnsService.DeleteCname(entry.Subdomain);
+            var deletion = new DnsEntryDeletion { Subdomain = entry.Subdomain, DnsZone = GetDnsZoneAsString(entry) };
+            _internalDnsService.DeleteCname(deletion);
             return Task.CompletedTask;
         }
 
-        private string GetDomain(DnsEntry entry)
+        private string GetDnsZoneAsString(DnsEntry entry)
         {
             return entry.Zone switch
             {
-                DnsEntryZone.Demos => $"{entry.Subdomain}.{_dnsZonesConfiguration.Demos}",
+                DnsEntryZone.Demos => _dnsZones.Demos,
                 _ => throw new InvalidEnumArgumentException(nameof(entry.Zone), (int)entry.Zone, typeof(DnsEntryZone))
             };
         }

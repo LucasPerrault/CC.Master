@@ -41,25 +41,20 @@ namespace Instances.Infra.Dns
             );
         }
 
-        public void AddNewCname(string domain, string targetClusterName)
+        internal void AddNewCname(DnsEntryCreation entryCreation)
         {
             var man = new ManagementClass(_session.Value, new ManagementPath("MicrosoftDNS_CNAMETYPE"), null);
             var vars = man.GetMethodParameters("CreateInstanceFromPropertyData");
             vars["DnsServerName"] = _server;
-            vars["ContainerName"] = domain.Split(".", 2)[1];
-            vars["OwnerName"] = domain;
-            vars["PrimaryName"] = GetPrimaryName(targetClusterName);
+            vars["ContainerName"] = entryCreation.DnsZone;
+            vars["OwnerName"] = $"{entryCreation.Subdomain}.{entryCreation.DnsZone}";
+            vars["PrimaryName"] = GetPrimaryName(entryCreation.Cluster);
             man.InvokeMethod("CreateInstanceFromPropertyData", vars, null);
         }
 
-        private string GetPrimaryName(string targetClusterName)
+        internal  void DeleteCname(DnsEntryDeletion deletion)
         {
-            return $"rbx-{ClusterNameConvertor.GetShortName(targetClusterName)}-haproxy.lucca.local.";
-        }
-
-        internal void DeleteCname(string domain)
-        {
-            var wql = $"SELECT * FROM MicrosoftDNS_CNAMETYPE WHERE OwnerName = '{domain}'";
+            var wql = $"SELECT * FROM MicrosoftDNS_CNAMETYPE WHERE OwnerName = '{deletion.Subdomain}.{deletion.DnsZone}'";
             var query = new ObjectQuery(wql);
             var s = new ManagementObjectSearcher(_session.Value, query);
             var col = s.Get();
@@ -67,6 +62,11 @@ namespace Instances.Infra.Dns
             {
                 o.Delete();
             }
+        }
+
+        private string GetPrimaryName(string targetClusterName)
+        {
+            return $"rbx-{ClusterNameConvertor.GetShortName(targetClusterName)}-haproxy.lucca.local.";
         }
     }
 }
