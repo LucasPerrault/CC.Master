@@ -13,6 +13,7 @@ using Instances.Domain.Shared;
 using Instances.Infra.CodeSources;
 using Instances.Infra.DataDuplication;
 using Instances.Infra.Demos;
+using Instances.Infra.Dns;
 using Instances.Infra.Github;
 using Instances.Infra.Instances;
 using Instances.Infra.Instances.Services;
@@ -49,6 +50,8 @@ namespace Instances.Web
             public SqlScriptPickerConfiguration SqlScriptPicker { get; set; }
             public ClusterSelectorConfiguration DemoClusterSelection { get; set; }
             public GithubConfiguration Github { get; set; }
+            public InternalDnsConfiguration InternalDns { get; set; }
+            public DnsZonesConfiguration DnsZones { get; set; }
         }
 
         public static void ConfigureServices(IServiceCollection services, InstancesConfiguration configuration)
@@ -58,10 +61,15 @@ namespace Instances.Web
             services.AddSingleton(configuration.Hubspot);
             services.AddSingleton(configuration.SqlScriptPicker);
             services.AddSingleton(configuration.DemoClusterSelection);
+            services.AddSingleton(configuration.InternalDns);
+            services.AddSingleton(configuration.DnsZones);
             services.AddSingleton<DeletionCallbackNotifier>();
             services.AddSingleton<IUsersPasswordHelper, UsersPasswordHelper>();
             services.AddSingleton<IDemoDeletionCalculator, DemoDeletionCalculator>();
             services.AddSingleton<ISqlScriptPicker, SqlScriptPicker>();
+
+            services.AddSingleton<IDnsService, DnsService>();
+            services.AddSingleton<InternalDnsService>();
 
             services.AddSingleton(
                 sp =>

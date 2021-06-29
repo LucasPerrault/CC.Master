@@ -28,6 +28,7 @@ namespace Instances.Application.Tests.Demos
         private readonly Mock<IDemoEmails> _emailsMock;
         private readonly Mock<IInstancesStore> _instancesStoreMock;
         private readonly Mock<IDemoDeletionCalculator> _deletionCalculatorMock;
+        private readonly Mock<IDnsService> _dnsServiceMock;
 
         public InactiveDemosCleanerTests()
         {
@@ -39,6 +40,7 @@ namespace Instances.Application.Tests.Demos
             _emailsMock = new Mock<IDemoEmails>();
             _instancesStoreMock = new Mock<IInstancesStore>();
             _deletionCalculatorMock = new Mock<IDemoDeletionCalculator>();
+            _dnsServiceMock = new Mock<IDnsService>();
 
             _emailsMock.Setup(e => e.GetIntentEmail(It.IsAny<DateTime>(), It.IsAny<IEnumerable<DemoCleanupInfo>>()))
                 .Returns(new EmailContentBuilder("mocked"));
@@ -62,7 +64,8 @@ namespace Instances.Application.Tests.Demos
                 _emailServiceMock.Object,
                 _emailsMock.Object,
                 _deletionCalculatorMock.Object,
-                _instancesStoreMock.Object
+                _instancesStoreMock.Object,
+                _dnsServiceMock.Object
             );
 
             await cleaner.CleanAsync(new DemoCleanupParams { IsDryRun = false});
@@ -116,7 +119,8 @@ namespace Instances.Application.Tests.Demos
                 _emailServiceMock.Object,
                 _emailsMock.Object,
                 _deletionCalculatorMock.Object,
-                _instancesStoreMock.Object
+                _instancesStoreMock.Object,
+                _dnsServiceMock.Object
             );
 
             await cleaner.CleanAsync(new DemoCleanupParams { IsDryRun = false});
@@ -167,7 +171,8 @@ namespace Instances.Application.Tests.Demos
                 _emailServiceMock.Object,
                 _emailsMock.Object,
                 _deletionCalculatorMock.Object,
-                _instancesStoreMock.Object
+                _instancesStoreMock.Object,
+                _dnsServiceMock.Object
             );
 
             await cleaner.CleanAsync(new DemoCleanupParams { IsDryRun = false});
@@ -215,7 +220,8 @@ namespace Instances.Application.Tests.Demos
                 _emailServiceMock.Object,
                 _emailsMock.Object,
                 _deletionCalculatorMock.Object,
-                _instancesStoreMock.Object
+                _instancesStoreMock.Object,
+                _dnsServiceMock.Object
             );
 
             await cleaner.CleanAsync(new DemoCleanupParams { IsDryRun = false});
@@ -262,7 +268,8 @@ namespace Instances.Application.Tests.Demos
                 _emailServiceMock.Object,
                 _emailsMock.Object,
                 _deletionCalculatorMock.Object,
-                _instancesStoreMock.Object
+                _instancesStoreMock.Object,
+                _dnsServiceMock.Object
             );
 
             await cleaner.CleanAsync(new DemoCleanupParams { IsDryRun = false});
@@ -302,7 +309,8 @@ namespace Instances.Application.Tests.Demos
                     _emailServiceMock.Object,
                     _emailsMock.Object,
                     _deletionCalculatorMock.Object,
-                    _instancesStoreMock.Object
+                    _instancesStoreMock.Object,
+                    _dnsServiceMock.Object
                 );
 
             await cleaner.CleanAsync(new DemoCleanupParams { IsDryRun = false});
@@ -350,7 +358,8 @@ namespace Instances.Application.Tests.Demos
                     _emailServiceMock.Object,
                     _emailsMock.Object,
                     _deletionCalculatorMock.Object,
-                    _instancesStoreMock.Object
+                    _instancesStoreMock.Object,
+                    _dnsServiceMock.Object
                 );
 
             await cleaner.CleanAsync(new DemoCleanupParams { IsDryRun = true});
@@ -405,7 +414,8 @@ namespace Instances.Application.Tests.Demos
                 _emailServiceMock.Object,
                 _emailsMock.Object,
                 _deletionCalculatorMock.Object,
-                _instancesStoreMock.Object
+                _instancesStoreMock.Object,
+                _dnsServiceMock.Object
             );
 
             await cleaner.CleanAsync(new DemoCleanupParams { IsDryRun = false});

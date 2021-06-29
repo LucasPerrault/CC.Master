@@ -137,6 +137,13 @@ namespace Instances.Application.Specflow.Tests.Demos.Steps
                 .ReturnsAsync((Operation op) => _demosContext.TestPrincipal.OperationsWithScope[op]);
             var ccDataServiceMock = new Mock<ICcDataService>();
             var clusterSelectorMock = new Mock<IClusterSelector>();
+            var dnsMock = new Mock<IDnsService>();
+            dnsMock.Setup(d => d.CreateAsync(It.IsAny<DnsEntry>()))
+                .Returns<DnsEntry>(entry =>
+                {
+                    _demosContext.Results.SubdomainPropagations.Add(entry);
+                    return Task.CompletedTask;
+                });
 
             return new DemoDuplicator
                 (
@@ -155,7 +162,8 @@ namespace Instances.Application.Specflow.Tests.Demos.Steps
                     distributorsStoreMock.Object,
                     new SubdomainGenerator(new SubdomainValidator(demosStore, envStoreMock.Object)),
                     clusterSelectorMock.Object,
-                    new UsersPasswordHelper()
+                    new UsersPasswordHelper(),
+                    dnsMock.Object
                 );
         }
 
@@ -170,6 +178,7 @@ namespace Instances.Application.Specflow.Tests.Demos.Steps
             );
 
             var instancesStoreMock = new Mock<IInstancesStore>();
+            var dnsMock = new Mock<IDnsService>();
             instancesStoreMock
                 .Setup(s => s.CreateForDemoAsync(It.IsAny<string>(), It.IsAny<string>()))
                 .Callback<string,string>(
@@ -212,7 +221,8 @@ namespace Instances.Application.Specflow.Tests.Demos.Steps
                     new Mock<IWsAuthSynchronizer>().Object,
                     passwordResetServiceMock.Object,
                     new Mock<IDemoDeletionCalculator>().Object,
-                    new Mock<ILogger<DemoDuplicationCompleter>>().Object
+                    new Mock<ILogger<DemoDuplicationCompleter>>().Object,
+                    dnsMock.Object
                 );
         }
 
@@ -226,6 +236,14 @@ namespace Instances.Application.Specflow.Tests.Demos.Steps
         public void ThenDuplicationShouldResultInInstanceDeletion(Guid duplicationId)
         {
             Assert.Single(_demosContext.Results.DeleteInstances);
+        }
+
+        [Then(@"dns propagation should start (.*)")]
+        public void ThenShouldPropagateOnDns(SubdomainSelection selection)
+        {
+            _demosContext.Results.SubdomainPropagations
+                .Where(p => p.Subdomain == selection.Subdomain && p.Zone == DnsEntryZone.Demos)
+                .Should().NotBeEmpty();
         }
 
         [Then(@"duplication '(.*)' should be marked as (.*)")]

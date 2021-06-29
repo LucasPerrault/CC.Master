@@ -24,6 +24,7 @@ namespace Instances.Application.Demos.Duplication
         private readonly ISubdomainGenerator _subdomainGenerator;
         private readonly IClusterSelector _clusterSelector;
         private readonly IUsersPasswordHelper _passwordHelper;
+        private readonly IDnsService _dnsService;
         private readonly DemoRightsFilter _demoRightsFilter;
 
         public DemoDuplicator
@@ -36,7 +37,8 @@ namespace Instances.Application.Demos.Duplication
             IDistributorsStore distributorsStore,
             ISubdomainGenerator subdomainGenerator,
             IClusterSelector clusterSelector,
-            IUsersPasswordHelper passwordHelper
+            IUsersPasswordHelper passwordHelper,
+            IDnsService dnsService
         )
         {
             _principal = principal;
@@ -48,6 +50,7 @@ namespace Instances.Application.Demos.Duplication
             _subdomainGenerator = subdomainGenerator;
             _clusterSelector = clusterSelector;
             _passwordHelper = passwordHelper;
+            _dnsService = dnsService;
             _demoRightsFilter = new DemoRightsFilter(_rightsService);
         }
 
@@ -72,6 +75,7 @@ namespace Instances.Application.Demos.Duplication
                 request.Comment
             );
 
+            await _dnsService.CreateAsync(DnsEntry.ForDemo(request.Subdomain, targetCluster));
             await _duplicationsStore.CreateAsync(duplication);
             await _instancesDuplicator.RequestRemoteDuplicationAsync
             (

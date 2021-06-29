@@ -1,4 +1,5 @@
 using Instances.Domain.Demos;
+using Instances.Domain.Instances;
 using Instances.Domain.Instances.Models;
 using Instances.Infra.Storage;
 using System;
@@ -27,5 +28,6 @@ namespace Instances.Application.Specflow.Tests.Demos.Models
         public List<Demo> Demos { get; } = new List<Demo>();
         public Demo SingleDemo { get; set; }
         public ExceptionResult ExceptionResult { get; } = new ExceptionResult();
+        public List<DnsEntry> SubdomainPropagations { get; } = new List<DnsEntry>();
     }
 }

@@ -17,6 +17,7 @@ namespace Instances.Application.Demos
         private readonly IInstancesStore _instancesStore;
         private readonly DemoRightsFilter _rightsFilter;
         private readonly ICcDataService _ccDataService;
+        private readonly IDnsService _dnsService;
 
         public DemosRepository
         (
@@ -24,7 +25,8 @@ namespace Instances.Application.Demos
             IDemosStore demosStore,
             IInstancesStore instancesStore,
             DemoRightsFilter rightsFilters,
-            ICcDataService ccDataService
+            ICcDataService ccDataService,
+            IDnsService dnsService
         )
         {
             _principal = principal;
@@ -32,6 +34,7 @@ namespace Instances.Application.Demos
             _instancesStore = instancesStore;
             _rightsFilter = rightsFilters;
             _ccDataService = ccDataService;
+            _dnsService = dnsService;
         }
 
         public async Task<Page<Demo>> GetDemosAsync(IPageToken pageToken, DemoFilter filter)
@@ -77,6 +80,7 @@ namespace Instances.Application.Demos
                 throw new BadRequestException($"Demo {demo.Id} is protected and cannot be deleted");
             }
 
+            await _dnsService.DeleteAsync(DnsEntry.ForDemo(demo.Subdomain, demo.Instance.Cluster));
             await _instancesStore.DeleteForDemoAsync(demo.Instance);
             await _demosStore.DeleteAsync(demo);
             await _ccDataService.DeleteInstanceAsync(demo.Subdomain, demo.Instance.Cluster, string.Empty);
