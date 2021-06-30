@@ -55,6 +55,7 @@ namespace Billing.Web
         {
             services.AddScoped<IProductsStore, ProductsStore>();
             services.AddScoped<IBusinessUnitsStore, BusinessUnitsStore>();
+            services.AddScoped<ISolutionsStore, SolutionsStore>();
         }
     }
 }
