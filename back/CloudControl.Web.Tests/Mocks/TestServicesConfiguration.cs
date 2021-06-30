@@ -219,7 +219,7 @@ namespace CloudControl.Web.Tests.Mocks
                     },
                     DnsZones = new DnsZonesConfiguration
                     {
-                        Demos = "lucca.demo.zone.local."
+                        Demos = "ilucca-demo.net"
                     }
                 }
             });
