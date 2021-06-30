@@ -1,0 +1,26 @@
+<div class="radioButtons palette-grey mod-outlined">
+  <div class="radioButtons-item">
+    <input type="radio" class="radioButtons-item-input" id="preview" name="lifecycle"
+           [value]="lifecycleStep.Preview" [formControl]="lifecycleStepsSelected"/>
+    <label class="radioButtons-item-label" for="preview">
+      {{ 'front_sourcePage_lifecycleFilter_activeSources' | translate }}
+      <span class="label mod-number">{{ codeSourcesFiltered.activeCodeSources.length }}</span>
+    </label>
+  </div>
+  <div class="radioButtons-item">
+    <input type="radio" class="radioButtons-item-input" id="referenced" name="lifecycle"
+           [value]="lifecycleStep.Referenced" [formControl]="lifecycleStepsSelected"/>
+    <label class="radioButtons-item-label" for="referenced">
+      {{ 'front_sourcePage_lifecycleFilter_referencedSources' | translate }}
+      <span class="label mod-number">{{ codeSourcesFiltered.referencedCodeSources.length }}</span>
+    </label>
+  </div>
+  <div class="radioButtons-item">
+    <input type="radio" class="radioButtons-item-input" id="deleted" name="lifecycle"
+           [value]="lifecycleStep.Deleted" [formControl]="lifecycleStepsSelected" />
+    <label class="radioButtons-item-label" for="deleted">
+      {{ 'front_sourcePage_lifecycleFilter_deletedSources' | translate }}
+      <span class="label mod-number">{{ codeSourcesFiltered.deletedCodeSources.length }}</span>
+    </label>
+  </div>
+</div>

@@ -8,7 +8,7 @@ namespace Billing.Contracts.Infra.Storage.Configurations
     {
         public void Configure(EntityTypeBuilder<Contract> builder)
         {
-            builder.ToView("Contracts");
+            builder.ToTable("Contracts");
             builder.HasKey(d => d.Id);
             builder.Property(d => d.ExternalId).HasColumnName("ExternalId");
             builder.Property(d => d.ClientId).HasColumnName("ClientId");

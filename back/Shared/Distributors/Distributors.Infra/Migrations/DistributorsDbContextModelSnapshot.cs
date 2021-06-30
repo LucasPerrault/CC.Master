@@ -42,6 +42,26 @@ namespace Distributors.Infra.Migrations
 
                     b.ToTable("Distributors","shared");
                 });
+
+            modelBuilder.Entity("Distributors.Domain.Models.DistributorDomain", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("DistributorId")
+                        .HasColumnName("DistributorId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Domain")
+                        .HasColumnName("Domain")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("DistributorDomains","shared");
+                });
 #pragma warning restore 612, 618
         }
     }

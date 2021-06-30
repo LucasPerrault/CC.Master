@@ -57,27 +57,34 @@ namespace Instances.Application.Demos.Duplication
                 throw new BadRequestException($"Duplication {instanceDuplicationId} was already marked as complete");
             }
 
-            isSuccessful = isSuccessful && await CompleteDemoCreationAsync(duplication);
-
-            var success = isSuccessful ? InstanceDuplicationProgress.FinishedWithSuccess : InstanceDuplicationProgress.FinishedWithFailure;
-            await _instanceDuplicationsStore.MarkAsCompleteAsync(duplication.InstanceDuplication, success);
-        }
-
-        private async Task<bool> CompleteDemoCreationAsync(DemoDuplication duplication)
-        {
             try
             {
                 var instance = await _instancesStore.CreateForDemoAsync(duplication.Password, duplication.InstanceDuplication.TargetCluster);
-                var demo = BuildDemo(duplication, instance);
+                await CreateAndStoreDemoAsync(duplication, instance);
+                await _instanceDuplicationsStore.MarkAsCompleteAsync(duplication.InstanceDuplication, InstanceDuplicationProgress.FinishedWithSuccess);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "Demo creation failed");
+                await _instanceDuplicationsStore.MarkAsCompleteAsync(duplication.InstanceDuplication, InstanceDuplicationProgress.FinishedWithFailure);
+            }
+        }
+
+        private async Task CreateAndStoreDemoAsync(DemoDuplication duplication, Instance instance)
+        {
+            var demo = BuildDemo(duplication, instance);
+            try
+            {
                 await _demosStore.CreateAsync(demo);
                 await _demoUsersPasswordResetService.ResetPasswordAsync(demo, duplication.Password);
                 await _wsAuthSynchronizer.SafeSynchronizeAsync(instance.Id);
-                return true;
             }
             catch (Exception e)
             {
                 _logger.LogError(e, "Could not create demo, following instance duplication");
-                return false;
+                await _instancesStore.DeleteForDemoAsync(instance);
+                await _demosStore.DeleteAsync(demo);
+                throw;
             }
         }
 

@@ -4,7 +4,6 @@ using Instances.Application.Instances;
 using Instances.Domain.Demos;
 using Instances.Domain.Demos.Filtering;
 using Instances.Domain.Instances;
-using Lucca.Core.Rights.Abstractions;
 using Lucca.Core.Shared.Domain.Exceptions;
 using Rights.Domain;
 using Rights.Domain.Abstractions;
@@ -60,7 +59,7 @@ namespace Instances.Application.Demos.Duplication
 
             var demoToDuplicate = await GetDemoToDuplicateAsync(request.SourceId);
             var distributor = await _distributorsStore.GetByCodeAsync(request.DistributorCode);
-            var targetCluster = await _clusterSelector.GetFillingClusterAsync();
+            var targetCluster = await _clusterSelector.GetFillingClusterAsync(request.Subdomain);
 
             var duplication = DuplicationFactory.New
             (
@@ -121,13 +120,13 @@ namespace Instances.Application.Demos.Duplication
                 throw new ApplicationException("Unsupported claims principal type");
             }
 
-            if (user.User.DepartmentCode == request.DistributorCode)
+            if (user.User.DistributorCode == request.DistributorCode)
             {
                 return;
             }
 
             var scope = await _rightsService.GetUserOperationHighestScopeAsync(Operation.Demo);
-            if (scope != Scope.AllDepartments)
+            if (scope != AccessRightScope.AllDistributors)
             {
                 throw new ForbiddenException("Insufficient rights to duplicate demo for another department than your own");
             }

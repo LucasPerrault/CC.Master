@@ -1,0 +1,25 @@
+<h4>{{ 'front_sourcePage_form_subtitle_fetchData' | translate }}</h4>
+<label class="textfield mod-search palette-grey mod-block">
+  <input class="textfield-input" type="text" [formControl]="githubRepoUrlControl">
+  <span class="textfield-label">{{ 'front_sourcePage_form_label_githubRepoUrl' | translate }}</span>
+</label>
+<div>
+  <button class="button u-marginTopSmall u-right"
+          *ngIf="(hasCodeSourcesFetched$ | async) === false"
+          [ngClass]="fetchButtonState$ | async"
+          [disabled]="!githubRepoUrlControl.value"
+          (click)="fetchGithubData(githubRepoUrlControl.value)">
+    {{ 'front_sourcePage_actionLabel_fetchData' | translate }}
+  </button>
+</div>
+
+<ng-container *ngIf="codeSourcesFetched$ | async; let codeSources">
+  <h4 class="u-marginTopSmall">{{ 'front_sourcePage_form_subtitle_selectCodeSource' | translate }}</h4>
+  <cc-code-source-select [codeSources]="codeSourcesFetched$ | async" [formControl]="codeSourceSelected">
+  </cc-code-source-select>
+</ng-container>
+
+<ng-container *ngIf="!!codeSourceForm.value">
+  <h4 class="u-marginTopSmall">{{ 'front_sourcePage_form_subtitle_information' | translate }}</h4>
+  <cc-code-source-form [formControl]="codeSourceForm"></cc-code-source-form>
+</ng-container>

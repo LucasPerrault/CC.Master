@@ -8,10 +8,10 @@ namespace Billing.Contracts.Infra.Storage.Configurations
     {
         public void Configure(EntityTypeBuilder<Client> builder)
         {
-            builder.ToView("Clients");
+            builder.ToTable("Clients");
             builder.HasKey(d => d.Id);
             builder.Property(d => d.ExternalId).HasColumnName("ExternalId");
-            builder.Property(d => d.Name).HasColumnName("Name"); 
+            builder.Property(d => d.Name).HasColumnName("Name");
             builder.Property(d => d.SalesforceId).HasColumnName("SalesforceId");
             builder.Property(d => d.BillingStreet).HasColumnName("BillingStreet");
             builder.Property(d => d.BillingPostalCode).HasColumnName("BillingPostalCode");

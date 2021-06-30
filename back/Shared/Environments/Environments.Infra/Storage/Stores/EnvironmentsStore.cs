@@ -1,28 +1,97 @@
-using Environments.Domain;
 using Environments.Domain.Storage;
+using Lucca.Core.Api.Abstractions.Paging;
+using Lucca.Core.Api.Queryable.Paging;
+using Lucca.Core.Shared.Domain.Expressions;
+using Microsoft.EntityFrameworkCore;
+using Rights.Domain.Filtering;
 using Storage.Infra.Extensions;
+using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Threading.Tasks;
+using Environment = Environments.Domain.Environment;
 
 namespace Environments.Infra.Storage.Stores
 {
     public class EnvironmentsStore : IEnvironmentsStore
     {
         private readonly EnvironmentsDbContext _dbContext;
+        private readonly IQueryPager _queryPager;
 
-        public EnvironmentsStore(EnvironmentsDbContext dbContext)
+        public EnvironmentsStore(EnvironmentsDbContext dbContext, IQueryPager queryPager)
         {
             _dbContext = dbContext;
+            _queryPager = queryPager;
         }
 
-        public IQueryable<Environment> GetFiltered(params Expression<System.Func<Environment, bool>>[] filters)
+        public Task<List<Environment>> GetAsync(List<EnvironmentAccessRight> rights, EnvironmentFilter filter)
         {
-            return _dbContext.Set<Environment>().Where(filters.CombineSafely());
+            return GetQueryable(rights, filter).ToListAsync();
         }
 
-        public IQueryable<Environment> GetAll()
+        public Task<Page<Environment>> GetAsync(IPageToken page, List<EnvironmentAccessRight> rights, EnvironmentFilter filter)
         {
-            return _dbContext.Set<Environment>();
+            return _queryPager.ToPageAsync(GetQueryable(rights, filter), page);
+        }
+
+        private IQueryable<Environment> GetQueryable(List<EnvironmentAccessRight> rights, EnvironmentFilter filter)
+        {
+            return _dbContext.Set<Environment>()
+                .Include(e => e.ActiveAccesses).ThenInclude(a => a.Consumer)
+                .Include(e => e.ActiveAccesses).ThenInclude(a => a.Access)
+                .ForRights(rights)
+                .FilterBy(filter);
+        }
+    }
+
+    internal static class EnvironmentQueryableExtensions
+    {
+        public static IQueryable<Environment> FilterBy(this IQueryable<Environment> environments, EnvironmentFilter filter)
+        {
+            return environments
+                .Apply(filter.Subdomain).To(e => e.Subdomain)
+                .Apply(filter.IsActive).To(e => e.IsActive)
+                .WhenNotNullOrEmpty(filter.Search).ApplyWhere(e => e.Subdomain.Contains(filter.Search));
+        }
+
+        public static IQueryable<Environment> ForRights
+        (
+            this IQueryable<Environment> environments,
+            List<EnvironmentAccessRight> accessRights
+        )
+        {
+            if (!accessRights.Any())
+            {
+                return new List<Environment>().AsQueryable();
+            }
+
+            var expressions = accessRights
+                .Select(r => WithPurposes(r.Purposes).SmartAndAlso(WithAccessRight(r.AccessRight)))
+                .ToArray();
+
+            return environments.Where(expressions.CombineSafelyOr());
+        }
+
+        private static Expression<Func<Environment, bool>> WithPurposes(PurposeAccessRight accessRight)
+        {
+            return accessRight switch
+            {
+                AllPurposeAccessRight _ => e => true,
+                SomePurposesAccessRight r => e => r.Purposes.Contains(e.Purpose),
+                _ => throw new ApplicationException($"Unknown type of purpose access right {accessRight}")
+            };
+        }
+
+        private static Expression<Func<Environment, bool>> WithAccessRight(AccessRight accessRight)
+        {
+            return accessRight switch
+            {
+                NoAccessRight _ => e => false,
+                DistributorCodeAccessRight r => e => e.ActiveAccesses.Any(a => a.Consumer.Code == r.DistributorCode),
+                AllAccessRight _ => e => true,
+                _ => throw new ApplicationException($"Unknown type of purpose access right {accessRight}")
+            };
         }
     }
 }

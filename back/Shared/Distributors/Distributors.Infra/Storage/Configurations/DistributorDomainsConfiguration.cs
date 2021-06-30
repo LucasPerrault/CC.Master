@@ -9,7 +9,7 @@ namespace Distributors.Infra.Storage.Configurations
     {
         public void Configure(EntityTypeBuilder<DistributorDomain> builder)
         {
-            builder.ToView("DistributorDomains", StorageSchemas.Shared.Value);
+            builder.ToTable("DistributorDomains", StorageSchemas.Shared.Value);
             builder.HasKey(d => d.Id);
             builder.Property(d => d.Domain).HasColumnName("Domain");
             builder.Property(d => d.DistributorId).HasColumnName("DistributorId");

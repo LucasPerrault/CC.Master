@@ -1,6 +1,6 @@
 using Instances.Application.Specflow.Tests.Demos.Models;
-using Lucca.Core.Rights.Abstractions;
 using Rights.Domain;
+using Rights.Domain.Abstractions;
 using System.Collections.Generic;
 using TechTalk.SpecFlow;
 using Testing.Infra;
@@ -18,9 +18,9 @@ namespace Instances.Application.Specflow.Tests.Demos.Steps
         }
 
         [Given("a user with department code '(.*)' and operation '(.*)' and scope '(.*)'")]
-        public void GivenAUserWithOperationAndScope(string departmentCode, Operation op, Scope scope)
+        public void GivenAUserWithOperationAndScope(string departmentCode, Operation op, AccessRightScope scope)
         {
-            var operationDict = new Dictionary<Operation, Scope>
+            var operationDict = new Dictionary<Operation, AccessRightScope>
             {
                 [op] = scope
             };
