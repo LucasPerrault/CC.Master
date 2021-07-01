@@ -1,6 +1,7 @@
 using Billing.Cmrr.Application.Interfaces;
 using Billing.Cmrr.Domain;
 using Billing.Cmrr.Domain.Interfaces;
+using Billing.Cmrr.Domain.Situation;
 using Billing.Products.Domain;
 using Billing.Products.Infra.Storage;
 using Billing.Products.Infra.Storage.Stores;
@@ -175,7 +176,7 @@ namespace Billing.Cmrr.Application.Tests
 
             section.Termination.Amount.Should().Be(-startCountForContract11.EuroTotal);
             cmrrContractSituation11.Contract.Id.Should().Be(11);
-            cmrrContractSituation11.EndPeriodCount.Id.Should().BeNull();
+            cmrrContractSituation11.EndPeriodCount.Should().BeNull();
             cmrrContractSituation11.StartPeriodCount.Id.Should().Be(2);
         }
 

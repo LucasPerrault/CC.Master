@@ -1,4 +1,4 @@
-namespace Billing.Cmrr.Domain
+namespace Billing.Cmrr.Domain.Situation
 {
     public enum CmrrAxis
     {

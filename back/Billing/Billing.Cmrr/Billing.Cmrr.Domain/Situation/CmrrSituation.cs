@@ -1,9 +1,7 @@
-using Billing.Products.Domain;
 using System;
 using System.Collections.Generic;
-using Tools;
 
-namespace Billing.Cmrr.Domain
+namespace Billing.Cmrr.Domain.Situation
 {
     public class CmrrSituation
     {
@@ -56,8 +54,8 @@ namespace Billing.Cmrr.Domain
 
         public List<CmrrAmountTopElement> Top { get; } = new List<CmrrAmountTopElement>();
 
-        internal HashSet<int> ClientIds { get; } = new HashSet<int>();
-        internal HashSet<int> ContractIds { get; } = new HashSet<int>();
+        private HashSet<int> ClientIds { get; } = new HashSet<int>();
+        private HashSet<int> ContractIds { get; } = new HashSet<int>();
 
         public int UserCount { get; set; }
 
@@ -101,7 +99,7 @@ namespace Billing.Cmrr.Domain
 
     public class CmrrAmountTopElementCount
     {
-        public int? Id { get; private set; }
+        public int Id { get; private set; }
         public int AccountingNumber { get; private set; }
 
         private CmrrAmountTopElementCount()
@@ -109,10 +107,15 @@ namespace Billing.Cmrr.Domain
 
         public static CmrrAmountTopElementCount FromCount(CmrrCount count)
         {
+            if (count is null)
+            {
+                return null;
+            }
+
             return new CmrrAmountTopElementCount
             {
-                Id = count?.Id,
-                AccountingNumber = count?.AccountingNumber ?? 0,
+                Id = count.Id,
+                AccountingNumber = count.AccountingNumber,
             };
         }
     }
@@ -136,78 +139,5 @@ namespace Billing.Cmrr.Domain
                 Id = contract.Id
             };
         }
-    }
-
-    public class ContractAxisSectionSituation
-    {
-        public Breakdown Breakdown { get; }
-        public CmrrContractSituation ContractSituation { get; }
-
-        public decimal StartPeriodAmount { get; }
-        public decimal EndPeriodAmount { get; }
-        public decimal PartialDiff => EndPeriodAmount - StartPeriodAmount;
-
-        public int StartPeriodUserCount { get; }
-        public int EndPeriodUserCount { get; }
-        public int UserCountDiff => EndPeriodUserCount - StartPeriodUserCount;
-
-        public ContractAxisSectionSituation(Breakdown breakdown, CmrrContractSituation contractSituation)
-        {
-            Breakdown = breakdown;
-            ContractSituation = contractSituation;
-
-            StartPeriodAmount = breakdown.Ratio * contractSituation.StartPeriodCount?.EuroTotal ?? 0;
-            EndPeriodAmount = breakdown.Ratio * contractSituation.EndPeriodCount?.EuroTotal ?? 0;
-
-            StartPeriodUserCount = contractSituation.StartPeriodCount?.AccountingNumber ?? 0;
-            EndPeriodUserCount = contractSituation.EndPeriodCount?.AccountingNumber ?? 0;
-        }
-    }
-
-    public class Breakdown : ValueObject
-    {
-        public AxisSection AxisSection { get; set; }
-        public int ProductId { get; set; }
-        public decimal Ratio { get; set; }
-        public string SubSection { get; set; }
-
-        protected override IEnumerable<object> EqualityComponents
-        {
-            get
-            {
-                yield return AxisSection;
-                yield return Ratio;
-                yield return SubSection;
-                yield return ProductId;
-            }
-        }
-    }
-
-    public class AxisSection : ValueObject
-    {
-        public int Id { get; }
-        public string Name { get; }
-        public int Order { get; }
-
-        protected override IEnumerable<object> EqualityComponents
-        {
-            get
-            {
-                yield return Id;
-                yield return Name;
-                yield return Order;
-            }
-        }
-
-        private AxisSection(int id, string name, int order)
-        {
-            Id = id;
-            Name = name;
-            Order = order;
-        }
-
-        public static AxisSection ForBusinessUnit(BusinessUnit bu) => new AxisSection(bu.Id, bu.Name, bu.DisplayOrder);
-        public static AxisSection ForProductFamily(ProductFamily family) => new AxisSection(family.Id, family.Name, family.DisplayOrder);
-        public static AxisSection ForSolution(Solution solution) => new AxisSection(solution.Id, solution.Name, 1);
     }
 }

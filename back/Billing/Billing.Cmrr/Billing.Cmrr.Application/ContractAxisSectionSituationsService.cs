@@ -1,5 +1,6 @@
 using Billing.Cmrr.Application.Interfaces;
 using Billing.Cmrr.Domain;
+using Billing.Cmrr.Domain.Situation;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;

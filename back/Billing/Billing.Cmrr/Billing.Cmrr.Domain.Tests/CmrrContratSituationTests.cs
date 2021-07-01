@@ -1,3 +1,4 @@
+using Billing.Cmrr.Domain.Situation;
 using FluentAssertions;
 using System;
 using Xunit;

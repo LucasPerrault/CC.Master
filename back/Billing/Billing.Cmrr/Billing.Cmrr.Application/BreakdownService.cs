@@ -1,4 +1,5 @@
 using Billing.Cmrr.Domain;
+using Billing.Cmrr.Domain.Situation;
 using Billing.Products.Domain;
 using Billing.Products.Domain.Interfaces;
 using System.Collections.Generic;

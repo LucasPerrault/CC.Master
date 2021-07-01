@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace Billing.Cmrr.Domain
+namespace Billing.Cmrr.Domain.Evolution
 {
     public class CmrrEvolution
     {

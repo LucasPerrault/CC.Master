@@ -1,5 +1,16 @@
+using Billing.Cmrr.Domain.Situation;
+
 namespace Billing.Cmrr.Domain
 {
+    public enum CmrrLifeCycle
+    {
+        Upsell = 1,
+        Creation = 2,
+        Expansion = 3,
+        Contraction = 4,
+        Termination = 5
+    }
+
     public class CmrrContractSituation
     {
         public int ContractId { get; }
@@ -41,6 +52,32 @@ namespace Billing.Cmrr.Domain
                 return CmrrLifeCycle.Contraction;
 
             return CmrrLifeCycle.Expansion;
+        }
+    }
+
+    public class ContractAxisSectionSituation
+    {
+        public Breakdown Breakdown { get; }
+        public CmrrContractSituation ContractSituation { get; }
+
+        public decimal StartPeriodAmount { get; }
+        public decimal EndPeriodAmount { get; }
+        public decimal PartialDiff => EndPeriodAmount - StartPeriodAmount;
+
+        public int StartPeriodUserCount { get; }
+        public int EndPeriodUserCount { get; }
+        public int UserCountDiff => EndPeriodUserCount - StartPeriodUserCount;
+
+        public ContractAxisSectionSituation(Breakdown breakdown, CmrrContractSituation contractSituation)
+        {
+            Breakdown = breakdown;
+            ContractSituation = contractSituation;
+
+            StartPeriodAmount = breakdown.Ratio * contractSituation.StartPeriodCount?.EuroTotal ?? 0;
+            EndPeriodAmount = breakdown.Ratio * contractSituation.EndPeriodCount?.EuroTotal ?? 0;
+
+            StartPeriodUserCount = contractSituation.StartPeriodCount?.AccountingNumber ?? 0;
+            EndPeriodUserCount = contractSituation.EndPeriodCount?.AccountingNumber ?? 0;
         }
     }
 }

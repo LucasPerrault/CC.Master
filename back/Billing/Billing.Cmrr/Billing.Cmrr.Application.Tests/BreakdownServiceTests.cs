@@ -1,4 +1,5 @@
 using Billing.Cmrr.Domain;
+using Billing.Cmrr.Domain.Situation;
 using Billing.Products.Domain;
 using Billing.Products.Infra.Storage;
 using Billing.Products.Infra.Storage.Stores;

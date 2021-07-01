@@ -1,5 +1,6 @@
 using Billing.Cmrr.Application.Interfaces;
 using Billing.Cmrr.Domain;
+using Billing.Cmrr.Domain.Evolution;
 using Billing.Cmrr.Domain.Interfaces;
 using FluentAssertions;
 using Moq;

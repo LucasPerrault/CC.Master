@@ -1,4 +1,5 @@
 using Billing.Cmrr.Domain;
+using Billing.Cmrr.Domain.Situation;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
