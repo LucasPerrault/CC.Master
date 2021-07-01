@@ -100,7 +100,7 @@ namespace Instances.Application.Demos.Duplication
         {
             var targetSubdomain = await _subdomainGenerator.GetSubdomainFromPrefixAsync(requestedSubdomain);
             var demoToDuplicate = await _demosStore.GetActiveByIdAsync(DefaultSourceDemoId, AccessRight.All);
-            var targetCluster = await _clusterSelector.GetFillingClusterAsync();
+            var targetCluster = await _clusterSelector.GetFillingClusterAsync(targetSubdomain);
 
             var duplication = DuplicationFactory.New
                 (

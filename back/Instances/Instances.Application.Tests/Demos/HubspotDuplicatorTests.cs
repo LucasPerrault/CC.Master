@@ -127,7 +127,7 @@ namespace Instances.Application.Tests.Demos
                         }
                     );
 
-            _clusterSelectorMock.Setup(s => s.GetFillingClusterAsync())
+            _clusterSelectorMock.Setup(s => s.GetFillingClusterAsync("aperture-science"))
                 .ReturnsAsync("demo-cluster");
 
             _sqlScriptPickerMock.Setup(p => p.GetForDuplication(It.IsAny<InstanceDuplication>()))

@@ -73,13 +73,18 @@
             "Endpoint": "/api/v3/instances",
             "Token": "{{ CC.Master:LegacyCommunicationToken }}"
         },
+        "CodeSourcesStore": {
+            "Host": "http://{{ CC.Master:LegacyCloudControlHost }}",
+            "Endpoint": "/api/v3/codeSources",
+            "Token": "{{ CC.Master:LegacyCommunicationToken }}"
+        },
         "Identity": {
             "ClientId": "{{ luccaidentity:CloudControlClientId }}",
             "ClientSecret": "{{ luccaidentity:CloudControlClientSecret }}",
             "TokenRequestRoute": "/identity/connect/token"
         },
         "WsAuth": {
-            "ServerApiEndpoint": "{{ shared:LuccaAuthSyncBaseUrl }}/api",
+            "ServerApiEndpoint": "{{ Lucca.Auth.Sync:scheme }}://{{ Lucca.Auth.Sync:tenant }}.{{ Lucca.Auth.Sync:domain }}{{ Lucca.Auth.Sync:AppPath }}/api",
             "Token": "{{ Lucca.Auth.Sync:CloudControlToken }}"
         },
         "CcData": {
@@ -101,6 +106,9 @@
             "UseFixedCluster": "{{ CC.Master:UseFixedClusterForDemos }}",
             "FixedClusterName": "{{ CC.Master:FixedClusterName }}",
             "ClusterChoiceCacheRetentionInHours": 24
+        },
+        "Github": {
+            "Token": "{{ CC.Master:GithubToken }}"
         }
     }
 }

@@ -1,15 +1,19 @@
+using Instances.Application.CodeSources;
 using Instances.Application.Demos;
 using Instances.Application.Demos.Deletion;
 using Instances.Application.Demos.Duplication;
 using Instances.Application.Demos.Emails;
 using Instances.Application.Instances;
+using Instances.Domain.CodeSources;
 using Instances.Domain.Demos;
 using Instances.Domain.Demos.Cleanup;
 using Instances.Domain.Demos.Filtering;
 using Instances.Domain.Instances;
 using Instances.Domain.Shared;
+using Instances.Infra.CodeSources;
 using Instances.Infra.DataDuplication;
 using Instances.Infra.Demos;
+using Instances.Infra.Github;
 using Instances.Infra.Instances;
 using Instances.Infra.Instances.Services;
 using Instances.Infra.Shared;
@@ -18,6 +22,7 @@ using Instances.Infra.WsAuth;
 using Lucca.Core.Api.Abstractions;
 using Lucca.Core.Api.Web;
 using Microsoft.Extensions.DependencyInjection;
+using Octokit;
 using Remote.Infra.Extensions;
 using Resources.Translations;
 using System;
@@ -26,7 +31,7 @@ namespace Instances.Web
 {
     public static class InstancesConfigurer
     {
-        public class InstancesStoreConfiguration
+        public class LegacyCloudControlEndpointConfiguration
         {
             public Uri Host { get; set; }
             public string Endpoint { get; set; }
@@ -35,13 +40,15 @@ namespace Instances.Web
 
         public class InstancesConfiguration
         {
-            public InstancesStoreConfiguration InstancesStore { get; set; }
+            public LegacyCloudControlEndpointConfiguration InstancesStore { get; set; }
+            public LegacyCloudControlEndpointConfiguration CodeSourcesStore { get; set; }
             public IdentityAuthenticationConfig Identity { get; set; }
             public CcDataConfiguration CcData { get; set; }
             public WsAuthConfiguration WsAuth { get; set; }
             public HubspotConfiguration Hubspot { get; set; }
             public SqlScriptPickerConfiguration SqlScriptPicker { get; set; }
             public ClusterSelectorConfiguration DemoClusterSelection { get; set; }
+            public GithubConfiguration Github { get; set; }
         }
 
         public static void ConfigureServices(IServiceCollection services, InstancesConfiguration configuration)
@@ -56,11 +63,25 @@ namespace Instances.Web
             services.AddSingleton<IDemoDeletionCalculator, DemoDeletionCalculator>();
             services.AddSingleton<ISqlScriptPicker, SqlScriptPicker>();
 
+            services.AddSingleton(
+                sp =>
+                {
+                    var client = new GitHubClient(new ProductHeaderValue(configuration.Github.ProductHeaderValue))
+                    {
+                        Credentials = new Credentials(configuration.Github.Token)
+                    };
+                    return client;
+                });
+            services.AddSingleton<IGithubService, GithubService>();
+
             services.AddScoped<InactiveDemosCleaner>();
             services.AddScoped<InstancesDuplicator>();
             services.AddScoped<DemoDuplicator>();
             services.AddScoped<HubspotDemoDuplicator>();
             services.AddScoped<IDemoDuplicationCompleter, DemoDuplicationCompleter>();
+
+            services.AddScoped<CodeSourcesRepository>();
+            services.AddScoped<ICodeSourceFetcherService, CodeSourceFetcherService>();
 
             services.AddScoped<IDemosStore, DemosStore>();
             services.AddScoped<IInstanceDuplicationsStore, InstanceDuplicationsStore>();
@@ -72,6 +93,7 @@ namespace Instances.Web
             services.AddScoped<ISubdomainGenerator, SubdomainGenerator>();
             services.AddScoped<ISubdomainValidator, SubdomainValidator>();
             services.AddScoped<IClusterSelector, ClusterSelector>();
+            services.AddScoped<ICodeSourcesStore, CodeSourcesStore>();
 
             services.AddScoped<IDemoEmails, DemoEmails>();
 
@@ -94,6 +116,13 @@ namespace Instances.Web
                     .WithBaseAddress(configuration.InstancesStore.Host, configuration.InstancesStore.Endpoint)
                     .WithAuthScheme("CloudControl").AuthenticateAsApplication(configuration.InstancesStore.Token);
 
+            });
+
+            services.AddHttpClient<IGithubBranchesStore, GithubBranchesRemoteStore>(client =>
+            {
+                client.WithUserAgent(nameof(InstancesRemoteStore))
+                    .WithBaseAddress(configuration.CodeSourcesStore.Host, configuration.CodeSourcesStore.Endpoint)
+                    .WithAuthScheme("CloudControl").AuthenticateAsApplication(configuration.CodeSourcesStore.Token);
             });
 
             services.AddHttpClient<WsAuthRemoteService>(client =>
