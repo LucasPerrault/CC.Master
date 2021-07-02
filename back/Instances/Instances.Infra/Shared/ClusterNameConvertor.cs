@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Text.RegularExpressions;
 
 namespace Instances.Infra.Shared
@@ -14,6 +14,16 @@ namespace Instances.Infra.Shared
     internal static class ClusterNameConvertor
     {
         private static readonly Regex ClusterNumberExtractor = new Regex(@"([a-z]+)(\d+)", RegexOptions.Compiled);
+
+        public static string GetLongName(string clusterName)
+        {
+            return GetLongName(GetParsedCluster(clusterName));
+        }
+
+        public static string GetLongName(ParsedCluster parsedCluster)
+        {
+            return parsedCluster.Name + GetClusterNumber(parsedCluster);
+        }
 
         public static string GetShortName(string clusterName)
         {

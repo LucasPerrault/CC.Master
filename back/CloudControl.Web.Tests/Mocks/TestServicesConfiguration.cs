@@ -219,6 +219,13 @@ namespace CloudControl.Web.Tests.Mocks
                             Server = "server.ilucca.local",
                             Authority = "authority"
                         },
+                        Ovh = new OvhDnsConfiguration
+                        {
+                            Endpoint = "ovh-eu",
+                            ApplicationKey = "app-key",
+                            ApplicationSecret = "app-secret",
+                            ConsumerKey = "consumer-key",
+                        },
                         Zones = new DnsZonesConfiguration
                         {
                             Demos = "ilucca-demo.net"

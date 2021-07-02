@@ -24,6 +24,7 @@ using Lucca.Core.Api.Abstractions;
 using Lucca.Core.Api.Web;
 using Microsoft.Extensions.DependencyInjection;
 using Octokit;
+using Ovh.Api;
 using Remote.Infra.Extensions;
 using Resources.Translations;
 using System;
@@ -61,6 +62,7 @@ namespace Instances.Web
             services.AddSingleton(configuration.SqlScriptPicker);
             services.AddSingleton(configuration.DemoClusterSelection);
             services.AddSingleton(configuration.Dns.Internal);
+            services.AddSingleton(configuration.Dns.Ovh);
             services.AddSingleton(configuration.Dns.Zones);
             services.AddSingleton<DeletionCallbackNotifier>();
             services.AddSingleton<IUsersPasswordHelper, UsersPasswordHelper>();
@@ -69,6 +71,13 @@ namespace Instances.Web
 
             services.AddSingleton<IDnsService, DnsService>();
             services.AddSingleton<InternalDnsService>();
+            services.AddSingleton(
+                sp =>
+                {
+                    var client = new Client(configuration.Dns.Ovh.Endpoint, configuration.Dns.Ovh.ApplicationKey, configuration.Dns.Ovh.ApplicationSecret, configuration.Dns.Ovh.ConsumerKey);
+                    return client;
+                });
+            services.AddSingleton<OvhDnsService>();
 
             services.AddSingleton(
                 sp =>

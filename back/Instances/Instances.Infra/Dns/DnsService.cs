@@ -9,6 +9,7 @@ namespace Instances.Infra.Dns
     {
         public DnsZonesConfiguration Zones { get; set; }
         public InternalDnsConfiguration Internal { get; set; }
+        public OvhDnsConfiguration Ovh { get; set; }
     }
 
     public class DnsZonesConfiguration
@@ -19,15 +20,17 @@ namespace Instances.Infra.Dns
     public class DnsService : IDnsService
     {
         private readonly InternalDnsService _internalDnsService;
+        private readonly OvhDnsService _ovhDnsService;
         private readonly DnsZonesConfiguration _dnsZones;
 
-        public DnsService(InternalDnsService internalDnsService, DnsZonesConfiguration dnsZones)
+        public DnsService(InternalDnsService internalDnsService, OvhDnsService ovhDnsService, DnsZonesConfiguration dnsZones)
         {
             _internalDnsService = internalDnsService;
+            _ovhDnsService = ovhDnsService;
             _dnsZones = dnsZones;
         }
 
-        public Task CreateAsync(DnsEntry entry)
+        public async Task CreateAsync(DnsEntry entry)
         {
             var creation = new DnsEntryCreation
             {
@@ -37,25 +40,24 @@ namespace Instances.Infra.Dns
             };
 
             _internalDnsService.AddNewCname(creation);
-            return Task.CompletedTask;
+            await _ovhDnsService.AddNewCnameAsync(creation);
         }
 
-        public Task DeleteAsync(IEnumerable<DnsEntry> entries)
+        public async Task DeleteAsync(IEnumerable<DnsEntry> entries)
         {
             foreach (var entry in entries)
             {
                 var deletion = new DnsEntryDeletion { Subdomain = entry.Subdomain, DnsZone = GetDnsZoneAsString(entry) };
                 _internalDnsService.DeleteCname(deletion);
+                await _ovhDnsService.DeleteCnameAsync(deletion);
             }
-
-            return Task.CompletedTask;
         }
 
-        public Task DeleteAsync(DnsEntry entry)
+        public async Task DeleteAsync(DnsEntry entry)
         {
             var deletion = new DnsEntryDeletion { Subdomain = entry.Subdomain, DnsZone = GetDnsZoneAsString(entry) };
             _internalDnsService.DeleteCname(deletion);
-            return Task.CompletedTask;
+            await _ovhDnsService.DeleteCnameAsync(deletion);
         }
 
         private string GetDnsZoneAsString(DnsEntry entry)

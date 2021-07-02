@@ -117,6 +117,12 @@
                 "Authority": "{{ CC.Master:InternalDnsAuthority }}",
                 "Server": "{{ CC.Master:InternalDnsServer }}"
             },
+            "Ovh": {
+                "Endpoint": "ovh-eu",
+                "ApplicationKey": "{{ CC.Master:OvhDnsApplicationKey }}",
+                "ApplicationSecret": "{{ CC.Master:OvhDnsApplicationSecret }}",
+                "ConsumerKey": "{{ CC.Master:OvhDnsConsumerKey }}"
+            },
             "Zones": {
                 "Demos": "ilucca-demo.net"
             }
