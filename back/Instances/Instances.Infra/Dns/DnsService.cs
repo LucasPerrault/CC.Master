@@ -32,6 +32,9 @@ namespace Instances.Infra.Dns
 
         public async Task CreateAsync(DnsEntry entry)
         {
+            // On nettoie pour être sûr
+            await DeleteAsync(entry);
+
             var creation = new DnsEntryCreation
             {
                 Subdomain = entry.Subdomain,
