@@ -210,17 +210,20 @@ namespace CloudControl.Web.Tests.Mocks
                     },
                     SqlScriptPicker = new SqlScriptPickerConfiguration(),
                     DemoClusterSelection = new ClusterSelectorConfiguration(),
-                    InternalDns = new InternalDnsConfiguration
+                    Dns = new DnsConfiguration
                     {
-                        Username = "sseguin",
-                        Password = "password",
-                        Server = "server.ilucca.local",
-                        Authority = "authority"
+                        Internal = new InternalDnsConfiguration
+                        {
+                            Username = "sseguin",
+                            Password = "password",
+                            Server = "server.ilucca.local",
+                            Authority = "authority"
+                        },
+                        Zones = new DnsZonesConfiguration
+                        {
+                            Demos = "ilucca-demo.net"
+                        }
                     },
-                    DnsZones = new DnsZonesConfiguration
-                    {
-                        Demos = "ilucca-demo.net"
-                    }
                 }
             });
         }

@@ -110,14 +110,16 @@
         "Github": {
             "Token": "{{ CC.Master:GithubToken }}"
         },
-        "InternalDns": {
-            "Username": "{{ CC.Master:InternalDnsUsername }}",
-            "Password": "{{ CC.Master:InternalDnsPassword }}",
-            "Authority": "{{ CC.Master:InternalDnsAuthority }}",
-            "Server": "{{ CC.Master:InternalDnsServer }}"
-        },
-        "DnsZones": {
-            "Demos": "ilucca-demo.net"
+        "Dns": {
+            "Internal": {
+                "Username": "{{ CC.Master:InternalDnsUsername }}",
+                "Password": "{{ CC.Master:InternalDnsPassword }}",
+                "Authority": "{{ CC.Master:InternalDnsAuthority }}",
+                "Server": "{{ CC.Master:InternalDnsServer }}"
+            },
+            "Zones": {
+                "Demos": "ilucca-demo.net"
+            }
         }
     }
 }

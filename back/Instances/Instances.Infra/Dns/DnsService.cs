@@ -1,10 +1,16 @@
-﻿using Instances.Domain.Instances;
+using Instances.Domain.Instances;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Threading.Tasks;
 
 namespace Instances.Infra.Dns
 {
+    public class DnsConfiguration
+    {
+        public DnsZonesConfiguration Zones { get; set; }
+        public InternalDnsConfiguration Internal { get; set; }
+    }
+
     public class DnsZonesConfiguration
     {
         public string Demos { get; set; }
