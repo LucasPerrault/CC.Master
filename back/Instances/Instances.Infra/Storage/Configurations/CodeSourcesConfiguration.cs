@@ -1,4 +1,4 @@
-﻿using Instances.Domain.CodeSources;
+using Instances.Domain.CodeSources;
 using Instances.Infra.Storage.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
@@ -14,6 +14,7 @@ namespace Instances.Infra.Storage.Configurations
             builder.Property(cs => cs.Code).HasColumnName("Code");
             builder.Property(cs => cs.Name).HasColumnName("Name");
             builder.Property(cs => cs.JenkinsProjectName).HasColumnName("JenkinsProjectName");
+            builder.Property(cs => cs.JenkinsProjectUrl).HasColumnName("JenkinsProjectUrl");
             builder.Property(cs => cs.Type).HasColumnName("Type");
             builder.Property(cs => cs.GithubRepo).HasColumnName("GithubRepo");
             builder.Property(cs => cs.Lifecycle).HasColumnName("Lifecycle");

@@ -26,6 +26,7 @@ namespace Instances.Domain.CodeSources
 
     public class CodeSource
     {
+
         public static HashSet<CodeSourceLifecycleStep> ActiveSteps => Enum
             .GetValues(typeof(CodeSourceLifecycleStep))
             .Cast<CodeSourceLifecycleStep>()
@@ -36,6 +37,7 @@ namespace Instances.Domain.CodeSources
         public string Name { get; set; }
         public string Code { get; set; }
         public string JenkinsProjectName { get; set; }
+        public string JenkinsProjectUrl { get; set; }
         public CodeSourceType Type { get; set; }
         public string GithubRepo { get; set; }
         public CodeSourceLifecycleStep Lifecycle { get; set; }
