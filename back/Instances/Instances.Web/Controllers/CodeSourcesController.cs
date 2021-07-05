@@ -1,6 +1,7 @@
-﻿using Instances.Application.CodeSources;
+using Instances.Application.CodeSources;
 using Instances.Domain.CodeSources;
 using Instances.Domain.CodeSources.Filtering;
+using Instances.Web.Controllers.Dtos;
 using Lucca.Core.Api.Abstractions.Paging;
 using Lucca.Core.Api.Web.ModelBinding.Sorting;
 using Microsoft.AspNetCore.Http;
@@ -72,11 +73,8 @@ namespace Instances.Web.Controllers
             };
         }
 
-        public class CodeSourceFetchDto
-        {
-            public string RepoUrl { get; set; }
-        }
     }
+
 
     public class CodeSourceQuery
     {
