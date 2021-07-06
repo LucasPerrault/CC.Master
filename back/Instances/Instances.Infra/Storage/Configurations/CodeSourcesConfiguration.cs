@@ -20,6 +20,19 @@ namespace Instances.Infra.Storage.Configurations
             builder.Property(cs => cs.Lifecycle).HasColumnName("Lifecycle");
             builder.HasOne(cs => cs.Config).WithOne().HasForeignKey<CodeSourceConfig>(c => c.CodeSourceId);
             builder.HasMany(cs => cs.ProductionVersions).WithOne().HasForeignKey(pv => pv.CodeSourceId);
+            builder.HasMany(cs => cs.CodeSourceArtifacts).WithOne().HasForeignKey(csa => csa.CodeSourceId);
+        }
+    }
+    public class CodeSourceArtifactsConfiguration : IEntityTypeConfiguration<CodeSourceArtifacts>
+    {
+        public void Configure(EntityTypeBuilder<CodeSourceArtifacts> builder)
+        {
+            builder.ToTable("CodeSourceArtifacts");
+            builder.HasKey(csa => csa.Id);
+            builder.Property(csa => csa.CodeSourceId).HasColumnName("CodeSourceId");
+            builder.Property(csa => csa.FileName).HasColumnName("FileName").HasMaxLength(255);
+            builder.Property(csa => csa.ArtifactUrl).HasColumnName("ArtifactUrl").HasMaxLength(255);
+            builder.Property(csa => csa.ArtifactType).HasColumnName("ArtifactType");
         }
     }
 

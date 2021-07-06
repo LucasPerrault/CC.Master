@@ -15,6 +15,7 @@ namespace Instances.Infra.Storage.Models
         public string GithubRepo { get; set; }
         public CodeSourceLifecycleStep Lifecycle { get; set; }
         public CodeSourceConfig Config { get; set; }
+        public List<CodeSourceArtifacts> CodeSourceArtifacts { get; set; }
         public List<CodeSourceProductionVersion> ProductionVersions { get; set; }
 
         public CodeSource ToCodeSource()

@@ -24,6 +24,7 @@ namespace Instances.Infra.Storage
             modelBuilder.ApplyConfiguration(new CodeSourcesConfiguration());
             modelBuilder.ApplyConfiguration(new CodeSourceConfigsConfiguration());
             modelBuilder.ApplyConfiguration(new CodeSourceProductionVersionsConfiguration());
+            modelBuilder.ApplyConfiguration(new CodeSourceArtifactsConfiguration());
 
             // shared
             modelBuilder.ApplyConfiguration(new DistributorsConfiguration());
