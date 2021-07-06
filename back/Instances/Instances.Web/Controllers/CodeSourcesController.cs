@@ -16,7 +16,7 @@ namespace Instances.Web.Controllers
 {
     [ApiController, Route("/api/code-sources")]
     [ApiSort("Code")]
-    public class CodeSourcesController
+    public class CodeSourcesController : ControllerBase
     {
         private readonly CodeSourcesRepository _repository;
 
@@ -73,8 +73,29 @@ namespace Instances.Web.Controllers
             };
         }
 
+        [HttpPost("services/build-url")]
+        [ForbidIfMissing(Operation.ReadCodeSources)]
+        public async Task<IActionResult> GetBuildUrlAsync([FromBody] CodeSourceBuildUrlDto input)
+        {
+            if (input.BrancheName.Contains("/"))
+            {
+                return BadRequest("Invalid branchName number");
+            }
+            if (!string.IsNullOrEmpty(input.BuildNumber) && input.BrancheName.Contains("/"))
+            {
+                return BadRequest("Invalid build number");
+            }
+            var buildUrl = await _repository.GetBuildUrlAsync(input.CodeSourceCode, input.BrancheName, input.BuildNumber);
+            if (string.IsNullOrEmpty(buildUrl))
+            {
+                return NotFound();
+            }
+            return Ok(new CodeSourceBuildUrlResponse
+            {
+                Url = buildUrl
+            });
+        }
     }
-
 
     public class CodeSourceQuery
     {
