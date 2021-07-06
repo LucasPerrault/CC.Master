@@ -42,7 +42,7 @@ namespace Environments.Domain
                             p.Scope switch
                             {
                                 AccessRightScope.AllDistributors => AccessRight.All,
-                                AccessRightScope.OwnDistributorOnly => AccessRight.ForDistributor(user.User.DistributorCode)
+                                AccessRightScope.OwnDistributorOnly => AccessRight.ForDistributor(user.User.DistributorId)
                             },
                             PurposeAccessRight.ForSome(p.EnvironmentPurposes)
                         )

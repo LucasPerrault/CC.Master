@@ -7,6 +7,7 @@
     <ItemGroup>
       <ProjectReference Include="..\..\..\Shared\Distributors\Distributors.Domain\Distributors.Domain.csproj" />
       <ProjectReference Include="..\..\..\Shared\Remote\Remote.Infra\Remote.Infra.csproj" />
+      <ProjectReference Include="..\..\Cache\Cache.Abstractions\Cache.Abstractions.csproj" />
       <ProjectReference Include="..\..\Storage\Storage.Infra\Storage.Infra.csproj" />
       <ProjectReference Include="..\Users.Domain\Users.Domain.csproj" />
     </ItemGroup>

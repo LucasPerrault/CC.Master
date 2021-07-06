@@ -1,4 +1,5 @@
 ﻿using Distributors.Domain.Models;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Distributors.Domain
@@ -7,5 +8,6 @@ namespace Distributors.Domain
     {
         Task<Distributor> GetByIdAsync(int id);
         Task<Distributor> GetByCodeAsync(string code);
+        Task<List<Distributor>> GetAllAsync();
     }
 }

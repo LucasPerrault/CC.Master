@@ -22,10 +22,11 @@ namespace Authentication.Web.Tests.Controllers
         {
             var response = await _client.GetAsync("/account/login?returnUrl=%2fdemos");
             Assert.Equal(HttpStatusCode.Redirect, response.StatusCode);
-            Assert.Contains(
-                    "https://mocked-partenaires.local/login?callback=https://localhost/demos",
-                    response.Headers.GetValues("Location")
-                );
+            Assert.Contains
+            (
+                "https://mocked-partenaires.local/login?callback=https://localhost/demos",
+                response.Headers.GetValues("Location")
+            );
         }
     }
 }

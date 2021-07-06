@@ -32,10 +32,10 @@ namespace Users.Application
 
         private async Task<AccessRight> GetAccessAsync(User user)
         {
-            var distributor = await _distributorsStore.GetByCodeAsync(user.DistributorCode);
+            var distributor = await _distributorsStore.GetByIdAsync(user.DistributorId);
             return distributor.Id == DistributorIds.Lucca
                 ? AccessRight.All
-                : AccessRight.ForDistributor(user.DistributorCode);
+                : AccessRight.ForDistributor(user.DistributorId);
         }
     }
 }

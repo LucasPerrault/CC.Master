@@ -2,6 +2,7 @@ using Authentication.Infra.Configurations;
 using Billing.Contracts.Infra.Configurations;
 using CloudControl.Web.Configuration;
 using Core.Proxy.Infra.Configuration;
+using Distributors.Infra.Storage;
 using Instances.Domain.Demos;
 using Instances.Infra.DataDuplication;
 using Instances.Infra.Demos;
@@ -102,6 +103,7 @@ namespace CloudControl.Web.Tests.Mocks
         {
             services.AddMockDbContext<IpFilterDbContext>("IpFilters", o => new IpFilterDbContext(o));
             services.AddMockDbContext<UsersDbContext>("Users", o => new UsersDbContext(o));
+            services.AddMockDbContext<DistributorsDbContext>("Distributors", o => new DistributorsDbContext(o));
         }
 
         public override void ConfigureRights(IServiceCollection services, AppConfiguration configuration)

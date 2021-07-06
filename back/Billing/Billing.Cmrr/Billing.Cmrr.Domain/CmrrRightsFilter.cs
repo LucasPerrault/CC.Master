@@ -1,5 +1,4 @@
 using Authentication.Domain;
-using Distributors.Domain;
 using Rights.Domain;
 using Rights.Domain.Abstractions;
 using Rights.Domain.Filtering;
@@ -12,12 +11,10 @@ namespace Billing.Cmrr.Domain
     public class CmrrRightsFilter : ICmrrRightsFilter
     {
         private readonly IRightsService _rightsService;
-        private readonly IDistributorsStore _distributorStore;
 
-        public CmrrRightsFilter(IRightsService rightsService, IDistributorsStore distributorStore)
+        public CmrrRightsFilter(IRightsService rightsService)
         {
             _rightsService = rightsService;
-            _distributorStore = distributorStore;
         }
 
         public async Task<AccessRight> GetReadAccessAsync(ClaimsPrincipal principal)
@@ -29,7 +26,7 @@ namespace Billing.Cmrr.Domain
                     return currentUserScope switch
                     {
                         AccessRightScope.AllDistributors => AccessRight.All,
-                        AccessRightScope.OwnDistributorOnly => await GetDistributorIdAccessRightFromDistributorCodeAsync(userPrincipal.User.DistributorCode),
+                        AccessRightScope.OwnDistributorOnly => AccessRight.ForDistributor(userPrincipal.User.DepartmentId),
                         _ => throw new ApplicationException($"Unhandled scope : {currentUserScope}")
                     };
                 case CloudControlApiKeyClaimsPrincipal _:
@@ -37,12 +34,6 @@ namespace Billing.Cmrr.Domain
                 default:
                     throw new ApplicationException("Unhandled ClaimsPrincipal type");
             }
-        }
-
-        private async Task<AccessRight> GetDistributorIdAccessRightFromDistributorCodeAsync(string distributorCode)
-        {
-            var distributor = await _distributorStore.GetByCodeAsync(distributorCode);
-            return AccessRight.ForDistributorId(distributor.Id);
         }
     }
 

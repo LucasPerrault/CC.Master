@@ -45,7 +45,7 @@ namespace Billing.Cmrr.Infra.Storage.Stores
             return access switch
             {
                 NoAccessRight _ => _ => false,
-                DistributorIdAccessRight r => c=> c.DistributorId == r.DistributorId,
+                DistributorAccessRight r => c=> c.DistributorId == r.DistributorId,
                 AllAccessRight _ => _ => true,
                 _ => throw new ApplicationException($"Unknown type of demo filter right {access}")
             };

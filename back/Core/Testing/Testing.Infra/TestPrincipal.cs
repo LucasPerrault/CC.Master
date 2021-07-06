@@ -12,18 +12,18 @@ namespace Testing.Infra
         public ClaimsPrincipal Principal { get; }
         public Dictionary<Operation, AccessRightScope> OperationsWithScope { get; }
 
-        public TestPrincipal(string departmentCode)
-        : this(departmentCode, new Dictionary<Operation, AccessRightScope>())
+        public TestPrincipal(int departmentId)
+        : this(departmentId, new Dictionary<Operation, AccessRightScope>())
         { }
 
-        public TestPrincipal(string departmentCode, Dictionary<Operation , AccessRightScope> operationsWithScope)
+        public TestPrincipal(int departmentId, Dictionary<Operation , AccessRightScope> operationsWithScope)
         {
             Principal = new CloudControlUserClaimsPrincipal(new Principal
             {
                 UserId = 1,
                 User = new User
                 {
-                    DistributorCode = departmentCode,
+                    DistributorId = departmentId,
                     FirstName = "Jean",
                     LastName = "Bombeur",
                 }
