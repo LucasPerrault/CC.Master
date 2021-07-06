@@ -6,9 +6,6 @@ namespace Instances.Infra.Dns
 {
     public class InternalDnsConfiguration
     {
-        public string Username { get; set; }
-        public string Password { get; set; }
-        public string Authority { get; set; }
         public string Server { get; set; }
     }
 
@@ -19,21 +16,14 @@ namespace Instances.Infra.Dns
 
         public InternalDnsService(InternalDnsConfiguration configuration)
         {
-            var con = new ConnectionOptions
-            {
-                Username = configuration.Username,
-                Password = configuration.Password,
-                Authority = configuration.Authority
-            };
             _server = configuration.Server;
 
             _session = new Lazy<ManagementScope>
             (
                 () =>
                 {
-                    var session = new ManagementScope(@$"\\{_server}\root\microsoftdns")
-                    {
-                        Options = con
+                    var session = new ManagementScope(@$"\\{_server}\root\microsoftdns") {
+                        Options = new ConnectionOptions { Impersonation = ImpersonationLevel.Impersonate }
                     };
                     session.Connect();
                     return session;

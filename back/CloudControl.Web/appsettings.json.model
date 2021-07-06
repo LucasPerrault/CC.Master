@@ -112,9 +112,6 @@
         },
         "Dns": {
             "Internal": {
-                "Username": "{{ CC.Master:InternalDnsUsername }}",
-                "Password": "{{ CC.Master:InternalDnsPassword }}",
-                "Authority": "{{ CC.Master:InternalDnsAuthority }}",
                 "Server": "{{ CC.Master:InternalDnsServer }}"
             },
             "Ovh": {

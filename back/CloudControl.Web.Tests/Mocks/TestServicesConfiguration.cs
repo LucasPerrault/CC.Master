@@ -214,10 +214,7 @@ namespace CloudControl.Web.Tests.Mocks
                     {
                         Internal = new InternalDnsConfiguration
                         {
-                            Username = "sseguin",
-                            Password = "password",
                             Server = "server.ilucca.local",
-                            Authority = "authority"
                         },
                         Ovh = new OvhDnsConfiguration
                         {
