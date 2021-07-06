@@ -1,10 +1,18 @@
 ﻿using Authentication.Domain;
+using Cache.Abstractions;
 using System;
 using System.Threading.Tasks;
 using Users.Domain;
 
 namespace Authentication.Infra.Services
 {
+
+    public class UserInMemoryCache : InMemoryCache<Guid, User>
+    {
+        public UserInMemoryCache() : base(TimeSpan.FromSeconds(10))
+        { }
+    }
+
     public interface IUserAuthenticationRemoteService
     {
         Task<Principal> GetUserPrincipalAsync(Guid token);
@@ -13,9 +21,9 @@ namespace Authentication.Infra.Services
     public class UserAuthenticationRemoteService : IUserAuthenticationRemoteService
     {
         private readonly IUsersService _usersService;
-        private readonly AuthenticationCache _cache;
+        private readonly UserInMemoryCache _cache;
 
-        public UserAuthenticationRemoteService(IUsersService usersService, AuthenticationCache cache)
+        public UserAuthenticationRemoteService(IUsersService usersService, UserInMemoryCache cache)
         {
             _usersService = usersService;
             _cache = cache;
@@ -40,7 +48,7 @@ namespace Authentication.Infra.Services
 
         private async Task<User> GetUserAsync(Guid token)
         {
-            if (_cache.TryGetUser(token, out var cachedUser))
+            if (_cache.TryGet(token, out var cachedUser))
             {
                 return cachedUser;
             }

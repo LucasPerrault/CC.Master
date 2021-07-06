@@ -1,5 +1,6 @@
 ﻿using Authentication.Domain;
 using Authentication.Infra.DTOs;
+using Cache.Abstractions;
 using Newtonsoft.Json;
 using Remote.Infra.Services;
 using System;
@@ -9,21 +10,27 @@ using System.Threading.Tasks;
 
 namespace Authentication.Infra.Services
 {
+
+    public class ApiKeyInMemoryCache : InMemoryCache<Guid, ApiKey>
+    {
+        public ApiKeyInMemoryCache() : base(TimeSpan.FromSeconds(10))
+        { }
+    }
+
     public interface IApiKeyAuthenticationRemoteService
     {
         Task<ApiKey> GetApiKeyPrincipalAsync(Guid token);
     }
-
     public class ApiKeyAuthenticationRemoteService : RestApiV3HostRemoteService, IApiKeyAuthenticationRemoteService
     {
-        private readonly AuthenticationCache _cache;
+        private readonly ApiKeyInMemoryCache _cache;
         protected override string RemoteApiDescription => "Partenaires";
 
         public ApiKeyAuthenticationRemoteService
         (
             HttpClient httpClient,
             JsonSerializer jsonSerializer,
-            AuthenticationCache cache
+            ApiKeyInMemoryCache cache
         ) : base(httpClient, jsonSerializer)
         {
             _cache = cache;
@@ -31,7 +38,7 @@ namespace Authentication.Infra.Services
 
         public async Task<ApiKey> GetApiKeyPrincipalAsync(Guid token)
         {
-            if (_cache.TryGetApiKey(token, out var cachedApiKey))
+            if (_cache.TryGet(token, out var cachedApiKey))
             {
                 return cachedApiKey;
             }
