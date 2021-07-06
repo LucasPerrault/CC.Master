@@ -22,11 +22,12 @@ namespace Billing.Products.Infra.Migrations
                        WHEN 'Cleemy' THEN 3
                        WHEN 'Poplee' THEN 4
                        WHEN 'Pagga' THEN 5
-                       WHEN 'Essentiel SIRH' THEN 6
-                       WHEN 'Lucca pour la Paie' THEN 7
-                       WHEN 'Startup' THEN 8
-                       WHEN 'Gratuits' THEN 9
-                       WHEN 'Autres' THEN 10
+                       WHEN 'Bloom' THEN 6
+                       WHEN 'Essentiel SIRH' THEN 7
+                       WHEN 'Lucca pour la Paie' THEN 8
+                       WHEN 'Startup' THEN 9
+                       WHEN 'Gratuits' THEN 10
+                       WHEN 'Autres' THEN 11
                 END)");
 
             migrationBuilder.AddColumn<int>(
