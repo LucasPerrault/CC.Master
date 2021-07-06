@@ -36,9 +36,10 @@ namespace Billing.Products.Infra.Migrations
                 update billing.Products Set FamilyId = 5 where Id in (3)
                 update billing.Products Set FamilyId = 6 where Id in (5, 21, 24, 33)
                 update billing.Products Set FamilyId = 7 where Id in (17, 20)
-                update billing.Products Set FamilyId = 8 where Id in (25)
-                update billing.Products Set FamilyId = 9 where Id in (26, 30)
-                update billing.Products Set FamilyId = 10 where Id in (27)"
+                update billing.Products Set FamilyId = 8 where Id in (25, 36)
+                update billing.Products Set FamilyId = 9 where Id in (26, 30, 37)
+                update billing.Products Set FamilyId = 10 where Id in (27)
+                update billing.Products Set FamilyId = 11 where Id in (38)"
             );
         }
 

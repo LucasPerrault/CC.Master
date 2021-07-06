@@ -18,7 +18,8 @@ namespace Billing.Products.Infra.Migrations
                 ('Timmi'),
                 ('Lucca pour la Paie'),
                 ('Essentiel SIRH'),
-                ('Startup')
+                ('Startup'),
+                ('Bloom')
             ");
         }
 
