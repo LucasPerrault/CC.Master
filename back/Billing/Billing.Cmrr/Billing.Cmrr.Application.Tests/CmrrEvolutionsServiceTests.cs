@@ -155,7 +155,7 @@ namespace Billing.Cmrr.Application.Tests
             var thirdMonthLine = cmrrEvolution.Lines.Single(l => l.Period == startPeriod.AddMonths(2));
             thirdMonthLine.Amount.Should().Be(350);
             thirdMonthLine.Expansion.Should().Be(150);
-            thirdMonthLine.Termination.Should().Be(-5);
+            thirdMonthLine.Contraction.Should().Be(-5);
         }
     }
 }

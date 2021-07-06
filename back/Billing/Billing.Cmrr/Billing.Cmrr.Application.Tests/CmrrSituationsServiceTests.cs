@@ -172,9 +172,9 @@ namespace Billing.Cmrr.Application.Tests
             cmrrContractSituation10.StartPeriodCount.Id.Should().Be(1);
 
             var startCountForContract11 = startCmrrCounts.First(c => c.ContractId == 11);
-            var cmrrContractSituation11 = section.Termination.Top.First(c => c.Contract.Id == 11);
+            var cmrrContractSituation11 = section.Contraction.Top.First(c => c.Contract.Id == 11);
 
-            section.Termination.Amount.Should().Be(-startCountForContract11.EuroTotal);
+            section.Contraction.Amount.Should().Be(-startCountForContract11.EuroTotal);
             cmrrContractSituation11.Contract.Id.Should().Be(11);
             cmrrContractSituation11.EndPeriodCount.Should().BeNull();
             cmrrContractSituation11.StartPeriodCount.Id.Should().Be(2);
