@@ -13,7 +13,7 @@ namespace Distributors.Infra.Storage.Stores
             _dbContext = dbContext;
         }
 
-        public IEnumerable<DistributorDomain> GetByDistributorId(string distributorId)
+        public IEnumerable<DistributorDomain> GetByDistributorId(int distributorId)
         {
             return _dbContext.Set<DistributorDomain>()
                 .Where(d => d.DistributorId == distributorId);

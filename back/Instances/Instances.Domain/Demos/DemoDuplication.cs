@@ -14,7 +14,7 @@ namespace Instances.Domain.Demos
         public DateTime CreatedAt { get; set; }
         public InstanceDuplication InstanceDuplication { get; set; }
 
-        public string DistributorId
+        public int DistributorId
         {
             get
             {

@@ -30,14 +30,14 @@ namespace Instances.Application.Specflow.Tests.Demos.Steps
             demosContext.DbContext = InMemoryDbHelper.InitialiseDb<InstancesDbContext>("Instances", o => new InstancesDbContext(o));
             var luccaDistributor = new Distributor
             {
-                Id = "1",
+                Id = 1,
                 Code = "LUCCA",
                 Name = "Lucca",
             };
             demosContext.DbContext.Add(luccaDistributor);
             var otherDistributor = new Distributor()
             {
-                Id = "2",
+                Id = 2,
                 Code = "DISTRIBUTOR",
                 Name = "Other distributor",
             };
@@ -57,7 +57,7 @@ namespace Instances.Application.Specflow.Tests.Demos.Steps
                 Subdomain = "virgin",
                 IsActive = true,
                 InstanceID = 1,
-                DistributorID = luccaDistributor.Id,
+                DistributorId = luccaDistributor.Id,
                 Distributor = luccaDistributor,
                 IsTemplate = true,
                 Instance = new Instance()
@@ -77,7 +77,7 @@ namespace Instances.Application.Specflow.Tests.Demos.Steps
                 Subdomain = "demo-lucca",
                 InstanceID = 2,
                 IsActive = true,
-                DistributorID = luccaDistributor.Id,
+                DistributorId = luccaDistributor.Id,
                 Distributor = luccaDistributor,
                 IsTemplate = false,
                 Instance = new Instance()
@@ -97,7 +97,7 @@ namespace Instances.Application.Specflow.Tests.Demos.Steps
                 Subdomain = "demo-distributor",
                 InstanceID = 3,
                 IsActive = true,
-                DistributorID = otherDistributor.Id,
+                DistributorId = otherDistributor.Id,
                 Distributor = otherDistributor,
                 IsTemplate = false,
                 Instance = new Instance()

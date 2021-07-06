@@ -25,7 +25,7 @@ namespace Environments.Domain
     {
         public int Id { get; set; }
         public int EnvironmentId { get; set; }
-        public string ConsumerId { get; set; }
+        public int ConsumerId { get; set; }
 
         public EnvironmentAccess Access { get; set; }
         public Distributor Consumer { get; set; }
@@ -34,7 +34,7 @@ namespace Environments.Domain
     public class EnvironmentAccess
     {
         public int Id { get; set; }
-        public string DistributorId { get; set; }
+        public int DistributorId { get; set; }
         public int EnvironmentId { get; set; }
         public int AuthorId { get; set; }
         public EnvironmentAccessTypeEnum Type { get; set; }
