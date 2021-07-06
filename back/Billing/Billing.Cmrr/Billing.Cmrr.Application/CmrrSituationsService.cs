@@ -55,9 +55,10 @@ namespace Billing.Cmrr.Application
         {
             CmrrDateTimeHelper.ThrowIfDatesAreNotAtFirstDayOfMonth(situationFilter.StartPeriod, situationFilter.EndPeriod);
 
-            var startPeriodCounts = await _countsStore.GetByPeriodAsync(situationFilter.StartPeriod);
-            var endPeriodCounts = await _countsStore.GetByPeriodAsync(situationFilter.EndPeriod);
+            var counts = await _countsStore.GetByPeriodsAsync(situationFilter.StartPeriod, situationFilter.EndPeriod);
 
+            var startPeriodCounts = counts.Where(c => c.CountPeriod == situationFilter.StartPeriod);
+            var endPeriodCounts = counts.Where(c => c.CountPeriod == situationFilter.EndPeriod);
 
             if (situationFilter.BillingStrategies.Any())
             {
@@ -76,7 +77,7 @@ namespace Billing.Cmrr.Application
             return CreateContractSituations(contracts, startPeriodCounts, endPeriodCounts).ToList();
         }
 
-        private static IEnumerable<CmrrContractSituation> CreateContractSituations(IEnumerable<CmrrContract> contracts, List<CmrrCount> startPeriodCounts, List<CmrrCount> endPeriodCounts)
+        private static IEnumerable<CmrrContractSituation> CreateContractSituations(IEnumerable<CmrrContract> contracts, IEnumerable<CmrrCount> startPeriodCounts, IEnumerable<CmrrCount> endPeriodCounts)
         {
             var startPeriodCountsByContractId = startPeriodCounts.ToDictionary(c => c.ContractId, c => c);
             var endPeriodCountsByContractId = endPeriodCounts.ToDictionary(c => c.ContractId, c => c);

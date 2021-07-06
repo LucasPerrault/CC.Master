@@ -113,20 +113,20 @@ namespace Billing.Cmrr.Application.Tests
                         Id = 2
                     }
                 };
-            cmrrCountsStoreMock.Setup(x => x.GetByPeriodAsync(startPeriod)).ReturnsAsync(() => startCmrrCounts);
+
 
             var endCmrrCounts = new List<CmrrCount>
+            {
+                new CmrrCount
                 {
-                    new CmrrCount
-                    {
-                        CountPeriod = endPeriod,
-                        ContractId = 10,
-                        EuroTotal = 110,
-                        Id = 3
-                    }
-                };
+                    CountPeriod = endPeriod,
+                    ContractId = 10,
+                    EuroTotal = 110,
+                    Id = 3
+                }
+            };
 
-            cmrrCountsStoreMock.Setup(x => x.GetByPeriodAsync(endPeriod)).ReturnsAsync(() => endCmrrCounts);
+            cmrrCountsStoreMock.Setup(x => x.GetByPeriodsAsync(startPeriod, endPeriod)).ReturnsAsync(() => startCmrrCounts.Union(endCmrrCounts).ToList());
 
             var product = new Product
             {
@@ -205,7 +205,7 @@ namespace Billing.Cmrr.Application.Tests
 
             var cmrrCountsStoreMock = new Mock<ICmrrCountsStore>();
 
-            cmrrCountsStoreMock.Setup(x => x.GetByPeriodAsync(It.IsAny<DateTime>())).ReturnsAsync(new List<CmrrCount>());
+            cmrrCountsStoreMock.Setup(x => x.GetByPeriodsAsync(It.IsAny<DateTime[]>())).ReturnsAsync(new List<CmrrCount>());
 
             var product = new Product { Id = 1, Name = "figgo", FamilyId = 1, ProductSolutions = new List<ProductSolution>
             {
@@ -277,20 +277,21 @@ namespace Billing.Cmrr.Application.Tests
                         Id = 2
                     }
                 };
-            cmrrCountsStoreMock.Setup(x => x.GetByPeriodAsync(startPeriod)).ReturnsAsync(() => startCmrrCounts);
+
+
 
             var endCmrrCounts = new List<CmrrCount>
+            {
+                new CmrrCount
                 {
-                    new CmrrCount
-                    {
-                        CountPeriod = endPeriod,
-                        ContractId = 10,
-                        EuroTotal = 110,
-                        Id = 3
-                    }
-                };
+                    CountPeriod = endPeriod,
+                    ContractId = 10,
+                    EuroTotal = 110,
+                    Id = 3
+                }
+            };
 
-            cmrrCountsStoreMock.Setup(x => x.GetByPeriodAsync(endPeriod)).ReturnsAsync(() => endCmrrCounts);
+            cmrrCountsStoreMock.Setup(x => x.GetByPeriodsAsync(startPeriod, endPeriod)).ReturnsAsync(() => startCmrrCounts.Union(endCmrrCounts).ToList());
 
             var product = new Product { Id = 1, Name = "figgo", FamilyId = 1,
                 ProductSolutions = new List<ProductSolution>
@@ -370,20 +371,19 @@ namespace Billing.Cmrr.Application.Tests
                         Id = 2
                     }
                 };
-            cmrrCountsStoreMock.Setup(x => x.GetByPeriodAsync(startPeriod)).ReturnsAsync(() => startCmrrCounts);
 
             var endCmrrCounts = new List<CmrrCount>
+            {
+                new CmrrCount
                 {
-                    new CmrrCount
-                    {
-                        CountPeriod = endPeriod,
-                        ContractId = 10,
-                        EuroTotal = 110,
-                        Id = 3
-                    }
-                };
+                    CountPeriod = endPeriod,
+                    ContractId = 10,
+                    EuroTotal = 110,
+                    Id = 3
+                }
+            };
 
-            cmrrCountsStoreMock.Setup(x => x.GetByPeriodAsync(endPeriod)).ReturnsAsync(() => endCmrrCounts);
+            cmrrCountsStoreMock.Setup(x => x.GetByPeriodsAsync(startPeriod, endPeriod)).ReturnsAsync(() => startCmrrCounts.Union(endCmrrCounts).ToList());
 
             var product = new Product
             {

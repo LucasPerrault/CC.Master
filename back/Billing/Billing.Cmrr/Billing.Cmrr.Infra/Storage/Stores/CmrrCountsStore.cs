@@ -24,10 +24,10 @@ namespace Billing.Cmrr.Infra.Storage.Stores
                 .ToListAsync();
         }
 
-        public Task<List<CmrrCount>> GetByPeriodAsync(DateTime period)
+        public Task<List<CmrrCount>> GetByPeriodsAsync(params DateTime[] period)
         {
             return _dbContext.Set<CmrrCount>()
-                .Where(c => c.CountPeriod == period)
+                .Where(c => period.Contains(c.CountPeriod))
                 .ToListAsync();
         }
     }
