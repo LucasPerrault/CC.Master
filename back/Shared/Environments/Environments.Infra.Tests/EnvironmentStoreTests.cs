@@ -1,3 +1,4 @@
+using Distributors.Domain.Models;
 using Environments.Domain;
 using Environments.Domain.Storage;
 using Environments.Infra.Storage;
@@ -94,13 +95,14 @@ namespace Environments.Infra.Tests
         public async Task ShouldReturnEnvironmentWhenDistributorMatches()
         {
             var dbContext = InMemoryDbHelper.InitialiseDb<EnvironmentsDbContext>("Mocked", o => new EnvironmentsDbContext(o));
+            dbContext.Add(new Distributor { Id = 777, Code = "ApertureScience" });
             dbContext.Add
             (
                 new Environment
                 {
                     ActiveAccesses = new List<EnvironmentSharedAccess>
                     {
-                        new EnvironmentSharedAccess { ConsumerId = "ApertureScience"}
+                        new EnvironmentSharedAccess { ConsumerId = 777 }
                     }
                 }
             );
@@ -128,7 +130,7 @@ namespace Environments.Infra.Tests
                 {
                     ActiveAccesses = new List<EnvironmentSharedAccess>
                     {
-                        new EnvironmentSharedAccess { ConsumerId = "ApertureScience"}
+                        new EnvironmentSharedAccess { ConsumerId = 777}
                     }
                 }
             );
@@ -150,6 +152,7 @@ namespace Environments.Infra.Tests
         public async Task ShouldReturnEnvironmentWhenOneAccessCompletelyMatches()
         {
             var dbContext = InMemoryDbHelper.InitialiseDb<EnvironmentsDbContext>("Mocked", o => new EnvironmentsDbContext(o));
+            dbContext.Add(new Distributor { Id = 777, Code = "ApertureScience" });
             dbContext.Add
             (
                 new Environment
@@ -157,7 +160,7 @@ namespace Environments.Infra.Tests
                     Purpose = EnvironmentPurpose.Lucca,
                     ActiveAccesses = new List<EnvironmentSharedAccess>
                     {
-                        new EnvironmentSharedAccess { ConsumerId = "ApertureScience"}
+                        new EnvironmentSharedAccess { ConsumerId = 777 }
                     }
                 }
             );
@@ -186,7 +189,7 @@ namespace Environments.Infra.Tests
                     Purpose = EnvironmentPurpose.Lucca,
                     ActiveAccesses = new List<EnvironmentSharedAccess>
                     {
-                        new EnvironmentSharedAccess { ConsumerId = "ApertureScience"}
+                        new EnvironmentSharedAccess { ConsumerId = 777}
                     }
                 }
             );

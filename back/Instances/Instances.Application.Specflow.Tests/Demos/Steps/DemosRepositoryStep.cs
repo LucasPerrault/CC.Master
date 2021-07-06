@@ -1,3 +1,4 @@
+using Distributors.Domain.Models;
 using Instances.Application.Demos;
 using Instances.Application.Demos.Dtos;
 using Instances.Application.Specflow.Tests.Demos.Models;
@@ -131,12 +132,13 @@ namespace Instances.Application.Specflow.Tests.Demos.Steps
         }
 
         [Then(@"demo '(.*)' should exist for distributor '(.*)'")]
-        public void ThenDemoShouldExistForDistributor(string subdomain, string distributorId)
+        public void ThenDemoShouldExistForDistributor(string subdomain, string distributorCode)
         {
+            var distributor = _demosContext.DbContext.Set<Distributor>().Single(d => d.Code == distributorCode);
             Assert.Contains
             (
                 _demosContext.Results.Demos,
-                d => d.Subdomain == subdomain && d.DistributorID == distributorId
+                d => d.Subdomain == subdomain && d.DistributorId == distributor.Id
             );
         }
 

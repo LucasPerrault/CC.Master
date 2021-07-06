@@ -9,7 +9,7 @@ namespace Instances.Application.Demos.Duplication
     {
         public static DemoDuplication New
         (
-            string distributorId,
+            int distributorId,
             int authorId,
             Demo sourceDemo,
             string targetCluster,

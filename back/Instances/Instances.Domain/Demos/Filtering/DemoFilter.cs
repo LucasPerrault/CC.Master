@@ -9,7 +9,7 @@ namespace Instances.Domain.Demos.Filtering
         public CompareBoolean IsActive { get; set; } = CompareBoolean.Bypass;
         public CompareBoolean IsTemplate { get; set; } = CompareBoolean.Bypass;
         public CompareBoolean IsProtected { get; set; } = CompareBoolean.Bypass;
-        public string DistributorId { get; set; }
+        public int? DistributorId { get; set; }
         public int? AuthorId { get; set; }
 
         public static DemoFilter Active() => new DemoFilter { IsActive = CompareBoolean.TrueOnly };
