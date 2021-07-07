@@ -336,7 +336,7 @@ namespace Billing.Cmrr.Application.Tests
             {
                 StartPeriod = startPeriod,
                 EndPeriod = endPeriod,
-                DistributorsId = new HashSet<string> { "100" }
+                DistributorsId = new HashSet<int> { 100 }
             };
 
             var cmrrContractsStoreMock = new Mock<ICmrrContractsStore>();
@@ -345,8 +345,8 @@ namespace Billing.Cmrr.Application.Tests
             {
                 var cmrrContracts = new List<CmrrContract>
                  {
-                    new CmrrContract { Id = 10, DistributorId = "100", ProductId = 1 },
-                    new CmrrContract { Id = 11, DistributorId = "101", ProductId = 1 }
+                    new CmrrContract { Id = 10, DistributorId = 100, ProductId = 1 },
+                    new CmrrContract { Id = 11, DistributorId = 101, ProductId = 1 }
                  };
                 return cmrrContracts;
             });

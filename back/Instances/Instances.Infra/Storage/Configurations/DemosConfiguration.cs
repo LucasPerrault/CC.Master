@@ -21,7 +21,7 @@ namespace Instances.Infra.Storage.Configurations
             builder.Property(d => d.InstanceID).HasColumnName("instanceId");
             builder.HasOne(d => d.Instance).WithOne().HasForeignKey<Demo>(d => d.InstanceID);
 
-            builder.Property(d => d.DistributorID).HasColumnName("distributorID");
+            builder.Property(d => d.DistributorId).HasColumnName("distributorID");
 
             builder.Property(d => d.Comment).HasColumnName("comment");
         }

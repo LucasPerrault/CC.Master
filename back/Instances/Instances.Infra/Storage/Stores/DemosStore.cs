@@ -119,7 +119,7 @@ namespace Instances.Infra.Storage.Stores
                 .Apply(filter.IsTemplate).To(d => d.IsTemplate)
                 .Apply(filter.Subdomain).To(d => d.Subdomain)
                 .WhenNotNullOrEmpty(filter.Search).ApplyWhere(d => d.Subdomain.Contains(filter.Search))
-                .WhenNotNullOrEmpty(filter.DistributorId).ApplyWhere(d => d.DistributorID == filter.DistributorId)
+                .WhenHasValue(filter.DistributorId).ApplyWhere(d => d.DistributorId == filter.DistributorId.Value)
                 .WhenHasValue(filter.AuthorId).ApplyWhere(d => d.AuthorId == filter.AuthorId.Value);
         }
     }

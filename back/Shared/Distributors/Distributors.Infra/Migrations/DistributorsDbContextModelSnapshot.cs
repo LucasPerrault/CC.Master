@@ -21,8 +21,10 @@ namespace Distributors.Infra.Migrations
 
             modelBuilder.Entity("Distributors.Domain.Models.Distributor", b =>
                 {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("Code")
                         .HasColumnName("Code")

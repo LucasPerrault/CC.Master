@@ -88,7 +88,7 @@ namespace Environments.Infra.Storage.Stores
             return accessRight switch
             {
                 NoAccessRight _ => e => false,
-                DistributorCodeAccessRight r => e => e.ActiveAccesses.Any(a => a.ConsumerId == r.DistributorCode),
+                DistributorCodeAccessRight r => e => e.ActiveAccesses.Any(a => a.Consumer.Code == r.DistributorCode),
                 AllAccessRight _ => e => true,
                 _ => throw new ApplicationException($"Unknown type of purpose access right {accessRight}")
             };
