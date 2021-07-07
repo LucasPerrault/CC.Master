@@ -12,5 +12,6 @@ namespace Instances.Domain.CodeSources
         Task<CodeSource> CreateAsync(CodeSource codeSource);
         Task UpdateLifecycleAsync(CodeSource codeSource, CodeSourceLifecycleStep lifecycleStep);
         Task AddProductionVersionAsync(CodeSource codeSource, CodeSourceProductionVersion productionVersion);
+        Task ReplaceProductionArtifactsAsync(CodeSource codeSource, IEnumerable<CodeSourceArtifacts> codeSourceArtifacts);
     }
 }

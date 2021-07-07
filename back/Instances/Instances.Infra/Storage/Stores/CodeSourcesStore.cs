@@ -1,4 +1,4 @@
-﻿using Instances.Domain.CodeSources;
+using Instances.Domain.CodeSources;
 using Instances.Domain.CodeSources.Filtering;
 using Instances.Infra.Storage.Models;
 using Lucca.Core.Api.Abstractions.Paging;
@@ -66,6 +66,23 @@ namespace Instances.Infra.Storage.Stores
             return _dbContext.SaveChangesAsync();
         }
 
+        public Task ReplaceProductionArtifactsAsync(CodeSource codeSource, IEnumerable<CodeSourceArtifacts> codeSourceArtifacts)
+        {
+            _dbContext
+                .RemoveRange(
+                    _dbContext
+                        .Set<CodeSourceArtifacts>()
+                        .Where(c => c.CodeSourceId == codeSource.Id)
+                );
+
+            _dbContext.AddRange(codeSourceArtifacts.Select(c =>
+            {
+                c.CodeSourceId = codeSource.Id;
+                return c;
+            }));
+            return _dbContext.SaveChangesAsync();
+        }
+
         private IQueryable<StoredCodeSource> Get(CodeSourceFilter filter)
         {
             return _dbContext
@@ -74,6 +91,7 @@ namespace Instances.Infra.Storage.Stores
                 .Include(cs => cs.Config)
                 .WhereMatches(filter);
         }
+
     }
 
     internal static class CodeSourceQueryableExtensions

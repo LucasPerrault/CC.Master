@@ -146,6 +146,11 @@ namespace Instances.Web
             {
                 c.WithUserAgent(nameof(InstanceSessionLogsService));
             });
+
+            services.AddHttpClient<IArtifactsService, ArtifactsService>(c =>
+            {
+                c.WithUserAgent(nameof(ArtifactsService));
+            });
         }
 
         public static LuccaApiBuilder ConfigureLuccaApiForInstances(this LuccaApiBuilder luccaApiBuilder)

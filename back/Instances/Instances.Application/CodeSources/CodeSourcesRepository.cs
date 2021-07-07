@@ -25,24 +25,26 @@ namespace Instances.Application.CodeSources
 
     public class CodeSourcesRepository
     {
-
         private readonly ICodeSourcesStore _codeSourcesStore;
         private readonly IGithubBranchesStore _githubBranchesStore;
         private readonly ICodeSourceFetcherService _fetcherService;
         private readonly ICodeSourceBuildUrlService _codeSourceBuildUrl;
+        private readonly IArtifactsService _artifactsService;
 
         public CodeSourcesRepository
         (
             ICodeSourcesStore codeSourcesStore,
             IGithubBranchesStore githubBranchesStore,
             ICodeSourceFetcherService fetcherService,
-            ICodeSourceBuildUrlService codeSourceBuildUrl
+            ICodeSourceBuildUrlService codeSourceBuildUrl,
+            IArtifactsService artifactsService
         )
         {
             _codeSourcesStore = codeSourcesStore;
             _githubBranchesStore = githubBranchesStore;
             _fetcherService = fetcherService;
             _codeSourceBuildUrl = codeSourceBuildUrl;
+            _artifactsService = artifactsService;
         }
 
         public async Task<Page<CodeSource>> GetAsync(IPageToken pageToken, CodeSourceFilter codeSourceFilter)
@@ -85,6 +87,9 @@ namespace Instances.Application.CodeSources
                 CommitHash = dto.CommitHash,
                 Date = DateTime.Now
             };
+
+            var codeSourceArtifacts = await _artifactsService.GetArtifactsAsync(source, dto.BranchName, dto.JenkinsBuildNumber);
+            await _codeSourcesStore.ReplaceProductionArtifactsAsync(source, codeSourceArtifacts);
 
             await _codeSourcesStore.AddProductionVersionAsync(source, productionVersion);
             if (source.Lifecycle != CodeSourceLifecycleStep.InProduction)

@@ -25,6 +25,7 @@ namespace Instances.Application.Tests.CodeSources
         private readonly Mock<IGithubBranchesStore> _githubBranchesStoreMock;
         private readonly Mock<IQueryPager> _queryPagerMock;
         private readonly Mock<ICodeSourceBuildUrlService> _codeSourceBuildUrlServiceMock;
+        private readonly Mock<IArtifactsService> _artifactsServiceMock;
 
         private readonly CodeSourcesRepository _codeSourcesRepository;
 
@@ -40,12 +41,14 @@ namespace Instances.Application.Tests.CodeSources
             _fetcherServiceMock = new Mock<ICodeSourceFetcherService>();
             _instancesDbContext = InMemoryDbHelper.InitialiseDb<InstancesDbContext>("Instances", o => new InstancesDbContext(o));
             _codeSourceBuildUrlServiceMock = new Mock<ICodeSourceBuildUrlService>(MockBehavior.Strict);
+            _artifactsServiceMock = new Mock<IArtifactsService>(MockBehavior.Strict);
 
             _codeSourcesRepository = new CodeSourcesRepository(
                 new CodeSourcesStore(_instancesDbContext, _queryPagerMock.Object),
                 _githubBranchesStoreMock.Object,
                 _fetcherServiceMock.Object,
-                _codeSourceBuildUrlServiceMock.Object
+                _codeSourceBuildUrlServiceMock.Object,
+                _artifactsServiceMock.Object
             );
         }
 
@@ -118,34 +121,64 @@ namespace Instances.Application.Tests.CodeSources
         [Fact]
         public async Task ShouldUpdateProdVersion()
         {
+            var listArtifacts = new List<CodeSourceArtifacts>
+            {
+                new CodeSourceArtifacts { Id = 1 }
+            };
             await _instancesDbContext.AddAsync(new StoredCodeSource { Id = 1, Code = "source-code"});
             await _instancesDbContext.SaveChangesAsync();
+            _artifactsServiceMock
+                .Setup(a => a.GetArtifactsAsync(It.IsAny<CodeSource>(), It.IsAny<string>(), It.IsAny<int>()))
+                .ReturnsAsync(listArtifacts);
 
             await _codeSourcesRepository.UpdateProductionVersionAsync(new CodeSourceProductionVersionDto
             {
                 CodeSourceCode = "source-code",
-                BranchName = "main-branch-in-production"
+                BranchName = "main-branch-in-production",
+                JenkinsBuildNumber = 12
             });
 
             var source = (await _codeSourcesRepository.GetAsync(new NumberPageToken(),CodeSourceFilter.ById(1))).Items.SingleOrDefault();
 
             source.CurrentProductionVersion.BranchName.Should().Be("main-branch-in-production");
+            _instancesDbContext.Set<CodeSourceArtifacts>().Count().Should().Be(1);
+            _artifactsServiceMock.Verify(a => a.GetArtifactsAsync(
+                It.Is<CodeSource>(c => c.Id == 1),
+                "main-branch-in-production",
+                12)
+            );
         }
 
         [Fact]
         public async Task ShouldMarkAsInProd()
         {
+            var listArtifacts = new List<CodeSourceArtifacts>
+            {
+                new CodeSourceArtifacts { Id = 1 }
+            };
+            _artifactsServiceMock
+                .Setup(a => a.GetArtifactsAsync(It.IsAny<CodeSource>(), It.IsAny<string>(), It.IsAny<int>()))
+                .ReturnsAsync(listArtifacts);
+
             await _instancesDbContext.AddAsync(new StoredCodeSource { Id = 1, Code = "source-code"});
             await _instancesDbContext.SaveChangesAsync();
 
             await _codeSourcesRepository.UpdateProductionVersionAsync(new CodeSourceProductionVersionDto
             {
                 CodeSourceCode = "source-code",
-                BranchName = "main-branch-in-production"
+                BranchName = "main-branch-in-production",
+                JenkinsBuildNumber = 12
             });
 
             var source = (await _codeSourcesRepository.GetAsync(new NumberPageToken(), CodeSourceFilter.ById(1))).Items.SingleOrDefault();
             source.Lifecycle.Should().Be(CodeSourceLifecycleStep.InProduction);
+
+            _instancesDbContext.Set<CodeSourceArtifacts>().Count().Should().Be(1);
+            _artifactsServiceMock.Verify(a => a.GetArtifactsAsync(
+                It.Is<CodeSource>(c => c.Id == 1),
+                "main-branch-in-production",
+                12)
+            );
         }
 
         [Fact]
