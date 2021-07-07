@@ -1,6 +1,7 @@
 using Instances.Infra.Shared;
+using Instances.Infra.Windows;
 using System;
-using System.Management;
+using System.Collections.Generic;
 
 namespace Instances.Infra.Dns
 {
@@ -11,47 +12,34 @@ namespace Instances.Infra.Dns
 
     public class InternalDnsService
     {
-        private readonly Lazy<ManagementScope> _session;
+        private readonly Lazy<IWmiSessionWrapper> _session;
         private readonly string _server;
+        private readonly IWmiWrapper _wmiWrapper;
 
-        public InternalDnsService(InternalDnsConfiguration configuration)
+        public InternalDnsService(InternalDnsConfiguration configuration, IWmiWrapper wmiWrapper)
         {
             _server = configuration.Server;
-
-            _session = new Lazy<ManagementScope>
+            _wmiWrapper = wmiWrapper;
+            _session = new Lazy<IWmiSessionWrapper>
             (
-                () =>
-                {
-                    var session = new ManagementScope(@$"\\{_server}\root\microsoftdns") {
-                        Options = new ConnectionOptions { Impersonation = ImpersonationLevel.Impersonate }
-                    };
-                    session.Connect();
-                    return session;
-                }
+                () => _wmiWrapper.CreateSession(@$"\\{_server}\root\microsoftdns")
             );
         }
 
         internal void AddNewCname(DnsEntryCreation entryCreation)
         {
-            var man = new ManagementClass(_session.Value, new ManagementPath("MicrosoftDNS_CNAMETYPE"), null);
-            var vars = man.GetMethodParameters("CreateInstanceFromPropertyData");
-            vars["DnsServerName"] = _server;
-            vars["ContainerName"] = entryCreation.DnsZone;
-            vars["OwnerName"] = $"{entryCreation.Subdomain}.{entryCreation.DnsZone}";
-            vars["PrimaryName"] = GetPrimaryName(entryCreation.Cluster);
-            man.InvokeMethod("CreateInstanceFromPropertyData", vars, null);
+            _wmiWrapper.InvokeClassMethod(_session.Value, "MicrosoftDNS_CNAMETYPE", "CreateInstanceFromPropertyData", new Dictionary<string, object>
+            {
+                ["DnsServerName"] = _server,
+                ["ContainerName"] = entryCreation.DnsZone,
+                ["OwnerName"] = $"{entryCreation.Subdomain}.{entryCreation.DnsZone}",
+                ["PrimaryName"] = GetPrimaryName(entryCreation.Cluster),
+            });
         }
 
         internal  void DeleteCname(DnsEntryDeletion deletion)
         {
-            var wql = $"SELECT * FROM MicrosoftDNS_CNAMETYPE WHERE OwnerName = '{deletion.Subdomain}.{deletion.DnsZone}'";
-            var query = new ObjectQuery(wql);
-            var s = new ManagementObjectSearcher(_session.Value, query);
-            var col = s.Get();
-            foreach (ManagementObject o in col)
-            {
-                o.Delete();
-            }
+            _wmiWrapper.QueryAndDeleteObjects(_session.Value, $"SELECT * FROM MicrosoftDNS_CNAMETYPE WHERE OwnerName = '{deletion.Subdomain}.{deletion.DnsZone}'");
         }
 
         private string GetPrimaryName(string targetClusterName)
