@@ -1,9 +1,11 @@
 using Billing.Cmrr.Domain;
 using Billing.Cmrr.Domain.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using Rights.Domain.Filtering;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 
 namespace Billing.Cmrr.Infra.Storage.Stores
@@ -17,13 +19,33 @@ namespace Billing.Cmrr.Infra.Storage.Stores
             _dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
         }
 
-        public Task<List<CmrrContract>> GetContractsNotEndedAtAsync(DateTime startPeriod, DateTime endPeriod)
+        public Task<List<CmrrContract>> GetContractsNotEndedAtAsync(DateTime startPeriod, DateTime endPeriod, AccessRight accessRight)
         {
-            return NotArchivedContract.Where(c => !c.EndDate.HasValue || c.EndDate >= startPeriod)
+            return NotArchivedContract.WhereHasRight(accessRight)
+                                      .Where(c => !c.EndDate.HasValue || c.EndDate >= startPeriod)
                                       .Where(c => c.StartDate <= endPeriod)
                                       .ToListAsync();
         }
 
         private IQueryable<CmrrContract> NotArchivedContract => _dbContext.Set<CmrrContract>().Where(c => !c.IsArchived);
+    }
+
+    internal static class CmrrContractQueryableExtensions
+    {
+        public static IQueryable<CmrrContract> WhereHasRight(this IQueryable<CmrrContract> query, AccessRight accessRight)
+        {
+            return query.Where(ToRightExpression(accessRight));
+        }
+
+        private static Expression<Func<CmrrContract, bool>> ToRightExpression(AccessRight access)
+        {
+            return access switch
+            {
+                NoAccessRight _ => _ => false,
+                DistributorIdAccessRight r => c=> c.DistributorId == r.DistributorId,
+                AllAccessRight _ => _ => true,
+                _ => throw new ApplicationException($"Unknown type of demo filter right {access}")
+            };
+        }
     }
 }

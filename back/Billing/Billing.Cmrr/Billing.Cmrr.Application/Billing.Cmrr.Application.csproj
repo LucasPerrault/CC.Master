@@ -11,6 +11,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\..\Core\Cache\Cache.Abstractions\Cache.Abstractions.csproj" />
+    <ProjectReference Include="..\..\..\Core\Rights\Rights.Domain\Rights.Domain.csproj" />
     <ProjectReference Include="..\..\Billing.Products\Billing.Products.Domain\Billing.Products.Domain.csproj" />
     <ProjectReference Include="..\Billing.Cmrr.Domain\Billing.Cmrr.Domain.csproj" />
   </ItemGroup>

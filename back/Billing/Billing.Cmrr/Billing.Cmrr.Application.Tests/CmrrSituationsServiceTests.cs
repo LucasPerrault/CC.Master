@@ -8,9 +8,11 @@ using Billing.Products.Infra.Storage.Stores;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using Moq;
+using Rights.Domain.Filtering;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -43,7 +45,11 @@ namespace Billing.Cmrr.Application.Tests
             var cmrrContractsStoreMock = new Mock<ICmrrContractsStore>();
             var cmrrCountsStoreMock = new Mock<ICmrrCountsStore>();
 
-            var sut = new CmrrSituationsService(cmrrContractsStoreMock.Object, cmrrCountsStoreMock.Object, null);
+
+            var cmrrRightsFilterMock = new Mock<ICmrrRightsFilter>();
+            cmrrRightsFilterMock.Setup(x => x.GetReadAccessAsync(It.IsAny<ClaimsPrincipal>())).ReturnsAsync(AccessRight.All);
+
+            var sut = new CmrrSituationsService(cmrrContractsStoreMock.Object, cmrrCountsStoreMock.Object, null, cmrrRightsFilterMock.Object, new ClaimsPrincipal());
 
             Func<Task<CmrrSituation>> func = () => sut.GetSituationAsync(situationFilter);
 
@@ -64,7 +70,10 @@ namespace Billing.Cmrr.Application.Tests
             var cmrrContractsStoreMock = new Mock<ICmrrContractsStore>();
             var cmrrCountsStoreMock = new Mock<ICmrrCountsStore>();
 
-            var sut = new CmrrSituationsService(cmrrContractsStoreMock.Object, cmrrCountsStoreMock.Object, null);
+            var cmrrRightsFilterMock = new Mock<ICmrrRightsFilter>();
+            cmrrRightsFilterMock.Setup(x => x.GetReadAccessAsync(It.IsAny<ClaimsPrincipal>())).ReturnsAsync(AccessRight.All);
+
+            var sut = new CmrrSituationsService(cmrrContractsStoreMock.Object, cmrrCountsStoreMock.Object, null, cmrrRightsFilterMock.Object, new ClaimsPrincipal());
 
             Func<Task<CmrrSituation>> func = () => sut.GetSituationAsync(situationFilter);
 
@@ -85,7 +94,7 @@ namespace Billing.Cmrr.Application.Tests
 
             var cmrrContractsStoreMock = new Mock<ICmrrContractsStore>();
 
-            cmrrContractsStoreMock.Setup(x => x.GetContractsNotEndedAtAsync(It.IsAny<DateTime>(), It.IsAny<DateTime>())).ReturnsAsync(() =>
+            cmrrContractsStoreMock.Setup(x => x.GetContractsNotEndedAtAsync(It.IsAny<DateTime>(), It.IsAny<DateTime>(), It.IsAny<AccessRight>())).ReturnsAsync(() =>
             {
                 var cmrrContracts = new List<CmrrContract>
                  {
@@ -147,7 +156,10 @@ namespace Billing.Cmrr.Application.Tests
             var contractAxisSectionSituationsService = new ContractAxisSectionSituationsService(new BreakdownService(productStore, new BreakDownInMemoryCache()));
 
             // Act
-            var sut = new CmrrSituationsService(cmrrContractsStoreMock.Object, cmrrCountsStoreMock.Object, contractAxisSectionSituationsService);
+            var cmrrRightsFilterMock = new Mock<ICmrrRightsFilter>();
+            cmrrRightsFilterMock.Setup(x => x.GetReadAccessAsync(It.IsAny<ClaimsPrincipal>())).ReturnsAsync(AccessRight.All);
+
+            var sut = new CmrrSituationsService(cmrrContractsStoreMock.Object, cmrrCountsStoreMock.Object, contractAxisSectionSituationsService, cmrrRightsFilterMock.Object, new ClaimsPrincipal());
 
             var cmrrContractSituations = await sut.GetSituationAsync(situationFilter);
 
@@ -194,7 +206,7 @@ namespace Billing.Cmrr.Application.Tests
 
             var cmrrContractsStoreMock = new Mock<ICmrrContractsStore>();
 
-            cmrrContractsStoreMock.Setup(x => x.GetContractsNotEndedAtAsync(It.IsAny<DateTime>(), It.IsAny<DateTime>())).ReturnsAsync(() =>
+            cmrrContractsStoreMock.Setup(x => x.GetContractsNotEndedAtAsync(It.IsAny<DateTime>(), It.IsAny<DateTime>(), It.IsAny<AccessRight>())).ReturnsAsync(() =>
             {
                 var cmrrContracts = new List<CmrrContract>
                  {
@@ -224,7 +236,10 @@ namespace Billing.Cmrr.Application.Tests
             var contractAxisSectionSituationsService = new ContractAxisSectionSituationsService(new BreakdownService(productStore, new BreakDownInMemoryCache()));
 
             // Act
-            var sut = new CmrrSituationsService(cmrrContractsStoreMock.Object, cmrrCountsStoreMock.Object, contractAxisSectionSituationsService);
+            var cmrrRightsFilterMock = new Mock<ICmrrRightsFilter>();
+            cmrrRightsFilterMock.Setup(x => x.GetReadAccessAsync(It.IsAny<ClaimsPrincipal>())).ReturnsAsync(AccessRight.All);
+
+            var sut = new CmrrSituationsService(cmrrContractsStoreMock.Object, cmrrCountsStoreMock.Object, contractAxisSectionSituationsService, cmrrRightsFilterMock.Object, new ClaimsPrincipal());
 
             var cmrrContractSituations = await sut.GetSituationAsync(situationFilter);
 
@@ -248,7 +263,7 @@ namespace Billing.Cmrr.Application.Tests
 
             var cmrrContractsStoreMock = new Mock<ICmrrContractsStore>();
 
-            cmrrContractsStoreMock.Setup(x => x.GetContractsNotEndedAtAsync(It.IsAny<DateTime>(), It.IsAny<DateTime>())).ReturnsAsync(() =>
+            cmrrContractsStoreMock.Setup(x => x.GetContractsNotEndedAtAsync(It.IsAny<DateTime>(), It.IsAny<DateTime>(), It.IsAny<AccessRight>())).ReturnsAsync(() =>
             {
                 var cmrrContracts = new List<CmrrContract>
                  {
@@ -307,7 +322,10 @@ namespace Billing.Cmrr.Application.Tests
             var contractAxisSectionSituationsService = new ContractAxisSectionSituationsService(new BreakdownService(productStore, new BreakDownInMemoryCache()));
 
             // Act
-            var sut = new CmrrSituationsService(cmrrContractsStoreMock.Object, cmrrCountsStoreMock.Object, contractAxisSectionSituationsService);
+            var cmrrRightsFilterMock = new Mock<ICmrrRightsFilter>();
+            cmrrRightsFilterMock.Setup(x => x.GetReadAccessAsync(It.IsAny<ClaimsPrincipal>())).ReturnsAsync(AccessRight.All);
+
+            var sut = new CmrrSituationsService(cmrrContractsStoreMock.Object, cmrrCountsStoreMock.Object, contractAxisSectionSituationsService, cmrrRightsFilterMock.Object, new ClaimsPrincipal());
 
             var cmrrContractSituations = await sut.GetSituationAsync(situationFilter);
 
@@ -341,7 +359,7 @@ namespace Billing.Cmrr.Application.Tests
 
             var cmrrContractsStoreMock = new Mock<ICmrrContractsStore>();
 
-            cmrrContractsStoreMock.Setup(x => x.GetContractsNotEndedAtAsync(It.IsAny<DateTime>(), It.IsAny<DateTime>())).ReturnsAsync(() =>
+            cmrrContractsStoreMock.Setup(x => x.GetContractsNotEndedAtAsync(It.IsAny<DateTime>(), It.IsAny<DateTime>(), It.IsAny<AccessRight>())).ReturnsAsync(() =>
             {
                 var cmrrContracts = new List<CmrrContract>
                  {
@@ -404,7 +422,10 @@ namespace Billing.Cmrr.Application.Tests
             var contractAxisSectionSituationsService = new ContractAxisSectionSituationsService(new BreakdownService(productStore, new BreakDownInMemoryCache()));
 
             // Act
-            var sut = new CmrrSituationsService(cmrrContractsStoreMock.Object, cmrrCountsStoreMock.Object, contractAxisSectionSituationsService);
+            var cmrrRightsFilterMock = new Mock<ICmrrRightsFilter>();
+            cmrrRightsFilterMock.Setup(x => x.GetReadAccessAsync(It.IsAny<ClaimsPrincipal>())).ReturnsAsync(AccessRight.All);
+
+            var sut = new CmrrSituationsService(cmrrContractsStoreMock.Object, cmrrCountsStoreMock.Object, contractAxisSectionSituationsService, cmrrRightsFilterMock.Object, new ClaimsPrincipal());
 
             var cmrrContractSituations = await sut.GetSituationAsync(situationFilter);
 

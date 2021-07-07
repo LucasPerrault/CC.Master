@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Tools;
 
@@ -15,12 +16,15 @@ namespace Billing.Cmrr.Application
     {
         private readonly ICmrrContractsStore _contractsStore;
         private readonly ICmrrCountsStore _countsStore;
+        private readonly ICmrrRightsFilter _cmrrRightsFilter;
+        private readonly ClaimsPrincipal _claimsPrincipal;
 
-
-        public CmrrEvolutionsService(ICmrrContractsStore contractsStore, ICmrrCountsStore countsStore)
+        public CmrrEvolutionsService(ICmrrContractsStore contractsStore, ICmrrCountsStore countsStore, ICmrrRightsFilter cmrrRightsFilter, ClaimsPrincipal claimsPrincipal)
         {
             _contractsStore = contractsStore;
             _countsStore = countsStore;
+            _cmrrRightsFilter = cmrrRightsFilter;
+            _claimsPrincipal = claimsPrincipal;
         }
 
 
@@ -64,7 +68,8 @@ namespace Billing.Cmrr.Application
 
         private async Task<List<CmrrContract>> GetContractsAsync(CmrrEvolutionFilter evolutionFilter)
         {
-            IEnumerable<CmrrContract> contracts = await _contractsStore.GetContractsNotEndedAtAsync(evolutionFilter.StartPeriod.AddMonths(-1), evolutionFilter.EndPeriod);
+            var accessRight = await _cmrrRightsFilter.GetReadAccessAsync(_claimsPrincipal);
+            IEnumerable<CmrrContract> contracts = await _contractsStore.GetContractsNotEndedAtAsync(evolutionFilter.StartPeriod.AddMonths(-1), evolutionFilter.EndPeriod, accessRight);
 
             if (evolutionFilter.ClientId.Any())
                 contracts = contracts.Where(c => evolutionFilter.ClientId.Contains(c.ClientId));

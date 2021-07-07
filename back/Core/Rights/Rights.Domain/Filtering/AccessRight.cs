@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using Tools;
 
 namespace Rights.Domain.Filtering
@@ -12,6 +12,9 @@ namespace Rights.Domain.Filtering
 
         public static AccessRight ForDistributor
             (string distributorCode) => new DistributorCodeAccessRight(distributorCode);
+
+        public static AccessRight ForDistributorId
+            (string distributorId) => new DistributorIdAccessRight(distributorId);
 
         public static AccessRight None => new NoAccessRight();
     }
@@ -40,6 +43,23 @@ namespace Rights.Domain.Filtering
             {
                 yield return typeof(DistributorCodeAccessRight);
                 yield return DistributorCode;
+            }
+        }
+    }
+
+    public class DistributorIdAccessRight : AccessRight
+    {
+        public string DistributorId { get; }
+        public DistributorIdAccessRight(string distributorId)
+        {
+            DistributorId = distributorId;
+        }
+        protected override IEnumerable<object> EqualityComponents
+        {
+            get
+            {
+                yield return typeof(DistributorIdAccessRight);
+                yield return DistributorId;
             }
         }
     }

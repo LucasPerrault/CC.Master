@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace Billing.Cmrr.Application
@@ -15,12 +16,20 @@ namespace Billing.Cmrr.Application
         private readonly ICmrrContractsStore _contractsStore;
         private readonly ICmrrCountsStore _countsStore;
         private readonly IContractAxisSectionSituationsService _axisSectionSituationsService;
+        private readonly ICmrrRightsFilter _cmrrRightsFilter;
+        private readonly ClaimsPrincipal _claimsPrincipal;
 
-        public CmrrSituationsService(ICmrrContractsStore contractsStore, ICmrrCountsStore countsStore, IContractAxisSectionSituationsService axisSectionSituationsService)
+        public CmrrSituationsService(ICmrrContractsStore contractsStore,
+            ICmrrCountsStore countsStore,
+            IContractAxisSectionSituationsService axisSectionSituationsService,
+            ICmrrRightsFilter cmrrRightsFilter,
+            ClaimsPrincipal claimsPrincipal)
         {
             _contractsStore = contractsStore;
             _countsStore = countsStore;
             _axisSectionSituationsService = axisSectionSituationsService;
+            _cmrrRightsFilter = cmrrRightsFilter;
+            _claimsPrincipal = claimsPrincipal;
         }
 
         public async Task<CmrrSituation> GetSituationAsync(CmrrSituationFilter situationFilter)
@@ -66,7 +75,8 @@ namespace Billing.Cmrr.Application
                 endPeriodCounts = endPeriodCounts.Where(c => situationFilter.BillingStrategies.Contains(c.BillingStrategy)).ToList();
             }
 
-            IEnumerable<CmrrContract> contracts = await _contractsStore.GetContractsNotEndedAtAsync(situationFilter.StartPeriod, situationFilter.EndPeriod);
+            var accessRight = await _cmrrRightsFilter.GetReadAccessAsync(_claimsPrincipal);
+            IEnumerable<CmrrContract> contracts = await _contractsStore.GetContractsNotEndedAtAsync(situationFilter.StartPeriod, situationFilter.EndPeriod, accessRight);
 
             if (situationFilter.ClientId.Any())
                 contracts = contracts.Where(c => situationFilter.ClientId.Contains(c.ClientId));
