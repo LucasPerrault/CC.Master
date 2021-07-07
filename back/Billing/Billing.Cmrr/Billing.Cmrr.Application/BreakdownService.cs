@@ -85,6 +85,20 @@ namespace Billing.Cmrr.Application
 
         private IEnumerable<Breakdown> ToBreakdowns(List<BreakdownShare> shares)
         {
+
+            if (shares.Count == 1)
+            {
+                var share = shares.Single();
+                yield return new Breakdown
+                {
+                    Ratio = 1,
+                    AxisSection = share.AxisSection,
+                    ProductId = share.Product.Id,
+                    SubSection = share.SubSection
+                };
+                yield break;
+            }
+
             decimal sum = shares.Sum(s => s.Share);
             var ratioPartialSum = 0m;
 
