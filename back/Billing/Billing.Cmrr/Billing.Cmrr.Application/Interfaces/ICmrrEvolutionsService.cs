@@ -17,7 +17,7 @@ namespace Billing.Cmrr.Application.Interfaces
         public DateTime EndPeriod { get; set; }
 
         public HashSet<int> ClientId { get; set; } = new HashSet<int>();
-        public HashSet<string> DistributorsId { get; set; } = new HashSet<string>();
+        public HashSet<int> DistributorsId { get; set; } = new HashSet<int>();
         public HashSet<BillingStrategy> BillingStrategies { get; set; } = new HashSet<BillingStrategy>();
     }
 }

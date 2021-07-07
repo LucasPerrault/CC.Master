@@ -15,7 +15,7 @@ namespace Billing.Web
         public HashSet<string> Sections { get; set; } = new HashSet<string>();
 
         public HashSet<int> ClientId { get; set; } = new HashSet<int>();
-        public HashSet<string> DistributorId { get; set; } = new HashSet<string>();
+        public HashSet<int> DistributorId { get; set; } = new HashSet<int>();
         public HashSet<BillingStrategy> BillingStrategy { get; set; } = new HashSet<BillingStrategy>();
 
         public CmrrSituationFilter ToCmrrSituationFilter()
