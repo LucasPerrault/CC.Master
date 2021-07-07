@@ -14,7 +14,7 @@ namespace Rights.Domain.Filtering
             (string distributorCode) => new DistributorCodeAccessRight(distributorCode);
 
         public static AccessRight ForDistributorId
-            (string distributorId) => new DistributorIdAccessRight(distributorId);
+            (int distributorId) => new DistributorIdAccessRight(distributorId);
 
         public static AccessRight None => new NoAccessRight();
     }
@@ -49,8 +49,8 @@ namespace Rights.Domain.Filtering
 
     public class DistributorIdAccessRight : AccessRight
     {
-        public string DistributorId { get; }
-        public DistributorIdAccessRight(string distributorId)
+        public int DistributorId { get; }
+        public DistributorIdAccessRight(int distributorId)
         {
             DistributorId = distributorId;
         }
