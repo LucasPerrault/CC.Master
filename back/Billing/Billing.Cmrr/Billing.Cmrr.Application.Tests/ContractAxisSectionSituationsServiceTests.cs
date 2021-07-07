@@ -77,7 +77,7 @@ namespace Billing.Cmrr.Application.Tests
             };
 
             var productStore = new ProductsStore(_dbContext);
-            var sut = new ContractAxisSectionSituationsService(new BreakdownService(productStore));
+            var sut = new ContractAxisSectionSituationsService(new BreakdownService(productStore, new BreakDownInMemoryCache()));
 
             var situations = (await sut.GetAxisSectionSituationsAsync(CmrrAxis.Product, contractSituations)).ToList();
 
@@ -144,7 +144,7 @@ namespace Billing.Cmrr.Application.Tests
 
             var productStore = new ProductsStore(_dbContext);
 
-            var sut = new ContractAxisSectionSituationsService(new BreakdownService(productStore));
+            var sut = new ContractAxisSectionSituationsService(new BreakdownService(productStore, new BreakDownInMemoryCache()));
 
             var situations = (await sut.GetAxisSectionSituationsAsync(CmrrAxis.BusinessUnit, contractSituations)).ToList();
 

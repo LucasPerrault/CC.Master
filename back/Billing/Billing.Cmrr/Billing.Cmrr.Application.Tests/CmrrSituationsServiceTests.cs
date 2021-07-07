@@ -144,7 +144,7 @@ namespace Billing.Cmrr.Application.Tests
             await _dbContext.AddAsync(family);
             await _dbContext.SaveChangesAsync();
             var productStore = new ProductsStore(_dbContext);
-            var contractAxisSectionSituationsService = new ContractAxisSectionSituationsService(new BreakdownService(productStore));
+            var contractAxisSectionSituationsService = new ContractAxisSectionSituationsService(new BreakdownService(productStore, new BreakDownInMemoryCache()));
 
             // Act
             var sut = new CmrrSituationsService(cmrrContractsStoreMock.Object, cmrrCountsStoreMock.Object, contractAxisSectionSituationsService);
@@ -221,7 +221,7 @@ namespace Billing.Cmrr.Application.Tests
             await _dbContext.AddAsync(family);
             await _dbContext.SaveChangesAsync();
             var productStore = new ProductsStore(_dbContext);
-            var contractAxisSectionSituationsService = new ContractAxisSectionSituationsService(new BreakdownService(productStore));
+            var contractAxisSectionSituationsService = new ContractAxisSectionSituationsService(new BreakdownService(productStore, new BreakDownInMemoryCache()));
 
             // Act
             var sut = new CmrrSituationsService(cmrrContractsStoreMock.Object, cmrrCountsStoreMock.Object, contractAxisSectionSituationsService);
@@ -304,7 +304,7 @@ namespace Billing.Cmrr.Application.Tests
             await _dbContext.AddAsync(family);
             await _dbContext.SaveChangesAsync();
             var productStore = new ProductsStore(_dbContext);
-            var contractAxisSectionSituationsService = new ContractAxisSectionSituationsService(new BreakdownService(productStore));
+            var contractAxisSectionSituationsService = new ContractAxisSectionSituationsService(new BreakdownService(productStore, new BreakDownInMemoryCache()));
 
             // Act
             var sut = new CmrrSituationsService(cmrrContractsStoreMock.Object, cmrrCountsStoreMock.Object, contractAxisSectionSituationsService);
@@ -401,7 +401,7 @@ namespace Billing.Cmrr.Application.Tests
             await _dbContext.AddAsync(family);
             await _dbContext.SaveChangesAsync();
             var productStore = new ProductsStore(_dbContext);
-            var contractAxisSectionSituationsService = new ContractAxisSectionSituationsService(new BreakdownService(productStore));
+            var contractAxisSectionSituationsService = new ContractAxisSectionSituationsService(new BreakdownService(productStore, new BreakDownInMemoryCache()));
 
             // Act
             var sut = new CmrrSituationsService(cmrrContractsStoreMock.Object, cmrrCountsStoreMock.Object, contractAxisSectionSituationsService);

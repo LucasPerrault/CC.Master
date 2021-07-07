@@ -1,7 +1,8 @@
-using Billing.Cmrr.Domain;
 using Billing.Cmrr.Domain.Situation;
 using Billing.Products.Domain;
 using Billing.Products.Domain.Interfaces;
+using Cache.Abstractions;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -14,16 +15,36 @@ namespace Billing.Cmrr.Application
         Task<List<Breakdown>> GetBreakdownsAsync(CmrrAxis axis);
     }
 
+    public class BreakDownInMemoryCache : InMemoryCache<CmrrAxis, List<Breakdown>>
+    {
+        public BreakDownInMemoryCache() : base(TimeSpan.FromMinutes(1))
+        { }
+    }
+
     public class BreakdownService : IBreakdownService
     {
         private readonly IProductsStore _productsStore;
+        private readonly BreakDownInMemoryCache _cache;
 
-        public BreakdownService(IProductsStore productsStore)
+        public BreakdownService(IProductsStore productsStore, BreakDownInMemoryCache cache)
         {
             _productsStore = productsStore;
+            _cache = cache;
         }
 
         public async Task<List<Breakdown>> GetBreakdownsAsync(CmrrAxis axis)
+        {
+            if (_cache.TryGet(axis, out List<Breakdown> cachedBreakdowns))
+            {
+                return cachedBreakdowns;
+            }
+
+            var breakdowns = await ComputeBreakdownsAsync(axis);
+            _cache.Cache(axis, breakdowns);
+            return breakdowns;
+        }
+
+        private async Task<List<Breakdown>> ComputeBreakdownsAsync(CmrrAxis axis)
         {
             var products = await _productsStore.GetAsync(new ProductsFilter { NonFreeOnly = true}, ProductsIncludes.All);
 

@@ -22,6 +22,8 @@ namespace Billing.Web
     {
         public static void ConfigureServices(IServiceCollection services, LegacyCloudControlConfiguration legacyConfig, BillingContractsConfiguration config)
         {
+            services.AddSingleton(new BreakDownInMemoryCache());
+
             services.AddScoped<IClientsStore, ClientsStore>();
             services.AddScoped<IContractsStore, ContractsStore>();
 
