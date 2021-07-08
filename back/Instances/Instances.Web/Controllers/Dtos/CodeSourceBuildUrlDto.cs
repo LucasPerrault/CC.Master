@@ -6,8 +6,8 @@ namespace Instances.Web.Controllers.Dtos
     {
         [Required]
         public string CodeSourceCode { get; set; }
-        public string BrancheName { get; set; }
         [Required]
+        public string BrancheName { get; set; }
         public string BuildNumber { get; set; } 
     }
 

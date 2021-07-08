@@ -18,9 +18,9 @@ namespace Instances.Web.Controllers
     [ApiSort("Code")]
     public class CodeSourcesController : ControllerBase
     {
-        private readonly CodeSourcesRepository _repository;
+        private readonly ICodeSourcesRepository _repository;
 
-        public CodeSourcesController(CodeSourcesRepository repository)
+        public CodeSourcesController(ICodeSourcesRepository repository)
         {
             _repository = repository;
         }
@@ -81,7 +81,7 @@ namespace Instances.Web.Controllers
             {
                 return BadRequest("Invalid branchName number");
             }
-            if (!string.IsNullOrEmpty(input.BuildNumber) && input.BrancheName.Contains("/"))
+            if (!string.IsNullOrEmpty(input.BuildNumber) && input.BuildNumber.Contains("/"))
             {
                 return BadRequest("Invalid build number");
             }

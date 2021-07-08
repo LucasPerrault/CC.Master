@@ -23,7 +23,7 @@ namespace Instances.Application.CodeSources
     }
 
 
-    public class CodeSourcesRepository
+    public class CodeSourcesRepository : ICodeSourcesRepository
     {
         private readonly ICodeSourcesStore _codeSourcesStore;
         private readonly IGithubBranchesStore _githubBranchesStore;
