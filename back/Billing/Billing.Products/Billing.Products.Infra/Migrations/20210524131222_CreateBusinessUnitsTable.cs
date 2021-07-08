@@ -74,6 +74,7 @@ namespace Billing.Products.Infra.Migrations
                        WHEN 'Poplee Entretiens & Objectifs' THEN 3
                        WHEN 'Signature Electronique' THEN 5
                        WHEN 'Bloom At Work' THEN 6
+                       WHEN 'Cleemy Banking' THEN 2
                 END
                 )
                 ");

@@ -42,6 +42,7 @@ namespace Billing.Products.Infra.Migrations
                         WHEN 'Poplee Entretiens & Objectifs' THEN 39
                         WHEN 'Signature Electronique' THEN 0
                         WHEN 'Bloom At Work' THEN 20
+                        WHEN 'Cleemy Banking' THEN 5
                 END)");
 
         }
