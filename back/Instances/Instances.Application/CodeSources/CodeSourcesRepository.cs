@@ -113,6 +113,11 @@ namespace Instances.Application.CodeSources
             return _codeSourceBuildUrl.GenerateBuildUrl(codeSource, branchName, buildNumber);
         }
 
+        public Task<List<CodeSourceArtifacts>> GetArtifactsAsync(int codeSourceId)
+        {
+            return _codeSourcesStore.GetArtifactsAsync(codeSourceId);
+        }
+
         private async Task<CodeSource> GetSingleOrDefaultAsync(CodeSourceFilter filter)
         {
             var codeSources = await _codeSourcesStore.GetAsync(filter);

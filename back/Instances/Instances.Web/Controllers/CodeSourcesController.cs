@@ -95,6 +95,12 @@ namespace Instances.Web.Controllers
                 Url = buildUrl
             });
         }
+
+        [HttpGet("{id:int}/artifacts")]
+        public async Task<List<CodeSourceArtifacts>> GetArtifactsListAsync(int id)
+        {
+            return await _repository.GetArtifactsAsync(id);
+        }
     }
 
     public class CodeSourceQuery

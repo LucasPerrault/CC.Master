@@ -92,6 +92,13 @@ namespace Instances.Infra.Storage.Stores
                 .WhereMatches(filter);
         }
 
+        public Task<List<CodeSourceArtifacts>> GetArtifactsAsync(int codeSourceId)
+        {
+            return _dbContext
+                .Set<CodeSourceArtifacts>()
+                .Where(c => c.CodeSourceId == codeSourceId)
+                .ToListAsync();
+        }
     }
 
     internal static class CodeSourceQueryableExtensions

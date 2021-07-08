@@ -56,11 +56,11 @@ namespace Instances.Application.Tests.CodeSources
         public async Task ShouldFilterOnLifeCycle()
         {
             await _instancesDbContext.AddAsync(new StoredCodeSource { Id = 1, Lifecycle = CodeSourceLifecycleStep.Preview });
-            await _instancesDbContext.AddAsync(new StoredCodeSource  { Id = 2, Lifecycle = CodeSourceLifecycleStep.Referenced });
+            await _instancesDbContext.AddAsync(new StoredCodeSource { Id = 2, Lifecycle = CodeSourceLifecycleStep.Referenced });
             await _instancesDbContext.SaveChangesAsync();
-            var filter = new CodeSourceFilter {Lifecycle = new HashSet<CodeSourceLifecycleStep> { CodeSourceLifecycleStep.Referenced }};
+            var filter = new CodeSourceFilter { Lifecycle = new HashSet<CodeSourceLifecycleStep> { CodeSourceLifecycleStep.Referenced } };
 
-            var codeSources = await _codeSourcesRepository.GetAsync(new NumberPageToken(),filter);
+            var codeSources = await _codeSourcesRepository.GetAsync(new NumberPageToken(), filter);
 
             codeSources.Items.Single().Id.Should().Be(2);
         }
@@ -83,7 +83,7 @@ namespace Instances.Application.Tests.CodeSources
 
             var filter = new CodeSourceFilter { Lifecycle = CodeSource.ActiveSteps };
 
-            var codeSources = await _codeSourcesRepository.GetAsync(new NumberPageToken(),filter);
+            var codeSources = await _codeSourcesRepository.GetAsync(new NumberPageToken(), filter);
 
             codeSources.Items.Count().Should().Be(4);
             codeSources.Items.Should().NotContain(a => a.Lifecycle == CodeSourceLifecycleStep.Deleted);
@@ -125,7 +125,7 @@ namespace Instances.Application.Tests.CodeSources
             {
                 new CodeSourceArtifacts { Id = 1 }
             };
-            await _instancesDbContext.AddAsync(new StoredCodeSource { Id = 1, Code = "source-code"});
+            await _instancesDbContext.AddAsync(new StoredCodeSource { Id = 1, Code = "source-code" });
             await _instancesDbContext.SaveChangesAsync();
             _artifactsServiceMock
                 .Setup(a => a.GetArtifactsAsync(It.IsAny<CodeSource>(), It.IsAny<string>(), It.IsAny<int>()))
@@ -138,7 +138,7 @@ namespace Instances.Application.Tests.CodeSources
                 JenkinsBuildNumber = 12
             });
 
-            var source = (await _codeSourcesRepository.GetAsync(new NumberPageToken(),CodeSourceFilter.ById(1))).Items.SingleOrDefault();
+            var source = (await _codeSourcesRepository.GetAsync(new NumberPageToken(), CodeSourceFilter.ById(1))).Items.SingleOrDefault();
 
             source.CurrentProductionVersion.BranchName.Should().Be("main-branch-in-production");
             _instancesDbContext.Set<CodeSourceArtifacts>().Count().Should().Be(1);
@@ -160,7 +160,7 @@ namespace Instances.Application.Tests.CodeSources
                 .Setup(a => a.GetArtifactsAsync(It.IsAny<CodeSource>(), It.IsAny<string>(), It.IsAny<int>()))
                 .ReturnsAsync(listArtifacts);
 
-            await _instancesDbContext.AddAsync(new StoredCodeSource { Id = 1, Code = "source-code"});
+            await _instancesDbContext.AddAsync(new StoredCodeSource { Id = 1, Code = "source-code" });
             await _instancesDbContext.SaveChangesAsync();
 
             await _codeSourcesRepository.UpdateProductionVersionAsync(new CodeSourceProductionVersionDto
@@ -264,5 +264,29 @@ namespace Instances.Application.Tests.CodeSources
 
         #endregion
 
+        #region GetArtifactsAsync
+        [Fact]
+        public async Task GetArtifactsAsync_Ok()
+        {
+            await _instancesDbContext.AddRangeAsync(
+                new StoredCodeSource { Id = 1, Code = "source-code-1" },
+                new StoredCodeSource { Id = 2, Code = "source-code-2" }
+            );
+            await _instancesDbContext.AddRangeAsync(
+                new CodeSourceArtifacts { CodeSourceId = 1, ArtifactType = CodeSourceArtifactType.AnonymizationScript, FileName = "abc.txt", ArtifactUrl = "http://test.com/abc" },
+                new CodeSourceArtifacts { CodeSourceId = 1, ArtifactType = CodeSourceArtifactType.CleanScript, FileName = "efg.txt", ArtifactUrl = "http://test.com/efg" },
+                new CodeSourceArtifacts { CodeSourceId = 1, ArtifactType = CodeSourceArtifactType.BackZip, FileName = "hij.txt", ArtifactUrl = "http://test.com/hij" },
+                new CodeSourceArtifacts { CodeSourceId = 2, ArtifactType = CodeSourceArtifactType.FrontZip, FileName = "klm.txt", ArtifactUrl = "http://test.com/klm" }
+            );
+            await _instancesDbContext.SaveChangesAsync();
+
+            var artifacts1 = await _codeSourcesRepository.GetArtifactsAsync(1);
+            var artifacts2 = await _codeSourcesRepository.GetArtifactsAsync(2);
+
+
+            artifacts1.Should().HaveCount(3);
+            artifacts2.Should().HaveCount(1);
+        }
+        #endregion GetArtifactsAsync
     }
 }
