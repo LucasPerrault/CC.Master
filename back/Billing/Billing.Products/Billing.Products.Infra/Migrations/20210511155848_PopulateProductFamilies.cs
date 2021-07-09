@@ -9,16 +9,18 @@ namespace Billing.Products.Infra.Migrations
             migrationBuilder.Sql(@"
                 insert into billing.ProductFamilies (name) 
                 values
-                ('Autres'),
-                ('Gratuits'),
+                ('Autres'), 
                 ('Figgo'),
-                ('Cleemy'),
+                ('Timmi Timesheet'),
+                ('Timmi Project'),
+                ('Cleemy Expenses'),
+                ('Poplee Entretiens & Objectifs'),
                 ('Pagga'),
-                ('Poplee'),
-                ('Timmi'),
-                ('Lucca pour la Paie'),
-                ('Essentiel SIRH'),
-                ('Startup'),
+                ('Poplee REM'),
+                ('Poplee Core RH'),
+                ('Essentiel'),
+                ('SIRH et paie'),
+                ('Suite Startup'),
                 ('Bloom')
             ");
         }
