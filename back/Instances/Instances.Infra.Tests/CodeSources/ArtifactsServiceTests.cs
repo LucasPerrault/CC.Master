@@ -27,7 +27,7 @@ namespace Instances.Infra.Tests.CodeSources
 
             var httpClient = new HttpClient(_httpHandlerMock.Object);
             var loggerMock = new Mock<ILogger<ArtifactsService>>();
-            _artifactsService = new ArtifactsService(loggerMock.Object, new JenkinsCodeSourceBuildUrlService(), httpClient);
+            _artifactsService = new ArtifactsService(loggerMock.Object, new JenkinsCodeSourceBuildUrlService(httpClient), httpClient);
         }
 
         #region GetArtifactsAsync

@@ -1,6 +1,13 @@
 using FluentAssertions;
 using Instances.Domain.CodeSources;
 using Instances.Infra.CodeSources;
+using Moq;
+using Moq.Protected;
+using System.Net;
+using System.Net.Http;
+using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 using Xunit;
 
 namespace Instances.Infra.Tests.CodeSources
@@ -8,10 +15,12 @@ namespace Instances.Infra.Tests.CodeSources
     public class JenkinsCodeSourceBuildUrlServiceTests
     {
         private readonly JenkinsCodeSourceBuildUrlService _jenkinsCodeSourceBuildUrlService;
+        private readonly Mock<HttpClientHandler> _httpHandlerMock;
 
         public JenkinsCodeSourceBuildUrlServiceTests()
         {
-            _jenkinsCodeSourceBuildUrlService = new JenkinsCodeSourceBuildUrlService();
+            _httpHandlerMock = new Mock<HttpClientHandler>(MockBehavior.Strict);
+            _jenkinsCodeSourceBuildUrlService = new JenkinsCodeSourceBuildUrlService(new HttpClient(_httpHandlerMock.Object));
         }
 
         #region IsValidBuildNumber
@@ -29,21 +38,47 @@ namespace Instances.Infra.Tests.CodeSources
         }
         #endregion
 
-        #region GenerateBuildUrl
+        #region GenerateBuildUrlAsync
         [Theory]
-        [InlineData("http://jenkins.lucca.test", null, "http://jenkins.lucca.test/job/my-branch/lastSuccessfulBuild")]
-        [InlineData("http://jenkins.lucca.test/", null, "http://jenkins.lucca.test/job/my-branch/lastSuccessfulBuild")]
-        [InlineData("http://jenkins.lucca.test", "lastSuccessfulBuild", "http://jenkins.lucca.test/job/my-branch/lastSuccessfulBuild")]
+        [InlineData("http://jenkins.lucca.test", null, "http://jenkins.lucca.test/job/my-branch/197")]
+        [InlineData("http://jenkins.lucca.test/", null, "http://jenkins.lucca.test/job/my-branch/197")]
+        [InlineData("http://jenkins.lucca.test", "lastSuccessfulBuild", "http://jenkins.lucca.test/job/my-branch/197")]
+        [InlineData("http://jenkins.lucca.test", "lastBuild", "http://jenkins.lucca.test/job/my-branch/198")]
         [InlineData("http://jenkins.lucca.test/", "1234", "http://jenkins.lucca.test/job/my-branch/1234")]
-        public void GenerateBuildUrl(string jenkinsProjectUrl, string buildNumber, string expected)
+        public async Task GenerateBuildUrlAsync(string jenkinsProjectUrl, string buildNumber, string expected)
         {
             var branchName = "my-branch";
             var codeSource = new CodeSource
             {
                 JenkinsProjectUrl = jenkinsProjectUrl
             };
+            _httpHandlerMock
+                .Protected()
+                .Setup<Task<HttpResponseMessage>>(
+                      "SendAsync",
+                      ItExpr.Is<HttpRequestMessage>(m => m.RequestUri.ToString().StartsWith("http://jenkins.lucca.test/job/my-branch/api/json")),
+                      ItExpr.IsAny<CancellationToken>()
+                )
+                .ReturnsAsync(new HttpResponseMessage()
+                {
+                    StatusCode = HttpStatusCode.OK,
+                    Content = new StringContent(@"
+                        {
+                            ""lastBuild"": {
+                                ""_class"": ""org.jenkinsci.plugins.workflow.job.WorkflowRun"",
+                                ""number"": 198,
+                                ""url"": ""http://jenkins.lucca.test/job/my-branch/job/master/198/""
+                            },
+                            ""lastSuccessfulBuild"": {
+                                ""_class"": ""org.jenkinsci.plugins.workflow.job.WorkflowRun"",
+                                ""number"": 197,
+                                ""url"": ""http://jenkins.lucca.test/job/my-branch/job/master/198/""
+                            }
+                        }
+                    ", Encoding.UTF8, "application/json")
+                });
 
-            var generatedUrl = _jenkinsCodeSourceBuildUrlService.GenerateBuildUrl(codeSource, branchName, buildNumber);
+            var generatedUrl = await _jenkinsCodeSourceBuildUrlService.GenerateBuildUrlAsync(codeSource, branchName, buildNumber);
 
             generatedUrl.Should().Be(expected);
         }

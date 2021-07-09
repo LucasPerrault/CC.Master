@@ -110,7 +110,7 @@ namespace Instances.Application.CodeSources
             {
                 throw new BadRequestException("Build url not found for this code source");
             }
-            return _codeSourceBuildUrl.GenerateBuildUrl(codeSource, branchName, buildNumber);
+            return await _codeSourceBuildUrl.GenerateBuildUrlAsync(codeSource, branchName, buildNumber);
         }
 
         public Task<List<CodeSourceArtifacts>> GetArtifactsAsync(int codeSourceId)

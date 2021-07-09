@@ -216,14 +216,14 @@ namespace Instances.Application.Tests.CodeSources
                 .Setup(c => c.IsValidBuildNumber(It.IsAny<string>()))
                 .Returns(true);
             _codeSourceBuildUrlServiceMock
-                .Setup(c => c.GenerateBuildUrl(It.IsAny<CodeSource>(), It.IsAny<string>(), It.IsAny<string>()))
-                .Returns(expectedResult);
+                .Setup(c => c.GenerateBuildUrlAsync(It.IsAny<CodeSource>(), It.IsAny<string>(), It.IsAny<string>()))
+                .ReturnsAsync(expectedResult);
 
             var result = await _codeSourcesRepository.GetBuildUrlAsync(code, branchName, buildNumber);
 
             result.Should().Be(expectedResult);
             _codeSourceBuildUrlServiceMock.Verify(c => c.IsValidBuildNumber(buildNumber));
-            _codeSourceBuildUrlServiceMock.Verify(c => c.GenerateBuildUrl(It.Is<CodeSource>(c => c.Code == code), branchName, buildNumber));
+            _codeSourceBuildUrlServiceMock.Verify(c => c.GenerateBuildUrlAsync(It.Is<CodeSource>(c => c.Code == code), branchName, buildNumber));
         }
 
         [Fact]

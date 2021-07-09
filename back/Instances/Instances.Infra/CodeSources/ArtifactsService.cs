@@ -39,7 +39,7 @@ namespace Instances.Infra.CodeSources
 
         public async Task<IEnumerable<CodeSourceArtifacts>> GetArtifactsAsync(CodeSource source, string branchName, int buildNumber)
         {
-            var jenkinsBaseUrl = _codeSourceBuildUrlService.GenerateBuildUrl(source, branchName, buildNumber.ToString());
+            var jenkinsBaseUrl = await _codeSourceBuildUrlService.GenerateBuildUrlAsync(source, branchName, buildNumber.ToString());
             var listArtifactsUrlBuilder = $"{jenkinsBaseUrl}/api/json/?tree=artifacts[*]";
 
             var response = await _httpClient.GetAsync(listArtifactsUrlBuilder);

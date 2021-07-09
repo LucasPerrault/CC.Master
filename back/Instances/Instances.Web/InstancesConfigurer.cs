@@ -151,6 +151,11 @@ namespace Instances.Web
             {
                 c.WithUserAgent(nameof(ArtifactsService));
             });
+
+            services.AddHttpClient<ICodeSourceBuildUrlService, JenkinsCodeSourceBuildUrlService>(c =>
+            {
+                c.WithUserAgent(nameof(ArtifactsService));
+            });
         }
 
         public static LuccaApiBuilder ConfigureLuccaApiForInstances(this LuccaApiBuilder luccaApiBuilder)
