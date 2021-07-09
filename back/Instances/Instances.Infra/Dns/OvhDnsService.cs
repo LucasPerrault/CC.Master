@@ -60,7 +60,7 @@ namespace Instances.Infra.Dns
 
         private string GetOvhApiPathWithId(string apiPathSeed, IDnsEntry dnsEntry, long id)
         {
-            return GetOvhApiPath(apiPathSeed, dnsEntry).Replace("{id}", id.ToString());
+            return GetOvhApiPath(apiPathSeed, dnsEntry).Replace("{id}", $"{id}");
         }
 
         private string GetCNameTargetName(DnsEntryCreation entryCreation)

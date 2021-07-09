@@ -1,7 +1,5 @@
-using System;
 using System.Collections.Generic;
 using System.Management;
-using System.Text;
 
 namespace Instances.Infra.Windows
 {
@@ -44,9 +42,9 @@ namespace Instances.Infra.Windows
             var objectQuery = new ObjectQuery(query);
             var s = new ManagementObjectSearcher(session.ManagementScope, objectQuery);
             var col = s.Get();
-            foreach (ManagementObject o in col)
+            foreach (var o in col)
             {
-                o.Delete();
+                ((ManagementObject) o).Delete();
             }
         }
     }

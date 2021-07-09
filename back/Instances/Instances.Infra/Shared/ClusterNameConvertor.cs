@@ -1,4 +1,5 @@
 using System;
+using System.Globalization;
 using System.Text.RegularExpressions;
 
 namespace Instances.Infra.Shared
@@ -62,7 +63,7 @@ namespace Instances.Infra.Shared
 
         private static ParsedCluster GetParsedCluster(string cluster)
         {
-            cluster = cluster.ToLower();
+            cluster = cluster.ToLowerInvariant();
             var match = ClusterNumberExtractor.Match(cluster);
 
             if (match.Success)
@@ -70,7 +71,7 @@ namespace Instances.Infra.Shared
                 return new ParsedCluster
                 {
                     Name = match.Groups[1].Value,
-                    Number = int.Parse(match.Groups[2].Value)
+                    Number = int.Parse(match.Groups[2].Value, CultureInfo.InvariantCulture)
                 };
             }
 
