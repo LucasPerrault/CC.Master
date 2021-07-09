@@ -18,16 +18,19 @@ namespace Billing.Products.Infra.Migrations
                 SET DisplayOrder = (
                 CASE [ProductFamilies].name
                        WHEN 'Figgo' THEN 1
-                       WHEN 'Timmi' THEN 2
-                       WHEN 'Cleemy' THEN 3
-                       WHEN 'Poplee' THEN 4
-                       WHEN 'Pagga' THEN 5
-                       WHEN 'Bloom' THEN 6
-                       WHEN 'Essentiel SIRH' THEN 7
-                       WHEN 'Lucca pour la Paie' THEN 8
-                       WHEN 'Startup' THEN 9
-                       WHEN 'Gratuits' THEN 10
-                       WHEN 'Autres' THEN 11
+                       WHEN 'Timmi Timesheet' THEN 2
+                       WHEN 'Timmi Project' THEN 3
+                       WHEN 'Cleemy Expenses' THEN 4
+                       WHEN 'Poplee Entretiens & Objectifs' THEN 5
+                       WHEN 'Pagga' THEN 6
+                       WHEN 'Poplee REM' THEN 7
+                       WHEN 'Poplee Core RH' THEN 8
+                       WHEN 'Bloom' THEN 9
+                       WHEN 'Essentiel' THEN 10
+                       WHEN 'SIRH et Paie' THEN 11
+                       WHEN 'Suite Startup' THEN 12
+                       WHEN 'Gratuits' THEN 13
+                       WHEN 'Autres' THEN 14
                 END)");
 
             migrationBuilder.AddColumn<int>(

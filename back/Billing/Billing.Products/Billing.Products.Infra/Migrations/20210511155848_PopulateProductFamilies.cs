@@ -7,9 +7,10 @@ namespace Billing.Products.Infra.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.Sql(@"
-                insert into billing.ProductFamilies (name) 
+                insert into billing.ProductFamilies (name)
                 values
-                ('Autres'), 
+                ('Autres'),
+                ('Gratuits'),
                 ('Figgo'),
                 ('Timmi Timesheet'),
                 ('Timmi Project'),
