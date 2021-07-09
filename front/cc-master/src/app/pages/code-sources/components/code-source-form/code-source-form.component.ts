@@ -54,6 +54,7 @@ export class CodeSourceFormComponent implements ControlValueAccessor, Validator,
       [CodeSourceFormKey.Type]: new FormControl(''),
       [CodeSourceFormKey.Lifecycle]: new FormControl(),
       [CodeSourceFormKey.JenkinsProjectName]: new FormControl(''),
+      [CodeSourceFormKey.JenkinsProjectUrl]: new FormControl(''),
       [CodeSourceFormKey.Config]: new FormGroup({
         [CodeSourceFormKey.AppPath]: new FormControl(),
         [CodeSourceFormKey.Subdomain]: new FormControl(),
