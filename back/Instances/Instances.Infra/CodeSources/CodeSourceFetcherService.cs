@@ -1,9 +1,13 @@
-﻿using Instances.Domain.CodeSources;
+using Instances.Domain.CodeSources;
+using Instances.Infra.CodeSources.Models;
 using Instances.Infra.Github;
-using Newtonsoft.Json;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
+using System.Text.Json;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Instances.Infra.CodeSources
@@ -29,39 +33,95 @@ namespace Instances.Infra.CodeSources
     {
         public const string CodeSourceConfigFilePath = ".cd/production.json";
 
+        private readonly ILogger<CodeSourceFetcherService> _logger;
         private readonly IGithubService _githubService;
+        private readonly HttpClient _httpClient;
 
-        public CodeSourceFetcherService(IGithubService githubService)
+        private List<RawJenkinsJob> _cacheRawJenkinsJobs = null;
+        private SemaphoreSlim _lockLoadingJenkinsJobs = new SemaphoreSlim(1, 1);
+
+        public CodeSourceFetcherService(
+            IGithubService githubService, HttpClient httpClient,
+            ILogger<CodeSourceFetcherService> logger)
         {
             _githubService = githubService;
+            _httpClient = httpClient;
+            _logger = logger;
         }
 
         public async Task<IEnumerable<CodeSource>> FetchAsync(string repoUrl)
         {
             var productionFileAsString = await _githubService.GetFileContentAsync(repoUrl, CodeSourceConfigFilePath);
-            var productionFile = JsonConvert.DeserializeObject<ContinuousDeploymentProductionFile>(productionFileAsString);
+            var productionFile = JsonSerializer.Deserialize<ContinuousDeploymentProductionFile>(productionFileAsString, new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true
+            });
 
-            return CreateCodeSourcesFromFetchedApps(productionFile.Apps, repoUrl);
+            return await CreateCodeSourcesFromFetchedAppsAsync(productionFile.Apps, repoUrl);
         }
 
-        private IEnumerable<CodeSource> CreateCodeSourcesFromFetchedApps(IEnumerable<ProductionApp> apps, string repoUrl)
+        private async Task<List<CodeSource>> CreateCodeSourcesFromFetchedAppsAsync(IEnumerable<ProductionApp> apps, string repoUrl)
         {
-            return apps.Select(app => new CodeSource
+            var result = new List<CodeSource>();
+            foreach (var app in apps)
             {
-                GithubRepo = repoUrl,
-                Name = app.FriendlyName,
-                Code = app.Name,
-                Type = GetCodeSourceTypeFromProjectType(app.ProjectType),
-                Lifecycle = CodeSourceLifecycleStep.Referenced,
-                JenkinsProjectName = app.JenkinsProjectName,
-                Config = new CodeSourceConfig
+                result.Add(new CodeSource
                 {
-                    IsPrivate = app.IsPrivate,
-                    IisServerPath = app.Path,
-                    AppPath = app.AppPath,
-                    Subdomain = app.WsTenant,
+                    GithubRepo = repoUrl,
+                    Name = app.FriendlyName,
+                    Code = app.Name,
+                    Type = GetCodeSourceTypeFromProjectType(app.ProjectType),
+                    Lifecycle = CodeSourceLifecycleStep.Referenced,
+                    JenkinsProjectName = app.JenkinsProjectName,
+                    JenkinsProjectUrl = await GetJenkinsProjectUrlAsync(app),
+                    Config = new CodeSourceConfig
+                    {
+                        IsPrivate = app.IsPrivate,
+                        IisServerPath = app.Path,
+                        AppPath = app.AppPath,
+                        Subdomain = app.WsTenant,
+                    }
+                });
+            }
+            return result;
+        }
+
+        private async Task<string> GetJenkinsProjectUrlAsync(ProductionApp app)
+        {
+            var jobs = await GetAllJenkinsJobsAsync();
+
+            return jobs?.FirstOrDefault(job => job.Name == app.JenkinsProjectName)?.Url;
+        }
+
+        private async Task<List<RawJenkinsJob>> GetAllJenkinsJobsAsync()
+        {
+            await _lockLoadingJenkinsJobs.WaitAsync();
+            try
+            {
+                if (_cacheRawJenkinsJobs != null)
+                {
+                    return _cacheRawJenkinsJobs;
                 }
-            });
+                var response = await _httpClient.GetAsync("http://jenkins2.lucca.local:8080/api/json/?tree=jobs[name,url,jobs[name,url]]");
+                if (!response.IsSuccessStatusCode)
+                {
+                    _logger.LogError($"Failed to get jenkins jobs, response {response.StatusCode} : {await response.Content.ReadAsStringAsync()} ");
+                    return null;
+                }
+                await using var bodyStream = await response.Content.ReadAsStreamAsync();
+                _cacheRawJenkinsJobs = (await JsonSerializer.DeserializeAsync<RawJenkinsJob>(bodyStream, new JsonSerializerOptions
+                    {
+                        PropertyNameCaseInsensitive = true
+                    }))
+                    .Jobs
+                    .SelectMany(j => j.Jobs ?? new List<RawJenkinsJob>())
+                    .ToList();
+                return _cacheRawJenkinsJobs;
+            }
+            finally
+            {
+                _lockLoadingJenkinsJobs.Release();
+            }
         }
 
         private CodeSourceType GetCodeSourceTypeFromProjectType(string projectType)

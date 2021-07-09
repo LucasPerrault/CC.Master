@@ -81,7 +81,10 @@ namespace Instances.Web
             services.AddScoped<IDemoDuplicationCompleter, DemoDuplicationCompleter>();
 
             services.AddScoped<ICodeSourcesRepository, CodeSourcesRepository>();
-            services.AddScoped<ICodeSourceFetcherService, CodeSourceFetcherService>();
+            services.AddHttpClient<ICodeSourceFetcherService, CodeSourceFetcherService>(c =>
+            {
+                c.WithUserAgent(nameof(CodeSourceFetcherService));
+            });
 
             services.AddScoped<IDemosStore, DemosStore>();
             services.AddScoped<IInstanceDuplicationsStore, InstanceDuplicationsStore>();
