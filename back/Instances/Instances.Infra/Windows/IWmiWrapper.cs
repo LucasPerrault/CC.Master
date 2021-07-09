@@ -16,4 +16,14 @@ namespace Instances.Infra.Windows
     {
         ManagementScope ManagementScope { get; }
     }
+
+    public static class WmiConstants
+    {
+        public const string ClassCNameType = "MicrosoftDNS_CNAMETYPE";
+        public const string MethodCreateInstanceFromPropertyData = "CreateInstanceFromPropertyData";
+        public const string PropertyCNameTypeDnsServerName = "DnsServerName";
+        public const string PropertyCNameTypeContainerName = "ContainerName";
+        public const string PropertyCNameTypeOwnerName = "OwnerName";
+        public const string PropertyCNameTypePrimaryName = "PrimaryName";
+    }
 }

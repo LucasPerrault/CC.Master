@@ -14,7 +14,7 @@ namespace Instances.Infra.Dns
         public string ConsumerKey { get; set; }
     }
 
-    public class OvhDnsService
+    public class OvhDnsService : IExternalDnsService
     {
         // https://api.ovh.com/console/#/domain/zone/%7BzoneName%7D/record#GET
         private const string GetRecordApiPath = "/domain/zone/{zoneName}/record?fieldType=CNAME&subDomain={subDomain}";
@@ -32,7 +32,7 @@ namespace Instances.Infra.Dns
             _ovhClient = ovhClient;
         }
 
-        internal async Task AddNewCnameAsync(DnsEntryCreation entryCreation)
+        public async Task AddNewCnameAsync(DnsEntryCreation entryCreation)
         {
             var payload = new CNameCreationDto
             {
@@ -44,13 +44,13 @@ namespace Instances.Infra.Dns
             await _ovhClient.PostAsync(GetOvhApiPath(RefreshZoneApiPath, entryCreation));
         }
 
-        internal async Task DeleteCnameAsync(DnsEntryDeletion deletion)
+        public async Task DeleteCnameAsync(DnsEntryDeletion entryDeletion)
         {
-            var ovhRecordId = await _ovhClient.GetAsync<long[]>(GetOvhApiPath(GetRecordApiPath, deletion));
+            var ovhRecordId = await _ovhClient.GetAsync<long[]>(GetOvhApiPath(GetRecordApiPath, entryDeletion));
             if (ovhRecordId.Length == 0) { return; }
 
-            await _ovhClient.DeleteAsync(GetOvhApiPathWithId(DeleteRecordApiPath, deletion, ovhRecordId[0]));
-            await _ovhClient.PostAsync(GetOvhApiPath(RefreshZoneApiPath, deletion));
+            await _ovhClient.DeleteAsync(GetOvhApiPathWithId(DeleteRecordApiPath, entryDeletion, ovhRecordId[0]));
+            await _ovhClient.PostAsync(GetOvhApiPath(RefreshZoneApiPath, entryDeletion));
         }
 
         private string GetOvhApiPath(string apiPathSeed,  IDnsEntry dnsEntry)

@@ -212,7 +212,7 @@ namespace CloudControl.Web.Tests.Mocks
                     DemoClusterSelection = new ClusterSelectorConfiguration(),
                     Dns = new DnsConfiguration
                     {
-                        Internal = new InternalDnsConfiguration
+                        Internal = new WinDnsConfiguration
                         {
                             Server = "server.ilucca.local",
                         },

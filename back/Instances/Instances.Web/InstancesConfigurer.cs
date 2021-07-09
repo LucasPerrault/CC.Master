@@ -71,15 +71,15 @@ namespace Instances.Web
             services.AddSingleton<ISqlScriptPicker, SqlScriptPicker>();
 
             services.AddSingleton<IDnsService, DnsService>();
-            services.AddSingleton<InternalDnsService>();
             services.AddSingleton<IWmiWrapper, WmiWrapper>();
+            services.AddSingleton<IInternalDnsService, WinDnsService>();
             services.AddSingleton(
                 sp =>
                 {
                     var client = new Client(configuration.Dns.Ovh.Endpoint, configuration.Dns.Ovh.ApplicationKey, configuration.Dns.Ovh.ApplicationSecret, configuration.Dns.Ovh.ConsumerKey);
                     return client;
                 });
-            services.AddSingleton<OvhDnsService>();
+            services.AddSingleton<IExternalDnsService, OvhDnsService>();
 
             services.AddSingleton(
                 sp =>
