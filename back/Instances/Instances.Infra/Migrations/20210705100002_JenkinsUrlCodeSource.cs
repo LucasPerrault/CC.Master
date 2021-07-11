@@ -19,7 +19,7 @@ namespace Instances.Infra.Migrations
                          WHEN 1 THEN CONCAT('webservices', '/job/', jenkinsProjectName)
                          WHEN 2 THEN 'CI.Pipeline.Multibranch'
                          WHEN 3 THEN CONCAT('webservices-legacy', '/job/', jenkinsProjectName)
-                         ELSE 'webservices'
+                         ELSE CONCAT('webservices', '/job/', jenkinsProjectName)
                       END)
             ");
         }
