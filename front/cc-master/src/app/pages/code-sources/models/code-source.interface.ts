@@ -10,6 +10,6 @@ export interface ICodeSource {
   githubRepo: string;
   lifecycle: LifecycleStep;
   jenkinsProjectName: string;
-  JenkinsProjectUrl: string;
+  jenkinsProjectUrl: string;
   config: ICodeSourceConfig;
 }
