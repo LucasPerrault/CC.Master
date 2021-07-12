@@ -32,18 +32,16 @@ namespace Instances.Web.Tests.Controllers
 
             var httpClient = webApplicationFactory.CreateAuthenticatedClient();
 
-            var response = await httpClient.PostAsync(
-                "/api/code-sources/services/build-url",
-
-                new StringContent($@"{{
-                    ""CodeSourceCode"": ""Figgo"",
-                    ""BranchName"": ""MyBranch"",
-                    ""BuildNumber"": ""1234""
-                }}
-                ", Encoding.UTF8, "application/json"));
+            var response = await httpClient.GetAsync(
+                "/api/code-sources/services/build-url?CodeSourceCode=Figgo&branchName=MyBranch&BuildNumber=1234"
+            );
 
             response.StatusCode.Should().Be(HttpStatusCode.OK);
             var content = await response.Content.ReadAsStringAsync();
+
+            codeSourcesRepositoryMock
+                .Setup(c => c.GetBuildUrlAsync("Figgo", "MyBranch", "1234"))
+                .ReturnsAsync(responseUrl);
             content.Should().Be($"{{\"url\":\"{responseUrl}\"}}");
         }
 
@@ -60,15 +58,9 @@ namespace Instances.Web.Tests.Controllers
 
             var httpClient = webApplicationFactory.CreateAuthenticatedClient();
 
-            var response = await httpClient.PostAsync(
-                "/api/code-sources/services/build-url",
-
-                new StringContent($@"{{
-                    ""CodeSourceCode"": ""Figgo"",
-                    ""BranchName"": ""MyBranch"",
-                    ""BuildNumber"": ""1234""
-                }}
-                ", Encoding.UTF8, "application/json"));
+            var response = await httpClient.GetAsync(
+                "/api/code-sources/services/build-url?CodeSourceCode=Figgo&branchName=MyBranch&BuildNumber=1234"
+            );
 
             response.StatusCode.Should().Be(HttpStatusCode.NotFound);
         }
@@ -92,15 +84,9 @@ namespace Instances.Web.Tests.Controllers
 
             var httpClient = webApplicationFactory.CreateAuthenticatedClient();
 
-            var response = await httpClient.PostAsync(
-                "/api/code-sources/services/build-url",
-
-                new StringContent($@"{{
-                    ""CodeSourceCode"": ""Figgo"",
-                    ""BranchName"": ""{branchName}"",
-                    ""BuildNumber"": ""{buildNumber}""
-                }}
-                ", Encoding.UTF8, "application/json"));
+            var response = await httpClient.GetAsync(
+                $"/api/code-sources/services/build-url?CodeSourceCode=Figgo&branchName={branchName}&BuildNumber={buildNumber}"
+            );
 
             response.StatusCode.Should().Be(expectedStatus);
         }

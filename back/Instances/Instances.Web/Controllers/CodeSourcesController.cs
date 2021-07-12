@@ -73,9 +73,9 @@ namespace Instances.Web.Controllers
             };
         }
 
-        [HttpPost("services/build-url")]
+        [HttpGet("services/build-url")]
         [ForbidIfMissing(Operation.ReadCodeSources)]
-        public async Task<IActionResult> GetBuildUrlAsync([FromBody] CodeSourceBuildUrlDto input)
+        public async Task<IActionResult> GetBuildUrlAsync([FromQuery] CodeSourceBuildUrlDto input)
         {
             if (input.BranchName.Contains("/"))
             {
