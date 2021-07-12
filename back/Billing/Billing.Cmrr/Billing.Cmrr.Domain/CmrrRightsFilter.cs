@@ -36,7 +36,7 @@ namespace Billing.Cmrr.Domain
                     return AccessRight.All;
                 default:
                     throw new ApplicationException("Unhandled ClaimsPrincipal type");
-            };
+            }
         }
 
         private async Task<AccessRight> GetDistributorIdAccessRightFromDistributorCodeAsync(string distributorCode)

@@ -6,7 +6,7 @@ namespace Billing.Products.Domain.Interfaces
     public class ProductsFilter
     {
         public bool NonFreeOnly { get; set; }
-        public static ProductsFilter All = new ProductsFilter();
+        public static ProductsFilter All => new ProductsFilter();
     }
 
     public class ProductsIncludes
@@ -16,7 +16,7 @@ namespace Billing.Products.Domain.Interfaces
         public bool BusinessUnits { get; set; }
 
 
-        public static ProductsIncludes All = new ProductsIncludes { Families = true, BusinessUnits = true};
+        public static ProductsIncludes All => new ProductsIncludes { Families = true, BusinessUnits = true};
     }
 
     public interface IProductsStore
