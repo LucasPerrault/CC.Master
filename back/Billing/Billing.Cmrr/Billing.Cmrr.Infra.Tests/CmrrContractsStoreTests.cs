@@ -3,6 +3,7 @@ using Billing.Cmrr.Infra.Storage;
 using Billing.Cmrr.Infra.Storage.Stores;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
+using Rights.Domain.Filtering;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -67,7 +68,7 @@ namespace Billing.Cmrr.Infra.Tests
             var expectedIds = new List<int> { 1, 2 };
 
             var sut = new CmrrContractsStore(_dbContext);
-            var contracts = await sut.GetContractsNotEndedAtAsync(startCountPeriod, endCountPeriod);
+            var contracts = await sut.GetContractsNotEndedAtAsync(startCountPeriod, endCountPeriod, AccessRight.All);
 
             contracts.Should().NotBeNullOrEmpty();
             contracts.Should().HaveCount(2);
@@ -103,7 +104,7 @@ namespace Billing.Cmrr.Infra.Tests
             var expectedIds = new List<int> { 1 };
 
             var sut = new CmrrContractsStore(_dbContext);
-            var contracts = await sut.GetContractsNotEndedAtAsync(startCountPeriod, endCountPeriod);
+            var contracts = await sut.GetContractsNotEndedAtAsync(startCountPeriod, endCountPeriod, AccessRight.All);
 
             contracts.Should().NotBeNullOrEmpty();
             contracts.Should().HaveCount(1);

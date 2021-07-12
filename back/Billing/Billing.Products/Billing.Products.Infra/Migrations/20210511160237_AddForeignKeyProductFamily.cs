@@ -32,13 +32,17 @@ namespace Billing.Products.Infra.Migrations
             migrationBuilder.Sql(@"
                 update billing.Products Set FamilyId = 2 where Id in (31)
                 update billing.Products Set FamilyId = 3 where Id in (1, 23)
-                update billing.Products Set FamilyId = 4 where Id in (2, 18, 19, 22, 32, 34)
-                update billing.Products Set FamilyId = 5 where Id in (3)
-                update billing.Products Set FamilyId = 6 where Id in (5, 21, 24, 33)
-                update billing.Products Set FamilyId = 7 where Id in (17, 20)
-                update billing.Products Set FamilyId = 8 where Id in (25)
-                update billing.Products Set FamilyId = 9 where Id in (26, 30)
-                update billing.Products Set FamilyId = 10 where Id in (27)"
+                update billing.Products Set FamilyId = 4 where Id in (17)
+                update billing.Products Set FamilyId = 5 where Id in (20)
+                update billing.Products Set FamilyId = 6 where Id in (2, 22, 18, 32, 19, 34)
+                update billing.Products Set FamilyId = 7 where Id in (24)
+                update billing.Products Set FamilyId = 8 where Id in (3)
+                update billing.Products Set FamilyId = 9 where Id in (21)
+                update billing.Products Set FamilyId = 10 where Id in (5, 33)
+                update billing.Products Set FamilyId = 11 where Id in (26, 30, 37)
+                update billing.Products Set FamilyId = 12 where Id in (25, 36)
+                update billing.Products Set FamilyId = 13 where Id in (27)
+                update billing.Products Set FamilyId = 14 where Id in (38)"
             );
         }
 

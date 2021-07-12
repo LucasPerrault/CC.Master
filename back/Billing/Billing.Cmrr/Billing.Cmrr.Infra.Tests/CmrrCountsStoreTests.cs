@@ -54,7 +54,7 @@ namespace Billing.Cmrr.Infra.Tests
             var expectedIds = new List<int> { 1 };
 
             var sut = new CmrrCountsStore(_dbContext);
-            var contracts = await sut.GetByPeriodAsync(countPeriod);
+            var contracts = await sut.GetByPeriodsAsync(countPeriod);
 
             contracts.Should().NotBeNullOrEmpty();
             contracts.Should().HaveCount(1);

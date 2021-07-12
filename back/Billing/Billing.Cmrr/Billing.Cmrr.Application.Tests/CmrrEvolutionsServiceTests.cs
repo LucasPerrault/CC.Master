@@ -4,9 +4,11 @@ using Billing.Cmrr.Domain.Evolution;
 using Billing.Cmrr.Domain.Interfaces;
 using FluentAssertions;
 using Moq;
+using Rights.Domain.Filtering;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -28,7 +30,7 @@ namespace Billing.Cmrr.Application.Tests
             var cmrrContractsStoreMock = new Mock<ICmrrContractsStore>();
             var cmrrCountsStoreMock = new Mock<ICmrrCountsStore>();
 
-            var sut = new CmrrEvolutionsService(cmrrContractsStoreMock.Object, cmrrCountsStoreMock.Object);
+            var sut = new CmrrEvolutionsService(cmrrContractsStoreMock.Object, cmrrCountsStoreMock.Object, null, null);
 
             Func<Task<CmrrEvolution>> func = () => sut.GetEvolutionAsync(evolutionFilter);
 
@@ -49,7 +51,7 @@ namespace Billing.Cmrr.Application.Tests
             var cmrrContractsStoreMock = new Mock<ICmrrContractsStore>();
             var cmrrCountsStoreMock = new Mock<ICmrrCountsStore>();
 
-            var sut = new CmrrEvolutionsService(cmrrContractsStoreMock.Object, cmrrCountsStoreMock.Object);
+            var sut = new CmrrEvolutionsService(cmrrContractsStoreMock.Object, cmrrCountsStoreMock.Object, null, null);
 
             Func<Task<CmrrEvolution>> func = () => sut.GetEvolutionAsync(evolutionFilter);
 
@@ -69,7 +71,7 @@ namespace Billing.Cmrr.Application.Tests
 
             var cmrrContractsStoreMock = new Mock<ICmrrContractsStore>();
 
-            cmrrContractsStoreMock.Setup(x => x.GetContractsNotEndedAtAsync(It.IsAny<DateTime>(), It.IsAny<DateTime>())).ReturnsAsync(() =>
+            cmrrContractsStoreMock.Setup(x => x.GetContractsNotEndedAtAsync(It.IsAny<DateTime>(), It.IsAny<DateTime>(), It.IsAny<AccessRight>())).ReturnsAsync(() =>
             {
                 var cmrrContracts = new List<CmrrContract>
                  {
@@ -129,7 +131,9 @@ namespace Billing.Cmrr.Application.Tests
 
             cmrrCountsStoreMock.Setup(x => x.GetBetweenAsync(startPeriod.AddMonths(-1), endPeriod)).ReturnsAsync(() => counts);
 
-            var sut = new CmrrEvolutionsService(cmrrContractsStoreMock.Object, cmrrCountsStoreMock.Object);
+            var cmrrRightsFilterMock = new Mock<ICmrrRightsFilter>();
+            cmrrRightsFilterMock.Setup(x => x.GetReadAccessAsync(It.IsAny<ClaimsPrincipal>())).ReturnsAsync(AccessRight.All);
+            var sut = new CmrrEvolutionsService(cmrrContractsStoreMock.Object, cmrrCountsStoreMock.Object, cmrrRightsFilterMock.Object, new ClaimsPrincipal());
 
             var cmrrEvolution = await sut.GetEvolutionAsync(evolutionFilter);
 
@@ -155,7 +159,7 @@ namespace Billing.Cmrr.Application.Tests
             var thirdMonthLine = cmrrEvolution.Lines.Single(l => l.Period == startPeriod.AddMonths(2));
             thirdMonthLine.Amount.Should().Be(350);
             thirdMonthLine.Expansion.Should().Be(150);
-            thirdMonthLine.Termination.Should().Be(-5);
+            thirdMonthLine.Contraction.Should().Be(-5);
         }
     }
 }

@@ -66,7 +66,7 @@ namespace Billing.Cmrr.Application.Tests
             await _dbContext.AddAsync(suite);
             await _dbContext.SaveChangesAsync();
 
-            var service = new BreakdownService(new ProductsStore(_dbContext));
+            var service = new BreakdownService(new ProductsStore(_dbContext), new BreakDownInMemoryCache());
             var allBreakdowns = await service.GetBreakdownsAsync(CmrrAxis.Product);
 
             allBreakdowns.Should().HaveCount(4);
@@ -113,7 +113,7 @@ namespace Billing.Cmrr.Application.Tests
             await _dbContext.AddAsync(suite);
             await _dbContext.SaveChangesAsync();
 
-            var service = new BreakdownService(new ProductsStore(_dbContext));
+            var service = new BreakdownService(new ProductsStore(_dbContext), new BreakDownInMemoryCache());
             var allBreakdowns = await service.GetBreakdownsAsync(CmrrAxis.Product);
 
             allBreakdowns.Should().HaveCount(3);
@@ -155,7 +155,7 @@ namespace Billing.Cmrr.Application.Tests
             await _dbContext.AddAsync(suite);
             await _dbContext.SaveChangesAsync();
 
-            var service = new BreakdownService(new ProductsStore(_dbContext));
+            var service = new BreakdownService(new ProductsStore(_dbContext), new BreakDownInMemoryCache());
             var allBreakdowns = await service.GetBreakdownsAsync(CmrrAxis.Product);
 
             allBreakdowns.Should().HaveCount(3);
@@ -212,7 +212,7 @@ namespace Billing.Cmrr.Application.Tests
             await _dbContext.AddAsync(suite);
             await _dbContext.SaveChangesAsync();
 
-            var service = new BreakdownService(new ProductsStore(_dbContext));
+            var service = new BreakdownService(new ProductsStore(_dbContext), new BreakDownInMemoryCache());
             var allBreakdowns = await service.GetBreakdownsAsync(CmrrAxis.BusinessUnit);
 
             allBreakdowns.Should().HaveCount(4);
@@ -273,7 +273,7 @@ namespace Billing.Cmrr.Application.Tests
             await _dbContext.AddAsync(suite);
             await _dbContext.SaveChangesAsync();
 
-            var service = new BreakdownService(new ProductsStore(_dbContext));
+            var service = new BreakdownService(new ProductsStore(_dbContext), new BreakDownInMemoryCache());
             var allBreakdowns = await service.GetBreakdownsAsync(CmrrAxis.BusinessUnit);
 
             allBreakdowns.Should().HaveCount(4);

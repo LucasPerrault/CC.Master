@@ -1,5 +1,6 @@
 using Billing.Cmrr.Application;
 using Billing.Cmrr.Application.Interfaces;
+using Billing.Cmrr.Domain;
 using Billing.Cmrr.Domain.Interfaces;
 using Billing.Cmrr.Infra.Storage.Stores;
 using Billing.Contracts.Application.Clients;
@@ -42,9 +43,12 @@ namespace Billing.Web
 
         private static void ConfigureCmrr(IServiceCollection services)
         {
+            services.AddSingleton(new BreakDownInMemoryCache());
+
             services.AddScoped<ICmrrContractsStore, CmrrContractsStore>();
             services.AddScoped<ICmrrCountsStore, CmrrCountsStore>();
             services.AddScoped<IBreakdownService, BreakdownService>();
+            services.AddScoped<ICmrrRightsFilter, CmrrRightsFilter>();
 
             services.AddScoped<ICmrrSituationsService, CmrrSituationsService>();
             services.AddScoped<ICmrrEvolutionsService, CmrrEvolutionsService>();

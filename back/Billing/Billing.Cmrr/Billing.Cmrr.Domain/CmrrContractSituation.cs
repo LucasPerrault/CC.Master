@@ -35,9 +35,9 @@ namespace Billing.Cmrr.Domain
         {
             if (endPeriodCount is null)
             {
-                if (contract.EndReason == ContractEndReason.Modification)
-                    return CmrrLifeCycle.Contraction;
-                return CmrrLifeCycle.Termination;
+                if (contract.EndReason == ContractEndReason.Resiliation)
+                    return CmrrLifeCycle.Termination;
+                return CmrrLifeCycle.Contraction;
             }
 
             if (startPeriodCount is null)

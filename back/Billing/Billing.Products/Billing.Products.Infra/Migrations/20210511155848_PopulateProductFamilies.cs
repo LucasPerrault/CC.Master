@@ -7,18 +7,22 @@ namespace Billing.Products.Infra.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.Sql(@"
-                insert into billing.ProductFamilies (name) 
+                insert into billing.ProductFamilies (name)
                 values
                 ('Autres'),
                 ('Gratuits'),
                 ('Figgo'),
-                ('Cleemy'),
+                ('Timmi Timesheet'),
+                ('Timmi Project'),
+                ('Cleemy Expenses'),
+                ('Poplee Entretiens & Objectifs'),
                 ('Pagga'),
-                ('Poplee'),
-                ('Timmi'),
-                ('Lucca pour la Paie'),
-                ('Essentiel SIRH'),
-                ('Startup')
+                ('Poplee REM'),
+                ('Poplee Core RH'),
+                ('Essentiel'),
+                ('SIRH et paie'),
+                ('Suite Startup'),
+                ('Bloom')
             ");
         }
 
