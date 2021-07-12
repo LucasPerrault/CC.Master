@@ -1,4 +1,4 @@
-﻿using Instances.Domain.CodeSources;
+using Instances.Domain.CodeSources;
 using Instances.Domain.CodeSources.Filtering;
 using Lucca.Core.Api.Abstractions.Paging;
 using Lucca.Core.Shared.Domain.Exceptions;
@@ -23,22 +23,28 @@ namespace Instances.Application.CodeSources
     }
 
 
-    public class CodeSourcesRepository
+    public class CodeSourcesRepository : ICodeSourcesRepository
     {
         private readonly ICodeSourcesStore _codeSourcesStore;
         private readonly IGithubBranchesStore _githubBranchesStore;
         private readonly ICodeSourceFetcherService _fetcherService;
+        private readonly ICodeSourceBuildUrlService _codeSourceBuildUrl;
+        private readonly IArtifactsService _artifactsService;
 
         public CodeSourcesRepository
         (
             ICodeSourcesStore codeSourcesStore,
             IGithubBranchesStore githubBranchesStore,
-            ICodeSourceFetcherService fetcherService
+            ICodeSourceFetcherService fetcherService,
+            ICodeSourceBuildUrlService codeSourceBuildUrl,
+            IArtifactsService artifactsService
         )
         {
             _codeSourcesStore = codeSourcesStore;
             _githubBranchesStore = githubBranchesStore;
             _fetcherService = fetcherService;
+            _codeSourceBuildUrl = codeSourceBuildUrl;
+            _artifactsService = artifactsService;
         }
 
         public async Task<Page<CodeSource>> GetAsync(IPageToken pageToken, CodeSourceFilter codeSourceFilter)
@@ -82,11 +88,34 @@ namespace Instances.Application.CodeSources
                 Date = DateTime.Now
             };
 
+            var codeSourceArtifacts = await _artifactsService.GetArtifactsAsync(source, dto.BranchName, dto.JenkinsBuildNumber);
+            await _codeSourcesStore.ReplaceProductionArtifactsAsync(source, codeSourceArtifacts);
+
             await _codeSourcesStore.AddProductionVersionAsync(source, productionVersion);
             if (source.Lifecycle != CodeSourceLifecycleStep.InProduction)
             {
                 await _codeSourcesStore.UpdateLifecycleAsync(source, CodeSourceLifecycleStep.InProduction);
             }
+        }
+
+        public async Task<string> GetBuildUrlAsync(string codeSourceCode, string branchName, string buildNumber)
+        {
+            if (!_codeSourceBuildUrl.IsValidBuildNumber(buildNumber))
+            {
+                throw new BadRequestException("Build number is invalid");
+            }
+
+            var codeSource = await GetSingleOrDefaultAsync(CodeSourceFilter.ActiveByCode(codeSourceCode));
+            if (string.IsNullOrEmpty(codeSource.JenkinsProjectUrl))
+            {
+                throw new BadRequestException("Build url not found for this code source");
+            }
+            return await _codeSourceBuildUrl.GenerateBuildUrlAsync(codeSource, branchName, buildNumber);
+        }
+
+        public Task<List<CodeSourceArtifacts>> GetArtifactsAsync(int codeSourceId)
+        {
+            return _codeSourcesStore.GetArtifactsAsync(codeSourceId);
         }
 
         private async Task<CodeSource> GetSingleOrDefaultAsync(CodeSourceFilter filter)

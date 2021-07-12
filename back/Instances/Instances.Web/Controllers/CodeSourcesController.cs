@@ -1,6 +1,7 @@
-﻿using Instances.Application.CodeSources;
+using Instances.Application.CodeSources;
 using Instances.Domain.CodeSources;
 using Instances.Domain.CodeSources.Filtering;
+using Instances.Web.Controllers.Dtos;
 using Lucca.Core.Api.Abstractions.Paging;
 using Lucca.Core.Api.Web.ModelBinding.Sorting;
 using Microsoft.AspNetCore.Http;
@@ -15,11 +16,11 @@ namespace Instances.Web.Controllers
 {
     [ApiController, Route("/api/code-sources")]
     [ApiSort("Code")]
-    public class CodeSourcesController
+    public class CodeSourcesController : ControllerBase
     {
-        private readonly CodeSourcesRepository _repository;
+        private readonly ICodeSourcesRepository _repository;
 
-        public CodeSourcesController(CodeSourcesRepository repository)
+        public CodeSourcesController(ICodeSourcesRepository repository)
         {
             _repository = repository;
         }
@@ -72,9 +73,33 @@ namespace Instances.Web.Controllers
             };
         }
 
-        public class CodeSourceFetchDto
+        [HttpGet("services/build-url")]
+        [ForbidIfMissing(Operation.ReadCodeSources)]
+        public async Task<IActionResult> GetBuildUrlAsync([FromQuery] CodeSourceBuildUrlDto input)
         {
-            public string RepoUrl { get; set; }
+            if (input.BranchName.Contains("/"))
+            {
+                return BadRequest("Invalid branchName number");
+            }
+            if (!string.IsNullOrEmpty(input.BuildNumber) && input.BuildNumber.Contains("/"))
+            {
+                return BadRequest("Invalid build number");
+            }
+            var buildUrl = await _repository.GetBuildUrlAsync(input.CodeSourceCode, input.BranchName, input.BuildNumber);
+            if (string.IsNullOrEmpty(buildUrl))
+            {
+                return NotFound();
+            }
+            return Ok(new CodeSourceBuildUrlResponse
+            {
+                Url = buildUrl
+            });
+        }
+
+        [HttpGet("{id:int}/artifacts")]
+        public async Task<List<CodeSourceArtifacts>> GetArtifactsListAsync(int id)
+        {
+            return await _repository.GetArtifactsAsync(id);
         }
     }
 

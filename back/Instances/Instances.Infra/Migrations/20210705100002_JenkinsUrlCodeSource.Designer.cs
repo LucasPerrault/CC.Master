@@ -4,14 +4,16 @@ using Instances.Infra.Storage;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Instances.Infra.Migrations
 {
     [DbContext(typeof(InstancesDbContext))]
-    partial class InstancesDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210705100002_JenkinsUrlCodeSource")]
+    partial class JenkinsUrlCodeSource
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -40,38 +42,6 @@ namespace Instances.Infra.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Distributors","shared");
-                });
-
-            modelBuilder.Entity("Instances.Domain.CodeSources.CodeSourceArtifacts", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<int>("ArtifactType")
-                        .HasColumnName("ArtifactType")
-                        .HasColumnType("int");
-
-                    b.Property<string>("ArtifactUrl")
-                        .HasColumnName("ArtifactUrl")
-                        .HasColumnType("nvarchar(255)")
-                        .HasMaxLength(255);
-
-                    b.Property<int>("CodeSourceId")
-                        .HasColumnName("CodeSourceId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("FileName")
-                        .HasColumnName("FileName")
-                        .HasColumnType("nvarchar(255)")
-                        .HasMaxLength(255);
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CodeSourceId");
-
-                    b.ToTable("CodeSourceArtifacts");
                 });
 
             modelBuilder.Entity("Instances.Domain.CodeSources.CodeSourceConfig", b =>
@@ -397,15 +367,6 @@ namespace Instances.Infra.Migrations
                         .IsUnique();
 
                     b.ToTable("Users","shared");
-                });
-
-            modelBuilder.Entity("Instances.Domain.CodeSources.CodeSourceArtifacts", b =>
-                {
-                    b.HasOne("Instances.Infra.Storage.Models.StoredCodeSource", null)
-                        .WithMany("CodeSourceArtifacts")
-                        .HasForeignKey("CodeSourceId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
                 });
 
             modelBuilder.Entity("Instances.Domain.CodeSources.CodeSourceConfig", b =>

@@ -80,8 +80,11 @@ namespace Instances.Web
             services.AddScoped<HubspotDemoDuplicator>();
             services.AddScoped<IDemoDuplicationCompleter, DemoDuplicationCompleter>();
 
-            services.AddScoped<CodeSourcesRepository>();
-            services.AddScoped<ICodeSourceFetcherService, CodeSourceFetcherService>();
+            services.AddScoped<ICodeSourcesRepository, CodeSourcesRepository>();
+            services.AddHttpClient<ICodeSourceFetcherService, CodeSourceFetcherService>(c =>
+            {
+                c.WithUserAgent(nameof(CodeSourceFetcherService));
+            });
 
             services.AddScoped<IDemosStore, DemosStore>();
             services.AddScoped<IInstanceDuplicationsStore, InstanceDuplicationsStore>();
@@ -145,6 +148,16 @@ namespace Instances.Web
             services.AddHttpClient<IInstanceSessionLogsService, InstanceSessionLogsService>(c =>
             {
                 c.WithUserAgent(nameof(InstanceSessionLogsService));
+            });
+
+            services.AddHttpClient<IArtifactsService, ArtifactsService>(c =>
+            {
+                c.WithUserAgent(nameof(ArtifactsService));
+            });
+
+            services.AddHttpClient<ICodeSourceBuildUrlService, JenkinsCodeSourceBuildUrlService>(c =>
+            {
+                c.WithUserAgent(nameof(ArtifactsService));
             });
         }
 

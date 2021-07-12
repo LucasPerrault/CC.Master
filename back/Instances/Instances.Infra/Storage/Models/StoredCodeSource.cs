@@ -1,4 +1,4 @@
-﻿using Instances.Domain.CodeSources;
+using Instances.Domain.CodeSources;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -10,10 +10,12 @@ namespace Instances.Infra.Storage.Models
         public string Name { get; set; }
         public string Code { get; set; }
         public string JenkinsProjectName { get; set; }
+        public string JenkinsProjectUrl { get; set; }
         public CodeSourceType Type { get; set; }
         public string GithubRepo { get; set; }
         public CodeSourceLifecycleStep Lifecycle { get; set; }
         public CodeSourceConfig Config { get; set; }
+        public List<CodeSourceArtifacts> CodeSourceArtifacts { get; set; }
         public List<CodeSourceProductionVersion> ProductionVersions { get; set; }
 
         public CodeSource ToCodeSource()
@@ -28,6 +30,7 @@ namespace Instances.Infra.Storage.Models
                 Lifecycle = Lifecycle,
                 GithubRepo = GithubRepo,
                 JenkinsProjectName = JenkinsProjectName,
+                JenkinsProjectUrl = JenkinsProjectUrl,
                 CurrentProductionVersion = ProductionVersions.OrderByDescending(v => v.Id).FirstOrDefault()
             };
         }
@@ -42,6 +45,7 @@ namespace Instances.Infra.Storage.Models
                 Lifecycle = codeSource.Lifecycle,
                 GithubRepo = codeSource.GithubRepo,
                 JenkinsProjectName = codeSource.JenkinsProjectName,
+                JenkinsProjectUrl = codeSource.JenkinsProjectUrl,
                 ProductionVersions = new List<CodeSourceProductionVersion>()
             };
     }

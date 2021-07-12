@@ -3,6 +3,7 @@ export enum CodeSourceFormKey {
   Type = 'type',
   Lifecycle = 'lifecycle',
   JenkinsProjectName = 'jenkinsProjectName',
+  JenkinsProjectUrl = 'jenkinsProjectUrl',
   Config = 'config',
   AppPath = 'appPath',
   Subdomain = 'subdomain',
