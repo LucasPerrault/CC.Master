@@ -23,6 +23,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\..\Core\Testing\Testing.Infra\Testing.Infra.csproj" />
       <ProjectReference Include="..\..\Shared\Environments\Environments.Domain\Environments.Domain.csproj" />
       <ProjectReference Include="..\Instances.Domain\Instances.Domain.csproj" />
       <ProjectReference Include="..\Instances.Infra\Instances.Infra.csproj" />

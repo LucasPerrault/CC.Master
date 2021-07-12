@@ -164,15 +164,17 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Users.Application", "Core\U
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Testing", "Testing", "{E7BC419B-74C9-4934-9573-B8A7EE5B0B09}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Testing.Infra", "Core\Testing\Testing.Infra\Testing.Infra.csproj", "{7DD9E818-16C4-4EE8-9B24-69D320739810}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Testing.Infra", "Core\Testing\Testing.Infra\Testing.Infra.csproj", "{7DD9E818-16C4-4EE8-9B24-69D320739810}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Testing.Specflow", "Core\Testing\Testing.Specflow\Testing.Specflow.csproj", "{36AF73E9-47BF-4E29-82B8-1A53780E8C72}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Testing.Specflow", "Core\Testing\Testing.Specflow\Testing.Specflow.csproj", "{36AF73E9-47BF-4E29-82B8-1A53780E8C72}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Environments.Infra.Tests", "Shared\Environments\Environments.Infra.Tests\Environments.Infra.Tests.csproj", "{31AAEC3E-CEF2-4EA3-823C-32B1BAFAD15B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Environments.Infra.Tests", "Shared\Environments\Environments.Infra.Tests\Environments.Infra.Tests.csproj", "{31AAEC3E-CEF2-4EA3-823C-32B1BAFAD15B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Environments.Domain.Tests", "Shared\Environments\Environments.Domain.Tests\Environments.Domain.Tests.csproj", "{0EE9149C-4A6B-4C7C-824A-63A8C1C4CF73}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Environments.Domain.Tests", "Shared\Environments\Environments.Domain.Tests\Environments.Domain.Tests.csproj", "{0EE9149C-4A6B-4C7C-824A-63A8C1C4CF73}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Environments.Application.Tests", "Shared\Environments\Environments.Application.Tests\Environments.Application.Tests.csproj", "{185FEFFD-AAD9-43F1-AC3C-90E41C0034F0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Environments.Application.Tests", "Shared\Environments\Environments.Application.Tests\Environments.Application.Tests.csproj", "{185FEFFD-AAD9-43F1-AC3C-90E41C0034F0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Instances.Web.Tests", "Instances\Instances.Web.Tests\Instances.Web.Tests.csproj", "{28069D52-71B4-46D2-B826-28AAB90223EE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -424,6 +426,10 @@ Global
 		{185FEFFD-AAD9-43F1-AC3C-90E41C0034F0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{185FEFFD-AAD9-43F1-AC3C-90E41C0034F0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{185FEFFD-AAD9-43F1-AC3C-90E41C0034F0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{28069D52-71B4-46D2-B826-28AAB90223EE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{28069D52-71B4-46D2-B826-28AAB90223EE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{28069D52-71B4-46D2-B826-28AAB90223EE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{28069D52-71B4-46D2-B826-28AAB90223EE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -506,6 +512,7 @@ Global
 		{31AAEC3E-CEF2-4EA3-823C-32B1BAFAD15B} = {1C2669B2-A62A-4EFC-AC72-02B971FC7B21}
 		{0EE9149C-4A6B-4C7C-824A-63A8C1C4CF73} = {1C2669B2-A62A-4EFC-AC72-02B971FC7B21}
 		{185FEFFD-AAD9-43F1-AC3C-90E41C0034F0} = {1C2669B2-A62A-4EFC-AC72-02B971FC7B21}
+		{28069D52-71B4-46D2-B826-28AAB90223EE} = {7DCC44DC-DED6-4042-A1BB-6007208A61E0}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {EBA79BF7-490F-4B8F-8162-771B77F6C73B}

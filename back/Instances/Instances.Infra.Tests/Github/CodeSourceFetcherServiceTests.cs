@@ -1,12 +1,17 @@
-﻿using FluentAssertions;
+using FluentAssertions;
 using Instances.Domain.CodeSources;
 using Instances.Infra.CodeSources;
 using Instances.Infra.Github;
+using Microsoft.Extensions.Logging;
 using Moq;
+using Moq.Protected;
+using Remote.Infra.Extensions;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
+using System.Net;
+using System.Net.Http;
 using System.Text.Json;
+using System.Threading;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -14,24 +19,37 @@ namespace Instances.Infra.Tests.Github
 {
     public class CodeSourceFetcherServiceTests
     {
-        private readonly Mock<IGithubService> _githubServiceMock = new Mock<IGithubService>();
+        private readonly Mock<IGithubService> _githubServiceMock;
+        private readonly Mock<HttpClientHandler> _httpHandlerMock;
+        private readonly CodeSourceFetcherService _codeSourceFetcherService;
+
+        public CodeSourceFetcherServiceTests()
+        {
+            _githubServiceMock = new Mock<IGithubService>(MockBehavior.Strict);
+            _httpHandlerMock = new Mock<HttpClientHandler>(MockBehavior.Strict);
+            var loggerMock = new Mock<ILogger<CodeSourceFetcherService>>();
+            _codeSourceFetcherService = new CodeSourceFetcherService(
+                _githubServiceMock.Object,
+                new HttpClient(_httpHandlerMock.Object),
+                loggerMock.Object
+            );
+        }
 
         [Fact]
         public async Task ShouldGetAppsFromProductionFiles()
         {
-
             _githubServiceMock
                 .Setup(s => s.GetFileContentAsync("mockedUrl", ".cd/production.json"))
                 .ReturnsAsync(() => MockedProductionFile.Empty);
-            var fetcher = new CodeSourceFetcherService(_githubServiceMock.Object);
-            await fetcher.FetchAsync("mockedUrl");
+
+            await _codeSourceFetcherService.FetchAsync("mockedUrl");
+
             _githubServiceMock.Verify(s => s.GetFileContentAsync("mockedUrl", ".cd/production.json"), Times.Once);
         }
 
         [Fact]
         public async Task ShouldProperlyBuildCodeSourcesFromApps()
         {
-
             _githubServiceMock
                 .Setup(s => s.GetFileContentAsync(It.IsAny<string>(), It.IsAny<string>()))
                 .ReturnsAsync(() => MockedProductionFile.FromApps(new
@@ -42,12 +60,44 @@ namespace Instances.Infra.Tests.Github
                     JenkinsProjectName = "JenkinsProjectName",
                     Path = "my-app"
                 }));
+            _httpHandlerMock
+                .Protected()
+                .Setup<Task<HttpResponseMessage>>(
+                      "SendAsync",
+                      ItExpr.Is<HttpRequestMessage>(m => m.RequestUri.ToString() == "http://jenkins2.lucca.local:8080/api/json/?tree=jobs[name,url,jobs[name,url]]"),
+                      ItExpr.IsAny<CancellationToken>()
+                )
+                .ReturnsAsync(new HttpResponseMessage()
+                {
+                    StatusCode = HttpStatusCode.OK,
+                    Content = JsonExtensions.ToJsonPayload(new
+                    {
+                        _class = "hudson.model.Hudson",
+                        jobs = new object[] {
+                            new
+                            {
+                                _class = "com.cloudbees.hudson.plugins.folder.Folder",
+                                name = "AzureFunctions",
+                                url = "http://jenkins2.lucca.local:8080/job/AzureFunctions/",
+                                jobs = new object[] {
+                                    new
+                                    {
+                                        _class = "org.jenkinsci.plugins.workflow.multibranch.WorkflowMultiBranchProject",
+                                        name = "JenkinsProjectName",
+                                        url = "http://jenkins2.lucca.local:8080/job/AzureFunctions/job/Growth.AzureFunctions/"
+                                    }
+                                }
+                            }
+                        }
+                    })
+                });
 
-            var fetcher = new CodeSourceFetcherService(_githubServiceMock.Object);
 
-            var apps = await fetcher.FetchAsync("mockedUrl");
+            var apps = await _codeSourceFetcherService.FetchAsync("mockedUrl");
+
             apps.Single().Name.Should().Be("My app");
             apps.Single().Code.Should().Be("appCode");
+            apps.Single().JenkinsProjectUrl.Should().Be("http://jenkins2.lucca.local:8080/job/AzureFunctions/job/Growth.AzureFunctions/");
             apps.Single().JenkinsProjectName.Should().Be("JenkinsProjectName");
             apps.Single().Config.Should().BeEquivalentTo(new CodeSourceConfig
             {
