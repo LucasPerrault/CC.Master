@@ -5,6 +5,7 @@ using Core.Proxy.Infra.Configuration;
 using Instances.Domain.Demos;
 using Instances.Infra.DataDuplication;
 using Instances.Infra.Demos;
+using Instances.Infra.Dns;
 using Instances.Infra.Instances;
 using Instances.Infra.Shared;
 using Instances.Infra.WsAuth;
@@ -208,7 +209,25 @@ namespace CloudControl.Web.Tests.Mocks
                         ServerUri = new Uri("https://api.hubapi.mocked")
                     },
                     SqlScriptPicker = new SqlScriptPickerConfiguration(),
-                    DemoClusterSelection = new ClusterSelectorConfiguration()
+                    DemoClusterSelection = new ClusterSelectorConfiguration(),
+                    Dns = new DnsConfiguration
+                    {
+                        Internal = new WinDnsConfiguration
+                        {
+                            Server = "server.ilucca.local",
+                        },
+                        Ovh = new OvhDnsConfiguration
+                        {
+                            Endpoint = "ovh-eu",
+                            ApplicationKey = "app-key",
+                            ApplicationSecret = "app-secret",
+                            ConsumerKey = "consumer-key",
+                        },
+                        Zones = new DnsZonesConfiguration
+                        {
+                            Demos = "ilucca-demo.net"
+                        }
+                    },
                 }
             });
         }

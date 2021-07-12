@@ -25,6 +25,7 @@ namespace Instances.Application.Demos.Duplication
         private readonly IDemoUsersPasswordResetService _demoUsersPasswordResetService;
         private readonly IDemoDeletionCalculator _deletionCalculator;
         private readonly ILogger<DemoDuplicationCompleter> _logger;
+        private readonly IDnsService _dnsService;
 
         public DemoDuplicationCompleter
         (
@@ -35,7 +36,8 @@ namespace Instances.Application.Demos.Duplication
             IWsAuthSynchronizer wsAuthSynchronizer,
             IDemoUsersPasswordResetService demoUsersPasswordResetService,
             IDemoDeletionCalculator deletionCalculator,
-            ILogger<DemoDuplicationCompleter> logger
+            ILogger<DemoDuplicationCompleter> logger,
+            IDnsService dnsService
         )
         {
             _duplicationsStore = duplicationsStore;
@@ -45,6 +47,7 @@ namespace Instances.Application.Demos.Duplication
             _wsAuthSynchronizer = wsAuthSynchronizer;
             _demoUsersPasswordResetService = demoUsersPasswordResetService;
             _logger = logger;
+            _dnsService = dnsService;
             _deletionCalculator = deletionCalculator;
         }
 
@@ -55,6 +58,12 @@ namespace Instances.Application.Demos.Duplication
             if (duplication.HasEnded)
             {
                 throw new BadRequestException($"Duplication {instanceDuplicationId} was already marked as complete");
+            }
+
+            if (!isSuccessful)
+            {
+                await _instanceDuplicationsStore.MarkAsCompleteAsync(duplication.InstanceDuplication, InstanceDuplicationProgress.FinishedWithFailure);
+                return;
             }
 
             try
@@ -83,6 +92,7 @@ namespace Instances.Application.Demos.Duplication
             {
                 _logger.LogError(e, "Could not create demo, following instance duplication");
                 await _instancesStore.DeleteForDemoAsync(instance);
+                await _dnsService.DeleteAsync(DnsEntry.ForDemo(demo.Subdomain, demo.Instance.Cluster));
                 await _demosStore.DeleteAsync(demo);
                 throw;
             }

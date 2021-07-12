@@ -7,7 +7,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace Instances.Infra.Shared
@@ -22,7 +21,6 @@ namespace Instances.Infra.Shared
 
     public class CcDataService : ICcDataService
     {
-        private static readonly Regex ClusterNumberExtractor = new Regex(@"([a-z]+)(\d+)", RegexOptions.Compiled);
 
         private readonly HttpClient _httpClient;
         private readonly CcDataConfiguration _ccDataConfiguration;
@@ -101,17 +99,10 @@ namespace Instances.Infra.Shared
         // Changements à reporter dans le CClithe
         public Uri GetCcDataBaseUri(string cluster)
         {
-            var parsedCluster = GetParsedCluster(cluster);
-
             var subdomain = GetCcDataSubdomainPart();
-            var clusterSubdomainPart = GetClusterSubdomainPart(parsedCluster);
+            var clusterSubdomainPart = ClusterNameConvertor.GetShortName(cluster);
 
             return new Uri($"{_ccDataConfiguration.Scheme}://{subdomain}.{clusterSubdomainPart}.{_ccDataConfiguration.Domain}");
-        }
-
-        private string GetClusterSubdomainPart(ParsedCluster parsedCluster)
-        {
-            return GetClusterName(parsedCluster) + GetClusterNumber(parsedCluster);
         }
 
         // Changements à reporter dans le CClithe
@@ -120,59 +111,6 @@ namespace Instances.Infra.Shared
             return _ccDataConfiguration.ShouldTargetBeta
                 ? "cc-data.beta"
                 : "cc-data";
-        }
-
-        // Changements à reporter dans le CClithe
-        private static string GetClusterName(ParsedCluster context)
-        {
-            return context.Name switch
-            {
-                "cluster" => "c",
-                "demo" => "dm",
-                "preview" => "pw",
-                "formation" => "fm",
-                "green" => "ch",
-                "security" => "se",
-                "recette" => "re",
-                _ => throw new NotSupportedException($"Cluster name is not supported : {context.Name}")
-            };
-        }
-
-        // Changements à reporter dans le CClithe
-        private string GetClusterNumber(ParsedCluster context)
-        {
-            return context.Name switch
-            {
-                "green" => string.Empty,
-                "demo" when !context.Number.HasValue => "1",
-                _ => context.Number.HasValue ? context.Number.ToString() : string.Empty
-            };
-        }
-
-        private ParsedCluster GetParsedCluster(string cluster)
-        {
-            cluster = cluster.ToLower();
-            var match = ClusterNumberExtractor.Match(cluster);
-
-            if (match.Success)
-            {
-                return new ParsedCluster
-                {
-                    Name = match.Groups[1].Value,
-                    Number = int.Parse(match.Groups[2].Value)
-                };
-            }
-
-            return new ParsedCluster
-            {
-                Name = cluster
-            };
-        }
-
-        private class ParsedCluster
-        {
-            public string Name { get; set; }
-            public int? Number { get; set; }
         }
     }
 }

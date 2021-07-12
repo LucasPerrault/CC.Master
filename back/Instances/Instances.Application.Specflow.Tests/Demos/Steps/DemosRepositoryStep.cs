@@ -197,8 +197,9 @@ namespace Instances.Application.Specflow.Tests.Demos.Steps
             var rightsServiceMock = new Mock<IRightsService>();
             var instanceStoreMock = new Mock<IInstancesStore>();
             var ccDataServiceMock = new Mock<ICcDataService>();
+            var dnsServiceMock = new Mock<IDnsService>();
             rightsServiceMock.Setup(rs => rs.GetUserOperationHighestScopeAsync(It.IsAny<Operation>())).ReturnsAsync((Operation op) => _demosContext.TestPrincipal.OperationsWithScope[op]);
-            return new DemosRepository(_demosContext.TestPrincipal.Principal, demosStore, instanceStoreMock.Object, new DemoRightsFilter(rightsServiceMock.Object), ccDataServiceMock.Object);
+            return new DemosRepository(_demosContext.TestPrincipal.Principal, demosStore, instanceStoreMock.Object, new DemoRightsFilter(rightsServiceMock.Object), ccDataServiceMock.Object, dnsServiceMock.Object);
         }
     }
 }

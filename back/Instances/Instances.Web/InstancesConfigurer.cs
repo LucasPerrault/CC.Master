@@ -13,16 +13,19 @@ using Instances.Domain.Shared;
 using Instances.Infra.CodeSources;
 using Instances.Infra.DataDuplication;
 using Instances.Infra.Demos;
+using Instances.Infra.Dns;
 using Instances.Infra.Github;
 using Instances.Infra.Instances;
 using Instances.Infra.Instances.Services;
 using Instances.Infra.Shared;
 using Instances.Infra.Storage.Stores;
+using Instances.Infra.Windows;
 using Instances.Infra.WsAuth;
 using Lucca.Core.Api.Abstractions;
 using Lucca.Core.Api.Web;
 using Microsoft.Extensions.DependencyInjection;
 using Octokit;
+using Ovh.Api;
 using Remote.Infra.Extensions;
 using Resources.Translations;
 using System;
@@ -49,6 +52,7 @@ namespace Instances.Web
             public SqlScriptPickerConfiguration SqlScriptPicker { get; set; }
             public ClusterSelectorConfiguration DemoClusterSelection { get; set; }
             public GithubConfiguration Github { get; set; }
+            public DnsConfiguration Dns { get; set; }
         }
 
         public static void ConfigureServices(IServiceCollection services, InstancesConfiguration configuration)
@@ -58,10 +62,24 @@ namespace Instances.Web
             services.AddSingleton(configuration.Hubspot);
             services.AddSingleton(configuration.SqlScriptPicker);
             services.AddSingleton(configuration.DemoClusterSelection);
+            services.AddSingleton(configuration.Dns.Internal);
+            services.AddSingleton(configuration.Dns.Ovh);
+            services.AddSingleton(configuration.Dns.Zones);
             services.AddSingleton<DeletionCallbackNotifier>();
             services.AddSingleton<IUsersPasswordHelper, UsersPasswordHelper>();
             services.AddSingleton<IDemoDeletionCalculator, DemoDeletionCalculator>();
             services.AddSingleton<ISqlScriptPicker, SqlScriptPicker>();
+
+            services.AddSingleton<IDnsService, DnsService>();
+            services.AddSingleton<IWmiWrapper, WmiWrapper>();
+            services.AddSingleton<IInternalDnsService, WinDnsService>();
+            services.AddSingleton(
+                sp =>
+                {
+                    var client = new Client(configuration.Dns.Ovh.Endpoint, configuration.Dns.Ovh.ApplicationKey, configuration.Dns.Ovh.ApplicationSecret, configuration.Dns.Ovh.ConsumerKey);
+                    return client;
+                });
+            services.AddSingleton<IExternalDnsService, OvhDnsService>();
 
             services.AddSingleton(
                 sp =>

@@ -33,6 +33,7 @@ namespace Instances.Application.Demos.Deletion
         private readonly IDemoEmails _demoEmails;
         private readonly IDemoDeletionCalculator _deletionCalculator;
         private readonly IInstancesStore _instancesStore;
+        private readonly IDnsService _dnsService;
 
         public InactiveDemosCleaner
         (
@@ -43,7 +44,8 @@ namespace Instances.Application.Demos.Deletion
             IEmailService emailService,
             IDemoEmails demoEmails,
             IDemoDeletionCalculator deletionCalculator,
-            IInstancesStore instancesStore
+            IInstancesStore instancesStore,
+            IDnsService dnsService
         )
         {
             _timeProvider = timeProvider;
@@ -54,6 +56,7 @@ namespace Instances.Application.Demos.Deletion
             _demoEmails = demoEmails;
             _deletionCalculator = deletionCalculator;
             _instancesStore = instancesStore;
+            _dnsService = dnsService;
         }
 
         public async Task CleanAsync(DemoCleanupParams demoCleanupParams)
@@ -121,6 +124,8 @@ namespace Instances.Application.Demos.Deletion
 
             foreach (var batch in clusterBatches)
             {
+                var entries = batch.Value.Select(s => DnsEntry.ForDemo(s, batch.Key));
+                await _dnsService.DeleteAsync(entries);
                 await _ccDataService.DeleteInstancesAsync(batch.Value, batch.Key, $"/api/demos/deletion-report/{batch.Key}");
             }
 

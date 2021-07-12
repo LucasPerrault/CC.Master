@@ -22,6 +22,7 @@ namespace Instances.Application.Tests.Demos
         private readonly Mock<IInstancesStore> _instancesStoreMock;
         private readonly Mock<IRightsService> _rightsServiceMock;
         private readonly Mock<ICcDataService> _iCcDataServiceMock;
+        private readonly Mock<IDnsService> _dnsServiceMock;
 
         public DemosRepositoryTests()
         {
@@ -29,6 +30,7 @@ namespace Instances.Application.Tests.Demos
             _instancesStoreMock = new Mock<IInstancesStore>();
             _rightsServiceMock = new Mock<IRightsService>();
             _iCcDataServiceMock = new Mock<ICcDataService>();
+            _dnsServiceMock = new Mock<IDnsService>();
         }
 
         [Fact]
@@ -45,7 +47,8 @@ namespace Instances.Application.Tests.Demos
                 _demosStoreMock.Object,
                 _instancesStoreMock.Object,
                 new DemoRightsFilter(_rightsServiceMock.Object),
-                _iCcDataServiceMock.Object
+                _iCcDataServiceMock.Object,
+                _dnsServiceMock.Object
             );
 
             _rightsServiceMock
