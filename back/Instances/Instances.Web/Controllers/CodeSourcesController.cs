@@ -77,7 +77,7 @@ namespace Instances.Web.Controllers
         [ForbidIfMissing(Operation.ReadCodeSources)]
         public async Task<IActionResult> GetBuildUrlAsync([FromBody] CodeSourceBuildUrlDto input)
         {
-            if (input.BrancheName.Contains("/"))
+            if (input.BranchName.Contains("/"))
             {
                 return BadRequest("Invalid branchName number");
             }
@@ -85,7 +85,7 @@ namespace Instances.Web.Controllers
             {
                 return BadRequest("Invalid build number");
             }
-            var buildUrl = await _repository.GetBuildUrlAsync(input.CodeSourceCode, input.BrancheName, input.BuildNumber);
+            var buildUrl = await _repository.GetBuildUrlAsync(input.CodeSourceCode, input.BranchName, input.BuildNumber);
             if (string.IsNullOrEmpty(buildUrl))
             {
                 return NotFound();

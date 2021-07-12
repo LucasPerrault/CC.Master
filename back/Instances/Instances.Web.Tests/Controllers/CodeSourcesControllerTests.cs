@@ -37,7 +37,7 @@ namespace Instances.Web.Tests.Controllers
 
                 new StringContent($@"{{
                     ""CodeSourceCode"": ""Figgo"",
-                    ""BrancheName"": ""MyBranch"",
+                    ""BranchName"": ""MyBranch"",
                     ""BuildNumber"": ""1234""
                 }}
                 ", Encoding.UTF8, "application/json"));
@@ -65,7 +65,7 @@ namespace Instances.Web.Tests.Controllers
 
                 new StringContent($@"{{
                     ""CodeSourceCode"": ""Figgo"",
-                    ""BrancheName"": ""MyBranch"",
+                    ""BranchName"": ""MyBranch"",
                     ""BuildNumber"": ""1234""
                 }}
                 ", Encoding.UTF8, "application/json"));
@@ -97,7 +97,7 @@ namespace Instances.Web.Tests.Controllers
 
                 new StringContent($@"{{
                     ""CodeSourceCode"": ""Figgo"",
-                    ""BrancheName"": ""{branchName}"",
+                    ""BranchName"": ""{branchName}"",
                     ""BuildNumber"": ""{buildNumber}""
                 }}
                 ", Encoding.UTF8, "application/json"));
