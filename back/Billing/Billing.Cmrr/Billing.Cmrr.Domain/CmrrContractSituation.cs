@@ -57,6 +57,7 @@ namespace Billing.Cmrr.Domain
 
     public class ContractAxisSectionSituation
     {
+        public const int RoundingDecimal = 2;
         public Breakdown Breakdown { get; }
         public CmrrContractSituation ContractSituation { get; }
 
@@ -73,8 +74,8 @@ namespace Billing.Cmrr.Domain
             Breakdown = breakdown;
             ContractSituation = contractSituation;
 
-            StartPeriodAmount = breakdown.Ratio * contractSituation.StartPeriodCount?.EuroTotal ?? 0;
-            EndPeriodAmount = breakdown.Ratio * contractSituation.EndPeriodCount?.EuroTotal ?? 0;
+            StartPeriodAmount = decimal.Round(breakdown.Ratio * contractSituation.StartPeriodCount?.EuroTotal ?? 0, RoundingDecimal);
+            EndPeriodAmount = decimal.Round(breakdown.Ratio * contractSituation.EndPeriodCount?.EuroTotal ?? 0, RoundingDecimal);
 
             StartPeriodUserCount = contractSituation.StartPeriodCount?.AccountingNumber ?? 0;
             EndPeriodUserCount = contractSituation.EndPeriodCount?.AccountingNumber ?? 0;
