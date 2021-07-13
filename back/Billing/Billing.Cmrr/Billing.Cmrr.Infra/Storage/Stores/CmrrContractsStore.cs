@@ -27,7 +27,10 @@ namespace Billing.Cmrr.Infra.Storage.Stores
                                       .ToListAsync();
         }
 
-        private IQueryable<CmrrContract> NotArchivedContract => _dbContext.Set<CmrrContract>().Where(c => !c.IsArchived);
+        private IQueryable<CmrrContract> NotArchivedContract => _dbContext
+            .Set<CmrrContract>()
+            .Where(c => !c.IsArchived)
+            .AsNoTracking();
     }
 
     internal static class CmrrContractQueryableExtensions
