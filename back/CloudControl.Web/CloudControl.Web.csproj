@@ -11,13 +11,17 @@
     <ItemGroup>
       <PackageReference Include="Lucca.Core.Api.Web" Version="0.3.4" />
       <PackageReference Include="Lucca.Core.AspNetCore.Healthz" Version="3.2.6" />
+      <PackageReference Include="Lucca.Core.Shared.Domain" Version="2.0.13" />
       <PackageReference Include="Lucca.Logs.AspnetCore" Version="0.7.0" />
+      <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="3.1.14" />
       <PackageReference Include="Microsoft.AspNetCore.SpaServices" Version="3.1.16" />
       <PackageReference Include="Microsoft.AspNetCore.SpaServices.Extensions" Version="3.1.16" />
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\Billing\Billing.Cmrr\Billing.Cmrr.Infra\Billing.Cmrr.Infra.csproj" />
       <ProjectReference Include="..\Billing\Billing.Contracts\Billing.Contracts.Infra\Billing.Contracts.Infra.csproj" />
+      <ProjectReference Include="..\Billing\Billing.Products\Billing.Products.Infra\Billing.Products.Infra.csproj" />
       <ProjectReference Include="..\Billing\Billing.Web\Billing.Web.csproj" />
       <ProjectReference Include="..\Core\Authentication\Authentication.Web\Authentication.Web.csproj" />
       <ProjectReference Include="..\Core\Email\Email.Web\Email.Web.csproj" />

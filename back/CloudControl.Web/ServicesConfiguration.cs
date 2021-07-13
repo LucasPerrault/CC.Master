@@ -1,5 +1,7 @@
 using Authentication.Web;
+using Billing.Cmrr.Infra.Storage;
 using Billing.Contracts.Infra.Storage;
+using Billing.Products.Infra.Storage;
 using Billing.Web;
 using Cache.Web;
 using CloudControl.Web.Configuration;
@@ -154,7 +156,7 @@ namespace CloudControl.Web
             })
             .AddMvcOptions(
                 options => options.Filters.Add<HandleDomainExceptionsFilter>()
-            );
+            ).AddNewtonsoftJson();
         }
 
         public virtual void ConfigureCache(IServiceCollection services, AppConfiguration configuration)
@@ -192,6 +194,8 @@ namespace CloudControl.Web
             services.ConfigureContext<ContractsDbContext>(_hostingEnvironment);
             services.ConfigureContext<UsersDbContext>(_hostingEnvironment);
             services.ConfigureContext<InstancesDbContext>(_hostingEnvironment);
+            services.ConfigureContext<CmrrDbContext>(_hostingEnvironment);
+            services.ConfigureContext<ProductDbContext>(_hostingEnvironment);
         }
 
         public virtual void ConfigureSharedDomains(IServiceCollection services, AppConfiguration configuration)
