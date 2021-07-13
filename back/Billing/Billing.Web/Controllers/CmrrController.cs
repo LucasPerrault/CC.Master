@@ -21,16 +21,16 @@ namespace Billing.Web.Controllers
         }
 
         [HttpGet("situation"), ForbidIfMissing(Operation.ReadCMRR)]
-        public async Task<CmrrSituation> GetSituationAsync([FromQuery] CmrrSituationListQuery situationListQuery)
+        public async Task<CmrrSituation> GetSituationAsync([FromQuery]CmrrQuery query)
         {
-            var result = await _cmrrSituationsService.GetSituationAsync(situationListQuery.ToCmrrSituationFilter());
+            var result = await _cmrrSituationsService.GetSituationAsync(query.ToCmrrFilter());
             return result;
         }
 
         [HttpGet("evolution"), ForbidIfMissing(Operation.ReadCMRR)]
-        public async Task<CmrrEvolution> GetEvolutionAsync([FromQuery] CmrrEvolutionListQuery evolutionListQuery)
+        public async Task<CmrrEvolution> GetEvolutionAsync([FromQuery]CmrrQuery query)
         {
-            var result = await _cmrrEvolutionsService.GetEvolutionAsync(evolutionListQuery.ToCmrrEvolutionFilter());
+            var result = await _cmrrEvolutionsService.GetEvolutionAsync(query.ToCmrrFilter());
             return result;
         }
     }

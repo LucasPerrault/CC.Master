@@ -2,6 +2,7 @@ using Billing.Cmrr.Application.Interfaces;
 using Billing.Cmrr.Domain;
 using Billing.Cmrr.Domain.Evolution;
 using Billing.Cmrr.Domain.Interfaces;
+using Billing.Cmrr.Domain.Situation;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -17,73 +18,93 @@ namespace Billing.Cmrr.Application
         private readonly ICmrrContractsStore _contractsStore;
         private readonly ICmrrCountsStore _countsStore;
         private readonly ICmrrRightsFilter _cmrrRightsFilter;
+        private readonly IContractAxisSectionSituationsService _axisSectionSituationsService;
         private readonly ClaimsPrincipal _claimsPrincipal;
 
-        public CmrrEvolutionsService(ICmrrContractsStore contractsStore, ICmrrCountsStore countsStore, ICmrrRightsFilter cmrrRightsFilter, ClaimsPrincipal claimsPrincipal)
+        public CmrrEvolutionsService(ICmrrContractsStore contractsStore, ICmrrCountsStore countsStore, ICmrrRightsFilter cmrrRightsFilter, IContractAxisSectionSituationsService axisSectionSituationsService, ClaimsPrincipal claimsPrincipal)
         {
             _contractsStore = contractsStore;
             _countsStore = countsStore;
             _cmrrRightsFilter = cmrrRightsFilter;
+            _axisSectionSituationsService = axisSectionSituationsService;
             _claimsPrincipal = claimsPrincipal;
         }
 
 
-        public async Task<CmrrEvolution> GetEvolutionAsync(CmrrEvolutionFilter evolutionFilter)
+        public async Task<CmrrEvolution> GetEvolutionAsync(CmrrFilter filter)
         {
-            var lines = await GetLinesAsync(evolutionFilter).ToListAsync();
+            var lines = await GetLinesAsync(filter).ToListAsync();
 
             var evolution = new CmrrEvolution
             {
                 Lines = lines,
-                StartPeriod = evolutionFilter.StartPeriod,
-                EndPeriod = evolutionFilter.EndPeriod
+                StartPeriod = filter.StartPeriod,
+                EndPeriod = filter.EndPeriod
             };
 
             return evolution;
         }
 
-        private async IAsyncEnumerable<CmrrEvolutionLine> GetLinesAsync(CmrrEvolutionFilter evolutionFilter)
+        private async IAsyncEnumerable<CmrrEvolutionLine> GetLinesAsync(CmrrFilter  filter)
         {
-            CmrrDateTimeHelper.ThrowIfDatesAreNotAtFirstDayOfMonth(evolutionFilter.StartPeriod, evolutionFilter.EndPeriod);
+            CmrrDateTimeHelper.ThrowIfDatesAreNotAtFirstDayOfMonth(filter.StartPeriod, filter.EndPeriod);
 
-            var counts = await _countsStore.GetBetweenAsync(evolutionFilter.StartPeriod.AddMonths(-1), evolutionFilter.EndPeriod);
+            var counts = await _countsStore.GetBetweenAsync(filter.StartPeriod.AddMonths(-1), filter.EndPeriod);
 
-            if (evolutionFilter.BillingStrategies.Any())
+            if (filter.BillingStrategies.Any())
             {
-                counts = counts.Where(c => evolutionFilter.BillingStrategies.Contains(c.BillingStrategy)).ToList();
+                counts = counts.Where(c => filter.BillingStrategies.Contains(c.BillingStrategy)).ToList();
             }
 
             var countsByCountKey = counts.ToDictionary(c => new CountKey(c.CountPeriod, c.ContractId), c => c);
 
-            var contracts = await GetContractsAsync(evolutionFilter);
+            var contracts = await GetContractsAsync(filter);
 
-            for (var i = 0; i < CmrrDateTimeHelper.MonthDifference(evolutionFilter.EndPeriod, evolutionFilter.StartPeriod) + 1; i++)
+            for (var i = 0; i < CmrrDateTimeHelper.MonthDifference(filter.EndPeriod, filter.StartPeriod) + 1; i++)
             {
-                var currentCountPeriod = evolutionFilter.StartPeriod.AddMonths(1 * i);
+                var currentCountPeriod = filter.StartPeriod.AddMonths(1 * i);
                 var previousCountPeriod = currentCountPeriod.AddMonths(-1);
-                var evolutionLine = GetEvolutionLine(currentCountPeriod, previousCountPeriod, countsByCountKey, contracts);
+                var evolutionLine = await GetEvolutionLineAsync(currentCountPeriod, previousCountPeriod, countsByCountKey, contracts, filter.Axis, filter.Sections);
                 yield return evolutionLine;
             }
         }
 
-        private async Task<List<CmrrContract>> GetContractsAsync(CmrrEvolutionFilter evolutionFilter)
+        private async Task<List<CmrrContract>> GetContractsAsync(CmrrFilter filter)
         {
             var accessRight = await _cmrrRightsFilter.GetReadAccessAsync(_claimsPrincipal);
-            IEnumerable<CmrrContract> contracts = await _contractsStore.GetContractsNotEndedAtAsync(evolutionFilter.StartPeriod.AddMonths(-1), evolutionFilter.EndPeriod, accessRight);
+            IEnumerable<CmrrContract> contracts = await _contractsStore.GetContractsNotEndedAtAsync(filter.StartPeriod.AddMonths(-1), filter.EndPeriod, accessRight);
 
-            if (evolutionFilter.ClientId.Any())
-                contracts = contracts.Where(c => evolutionFilter.ClientId.Contains(c.ClientId));
+            if (filter.ClientId.Any())
+                contracts = contracts.Where(c => filter.ClientId.Contains(c.ClientId));
 
-            if (evolutionFilter.DistributorsId.Any())
-                contracts = contracts.Where(c => evolutionFilter.DistributorsId.Contains(c.DistributorId));
+            if (filter.DistributorsId.Any())
+                contracts = contracts.Where(c => filter.DistributorsId.Contains(c.DistributorId));
 
             return contracts.ToList();
         }
 
-        private CmrrEvolutionLine GetEvolutionLine(DateTime currentCountPeriod, DateTime previousCountPeriod, Dictionary<CountKey, CmrrCount> countsByCountKey, List<CmrrContract> contracts)
+        private async Task<CmrrEvolutionLine> GetEvolutionLineAsync(DateTime currentCountPeriod, DateTime previousCountPeriod, Dictionary<CountKey, CmrrCount> countsByCountKey, List<CmrrContract> contracts, CmrrAxis axis, HashSet<string> selectedSections)
         {
             var line = new CmrrEvolutionLine(currentCountPeriod);
+            var situations = GetEvolutionLineContractSituations(currentCountPeriod, previousCountPeriod, countsByCountKey, contracts);
 
+            var hasSections = selectedSections.Any();
+            foreach (var situation in await _axisSectionSituationsService.GetAxisSectionSituationsAsync(axis, situations))
+            {
+                if (hasSections && !selectedSections.Contains(situation.Breakdown.AxisSection.Name))
+                {
+                    continue;
+                }
+                line.Amount += situation.ContractSituation.EndPeriodCount?.EuroTotal ?? 0;
+
+                var diff = (situation.ContractSituation.EndPeriodCount?.EuroTotal ?? 0) - (situation.ContractSituation.StartPeriodCount?.EuroTotal ?? 0);
+                ApplyAmountAccordingToLifeCycle(line, situation.ContractSituation.LifeCycle, diff);
+            }
+            return line;
+        }
+
+        private IEnumerable<CmrrContractSituation> GetEvolutionLineContractSituations(DateTime currentCountPeriod, DateTime previousCountPeriod, Dictionary<CountKey, CmrrCount> countsByCountKey, List<CmrrContract> contracts)
+        {
             foreach (var contract in contracts)
             {
                 countsByCountKey.TryGetValue(new CountKey(previousCountPeriod, contract.Id), out var previousPeriodCount);
@@ -92,13 +113,8 @@ namespace Billing.Cmrr.Application
                 if (currentPeriodCount is null && previousPeriodCount is null)
                     continue;
 
-                var contractSituation = new CmrrContractSituation(contract, previousPeriodCount, currentPeriodCount);
-                line.Amount += contractSituation.EndPeriodCount?.EuroTotal ?? 0;
-
-                var diff = (contractSituation.EndPeriodCount?.EuroTotal ?? 0) - (contractSituation.StartPeriodCount?.EuroTotal ?? 0);
-                ApplyAmountAccordingToLifeCycle(line, contractSituation.LifeCycle, diff);
+                yield return new CmrrContractSituation(contract, previousPeriodCount, currentPeriodCount);
             }
-            return line;
         }
 
         private void ApplyAmountAccordingToLifeCycle(CmrrEvolutionLine line, CmrrLifeCycle lifeCycle, decimal amount)

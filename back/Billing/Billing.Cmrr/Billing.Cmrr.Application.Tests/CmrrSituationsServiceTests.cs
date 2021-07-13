@@ -36,7 +36,7 @@ namespace Billing.Cmrr.Application.Tests
         {
             var startPeriod = new DateTime(2021, 01, 02);
             var endPeriod = new DateTime(2021, 01, 01);
-            var situationFilter = new CmrrSituationFilter
+            var situationFilter = new CmrrFilter
             {
                 StartPeriod = startPeriod,
                 EndPeriod = endPeriod
@@ -61,7 +61,7 @@ namespace Billing.Cmrr.Application.Tests
         {
             var startPeriod = new DateTime(2021, 01, 01);
             var endPeriod = new DateTime(2021, 01, 02);
-            var situationFilter = new CmrrSituationFilter
+            var situationFilter = new CmrrFilter
             {
                 StartPeriod = startPeriod,
                 EndPeriod = endPeriod
@@ -86,7 +86,7 @@ namespace Billing.Cmrr.Application.Tests
             // Arrange
             var startPeriod = new DateTime(2021, 01, 01);
             var endPeriod = new DateTime(2021, 02, 01);
-            var situationFilter = new CmrrSituationFilter
+            var situationFilter = new CmrrFilter
             {
                 StartPeriod = startPeriod,
                 EndPeriod = endPeriod
@@ -198,7 +198,7 @@ namespace Billing.Cmrr.Application.Tests
             // Arrange
             var startPeriod = new DateTime(2021, 01, 01);
             var endPeriod = new DateTime(2021, 02, 01);
-            var situationFilter = new CmrrSituationFilter
+            var situationFilter = new CmrrFilter
             {
                 StartPeriod = startPeriod,
                 EndPeriod = endPeriod
@@ -254,7 +254,7 @@ namespace Billing.Cmrr.Application.Tests
             // Arrange
             var startPeriod = new DateTime(2021, 01, 01);
             var endPeriod = new DateTime(2021, 02, 01);
-            var situationFilter = new CmrrSituationFilter
+            var situationFilter = new CmrrFilter
             {
                 StartPeriod = startPeriod,
                 EndPeriod = endPeriod,
@@ -350,7 +350,7 @@ namespace Billing.Cmrr.Application.Tests
             // Arrange
             var startPeriod = new DateTime(2021, 01, 01);
             var endPeriod = new DateTime(2021, 02, 01);
-            var situationFilter = new CmrrSituationFilter
+            var situationFilter = new CmrrFilter
             {
                 StartPeriod = startPeriod,
                 EndPeriod = endPeriod,
