@@ -1,0 +1,12 @@
+check-functional-description:
+  enabled: true
+  protectedBranches:
+    - "master"
+  uncheckTypes: true
+release-drafter:
+  enabled: true
+  releasedBranches:
+    - "master"
+  slackChannel: "#cc-public"
+check-labels:
+  enabled: true
