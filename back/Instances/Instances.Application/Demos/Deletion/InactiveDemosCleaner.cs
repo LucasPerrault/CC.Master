@@ -71,7 +71,7 @@ namespace Instances.Application.Demos.Deletion
             await UpdateDemosAsync(usages);
 
             var today = _timeProvider.Today();
-            var infos = await GetCleanupInfoAsync(usages, today);
+            var infos = GetCleanupInfo(usages, today);
             await ReportCleanupIntentionsAsync(infos, demoCleanupParams.IsDryRun);
 
             if (demoCleanupParams.IsDryRun)
@@ -144,7 +144,7 @@ namespace Instances.Application.Demos.Deletion
             );
         }
 
-        private async Task<IEnumerable<DemoCleanupInfo>> GetCleanupInfoAsync
+        private IEnumerable<DemoCleanupInfo> GetCleanupInfo
         (
             IEnumerable<DemoLastUsageRetrieveAttempt> attempts,
             DateTime today
