@@ -1,4 +1,4 @@
-﻿using Cache.Abstractions;
+using Cache.Abstractions;
 using Distributors.Domain.Models;
 using Instances.Application.Instances;
 using Instances.Domain.Demos;
@@ -47,6 +47,7 @@ namespace Instances.Application.Demos.Duplication
         private readonly IDemosStore _demosStore;
         private readonly ISubdomainGenerator _subdomainGenerator;
         private readonly IClusterSelector _clusterSelector;
+        private readonly IDnsService _dnsService;
         private readonly IDemoDuplicationsStore _duplicationsStore;
         private readonly InstancesDuplicator _instancesDuplicator;
 
@@ -58,7 +59,8 @@ namespace Instances.Application.Demos.Duplication
             ISubdomainGenerator subdomainGenerator,
             IClusterSelector clusterSelector,
             IDemoDuplicationsStore duplicationsStore,
-            InstancesDuplicator instancesDuplicator
+            InstancesDuplicator instancesDuplicator,
+            IDnsService dnsService
         )
         {
             _cacheService = cacheService;
@@ -68,6 +70,7 @@ namespace Instances.Application.Demos.Duplication
             _clusterSelector = clusterSelector;
             _duplicationsStore = duplicationsStore;
             _instancesDuplicator = instancesDuplicator;
+            _dnsService = dnsService;
         }
 
         public async Task DuplicateMasterForHubspotAsync(HubspotDemoDuplication hubspotDemoDuplication)
@@ -112,6 +115,7 @@ namespace Instances.Application.Demos.Duplication
                     DefaultHubspotPassword
                 );
 
+            await _dnsService.CreateAsync(DnsEntry.ForDemo(targetSubdomain, targetCluster));
             await _duplicationsStore.CreateAsync(duplication);
             await _instancesDuplicator.RequestRemoteDuplicationAsync(duplication.InstanceDuplication, $"/api/hubspot/duplications/{duplication.InstanceDuplicationId}/notify");
 
