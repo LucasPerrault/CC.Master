@@ -1,6 +1,8 @@
 using Instances.Domain.Instances;
 using Microsoft.EntityFrameworkCore;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Tools;
 
@@ -28,6 +30,13 @@ namespace Instances.Infra.Storage.Stores
             duplication.Progress = progress;
             duplication.EndedAt = _timeProvider.Now();
             await _dbContext.SaveChangesAsync();
+        }
+
+        public async Task<IReadOnlyCollection<InstanceDuplication>> GetPendingForSubdomainAsync(string subdomain)
+        {
+            return await _dbContext.Set<InstanceDuplication>()
+                .Where(d => d.TargetSubdomain == subdomain && !d.EndedAt.HasValue)
+                .ToListAsync();
         }
     }
 }

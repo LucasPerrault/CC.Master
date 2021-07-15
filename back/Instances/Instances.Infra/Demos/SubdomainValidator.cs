@@ -3,6 +3,7 @@ using Instances.Domain.Demos;
 using Instances.Domain.Demos.Filtering;
 using Instances.Domain.Instances;
 using Lucca.Core.Shared.Domain.Exceptions;
+using Microsoft.EntityFrameworkCore;
 using Rights.Domain.Filtering;
 using System;
 using System.Collections.Generic;
@@ -35,11 +36,13 @@ namespace Instances.Infra.Demos
 
         private readonly IDemosStore _demosStore;
         private readonly IEnvironmentsStore _environmentsStore;
+        private readonly IInstanceDuplicationsStore _duplicationsStore;
 
-        public SubdomainValidator(IDemosStore demosStore, IEnvironmentsStore environmentsStore)
+        public SubdomainValidator(IDemosStore demosStore, IEnvironmentsStore environmentsStore, IInstanceDuplicationsStore duplicationsStore)
         {
             _demosStore = demosStore;
             _environmentsStore = environmentsStore;
+            _duplicationsStore = duplicationsStore;
         }
 
         public Task ThrowIfInvalidAsync(string subdomain)
@@ -86,7 +89,11 @@ namespace Instances.Infra.Demos
                 Subdomain = CompareString.Equals(subdomain),
             }, AccessRight.All);
 
-            return !(await envsTask).Any() && !(await demosTask).Any();
+            var duplicationsTask = _duplicationsStore.GetPendingForSubdomainAsync(subdomain);
+
+            return !(await envsTask).Any()
+                && !(await demosTask).Any()
+                && !(await duplicationsTask).Any();
         }
 
         private async Task<HashSet<string>> GetUsedSubdomainsByPrefixAsync(string prefix)
