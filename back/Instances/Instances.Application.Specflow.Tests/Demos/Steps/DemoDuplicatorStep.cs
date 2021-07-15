@@ -121,6 +121,11 @@ namespace Instances.Application.Specflow.Tests.Demos.Steps
         {
             var demosStore = new DemosStore(_demosContext.DbContext, new DummyQueryPager());
             var demoDuplicationsStore = new DemoDuplicationsStore(_demosContext.DbContext);
+            var instanceDuplicationsStore = new InstanceDuplicationsStore
+            (
+                _demosContext.DbContext,
+                new Mock<ITimeProvider>().Object
+            );
             var envStoreMock = new Mock<IEnvironmentsStore>();
             envStoreMock
                 .Setup(s => s.GetAsync(It.IsAny<List<EnvironmentAccessRight>>(), It.IsAny<EnvironmentFilter>()))
@@ -160,7 +165,7 @@ namespace Instances.Application.Specflow.Tests.Demos.Steps
                     demoDuplicationsStore,
                     rightsServiceMock.Object,
                     distributorsStoreMock.Object,
-                    new SubdomainGenerator(new SubdomainValidator(demosStore, envStoreMock.Object)),
+                    new SubdomainGenerator(new SubdomainValidator(demosStore, envStoreMock.Object, instanceDuplicationsStore)),
                     clusterSelectorMock.Object,
                     new UsersPasswordHelper(),
                     dnsMock.Object
@@ -272,6 +277,27 @@ namespace Instances.Application.Specflow.Tests.Demos.Steps
         public void ThenDuplicationShouldNotResultInInstanceDeletion(Guid duplicationId)
         {
             Assert.Empty(_demosContext.Results.DeleteInstances);
+        }
+
+        [Then(@"(no|one) duplication should be found as pending (.*)")]
+        public async Task ThenThereShouldBeAPendingDuplicationForSubdomain(string duplicationCountKeyword, SubdomainSelection selection)
+        {
+            var instanceDuplicationsStore = new InstanceDuplicationsStore
+            (
+                _demosContext.DbContext,
+                new Mock<ITimeProvider>().Object
+            );
+            var pendingSubdomainDuplications = await instanceDuplicationsStore.GetPendingForSubdomainAsync(selection.Subdomain);
+
+            switch (duplicationCountKeyword)
+            {
+                case "no":
+                    pendingSubdomainDuplications.Should().BeEmpty();
+                    break;
+                case "one":
+                    pendingSubdomainDuplications.Should().HaveCount(1);
+                    break;
+            }
         }
 
         private class DemoCompleterSetup

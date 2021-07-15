@@ -7,6 +7,7 @@ Scenario: Create a demo from virgin as a user with scope "AllDepartments"
         And demo duplication should exist for distributor 'LUCCA'
         And instance duplication should exist for subdomain 'aperture-science'
         And dns propagation should start for subdomain 'aperture-science'
+        And one duplication should be found as pending for subdomain 'aperture-science'
 
 Scenario: Create a demo from virgin as a user with scope "DepartmentOnly"
     Given a user with department code 'DISTRIBUTOR' and operation 'Demo' and scope 'OwnDistributorOnly'
@@ -15,6 +16,7 @@ Scenario: Create a demo from virgin as a user with scope "DepartmentOnly"
         And demo duplication should exist for distributor 'DISTRIBUTOR'
         And instance duplication should exist for subdomain 'aperture-science'
         And dns propagation should start for subdomain 'aperture-science'
+        And one duplication should be found as pending for subdomain 'aperture-science'
 
 Scenario: Create a demo for forbidden distributor as a user with scope "DepartmentOnly"
     Given a user with department code 'DISTRIBUTOR' and operation 'Demo' and scope 'OwnDistributorOnly'
@@ -28,6 +30,7 @@ Scenario: Create a demo from other distributor as a user with scope "AllDepartme
         And demo duplication should exist for distributor 'DISTRIBUTOR'
         And instance duplication should exist for subdomain 'aperture-science'
         And dns propagation should start for subdomain 'aperture-science'
+        And one duplication should be found as pending for subdomain 'aperture-science'
 
 Scenario: Create a demo from own distributor as a user with scope "DepartmentOnly"
     Given a user with department code 'DISTRIBUTOR' and operation 'Demo' and scope 'OwnDistributorOnly'
@@ -36,6 +39,7 @@ Scenario: Create a demo from own distributor as a user with scope "DepartmentOnl
         And demo duplication should exist for distributor 'DISTRIBUTOR'
         And instance duplication should exist for subdomain 'aperture-science'
         And dns propagation should start for subdomain 'aperture-science'
+        And one duplication should be found as pending for subdomain 'aperture-science'
 
 Scenario: Create a demo virgin as a non-lucca user with scope "DepartmentOnly"
     Given a user with department code 'DISTRIBUTOR' and operation 'Demo' and scope 'OwnDistributorOnly'
@@ -44,6 +48,7 @@ Scenario: Create a demo virgin as a non-lucca user with scope "DepartmentOnly"
         And demo duplication should exist for distributor 'DISTRIBUTOR'
         And instance duplication should exist for subdomain 'aperture-science'
         And dns propagation should start for subdomain 'aperture-science'
+        And one duplication should be found as pending for subdomain 'aperture-science'
 
 Scenario: Create a demo from forbidden distributor as a user with scope "DepartmentOnly"
     Given a user with department code 'DISTRIBUTOR' and operation 'Demo' and scope 'OwnDistributorOnly'
