@@ -92,7 +92,7 @@ namespace Instances.Application.Demos.Duplication
             {
                 _logger.LogError(e, "Could not create demo, following instance duplication");
                 await _instancesStore.DeleteForDemoAsync(instance);
-                await _dnsService.DeleteAsync(DnsEntry.ForDemo(demo.Subdomain, demo.Instance.Cluster));
+                await _dnsService.DeleteAsync(DnsEntry.ForDemo(demo.Subdomain, instance.Cluster));
                 await _demosStore.DeleteAsync(demo);
                 throw;
             }
