@@ -1,4 +1,4 @@
-﻿using Cache.Abstractions;
+using Cache.Abstractions;
 using Instances.Application.Demos.Duplication;
 using Instances.Application.Instances;
 using Instances.Domain.Demos;
@@ -25,6 +25,7 @@ namespace Instances.Application.Tests.Demos
 
         private readonly Mock<ISqlScriptPicker> _sqlScriptPickerMock = new Mock<ISqlScriptPicker>();
         private readonly Mock<ICcDataService> _ccDataServiceMock = new Mock<ICcDataService>();
+        private readonly Mock<IDnsService> _dnsServiceMock = new Mock<IDnsService>();
 
         [Fact]
         public async Task ShouldUpdateSubdomainOnHubspot()
@@ -94,6 +95,26 @@ namespace Instances.Application.Tests.Demos
                 ));
         }
 
+
+        [Fact]
+        public async Task ShouldAddDns()
+        {
+            _dnsServiceMock.Setup(d => d.CreateAsync(It.IsAny<DnsEntry>())).Returns(Task.CompletedTask);
+            var duplicator = GetDuplicator();
+
+            await duplicator.DuplicateMasterForHubspotAsync
+                (
+                    new HubspotDemoDuplication
+                    {
+                        VId = 1,
+                        FailureWorkflowId = 666,
+                        SuccessWorkflowId = 777
+                    }
+                );
+
+            _dnsServiceMock.Verify(d => d.CreateAsync(It.IsAny<DnsEntry>()));
+        }
+
         private static DurationCacheInvalidation ItExpiresAfter(TimeSpan timeSpan)
         {
             return It.Is<DurationCacheInvalidation>(i => i.Duration == timeSpan);
@@ -145,7 +166,8 @@ namespace Instances.Application.Tests.Demos
                         (
                             _sqlScriptPickerMock.Object,
                             _ccDataServiceMock.Object
-                        )
+                        ),
+                    _dnsServiceMock.Object
                 );
             return duplicator;
         }
