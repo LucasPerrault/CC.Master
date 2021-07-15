@@ -13,7 +13,6 @@ namespace Billing.Cmrr.Infra.Storage.Configurations
 
             builder.Property(d => d.ProductId).HasColumnName("ProductId");
 
-            builder.Property(d => d.CreationDate).HasColumnName("CreationDate");
             builder.Property(d => d.StartDate).HasColumnName("StartDate");
             builder.Property(d => d.EndDate).HasColumnName("EndDate");
 
@@ -25,7 +24,6 @@ namespace Billing.Cmrr.Infra.Storage.Configurations
 
             builder.Property(d => d.DistributorId).HasColumnName("DistributorId");
 
-            builder.Property(d => d.EnvironmentId).HasColumnName("EnvironmentId");
             builder.Property(d => d.EnvironmentCreatedAt).HasColumnName("EnvironmentCreatedAt");
 
             builder.Property(d => d.IsArchived).HasColumnName("IsArchived");

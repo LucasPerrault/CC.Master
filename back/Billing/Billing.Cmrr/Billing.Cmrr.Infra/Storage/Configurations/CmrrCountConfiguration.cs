@@ -13,18 +13,8 @@ namespace Billing.Cmrr.Infra.Storage.Configurations
             builder.Property(d => d.ContractId).HasColumnName("ContractId");
             builder.Property(d => d.CountPeriod).HasColumnName("CountPeriod");
             builder.Property(d => d.BillingStrategy).HasColumnName("BillingStrategy");
-
             builder.Property(d => d.AccountingNumber).HasColumnName("AccountingNumber");
-            builder.Property(d => d.EntryNumber).HasColumnName("EntryNumber");
-            builder.Property(d => d.Code).HasColumnName("Code");
-
-            builder.Property(d => d.CurrencyId).HasColumnName("CurrencyId");
-            builder.Property(d => d.CurrencyTotal).HasColumnName("CurrencyAmount");
-            builder.Property(d => d.EuroTotal).HasColumnName("EuroAmount");
-            builder.Property(d => d.LuccaDiscount).HasColumnName("LuccaDiscount");
-            builder.Property(d => d.DistributorDiscount).HasColumnName("DistributorDiscount");
-
-            builder.Property(d => d.CreatedAt).HasColumnName("CreatedAt");
+            builder.Property(d => d.EuroTotal).HasColumnName("EuroTotal");
         }
     }
 }

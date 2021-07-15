@@ -21,6 +21,7 @@ namespace Billing.Cmrr.Infra.Storage.Stores
         {
             return _dbContext.Set<CmrrCount>()
                 .Where(c => c.CountPeriod >= start && c.CountPeriod <= end)
+                .AsNoTracking()
                 .ToListAsync();
         }
 
@@ -28,6 +29,7 @@ namespace Billing.Cmrr.Infra.Storage.Stores
         {
             return _dbContext.Set<CmrrCount>()
                 .Where(c => period.Contains(c.CountPeriod))
+                .AsNoTracking()
                 .ToListAsync();
         }
     }
