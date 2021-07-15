@@ -1,0 +1,173 @@
+#####
+# Doc de référence
+#####
+
+@urlCC = https://cc.ilucca-beta.net
+# A remplacer avec un token session
+@luccaUserToken =  00000000-0000-0000-0000-000000000000
+# A remplacer avec un token session
+@apogeaUserToken = 00000000-0000-0000-0000-000000000000
+########################
+### Tests sans token ###
+########################
+### A01
+GET {{urlCC}}/api/products
+User-Agent: lucca/secu
+### A02
+GET {{urlCC}}/api/solutions
+User-Agent: lucca/secu
+### A03
+GET {{urlCC}}/api/business-units
+User-Agent: lucca/secu
+### A04
+GET {{urlCC}}/api/cmrr/situation?startPeriod=2021-05&endPeriod=2021-06&axis=Product
+User-Agent: lucca/secu
+### A05
+GET {{urlCC}}/api/cmrr/evolution?startPeriod=2021-05&endPeriod=2021-06
+User-Agent: lucca/secu
+
+##########################################
+### Tests avec token utilisateur lucca ###
+##########################################
+
+### B01
+GET {{urlCC}}/api/products
+Authorization: Cloudcontrol user={{luccaUserToken}}
+User-Agent: lucca/secu
+### B02
+GET {{urlCC}}/api/solutions
+Authorization: Cloudcontrol user={{luccaUserToken}}
+User-Agent: lucca/secu
+### B03
+GET {{urlCC}}/api/business-units
+Authorization: Cloudcontrol user={{luccaUserToken}}
+User-Agent: lucca/secu
+### B04
+GET {{urlCC}}/api/cmrr/situation?startPeriod=2021-05&endPeriod=2021-06&axis=Product
+Authorization: Cloudcontrol user={{luccaUserToken}}
+User-Agent: lucca/secu
+### B05
+GET {{urlCC}}/api/cmrr/evolution?startPeriod=2021-05&endPeriod=2021-06
+Authorization: Cloudcontrol user={{luccaUserToken}}
+User-Agent: lucca/secu
+### B06, filtré par distributeur apogéa
+GET {{urlCC}}/api/cmrr/situation?startPeriod=2021-05&endPeriod=2021-06&axis=Product&distributorid=68
+Authorization: Cloudcontrol user={{luccaUserToken}}
+User-Agent: lucca/secu
+### B07, filtré par distributeur absys cyborg
+GET {{urlCC}}/api/cmrr/situation?startPeriod=2021-05&endPeriod=2021-06&axis=Product&distributorid=2
+Authorization: Cloudcontrol user={{luccaUserToken}}
+User-Agent: lucca/secu
+### B08, filtré par distributeur apogéa et absys cyborg
+GET {{urlCC}}/api/cmrr/situation?startPeriod=2021-05&endPeriod=2021-06&axis=Product&distributorid=68,2
+Authorization: Cloudcontrol user={{luccaUserToken}}
+User-Agent: lucca/secu
+### B09, filtré par client scaleway (appartient à Absys Cyborg)
+GET {{urlCC}}/api/cmrr/situation?startPeriod=2021-05&endPeriod=2021-06&axis=Product&clientId=1020
+Authorization: Cloudcontrol user={{luccaUserToken}}
+User-Agent: lucca/secu
+### B10, filtré par client deezer (appartient à Lucca)
+GET {{urlCC}}/api/cmrr/situation?startPeriod=2021-05&endPeriod=2021-06&axis=Product&clientId=3692
+Authorization: Cloudcontrol user={{luccaUserToken}}
+User-Agent: lucca/secu
+### B11, filtré par distributeur apogéa
+GET {{urlCC}}/api/cmrr/evolution?startPeriod=2021-05&endPeriod=2021-06&distributorid=68
+Authorization: Cloudcontrol user={{luccaUserToken}}
+User-Agent: lucca/secu
+### B12, filtré par distributeur absys cyborg
+GET {{urlCC}}/api/cmrr/evolution?startPeriod=2021-05&endPeriod=2021-06&distributorid=2
+Authorization: Cloudcontrol user={{luccaUserToken}}
+User-Agent: lucca/secu
+### B13, filtré par distributeur apogéa et absys cyborg
+GET {{urlCC}}/api/cmrr/evolution?startPeriod=2021-05&endPeriod=2021-06&distributorid=68,2
+Authorization: Cloudcontrol user={{luccaUserToken}}
+User-Agent: lucca/secu
+### B14, filtré par client scaleway (appartient à Absys Cyborg)
+GET {{urlCC}}/api/cmrr/evolution?startPeriod=2021-05&endPeriod=2021-06&clientId=1020
+Authorization: Cloudcontrol user={{luccaUserToken}}
+User-Agent: lucca/secu
+### B15, filtré par client deezer (appartient à Lucca)
+GET {{urlCC}}/api/cmrr/evolution?startPeriod=2021-05&endPeriod=2021-06&axis=Product&clientId=3692
+Authorization: Cloudcontrol user={{luccaUserToken}}
+User-Agent: lucca/secu
+
+
+############################################
+### Tests avec token utilisateur aapogea ###
+############################################
+### C01
+GET {{urlCC}}/api/products
+Authorization: Cloudcontrol user={{apogeaUserToken}}
+User-Agent: lucca/secu
+### C02
+GET {{urlCC}}/api/solutions
+Authorization: Cloudcontrol user={{apogeaUserToken}}
+User-Agent: lucca/secu
+### C03
+GET {{urlCC}}/api/business-units
+Authorization: Cloudcontrol user={{apogeaUserToken}}
+User-Agent: lucca/secu
+### C04
+GET {{urlCC}}/api/cmrr/situation?startPeriod=2021-05&endPeriod=2021-06&axis=Product
+Authorization: Cloudcontrol user={{apogeaUserToken}}
+User-Agent: lucca/secu
+### C05
+GET {{urlCC}}/api/cmrr/evolution?startPeriod=2021-05&endPeriod=2021-06
+Authorization: Cloudcontrol user={{apogeaUserToken}}
+User-Agent: lucca/secu
+### C06, filtré par distributeur apogéa
+GET {{urlCC}}/api/cmrr/situation?startPeriod=2021-05&endPeriod=2021-06&axis=Product&distributorid=68
+Authorization: Cloudcontrol user={{apogeaUserToken}}
+User-Agent: lucca/secu
+### C07, filtré par distributeur absys cyborg
+GET {{urlCC}}/api/cmrr/situation?startPeriod=2021-05&endPeriod=2021-06&axis=Product&distributorid=2
+Authorization: Cloudcontrol user={{apogeaUserToken}}
+User-Agent: lucca/secu
+### C08, filtré par distributeur apogéa et absys cyborg
+GET {{urlCC}}/api/cmrr/situation?startPeriod=2021-05&endPeriod=2021-06&axis=Product&distributorid=68,2
+Authorization: Cloudcontrol user={{apogeaUserToken}}
+User-Agent: lucca/secu
+### C09, filtré par client scaleway (appartient à Absys Cyborg)
+GET {{urlCC}}/api/cmrr/situation?startPeriod=2021-05&endPeriod=2021-06&axis=Product&clientId=1020
+Authorization: Cloudcontrol user={{apogeaUserToken}}
+User-Agent: lucca/secu
+### C10, filtré par client scaleway (appartient à Absys Cyborg) en forçant distributeur apogea
+GET {{urlCC}}/api/cmrr/situation?startPeriod=2021-05&endPeriod=2021-06&axis=Product&clientId=1020&distributorid=2
+Authorization: Cloudcontrol user={{apogeaUserToken}}
+User-Agent: lucca/secu
+### C11, filtré par client deezer (appartient à Lucca)
+GET {{urlCC}}/api/cmrr/situation?startPeriod=2021-05&endPeriod=2021-06&axis=Product&clientId=3692
+Authorization: Cloudcontrol user={{apogeaUserToken}}
+User-Agent: lucca/secu
+### C12, filtré par client deezer (appartient à Lucca) en forçant distributeur Lucca
+GET {{urlCC}}/api/cmrr/situation?startPeriod=2021-05&endPeriod=2021-06&axis=Product&clientId=3692&distributorId=37
+Authorization: Cloudcontrol user={{apogeaUserToken}}
+User-Agent: lucca/secu
+### C13, filtré par distributeur apogéa
+GET {{urlCC}}/api/cmrr/evolution?startPeriod=2021-05&endPeriod=2021-06&distributorid=68
+Authorization: Cloudcontrol user={{apogeaUserToken}}
+User-Agent: lucca/secu
+### C14, filtré par distributeur absys cyborg
+GET {{urlCC}}/api/cmrr/evolution?startPeriod=2021-05&endPeriod=2021-06&distributorid=2
+Authorization: Cloudcontrol user={{apogeaUserToken}}
+User-Agent: lucca/secu
+### C15, filtré par distributeur apogéa et absys cyborg
+GET {{urlCC}}/api/cmrr/evolution?startPeriod=2021-05&endPeriod=2021-06&distributorid=68,2
+Authorization: Cloudcontrol user={{apogeaUserToken}}
+User-Agent: lucca/secu
+### C16, filtré par client scaleway (appartient à Absys Cyborg)
+GET {{urlCC}}/api/cmrr/evolution?startPeriod=2021-05&endPeriod=2021-06&clientId=1020
+Authorization: Cloudcontrol user={{apogeaUserToken}}
+User-Agent: lucca/secu
+### C17, filtré par client scaleway (appartient à Absys Cyborg) en forçant distributeur apogea
+GET {{urlCC}}/api/cmrr/evolution?startPeriod=2021-05&endPeriod=2021-06&clientId=1020&distributorid=2
+Authorization: Cloudcontrol user={{apogeaUserToken}}
+User-Agent: lucca/secu
+### C18, filtré par client deezer (appartient à Lucca)
+GET {{urlCC}}/api/cmrr/evolution?startPeriod=2021-05&endPeriod=2021-06&clientId=3692
+Authorization: Cloudcontrol user={{apogeaUserToken}}
+User-Agent: lucca/secu
+### C19, filtré par client deezer (appartient à Lucca) en forçant distributeur Lucca
+GET {{urlCC}}/api/cmrr/evolution?startPeriod=2021-05&endPeriod=2021-06&clientId=3692&distributorId=37
+Authorization: Cloudcontrol user={{apogeaUserToken}}
+User-Agent: lucca/secu
