@@ -27,6 +27,7 @@
       <ProjectReference Include="..\Core\Email\Email.Web\Email.Web.csproj" />
       <ProjectReference Include="..\Core\Cache\Cache.Web\Cache.Web.csproj" />
       <ProjectReference Include="..\Core\IpFilter\IpFilter.Web\IpFilter.Web.csproj" />
+      <ProjectReference Include="..\Core\Lock\Lock.Web\Lock.Web.csproj" />
       <ProjectReference Include="..\Core\Proxy\Proxy.Web\Proxy.Web.csproj" />
       <ProjectReference Include="..\Core\Rights\Rights.Web\Rights.Web.csproj" />
       <ProjectReference Include="..\Core\Salesforce\Salesforce.Infra\Salesforce.Infra.csproj" />
