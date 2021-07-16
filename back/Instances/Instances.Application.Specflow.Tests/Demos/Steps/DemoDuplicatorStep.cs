@@ -168,6 +168,8 @@ namespace Instances.Application.Specflow.Tests.Demos.Steps
                     return Task.CompletedTask;
                 });
 
+            var translationsMock = new Mock<Resources.Translations.Translations>();
+
             return new DemoDuplicator
                 (
                     _demosContext.TestPrincipal.Principal,
@@ -183,7 +185,7 @@ namespace Instances.Application.Specflow.Tests.Demos.Steps
                     demoDuplicationsStore,
                     rightsServiceMock.Object,
                     distributorsStoreMock.Object,
-                    new SubdomainGenerator(new SubdomainValidator(demosStore, envStoreMock.Object, instanceDuplicationsStore)),
+                    new SubdomainGenerator(new SubdomainValidator(demosStore, envStoreMock.Object, instanceDuplicationsStore, translationsMock.Object)),
                     clusterSelectorMock.Object,
                     new UsersPasswordHelper(),
                     dnsMock.Object

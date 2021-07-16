@@ -4,6 +4,7 @@ using Instances.Domain.Demos.Filtering;
 using Instances.Domain.Instances;
 using Lucca.Core.Shared.Domain.Exceptions;
 using Microsoft.EntityFrameworkCore;
+using Resources.Translations;
 using Rights.Domain.Filtering;
 using System;
 using System.Collections.Generic;
@@ -37,43 +38,54 @@ namespace Instances.Infra.Demos
         private readonly IDemosStore _demosStore;
         private readonly IEnvironmentsStore _environmentsStore;
         private readonly IInstanceDuplicationsStore _duplicationsStore;
+        private readonly Translations _translations;
 
-        public SubdomainValidator(IDemosStore demosStore, IEnvironmentsStore environmentsStore, IInstanceDuplicationsStore duplicationsStore)
+        public SubdomainValidator(IDemosStore demosStore, IEnvironmentsStore environmentsStore, IInstanceDuplicationsStore duplicationsStore, Translations translations)
         {
             _demosStore = demosStore;
             _environmentsStore = environmentsStore;
             _duplicationsStore = duplicationsStore;
+            _translations = translations;
         }
 
         public Task ThrowIfInvalidAsync(string subdomain)
         {
             if (SubdomainValidation.ReservedSubdomains.Contains(subdomain))
             {
-                throw new BadRequestException($"Subdomain {subdomain} is restricted");
+                throw new BadRequestException(_translations.SubdomainReservedWord(subdomain));
             }
             if (SubdomainValidation.ReservedSubdomainPrefixes.Any(subdomain.StartsWith))
             {
-                throw new BadRequestException($"Subdomain {subdomain} starts with restricted prefix");
+                throw new BadRequestException(_translations.SubdomainStartsWithReservedWord(subdomain));
             }
             if (subdomain.Length < SubdomainMinLength)
             {
-                throw new BadRequestException($"Subdomain {subdomain} is too short (min {SubdomainMinLength} characters)");
+                throw new BadRequestException(_translations.SubdomainTooShort(subdomain, SubdomainMinLength));
             }
             if (subdomain.Length > SubdomainMaxLength)
             {
-                throw new BadRequestException($"Subdomain {subdomain} is too long (max {SubdomainMaxLength} characters)");
+                throw new BadRequestException(_translations.SubdomainTooLong(subdomain, SubdomainMaxLength));
             }
             if (!Regex.IsMatch(subdomain, SubdomainRegex))
             {
-                throw new BadRequestException($"Subdomain {subdomain} does not match requested format (lower-case alphanumeric chars and dashes)");
+                throw new BadRequestException(_translations.SubdomainInvalid(subdomain));
             }
 
             return Task.CompletedTask;
         }
 
+        public async Task ThrowIfUnavailableAsync(string subdomain)
+        {
+            var available = await IsAvailableAsync(subdomain);
+            if (!available)
+            {
+                throw new BadRequestException(_translations.SubdomainUnavailable(subdomain));
+            }
+        }
+
         public async Task<bool> IsAvailableAsync(string subdomain)
         {
-            var envsTask = _environmentsStore.GetAsync
+            var envs = await _environmentsStore.GetAsync
             (
                 EnvironmentAccessRight.Everything,
                 new EnvironmentFilter
@@ -83,17 +95,17 @@ namespace Instances.Infra.Demos
                 }
             );
 
-            var demosTask = _demosStore.GetAsync(new DemoFilter
+            var demos = await _demosStore.GetAsync(new DemoFilter
             {
                 IsActive = CompareBoolean.TrueOnly,
                 Subdomain = CompareString.Equals(subdomain),
             }, AccessRight.All);
 
-            var duplicationsTask = _duplicationsStore.GetPendingForSubdomainAsync(subdomain);
+            var duplications = await _duplicationsStore.GetPendingForSubdomainAsync(subdomain);
 
-            return !(await envsTask).Any()
-                && !(await demosTask).Any()
-                && !(await duplicationsTask).Any();
+            return !envs.Any()
+                && !demos.Any()
+                && !duplications.Any();
         }
 
         private async Task<HashSet<string>> GetUsedSubdomainsByPrefixAsync(string prefix)

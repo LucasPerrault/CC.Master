@@ -21,7 +21,7 @@ namespace Instances.Infra.Storage.Stores
 
         public Task<InstanceDuplication> GetAsync(Guid id)
         {
-            return _dbContext.Set<InstanceDuplication>()
+            return Duplications
                 .FirstOrDefaultAsync(d => d.Id == id);
         }
 
@@ -34,9 +34,11 @@ namespace Instances.Infra.Storage.Stores
 
         public async Task<IReadOnlyCollection<InstanceDuplication>> GetPendingForSubdomainAsync(string subdomain)
         {
-            return await _dbContext.Set<InstanceDuplication>()
+            return await Duplications
                 .Where(d => d.TargetSubdomain == subdomain && !d.EndedAt.HasValue)
                 .ToListAsync();
         }
+
+        private IQueryable<InstanceDuplication> Duplications => _dbContext.Set<InstanceDuplication>();
     }
 }

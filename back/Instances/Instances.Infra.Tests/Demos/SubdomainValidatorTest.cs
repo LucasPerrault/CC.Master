@@ -6,6 +6,7 @@ using Instances.Domain.Instances;
 using Instances.Infra.Demos;
 using Lucca.Core.Shared.Domain.Exceptions;
 using Moq;
+using Resources.Translations;
 using Rights.Domain.Filtering;
 using System;
 using System.Collections.Generic;
@@ -21,14 +22,15 @@ namespace Instances.Infra.Tests.Demos
         private readonly Mock<IDemosStore> _demosStoreMock;
         private readonly Mock<IEnvironmentsStore> _envStoreMock;
         private readonly Mock<IInstanceDuplicationsStore> _duplicationsStoreMock;
+        private readonly Mock<Translations> _translationsMock;
 
         public SubdomainValidatorTest()
         {
             _demosStoreMock = new Mock<IDemosStore>();
             _envStoreMock = new Mock<IEnvironmentsStore>();
             _duplicationsStoreMock = new Mock<IInstanceDuplicationsStore>();
+            _translationsMock = new Mock<Translations>();
         }
-
 
         [Theory]
         [InlineData("aperture-science")]
@@ -46,7 +48,7 @@ namespace Instances.Infra.Tests.Demos
                 .Setup(s => s.GetPendingForSubdomainAsync(It.Is<string>(d => d == takenSubdomain)))
                 .ReturnsAsync(new List<InstanceDuplication>());
 
-            var subdomainValidator = new SubdomainValidator(_demosStoreMock.Object, _envStoreMock.Object, _duplicationsStoreMock.Object);
+            var subdomainValidator = new SubdomainValidator(_demosStoreMock.Object, _envStoreMock.Object, _duplicationsStoreMock.Object, _translationsMock.Object);
 
             Assert.True(await subdomainValidator.IsAvailableAsync(takenSubdomain));
         }
@@ -69,7 +71,7 @@ namespace Instances.Infra.Tests.Demos
                 .Setup(s => s.GetPendingForSubdomainAsync(It.Is<string>(d => d == takenSubdomain)))
                 .ReturnsAsync(new List<InstanceDuplication>());
 
-            var subdomainValidator = new SubdomainValidator(_demosStoreMock.Object, _envStoreMock.Object, _duplicationsStoreMock.Object);
+            var subdomainValidator = new SubdomainValidator(_demosStoreMock.Object, _envStoreMock.Object, _duplicationsStoreMock.Object, _translationsMock.Object);
 
             Assert.False(await subdomainValidator.IsAvailableAsync("aperture-science"));
         }
@@ -97,7 +99,7 @@ namespace Instances.Infra.Tests.Demos
                 .Setup(s => s.GetPendingForSubdomainAsync(It.Is<string>(d => d == takenSubdomain)))
                 .ReturnsAsync(new List<InstanceDuplication>());
 
-            var subdomainValidator = new SubdomainValidator(_demosStoreMock.Object, _envStoreMock.Object, _duplicationsStoreMock.Object);
+            var subdomainValidator = new SubdomainValidator(_demosStoreMock.Object, _envStoreMock.Object, _duplicationsStoreMock.Object, _translationsMock.Object);
 
             Assert.False(await subdomainValidator.IsAvailableAsync("aperture-science"));
         }
@@ -125,7 +127,7 @@ namespace Instances.Infra.Tests.Demos
                 .Setup(s => s.GetPendingForSubdomainAsync(It.Is<string>(d => d == takenSubdomain)))
                 .ReturnsAsync(duplications);
 
-            var subdomainValidator = new SubdomainValidator(_demosStoreMock.Object, _envStoreMock.Object, _duplicationsStoreMock.Object);
+            var subdomainValidator = new SubdomainValidator(_demosStoreMock.Object, _envStoreMock.Object, _duplicationsStoreMock.Object, _translationsMock.Object);
 
             Assert.False(await subdomainValidator.IsAvailableAsync(takenSubdomain));
         }
@@ -135,7 +137,7 @@ namespace Instances.Infra.Tests.Demos
         [InlineData("not-longer-than-63-this-was-a-triumph-im-making-a-note-here-hug")]
         public async Task IsAvailableAsync_ShouldNotThrow_WhenSubdomainIsNotValid(string validSubdomain)
         {
-            var subdomainValidator = new SubdomainValidator(_demosStoreMock.Object, _envStoreMock.Object, _duplicationsStoreMock.Object);
+            var subdomainValidator = new SubdomainValidator(_demosStoreMock.Object, _envStoreMock.Object, _duplicationsStoreMock.Object, _translationsMock.Object);
 
             await subdomainValidator.ThrowIfInvalidAsync(validSubdomain);
         }
@@ -154,7 +156,7 @@ namespace Instances.Infra.Tests.Demos
         [InlineData("iis-aperture")]
         public async Task IsAvailableAsync_ShouldThrow_WhenSubdomainIsNotValid(string invalidSubdomain)
         {
-            var subdomainValidator = new SubdomainValidator(_demosStoreMock.Object, _envStoreMock.Object, _duplicationsStoreMock.Object);
+            var subdomainValidator = new SubdomainValidator(_demosStoreMock.Object, _envStoreMock.Object, _duplicationsStoreMock.Object, _translationsMock.Object);
 
             await Assert.ThrowsAsync<BadRequestException>(async () => await subdomainValidator.ThrowIfInvalidAsync(invalidSubdomain));
         }
@@ -191,7 +193,7 @@ namespace Instances.Infra.Tests.Demos
                 .ReturnsAsync(new List<Environment>());
 
 
-            var subdomainValidator = new SubdomainValidator(_demosStoreMock.Object, _envStoreMock.Object, _duplicationsStoreMock.Object);
+            var subdomainValidator = new SubdomainValidator(_demosStoreMock.Object, _envStoreMock.Object, _duplicationsStoreMock.Object, _translationsMock.Object);
             var availableSubdomain = await subdomainValidator.GetAvailableSubdomainByPrefixAsync(prefix);
             Func<Task> act = async () => await subdomainValidator.ThrowIfInvalidAsync(availableSubdomain);
             await act.Should().NotThrowAsync();
@@ -223,7 +225,7 @@ namespace Instances.Infra.Tests.Demos
                 .Setup(s => s.GetAsync(It.IsAny<List<EnvironmentAccessRight>>(), It.IsAny<EnvironmentFilter>()))
                 .ReturnsAsync(new List<Environment>());
 
-            var subdomainValidator = new SubdomainValidator(_demosStoreMock.Object, _envStoreMock.Object, _duplicationsStoreMock.Object);
+            var subdomainValidator = new SubdomainValidator(_demosStoreMock.Object, _envStoreMock.Object, _duplicationsStoreMock.Object, _translationsMock.Object);
             var availableSubdomain = await subdomainValidator.GetAvailableSubdomainByPrefixAsync(prefix);
             Assert.Contains(prefix, availableSubdomain);
             Func<Task> act = async () => await subdomainValidator.ThrowIfInvalidAsync(availableSubdomain);
