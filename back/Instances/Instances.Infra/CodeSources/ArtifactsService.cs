@@ -5,7 +5,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
-using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace Instances.Infra.CodeSources
@@ -55,10 +54,7 @@ namespace Instances.Infra.CodeSources
             }
 
             await using var body = await response.Content.ReadAsStreamAsync();
-            var result = await JsonSerializer.DeserializeAsync<JenkinsApiArtifactResult>(body, new JsonSerializerOptions
-            {
-                PropertyNameCaseInsensitive = true
-            });
+            var result = await Tools.Serializer.DeserializeAsync<JenkinsApiArtifactResult>(body);
 
             return result.Artifacts.Select(artifact =>
                 new CodeSourceArtifacts

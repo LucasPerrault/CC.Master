@@ -10,9 +10,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
-using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
+using Tools;
 using Xunit;
 
 namespace Instances.Infra.Tests.Github
@@ -108,8 +108,8 @@ namespace Instances.Infra.Tests.Github
 
         private static class MockedProductionFile
         {
-            public static string Empty => JsonSerializer.Serialize(new { Apps = new List<object>() });
-            public static string FromApps(params object[] objects) => JsonSerializer.Serialize(new { Apps = objects });
+            public static string Empty => Serializer.Serialize(new { Apps = new List<object>() });
+            public static string FromApps(params object[] objects) => Serializer.Serialize(new { Apps = objects });
         }
     }
 }

@@ -1,4 +1,6 @@
-﻿using System.Text.Json;
+﻿using System.IO;
+using System.Text.Json;
+using System.Threading.Tasks;
 
 namespace Tools
 {
@@ -8,6 +10,18 @@ namespace Tools
         public static T Deserialize<T>(string content)
         {
             return JsonSerializer.Deserialize<T>
+            (
+                content,
+                new JsonSerializerOptions
+                {
+                    PropertyNameCaseInsensitive = true
+                }
+            );
+        }
+
+        public static async Task<T> DeserializeAsync<T>(Stream content)
+        {
+            return await JsonSerializer.DeserializeAsync<T>
             (
                 content,
                 new JsonSerializerOptions

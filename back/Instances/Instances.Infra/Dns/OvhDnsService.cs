@@ -1,7 +1,6 @@
 using Instances.Infra.Shared;
-using Newtonsoft.Json;
 using Ovh.Api;
-using System;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace Instances.Infra.Dns
@@ -70,13 +69,16 @@ namespace Instances.Infra.Dns
 
         private class CNameCreationDto
         {
-            [JsonProperty("fieldType")]
+            [JsonPropertyName("fieldType")]
             public string FieldType => "CNAME";
-            [JsonProperty("subDomain")]
+
+            [JsonPropertyName("subDomain")]
             public string SubDomain { get; set; }
-            [JsonProperty("target")]
+
+            [JsonPropertyName("target")]
             public string Target { get; set; }
-            [JsonProperty("ttl", NullValueHandling = NullValueHandling.Ignore)]
+
+            [JsonPropertyName("ttl")]
             public long? Ttl => null;
         }
     }

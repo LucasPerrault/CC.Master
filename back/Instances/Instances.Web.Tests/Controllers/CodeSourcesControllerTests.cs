@@ -4,13 +4,10 @@ using FluentAssertions;
 using Instances.Application.CodeSources;
 using Instances.Domain.CodeSources;
 using Moq;
-using System;
 using System.Collections.Generic;
 using System.Net;
-using System.Net.Http;
-using System.Text;
-using System.Text.Json;
 using System.Threading.Tasks;
+using Tools;
 using Xunit;
 
 namespace Instances.Web.Tests.Controllers
@@ -112,7 +109,7 @@ namespace Instances.Web.Tests.Controllers
             var response = await httpClient.GetAsync("/api/code-sources/23/artifacts");
 
             response.StatusCode.Should().Be(HttpStatusCode.OK);
-            var content = await JsonSerializer.DeserializeAsync<List<object>>(await response.Content.ReadAsStreamAsync());
+            var content = await Serializer.DeserializeAsync<List<object>>(await response.Content.ReadAsStreamAsync());
             content.Should().HaveCount(1);
 
             codeSourcesRepositoryMock.Verify(c => c.GetArtifactsAsync(23));

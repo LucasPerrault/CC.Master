@@ -6,7 +6,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
-using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using Tools;
@@ -107,10 +106,7 @@ namespace Instances.Infra.CodeSources
                     return null;
                 }
                 await using var bodyStream = await response.Content.ReadAsStreamAsync();
-                _cacheRawJenkinsJobs = (await JsonSerializer.DeserializeAsync<RawJenkinsJob>(bodyStream, new JsonSerializerOptions
-                    {
-                        PropertyNameCaseInsensitive = true
-                    }))
+                _cacheRawJenkinsJobs = (await Serializer.DeserializeAsync<RawJenkinsJob>(bodyStream))
                     .Jobs
                     .SelectMany(j => j.Jobs ?? new List<RawJenkinsJob>())
                     .ToList();
