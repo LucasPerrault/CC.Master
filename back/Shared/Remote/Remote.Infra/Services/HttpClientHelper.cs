@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Tools;
-using HttpClientExtensions = Remote.Infra.Extensions.HttpClientExtensions;
+using HttpClientAuthenticator = Remote.Infra.Extensions.HttpClientExtensions.HttpClientAuthenticator;
 
 namespace Remote.Infra.Services
 {
@@ -15,12 +15,12 @@ namespace Remote.Infra.Services
         private readonly HttpClient _httpClient;
         private readonly Func<TError, string> _errorMessageFunc;
 
-        private string RemoteApiDescription { get; }
+        private string _remoteApiDescription { get; }
 
         public HttpClientHelper(HttpClient httpClient, string remoteApiDescription, Func<TError, string> errorMessageFunc)
         {
             _httpClient = httpClient;
-            RemoteApiDescription = remoteApiDescription;
+            _remoteApiDescription = remoteApiDescription;
             _errorMessageFunc = errorMessageFunc;
         }
 
@@ -74,15 +74,6 @@ namespace Remote.Infra.Services
             return PutGenericObjectResponseAsync<TForm, TResult>(id, content, new Dictionary<string, string>());
         }
 
-        public void ApplyLateHttpClientAuthentication
-        (
-            string scheme,
-            Action<HttpClientExtensions.HttpClientAuthenticator> authAction
-        )
-        {
-            authAction(_httpClient.WithAuthScheme(scheme));
-        }
-
         public Task<HttpResponseMessage> GetRequestResponseMessageAsync(HttpMethod method, string subRoute, Dictionary<string, string> queryParams)
         {
             var requestMessage = BuildHttpRequestMessage(method, subRoute, queryParams);
@@ -114,6 +105,11 @@ namespace Remote.Infra.Services
             return new HttpRequestMessage(method, requestUri);
         }
 
+        public void ApplyLateHttpClientAuthentication(string scheme, Action<HttpClientAuthenticator> authAction)
+        {
+            authAction(_httpClient.WithAuthScheme(scheme));
+        }
+
         private async Task<TResponse> ParseResponseAsync<TResponse>(HttpResponseMessage response)
         {
             var responseString = await response.Content.ReadAsStringAsync();
@@ -124,7 +120,7 @@ namespace Remote.Infra.Services
             }
 
             var errorMessage = _errorMessageFunc(Serializer.Deserialize<TError>(responseString));
-            throw new RemoteServiceException(RemoteApiDescription, response.StatusCode, errorMessage);
+            throw new RemoteServiceException(_remoteApiDescription, response.StatusCode, errorMessage);
 
         }
     }
