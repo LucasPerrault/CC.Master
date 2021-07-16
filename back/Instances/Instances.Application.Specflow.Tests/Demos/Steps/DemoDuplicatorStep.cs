@@ -68,6 +68,24 @@ namespace Instances.Application.Specflow.Tests.Demos.Steps
             await demoDuplicationsStore.CreateAsync(duplication);
         }
 
+        [Given(@"an existing demo '(.*)'")]
+        public async Task GivenAnExistingDemo(string subdomain)
+        {
+            var demosStore = new DemosStore(_demosContext.DbContext, new DummyQueryPager());
+
+            var demo = new Demo
+            {
+                Subdomain = subdomain,
+                IsActive = true,
+                IsTemplate = false,
+                InstanceID = 42,
+                Instance = new Instance { Id = 42, IsActive = true },
+                AuthorId = 42
+            };
+
+            await demosStore.CreateAsync(demo);
+        }
+
 
         [When("I request creation of demo '(.*)' by duplicating demo '(.*)' (.*)")]
         public async Task WhenICreateANewDemoByDuplicationForDistributor(string subdomain, string sourceSubdomain, DistributorSelection selection)
