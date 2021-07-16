@@ -156,7 +156,7 @@ namespace CloudControl.Web
             })
             .AddMvcOptions(
                 options => options.Filters.Add<HandleDomainExceptionsFilter>()
-            ).AddNewtonsoftJson();
+            );
         }
 
         public virtual void ConfigureCache(IServiceCollection services, AppConfiguration configuration)
