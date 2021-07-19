@@ -28,7 +28,7 @@ namespace Instances.Domain.Demos.Validation
                 SubdomainValidity.TooShort => _translations.SubdomainTooShort(subdomain, SubdomainExtensions.SubdomainMinLength),
                 SubdomainValidity.TooLong => _translations.SubdomainTooLong(subdomain, SubdomainExtensions.SubdomainMaxLength),
                 SubdomainValidity.WrongFormat => _translations.SubdomainInvalid(subdomain),
-                _ => throw new NotImplementedException()
+                _ => throw new NotSupportedException()
             };
         }
 
