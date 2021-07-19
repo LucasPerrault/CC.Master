@@ -8,6 +8,7 @@ using Instances.Domain.CodeSources;
 using Instances.Domain.Demos;
 using Instances.Domain.Demos.Cleanup;
 using Instances.Domain.Demos.Filtering;
+using Instances.Domain.Demos.Validation;
 using Instances.Domain.Instances;
 using Instances.Domain.Shared;
 using Instances.Infra.CodeSources;
@@ -112,9 +113,11 @@ namespace Instances.Web
             services.AddScoped<InstanceDuplicationsRepository>();
             services.AddScoped<InstanceDuplicationsRepository>();
             services.AddScoped<ISubdomainGenerator, SubdomainGenerator>();
-            services.AddScoped<ISubdomainValidator, SubdomainValidator>();
             services.AddScoped<IClusterSelector, ClusterSelector>();
             services.AddScoped<ICodeSourcesStore, CodeSourcesStore>();
+
+            services.AddSingleton<ISubdomainValidationTranslator, SubdomainValidationTranslator>();
+            services.AddScoped<ISubdomainValidator, SubdomainValidator>();
 
             services.AddScoped<IDemoEmails, DemoEmails>();
 

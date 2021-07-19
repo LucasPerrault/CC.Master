@@ -9,6 +9,7 @@ using Instances.Application.Specflow.Tests.Demos.Models;
 using Instances.Application.Specflow.Tests.Shared.Tooling;
 using Instances.Domain.Demos;
 using Instances.Domain.Demos.Cleanup;
+using Instances.Domain.Demos.Validation;
 using Instances.Domain.Instances;
 using Instances.Domain.Instances.Models;
 using Instances.Domain.Shared;
@@ -21,7 +22,6 @@ using Microsoft.Extensions.Logging;
 using Moq;
 using Rights.Domain;
 using Rights.Domain.Abstractions;
-using Rights.Domain.Filtering;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -66,6 +66,24 @@ namespace Instances.Application.Specflow.Tests.Demos.Steps
                 }
             };
             await demoDuplicationsStore.CreateAsync(duplication);
+        }
+
+        [Given(@"an existing demo '(.*)'")]
+        public async Task GivenAnExistingDemo(string subdomain)
+        {
+            var demosStore = new DemosStore(_demosContext.DbContext, new DummyQueryPager());
+
+            var demo = new Demo
+            {
+                Subdomain = subdomain,
+                IsActive = true,
+                IsTemplate = false,
+                InstanceID = 42,
+                Instance = new Instance { Id = 42, IsActive = true },
+                AuthorId = 42
+            };
+
+            await demosStore.CreateAsync(demo);
         }
 
 
@@ -121,6 +139,11 @@ namespace Instances.Application.Specflow.Tests.Demos.Steps
         {
             var demosStore = new DemosStore(_demosContext.DbContext, new DummyQueryPager());
             var demoDuplicationsStore = new DemoDuplicationsStore(_demosContext.DbContext);
+            var instanceDuplicationsStore = new InstanceDuplicationsStore
+            (
+                _demosContext.DbContext,
+                new Mock<ITimeProvider>().Object
+            );
             var envStoreMock = new Mock<IEnvironmentsStore>();
             envStoreMock
                 .Setup(s => s.GetAsync(It.IsAny<List<EnvironmentAccessRight>>(), It.IsAny<EnvironmentFilter>()))
@@ -145,6 +168,9 @@ namespace Instances.Application.Specflow.Tests.Demos.Steps
                     return Task.CompletedTask;
                 });
 
+            var subdomainValidationTranslator = new Mock<ISubdomainValidationTranslator>();
+            var subdomainValidator = new SubdomainValidator(demosStore, envStoreMock.Object, instanceDuplicationsStore, subdomainValidationTranslator.Object);
+
             return new DemoDuplicator
                 (
                     _demosContext.TestPrincipal.Principal,
@@ -160,7 +186,7 @@ namespace Instances.Application.Specflow.Tests.Demos.Steps
                     demoDuplicationsStore,
                     rightsServiceMock.Object,
                     distributorsStoreMock.Object,
-                    new SubdomainGenerator(new SubdomainValidator(demosStore, envStoreMock.Object)),
+                    new SubdomainGenerator(subdomainValidator),
                     clusterSelectorMock.Object,
                     new UsersPasswordHelper(),
                     dnsMock.Object
@@ -272,6 +298,27 @@ namespace Instances.Application.Specflow.Tests.Demos.Steps
         public void ThenDuplicationShouldNotResultInInstanceDeletion(Guid duplicationId)
         {
             Assert.Empty(_demosContext.Results.DeleteInstances);
+        }
+
+        [Then(@"(no|one) duplication should be found as pending (.*)")]
+        public async Task ThenThereShouldBeAPendingDuplicationForSubdomain(string duplicationCountKeyword, SubdomainSelection selection)
+        {
+            var instanceDuplicationsStore = new InstanceDuplicationsStore
+            (
+                _demosContext.DbContext,
+                new Mock<ITimeProvider>().Object
+            );
+            var pendingSubdomainDuplications = await instanceDuplicationsStore.GetPendingForSubdomainAsync(selection.Subdomain);
+
+            switch (duplicationCountKeyword)
+            {
+                case "no":
+                    pendingSubdomainDuplications.Should().BeEmpty();
+                    break;
+                case "one":
+                    pendingSubdomainDuplications.Should().HaveCount(1);
+                    break;
+            }
         }
 
         private class DemoCompleterSetup

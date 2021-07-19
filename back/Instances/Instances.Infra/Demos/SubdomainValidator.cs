@@ -1,13 +1,13 @@
 using Environments.Domain.Storage;
 using Instances.Domain.Demos;
 using Instances.Domain.Demos.Filtering;
+using Instances.Domain.Demos.Validation;
 using Instances.Domain.Instances;
 using Lucca.Core.Shared.Domain.Exceptions;
 using Rights.Domain.Filtering;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Tools;
 
@@ -28,49 +28,53 @@ namespace Instances.Infra.Demos
 
     public class SubdomainValidator : ISubdomainValidator
     {
-        private const string SubdomainRegex = @"^(?!-)[a-z0-9-]+(?<!-)$";
-        public const int SubdomainMinLength = SubdomainExtensions.SubdomainMinLength;
-        public const int SubdomainMaxLength = SubdomainExtensions.SubdomainMaxLength;
         public const int MaxDemoPerRequestSubdomain = 10;
 
         private readonly IDemosStore _demosStore;
         private readonly IEnvironmentsStore _environmentsStore;
+        private readonly IInstanceDuplicationsStore _duplicationsStore;
+        private readonly ISubdomainValidationTranslator _translator;
 
-        public SubdomainValidator(IDemosStore demosStore, IEnvironmentsStore environmentsStore)
+        public SubdomainValidator
+        (
+            IDemosStore demosStore,
+            IEnvironmentsStore environmentsStore,
+            IInstanceDuplicationsStore duplicationsStore,
+            ISubdomainValidationTranslator translator
+        )
         {
             _demosStore = demosStore;
             _environmentsStore = environmentsStore;
+            _duplicationsStore = duplicationsStore;
+            _translator = translator;
         }
 
         public Task ThrowIfInvalidAsync(string subdomain)
         {
-            if (SubdomainValidation.ReservedSubdomains.Contains(subdomain))
+            var validity = SubdomainFormatChecker.GetValidity(subdomain);
+
+            if (validity != SubdomainValidity.Ok)
             {
-                throw new BadRequestException($"Subdomain {subdomain} is restricted");
-            }
-            if (SubdomainValidation.ReservedSubdomainPrefixes.Any(subdomain.StartsWith))
-            {
-                throw new BadRequestException($"Subdomain {subdomain} starts with restricted prefix");
-            }
-            if (subdomain.Length < SubdomainMinLength)
-            {
-                throw new BadRequestException($"Subdomain {subdomain} is too short (min {SubdomainMinLength} characters)");
-            }
-            if (subdomain.Length > SubdomainMaxLength)
-            {
-                throw new BadRequestException($"Subdomain {subdomain} is too long (max {SubdomainMaxLength} characters)");
-            }
-            if (!Regex.IsMatch(subdomain, SubdomainRegex))
-            {
-                throw new BadRequestException($"Subdomain {subdomain} does not match requested format (lower-case alphanumeric chars and dashes)");
+                var message = _translator.GetInvalidityMessage(subdomain, validity);
+                throw new BadRequestException(message);
             }
 
             return Task.CompletedTask;
         }
 
+        public async Task ThrowIfUnavailableAsync(string subdomain)
+        {
+            var available = await IsAvailableAsync(subdomain);
+            if (!available)
+            {
+                var message = _translator.GetUnavailabilityMessage(subdomain);
+                throw new BadRequestException(message);
+            }
+        }
+
         public async Task<bool> IsAvailableAsync(string subdomain)
         {
-            var envsTask = _environmentsStore.GetAsync
+            var envs = await _environmentsStore.GetAsync
             (
                 EnvironmentAccessRight.Everything,
                 new EnvironmentFilter
@@ -80,13 +84,17 @@ namespace Instances.Infra.Demos
                 }
             );
 
-            var demosTask = _demosStore.GetAsync(new DemoFilter
+            var demos = await _demosStore.GetAsync(new DemoFilter
             {
                 IsActive = CompareBoolean.TrueOnly,
                 Subdomain = CompareString.Equals(subdomain),
             }, AccessRight.All);
 
-            return !(await envsTask).Any() && !(await demosTask).Any();
+            var duplications = await _duplicationsStore.GetPendingForSubdomainAsync(subdomain);
+
+            return !envs.Any()
+                && !demos.Any()
+                && !duplications.Any();
         }
 
         private async Task<HashSet<string>> GetUsedSubdomainsByPrefixAsync(string prefix)
@@ -123,7 +131,7 @@ namespace Instances.Infra.Demos
         {
             var suffixMaxLength = $"{MaxDemoPerRequestSubdomain}".Length;
 
-            var maxSizedPrefix = Math.Min(prefix.Length, SubdomainMaxLength - suffixMaxLength);
+            var maxSizedPrefix = Math.Min(prefix.Length, SubdomainExtensions.SubdomainMaxLength - suffixMaxLength);
             var maxPrefix = prefix.Substring(0, maxSizedPrefix);
 
             var usedSubdomains = await GetUsedSubdomainsByPrefixAsync(maxPrefix);
