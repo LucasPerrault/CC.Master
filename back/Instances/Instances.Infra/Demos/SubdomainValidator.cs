@@ -1,15 +1,13 @@
 using Environments.Domain.Storage;
 using Instances.Domain.Demos;
 using Instances.Domain.Demos.Filtering;
+using Instances.Domain.Demos.Validation;
 using Instances.Domain.Instances;
 using Lucca.Core.Shared.Domain.Exceptions;
-using Microsoft.EntityFrameworkCore;
-using Resources.Translations;
 using Rights.Domain.Filtering;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Tools;
 
@@ -30,45 +28,35 @@ namespace Instances.Infra.Demos
 
     public class SubdomainValidator : ISubdomainValidator
     {
-        private const string SubdomainRegex = @"^(?!-)[a-z0-9-]+(?<!-)$";
-        public const int SubdomainMinLength = SubdomainExtensions.SubdomainMinLength;
-        public const int SubdomainMaxLength = SubdomainExtensions.SubdomainMaxLength;
         public const int MaxDemoPerRequestSubdomain = 10;
 
         private readonly IDemosStore _demosStore;
         private readonly IEnvironmentsStore _environmentsStore;
         private readonly IInstanceDuplicationsStore _duplicationsStore;
-        private readonly Translations _translations;
+        private readonly ISubdomainValidationTranslator _translator;
 
-        public SubdomainValidator(IDemosStore demosStore, IEnvironmentsStore environmentsStore, IInstanceDuplicationsStore duplicationsStore, Translations translations)
+        public SubdomainValidator
+        (
+            IDemosStore demosStore,
+            IEnvironmentsStore environmentsStore,
+            IInstanceDuplicationsStore duplicationsStore,
+            ISubdomainValidationTranslator translator
+        )
         {
             _demosStore = demosStore;
             _environmentsStore = environmentsStore;
             _duplicationsStore = duplicationsStore;
-            _translations = translations;
+            _translator = translator;
         }
 
         public Task ThrowIfInvalidAsync(string subdomain)
         {
-            if (SubdomainValidation.ReservedSubdomains.Contains(subdomain))
+            var validity = SubdomainFormatChecker.GetValidity(subdomain);
+
+            if (validity != SubdomainValidity.Ok)
             {
-                throw new BadRequestException(_translations.SubdomainReservedWord(subdomain));
-            }
-            if (SubdomainValidation.ReservedSubdomainPrefixes.Any(subdomain.StartsWith))
-            {
-                throw new BadRequestException(_translations.SubdomainStartsWithReservedWord(subdomain));
-            }
-            if (subdomain.Length < SubdomainMinLength)
-            {
-                throw new BadRequestException(_translations.SubdomainTooShort(subdomain, SubdomainMinLength));
-            }
-            if (subdomain.Length > SubdomainMaxLength)
-            {
-                throw new BadRequestException(_translations.SubdomainTooLong(subdomain, SubdomainMaxLength));
-            }
-            if (!Regex.IsMatch(subdomain, SubdomainRegex))
-            {
-                throw new BadRequestException(_translations.SubdomainInvalid(subdomain));
+                var message = _translator.GetInvalidityMessage(subdomain, validity);
+                throw new BadRequestException(message);
             }
 
             return Task.CompletedTask;
@@ -79,7 +67,8 @@ namespace Instances.Infra.Demos
             var available = await IsAvailableAsync(subdomain);
             if (!available)
             {
-                throw new BadRequestException(_translations.SubdomainUnavailable(subdomain));
+                var message = _translator.GetUnavailabilityMessage(subdomain);
+                throw new BadRequestException(message);
             }
         }
 
@@ -142,7 +131,7 @@ namespace Instances.Infra.Demos
         {
             var suffixMaxLength = $"{MaxDemoPerRequestSubdomain}".Length;
 
-            var maxSizedPrefix = Math.Min(prefix.Length, SubdomainMaxLength - suffixMaxLength);
+            var maxSizedPrefix = Math.Min(prefix.Length, SubdomainExtensions.SubdomainMaxLength - suffixMaxLength);
             var maxPrefix = prefix.Substring(0, maxSizedPrefix);
 
             var usedSubdomains = await GetUsedSubdomainsByPrefixAsync(maxPrefix);

@@ -9,6 +9,7 @@ using Instances.Application.Specflow.Tests.Demos.Models;
 using Instances.Application.Specflow.Tests.Shared.Tooling;
 using Instances.Domain.Demos;
 using Instances.Domain.Demos.Cleanup;
+using Instances.Domain.Demos.Validation;
 using Instances.Domain.Instances;
 using Instances.Domain.Instances.Models;
 using Instances.Domain.Shared;
@@ -21,7 +22,6 @@ using Microsoft.Extensions.Logging;
 using Moq;
 using Rights.Domain;
 using Rights.Domain.Abstractions;
-using Rights.Domain.Filtering;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -168,7 +168,8 @@ namespace Instances.Application.Specflow.Tests.Demos.Steps
                     return Task.CompletedTask;
                 });
 
-            var translationsMock = new Mock<Resources.Translations.Translations>();
+            var subdomainValidationTranslator = new Mock<ISubdomainValidationTranslator>();
+            var subdomainValidator = new SubdomainValidator(demosStore, envStoreMock.Object, instanceDuplicationsStore, subdomainValidationTranslator.Object);
 
             return new DemoDuplicator
                 (
@@ -185,7 +186,7 @@ namespace Instances.Application.Specflow.Tests.Demos.Steps
                     demoDuplicationsStore,
                     rightsServiceMock.Object,
                     distributorsStoreMock.Object,
-                    new SubdomainGenerator(new SubdomainValidator(demosStore, envStoreMock.Object, instanceDuplicationsStore, translationsMock.Object)),
+                    new SubdomainGenerator(subdomainValidator),
                     clusterSelectorMock.Object,
                     new UsersPasswordHelper(),
                     dnsMock.Object
