@@ -28,27 +28,24 @@ namespace Instances.Infra.Dns
 
         public void AddNewCname(DnsEntryCreation entryCreation)
         {
-
-            _session.SafeRun(session =>
+            _session.SafeRun(LazyWithResetRetry.Once, session =>
+            {
+                _wmiWrapper.InvokeClassMethod(session, WmiConstants.ClassCNameType, WmiConstants.MethodCreateInstanceFromPropertyData, new Dictionary<string, object>
                 {
-                    _wmiWrapper.InvokeClassMethod(session, WmiConstants.ClassCNameType, WmiConstants.MethodCreateInstanceFromPropertyData, new Dictionary<string, object>
-                    {
-                        [WmiConstants.PropertyCNameTypeDnsServerName] = _server,
-                        [WmiConstants.PropertyCNameTypeContainerName] = entryCreation.DnsZone,
-                        [WmiConstants.PropertyCNameTypeOwnerName] = $"{entryCreation.Subdomain}.{entryCreation.DnsZone}",
-                        [WmiConstants.PropertyCNameTypePrimaryName] = GetPrimaryName(entryCreation.Cluster),
-                    });
+                    [WmiConstants.PropertyCNameTypeDnsServerName] = _server,
+                    [WmiConstants.PropertyCNameTypeContainerName] = entryCreation.DnsZone,
+                    [WmiConstants.PropertyCNameTypeOwnerName] = $"{entryCreation.Subdomain}.{entryCreation.DnsZone}",
+                    [WmiConstants.PropertyCNameTypePrimaryName] = GetPrimaryName(entryCreation.Cluster),
                 });
-
+            });
         }
 
         public void DeleteCname(DnsEntryDeletion entryDeletion)
         {
-            _session.SafeRun(
-                session =>
-                {
-                    _wmiWrapper.QueryAndDeleteObjects(session, $"SELECT * FROM {WmiConstants.ClassCNameType} WHERE {WmiConstants.PropertyCNameTypeOwnerName} = '{entryDeletion.Subdomain}.{entryDeletion.DnsZone}'");
-                });
+            _session.SafeRun(LazyWithResetRetry.Once, session =>
+            {
+                _wmiWrapper.QueryAndDeleteObjects(session, $"SELECT * FROM {WmiConstants.ClassCNameType} WHERE {WmiConstants.PropertyCNameTypeOwnerName} = '{entryDeletion.Subdomain}.{entryDeletion.DnsZone}'");
+            });
         }
 
         private string GetPrimaryName(string targetClusterName)

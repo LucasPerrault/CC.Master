@@ -1,7 +1,14 @@
 ﻿using System;
+using System.ComponentModel;
 
 namespace Tools
 {
+    public enum LazyWithResetRetry
+    {
+        None,
+        Once
+    }
+
     public class LazyWithReset<T> where T : class
     {
         private readonly Func<T> _init;
@@ -25,7 +32,7 @@ namespace Tools
             }
         }
 
-        public void SafeRun(Action<T> action)
+        public void SafeRun(LazyWithResetRetry retry, Action<T> action)
         {
             try
             {
@@ -34,7 +41,16 @@ namespace Tools
             catch (Exception)
             {
                 _instance = null;
-                throw;
+                switch (retry)
+                {
+                    case LazyWithResetRetry.None:
+                        throw;
+                    case LazyWithResetRetry.Once:
+                        SafeRun(LazyWithResetRetry.None, action);
+                        break;
+                    default:
+                        throw new InvalidEnumArgumentException(nameof(retry), (int)retry, typeof(LazyWithResetRetry));
+                }
             }
         }
     }
