@@ -98,6 +98,11 @@ namespace CloudControl.Web.Tests.Mocks
             // do not configure redis in a test context
         }
 
+        public override void ConfigureLock(IServiceCollection services, AppConfiguration configuration)
+        {
+            // do not configure sql concurrent lock in a test context
+        }
+
         public override void ConfigureStorage(IServiceCollection services)
         {
             services.AddMockDbContext<IpFilterDbContext>("IpFilters", o => new IpFilterDbContext(o));

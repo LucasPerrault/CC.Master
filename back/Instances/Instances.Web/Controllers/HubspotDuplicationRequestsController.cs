@@ -1,5 +1,6 @@
 using Instances.Application.Demos.Duplication;
 using IpFilter.Domain;
+using Lock.Web;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -40,6 +41,7 @@ namespace Instances.Web.Controllers
         }
 
         [HttpPost]
+        [OneRequestAtATime(DemoDuplicationLock.Name, DemoDuplicationLock.TimeoutInSeconds)]
         public async Task<ActionResult> RequestDuplicationAsync
         (
             [FromQuery]HubspotDemoDuplicationQuery duplicationQuery,
