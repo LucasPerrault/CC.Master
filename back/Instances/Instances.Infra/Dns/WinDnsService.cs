@@ -12,7 +12,7 @@ namespace Instances.Infra.Dns
 
     public class WinDnsService : IInternalDnsService
     {
-        private readonly Lazy<IWmiSessionWrapper> _session;
+        private Lazy<IWmiSessionWrapper> _session;
         private readonly string _server;
         private readonly IWmiWrapper _wmiWrapper;
 
@@ -20,13 +20,21 @@ namespace Instances.Infra.Dns
         {
             _server = configuration.Server;
             _wmiWrapper = wmiWrapper;
-            _session = new Lazy<IWmiSessionWrapper>
-            (
-                () => _wmiWrapper.CreateSession(@$"\\{_server}\root\microsoftdns")
-            );
+            _session = GetNewLazySession();
         }
 
         public void AddNewCname(DnsEntryCreation entryCreation)
+        {
+            SafeRun(() => UnsafeAddNewCname(entryCreation));
+        }
+
+        public void DeleteCname(DnsEntryDeletion entryDeletion)
+        {
+
+            SafeRun(() => UnsafeDeleteCname(entryDeletion));
+        }
+
+        private void UnsafeAddNewCname(DnsEntryCreation entryCreation)
         {
             _wmiWrapper.InvokeClassMethod(_session.Value, WmiConstants.ClassCNameType, WmiConstants.MethodCreateInstanceFromPropertyData, new Dictionary<string, object>
             {
@@ -37,9 +45,30 @@ namespace Instances.Infra.Dns
             });
         }
 
-        public void DeleteCname(DnsEntryDeletion entryDeletion)
+        private void UnsafeDeleteCname(DnsEntryDeletion entryDeletion)
         {
             _wmiWrapper.QueryAndDeleteObjects(_session.Value, $"SELECT * FROM {WmiConstants.ClassCNameType} WHERE {WmiConstants.PropertyCNameTypeOwnerName} = '{entryDeletion.Subdomain}.{entryDeletion.DnsZone}'");
+        }
+
+        private void SafeRun(Action action)
+        {
+            try
+            {
+                action();
+            }
+            catch (Exception)
+            {
+                _session = GetNewLazySession();
+                throw;
+            }
+        }
+
+        private Lazy<IWmiSessionWrapper> GetNewLazySession()
+        {
+            return new Lazy<IWmiSessionWrapper>
+            (
+                () => _wmiWrapper.CreateSession(@$"\\{_server}\root\microsoftdns")
+            );
         }
 
         private string GetPrimaryName(string targetClusterName)
