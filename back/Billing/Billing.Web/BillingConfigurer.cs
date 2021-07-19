@@ -2,6 +2,7 @@ using Billing.Cmrr.Application;
 using Billing.Cmrr.Application.Interfaces;
 using Billing.Cmrr.Domain;
 using Billing.Cmrr.Domain.Interfaces;
+using Billing.Cmrr.Domain.Situation;
 using Billing.Cmrr.Infra.Storage.Stores;
 using Billing.Contracts.Application.Clients;
 using Billing.Contracts.Domain.Clients.Interfaces;
@@ -44,6 +45,7 @@ namespace Billing.Web
         private static void ConfigureCmrr(IServiceCollection services)
         {
             services.AddSingleton(new BreakDownInMemoryCache());
+            services.AddSingleton(new CmrrClientsSituationService());
 
             services.AddScoped<ICmrrContractsStore, CmrrContractsStore>();
             services.AddScoped<ICmrrCountsStore, CmrrCountsStore>();

@@ -13,18 +13,22 @@ namespace Billing.Cmrr.Application
 {
     public class CmrrSituationsService : ICmrrSituationsService
     {
+        private readonly CmrrClientsSituationService _clientSituationService;
         private readonly ICmrrContractsStore _contractsStore;
         private readonly ICmrrCountsStore _countsStore;
         private readonly IContractAxisSectionSituationsService _axisSectionSituationsService;
         private readonly ICmrrRightsFilter _cmrrRightsFilter;
         private readonly ClaimsPrincipal _claimsPrincipal;
 
-        public CmrrSituationsService(ICmrrContractsStore contractsStore,
+        public CmrrSituationsService(
+            CmrrClientsSituationService clientSituationService,
+            ICmrrContractsStore contractsStore,
             ICmrrCountsStore countsStore,
             IContractAxisSectionSituationsService axisSectionSituationsService,
             ICmrrRightsFilter cmrrRightsFilter,
             ClaimsPrincipal claimsPrincipal)
         {
+            _clientSituationService = clientSituationService;
             _contractsStore = contractsStore;
             _countsStore = countsStore;
             _axisSectionSituationsService = axisSectionSituationsService;
@@ -52,13 +56,16 @@ namespace Billing.Cmrr.Application
                 StartPeriod = filter.StartPeriod,
                 EndPeriod = filter.EndPeriod,
                 Total = new CmrrSubLine("Total"),
-                Lines = sections.Select(s => new CmrrLine(s.Name)).ToList()
+                Lines = sections.Select(s => new CmrrLine(s.Name)).ToList(),
+                Clients = _clientSituationService.GetClientsSituation(contractSituations),
             };
 
             PopulateSituation(situation, axisSectionSituations);
 
             return situation;
         }
+
+
 
         private async Task<List<CmrrContractSituation>> GetContractSituationsAsync(CmrrFilter filter)
         {
