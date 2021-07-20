@@ -14,6 +14,9 @@ namespace Rights.Web
     {
         public static void ConfigureServices(this IServiceCollection services, RightsConfiguration config)
         {
+
+            services.AddSingleton(new UserPermissionsCache());
+
             services.AddHttpClient<DepartmentsRemoteService>((provider, client) =>
             {
                 client.WithUserAgent(nameof(DepartmentsRemoteService))
