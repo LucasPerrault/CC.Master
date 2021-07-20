@@ -26,7 +26,7 @@ namespace Billing.Cmrr.Domain
                     return currentUserScope switch
                     {
                         AccessRightScope.AllDistributors => AccessRight.All,
-                        AccessRightScope.OwnDistributorOnly => AccessRight.ForDistributor(userPrincipal.User.DepartmentId),
+                        AccessRightScope.OwnDistributorOnly => AccessRight.ForDistributor(userPrincipal.User.DistributorId),
                         _ => throw new ApplicationException($"Unhandled scope : {currentUserScope}")
                     };
                 case CloudControlApiKeyClaimsPrincipal _:

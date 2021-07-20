@@ -27,7 +27,7 @@ namespace Users.Infra
             var luccaUser = await GetObjectResponseAsync<LuccaUser>(queryParams);
 
             var userDepartmentCode = luccaUser.Data.Department.Code;
-            var distributor = await _distributorsStore.GetByCodeAsync(luccaUser.Data.Department.Code);
+            var distributor = await _distributorsStore.GetByCodeAsync(userDepartmentCode);
             if (distributor is null)
             {
                 throw new ApplicationException($"Unknown user department code {userDepartmentCode}");
