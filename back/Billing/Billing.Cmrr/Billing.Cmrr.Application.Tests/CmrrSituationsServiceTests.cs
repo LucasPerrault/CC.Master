@@ -1,4 +1,3 @@
-using Billing.Cmrr.Application.Interfaces;
 using Billing.Cmrr.Domain;
 using Billing.Cmrr.Domain.Interfaces;
 using Billing.Cmrr.Domain.Situation;
@@ -49,7 +48,7 @@ namespace Billing.Cmrr.Application.Tests
             var cmrrRightsFilterMock = new Mock<ICmrrRightsFilter>();
             cmrrRightsFilterMock.Setup(x => x.GetReadAccessAsync(It.IsAny<ClaimsPrincipal>())).ReturnsAsync(AccessRight.All);
 
-            var sut = new CmrrSituationsService(new CmrrClientsSituationService(), cmrrContractsStoreMock.Object, cmrrCountsStoreMock.Object, null, cmrrRightsFilterMock.Object, new ClaimsPrincipal());
+            var sut = new CmrrSituationsService(cmrrContractsStoreMock.Object, cmrrCountsStoreMock.Object, null, cmrrRightsFilterMock.Object, new ClaimsPrincipal());
 
             Func<Task<CmrrSituation>> func = () => sut.GetSituationAsync(situationFilter);
 
@@ -73,7 +72,7 @@ namespace Billing.Cmrr.Application.Tests
             var cmrrRightsFilterMock = new Mock<ICmrrRightsFilter>();
             cmrrRightsFilterMock.Setup(x => x.GetReadAccessAsync(It.IsAny<ClaimsPrincipal>())).ReturnsAsync(AccessRight.All);
 
-            var sut = new CmrrSituationsService(new CmrrClientsSituationService(), cmrrContractsStoreMock.Object, cmrrCountsStoreMock.Object, null, cmrrRightsFilterMock.Object, new ClaimsPrincipal());
+            var sut = new CmrrSituationsService(cmrrContractsStoreMock.Object, cmrrCountsStoreMock.Object, null, cmrrRightsFilterMock.Object, new ClaimsPrincipal());
 
             Func<Task<CmrrSituation>> func = () => sut.GetSituationAsync(situationFilter);
 
@@ -159,7 +158,7 @@ namespace Billing.Cmrr.Application.Tests
             var cmrrRightsFilterMock = new Mock<ICmrrRightsFilter>();
             cmrrRightsFilterMock.Setup(x => x.GetReadAccessAsync(It.IsAny<ClaimsPrincipal>())).ReturnsAsync(AccessRight.All);
 
-            var sut = new CmrrSituationsService(new CmrrClientsSituationService(), cmrrContractsStoreMock.Object, cmrrCountsStoreMock.Object, contractAxisSectionSituationsService, cmrrRightsFilterMock.Object, new ClaimsPrincipal());
+            var sut = new CmrrSituationsService(cmrrContractsStoreMock.Object, cmrrCountsStoreMock.Object, contractAxisSectionSituationsService, cmrrRightsFilterMock.Object, new ClaimsPrincipal());
 
             var cmrrContractSituations = await sut.GetSituationAsync(situationFilter);
 
@@ -239,7 +238,7 @@ namespace Billing.Cmrr.Application.Tests
             var cmrrRightsFilterMock = new Mock<ICmrrRightsFilter>();
             cmrrRightsFilterMock.Setup(x => x.GetReadAccessAsync(It.IsAny<ClaimsPrincipal>())).ReturnsAsync(AccessRight.All);
 
-            var sut = new CmrrSituationsService(new CmrrClientsSituationService(), cmrrContractsStoreMock.Object, cmrrCountsStoreMock.Object, contractAxisSectionSituationsService, cmrrRightsFilterMock.Object, new ClaimsPrincipal());
+            var sut = new CmrrSituationsService(cmrrContractsStoreMock.Object, cmrrCountsStoreMock.Object, contractAxisSectionSituationsService, cmrrRightsFilterMock.Object, new ClaimsPrincipal());
 
             var cmrrContractSituations = await sut.GetSituationAsync(situationFilter);
 
@@ -325,7 +324,7 @@ namespace Billing.Cmrr.Application.Tests
             var cmrrRightsFilterMock = new Mock<ICmrrRightsFilter>();
             cmrrRightsFilterMock.Setup(x => x.GetReadAccessAsync(It.IsAny<ClaimsPrincipal>())).ReturnsAsync(AccessRight.All);
 
-            var sut = new CmrrSituationsService(new CmrrClientsSituationService(), cmrrContractsStoreMock.Object, cmrrCountsStoreMock.Object, contractAxisSectionSituationsService, cmrrRightsFilterMock.Object, new ClaimsPrincipal());
+            var sut = new CmrrSituationsService(cmrrContractsStoreMock.Object, cmrrCountsStoreMock.Object, contractAxisSectionSituationsService, cmrrRightsFilterMock.Object, new ClaimsPrincipal());
 
             var cmrrContractSituations = await sut.GetSituationAsync(situationFilter);
 
@@ -425,7 +424,7 @@ namespace Billing.Cmrr.Application.Tests
             var cmrrRightsFilterMock = new Mock<ICmrrRightsFilter>();
             cmrrRightsFilterMock.Setup(x => x.GetReadAccessAsync(It.IsAny<ClaimsPrincipal>())).ReturnsAsync(AccessRight.All);
 
-            var sut = new CmrrSituationsService(new CmrrClientsSituationService(), cmrrContractsStoreMock.Object, cmrrCountsStoreMock.Object, contractAxisSectionSituationsService, cmrrRightsFilterMock.Object, new ClaimsPrincipal());
+            var sut = new CmrrSituationsService(cmrrContractsStoreMock.Object, cmrrCountsStoreMock.Object, contractAxisSectionSituationsService, cmrrRightsFilterMock.Object, new ClaimsPrincipal());
 
             var cmrrContractSituations = await sut.GetSituationAsync(situationFilter);
 

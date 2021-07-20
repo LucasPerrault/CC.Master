@@ -45,7 +45,6 @@ namespace Billing.Web
         private static void ConfigureCmrr(IServiceCollection services)
         {
             services.AddSingleton(new BreakDownInMemoryCache());
-            services.AddSingleton(new CmrrClientsSituationService());
 
             services.AddScoped<ICmrrContractsStore, CmrrContractsStore>();
             services.AddScoped<ICmrrCountsStore, CmrrCountsStore>();

@@ -17,10 +17,8 @@ namespace Billing.Cmrr.Domain.Situation
 
     public class CmrrClientSituation
     {
-        public List<CmrrClient> Acquired { get; set; }
-        public List<CmrrClient> Terminated { get; set; }
-
-
+        public List<CmrrClient> Acquired { get; } = new List<CmrrClient>();
+        public List<CmrrClient> Terminated { get; } = new List<CmrrClient>();
     }
 
     public class CmrrClient
