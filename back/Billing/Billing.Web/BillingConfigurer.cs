@@ -2,6 +2,7 @@ using Billing.Cmrr.Application;
 using Billing.Cmrr.Application.Interfaces;
 using Billing.Cmrr.Domain;
 using Billing.Cmrr.Domain.Interfaces;
+using Billing.Cmrr.Domain.Situation;
 using Billing.Cmrr.Infra.Storage.Stores;
 using Billing.Contracts.Application.Clients;
 using Billing.Contracts.Domain.Clients.Interfaces;

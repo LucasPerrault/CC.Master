@@ -19,7 +19,8 @@ namespace Billing.Cmrr.Application
         private readonly ICmrrRightsFilter _cmrrRightsFilter;
         private readonly ClaimsPrincipal _claimsPrincipal;
 
-        public CmrrSituationsService(ICmrrContractsStore contractsStore,
+        public CmrrSituationsService(
+            ICmrrContractsStore contractsStore,
             ICmrrCountsStore countsStore,
             IContractAxisSectionSituationsService axisSectionSituationsService,
             ICmrrRightsFilter cmrrRightsFilter,
@@ -52,13 +53,16 @@ namespace Billing.Cmrr.Application
                 StartPeriod = filter.StartPeriod,
                 EndPeriod = filter.EndPeriod,
                 Total = new CmrrSubLine("Total"),
-                Lines = sections.Select(s => new CmrrLine(s.Name)).ToList()
+                Lines = sections.Select(s => new CmrrLine(s.Name)).ToList(),
+                Clients = new CmrrClientSituation(),
             };
 
             PopulateSituation(situation, axisSectionSituations);
 
             return situation;
         }
+
+
 
         private async Task<List<CmrrContractSituation>> GetContractSituationsAsync(CmrrFilter filter)
         {
@@ -107,10 +111,11 @@ namespace Billing.Cmrr.Application
 
         private void PopulateSituation(CmrrSituation cmrrSituation, IReadOnlyCollection<ContractAxisSectionSituation> situations)
         {
+            var linesPerName = cmrrSituation.Lines.ToDictionary(l => l.Name, l => l);
+
             foreach (var situation in situations.OrderByDescending(s => Math.Abs(s.PartialDiff)))
             {
-                var line = cmrrSituation.Lines.SingleOrDefault(l => l.Name == situation.Breakdown.AxisSection.Name);
-                if (line is null)
+                if (!linesPerName.TryGetValue(situation.Breakdown.AxisSection.Name, out var line))
                 {
                     continue;
                 }
@@ -128,8 +133,7 @@ namespace Billing.Cmrr.Application
 
             foreach (var situation in situations.OrderByDescending(s => Math.Abs(s.StartPeriodAmount)))
             {
-                var line = cmrrSituation.Lines.SingleOrDefault(l => l.Name == situation.Breakdown.AxisSection.Name);
-                if (line is null)
+                if (!linesPerName.TryGetValue(situation.Breakdown.AxisSection.Name, out var line))
                 {
                     continue;
                 }
@@ -142,8 +146,7 @@ namespace Billing.Cmrr.Application
 
             foreach (var situation in situations.OrderByDescending(s => Math.Abs(s.EndPeriodAmount)))
             {
-                var line = cmrrSituation.Lines.SingleOrDefault(l => l.Name == situation.Breakdown.AxisSection.Name);
-                if (line is null)
+                if (!linesPerName.TryGetValue(situation.Breakdown.AxisSection.Name, out var line))
                 {
                     continue;
                 }
@@ -152,6 +155,24 @@ namespace Billing.Cmrr.Application
                 UpdateEndAmount(subLine.TotalTo, situation);
                 UpdateEndAmount(line.Total.TotalTo, situation);
                 UpdateEndAmount(cmrrSituation.Total.TotalTo, situation);
+            }
+
+            PopulateClientsSituation(cmrrSituation, situations, linesPerName.Keys);
+        }
+
+        private static void PopulateClientsSituation(CmrrSituation cmrrSituation, IReadOnlyCollection<ContractAxisSectionSituation> situations, Dictionary<string, CmrrLine>.KeyCollection sections)
+        {
+            foreach (var situationGroup in situations.Where(s => sections.Contains(s.Breakdown.AxisSection.Name)).GroupBy(s => s.ContractSituation.Contract.ClientId))
+            {
+                if (situationGroup.All(c => c.ContractSituation.StartPeriodCount == null))
+                {
+                    cmrrSituation.Clients.Acquired.Add(new CmrrClient { Name = situationGroup.First().ContractSituation.Contract.ClientName });
+                }
+
+                if (situationGroup.All(c => c.ContractSituation.EndPeriodCount == null))
+                {
+                    cmrrSituation.Clients.Terminated.Add(new CmrrClient { Name = situationGroup.First().ContractSituation.Contract.ClientName });
+                }
             }
         }
 
