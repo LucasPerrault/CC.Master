@@ -6,6 +6,7 @@
 
     <ItemGroup>
         <PackageReference Include="Lucca.Core.Rights" Version="6.1.1" />
+        <PackageReference Include="morelinq" Version="3.3.2" />
     </ItemGroup>
 
     <ItemGroup>
