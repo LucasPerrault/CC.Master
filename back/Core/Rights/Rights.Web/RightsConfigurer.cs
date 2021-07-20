@@ -16,6 +16,7 @@ namespace Rights.Web
         {
 
             services.AddSingleton(new UserPermissionsCache());
+            services.AddSingleton(new ApiKeyPermissionsCache());
 
             services.AddHttpClient<DepartmentsRemoteService>((provider, client) =>
             {
