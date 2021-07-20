@@ -1,4 +1,4 @@
-using Billing.Cmrr.Application.Interfaces;
+using Billing.Cmrr.Application;
 using Billing.Cmrr.Domain;
 using Billing.Cmrr.Domain.Situation;
 using System;
@@ -6,7 +6,7 @@ using System.Collections.Generic;
 
 namespace Billing.Web
 {
-    public class CmrrSituationListQuery
+    public class CmrrQuery
     {
         public DateTime? StartPeriod { get; set; }
         public DateTime? EndPeriod { get; set; }
@@ -18,7 +18,7 @@ namespace Billing.Web
         public HashSet<int> DistributorId { get; set; } = new HashSet<int>();
         public HashSet<BillingStrategy> BillingStrategy { get; set; } = new HashSet<BillingStrategy>();
 
-        public CmrrSituationFilter ToCmrrSituationFilter()
+        public CmrrFilter ToCmrrFilter()
         {
             if (StartPeriod is null)
                 throw new ArgumentNullException($"{nameof(StartPeriod)} must be specified");
@@ -31,7 +31,7 @@ namespace Billing.Web
                 sections.Add(section);
             }
 
-            return new CmrrSituationFilter
+            return new CmrrFilter
             {
                 StartPeriod = StartPeriod.Value,
                 EndPeriod = EndPeriod.Value,

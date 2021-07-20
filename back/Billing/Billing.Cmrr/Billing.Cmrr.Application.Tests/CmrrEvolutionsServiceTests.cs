@@ -2,6 +2,10 @@ using Billing.Cmrr.Application.Interfaces;
 using Billing.Cmrr.Domain;
 using Billing.Cmrr.Domain.Evolution;
 using Billing.Cmrr.Domain.Interfaces;
+using Billing.Cmrr.Domain.Situation;
+using Billing.Products.Domain;
+using Billing.Products.Domain.Interfaces;
+using Castle.Components.DictionaryAdapter;
 using FluentAssertions;
 using Moq;
 using Rights.Domain.Filtering;
@@ -21,16 +25,18 @@ namespace Billing.Cmrr.Application.Tests
         {
             var startPeriod = new DateTime(2021, 01, 02);
             var endPeriod = new DateTime(2021, 01, 01);
-            var evolutionFilter = new CmrrEvolutionFilter
+            var evolutionFilter = new CmrrFilter
             {
                 StartPeriod = startPeriod,
-                EndPeriod = endPeriod
+                EndPeriod = endPeriod,
+                Axis = CmrrAxis.Product
             };
 
             var cmrrContractsStoreMock = new Mock<ICmrrContractsStore>();
             var cmrrCountsStoreMock = new Mock<ICmrrCountsStore>();
+            var contractAxisSectionsSituationsServiceMock = new Mock<IContractAxisSectionSituationsService>();
 
-            var sut = new CmrrEvolutionsService(cmrrContractsStoreMock.Object, cmrrCountsStoreMock.Object, null, null);
+            var sut = new CmrrEvolutionsService(cmrrContractsStoreMock.Object, cmrrCountsStoreMock.Object, null, contractAxisSectionsSituationsServiceMock.Object, null);
 
             Func<Task<CmrrEvolution>> func = () => sut.GetEvolutionAsync(evolutionFilter);
 
@@ -42,16 +48,18 @@ namespace Billing.Cmrr.Application.Tests
         {
             var startPeriod = new DateTime(2021, 01, 01);
             var endPeriod = new DateTime(2021, 01, 02);
-            var evolutionFilter = new CmrrEvolutionFilter
+            var evolutionFilter = new CmrrFilter
             {
                 StartPeriod = startPeriod,
-                EndPeriod = endPeriod
+                EndPeriod = endPeriod,
+                Axis = CmrrAxis.Product
             };
 
             var cmrrContractsStoreMock = new Mock<ICmrrContractsStore>();
             var cmrrCountsStoreMock = new Mock<ICmrrCountsStore>();
+            var contractAxisSectionsSituationsServiceMock = new Mock<IContractAxisSectionSituationsService>();
 
-            var sut = new CmrrEvolutionsService(cmrrContractsStoreMock.Object, cmrrCountsStoreMock.Object, null, null);
+            var sut = new CmrrEvolutionsService(cmrrContractsStoreMock.Object, cmrrCountsStoreMock.Object, null, contractAxisSectionsSituationsServiceMock.Object, null);
 
             Func<Task<CmrrEvolution>> func = () => sut.GetEvolutionAsync(evolutionFilter);
 
@@ -63,10 +71,11 @@ namespace Billing.Cmrr.Application.Tests
         {
             var startPeriod = new DateTime(2021, 01, 01);
             var endPeriod = new DateTime(2021, 03, 01);
-            var evolutionFilter = new CmrrEvolutionFilter
+            var evolutionFilter = new CmrrFilter
             {
                 StartPeriod = startPeriod,
-                EndPeriod = endPeriod
+                EndPeriod = endPeriod,
+                Axis = CmrrAxis.Product
             };
 
             var cmrrContractsStoreMock = new Mock<ICmrrContractsStore>();
@@ -131,9 +140,28 @@ namespace Billing.Cmrr.Application.Tests
 
             cmrrCountsStoreMock.Setup(x => x.GetBetweenAsync(startPeriod.AddMonths(-1), endPeriod)).ReturnsAsync(() => counts);
 
+            var productsStoreMock = new Mock<IProductsStore>();
+            var productSolution = new ProductSolution
+            {
+                ProductId = 1,
+                Product = new Product { Id = 1, Name = "Product", Family = new ProductFamily { Id = 1, Name = "Family", DisplayOrder = 1}},
+                SolutionId = 1,
+                Solution = new Solution { Id = 1, Name = "Solution" }
+            };
+            productSolution.Product.ProductSolutions = new EditableList<ProductSolution> { productSolution };
+            productsStoreMock
+                .Setup(p => p.GetAsync(It.IsAny<ProductsFilter>(), It.IsAny<ProductsIncludes>()))
+                .ReturnsAsync
+                (
+                    new List<Product>
+                    {
+                        productSolution.Product
+                    }
+                );
+
             var cmrrRightsFilterMock = new Mock<ICmrrRightsFilter>();
             cmrrRightsFilterMock.Setup(x => x.GetReadAccessAsync(It.IsAny<ClaimsPrincipal>())).ReturnsAsync(AccessRight.All);
-            var sut = new CmrrEvolutionsService(cmrrContractsStoreMock.Object, cmrrCountsStoreMock.Object, cmrrRightsFilterMock.Object, new ClaimsPrincipal());
+            var sut = new CmrrEvolutionsService(cmrrContractsStoreMock.Object, cmrrCountsStoreMock.Object, cmrrRightsFilterMock.Object, new ContractAxisSectionSituationsService(new BreakdownService(productsStoreMock.Object, new BreakDownInMemoryCache())), new ClaimsPrincipal());
 
             var cmrrEvolution = await sut.GetEvolutionAsync(evolutionFilter);
 
