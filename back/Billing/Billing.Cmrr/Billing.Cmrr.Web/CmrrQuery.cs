@@ -4,7 +4,7 @@ using Billing.Cmrr.Domain.Situation;
 using System;
 using System.Collections.Generic;
 
-namespace Billing.Web
+namespace Billing.Cmrr.Web
 {
     public class CmrrQuery
     {

@@ -6,7 +6,7 @@ using Rights.Web.Attributes;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Billing.Web.Controllers
+namespace Billing.Products.Web.Controllers
 {
 
     public class SolutionDto

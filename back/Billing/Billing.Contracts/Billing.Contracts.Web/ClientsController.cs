@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Threading.Tasks;
 
-namespace Billing.Web.Controllers
+namespace Billing.Contracts.Web
 {
     [ApiController, Route("/api/clients")]
     public class ClientsController
