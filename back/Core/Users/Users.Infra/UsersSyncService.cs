@@ -1,4 +1,6 @@
-﻿using Newtonsoft.Json;
+﻿using Distributors.Domain;
+using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 using Remote.Infra.Services;
 using Rights.Domain.Filtering;
 using System;
@@ -17,12 +19,22 @@ namespace Users.Infra
         public static readonly DateTime EarliestContractEnd = new DateTime(1900, 1, 1);
 
         private readonly UsersStore _store;
+        private readonly ILogger<UsersSyncService> _logger;
+        private readonly IDistributorsStore _distributorsStore;
         protected override string RemoteApiDescription => "Partenaires users";
 
-        public UsersSyncService(HttpClient httpClient, JsonSerializer jsonSerializer, UsersStore store)
-            : base(httpClient, jsonSerializer)
+        public UsersSyncService
+        (
+            HttpClient httpClient,
+            IDistributorsStore distributorsStore,
+            JsonSerializer jsonSerializer,
+            UsersStore store,
+            ILogger<UsersSyncService> logger
+        ) : base(httpClient, jsonSerializer)
         {
+            _distributorsStore = distributorsStore;
             _store = store;
+            _logger = logger;
         }
 
         public async Task SyncAsync()
@@ -32,13 +44,24 @@ namespace Users.Infra
             var localUsers = await _store.GetAllAsync(new UsersFilter(), AccessRight.All);
             var localUsersDict = localUsers.ToDictionary(u => u.Id, u => u);
 
+            var distributorsPerCode = ( await _distributorsStore.GetAllAsync() )
+                .ToDictionary(d => d.Code, d => d);
+
             foreach (var remoteUser in allUsersFromRemote)
             {
+                var departmentCode = remoteUser.Department.Code;
+                if (!distributorsPerCode.TryGetValue(departmentCode, out var distributor))
+                {
+                    _logger.LogError($"User {remoteUser.Id} has unknown department code {departmentCode}");
+                    continue;
+                }
+
                 if (localUsersDict.TryGetValue(remoteUser.Id, out var user))
                 {
                     user.FirstName = remoteUser.FirstName;
                     user.LastName = remoteUser.LastName;
                     user.DepartmentId = remoteUser.DepartmentId;
+                    user.DistributorId = distributor.Id;
                     user.IsActive = remoteUser.IsActive;
                 }
                 else
@@ -47,6 +70,7 @@ namespace Users.Infra
                     {
                         Id = remoteUser.Id,
                         DepartmentId = remoteUser.DepartmentId,
+                        DistributorId = distributor.Id,
                         FirstName = remoteUser.FirstName,
                         LastName = remoteUser.LastName,
                         IsActive = remoteUser.IsActive
