@@ -1,6 +1,7 @@
 ﻿using Billing.Contracts.Application.Clients;
 using Billing.Contracts.Domain.Contracts;
 using Lucca.Core.Api.Abstractions.Paging;
+using Lucca.Core.Api.Web.ModelBinding.Sorting;
 using Microsoft.AspNetCore.Mvc;
 using Rights.Domain;
 using Rights.Web.Attributes;
@@ -9,6 +10,7 @@ using System.Threading.Tasks;
 namespace Billing.Contracts.Web
 {
     [ApiController, Route("/api/contracts")]
+    [ApiSort(nameof(Contract.Id))]
     public class ContractsController
     {
         private readonly ContractsRepository _contractsRepository;
@@ -20,15 +22,9 @@ namespace Billing.Contracts.Web
 
         [HttpGet]
         [ForbidIfMissing(Operation.ReadContracts)]
-        public async Task<Page<Contract>> GetAsync()
+        public Task<Page<Contract>> GetAsync(IPageToken pageToken)
         {
-            var contracts = await _contractsRepository.GetAsync();
-
-            return new Page<Contract>
-            {
-                Count = contracts.Count,
-                Items = contracts
-            };
+            return _contractsRepository.GetPageAsync(pageToken);
         }
     }
 }

@@ -1,5 +1,7 @@
 ﻿using Billing.Contracts.Domain.Contracts;
 using Billing.Contracts.Domain.Contracts.Interfaces;
+using Lucca.Core.Api.Abstractions.Paging;
+using Lucca.Core.Api.Queryable.Paging;
 using Microsoft.EntityFrameworkCore;
 using Rights.Domain.Filtering;
 using Storage.Infra.Extensions;
@@ -14,25 +16,26 @@ namespace Billing.Contracts.Infra.Storage.Stores
     public class ContractsStore : IContractsStore
     {
         private readonly ContractsDbContext _dbContext;
+        private readonly IQueryPager _queryPager;
 
-        public ContractsStore(ContractsDbContext dbContext)
+        public ContractsStore(ContractsDbContext dbContext, IQueryPager _queryPager)
         {
-            _dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
+            _dbContext = dbContext;
+            this._queryPager = _queryPager;
         }
 
-        public async Task<List<Contract>> GetAsync(AccessRight accessRight, ContractFilter filter)
+        public Task<Page<Contract>> GetPageAsync(AccessRight accessRight, ContractFilter filter, IPageToken pageToken)
         {
-            return await Set()
-                .WhereHasRight(accessRight)
-                .WhereMatches(filter)
-                .ToListAsync();
+            return _queryPager.ToPageAsync(Set(accessRight, filter), pageToken);
         }
 
-        private IQueryable<Contract> Set()
+        private IQueryable<Contract> Set(AccessRight accessRight, ContractFilter filter)
         {
             return _dbContext.Set<Contract>()
                 .Where(c => !c.ArchivedAt.HasValue || c.ArchivedAt > DateTime.Today)
-                .Include(c => c.Attachments);
+                .Include(c => c.Attachments)
+                .WhereHasRight(accessRight)
+                .WhereMatches(filter);
         }
     }
 
