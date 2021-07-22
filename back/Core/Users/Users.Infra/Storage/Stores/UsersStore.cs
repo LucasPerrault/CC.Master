@@ -1,4 +1,3 @@
-using Distributors.Domain;
 using Lucca.Core.Api.Abstractions.Paging;
 using Lucca.Core.Api.Queryable.Paging;
 using Microsoft.EntityFrameworkCore;
@@ -17,13 +16,11 @@ namespace Users.Infra.Storage.Stores
     public class UsersStore : IUsersStore
     {
         private readonly UsersDbContext _context;
-        private readonly IDistributorsStore _distributorsStore;
         private readonly IQueryPager _queryPager;
 
-        public UsersStore(UsersDbContext context, IDistributorsStore distributorsStore, IQueryPager queryPager)
+        public UsersStore(UsersDbContext context, IQueryPager queryPager)
         {
             _context = context;
-            _distributorsStore = distributorsStore;
             _queryPager = queryPager;
         }
 
@@ -80,15 +77,9 @@ namespace Users.Infra.Storage.Stores
             {
                 NoAccessRight _ => _ => false,
                 AllAccessRight _ => _ => true,
-                DistributorAccessRight right => await ToDistributorExpressionAsync(right.DistributorId),
+                DistributorAccessRight right => user => user.DistributorId == right.DistributorId,
                 _ => throw new ApplicationException($"Unhandled access right {typeof(AccessRight)}")
             };
-        }
-
-        private async Task<Expression<Func<SimpleUser, bool>>> ToDistributorExpressionAsync(int distributorId)
-        {
-            var distributor = await _distributorsStore.GetByIdAsync(distributorId);
-            return user => user.DepartmentId == distributor.DepartmentId;
         }
     }
 
