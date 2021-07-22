@@ -1,5 +1,6 @@
 ﻿using Billing.Contracts.Application.Clients;
 using Billing.Contracts.Domain.Clients.Interfaces;
+using Billing.Contracts.Domain.Contracts;
 using Billing.Contracts.Domain.Contracts.Interfaces;
 using Billing.Contracts.Infra.Clients.Stores;
 using Billing.Contracts.Infra.Configurations;
@@ -18,6 +19,8 @@ namespace Billing.Contracts.Web
         {
             services.AddScoped<IClientsStore, ClientsStore>();
             services.AddScoped<IContractsStore, ContractsStore>();
+
+            services.AddScoped<ContractsRightsFilter>();
 
             services.AddScoped<IClientVisibilityService, ClientVisibilityService>();
 
