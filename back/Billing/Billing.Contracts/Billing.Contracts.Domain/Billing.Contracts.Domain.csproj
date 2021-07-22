@@ -11,6 +11,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\..\Core\Authentication\Authentication.Domain\Authentication.Domain.csproj" />
     <ProjectReference Include="..\..\..\Core\Rights\Rights.Domain\Rights.Domain.csproj" />
+    <ProjectReference Include="..\..\..\Shared\Distributors\Distributors.Domain\Distributors.Domain.csproj" />
   </ItemGroup>
 
 </Project>

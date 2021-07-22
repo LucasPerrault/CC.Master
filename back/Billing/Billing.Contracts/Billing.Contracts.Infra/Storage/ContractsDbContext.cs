@@ -1,4 +1,6 @@
 ﻿using Billing.Contracts.Infra.Storage.Configurations;
+using Distributors.Domain.Models;
+using Distributors.Infra.Storage.Configurations;
 using Microsoft.EntityFrameworkCore;
 using Storage.Infra.Context;
 using Storage.Infra.Migrations;
@@ -15,6 +17,8 @@ namespace Billing.Contracts.Infra.Storage
         {
             modelBuilder.ApplyConfiguration(new ClientConfiguration());
             modelBuilder.ApplyConfiguration(new ContractConfiguration());
+
+            modelBuilder.ApplyConfiguration(new DistributorsConfiguration());
         }
     }
 

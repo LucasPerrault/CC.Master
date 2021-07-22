@@ -21,6 +21,7 @@ namespace Billing.Contracts.Web
             services.AddScoped<IContractsStore, ContractsStore>();
 
             services.AddScoped<ContractsRightsFilter>();
+            services.AddScoped<ContractsRepository>();
 
             services.AddScoped<IClientVisibilityService, ClientVisibilityService>();
 

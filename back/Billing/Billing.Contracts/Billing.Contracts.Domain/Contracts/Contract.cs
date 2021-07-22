@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Distributors.Domain.Models;
+using System;
 
 namespace Billing.Contracts.Domain.Contracts
 {
@@ -11,5 +12,8 @@ namespace Billing.Contracts.Domain.Contracts
         public int? EnvironmentId { get; set; }
         public string EnvironmentSubdomain { get; set; }
         public DateTime? ArchivedAt { get; set; }
+
+        public int DistributorId { get; set; }
+        public Distributor Distributor { get; set; }
     }
 }
