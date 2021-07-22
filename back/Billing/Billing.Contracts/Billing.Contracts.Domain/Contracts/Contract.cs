@@ -1,6 +1,7 @@
 ﻿using Billing.Contracts.Domain.Clients;
 using Distributors.Domain.Models;
 using System;
+using System.Collections.Generic;
 
 namespace Billing.Contracts.Domain.Contracts
 {
@@ -18,5 +19,19 @@ namespace Billing.Contracts.Domain.Contracts
 
         public int ClientId { get; set; }
         public Client Client { get; set; }
+
+        public List<EstablishmentAttachment> Attachments { get; set; }
+    }
+
+    public class EstablishmentAttachment
+    {
+        public int Id { get; set; }
+        public int ContractId { get; set; }
+        public int EstablishmentId { get; set; }
+        public int EstablishmentRemoteId { get; set; }
+        public string EstablishmentName { get; set; }
+        public DateTime StartsOn { get; set; }
+        public DateTime? EndsOn { get; set; }
+        public bool IsActive { get; set; }
     }
 }

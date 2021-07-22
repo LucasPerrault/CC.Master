@@ -31,7 +31,8 @@ namespace Billing.Contracts.Infra.Storage.Stores
         private IQueryable<Contract> Set()
         {
             return _dbContext.Set<Contract>()
-                .Where(c => !c.ArchivedAt.HasValue || c.ArchivedAt > DateTime.Today);
+                .Where(c => !c.ArchivedAt.HasValue || c.ArchivedAt > DateTime.Today)
+                .Include(c => c.Attachments);
         }
     }
 

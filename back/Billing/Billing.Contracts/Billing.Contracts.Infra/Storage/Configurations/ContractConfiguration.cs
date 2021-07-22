@@ -20,6 +20,8 @@ namespace Billing.Contracts.Infra.Storage.Configurations
 
             builder.HasOne(d => d.Distributor).WithMany().HasForeignKey(d => d.DistributorId);
             builder.HasOne(d => d.Client).WithMany(c => c.Contracts).HasForeignKey(d => d.ClientId);
+
+            builder.HasMany(d => d.Attachments).WithOne().HasForeignKey(a => a.ContractId);
         }
     }
 }
