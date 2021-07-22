@@ -5,6 +5,7 @@ using Rights.Domain.Abstractions;
 using Rights.Domain.Filtering;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -42,7 +43,8 @@ namespace Environments.Domain
                             p.Scope switch
                             {
                                 AccessRightScope.AllDistributors => AccessRight.All,
-                                AccessRightScope.OwnDistributorOnly => AccessRight.ForDistributor(user.User.DistributorCode)
+                                AccessRightScope.OwnDistributorOnly => AccessRight.ForDistributor(user.User.DistributorCode),
+                                _ => throw new InvalidEnumArgumentException(nameof(p.Scope), (int)p.Scope, typeof(AccessRightScope)),
                             },
                             PurposeAccessRight.ForSome(p.EnvironmentPurposes)
                         )

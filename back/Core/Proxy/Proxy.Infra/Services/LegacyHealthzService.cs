@@ -1,22 +1,26 @@
 ﻿using Microsoft.Extensions.Diagnostics.HealthChecks;
-using Newtonsoft.Json;
 using Remote.Infra.Services;
-using System;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace Core.Proxy.Infra.Services
 {
-    public class LegacyHealthzService : HostRemoteService
+    internal class LegacyHealthzErrorMessage
+    {
+        public string Message { get; set; }
+    }
+
+    public class LegacyHealthzService
     {
         private const string HealthzSubroute = "healthz";
 
-        protected override string RemoteApiDescription => "Legacy Healthz";
+        private readonly HttpClientHelper<LegacyHealthzErrorMessage> _httpClientHelper;
 
-        public LegacyHealthzService(HttpClient httpClient, JsonSerializer jsonSerializer)
-            : base(httpClient, jsonSerializer)
-        { }
+        public LegacyHealthzService(HttpClient httpClient)
+        {
+            _httpClientHelper = new HttpClientHelper<LegacyHealthzErrorMessage>(httpClient, "Legacy Healthz", e => e.Message);
+        }
 
         internal async Task<HealthCheckResult> GetLegacyHealthAsync()
         {
@@ -26,18 +30,13 @@ namespace Core.Proxy.Infra.Services
             };
             try
             {
-                var legacyHealthzReponse = await GetGenericObjectResponseAsync<LegacyHealthz>(HealthzSubroute, queryParams);
-                return legacyHealthzReponse.GetHealthCheckResult();
+                var legacyHealthzResponse = await _httpClientHelper.GetGenericObjectResponseAsync<LegacyHealthz>(HealthzSubroute, queryParams);
+                return legacyHealthzResponse.GetHealthCheckResult();
             }
             catch
             {
                 return HealthCheckResult.Unhealthy();
             }
-        }
-
-        protected override string GetErrorMessage(JsonTextReader jsonTextReader)
-        {
-            throw new NotImplementedException();
         }
 
         private class LegacyHealthz

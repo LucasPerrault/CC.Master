@@ -2,12 +2,12 @@
 using Lucca.Core.Shared.Domain.Exceptions;
 using Microsoft.AspNetCore.WebUtilities;
 using Remote.Infra.Extensions;
-using Remote.Infra.Services;
 using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
+using Tools;
 
 namespace Instances.Infra.Demos
 {
@@ -23,13 +23,11 @@ namespace Instances.Infra.Demos
 
         private readonly HttpClient _client;
         private readonly HubspotConfiguration _configuration;
-        private readonly HttpResponseMessageParser _parser;
 
-        public HubspotService(HttpClient client, HubspotConfiguration configuration, HttpResponseMessageParser parser)
+        public HubspotService(HttpClient client, HubspotConfiguration configuration)
         {
             _client = client;
             _configuration = configuration;
-            _parser = parser;
         }
 
         public async Task CallWorkflowForEmailAsync(int workflowId, string email)
@@ -56,7 +54,7 @@ namespace Instances.Infra.Demos
                 throw new ApplicationException($"Hubspot contact fetch failed with status {responseMessage.StatusCode}");
             }
 
-            var dto = await _parser.ParseAsync<HubspotContactDto>(responseMessage);
+            var dto = Serializer.Deserialize<HubspotContactDto>(await responseMessage.Content.ReadAsStringAsync());
             return new HubspotContact
             {
                 VId = dto.VId,

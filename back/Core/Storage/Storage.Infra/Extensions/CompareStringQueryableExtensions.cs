@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Linq;
 using System.Linq.Expressions;
 using Tools;
@@ -15,6 +16,7 @@ namespace Storage.Infra.Extensions
                 CompareStringType.Equals => new CompareEqualStringQueryableBuilder<T>(query, comparison.Value),
                 CompareStringType.DoesNotEqual => new CompareNotEqualStringQueryableBuilder<T>(query, comparison.Value),
                 CompareStringType.StartsWith => new CompareStartsWithStringQueryableBuilder<T>(query, comparison.Value),
+                _ => throw new InvalidEnumArgumentException(nameof(comparison.Type), (int)comparison.Type, typeof(CompareStringType)),
             };
         }
 

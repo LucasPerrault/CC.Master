@@ -1,29 +1,12 @@
 using FluentAssertions;
-using FluentAssertions.Json;
-using Instances.Domain.Shared;
 using Instances.Infra.Shared;
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Logging;
-using Moq;
-using Moq.Protected;
-using Newtonsoft.Json.Linq;
 using System;
-using System.Collections.Generic;
-using System.Net;
-using System.Net.Http;
-using System.Text.RegularExpressions;
-using System.Threading;
-using System.Threading.Tasks;
 using Xunit;
 
 namespace Instances.Infra.Tests.Shared
 {
     public class ClusterNameConvertorTests
     {
-
-        public ClusterNameConvertorTests()
-        {
-        }
 
         [Theory]
         [InlineData("green")]

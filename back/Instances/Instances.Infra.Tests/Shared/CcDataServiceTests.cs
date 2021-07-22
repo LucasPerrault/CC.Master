@@ -1,18 +1,17 @@
 using FluentAssertions;
-using FluentAssertions.Json;
 using Instances.Domain.Shared;
 using Instances.Infra.Shared;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Moq;
 using Moq.Protected;
-using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
+using Tools;
 using Xunit;
 
 namespace Instances.Infra.Tests.Shared
@@ -87,24 +86,22 @@ namespace Instances.Infra.Tests.Shared
                     ItExpr.IsAny<HttpRequestMessage>(),
                     ItExpr.IsAny<CancellationToken>());
 
-            var callbackAuthHeader = $"Cloudcontrol application={_ccDataConfiguration.InboundToken}";
             captureMessage.Should().NotBeNull();
             captureMessage.Method.Should().Be(HttpMethod.Post);
             captureMessage.RequestUri.Should().Be("http://cc-data.c5.lucca.local/api/v1/duplicate-instance");
 
-            var body = JToken.Parse(await captureMessage.Content.ReadAsStringAsync());
-            body.Should().BeEquivalentTo(JToken.Parse($@"{{
-                ""CallbackUri"": ""https://cc.ilucca.local/callback/path/return"",
-                ""CallbackAuthorizationHeader"": ""{ callbackAuthHeader }"",
-                ""SourceTenant"": {{
-                    ""Tenant"": ""tenant"",
-                    ""CcDataServerUri"": null
-                }},
-                ""TargetTenant"": ""target"",
-                ""PostRestoreScripts"": [
-                    {{ ""Uri"": ""http://test"", ""AuthorizationHeader"": null }}
-                ]
-            }}"));
+            var bodyAsString = await captureMessage.Content.ReadAsStringAsync();
+
+            var expectation = Serializer.Serialize(new
+            {
+                SourceTenant = new { Tenant = "tenant", CcDataServerUri = (string)null },
+                TargetTenant = "target",
+                PostRestoreScripts = new object[] { new { Uri = "http://test", AuthorizationHeader = (string)null } },
+                CallbackUri = "https://cc.ilucca.local/callback/path/return",
+                CallbackAuthorizationHeader =  $"Cloudcontrol application={_ccDataConfiguration.InboundToken}",
+            });
+
+            bodyAsString.Should().Be(expectation);
         }
 
         [Theory]

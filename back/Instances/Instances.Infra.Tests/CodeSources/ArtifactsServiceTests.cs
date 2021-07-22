@@ -5,11 +5,11 @@ using Lucca.Core.Shared.Domain.Exceptions;
 using Microsoft.Extensions.Logging;
 using Moq;
 using Moq.Protected;
+using Remote.Infra.Extensions;
 using System;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
-using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using Xunit;
@@ -48,7 +48,7 @@ namespace Instances.Infra.Tests.CodeSources
                 .ReturnsAsync(new HttpResponseMessage()
                 {
                     StatusCode = HttpStatusCode.OK,
-                    Content = new StringContent(JsonSerializer.Serialize(new
+                    Content = new
                     {
                         _class = "org.jenkinsci.plugins.workflow.job.WorkflowRun",
                         artifacts = new object[] {
@@ -83,7 +83,7 @@ namespace Instances.Infra.Tests.CodeSources
                                 relativePath= ".jenkins/zips/Figgo.e2e.zip"
                             }
                         }
-                    }))
+                    }.ToJsonPayload()
                 });
 
             var result = await _artifactsService.GetArtifactsAsync(codeSource, "myBranch", 1234);

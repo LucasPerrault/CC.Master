@@ -32,7 +32,6 @@ using Microsoft.AspNetCore.Localization;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Newtonsoft.Json;
 using Proxy.Web;
 using Remote.Infra;
 using Rights.Web;
@@ -120,7 +119,6 @@ namespace CloudControl.Web
         public virtual void ConfigureHttpContext(IServiceCollection services)
         {
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
-            services.AddSingleton<JsonSerializer>();
         }
 
         public virtual void ConfigureHealthCheck(IServiceCollection services, AppConfiguration configuration)
@@ -152,6 +150,7 @@ namespace CloudControl.Web
                     .AddEntityFrameworkQuerying()
                     .ConfigureLuccaApiForInstances();
             });
+
             services.AddMvc().AddLuccaApi(o =>
             {
                 o.ShouldIncludeFullExceptionDetails = _hostingEnvironment.IsDevelopment();

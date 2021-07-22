@@ -1,5 +1,4 @@
-using Newtonsoft.Json;
-using Partenaires.Infra.Services;
+using Remote.Infra.Services;
 using Rights.Infra.Models;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,19 +7,18 @@ using System.Threading.Tasks;
 
 namespace Rights.Infra.Remote
 {
-    public class DepartmentsRemoteService : PartenairesService
+    public class DepartmentsRemoteService
     {
-        public DepartmentsRemoteService(HttpClient httpClient, JsonSerializer jsonSerializer)
-            : base(httpClient, jsonSerializer)
-        { }
-
-        protected override string RemoteApiDescription => "Partenaires departments";
+        private readonly RestApiV3HttpClientHelper _httpClientHelper;
+        public DepartmentsRemoteService(HttpClient httpClient)
+        {
+            _httpClientHelper = new RestApiV3HttpClientHelper(httpClient,"Partenaires departments");
+        }
 
         internal async Task<IReadOnlyCollection<Department>> GetDepartmentsAsync()
         {
-            var queryParams = new Dictionary<string, string>();
 
-            var departmentsResponse = await GetObjectCollectionResponseAsync<Department>(queryParams);
+            var departmentsResponse = await _httpClientHelper.GetObjectCollectionResponseAsync<Department>();
 
             return departmentsResponse.Data.Items.ToList();
         }

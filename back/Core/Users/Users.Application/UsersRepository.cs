@@ -1,5 +1,4 @@
 using Lucca.Core.Api.Abstractions.Paging;
-using System.Collections.Generic;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Users.Domain;
