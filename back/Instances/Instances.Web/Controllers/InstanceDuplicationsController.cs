@@ -1,5 +1,7 @@
 using Instances.Application.Instances;
+using Instances.Application.Instances.Dtos;
 using Instances.Domain.Instances;
+using Lucca.Core.Shared.Domain.Exceptions;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Threading.Tasks;
@@ -17,9 +19,20 @@ namespace Instances.Web.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<InstanceDuplication> GetDuplicationAsync([FromRoute]Guid id)
+        public Task<InstanceDuplication> GetDuplicationAsync([FromRoute]Guid id)
         {
-            return await _duplicationsRepository.GetDuplication(id);
+            return _duplicationsRepository.GetDuplication(id);
+        }
+
+        [HttpGet("usability")]
+        public Task<SubdomainUsability> GetUsabilityAsync([FromQuery]string subdomain)
+        {
+            if (string.IsNullOrEmpty(subdomain))
+            {
+                throw new BadRequestException($"{nameof(subdomain)} parameter is mandatory");
+            }
+
+            return _duplicationsRepository.GetUsabilityAsync(subdomain);
         }
     }
 }

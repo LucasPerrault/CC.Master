@@ -1,5 +1,4 @@
-﻿using Distributors.Domain;
-using Newtonsoft.Json;
+using Distributors.Domain;
 using Remote.Infra.Services;
 using System;
 using System.Collections.Generic;
@@ -9,22 +8,24 @@ using Users.Domain;
 
 namespace Users.Infra
 {
-    public class UsersService : RestApiV3HostRemoteService, IUsersService
+    public class UsersService : IUsersService
     {
+        private readonly RestApiV3HttpClientHelper _httpClientHelper;
         private readonly IDistributorsStore _distributorsStore;
-        protected override string RemoteApiDescription => "Partenaires users";
-        public UsersService(HttpClient httpClient, JsonSerializer jsonSerializer, IDistributorsStore distributorsStore)
-            : base(httpClient, jsonSerializer)
+        public UsersService(HttpClient httpClient, IDistributorsStore distributorsStore)
         {
             _distributorsStore = distributorsStore;
+            _httpClientHelper = new RestApiV3HttpClientHelper(httpClient, "Partenaires users");
         }
 
         public async Task<User> GetByTokenAsync(Guid token)
         {
-            ApplyLateHttpClientAuthentication("Lucca", a => a.AuthenticateAsUser(token));
+            _httpClientHelper.ApplyLateHttpClientAuthentication("Lucca", a => a.AuthenticateAsUser(token));
 
             var queryParams = new Dictionary<string, string> { { "fields", LuccaUser.ApiFields } };
-            var luccaUser = await GetObjectResponseAsync<LuccaUser>(queryParams);
+            var luccaUser = await _httpClientHelper.GetObjectResponseAsync<LuccaUser>(queryParams);
+            return luccaUser.Data.ToUser();
+        }
 
             var userDepartmentCode = luccaUser.Data.Department.Code;
             var distributor = await _distributorsStore.GetByCodeAsync(userDepartmentCode);

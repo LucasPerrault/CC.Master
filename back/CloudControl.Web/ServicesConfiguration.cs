@@ -16,6 +16,7 @@ using Instances.Infra.Storage;
 using Instances.Web;
 using IpFilter.Infra.Storage;
 using IpFilter.Web;
+using Lock.Web;
 using Lucca.Core.Api.Abstractions;
 using Lucca.Core.Api.Queryable.EntityFrameworkCore;
 using Lucca.Core.Api.Web;
@@ -31,7 +32,6 @@ using Microsoft.AspNetCore.Localization;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Newtonsoft.Json;
 using Proxy.Web;
 using Remote.Infra;
 using Rights.Web;
@@ -71,6 +71,7 @@ namespace CloudControl.Web
             ConfigureLogs(services);
             ConfigureSpa(services);
             ConfigureCache(services, configuration);
+            ConfigureLock(services, configuration);
             ConfigureNotifications(services, configuration);
             ConfigureProxy(services);
             ConfigureIpFilter(services);
@@ -118,7 +119,6 @@ namespace CloudControl.Web
         public virtual void ConfigureHttpContext(IServiceCollection services)
         {
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
-            services.AddSingleton<JsonSerializer>();
         }
 
         public virtual void ConfigureHealthCheck(IServiceCollection services, AppConfiguration configuration)
@@ -150,18 +150,24 @@ namespace CloudControl.Web
                     .AddEntityFrameworkQuerying()
                     .ConfigureLuccaApiForInstances();
             });
+
             services.AddMvc().AddLuccaApi(o =>
             {
                 o.ShouldIncludeFullExceptionDetails = _hostingEnvironment.IsDevelopment();
             })
             .AddMvcOptions(
                 options => options.Filters.Add<HandleDomainExceptionsFilter>()
-            ).AddNewtonsoftJson();
+            );
         }
 
         public virtual void ConfigureCache(IServiceCollection services, AppConfiguration configuration)
         {
             RedisCacheConfigurer.ConfigureRedis(services, configuration.Redis);
+        }
+
+        public virtual void ConfigureLock(IServiceCollection services, AppConfiguration configuration)
+        {
+            LockConfigurer.ConfigureLock(services, configuration.SqlInfos.Default);
         }
 
         public virtual void ConfigureProxy(IServiceCollection services)

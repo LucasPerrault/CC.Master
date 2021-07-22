@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 
 namespace Instances.Domain.Instances
 {
@@ -27,7 +28,7 @@ namespace Instances.Domain.Instances
         // https://fr.wikipedia.org/wiki/Normalisation_Unicode
         private static string SeparateDiacriticsFromLetters(this string text)
         {
-            return text.Normalize(System.Text.NormalizationForm.FormD);
+            return text.Normalize(NormalizationForm.FormD);
         }
 
         private static string Concat(this IEnumerable<char> chars)

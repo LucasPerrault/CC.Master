@@ -13,7 +13,6 @@
       <PackageReference Include="Lucca.Core.AspNetCore.Healthz" Version="3.2.6" />
       <PackageReference Include="Lucca.Core.Shared.Domain" Version="2.0.13" />
       <PackageReference Include="Lucca.Logs.AspnetCore" Version="0.7.0" />
-      <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="3.1.14" />
       <PackageReference Include="Microsoft.AspNetCore.SpaServices" Version="3.1.16" />
       <PackageReference Include="Microsoft.AspNetCore.SpaServices.Extensions" Version="3.1.16" />
     </ItemGroup>
@@ -27,6 +26,7 @@
       <ProjectReference Include="..\Core\Email\Email.Web\Email.Web.csproj" />
       <ProjectReference Include="..\Core\Cache\Cache.Web\Cache.Web.csproj" />
       <ProjectReference Include="..\Core\IpFilter\IpFilter.Web\IpFilter.Web.csproj" />
+      <ProjectReference Include="..\Core\Lock\Lock.Web\Lock.Web.csproj" />
       <ProjectReference Include="..\Core\Proxy\Proxy.Web\Proxy.Web.csproj" />
       <ProjectReference Include="..\Core\Rights\Rights.Web\Rights.Web.csproj" />
       <ProjectReference Include="..\Core\Salesforce\Salesforce.Infra\Salesforce.Infra.csproj" />

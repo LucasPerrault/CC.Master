@@ -1,21 +1,21 @@
 ﻿using Instances.Domain.Instances;
 using Instances.Domain.Instances.Models;
-using Newtonsoft.Json;
 using Remote.Infra.Services;
-using System;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace Instances.Infra.Instances.Services
 {
-    public class InstancesRemoteStore : RestApiV3HostRemoteService, IInstancesStore
+    public class InstancesRemoteStore : IInstancesStore
     {
 
-        protected override string RemoteApiDescription => "Legacy cloudcontrol instances api";
+        private readonly RestApiV3HttpClientHelper _httpClientHelper;
 
-        public InstancesRemoteStore(HttpClient httpClient, JsonSerializer jsonSerializer) : base(httpClient, jsonSerializer)
-        { }
+        public InstancesRemoteStore(HttpClient httpClient)
+        {
+            _httpClientHelper = new RestApiV3HttpClientHelper(httpClient, "Legacy cloudcontrol instances api");
+        }
 
         private class CreateForDemoDto
         {
@@ -26,7 +26,7 @@ namespace Instances.Infra.Instances.Services
         public async Task<Instance> CreateForDemoAsync(string password, string cluster)
         {
             var dto = new CreateForDemoDto { Password = password, Cluster = cluster};
-            var response = await PostObjectResponseAsync<CreateForDemoDto, Instance>
+            var response = await _httpClientHelper.PostObjectResponseAsync<CreateForDemoDto, Instance>
             (
                 "createForDemo",
                 dto,
@@ -43,7 +43,7 @@ namespace Instances.Infra.Instances.Services
 
         public async Task DeleteForDemoAsync(Instance demoInstance)
         {
-            await PostObjectResponseAsync<DeleteForDemoDto, Instance>
+            await _httpClientHelper.PostObjectResponseAsync<DeleteForDemoDto, Instance>
             (
                 "deleteForDemo",
                 new DeleteForDemoDto { Id =  demoInstance.Id },

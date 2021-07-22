@@ -1,6 +1,5 @@
 ﻿using Instances.Domain.CodeSources;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
 using Remote.Infra.Exceptions;
 using Remote.Infra.Services;
 using System.Collections.Generic;
@@ -9,27 +8,25 @@ using System.Threading.Tasks;
 
 namespace Instances.Infra.Github
 {
-    public class GithubBranchesRemoteStore : RestApiV3HostRemoteService, IGithubBranchesStore
+    public class GithubBranchesRemoteStore : IGithubBranchesStore
     {
         private readonly ILogger<GithubBranchesRemoteStore> _logger;
-        protected override string RemoteApiDescription => "Legacy cloudcontrol github branches api";
+        private readonly RestApiV3HttpClientHelper _httpClientHelper;
 
-        public GithubBranchesRemoteStore(HttpClient httpClient, JsonSerializer jsonSerializer, ILogger<GithubBranchesRemoteStore> logger)
-            : base(httpClient, jsonSerializer)
+        public GithubBranchesRemoteStore(HttpClient httpClient, ILogger<GithubBranchesRemoteStore> logger)
         {
+            _httpClientHelper = new RestApiV3HttpClientHelper(httpClient, "Legacy cloudcontrol github branches api");
             _logger = logger;
         }
 
         public async Task CreateForNewSourceCodeAsync(CodeSource codeSource)
         {
-            var payload = new { Id = codeSource.Id };
-
             try
             {
-                await PostObjectResponseAsync<object, object>
+                await _httpClientHelper.PostObjectResponseAsync<object>
                 (
                     "createDefaultBranches",
-                    payload,
+                    new { Id = codeSource.Id },
                     new Dictionary<string, string>()
                 );
             }

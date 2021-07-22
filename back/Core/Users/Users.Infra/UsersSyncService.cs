@@ -1,4 +1,4 @@
-﻿using Distributors.Domain;
+using Distributors.Domain;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Remote.Infra.Services;
@@ -14,25 +14,26 @@ using Users.Infra.Storage.Stores;
 
 namespace Users.Infra
 {
-    public class UsersSyncService : RestApiV3HostRemoteService, IUsersSyncService
+    public class UsersSyncService : IUsersSyncService
     {
         public static readonly DateTime EarliestContractEnd = new DateTime(1900, 1, 1);
 
         private readonly UsersStore _store;
         private readonly ILogger<UsersSyncService> _logger;
         private readonly IDistributorsStore _distributorsStore;
+        private readonly RestApiV3HttpClientHelper _httpClientHelper;
         protected override string RemoteApiDescription => "Partenaires users";
 
         public UsersSyncService
         (
             HttpClient httpClient,
             IDistributorsStore distributorsStore,
-            JsonSerializer jsonSerializer,
             UsersStore store,
             ILogger<UsersSyncService> logger
-        ) : base(httpClient, jsonSerializer)
+        )
         {
             _distributorsStore = distributorsStore;
+            _httpClientHelper = new RestApiV3HttpClientHelper(httpClient, "Partenaires users");
             _store = store;
             _logger = logger;
         }
@@ -90,7 +91,7 @@ namespace Users.Infra
                 { "fields", LuccaUser.ApiFields },
                 {"dtContractEnd", $"since,{EarliestContractEnd :yyyy-MM-dd},null"}
             };
-            var response = await GetObjectCollectionResponseAsync<LuccaUser>(queryParams);
+            var response = await _httpClientHelper.GetObjectCollectionResponseAsync<LuccaUser>(queryParams);
             return response.Data.Items;
         }
     }

@@ -7,6 +7,7 @@ Feature: Demo duplication end
         And duplication 'deadbeef-0053-41a7-b607-c545afc2dad9'' should not result in instance deletion
         And duplication 'deadbeef-0053-41a7-b607-c545afc2dad9' should be marked as FinishedWithSuccess
         And one demo 'aperture-science' should be active
+        And no duplication should be found as pending for subdomain 'aperture-science'
 
     Scenario: Cleanup when password reset fails
         Given a running duplication for demo 'aperture-science' of id 'deadbeef-0053-41a7-b607-c545afc2dad9'
