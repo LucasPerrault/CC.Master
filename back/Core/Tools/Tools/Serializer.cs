@@ -33,7 +33,10 @@ namespace Tools
 
         public static string Serialize(object o)
         {
-            return JsonSerializer.Serialize(o);
+            return JsonSerializer.Serialize(o, new JsonSerializerOptions
+            {
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+            });
         }
     }
 }

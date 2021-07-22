@@ -1,7 +1,7 @@
 using Instances.Infra.Shared;
 using Ovh.Api;
-using System.Text.Json.Serialization;
 using System.Threading.Tasks;
+using Tools;
 
 namespace Instances.Infra.Dns
 {
@@ -39,7 +39,7 @@ namespace Instances.Infra.Dns
                 Target = GetCNameTargetName(entryCreation),
             };
 
-            await _ovhClient.PostAsync(GetOvhApiPath(CreateRecordApiPath, entryCreation), payload);
+            await _ovhClient.PostStringAsync(GetOvhApiPath(CreateRecordApiPath, entryCreation), Serializer.Serialize(payload));
             await _ovhClient.PostAsync(GetOvhApiPath(RefreshZoneApiPath, entryCreation));
         }
 
@@ -69,16 +69,9 @@ namespace Instances.Infra.Dns
 
         private class CNameCreationDto
         {
-            [JsonPropertyName("fieldType")]
             public string FieldType => "CNAME";
-
-            [JsonPropertyName("subDomain")]
             public string SubDomain { get; set; }
-
-            [JsonPropertyName("target")]
             public string Target { get; set; }
-
-            [JsonPropertyName("ttl")]
             public long? Ttl => null;
         }
     }
