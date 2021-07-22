@@ -4,6 +4,7 @@ using Instances.Application.Demos.Dtos;
 using Instances.Application.Demos.Duplication;
 using Instances.Domain.Demos;
 using Instances.Web.Controllers.Dtos;
+using Lock.Web;
 using Lucca.Core.Api.Abstractions.Paging;
 using Lucca.Core.Api.Web.ModelBinding.Sorting;
 using Microsoft.AspNetCore.Mvc;
@@ -53,6 +54,7 @@ namespace Instances.Web.Controllers
 
         [HttpPost("duplicate")]
         [ForbidIfMissing(Operation.Demo)]
+        [OneRequestAtATime(DemoDuplicationLock.Name, DemoDuplicationLock.TimeoutInSeconds)]
         public Task<DemoDuplication> Duplicate(DemoDuplicationRequest request)
         {
             return _duplicator.CreateDuplicationAsync(request);

@@ -16,6 +16,7 @@ using Instances.Infra.Storage;
 using Instances.Web;
 using IpFilter.Infra.Storage;
 using IpFilter.Web;
+using Lock.Web;
 using Lucca.Core.Api.Abstractions;
 using Lucca.Core.Api.Queryable.EntityFrameworkCore;
 using Lucca.Core.Api.Web;
@@ -71,6 +72,7 @@ namespace CloudControl.Web
             ConfigureLogs(services);
             ConfigureSpa(services);
             ConfigureCache(services, configuration);
+            ConfigureLock(services, configuration);
             ConfigureNotifications(services, configuration);
             ConfigureProxy(services);
             ConfigureIpFilter(services);
@@ -149,30 +151,24 @@ namespace CloudControl.Web
                     .AddEntityFrameworkQuerying()
                     .ConfigureLuccaApiForInstances();
             });
-            services.AddMvc().AddLuccaApi
-                (
-                    o =>
-                    {
-                        o.ShouldIncludeFullExceptionDetails = _hostingEnvironment.IsDevelopment();
-                    }
-                )
-                .AddMvcOptions(options => options.Filters.Add<HandleDomainExceptionsFilter>())
-                // this json config affects mvc auto serialization
-                // but does not affect our own use of JsonSerializer
-                // and we'll still need to specify case insensitivity manually
-                .AddJsonOptions
-                (
-                    o =>
-                    {
-                        o.JsonSerializerOptions.PropertyNameCaseInsensitive = true;
-                        o.JsonSerializerOptions.Encoder = JavaScriptEncoder.Default;
-                    }
-                );
+         
+            services.AddMvc().AddLuccaApi(o =>
+            {
+                o.ShouldIncludeFullExceptionDetails = _hostingEnvironment.IsDevelopment();
+            })
+            .AddMvcOptions(
+                options => options.Filters.Add<HandleDomainExceptionsFilter>()
+            );
         }
 
         public virtual void ConfigureCache(IServiceCollection services, AppConfiguration configuration)
         {
             RedisCacheConfigurer.ConfigureRedis(services, configuration.Redis);
+        }
+
+        public virtual void ConfigureLock(IServiceCollection services, AppConfiguration configuration)
+        {
+            LockConfigurer.ConfigureLock(services, configuration.SqlInfos.Default);
         }
 
         public virtual void ConfigureProxy(IServiceCollection services)

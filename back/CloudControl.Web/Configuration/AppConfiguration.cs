@@ -33,5 +33,12 @@ namespace CloudControl.Web.Configuration
             UsersEndpointPath = Authentication.UsersEndpointPath,
             UserFetchToken =  Authentication.ApiKeysFetcherToken
         };
+
+        public SqlConfiguration SqlInfos { get; set; }
+    }
+
+    public class SqlConfiguration
+    {
+        public string Default { get; set; }
     }
 }

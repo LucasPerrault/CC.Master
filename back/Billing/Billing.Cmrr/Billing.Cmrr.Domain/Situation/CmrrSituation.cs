@@ -12,6 +12,18 @@ namespace Billing.Cmrr.Domain.Situation
 
         public CmrrSubLine Total { get; set; }
         public List<CmrrLine> Lines { get; set; }
+        public CmrrClientSituation Clients { get; set; }
+    }
+
+    public class CmrrClientSituation
+    {
+        public List<CmrrClient> Acquired { get; } = new List<CmrrClient>();
+        public List<CmrrClient> Terminated { get; } = new List<CmrrClient>();
+    }
+
+    public class CmrrClient
+    {
+        public string Name { get; set; }
     }
 
     public class CmrrLine

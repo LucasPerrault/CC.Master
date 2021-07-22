@@ -75,8 +75,10 @@ namespace CloudControl.Web.Tests.Mocks
         }
 
         public override void ConfigureCache(IServiceCollection services, AppConfiguration configuration)
-        {
-        }
+        { }
+
+        public override void ConfigureLock(IServiceCollection services, AppConfiguration configuration)
+        { }
 
         public override void ConfigureIpFilter(IServiceCollection services)
         {
