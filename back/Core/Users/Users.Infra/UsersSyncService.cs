@@ -1,6 +1,5 @@
 using Distributors.Domain;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
 using Remote.Infra.Services;
 using Rights.Domain.Filtering;
 using System;
@@ -22,7 +21,6 @@ namespace Users.Infra
         private readonly ILogger<UsersSyncService> _logger;
         private readonly IDistributorsStore _distributorsStore;
         private readonly RestApiV3HttpClientHelper _httpClientHelper;
-        protected override string RemoteApiDescription => "Partenaires users";
 
         public UsersSyncService
         (

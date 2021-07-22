@@ -24,16 +24,14 @@ namespace Users.Infra
 
             var queryParams = new Dictionary<string, string> { { "fields", LuccaUser.ApiFields } };
             var luccaUser = await _httpClientHelper.GetObjectResponseAsync<LuccaUser>(queryParams);
-            return luccaUser.Data.ToUser();
-        }
 
             var userDepartmentCode = luccaUser.Data.Department.Code;
             var distributor = await _distributorsStore.GetByCodeAsync(userDepartmentCode);
+
             if (distributor is null)
             {
                 throw new ApplicationException($"Unknown user department code {userDepartmentCode}");
             }
-
             return luccaUser.Data.ToUser(distributor);
         }
     }
