@@ -46,7 +46,7 @@ namespace Instances.Application.Tests.Demos
                 claimsPrincipal,
                 _demosStoreMock.Object,
                 _instancesStoreMock.Object,
-                new DemoRightsFilter(_rightsServiceMock.Object),
+                new DemoRightsFilter(new RightsFilter(_rightsServiceMock.Object)),
                 _iCcDataServiceMock.Object,
                 _dnsServiceMock.Object
             );

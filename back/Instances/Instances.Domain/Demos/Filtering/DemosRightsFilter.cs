@@ -1,6 +1,5 @@
 using Authentication.Domain;
 using Rights.Domain;
-using Rights.Domain.Abstractions;
 using Rights.Domain.Filtering;
 using System;
 using System.Security.Claims;
@@ -10,29 +9,20 @@ namespace Instances.Domain.Demos.Filtering
 {
     public class DemoRightsFilter
     {
-        private readonly IRightsService _rightsService;
+        private readonly RightsFilter _rightsFilter;
 
-        public DemoRightsFilter(IRightsService rightsService)
+        public DemoRightsFilter(RightsFilter rightsFilter)
         {
-            _rightsService = rightsService;
+            _rightsFilter = rightsFilter;
         }
 
         public async Task<AccessRight> GetReadAccessAsync(ClaimsPrincipal principal)
         {
-            switch(principal)
+            return principal switch
             {
-                case CloudControlUserClaimsPrincipal userPrincipal:
-                    var currentUserScope = await _rightsService.GetUserOperationHighestScopeAsync(Operation.Demo);
-                    return currentUserScope switch
-                    {
-                        AccessRightScope.AllDistributors => AccessRight.All,
-                        AccessRightScope.OwnDistributorOnly => AccessRight.ForDistributor(userPrincipal.User.DistributorCode),
-                        _ => throw new ApplicationException($"Unhandled scope : {currentUserScope}")
-                    };
-                case CloudControlApiKeyClaimsPrincipal _:
-                    return AccessRight.All;
-                default:
-                    throw new ApplicationException("Unhandled ClaimsPrincipal type");
+                CloudControlUserClaimsPrincipal userPrincipal => await _rightsFilter.FilterByDistributorAsync(Operation.Demo, userPrincipal.User.DistributorCode),
+                CloudControlApiKeyClaimsPrincipal _ => AccessRight.All,
+                _ => throw new ApplicationException("Unhandled ClaimsPrincipal type")
             };
         }
     }
