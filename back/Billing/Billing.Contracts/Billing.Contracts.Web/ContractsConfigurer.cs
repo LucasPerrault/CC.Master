@@ -1,11 +1,10 @@
 ﻿using Billing.Contracts.Application.Clients;
+using Billing.Contracts.Domain.Clients;
 using Billing.Contracts.Domain.Clients.Interfaces;
 using Billing.Contracts.Domain.Contracts;
 using Billing.Contracts.Domain.Contracts.Interfaces;
-using Billing.Contracts.Infra.Clients.Stores;
 using Billing.Contracts.Infra.Configurations;
 using Billing.Contracts.Infra.Legacy;
-using Billing.Contracts.Infra.Services;
 using Billing.Contracts.Infra.Storage.Stores;
 using Core.Proxy.Infra.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -17,13 +16,13 @@ namespace Billing.Contracts.Web
     {
         public static void ConfigureServices(IServiceCollection services, LegacyCloudControlConfiguration legacyConfig, BillingContractsConfiguration config)
         {
-            services.AddScoped<IClientsStore, ClientsStore>();
             services.AddScoped<IContractsStore, ContractsStore>();
-
             services.AddScoped<ContractsRightsFilter>();
             services.AddScoped<ContractsRepository>();
 
-            services.AddScoped<IClientVisibilityService, ClientVisibilityService>();
+            services.AddScoped<IClientsStore, ClientsStore>();
+            services.AddScoped<ClientRightFilter>();
+            services.AddScoped<ClientsRepository>();
 
             services.AddHttpClient<ILegacyClientsRemoteService, LegacyClientsRemoteService>((provider, client) =>
             {
@@ -31,8 +30,6 @@ namespace Billing.Contracts.Web
                     .WithBaseAddress(legacyConfig.Uri, config.LegacyClientsEndpointPath)
                     .WithAuthScheme("CloudControl").AuthenticateCurrentPrincipal(provider);
             });
-
-            services.AddScoped<ClientsRepository>();
         }
     }
 }
