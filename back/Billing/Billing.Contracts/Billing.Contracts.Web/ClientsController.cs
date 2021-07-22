@@ -17,7 +17,7 @@ namespace Billing.Contracts.Web
             _clientsRepository = clientsRepository ?? throw new ArgumentNullException(nameof(clientsRepository));
         }
 
-        [HttpPut("{id}")]
+        [HttpPut("{id:guid}")]
         public Task PutAsync([FromRoute]Guid id, [FromBody]Client client, [FromQuery]string subdomain)
         {
             if (string.IsNullOrEmpty(subdomain))

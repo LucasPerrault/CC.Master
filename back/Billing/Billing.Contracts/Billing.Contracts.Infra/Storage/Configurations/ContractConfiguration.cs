@@ -19,6 +19,7 @@ namespace Billing.Contracts.Infra.Storage.Configurations
             builder.Property(d => d.ArchivedAt).HasColumnName("ArchivedAt");
 
             builder.HasOne(d => d.Distributor).WithMany().HasForeignKey(d => d.DistributorId);
+            builder.HasOne(d => d.Client).WithMany(c => c.Contracts).HasForeignKey(d => d.ClientId);
         }
     }
 }
