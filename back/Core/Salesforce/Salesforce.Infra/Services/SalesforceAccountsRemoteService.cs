@@ -2,7 +2,6 @@
 using Salesforce.Domain.Interfaces;
 using Salesforce.Domain.Models;
 using Salesforce.Infra.DTOs;
-using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
 

@@ -41,7 +41,6 @@ using Storage.Web;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.Text.Encodings.Web;
 using System.Text.Json.Serialization;
 using TeamNotification.Web;
 using Tools.Web;
@@ -151,7 +150,7 @@ namespace CloudControl.Web
                     .AddEntityFrameworkQuerying()
                     .ConfigureLuccaApiForInstances();
             });
-         
+
             services.AddMvc().AddLuccaApi(o =>
             {
                 o.ShouldIncludeFullExceptionDetails = _hostingEnvironment.IsDevelopment();
