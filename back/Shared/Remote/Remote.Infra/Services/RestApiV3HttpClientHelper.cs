@@ -51,6 +51,11 @@ namespace Remote.Infra.Services
             return PostGenericObjectResponseAsync<TForm, RestApiV3Response<TResult>>(urlSegment, content, queryParams);
         }
 
+        public Task PostObjectResponseAsync<TForm>(string urlSegment, TForm content, Dictionary<string, string> queryParams)
+        {
+            return PostGenericObjectResponseAsync<TForm>(urlSegment, content, queryParams);
+        }
+
         public Task<RestApiV3Response<TResult>> PostObjectResponseAsync<TForm, TResult>(TForm content, Dictionary<string, string> queryParams)
         {
             return PostGenericObjectResponseAsync<TForm, RestApiV3Response<TResult>>(content, queryParams);

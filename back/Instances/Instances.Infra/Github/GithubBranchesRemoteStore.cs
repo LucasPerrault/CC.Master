@@ -23,7 +23,7 @@ namespace Instances.Infra.Github
         {
             try
             {
-                await _httpClientHelper.PostObjectResponseAsync<object, object>
+                await _httpClientHelper.PostObjectResponseAsync<object>
                 (
                     "createDefaultBranches",
                     new { Id = codeSource.Id },

@@ -59,9 +59,19 @@ namespace Remote.Infra.Services
             return PostGenericObjectResponseAsync<TForm, TResult>(string.Empty, content, queryParams);
         }
 
+        public Task PostGenericObjectResponseAsync<TForm>(TForm content, Dictionary<string, string> queryParams)
+        {
+            return PostGenericObjectResponseAsync<TForm>(string.Empty, content, queryParams);
+        }
+
         public Task<TResult> PostGenericObjectResponseAsync<TForm, TResult>(string urlSegment, TForm content, Dictionary<string, string> queryParams)
         {
             return GetRequestWithContentResponseAsync<TForm, TResult>(HttpMethod.Post, urlSegment, queryParams, content);
+        }
+
+        public Task PostGenericObjectResponseAsync<TForm>(string urlSegment, TForm content, Dictionary<string, string> queryParams)
+        {
+            return GetRequestWithContentResponseAsync<TForm>(HttpMethod.Post, urlSegment, queryParams, content);
         }
 
         public Task<TResult> PutGenericObjectResponseAsync<TForm, TResult>(string id, TForm content, Dictionary<string, string> queryParams)
@@ -99,6 +109,17 @@ namespace Remote.Infra.Services
             return await ParseResponseAsync<TResult>(response);
         }
 
+        public async Task GetRequestWithContentResponseAsync<TForm>(HttpMethod method, string subRoute, Dictionary<string, string> queryParams, TForm content)
+        {
+            var requestMessage = BuildHttpRequestMessage(method, subRoute, queryParams);
+
+            using var httpContent = content.ToJsonPayload();
+            requestMessage.Content = httpContent;
+
+            var response = await _httpClient.SendAsync(requestMessage);
+            response.EnsureSuccessStatusCode();
+        }
+
         public HttpRequestMessage BuildHttpRequestMessage(HttpMethod method, string subRoute, Dictionary<string, string> queryParams)
         {
             var requestUri = QueryHelpers.AddQueryString(subRoute, queryParams);
@@ -112,14 +133,14 @@ namespace Remote.Infra.Services
 
         private async Task<TResponse> ParseResponseAsync<TResponse>(HttpResponseMessage response)
         {
-            var responseString = await response.Content.ReadAsStringAsync();
+            var responseString = await response.Content.ReadAsStreamAsync();
 
             if (response.IsSuccessStatusCode)
             {
-                return Serializer.Deserialize<TResponse>(responseString);
+                return await Serializer.DeserializeAsync<TResponse>(responseString);
             }
 
-            var errorMessage = _errorMessageFunc(Serializer.Deserialize<TError>(responseString));
+            var errorMessage = _errorMessageFunc(await Serializer.DeserializeAsync<TError>(responseString));
             throw new RemoteServiceException(_remoteApiDescription, response.StatusCode, errorMessage);
 
         }
