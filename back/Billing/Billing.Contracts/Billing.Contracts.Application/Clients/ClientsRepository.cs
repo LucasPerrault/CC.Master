@@ -4,7 +4,9 @@ using Billing.Contracts.Domain.Exceptions;
 using Salesforce.Domain.Interfaces;
 using Salesforce.Domain.Models;
 using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace Billing.Contracts.Application.Clients
@@ -14,18 +16,27 @@ namespace Billing.Contracts.Application.Clients
         private readonly IClientsStore _clientsStore;
         private readonly ILegacyClientsRemoteService _legacyClientsRemoteService;
         private readonly ClientRightFilter _clientRightFilter;
+        private readonly ClaimsPrincipal _claimsPrincipal;
         private readonly ISalesforceAccountsRemoteService _salesforceAccountsRemoteService;
 
         public ClientsRepository(
             IClientsStore clientsStore,
             ILegacyClientsRemoteService legacyClientsRemoteService,
             ClientRightFilter clientRightFilter,
+            ClaimsPrincipal claimsPrincipal,
             ISalesforceAccountsRemoteService salesforceAccountsRemoteService)
         {
             _clientsStore = clientsStore;
             _legacyClientsRemoteService = legacyClientsRemoteService;
             _clientRightFilter = clientRightFilter;
+            _claimsPrincipal = claimsPrincipal;
             _salesforceAccountsRemoteService = salesforceAccountsRemoteService;
+        }
+
+        public async Task<List<Client>> GetAsync()
+        {
+            var accessRight = await _clientRightFilter.GetReadAccessAsync(_claimsPrincipal);
+            return await _clientsStore.GetAsync(accessRight, ClientFilter.All);
         }
 
         public async Task PutAsync(Guid externalId, Client client, string subdomain)

@@ -12,6 +12,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\..\..\Core\Proxy\Proxy.Infra\Proxy.Infra.csproj" />
+      <ProjectReference Include="..\..\..\Core\Rights\Rights.Web\Rights.Web.csproj" />
       <ProjectReference Include="..\Billing.Contracts.Application\Billing.Contracts.Application.csproj" />
       <ProjectReference Include="..\Billing.Contracts.Infra\Billing.Contracts.Infra.csproj" />
     </ItemGroup>

@@ -2,6 +2,8 @@
 using Billing.Contracts.Domain.Contracts;
 using Lucca.Core.Api.Abstractions.Paging;
 using Microsoft.AspNetCore.Mvc;
+using Rights.Domain;
+using Rights.Web.Attributes;
 using System.Threading.Tasks;
 
 namespace Billing.Contracts.Web
@@ -17,6 +19,7 @@ namespace Billing.Contracts.Web
         }
 
         [HttpGet]
+        [ForbidIfMissing(Operation.ReadContracts)]
         public async Task<Page<Contract>> GetAsync()
         {
             var contracts = await _contractsRepository.GetAsync();
