@@ -20,13 +20,6 @@ namespace Billing.Contracts.Infra.Storage.Stores
             _dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
         }
 
-        public Task<Client> GetByIdAsync(int id)
-        {
-            return _dbContext
-                .FindAsync<Client>(id)
-                .AsTask();
-        }
-
         public Task<List<Client>> GetAsync(AccessRight accessRight, ClientFilter filter)
         {
             return _dbContext.Set<Client>()
