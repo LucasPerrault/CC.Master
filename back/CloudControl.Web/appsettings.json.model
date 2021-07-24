@@ -124,5 +124,15 @@
                 "Demos": "ilucca-demo.net"
             }
         }
+    },
+    "AdvancedFilters": {
+        "Routes": {
+            "HostSources": {
+                "CloudControlHost": "https://cc.ilucca.local"
+            },
+            "TenantSources": {
+                "EstablishmentsEndpoint": "api/establishments"
+            }
+        }
     }
 }

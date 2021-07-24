@@ -1,3 +1,4 @@
+using AdvancedFilters.Web;
 using Authentication.Web;
 using Billing.Cmrr.Infra.Storage;
 using Billing.Cmrr.Web;
@@ -86,8 +87,8 @@ namespace CloudControl.Web
             ConfigureBilling(services, configuration);
             ConfigureInstances(services, configuration);
             ConfigureEmails(services, configuration);
+            ConfigureAdvancedFilters(services, configuration);
         }
-
         private void ConfigureCulture(IServiceCollection services)
         {
             CultureInfo.DefaultThreadCurrentCulture = CultureInfo.GetCultureInfo("fr");
@@ -239,6 +240,11 @@ namespace CloudControl.Web
         public virtual void ConfigureInstances(IServiceCollection services, AppConfiguration configuration)
         {
             InstancesConfigurer.ConfigureServices(services, configuration.Instances);
+        }
+
+        public virtual void ConfigureAdvancedFilters(IServiceCollection services, AppConfiguration configuration)
+        {
+            AdvancedFiltersConfigurer.ConfigureServices(services, configuration.AdvancedFilters);
         }
 
         public virtual void ConfigureLogs(IServiceCollection services)

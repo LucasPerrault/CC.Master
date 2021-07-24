@@ -1,3 +1,4 @@
+using AdvancedFilters.Web;
 using Authentication.Infra.Configurations;
 using Billing.Contracts.Infra.Configurations;
 using Cache.Web;
@@ -35,6 +36,7 @@ namespace CloudControl.Web.Configuration
         };
 
         public SqlConfiguration SqlInfos { get; set; }
+        public AdvancedFiltersConfiguration AdvancedFilters { get; set; }
     }
 
     public class SqlConfiguration
