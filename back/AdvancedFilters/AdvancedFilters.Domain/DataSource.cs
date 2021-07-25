@@ -32,5 +32,6 @@ namespace AdvancedFilters.Domain
     {
         public DataSources Source { get; set; }
         public IDataSourceRoute Route { get; set; }
+        public IDataSourceAuthentication Authentication { get; set; }
     }
 }

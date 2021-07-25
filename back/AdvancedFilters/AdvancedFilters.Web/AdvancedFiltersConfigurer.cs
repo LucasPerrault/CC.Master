@@ -11,6 +11,7 @@ namespace AdvancedFilters.Web
     public class AdvancedFiltersConfiguration
     {
         public RoutesConfiguration Routes { get; set; }
+        public AuthenticationConfiguration Auth { get; set; }
     }
 
     public static class AdvancedFiltersConfigurer
@@ -26,12 +27,14 @@ namespace AdvancedFilters.Web
         public static Dictionary<DataSources, DataSource> GetAll(AdvancedFiltersConfiguration configuration)
         {
             var routes = DataSourceRouteMapper.ToRoutes(configuration.Routes);
+            var auths = DataSourceAuthMapper.ToAuths(configuration.Auth);
 
             return Enum.GetValues(typeof(DataSources)).Cast<DataSources>()
                 .ToDictionary(s => s, s => new DataSource
                 {
                     Source = s,
-                    Route = routes[s]
+                    Route = routes[s],
+                    Authentication = auths[s]
                 });
         }
     }
