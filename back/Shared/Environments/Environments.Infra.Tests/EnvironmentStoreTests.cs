@@ -95,7 +95,7 @@ namespace Environments.Infra.Tests
         public async Task ShouldReturnEnvironmentWhenDistributorMatches()
         {
             var dbContext = InMemoryDbHelper.InitialiseDb<EnvironmentsDbContext>("Mocked", o => new EnvironmentsDbContext(o));
-            dbContext.Add(new Distributor { Id = 777, Code = "ApertureScience" });
+            dbContext.Add(new Distributor { Id = 777 });
             dbContext.Add
             (
                 new Environment
@@ -113,7 +113,7 @@ namespace Environments.Infra.Tests
             {
                 new EnvironmentAccessRight
                 (
-                    AccessRight.ForDistributor("ApertureScience"),
+                    AccessRight.ForDistributor(777),
                     PurposeAccessRight.ForAll
                 )
             }, new EnvironmentFilter());
@@ -141,7 +141,7 @@ namespace Environments.Infra.Tests
             {
                 new EnvironmentAccessRight
                 (
-                    AccessRight.ForDistributor("BlackMesa"),
+                    AccessRight.ForDistributor(333),
                     PurposeAccessRight.ForAll
                 )
             }, new EnvironmentFilter());
@@ -152,7 +152,7 @@ namespace Environments.Infra.Tests
         public async Task ShouldReturnEnvironmentWhenOneAccessCompletelyMatches()
         {
             var dbContext = InMemoryDbHelper.InitialiseDb<EnvironmentsDbContext>("Mocked", o => new EnvironmentsDbContext(o));
-            dbContext.Add(new Distributor { Id = 777, Code = "ApertureScience" });
+            dbContext.Add(new Distributor { Id = 777 });
             dbContext.Add
             (
                 new Environment
@@ -171,7 +171,7 @@ namespace Environments.Infra.Tests
             {
                 new EnvironmentAccessRight
                 (
-                    AccessRight.ForDistributor("ApertureScience"),
+                    AccessRight.ForDistributor(777),
                     PurposeAccessRight.ForSome(EnvironmentPurpose.Lucca)
                 )
             }, new EnvironmentFilter());
@@ -201,12 +201,12 @@ namespace Environments.Infra.Tests
             {
                 new EnvironmentAccessRight
                 (
-                    AccessRight.ForDistributor("BlackMesa"),
+                    AccessRight.ForDistributor(333),
                     PurposeAccessRight.ForSome(EnvironmentPurpose.Lucca)
                 ),
                 new EnvironmentAccessRight
                 (
-                    AccessRight.ForDistributor("ApertureScience"),
+                    AccessRight.ForDistributor(777),
                     PurposeAccessRight.ForSome(EnvironmentPurpose.Contractual)
                 ),
             }, new EnvironmentFilter());

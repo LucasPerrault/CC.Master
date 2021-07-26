@@ -8,6 +8,7 @@ namespace Distributors.Web
     {
         public static void ConfigureServices(IServiceCollection services)
         {
+            services.AddSingleton<DistributorsCache>();
             services.AddScoped<IDistributorsStore, DistributorsStore>();
             services.AddScoped<DistributorDomainsStore>();
         }

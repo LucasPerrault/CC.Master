@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Distributors.Domain.Models;
+using System;
 using Users.Domain;
 
 namespace Users.Infra
@@ -30,7 +31,7 @@ namespace Users.Infra
 
     internal static class LuccaUserExtensions
     {
-        public static User ToUser(this LuccaUser user)
+        public static User ToUser(this LuccaUser user, Distributor distributor)
         {
             return new User
             {
@@ -39,7 +40,7 @@ namespace Users.Infra
                 LastName = user.LastName,
                 Mail = user.Mail,
                 Login = user.Login,
-                DistributorCode = user.Department.Code,
+                DistributorId = distributor.Id,
                 ManagerId = user.ManagerId,
                 DepartmentId = user.DepartmentId,
                 LegalEntityId = user.LegalEntityId,

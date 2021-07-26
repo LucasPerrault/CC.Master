@@ -102,7 +102,7 @@ namespace Instances.Infra.Storage.Stores
             return access switch
             {
                 NoAccessRight _ => _ => false,
-                DistributorCodeAccessRight r => d => d.Distributor.Code == r.DistributorCode || d.IsTemplate,
+                DistributorAccessRight r => d => d.DistributorId == r.DistributorId || d.IsTemplate,
                 AllAccessRight _ => _ => true,
                 _ => throw new ApplicationException($"Unknown type of demo filter right {access}")
             };

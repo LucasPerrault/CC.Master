@@ -26,7 +26,7 @@ namespace Instances.Domain.Demos.Filtering
                     return currentUserScope switch
                     {
                         AccessRightScope.AllDistributors => AccessRight.All,
-                        AccessRightScope.OwnDistributorOnly => AccessRight.ForDistributor(userPrincipal.User.DistributorCode),
+                        AccessRightScope.OwnDistributorOnly => AccessRight.ForDistributor(userPrincipal.User.DistributorId),
                         _ => throw new ApplicationException($"Unhandled scope : {currentUserScope}")
                     };
                 case CloudControlApiKeyClaimsPrincipal _:
