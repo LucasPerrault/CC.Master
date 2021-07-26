@@ -25,7 +25,6 @@ namespace Rights.Infra.Models
         public static readonly string ApiFields = $"{nameof(LegalEntityId)},{nameof(Scope)},{nameof(ExternalEntityId)},{nameof(OperationId)}";
 
         public int? LegalEntityId { get; set; }
-        public Scope Scope { get; set; }
         public int ExternalEntityId { get; set; }
         public int OperationId { get; set; }
     }
@@ -36,7 +35,7 @@ namespace Rights.Infra.Models
         {
             return ToByteArrays(permission).SelectMany(b => b).ToArray();
         }
-        public static byte[] ToBytes(this List<Permission> permissions)
+        public static byte[] ToBytes(this List<IUserPermission> permissions)
         {
             return permissions.SelectMany(ToByteArrays).SelectMany(b => b).ToArray();
         }
@@ -71,38 +70,36 @@ namespace Rights.Infra.Models
             return bytes.ToBatches(13).Select(b => b.ToPermission()).ToList();
         }
 
-        public static byte[] ToBytes(this ApiKeyPermission permission)
+        public static byte[] ToBytes(this IApiKeyPermission permission)
         {
             return ToByteArrays(permission).SelectMany(b => b).ToArray();
         }
 
-        public static byte[] ToBytes(this List<ApiKeyPermission> permissions)
+        public static byte[] ToBytes(this List<IApiKeyPermission> permissions)
         {
             return permissions.SelectMany(ToByteArrays).SelectMany(b => b).ToArray();
         }
 
-        private static IEnumerable<byte[]> ToByteArrays(ApiKeyPermission permission)
+        private static IEnumerable<byte[]> ToByteArrays(IApiKeyPermission permission)
         {
             yield return BitConverter.GetBytes((ushort)permission.OperationId);
-            yield return BitConverter.GetBytes((ushort)permission.Scope);
             yield return BitConverter.GetBytes((ushort)permission.ExternalEntityId);
             yield return BitConverter.GetBytes((ushort)(permission.LegalEntityId ?? 0));
         }
 
-        public static ApiKeyPermission ToApiKeyPermission(this byte[] bytes)
+        public static IApiKeyPermission ToApiKeyPermission(this byte[] bytes)
         {
             return new ApiKeyPermission
             {
                 OperationId = BitConverter.ToUInt16(bytes, 0),
-                Scope = (Scope)BitConverter.ToUInt16(bytes, 2),
-                ExternalEntityId = BitConverter.ToUInt16(bytes, 4),
-                LegalEntityId = ParseNonDefault(bytes, 6),
+                ExternalEntityId = BitConverter.ToUInt16(bytes, 2),
+                LegalEntityId = ParseNonDefault(bytes, 4),
             };
         }
 
-        public static List<ApiKeyPermission> ToApiKeyPermissions(this byte[] bytes)
+        public static List<IApiKeyPermission> ToApiKeyPermissions(this byte[] bytes)
         {
-            return bytes.ToBatches(8).Select(b => b.ToApiKeyPermission()).ToList();
+            return bytes.ToBatches(6).Select(b => b.ToApiKeyPermission()).ToList();
         }
 
         private static ushort? ParseNonDefault(byte[] bytes, int index)

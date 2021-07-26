@@ -1,5 +1,6 @@
 using Cache.Abstractions;
 using Lucca.Core.Rights.Abstractions.Permissions;
+using Rights.Infra.Models;
 using Rights.Infra.Remote;
 using System;
 using System.Collections.Generic;
@@ -8,33 +9,41 @@ using System.Threading.Tasks;
 
 namespace Rights.Infra.Services
 {
-    public class ApiKeyPermissionsCache : InMemoryCache<int, List<IApiKeyPermission>>
-    {
-        public ApiKeyPermissionsCache() : base(TimeSpan.FromSeconds(30))
-        { }
-    }
 
+    public class ApiKeyPermissionsCacheKey : CacheKey<byte[]>
+    {
+        private int UserId { get; }
+
+        public ApiKeyPermissionsCacheKey(int userId)
+        {
+            UserId = userId;
+        }
+
+        public override string Key => $"api-key-permissions:{UserId}";
+    }
     public class ApiKeyPermissionsService
     {
         private readonly ApiKeyPermissionsRemoteService _remoteService;
-        private readonly ApiKeyPermissionsCache _permissionsCache;
+        private readonly ICacheService _cacheService;
 
-        public ApiKeyPermissionsService(ApiKeyPermissionsRemoteService remoteService, ApiKeyPermissionsCache permissionsCache)
+        public ApiKeyPermissionsService(ApiKeyPermissionsRemoteService remoteService, ICacheService cacheService)
         {
             _remoteService = remoteService;
-            _permissionsCache = permissionsCache;
+            _cacheService = cacheService;
         }
 
         internal async Task<IReadOnlyCollection<IApiKeyPermission>> GetApiKeyPermissionsAsync(int apiKeyId, ISet<int> operations)
         {
-            if (_permissionsCache.TryGet(apiKeyId, out var cachedPermissions))
+            var key = new ApiKeyPermissionsCacheKey(apiKeyId);
+            var cachedPermissionBytes = await _cacheService.GetAsync(key);
+            if (cachedPermissionBytes != null)
             {
-                return cachedPermissions;
+                return cachedPermissionBytes.ToApiKeyPermissions();
             }
 
             var permissions = (await _remoteService.GetApiKeyPermissionsAsync(apiKeyId))
                 .ToList();
-            _permissionsCache.Cache(apiKeyId, permissions);
+            await _cacheService.SetAsync(key, permissions.ToBytes(), CacheInvalidation.After(TimeSpan.FromMinutes(2)));
             return permissions;
         }
     }

@@ -1,5 +1,6 @@
 ﻿using FluentAssertions;
 using Lucca.Core.Rights.Abstractions;
+using Lucca.Core.Rights.Abstractions.Permissions;
 using Rights.Infra.Models;
 using System.Collections;
 using System.Collections.Generic;
@@ -46,7 +47,7 @@ namespace Rights.Infra.Tests.Extensions
 
     public class PermissionGenerator : IEnumerable<object[]>
     {
-        public static readonly List<Permission> Permissions = new List<Permission>
+        public static readonly List<IUserPermission> Permissions = new List<IUserPermission>
         {
             new Permission
             {
@@ -103,23 +104,15 @@ namespace Rights.Infra.Tests.Extensions
 
     public class ApiKeyPermissionGenerator : IEnumerable<object[]>
     {
-        public static readonly List<ApiKeyPermission> ApiKeyPermissions = new List<ApiKeyPermission>
+        public static readonly List<IApiKeyPermission> ApiKeyPermissions = new List<IApiKeyPermission>
         {
             new ApiKeyPermission
             {
-                Scope = Scope.AllDepartments,
                 OperationId = 3,
                 ExternalEntityId = 25,
             },
             new ApiKeyPermission
             {
-                Scope = Scope.Manager,
-                OperationId = 3,
-                ExternalEntityId = 25,
-            },
-            new ApiKeyPermission
-            {
-                Scope = Scope.AllDepartments,
                 OperationId = 3,
                 ExternalEntityId = 25,
                 LegalEntityId = 1,
