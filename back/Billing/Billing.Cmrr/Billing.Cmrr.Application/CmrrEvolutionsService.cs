@@ -95,10 +95,8 @@ namespace Billing.Cmrr.Application
                 {
                     continue;
                 }
-                line.Amount += situation.ContractSituation.EndPeriodCount?.EuroTotal ?? 0;
-
-                var diff = (situation.ContractSituation.EndPeriodCount?.EuroTotal ?? 0) - (situation.ContractSituation.StartPeriodCount?.EuroTotal ?? 0);
-                ApplyAmountAccordingToLifeCycle(line, situation.ContractSituation.LifeCycle, diff);
+                line.Amount += situation.EndPeriodAmount;
+                GetDiffIncrementAction(situation.ContractSituation.LifeCycle, situation.PartialDiff)(line);
             }
             return line;
         }
@@ -117,30 +115,18 @@ namespace Billing.Cmrr.Application
             }
         }
 
-        private void ApplyAmountAccordingToLifeCycle(CmrrEvolutionLine line, CmrrLifeCycle lifeCycle, decimal amount)
+        private Action<CmrrEvolutionLine> GetDiffIncrementAction(CmrrLifeCycle lifeCycle, decimal diff)
         {
-            switch (lifeCycle)
+            return lifeCycle switch
             {
-                case CmrrLifeCycle.Upsell:
-                    line.Upsell += amount;
-                    break;
-                case CmrrLifeCycle.Creation:
-                    line.Creation += amount;
-                    break;
-                case CmrrLifeCycle.Expansion:
-                    line.Expansion += amount;
-                    break;
-                case CmrrLifeCycle.Contraction:
-                    line.Contraction += amount;
-                    break;
-                case CmrrLifeCycle.Termination:
-                    line.Termination += amount;
-                    break;
-                default:
-                    throw new InvalidEnumArgumentException(nameof(lifeCycle), (int)lifeCycle, typeof(CmrrLifeCycle));
-            }
+                CmrrLifeCycle.Upsell => l => l.Upsell += diff,
+                CmrrLifeCycle.Creation => l => l.Creation += diff,
+                CmrrLifeCycle.Expansion => l => l.Expansion += diff,
+                CmrrLifeCycle.Contraction => l => l.Contraction += diff,
+                CmrrLifeCycle.Termination => l => l.Termination += diff,
+                _ => throw new InvalidEnumArgumentException(nameof(lifeCycle), (int)lifeCycle, typeof(CmrrLifeCycle))
+            };
         }
-
 
         private class CountKey : ValueObject
         {
