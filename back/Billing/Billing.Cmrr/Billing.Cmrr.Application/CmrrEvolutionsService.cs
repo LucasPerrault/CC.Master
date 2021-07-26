@@ -96,7 +96,7 @@ namespace Billing.Cmrr.Application
                     continue;
                 }
                 line.Amount += situation.EndPeriodAmount;
-                GetDiffIncrementAction(situation.ContractSituation.LifeCycle, situation.PartialDiff)(line);
+                GetLifeCycleIncrementFunc(situation.ContractSituation.LifeCycle)(situation.PartialDiff)(line);
             }
             return line;
         }
@@ -115,15 +115,15 @@ namespace Billing.Cmrr.Application
             }
         }
 
-        private Action<CmrrEvolutionLine> GetDiffIncrementAction(CmrrLifeCycle lifeCycle, decimal diff)
+        private Func<decimal, Action<CmrrEvolutionLine>> GetLifeCycleIncrementFunc(CmrrLifeCycle lifeCycle)
         {
             return lifeCycle switch
             {
-                CmrrLifeCycle.Upsell => l => l.Upsell += diff,
-                CmrrLifeCycle.Creation => l => l.Creation += diff,
-                CmrrLifeCycle.Expansion => l => l.Expansion += diff,
-                CmrrLifeCycle.Contraction => l => l.Contraction += diff,
-                CmrrLifeCycle.Termination => l => l.Termination += diff,
+                CmrrLifeCycle.Upsell => d => l => l.Upsell += d,
+                CmrrLifeCycle.Creation => d => l => l.Creation += d,
+                CmrrLifeCycle.Expansion => d => l => l.Expansion += d,
+                CmrrLifeCycle.Contraction => d => l => l.Contraction += d,
+                CmrrLifeCycle.Termination => d => l => l.Termination += d,
                 _ => throw new InvalidEnumArgumentException(nameof(lifeCycle), (int)lifeCycle, typeof(CmrrLifeCycle))
             };
         }
