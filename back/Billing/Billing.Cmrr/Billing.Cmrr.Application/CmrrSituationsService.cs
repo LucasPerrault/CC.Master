@@ -160,19 +160,86 @@ namespace Billing.Cmrr.Application
             PopulateClientsSituation(cmrrSituation, situations, linesPerName.Keys);
         }
 
-        private static void PopulateClientsSituation(CmrrSituation cmrrSituation, IReadOnlyCollection<ContractAxisSectionSituation> situations, Dictionary<string, CmrrLine>.KeyCollection sections)
+        private void PopulateClientsSituation(CmrrSituation cmrrSituation, IReadOnlyCollection<ContractAxisSectionSituation> situations, Dictionary<string, CmrrLine>.KeyCollection sections)
         {
-            foreach (var situationGroup in situations.Where(s => sections.Contains(s.Breakdown.AxisSection.Name)).GroupBy(s => s.ContractSituation.Contract.ClientId))
+            var clientSituations = situations
+                .Where(s => sections.Contains(s.Breakdown.AxisSection.Name))
+                .GroupBy(s => s.ContractSituation.Contract.ClientId)
+                .Select(group => new ClientSituation(group.ToList()))
+                .OrderByDescending(s => s.Amount);
+
+            foreach (var clientSituation in clientSituations)
             {
-                if (situationGroup.All(c => c.ContractSituation.StartPeriodCount == null))
+                var amount = GetAmount(cmrrSituation, clientSituation);
+                if (amount is null)
                 {
-                    cmrrSituation.Clients.Acquired.Add(new CmrrClient { Name = situationGroup.First().ContractSituation.Contract.ClientName });
+                    continue;
                 }
 
-                if (situationGroup.All(c => c.ContractSituation.EndPeriodCount == null))
+                var topElement = CmrrAmountTopElement.FromRaw
+                (
+                    clientSituation.Amount,
+                    clientSituation.ClientId,
+                    CmrrAmountTopElementContract.FromRaw(0, clientSituation.ClientId, clientSituation.ClientName)
+                );
+                UpdateCmrrAmount(amount, clientSituation.Amount, clientSituation.UserCount, clientSituation.ClientId, null, topElement);
+            }
+        }
+
+        private enum ClientSituationType
+        {
+            NotInteresting,
+            Acquired,
+            Terminated
+        }
+
+        private class ClientSituation
+        {
+
+            public ClientSituationType Type { get; }
+            public string ClientName { get; }
+            public decimal Amount { get; }
+            public int ClientId { get; }
+            public int ContractCount { get; }
+            public int UserCount { get; }
+
+
+
+            public ClientSituation(List<ContractAxisSectionSituation> situations)
+            {
+                Type = GetSituationType(situations);
+                ClientName = situations.First().ContractSituation.Contract.ClientName;
+                ClientId = situations.First().ContractSituation.Contract.ClientId;
+                ContractCount = situations.Select(s => s.ContractSituation.ContractId).ToHashSet().Count;
+
+                Amount = Type switch
                 {
-                    cmrrSituation.Clients.Terminated.Add(new CmrrClient { Name = situationGroup.First().ContractSituation.Contract.ClientName });
+                    ClientSituationType.Acquired => situations.Sum(s => s.EndPeriodAmount),
+                    ClientSituationType.Terminated => situations.Sum(s => s.StartPeriodAmount),
+                    _ => Amount
+                };
+
+                UserCount = Type switch
+                {
+                    ClientSituationType.Acquired => situations.First().EndPeriodUserCount,
+                    ClientSituationType.Terminated => situations.First().StartPeriodUserCount,
+                    _ => UserCount
+                };
+            }
+
+            private static ClientSituationType GetSituationType(List<ContractAxisSectionSituation> situations)
+            {
+                if (situations.All(c => c.ContractSituation.StartPeriodCount == null))
+                {
+                    return ClientSituationType.Acquired;
                 }
+
+                if (situations.All(c => c.ContractSituation.EndPeriodCount == null))
+                {
+                    return ClientSituationType.Terminated;
+                }
+
+                return ClientSituationType.NotInteresting;
             }
         }
 
@@ -199,25 +266,72 @@ namespace Billing.Cmrr.Application
         }
 
         private void UpdateCmrrAmount
-         (
-            CmrrAmount amount,
+        (
+            CmrrAmount cmrrAmount,
             ContractAxisSectionSituation axisSectionSituation,
             Func<ContractAxisSectionSituation, decimal> amountFunc,
             Func<ContractAxisSectionSituation, int> userCountFunc,
             Func<ContractAxisSectionSituation, bool> shouldCountClientAndContracts
         )
         {
-            amount.Amount += amountFunc(axisSectionSituation);
-            amount.UserCount += userCountFunc(axisSectionSituation);
+            var amount = amountFunc(axisSectionSituation);
+            var userCount = userCountFunc(axisSectionSituation);
+            var clientId = shouldCountClientAndContracts(axisSectionSituation)
+                ? (int?)axisSectionSituation.ContractSituation.Contract.ClientId
+                : null;
+            var contractId = shouldCountClientAndContracts(axisSectionSituation)
+                ? (int?)axisSectionSituation.ContractSituation.ContractId
+                : null;
 
-            if (shouldCountClientAndContracts(axisSectionSituation))
+            UpdateCmrrAmount
+            (
+                cmrrAmount,
+                amount,
+                userCount,
+                clientId,
+                contractId,
+                CmrrAmountTopElement.FromSituation(axisSectionSituation, amount, userCount)
+            );
+        }
+
+        private void UpdateCmrrAmount
+        (
+            CmrrAmount cmrrAmount,
+            decimal amount,
+            int userCount,
+            int? clientId,
+            int? contractId,
+            CmrrAmountTopElement topElement
+        )
+        {
+            cmrrAmount.Amount += amount;
+            cmrrAmount.UserCount += userCount;
+
+            if (clientId.HasValue)
             {
-                amount.AddClient(axisSectionSituation.ContractSituation.Contract.ClientId);
-                amount.AddContract(axisSectionSituation.ContractSituation.ContractId);
+                cmrrAmount.AddClient(clientId.Value);
             }
 
-            if (amount.Top.Count < CmrrAmountTopElement.TopCount)
-                amount.Top.Add(CmrrAmountTopElement.FromSituation(axisSectionSituation, amountFunc(axisSectionSituation), userCountFunc(axisSectionSituation)));
+            if (contractId.HasValue)
+            {
+                cmrrAmount.AddContract(contractId.Value);
+            }
+
+            if (cmrrAmount.Top.Count < CmrrAmountTopElement.TopCount)
+            {
+                cmrrAmount.Top.Add(topElement);
+            }
+        }
+
+
+        private CmrrAmount GetAmount(CmrrSituation cmrrSituation, ClientSituation clientSituation)
+        {
+            return clientSituation.Type switch
+            {
+                ClientSituationType.Acquired => cmrrSituation.Clients.Acquired,
+                ClientSituationType.Terminated => cmrrSituation.Clients.Terminated,
+                _ => null
+            };
         }
 
         private CmrrAmount GetAmount(CmrrSubLine section, ContractAxisSectionSituation situation)
