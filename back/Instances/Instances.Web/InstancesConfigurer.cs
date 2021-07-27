@@ -116,7 +116,7 @@ namespace Instances.Web
             services.AddScoped<IClusterSelector, ClusterSelector>();
             services.AddScoped<ICodeSourcesStore, CodeSourcesStore>();
 
-            services.AddSingleton<ISubdomainValidationTranslator, SubdomainValidationTranslator>();
+            services.AddScoped<ISubdomainValidationTranslator, SubdomainValidationTranslator>();
             services.AddScoped<ISubdomainValidator, SubdomainValidator>();
 
             services.AddScoped<IDemoEmails, DemoEmails>();
