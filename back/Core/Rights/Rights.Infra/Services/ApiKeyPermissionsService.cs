@@ -1,4 +1,5 @@
 using Cache.Abstractions;
+using Lock;
 using Lucca.Core.Rights.Abstractions.Permissions;
 using Rights.Infra.Models;
 using Rights.Infra.Remote;
@@ -25,24 +26,34 @@ namespace Rights.Infra.Services
     {
         private readonly ApiKeyPermissionsRemoteService _remoteService;
         private readonly ICacheService _cacheService;
+        private readonly ILockService _lockService;
 
-        public ApiKeyPermissionsService(ApiKeyPermissionsRemoteService remoteService, ICacheService cacheService)
+        public ApiKeyPermissionsService(ApiKeyPermissionsRemoteService remoteService, ICacheService cacheService, ILockService lockService)
         {
             _remoteService = remoteService;
             _cacheService = cacheService;
+            _lockService = lockService;
         }
 
         internal async Task<IReadOnlyCollection<IApiKeyPermission>> GetApiKeyPermissionsAsync(int apiKeyId, ISet<int> operations)
         {
             var key = new ApiKeyPermissionsCacheKey(apiKeyId);
+
             var cachedPermissionBytes = await _cacheService.GetAsync(key);
             if (cachedPermissionBytes != null)
             {
                 return cachedPermissionBytes.ToApiKeyPermissions();
             }
 
-            var permissions = (await _remoteService.GetApiKeyPermissionsAsync(apiKeyId))
-                .ToList();
+            using var acquiredLock = await _lockService.TakeLockAsync(key.Key, TimeSpan.FromSeconds(10));
+
+            var permissionCachedByConcurrentProcess = await _cacheService.GetAsync(key);
+            if (permissionCachedByConcurrentProcess != null)
+            {
+                return permissionCachedByConcurrentProcess.ToApiKeyPermissions();
+            }
+
+            var permissions = (await _remoteService.GetApiKeyPermissionsAsync(apiKeyId)).ToList();
             await _cacheService.SetAsync(key, permissions.ToBytes(), CacheInvalidation.After(TimeSpan.FromMinutes(2)));
             return permissions;
         }
