@@ -1,5 +1,4 @@
 using Authentication.Domain;
-using Distributors.Domain;
 using Rights.Domain;
 using Rights.Domain.Filtering;
 using System;
@@ -10,12 +9,10 @@ namespace Billing.Cmrr.Domain
 {
     public class CmrrRightsFilter : ICmrrRightsFilter
     {
-        private readonly IDistributorsStore _distributorStore;
         private readonly RightsFilter _rightsFilter;
 
-        public CmrrRightsFilter(IDistributorsStore distributorStore, RightsFilter rightsFilter)
+        public CmrrRightsFilter(RightsFilter rightsFilter)
         {
-            _distributorStore = distributorStore;
             _rightsFilter = rightsFilter;
         }
 
@@ -24,16 +21,10 @@ namespace Billing.Cmrr.Domain
 
             return principal switch
             {
-                CloudControlUserClaimsPrincipal userPrincipal => await _rightsFilter.FilterByDistributorAsync(Operation.ReadContracts, userPrincipal.User.DistributorCode),
+                CloudControlUserClaimsPrincipal userPrincipal => await _rightsFilter.FilterByDistributorAsync(Operation.ReadContracts, userPrincipal.User.DistributorId),
                 CloudControlApiKeyClaimsPrincipal _ => AccessRight.All,
                 _ => throw new ApplicationException("Unhandled ClaimsPrincipal type")
             };
-        }
-
-        private async Task<AccessRight> GetDistributorIdAccessRightFromDistributorCodeAsync(string distributorCode)
-        {
-            var distributor = await _distributorStore.GetByCodeAsync(distributorCode);
-            return AccessRight.ForDistributorId(distributor.Id);
         }
     }
 

@@ -1,7 +1,9 @@
+using Distributors.Domain.Models;
 using Instances.Application.Specflow.Tests.Demos.Models;
 using Rights.Domain;
 using Rights.Domain.Abstractions;
 using System.Collections.Generic;
+using System.Linq;
 using TechTalk.SpecFlow;
 using Testing.Infra;
 
@@ -25,7 +27,8 @@ namespace Instances.Application.Specflow.Tests.Demos.Steps
                 [op] = scope
             };
 
-            _demosContext.TestPrincipal = new TestPrincipal(departmentCode, operationDict);
+            var distributorId = _demosContext.DbContext.Set<Distributor>().Single(d => d.Code == departmentCode).Id;
+            _demosContext.TestPrincipal = new TestPrincipal(distributorId, operationDict);
         }
     }
 }

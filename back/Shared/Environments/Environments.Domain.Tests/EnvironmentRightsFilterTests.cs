@@ -15,7 +15,7 @@ namespace Environments.Domain.Tests
     {
 
         private readonly Mock<IRightsService> _rightsServiceMock = new Mock<IRightsService>();
-        private const string DepartmentCode = "DepCode";
+        private const int DistributorId = 123;
 
         [Theory]
         [MemberData(nameof(TestData))]
@@ -33,7 +33,7 @@ namespace Environments.Domain.Tests
                 {
                     FirstName = "Bernard",
                     LastName = "Martin",
-                    DistributorCode = DepartmentCode
+                    DistributorId = DistributorId
                 }
             });
 
@@ -80,7 +80,7 @@ namespace Environments.Domain.Tests
                 {
                     new EnvironmentAccessRight
                     (
-                        AccessRight.ForDistributor(DepartmentCode),
+                        AccessRight.ForDistributor(DistributorId),
                         PurposeAccessRight.ForSome(EnvironmentPurpose.InternalUse)
                     )
                 }
@@ -117,7 +117,7 @@ namespace Environments.Domain.Tests
                     ),
                     new EnvironmentAccessRight
                     (
-                        AccessRight.ForDistributor(DepartmentCode),
+                        AccessRight.ForDistributor(DistributorId),
                         PurposeAccessRight.ForSome(EnvironmentPurpose.Lucca, EnvironmentPurpose.Security, EnvironmentPurpose.Virgin)
                     )
                 }

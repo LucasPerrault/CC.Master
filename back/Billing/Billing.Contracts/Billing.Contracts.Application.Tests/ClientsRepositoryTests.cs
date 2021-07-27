@@ -32,11 +32,11 @@ namespace Billing.Contracts.Application.Tests
 
         private static readonly Distributor Partner = new Distributor
         {
-            Id = 1, Code = "PAR", Name = "Partner"
+            Id = 1, Name = "Partner"
         };
         private static readonly Distributor Lucca = new Distributor
         {
-            Id = 2, Code = "LUC", Name = "Lucca"
+            Id = 2, Name = "Lucca"
         };
 
         [Fact]
@@ -218,7 +218,7 @@ namespace Billing.Contracts.Application.Tests
                         Id = 1,
                         DepartmentId = 1,
                         LegalEntityId = 1,
-                        DistributorCode = distributor.Code,
+                        DistributorId = distributor.Id,
                         ManagerId = 0,
                     }
                 }

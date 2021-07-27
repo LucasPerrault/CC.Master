@@ -20,7 +20,7 @@ namespace Instances.Domain.Demos.Filtering
         {
             return principal switch
             {
-                CloudControlUserClaimsPrincipal userPrincipal => await _rightsFilter.FilterByDistributorAsync(Operation.Demo, userPrincipal.User.DistributorCode),
+                CloudControlUserClaimsPrincipal userPrincipal => await _rightsFilter.FilterByDistributorAsync(Operation.Demo, userPrincipal.User.DistributorId),
                 CloudControlApiKeyClaimsPrincipal _ => AccessRight.All,
                 _ => throw new ApplicationException("Unhandled ClaimsPrincipal type")
             };

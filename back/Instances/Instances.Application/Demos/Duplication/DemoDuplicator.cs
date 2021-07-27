@@ -125,7 +125,8 @@ namespace Instances.Application.Demos.Duplication
                 throw new ApplicationException("Unsupported claims principal type");
             }
 
-            if (user.User.DistributorCode == request.DistributorCode)
+            var distributor = await _distributorsStore.GetByCodeAsync(request.DistributorCode);
+            if (user.User.DistributorId == distributor.Id)
             {
                 return;
             }

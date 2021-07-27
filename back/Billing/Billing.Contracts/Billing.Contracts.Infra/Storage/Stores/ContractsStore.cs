@@ -6,7 +6,6 @@ using Microsoft.EntityFrameworkCore;
 using Rights.Domain.Filtering;
 using Storage.Infra.Extensions;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
@@ -58,8 +57,7 @@ namespace Billing.Contracts.Infra.Storage.Stores
             return accessRight switch
             {
                 NoAccessRight _ => _ => false,
-                DistributorCodeAccessRight r => c => c.Distributor.Code == r.DistributorCode,
-                DistributorIdAccessRight r => c => c.DistributorId == r.DistributorId,
+                DistributorAccessRight r => c => c.DistributorId == r.DistributorId,
                 AllAccessRight _ => _ => true,
                 _ => throw new ApplicationException($"Unknown type of contract filter right {accessRight}")
             };

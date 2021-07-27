@@ -13,13 +13,13 @@ namespace Rights.Domain.Filtering
             _rightsService = rightsService;
         }
 
-        public async Task<AccessRight> FilterByDistributorAsync(Operation operation, string distributorCode)
+        public async Task<AccessRight> FilterByDistributorAsync(Operation operation, int distributorId)
         {
             var currentUserScope = await _rightsService.GetUserOperationHighestScopeAsync(operation);
             return currentUserScope switch
             {
                 AccessRightScope.AllDistributors => AccessRight.All,
-                AccessRightScope.OwnDistributorOnly => AccessRight.ForDistributor(distributorCode),
+                AccessRightScope.OwnDistributorOnly => AccessRight.ForDistributor(distributorId),
                 _ => throw new ApplicationException($"Unhandled scope : {currentUserScope}")
             };
         }

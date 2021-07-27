@@ -80,14 +80,14 @@ namespace Users.Infra.Storage.Stores
             {
                 NoAccessRight _ => _ => false,
                 AllAccessRight _ => _ => true,
-                DistributorCodeAccessRight right => await ToDistributorExpressionAsync(right.DistributorCode),
+                DistributorAccessRight right => await ToDistributorExpressionAsync(right.DistributorId),
                 _ => throw new ApplicationException($"Unhandled access right {typeof(AccessRight)}")
             };
         }
 
-        private async Task<Expression<Func<SimpleUser, bool>>> ToDistributorExpressionAsync(string distributorCode)
+        private async Task<Expression<Func<SimpleUser, bool>>> ToDistributorExpressionAsync(int distributorId)
         {
-            var distributor = await _distributorsStore.GetByCodeAsync(distributorCode);
+            var distributor = await _distributorsStore.GetByIdAsync(distributorId);
             return user => user.DepartmentId == distributor.DepartmentId;
         }
     }

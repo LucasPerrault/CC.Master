@@ -11,10 +11,7 @@ namespace Rights.Domain.Filtering
         public static AccessRight All => new AllAccessRight();
 
         public static AccessRight ForDistributor
-            (string distributorCode) => new DistributorCodeAccessRight(distributorCode);
-
-        public static AccessRight ForDistributorId
-            (int distributorId) => new DistributorIdAccessRight(distributorId);
+            (int distributorId) => new DistributorAccessRight(distributorId);
 
         public static AccessRight None => new NoAccessRight();
     }
@@ -30,27 +27,10 @@ namespace Rights.Domain.Filtering
         }
     }
 
-    public class DistributorCodeAccessRight : AccessRight
-    {
-        public string DistributorCode { get; }
-        public DistributorCodeAccessRight(string distributorCode)
-        {
-            DistributorCode = distributorCode;
-        }
-        protected override IEnumerable<object> EqualityComponents
-        {
-            get
-            {
-                yield return typeof(DistributorCodeAccessRight);
-                yield return DistributorCode;
-            }
-        }
-    }
-
-    public class DistributorIdAccessRight : AccessRight
+    public class DistributorAccessRight : AccessRight
     {
         public int DistributorId { get; }
-        public DistributorIdAccessRight(int distributorId)
+        public DistributorAccessRight(int distributorId)
         {
             DistributorId = distributorId;
         }
@@ -58,7 +38,7 @@ namespace Rights.Domain.Filtering
         {
             get
             {
-                yield return typeof(DistributorIdAccessRight);
+                yield return typeof(DistributorAccessRight);
                 yield return DistributorId;
             }
         }

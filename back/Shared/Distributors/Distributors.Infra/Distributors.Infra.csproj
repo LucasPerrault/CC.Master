@@ -12,6 +12,7 @@
     </ItemGroup>
 
     <ItemGroup>
+        <ProjectReference Include="..\..\..\Core\Cache\Cache.Abstractions\Cache.Abstractions.csproj" />
         <ProjectReference Include="..\..\..\Core\Storage\Storage.Infra\Storage.Infra.csproj" />
         <ProjectReference Include="..\Distributors.Domain\Distributors.Domain.csproj" />
     </ItemGroup>
