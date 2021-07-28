@@ -19,7 +19,12 @@
 
     public class HostDataSourceRoute : IDataSourceRoute
     {
+
         public DataSourceRouteType Type => DataSourceRouteType.Host;
-        public string Host { get; set; }
+        public string Host { get; }
+        public HostDataSourceRoute(string host)
+        {
+            Host = host;
+        }
     }
 }
