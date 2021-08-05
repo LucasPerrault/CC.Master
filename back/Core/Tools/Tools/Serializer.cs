@@ -9,6 +9,11 @@ namespace Tools
 
         public static T Deserialize<T>(string content)
         {
+            if (string.IsNullOrEmpty(content))
+            {
+                return default;
+            }
+
             return JsonSerializer.Deserialize<T>
             (
                 content,
@@ -21,6 +26,11 @@ namespace Tools
 
         public static async Task<T> DeserializeAsync<T>(Stream content)
         {
+            if (content.Length == 0)
+            {
+                return default;
+            }
+
             return await JsonSerializer.DeserializeAsync<T>
             (
                 content,
