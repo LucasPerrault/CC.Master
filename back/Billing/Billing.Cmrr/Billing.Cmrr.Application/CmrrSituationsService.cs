@@ -221,8 +221,8 @@ namespace Billing.Cmrr.Application
 
                 UserCount = Type switch
                 {
-                    ClientSituationType.Acquired => situations.First().EndPeriodUserCount,
-                    ClientSituationType.Terminated => situations.First().StartPeriodUserCount,
+                    ClientSituationType.Acquired => situations.Max(s => s.EndPeriodUserCount),
+                    ClientSituationType.Terminated => situations.Max(s => s.StartPeriodUserCount),
                     _ => UserCount
                 };
             }
