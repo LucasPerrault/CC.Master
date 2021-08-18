@@ -1,29 +1,42 @@
+using Cache.Abstractions;
 using Lucca.Core.Rights.Abstractions.Permissions;
-using Rights.Infra.Models;
 using Rights.Infra.Remote;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace Rights.Infra.Services
 {
+    public class UserPermissionsCache : InMemoryCache<int, List<IUserPermission>>
+    {
+        public UserPermissionsCache() : base(TimeSpan.FromSeconds(30))
+        { }
+    }
+
     public class UserPermissionsService
     {
         private readonly UserPermissionsRemoteService _remoteService;
-        private List<Permission> _cache;
+        private readonly UserPermissionsCache _userPermissionsCache;
 
-        public UserPermissionsService(UserPermissionsRemoteService remoteService)
+        public UserPermissionsService(UserPermissionsRemoteService remoteService, UserPermissionsCache userPermissionsCache)
         {
             _remoteService = remoteService;
+            _userPermissionsCache = userPermissionsCache;
         }
 
-        internal async Task<IReadOnlyCollection<Permission>> GetUserPermissionsAsync(int principalId)
+        internal async Task<IReadOnlyCollection<IUserPermission>> GetUserPermissionsAsync(int principalId)
         {
-            if (_cache == null)
+            if (_userPermissionsCache.TryGet(principalId, out var cachedPermissions))
             {
-                _cache = (await _remoteService.GetUserPermissionsAsync(principalId)).ToList();
+                return cachedPermissions;
             }
-            return _cache;
+
+            var permissions = (await _remoteService.GetUserPermissionsAsync(principalId))
+                .ToList();
+            _userPermissionsCache.Cache(principalId, permissions);
+
+            return permissions;
         }
 
         internal async Task<IEnumerable<IUserPermission>> GetUserPermissionsAsync(int principalId, ISet<int> operations)

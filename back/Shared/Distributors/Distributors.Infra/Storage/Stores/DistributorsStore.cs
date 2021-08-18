@@ -10,21 +10,9 @@ using System.Threading.Tasks;
 namespace Distributors.Infra.Storage.Stores
 {
 
-    public class DistributorsCache : InMemoryCache<string, List<Distributor>>
+    public class DistributorsCache : InMemoryCache<List<Distributor>>
     {
-        private const string UniqueKey = "AllDistributors";
-
         public DistributorsCache() : base(TimeSpan.FromMinutes(10)) { }
-
-        public void Cache(List<Distributor> distributors)
-        {
-            Cache(UniqueKey, distributors);
-        }
-
-        public bool TryGet(out List<Distributor> distributors)
-        {
-            return TryGet(UniqueKey, out distributors);
-        }
     }
 
     public class DistributorsStore : IDistributorsStore

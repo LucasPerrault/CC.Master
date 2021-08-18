@@ -1,3 +1,4 @@
+using Lucca.Core.Rights.Abstractions.Permissions;
 using Remote.Infra.Services;
 using Rights.Infra.Models;
 using Rights.Infra.Services;
@@ -17,7 +18,7 @@ namespace Rights.Infra.Remote
             _httpClientHelper = new RestApiV3HttpClientHelper(httpClient, "Partenaires users permissions");
         }
 
-        internal async Task<IReadOnlyCollection<Permission>> GetUserPermissionsAsync(int principalId)
+        internal async Task<IReadOnlyCollection<IUserPermission>> GetUserPermissionsAsync(int principalId)
         {
             var allPermissions = await GetAllUserPermissionsAsync(principalId);
             return allPermissions.ToList();

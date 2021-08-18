@@ -11,6 +11,7 @@
     <ItemGroup>
         <ProjectReference Include="..\..\..\Shared\Remote\Remote.Infra\Remote.Infra.csproj" />
         <ProjectReference Include="..\..\Authentication\Authentication.Domain\Authentication.Domain.csproj" />
+        <ProjectReference Include="..\..\Cache\Cache.Abstractions\Cache.Abstractions.csproj" />
         <ProjectReference Include="..\Rights.Domain\Rights.Domain.csproj" />
     </ItemGroup>
 
