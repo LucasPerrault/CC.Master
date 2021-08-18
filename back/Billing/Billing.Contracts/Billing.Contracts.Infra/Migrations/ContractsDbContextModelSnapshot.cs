@@ -135,9 +135,10 @@ namespace Billing.Contracts.Infra.Migrations
                         .HasColumnName("EstablishmentId")
                         .HasColumnType("int");
 
-                    b.Property<int>("EstablishmentName")
+                    b.Property<string>("EstablishmentName")
+                        .IsRequired()
                         .HasColumnName("EstablishmentName")
-                        .HasColumnType("int");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("EstablishmentRemoteId")
                         .HasColumnName("EstablishmentRemoteId")
