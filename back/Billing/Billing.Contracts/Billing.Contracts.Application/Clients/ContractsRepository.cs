@@ -1,8 +1,6 @@
 ﻿using Billing.Contracts.Domain.Contracts;
 using Billing.Contracts.Domain.Contracts.Interfaces;
 using Lucca.Core.Api.Abstractions.Paging;
-using Rights.Domain.Abstractions;
-using System.Collections.Generic;
 using System.Security.Claims;
 using System.Threading.Tasks;
 

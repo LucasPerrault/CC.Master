@@ -6,6 +6,6 @@ namespace Billing.Contracts.Domain.Contracts.Interfaces
 {
     public interface IContractsStore
     {
-        Task<Page<Contract>> GetPageAsync(AccessRight accessRight, ContractFilter all, IPageToken pageToken);
+        Task<Page<Contract>> GetPageAsync(AccessRight accessRight, ContractFilter filter, IPageToken pageToken);
     }
 }
