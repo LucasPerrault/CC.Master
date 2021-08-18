@@ -46,12 +46,15 @@ namespace Users.Infra
             var distributorsPerCode = ( await _distributorsStore.GetAllAsync() )
                 .ToDictionary(d => d.Code, d => d);
 
+            var usersByDepartmentCodeErrors = new Dictionary<string, List<int>>();
             foreach (var remoteUser in allUsersFromRemote)
             {
                 var departmentCode = remoteUser.Department.Code;
                 if (!distributorsPerCode.TryGetValue(departmentCode, out var distributor))
                 {
-                    _logger.LogError($"User {remoteUser.Id} has unknown department code {departmentCode}");
+                    usersByDepartmentCodeErrors.TryAdd(departmentCode, new List<int>());
+                    usersByDepartmentCodeErrors[departmentCode].Add(remoteUser.Id);
+
                     continue;
                 }
 
@@ -77,6 +80,15 @@ namespace Users.Infra
 
                     await _store.CreateAsync(simpleUser);
                 }
+            }
+
+            if (usersByDepartmentCodeErrors.Any())
+            {
+                var errorParts = usersByDepartmentCodeErrors
+                    .OrderBy(kvp => kvp.Key)
+                    .Select(kvp => $"{kvp.Key}>{string.Join(",", kvp.Value)}");
+
+                _logger.LogError($"Users with unknown department: {string.Join("; ", errorParts)}");
             }
 
             await _store.SaveChangesAsync();

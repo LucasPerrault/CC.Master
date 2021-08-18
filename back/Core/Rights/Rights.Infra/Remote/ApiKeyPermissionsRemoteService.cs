@@ -1,4 +1,5 @@
 using Authentication.Domain;
+using Lucca.Core.Rights.Abstractions.Permissions;
 using Remote.Infra.Services;
 using Rights.Infra.Models;
 using Rights.Infra.Services;
@@ -22,7 +23,7 @@ namespace Rights.Infra.Remote
             _claimsPrincipal = claimsPrincipal;
         }
 
-        internal async Task<IReadOnlyCollection<ApiKeyPermission>> GetApiKeyPermissionsAsync(int apiKeyId)
+        internal async Task<IReadOnlyCollection<IApiKeyPermission>> GetApiKeyPermissionsAsync(int apiKeyId)
         {
             // apiKeyId is not known (Lucca apis hide it by design)
             // calling as current api key principal
