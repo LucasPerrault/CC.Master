@@ -8,4 +8,10 @@
     <PackageReference Include="Lucca.Core.Shared.Domain" Version="2.0.13" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\Core\Authentication\Authentication.Domain\Authentication.Domain.csproj" />
+    <ProjectReference Include="..\..\..\Core\Rights\Rights.Domain\Rights.Domain.csproj" />
+    <ProjectReference Include="..\..\..\Shared\Distributors\Distributors.Domain\Distributors.Domain.csproj" />
+  </ItemGroup>
+
 </Project>

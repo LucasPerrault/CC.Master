@@ -4,14 +4,16 @@ using Billing.Contracts.Infra.Storage;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Billing.Contracts.Infra.Migrations
 {
     [DbContext(typeof(ContractsDbContext))]
-    partial class ContractsDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210722232153_CreateViewEstablishmentAttachments")]
+    partial class CreateViewEstablishmentAttachments
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -135,10 +137,9 @@ namespace Billing.Contracts.Infra.Migrations
                         .HasColumnName("EstablishmentId")
                         .HasColumnType("int");
 
-                    b.Property<string>("EstablishmentName")
-                        .IsRequired()
+                    b.Property<int>("EstablishmentName")
                         .HasColumnName("EstablishmentName")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("int");
 
                     b.Property<int>("EstablishmentRemoteId")
                         .HasColumnName("EstablishmentRemoteId")

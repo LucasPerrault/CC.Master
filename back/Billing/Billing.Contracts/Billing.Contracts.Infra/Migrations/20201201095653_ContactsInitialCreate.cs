@@ -33,8 +33,8 @@ namespace Billing.Contracts.Infra.Migrations
                         e.[id] EnvironmentId,
                         e.[subdomain] EnvironmentSubdomain
                 FROM [dbo].[Contracts] co
-	                LEFT JOIN [dbo].[Clients] cl ON cl.Id = co.clientId
-	                LEFT JOIN [dbo].[Environments] e ON e.id = co.environmentID
+                    LEFT JOIN [dbo].[Clients] cl ON cl.Id = co.clientId
+                    LEFT JOIN [dbo].[Environments] e ON e.id = co.environmentID
             ");
         }
 

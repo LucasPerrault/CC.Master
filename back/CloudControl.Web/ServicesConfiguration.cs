@@ -1,8 +1,10 @@
 using Authentication.Web;
 using Billing.Cmrr.Infra.Storage;
+using Billing.Cmrr.Web;
 using Billing.Contracts.Infra.Storage;
+using Billing.Contracts.Web;
 using Billing.Products.Infra.Storage;
-using Billing.Web;
+using Billing.Products.Web;
 using Cache.Web;
 using CloudControl.Web.Configuration;
 using CloudControl.Web.Exceptions;
@@ -229,7 +231,9 @@ namespace CloudControl.Web
 
         public virtual void ConfigureBilling(IServiceCollection services, AppConfiguration configuration)
         {
-            BillingConfigurer.ConfigureServices(services, configuration.LegacyCloudControl, configuration.BillingContracts);
+            ContractsConfigurer.ConfigureServices(services, configuration.LegacyCloudControl, configuration.BillingContracts);
+            CmrrConfigurer.ConfigureServices(services);
+            ProductsConfigurer.ConfigureServices(services);
         }
 
         public virtual void ConfigureInstances(IServiceCollection services, AppConfiguration configuration)

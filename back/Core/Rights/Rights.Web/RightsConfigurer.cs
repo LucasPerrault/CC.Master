@@ -3,6 +3,7 @@ using Lucca.Core.Rights.RightsHelper;
 using Microsoft.Extensions.DependencyInjection;
 using Remote.Infra.Extensions;
 using Rights.Domain.Abstractions;
+using Rights.Domain.Filtering;
 using Rights.Infra.Configuration;
 using Rights.Infra.Remote;
 using Rights.Infra.Services;
@@ -38,6 +39,8 @@ namespace Rights.Web
                     .WithBaseAddress(config.ServerUri, config.UsersEndpointPath)
                     .WithAuthScheme("Lucca").AuthenticateCurrentPrincipal(provider);
             });
+
+            services.AddScoped<RightsFilter>();
 
             services.AddScoped<ICloudControlPermissionsStore, CloudControlPermissionsStore>();
 

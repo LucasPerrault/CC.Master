@@ -11,6 +11,7 @@ using Instances.Infra.Storage.Stores;
 using Moq;
 using Rights.Domain;
 using Rights.Domain.Abstractions;
+using Rights.Domain.Filtering;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -199,7 +200,7 @@ namespace Instances.Application.Specflow.Tests.Demos.Steps
             var ccDataServiceMock = new Mock<ICcDataService>();
             var dnsServiceMock = new Mock<IDnsService>();
             rightsServiceMock.Setup(rs => rs.GetUserOperationHighestScopeAsync(It.IsAny<Operation>())).ReturnsAsync((Operation op) => _demosContext.TestPrincipal.OperationsWithScope[op]);
-            return new DemosRepository(_demosContext.TestPrincipal.Principal, demosStore, instanceStoreMock.Object, new DemoRightsFilter(rightsServiceMock.Object), ccDataServiceMock.Object, dnsServiceMock.Object);
+            return new DemosRepository(_demosContext.TestPrincipal.Principal, demosStore, instanceStoreMock.Object, new DemoRightsFilter(new RightsFilter(rightsServiceMock.Object)), ccDataServiceMock.Object, dnsServiceMock.Object);
         }
     }
 }

@@ -7,6 +7,7 @@ using Instances.Domain.Instances;
 using Lucca.Core.Shared.Domain.Exceptions;
 using Rights.Domain;
 using Rights.Domain.Abstractions;
+using Rights.Domain.Filtering;
 using System;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -51,7 +52,7 @@ namespace Instances.Application.Demos.Duplication
             _clusterSelector = clusterSelector;
             _passwordHelper = passwordHelper;
             _dnsService = dnsService;
-            _demoRightsFilter = new DemoRightsFilter(_rightsService);
+            _demoRightsFilter = new DemoRightsFilter(new RightsFilter(_rightsService));
         }
 
         public async Task<DemoDuplication> CreateDuplicationAsync(DemoDuplicationRequest request)

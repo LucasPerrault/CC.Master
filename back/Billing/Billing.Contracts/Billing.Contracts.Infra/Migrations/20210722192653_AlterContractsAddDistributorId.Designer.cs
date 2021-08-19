@@ -4,14 +4,16 @@ using Billing.Contracts.Infra.Storage;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Billing.Contracts.Infra.Migrations
 {
     [DbContext(typeof(ContractsDbContext))]
-    partial class ContractsDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210722192653_AlterContractsAddDistributorId")]
+    partial class AlterContractsAddDistributorId
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -109,54 +111,9 @@ namespace Billing.Contracts.Infra.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ClientId");
-
                     b.HasIndex("DistributorId");
 
                     b.ToTable("Contracts");
-                });
-
-            modelBuilder.Entity("Billing.Contracts.Domain.Contracts.EstablishmentAttachment", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<int>("ContractId")
-                        .HasColumnName("ContractId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime?>("EndsOn")
-                        .HasColumnName("EndsOn")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("EstablishmentId")
-                        .HasColumnName("EstablishmentId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("EstablishmentName")
-                        .IsRequired()
-                        .HasColumnName("EstablishmentName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("EstablishmentRemoteId")
-                        .HasColumnName("EstablishmentRemoteId")
-                        .HasColumnType("int");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnName("IsActive")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTime>("StartsOn")
-                        .HasColumnName("StartsOn")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ContractId");
-
-                    b.ToTable("EstablishmentAttachments");
                 });
 
             modelBuilder.Entity("Distributors.Domain.Models.Distributor", b =>
@@ -185,24 +142,9 @@ namespace Billing.Contracts.Infra.Migrations
 
             modelBuilder.Entity("Billing.Contracts.Domain.Contracts.Contract", b =>
                 {
-                    b.HasOne("Billing.Contracts.Domain.Clients.Client", "Client")
-                        .WithMany("Contracts")
-                        .HasForeignKey("ClientId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("Distributors.Domain.Models.Distributor", "Distributor")
                         .WithMany()
                         .HasForeignKey("DistributorId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("Billing.Contracts.Domain.Contracts.EstablishmentAttachment", b =>
-                {
-                    b.HasOne("Billing.Contracts.Domain.Contracts.Contract", null)
-                        .WithMany("Attachments")
-                        .HasForeignKey("ContractId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });

@@ -1,9 +1,12 @@
 ﻿using Billing.Contracts.Domain.Clients;
 using Billing.Contracts.Domain.Clients.Interfaces;
 using Billing.Contracts.Domain.Exceptions;
+using Lucca.Core.Api.Abstractions.Paging;
 using Salesforce.Domain.Interfaces;
 using Salesforce.Domain.Models;
 using System;
+using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace Billing.Contracts.Application.Clients
@@ -12,30 +15,42 @@ namespace Billing.Contracts.Application.Clients
     {
         private readonly IClientsStore _clientsStore;
         private readonly ILegacyClientsRemoteService _legacyClientsRemoteService;
-        private readonly IClientVisibilityService _clientVisibilityService;
+        private readonly ClientRightFilter _clientRightFilter;
+        private readonly ClaimsPrincipal _claimsPrincipal;
         private readonly ISalesforceAccountsRemoteService _salesforceAccountsRemoteService;
 
         public ClientsRepository(
             IClientsStore clientsStore,
             ILegacyClientsRemoteService legacyClientsRemoteService,
-            IClientVisibilityService clientVisibilityService,
+            ClientRightFilter clientRightFilter,
+            ClaimsPrincipal claimsPrincipal,
             ISalesforceAccountsRemoteService salesforceAccountsRemoteService)
         {
-            _clientsStore = clientsStore ?? throw new ArgumentNullException(nameof(clientsStore));
-            _legacyClientsRemoteService = legacyClientsRemoteService ?? throw new ArgumentNullException(nameof(legacyClientsRemoteService));
-            _clientVisibilityService = clientVisibilityService ?? throw new ArgumentNullException(nameof(clientVisibilityService));
-            _salesforceAccountsRemoteService = salesforceAccountsRemoteService ?? throw new ArgumentNullException(nameof(salesforceAccountsRemoteService));
+            _clientsStore = clientsStore;
+            _legacyClientsRemoteService = legacyClientsRemoteService;
+            _clientRightFilter = clientRightFilter;
+            _claimsPrincipal = claimsPrincipal;
+            _salesforceAccountsRemoteService = salesforceAccountsRemoteService;
+        }
+
+        public async Task<Page<Client>> GetPageAsync(IPageToken pageToken)
+        {
+            var accessRight = await _clientRightFilter.GetReadAccessAsync(_claimsPrincipal);
+            return await _clientsStore.GetPageAsync(pageToken, accessRight, ClientFilter.All);
         }
 
         public async Task PutAsync(Guid externalId, Client client, string subdomain)
         {
-            var isClientVisible = await _clientVisibilityService.IsClientVisibleInSubdomainAsync(externalId, subdomain);
-            if (!isClientVisible)
+            var accessRight = _clientRightFilter.GetAccessForEnvironment(subdomain);
+            var filter = new ClientFilter { ExternalId = externalId };
+
+            var clients = await _clientsStore.GetAsync(accessRight, filter);
+            var currentClient = clients.SingleOrDefault();
+            if (currentClient == null)
             {
                 throw new ClientNotVisibleException();
             }
 
-            var currentClient = await _clientsStore.GetByExternalIdAsync(externalId);
             var clientSfId = currentClient.SalesforceId;
 
             var account = ConvertToAccount(client);

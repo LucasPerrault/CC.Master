@@ -6,7 +6,7 @@ using Rights.Domain;
 using Rights.Web.Attributes;
 using System.Threading.Tasks;
 
-namespace Billing.Web.Controllers
+namespace Billing.Cmrr.Web
 {
     [ApiController, Route("/api/cmrr")]
     public class CmrrController
