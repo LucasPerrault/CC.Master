@@ -1,10 +1,10 @@
 ﻿using Billing.Contracts.Domain.Clients;
 using Billing.Contracts.Domain.Clients.Interfaces;
 using Billing.Contracts.Domain.Exceptions;
+using Lucca.Core.Api.Abstractions.Paging;
 using Salesforce.Domain.Interfaces;
 using Salesforce.Domain.Models;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -33,10 +33,10 @@ namespace Billing.Contracts.Application.Clients
             _salesforceAccountsRemoteService = salesforceAccountsRemoteService;
         }
 
-        public async Task<List<Client>> GetAsync()
+        public async Task<Page<Client>> GetPageAsync(IPageToken pageToken)
         {
             var accessRight = await _clientRightFilter.GetReadAccessAsync(_claimsPrincipal);
-            return await _clientsStore.GetAsync(accessRight, ClientFilter.All);
+            return await _clientsStore.GetPageAsync(pageToken, accessRight, ClientFilter.All);
         }
 
         public async Task PutAsync(Guid externalId, Client client, string subdomain)

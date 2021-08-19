@@ -17,10 +17,10 @@ namespace Billing.Contracts.Infra.Storage.Stores
         private readonly ContractsDbContext _dbContext;
         private readonly IQueryPager _queryPager;
 
-        public ContractsStore(ContractsDbContext dbContext, IQueryPager _queryPager)
+        public ContractsStore(ContractsDbContext dbContext, IQueryPager queryPager)
         {
             _dbContext = dbContext;
-            this._queryPager = _queryPager;
+            _queryPager = queryPager;
         }
 
         public Task<Page<Contract>> GetPageAsync(AccessRight accessRight, ContractFilter filter, IPageToken pageToken)

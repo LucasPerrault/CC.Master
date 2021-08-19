@@ -22,14 +22,9 @@ namespace Billing.Contracts.Web
 
         [HttpGet]
         [ForbidIfMissing(Operation.ReadContracts)]
-        public async Task<Page<Client>> GetAsync()
+        public Task<Page<Client>> GetAsync(IPageToken pageToken)
         {
-            var clients = await _clientsRepository.GetAsync();
-            return new Page<Client>
-            {
-                Items = clients,
-                Count = clients.Count
-            };
+            return _clientsRepository.GetPageAsync(pageToken);
         }
 
         [HttpPut("{id:guid}")]

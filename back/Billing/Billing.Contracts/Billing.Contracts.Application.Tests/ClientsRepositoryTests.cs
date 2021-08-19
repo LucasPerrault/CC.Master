@@ -8,6 +8,9 @@ using Billing.Contracts.Infra.Storage;
 using Billing.Contracts.Infra.Storage.Stores;
 using Distributors.Domain.Models;
 using FluentAssertions;
+using Lucca.Core.Api.Abstractions.Paging;
+using Lucca.Core.Api.Queryable.Paging;
+using Microsoft.EntityFrameworkCore;
 using Moq;
 using Rights.Domain;
 using Rights.Domain.Abstractions;
@@ -16,6 +19,7 @@ using Salesforce.Domain.Interfaces;
 using Salesforce.Domain.Models;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Testing.Infra;
 using Users.Domain;
@@ -53,15 +57,16 @@ namespace Billing.Contracts.Application.Tests
 
             var repo = new ClientsRepository
             (
-                new ClientsStore(_dbContext),
+                new ClientsStore(_dbContext, new DummyQueryPager()),
                 _legacyClientServiceMock.Object,
                 new ClientRightFilter(new RightsFilter(_rightServiceMock.Object)),
                 GetUserPrincipal(Lucca),
                 _salesforceAccountRemoteServiceMock.Object
             );
 
-            var clients = await repo.GetAsync();
-            clients.Should().HaveCount(1);
+            var clients = await repo.GetPageAsync(new NumberPageToken());
+            clients.Count.Should().Be(1);
+            clients.Items.Single().Should().Be(client);
         }
 
         [Fact]
@@ -79,15 +84,16 @@ namespace Billing.Contracts.Application.Tests
 
             var repo = new ClientsRepository
             (
-                new ClientsStore(_dbContext),
+                new ClientsStore(_dbContext, new DummyQueryPager()),
                 _legacyClientServiceMock.Object,
                 new ClientRightFilter(new RightsFilter(_rightServiceMock.Object)),
                 GetUserPrincipal(Lucca),
                 _salesforceAccountRemoteServiceMock.Object
             );
 
-            var clients = await repo.GetAsync();
-            clients.Should().BeEmpty();
+            var clients = await repo.GetPageAsync(new NumberPageToken());
+            clients.Count.Should().Be(0);
+            clients.Items.Should().BeEmpty();
         }
 
         [Fact]
@@ -105,15 +111,17 @@ namespace Billing.Contracts.Application.Tests
 
             var repo = new ClientsRepository
             (
-                new ClientsStore(_dbContext),
+                new ClientsStore(_dbContext, new DummyQueryPager()),
                 _legacyClientServiceMock.Object,
                 new ClientRightFilter(new RightsFilter(_rightServiceMock.Object)),
                 GetUserPrincipal(Partner),
                 _salesforceAccountRemoteServiceMock.Object
             );
 
-            var clients = await repo.GetAsync();
-            clients.Should().HaveCount(1);
+
+            var clients = await repo.GetPageAsync(new NumberPageToken());
+            clients.Count.Should().Be(1);
+            clients.Items.Single().Should().Be(client);
         }
 
         [Fact]
@@ -131,7 +139,7 @@ namespace Billing.Contracts.Application.Tests
 
             var repo = new ClientsRepository
             (
-                new ClientsStore(_dbContext),
+                new ClientsStore(_dbContext, new DummyQueryPager()),
                 _legacyClientServiceMock.Object,
                 new ClientRightFilter(new RightsFilter(_rightServiceMock.Object)),
                 null,
@@ -156,7 +164,7 @@ namespace Billing.Contracts.Application.Tests
 
             var repo = new ClientsRepository
             (
-                new ClientsStore(_dbContext),
+                new ClientsStore(_dbContext, new DummyQueryPager()),
                 _legacyClientServiceMock.Object,
                 new ClientRightFilter(new RightsFilter(_rightServiceMock.Object)),
                 null,
@@ -182,7 +190,7 @@ namespace Billing.Contracts.Application.Tests
 
             var repo = new ClientsRepository
             (
-                new ClientsStore(_dbContext),
+                new ClientsStore(_dbContext, new DummyQueryPager()),
                 _legacyClientServiceMock.Object,
                 new ClientRightFilter(new RightsFilter(_rightServiceMock.Object)),
                 null,
@@ -236,5 +244,25 @@ namespace Billing.Contracts.Application.Tests
             };
         }
 
+    }
+
+    internal class DummyQueryPager : IQueryPager
+    {
+        public IQueryable<T> GetPagedQueryable<T>(IQueryable<T> unpagedQuery, IPageToken token) where T : class
+        {
+            return unpagedQuery;
+        }
+
+        public async Task<Page<T>> ToPageAsync<T>(IQueryable<T> unpagedQuery, IPageToken token) where T : class
+        {
+            var items = await unpagedQuery.ToListAsync();
+            return new Page<T>
+            {
+                Items = items,
+                Count = items.Count,
+                Prev = null,
+                Next = null,
+            };
+        }
     }
 }

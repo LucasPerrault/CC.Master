@@ -1,5 +1,7 @@
 ﻿using Billing.Contracts.Domain.Clients;
 using Billing.Contracts.Domain.Clients.Interfaces;
+using Lucca.Core.Api.Abstractions.Paging;
+using Lucca.Core.Api.Queryable.Paging;
 using Microsoft.EntityFrameworkCore;
 using Rights.Domain.Filtering;
 using Storage.Infra.Extensions;
@@ -14,18 +16,29 @@ namespace Billing.Contracts.Infra.Storage.Stores
     public class ClientsStore : IClientsStore
     {
         private readonly ContractsDbContext _dbContext;
+        private readonly IQueryPager _queryPager;
 
-        public ClientsStore(ContractsDbContext dbContext)
+        public ClientsStore(ContractsDbContext dbContext, IQueryPager queryPager)
         {
-            _dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
+            _dbContext = dbContext;
+            _queryPager = queryPager;
         }
 
         public Task<List<Client>> GetAsync(AccessRight accessRight, ClientFilter filter)
         {
+            return GetQueryable(accessRight, filter).ToListAsync();
+        }
+
+        public async Task<Page<Client>> GetPageAsync(IPageToken pageToken, AccessRight accessRight, ClientFilter filter)
+        {
+            return await _queryPager.ToPageAsync(GetQueryable(accessRight, filter), pageToken);
+        }
+
+        private IQueryable<Client> GetQueryable(AccessRight accessRight, ClientFilter filter)
+        {
             return _dbContext.Set<Client>()
                 .WhereHasRight(accessRight)
-                .WhereMatches(filter)
-                .ToListAsync();
+                .WhereMatches(filter);
         }
     }
 
