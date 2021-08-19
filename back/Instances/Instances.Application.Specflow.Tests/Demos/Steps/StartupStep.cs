@@ -45,7 +45,6 @@ namespace Instances.Application.Specflow.Tests.Demos.Steps
             var luccaUser = new SimpleUser
             {
                 Id = 42,
-                DepartmentId = 22,
                 IsActive = true,
                 FirstName = "Mia",
                 LastName = "Houx"
