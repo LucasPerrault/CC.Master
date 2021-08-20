@@ -1,6 +1,7 @@
 ﻿using Billing.Contracts.Application.Clients;
 using Billing.Contracts.Domain.Clients;
 using Lucca.Core.Api.Abstractions.Paging;
+using Lucca.Core.Api.Web.ModelBinding.Sorting;
 using Lucca.Core.Shared.Domain.Exceptions;
 using Microsoft.AspNetCore.Mvc;
 using Rights.Domain;
@@ -11,6 +12,7 @@ using System.Threading.Tasks;
 namespace Billing.Contracts.Web
 {
     [ApiController, Route("/api/clients")]
+    [ApiSort(nameof(Client.Id))]
     public class ClientsController
     {
         private readonly ClientsRepository _clientsRepository;
