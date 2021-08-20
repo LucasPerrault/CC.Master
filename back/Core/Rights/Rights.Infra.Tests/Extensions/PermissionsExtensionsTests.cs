@@ -16,7 +16,7 @@ namespace Rights.Infra.Tests.Extensions
         [ClassData(typeof(PermissionGenerator))]
         public void PermissionSerializationShouldWork(Permission permission)
         {
-            permission.ToBytes().ToPermission().Should().BeEquivalentTo(permission);
+            permission.ToBytes().ToPermission(0).Should().BeEquivalentTo(permission);
         }
 
         [Fact]
@@ -32,7 +32,7 @@ namespace Rights.Infra.Tests.Extensions
         [ClassData(typeof(ApiKeyPermissionGenerator))]
         public void ApiKeyPermissionSerializationShouldWork(ApiKeyPermission permission)
         {
-            permission.ToBytes().ToApiKeyPermission().Should().BeEquivalentTo(permission);
+            permission.ToBytes().ToApiKeyPermission(0).Should().BeEquivalentTo(permission);
         }
 
         [Fact]
