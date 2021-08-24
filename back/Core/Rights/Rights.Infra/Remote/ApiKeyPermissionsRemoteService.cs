@@ -23,12 +23,8 @@ namespace Rights.Infra.Remote
             _claimsPrincipal = claimsPrincipal;
         }
 
-        internal async Task<IReadOnlyCollection<IApiKeyPermission>> GetApiKeyPermissionsAsync(int apiKeyId)
+        internal async Task<IReadOnlyCollection<IApiKeyPermission>> GetApiKeyPermissionsAsync()
         {
-            // apiKeyId is not known (Lucca apis hide it by design)
-            // calling as current api key principal
-            // remote instance will filter results accordingly
-            // https://github.com/LuccaSA/ilucca/blob/e5a6707565918cfb09388717344a60ce9e1321e6/Domain/Lucca.Domain/Repositories/ForeignAppPermissionsLookupRepository.cs#L40
             if (!(_claimsPrincipal is CloudControlApiKeyClaimsPrincipal))
             {
                 throw new ApplicationException("Method assumes ClaimsPrincipal is an api key, but it is not");
