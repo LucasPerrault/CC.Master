@@ -12,6 +12,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\Core\Tools\Tools\Tools.csproj" />
     <ProjectReference Include="..\AdvancedFilters.Domain\AdvancedFilters.Domain.csproj" />
+    <ProjectReference Include="..\AdvancedFilters.Infra\AdvancedFilters.Infra.csproj" />
   </ItemGroup>
 
 </Project>

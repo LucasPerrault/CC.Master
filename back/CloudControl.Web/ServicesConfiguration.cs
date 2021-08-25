@@ -1,3 +1,4 @@
+using AdvancedFilters.Infra.Storage;
 using AdvancedFilters.Web;
 using Authentication.Web;
 using Billing.Cmrr.Infra.Storage;
@@ -205,6 +206,7 @@ namespace CloudControl.Web
             services.ConfigureContext<InstancesDbContext>(_hostingEnvironment);
             services.ConfigureContext<CmrrDbContext>(_hostingEnvironment);
             services.ConfigureContext<ProductDbContext>(_hostingEnvironment);
+            services.ConfigureContext<AdvancedFiltersDbContext>(_hostingEnvironment);
         }
 
         public virtual void ConfigureSharedDomains(IServiceCollection services, AppConfiguration configuration)

@@ -4,7 +4,6 @@ using System.Threading.Tasks;
 
 namespace AdvancedFilters.Domain
 {
-
     public enum DataSources
     {
         Environments,

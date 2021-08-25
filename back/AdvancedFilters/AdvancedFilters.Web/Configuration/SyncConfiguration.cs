@@ -1,9 +1,11 @@
-﻿using AdvancedFilters.Domain;
+using AdvancedFilters.Domain;
+using AdvancedFilters.Domain.Billing.Models;
+using AdvancedFilters.Domain.Instance.Models;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Tools;
-using Environment = AdvancedFilters.Domain.Environment;
+using Environment = AdvancedFilters.Domain.Instance.Models.Environment;
 
 namespace AdvancedFilters.Web.Configuration
 {
@@ -103,7 +105,4 @@ namespace AdvancedFilters.Web.Configuration
             return Items;
         }
     }
-
-    public class CafeDbContext
-    { }
 }
