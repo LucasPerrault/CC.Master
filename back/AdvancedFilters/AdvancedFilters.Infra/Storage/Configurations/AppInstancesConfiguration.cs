@@ -9,14 +9,16 @@ namespace AdvancedFilters.Infra.Storage.Configurations
         public void Configure(EntityTypeBuilder<AppInstance> builder)
         {
             builder.ToTable("AppInstances");
-            builder.HasKey(e => e.Id);
-            builder.Property(e => e.RemoteId).HasColumnName("RemoteId").IsRequired();
-            builder.Property(e => e.Name).HasColumnName("Name").IsRequired();
-            builder.Property(e => e.ApplicationId).HasColumnName("ApplicationId").IsRequired();
-            builder.Property(e => e.EnvironmentId).HasColumnName("EnvironmentId").IsRequired();
-            builder.Property(e => e.DeleteAt).HasColumnName("DeleteAt");
+            builder.HasKey(ai => ai.Id);
+            builder.Property(ai => ai.RemoteId).HasColumnName("RemoteId").IsRequired();
+            builder.Property(ai => ai.Name).HasColumnName("Name").IsRequired();
+            builder.Property(ai => ai.ApplicationId).HasColumnName("ApplicationId").IsRequired();
+            builder.Property(ai => ai.EnvironmentId).HasColumnName("EnvironmentId").IsRequired();
+            builder.Property(ai => ai.DeleteAt).HasColumnName("DeleteAt");
 
-            builder.HasOne(e => e.Environment).WithMany().HasForeignKey(e => e.EnvironmentId);
+            builder.HasOne(ai => ai.Environment).WithMany().HasPrincipalKey(e => e.RemoteId).HasForeignKey(ai => ai.EnvironmentId);
+
+            builder.HasIndex(ai => ai.RemoteId).IsUnique();
         }
     }
 }

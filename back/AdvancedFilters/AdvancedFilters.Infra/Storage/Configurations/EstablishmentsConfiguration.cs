@@ -22,7 +22,9 @@ namespace AdvancedFilters.Infra.Storage.Configurations
             builder.Property(e => e.CreatedAt).HasColumnName("CreatedAt").IsRequired();
             builder.Property(e => e.IsArchived).HasColumnName("IsArchived").IsRequired();
 
-            builder.HasOne(e => e.LegalUnit).WithMany().HasForeignKey(e => e.LegalUnitId);
+            builder.HasOne(e => e.LegalUnit).WithMany().HasPrincipalKey(lu => lu.RemoteId).HasForeignKey(e => e.LegalUnitId);
+
+            builder.HasIndex(e => e.RemoteId).IsUnique();
         }
     }
 }

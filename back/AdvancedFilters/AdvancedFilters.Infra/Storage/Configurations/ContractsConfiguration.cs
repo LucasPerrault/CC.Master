@@ -14,7 +14,7 @@ namespace AdvancedFilters.Infra.Storage.Configurations
             builder.Property(c => c.ExternalId).HasColumnName("ExternalId").HasMaxLength(36).IsRequired();
             builder.Property(c => c.ClientId).HasColumnName("ClientId").IsRequired();
 
-            builder.HasOne(c => c.Client).WithMany().HasForeignKey(c => c.ClientId);
+            builder.HasOne(c => c.Client).WithMany().HasPrincipalKey(cl => cl.RemoteId).HasForeignKey(c => c.ClientId);
         }
     }
 }

@@ -17,7 +17,7 @@ namespace AdvancedFilters.Infra.Storage.Configurations
             builder.Property(c => c.ExpiresAt).HasColumnName("ExpiresAt");
             builder.Property(c => c.IsConfirmed).HasColumnName("IsConfirmed").IsRequired();
 
-            builder.HasOne(c => c.AppInstance).WithMany().HasForeignKey(c => c.AppInstanceId);
+            builder.HasOne(c => c.AppInstance).WithMany().HasPrincipalKey(ai => ai.RemoteId).HasForeignKey(c => c.AppInstanceId);
         }
     }
 }

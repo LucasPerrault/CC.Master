@@ -15,11 +15,6 @@ namespace AdvancedFilters.Domain.DataSources
             Scheme = scheme;
             Parameter = parameter;
         }
-
-        public void Apply(IDataSourceAuthenticator authenticator)
-        {
-            authenticator.Authenticate(this);
-        }
     }
 
     public class LuccaAuthentication : AuthorizationAuthentication

@@ -1,3 +1,4 @@
+using AdvancedFilters.Domain.Billing.Models;
 using AdvancedFilters.Domain.Contacts.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
@@ -18,7 +19,7 @@ namespace AdvancedFilters.Infra.Storage.Configurations
             builder.Property(c => c.ExpiresAt).HasColumnName("ExpiresAt");
             builder.Property(c => c.IsConfirmed).HasColumnName("IsConfirmed").IsRequired();
 
-            builder.HasOne(c => c.Client).WithMany().HasForeignKey(c => c.ClientId);
+            builder.HasOne(c => c.Client).WithMany().HasPrincipalKey(cl => cl.RemoteId).HasForeignKey(c => c.ClientId);
         }
     }
 }

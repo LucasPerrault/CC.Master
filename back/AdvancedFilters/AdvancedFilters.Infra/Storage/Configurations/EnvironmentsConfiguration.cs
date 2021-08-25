@@ -15,7 +15,9 @@ namespace AdvancedFilters.Infra.Storage.Configurations
             builder.Property(e => e.Domain).HasColumnName("Domain").IsRequired();
             builder.Property(e => e.IsActive).HasColumnName("IsActive").IsRequired();
 
-            builder.HasMany(e => e.LegalUnits).WithOne().HasForeignKey(lu => lu.EnvironmentId);
+            builder.HasMany(e => e.LegalUnits).WithOne().HasPrincipalKey(e => e.RemoteId).HasForeignKey(lu => lu.EnvironmentId);
+
+            builder.HasIndex(e => e.RemoteId).IsUnique();
         }
     }
 }

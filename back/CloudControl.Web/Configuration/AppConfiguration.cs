@@ -1,4 +1,5 @@
 using AdvancedFilters.Web;
+using AdvancedFilters.Web.Configuration;
 using Authentication.Infra.Configurations;
 using Billing.Contracts.Infra.Configurations;
 using Cache.Web;
