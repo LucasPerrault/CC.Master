@@ -2,6 +2,7 @@
 using IpFilter.Domain;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Threading.Tasks;
 
 namespace Authentication.Web.Controllers
 {
@@ -24,11 +25,12 @@ namespace Authentication.Web.Controllers
         }
 
         [HttpGet]
-        public RedirectResult Logout()
+        public async Task<RedirectResult> Logout()
         {
             _cookieService.InvalidateAuthTokenCookie(HttpContext);
             var redirectionCallback = $"https://{Request.Host.Value}";
-            var authUrl = _authRedirectionRemoteService.GetLogoutRedirectionUri(redirectionCallback);
+            await _authRedirectionRemoteService.LogoutAsync();
+            var authUrl = _authRedirectionRemoteService.GetAuthRedirectionUri(redirectionCallback);
 
             return Redirect(authUrl.ToString());
         }
