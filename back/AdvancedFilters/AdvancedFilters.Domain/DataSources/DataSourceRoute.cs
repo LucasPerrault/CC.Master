@@ -1,4 +1,4 @@
-﻿namespace AdvancedFilters.Domain
+﻿namespace AdvancedFilters.Domain.DataSources
 {
     public enum DataSourceRouteType
     {

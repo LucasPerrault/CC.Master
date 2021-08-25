@@ -1,5 +1,5 @@
-using AdvancedFilters.Domain;
-using AdvancedFilters.Domain.Billing.Models;
+using AdvancedFilters.Domain.DataSources;
+using AdvancedFilters.Domain.Instance;
 using AdvancedFilters.Domain.Instance.Models;
 using System.Collections.Generic;
 using System.Net.Http;

@@ -1,6 +1,6 @@
 using System;
 
-namespace AdvancedFilters.Domain.Billing.Models
+namespace AdvancedFilters.Domain.Instance.Models
 {
     public class Establishment
     {

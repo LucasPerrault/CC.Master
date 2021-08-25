@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace AdvancedFilters.Domain
+namespace AdvancedFilters.Domain.DataSources
 {
     public enum DataSourceAuthType
     {

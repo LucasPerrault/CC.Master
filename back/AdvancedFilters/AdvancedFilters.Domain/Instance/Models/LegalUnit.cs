@@ -1,8 +1,8 @@
+using AdvancedFilters.Domain.Billing.Models;
 using System;
 using System.Collections.Generic;
-using Environment = AdvancedFilters.Domain.Instance.Models.Environment;
 
-namespace AdvancedFilters.Domain.Billing.Models
+namespace AdvancedFilters.Domain.Instance.Models
 {
     public class LegalUnit
     {

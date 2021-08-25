@@ -1,6 +1,9 @@
 using AdvancedFilters.Domain.Billing.Filters;
 using AdvancedFilters.Domain.Billing.Interfaces;
 using AdvancedFilters.Domain.Billing.Models;
+using AdvancedFilters.Domain.Instance.Filters;
+using AdvancedFilters.Domain.Instance.Interfaces;
+using AdvancedFilters.Domain.Instance.Models;
 using Lucca.Core.Api.Abstractions.Paging;
 using Lucca.Core.Api.Queryable.Paging;
 using Storage.Infra.Extensions;

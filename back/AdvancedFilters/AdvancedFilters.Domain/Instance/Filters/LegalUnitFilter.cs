@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace AdvancedFilters.Domain.Billing.Filters
+namespace AdvancedFilters.Domain.Instance.Filters
 {
     public class LegalUnitFilter
     {
