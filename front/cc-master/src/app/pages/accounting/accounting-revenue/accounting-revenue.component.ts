@@ -1,11 +1,11 @@
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
+import { getButtonState, toSubmissionState } from '@cc/common/forms';
 import { ReplaySubject, Subject } from 'rxjs';
 import { finalize, map, take } from 'rxjs/operators';
 
 import { ISyncRevenueInfo } from './models/sync-revenue-info.interface';
 import { AccountingPeriodService } from './services/accounting-period.service';
 import { SyncRevenueService } from './services/sync-revenue.service';
-import { getButtonState, toSubmissionState } from '@cc/common/forms';
 
 @Component({
   selector: 'cc-accounting-revenue',

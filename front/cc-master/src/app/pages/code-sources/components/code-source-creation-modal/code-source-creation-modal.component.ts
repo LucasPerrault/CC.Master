@@ -5,7 +5,7 @@ import { TranslatePipe } from '@cc/aspects/translate';
 import { getButtonState, toSubmissionState } from '@cc/common/forms';
 import { ILuSidepanelContent, LuSidepanel } from '@lucca-front/ng/sidepanel';
 import { Observable, ReplaySubject, Subject } from 'rxjs';
-import { map, share, startWith, take, takeUntil, tap } from 'rxjs/operators';
+import { map, share, startWith, take, takeUntil } from 'rxjs/operators';
 
 import { ICodeSource } from '../../models/code-source.interface';
 import { CodeSourcesService } from '../../services/code-sources.service';
