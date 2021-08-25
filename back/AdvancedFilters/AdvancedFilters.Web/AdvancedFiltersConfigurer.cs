@@ -25,11 +25,17 @@ namespace AdvancedFilters.Web
         {
             services.AddSingleton(new DataSourcesRepository(DataSourceMapper.GetAll(configuration)));
 
+            services.ConfigureStorage();
+
             services.ConfigureInstances();
             services.ConfigureBilling();
             services.ConfigureContacts();
         }
 
+        public static void ConfigureStorage(this IServiceCollection services)
+        {
+            services.AddScoped<BulkUpsertService>();
+        }
         private static void ConfigureInstances(this IServiceCollection services)
         {
             services.AddScoped<IEnvironmentsStore, EnvironmentsStore>();
