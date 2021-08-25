@@ -9,7 +9,7 @@ import { AccountingRevenueModule } from './accounting-revenue/accounting-revenue
 
 const routes: Routes = [
   {
-    path: NavigationPath.Contracts,
+    path: NavigationPath.Accounting,
     children: [
       {
         path: '',

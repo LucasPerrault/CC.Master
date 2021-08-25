@@ -1,1 +1,16 @@
-<p>accounting-revenue works!</p>
+<div class="page mod-fullWidth mod-withFullwidthTable">
+  <header class="page-header blockWithFixedSizeInFlex">
+    <h1>{{ 'front_accountingRevenuePage_title' | translate }}</h1>
+  </header>
+
+  <section>
+    <cc-accounting-period-card [accountingPeriod]="currentPeriod$ | async"
+                               [isLoading]="isCurrentPeriodLoading$ | async">
+    </cc-accounting-period-card>
+
+    <cc-accounting-sync-revenue-card [syncRevenueInfo]="syncRevenueInfo$ | async"
+                                     [isLoading]="isSyncRevenueLoading$ | async">
+    </cc-accounting-sync-revenue-card>
+  </section>
+
+</div>

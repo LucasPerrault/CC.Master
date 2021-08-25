@@ -1,0 +1,15 @@
+<div class="card">
+  <div class="card-content">
+    <h2>{{ 'front_accountingRevenuePage_currentPeriod_title_card' | translate }}</h2>
+
+    <div *ngIf="isLoading; else isNotLoading" class="progress mod-indeterminate">
+      <div class="progress-bar"></div>
+    </div>
+
+    <ng-template #isNotLoading>
+      {{ 'front_accountingRevenuePage_currentPeriod' | translate }} :
+      <strong>{{ accountingPeriod | date : 'MMMM YYYY' }}</strong>
+    </ng-template>
+
+  </div>
+</div>
