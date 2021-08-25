@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import { forkJoin, Observable, ReplaySubject, Subject } from 'rxjs';
+import { Component, OnInit, ViewEncapsulation } from '@angular/core';
+import { ReplaySubject, Subject } from 'rxjs';
 import { finalize, map, take } from 'rxjs/operators';
 
 import { ISyncRevenueInfo } from './models/sync-revenue-info.interface';
@@ -11,6 +11,7 @@ import { getButtonState, toSubmissionState } from '@cc/common/forms';
   selector: 'cc-accounting-revenue',
   templateUrl: './accounting-revenue.component.html',
   styleUrls: ['./accounting-revenue.component.scss'],
+  encapsulation: ViewEncapsulation.None,
 })
 export class AccountingRevenueComponent implements OnInit {
   public syncRevenueInfo$: ReplaySubject<ISyncRevenueInfo> = new ReplaySubject<ISyncRevenueInfo>(1);

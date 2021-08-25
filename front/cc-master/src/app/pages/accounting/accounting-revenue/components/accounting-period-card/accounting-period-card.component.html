@@ -7,8 +7,10 @@
     </div>
 
     <ng-template #isNotLoading>
-      {{ 'front_accountingRevenuePage_currentPeriod' | translate }} :
-      <strong>{{ accountingPeriod | date : 'MMMM YYYY' }}</strong>
+      <div class="u-right">
+        {{ 'front_accountingRevenuePage_currentPeriod' | translate }} :
+        <strong>{{ accountingPeriod | date : 'MMMM YYYY' }}</strong>
+      </div>
     </ng-template>
 
   </div>

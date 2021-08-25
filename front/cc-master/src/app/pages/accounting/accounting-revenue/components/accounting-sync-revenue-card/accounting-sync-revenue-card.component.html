@@ -1,4 +1,4 @@
-<div class="card grid-lg4">
+<div class="card">
   <div class="card-content">
     <h2>{{ 'front_accountingRevenuePage_sync_title_card' | translate }}</h2>
 
@@ -7,9 +7,9 @@
     </div>
 
     <ng-template #isNotLoading>
-      <div class="u-displayFlex u-flexDirectionColumn">
+      <div class="u-displayFlex u-flexDirectionColumn u-alignItemsFlexEnd">
         <span>
-          {{ 'front_accountingRevenuePage_sync_amount' | translate }}
+          {{ 'front_accountingRevenuePage_sync_amount' | translate }} :
           <strong>{{ syncRevenueInfo?.amount | currency:"EUR"}}</strong>
         </span>
 
