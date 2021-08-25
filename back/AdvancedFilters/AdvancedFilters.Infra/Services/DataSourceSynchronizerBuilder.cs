@@ -17,24 +17,24 @@ namespace AdvancedFilters.Infra.Services
             _bulk = bulk;
         }
 
-        public IDataSourceSynchronizer BuildFrom(EnvironmentDataSource configuration)
+        public IDataSourceSynchronizer BuildFrom(EnvironmentDataSource dataSource)
         {
-            return new DataSourceSynchronizer<EnvironmentsDto, Environment>(_httpClient, _bulk, configuration.Authentication, configuration.DataSourceRoute);
+            return new DataSourceSynchronizer<EnvironmentsDto, Environment>(_httpClient, _bulk, dataSource);
         }
 
-        public IDataSourceSynchronizer BuildFrom(EstablishmentDataSource configuration)
+        public IDataSourceSynchronizer BuildFrom(EstablishmentDataSource dataSource)
         {
-            return new DataSourceSynchronizer<EstablishmentDto, Establishment>(_httpClient, _bulk, configuration.Authentication, configuration.DataSourceRoute);
+            return new DataSourceSynchronizer<EstablishmentDto, Establishment>(_httpClient, _bulk, dataSource);
         }
 
-        public IDataSourceSynchronizer BuildFrom(AppInstanceDataSource configuration)
+        public IDataSourceSynchronizer BuildFrom(AppInstanceDataSource dataSource)
         {
-            return new DataSourceSynchronizer<AppInstancesDto, AppInstance>(_httpClient, _bulk, configuration.Authentication, configuration.DataSourceRoute);
+            return new DataSourceSynchronizer<AppInstancesDto, AppInstance>(_httpClient, _bulk, dataSource);
         }
 
-        public IDataSourceSynchronizer BuildFrom(LegalUnitDataSource configuration)
+        public IDataSourceSynchronizer BuildFrom(LegalUnitDataSource dataSource)
         {
-            return new DataSourceSynchronizer<LegalUnitDto, LegalUnit>(_httpClient, _bulk, configuration.Authentication, configuration.DataSourceRoute);
+            return new DataSourceSynchronizer<LegalUnitDto, LegalUnit>(_httpClient, _bulk, dataSource);
         }
     }
 }
