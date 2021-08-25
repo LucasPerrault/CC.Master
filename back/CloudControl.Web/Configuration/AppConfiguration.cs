@@ -1,6 +1,4 @@
-using AdvancedFilters.Web;
 using AdvancedFilters.Web.Configuration;
-using Authentication.Infra.Configurations;
 using Billing.Contracts.Infra.Configurations;
 using Cache.Web;
 using Core.Proxy.Infra.Configuration;
@@ -10,6 +8,7 @@ using Rights.Infra.Configuration;
 using Salesforce.Infra.Configurations;
 using TeamNotification.Web;
 using Users.Web;
+using AuthenticationConfiguration = Authentication.Infra.Configurations.AuthenticationConfiguration;
 
 namespace CloudControl.Web.Configuration
 {

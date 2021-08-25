@@ -1,4 +1,3 @@
-using AdvancedFilters.Domain.Billing.Models;
 using System.Collections.Generic;
 
 namespace AdvancedFilters.Domain.Instance.Models
