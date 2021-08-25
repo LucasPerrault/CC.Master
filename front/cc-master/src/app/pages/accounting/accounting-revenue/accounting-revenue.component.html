@@ -5,7 +5,9 @@
 
   <section>
     <cc-accounting-period-card [accountingPeriod]="currentPeriod$ | async"
-                               [isLoading]="isCurrentPeriodLoading$ | async">
+                               [isLoading]="isCurrentPeriodLoading$ | async"
+                               [closeButtonState]="closePeriodButtonState$ | async"
+                               (closeCurrentPeriod)="closeCurrentPeriod($event)">
     </cc-accounting-period-card>
 
     <cc-accounting-sync-revenue-card [syncRevenueInfo]="syncRevenueInfo$ | async"

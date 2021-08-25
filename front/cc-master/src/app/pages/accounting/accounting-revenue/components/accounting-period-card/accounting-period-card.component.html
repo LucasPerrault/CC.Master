@@ -12,4 +12,11 @@
     </ng-template>
 
   </div>
+  <footer class="card-footer">
+    <div class="card-footer-right">
+      <button class="button" [ngClass]="closeButtonState" (click)="close()" [disabled]="!canCloseCurrentPeriod">
+        {{ 'front_accountingRevenuePage_closeCurrentPeriod_button_label' | translate }}
+      </button>
+    </div>
+  </footer>
 </div>
