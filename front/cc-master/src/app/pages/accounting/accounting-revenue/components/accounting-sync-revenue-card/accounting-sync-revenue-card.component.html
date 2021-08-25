@@ -21,4 +21,12 @@
     </ng-template>
 
   </div>
+  <footer class="card-footer">
+    <div class="card-footer-right">
+      <button class="button" [ngClass]="syncButtonState" (click)="synchronise()" [disabled]="isDisabled">
+        {{ 'front_accountingRevenuePage_syncRevenue_button_label' | translate }}
+      </button>
+    </div>
+
+  </footer>
 </div>

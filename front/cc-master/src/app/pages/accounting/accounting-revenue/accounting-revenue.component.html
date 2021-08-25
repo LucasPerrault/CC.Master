@@ -11,7 +11,9 @@
     </cc-accounting-period-card>
 
     <cc-accounting-sync-revenue-card [syncRevenueInfo]="syncRevenueInfo$ | async"
-                                     [isLoading]="isSyncRevenueLoading$ | async">
+                                     [isLoading]="isSyncRevenueLoading$ | async"
+                                     [syncButtonState]="syncButtonState$ | async"
+                                     (syncRevenue)="syncRevenue()">
     </cc-accounting-sync-revenue-card>
   </section>
 

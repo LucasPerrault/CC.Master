@@ -15,6 +15,7 @@ import { getButtonState, toSubmissionState } from '@cc/common/forms';
 export class AccountingRevenueComponent implements OnInit {
   public syncRevenueInfo$: ReplaySubject<ISyncRevenueInfo> = new ReplaySubject<ISyncRevenueInfo>(1);
   public isSyncRevenueLoading$: ReplaySubject<boolean> = new ReplaySubject<boolean>(1);
+  public syncButtonState$: Subject<string> = new Subject<string>();
 
   public currentPeriod$: ReplaySubject<Date> = new ReplaySubject<Date>(1);
   public isCurrentPeriodLoading$: ReplaySubject<boolean> = new ReplaySubject<boolean>(1);
@@ -27,11 +28,18 @@ export class AccountingRevenueComponent implements OnInit {
 
   public ngOnInit(): void {
     this.refreshAccountingPeriod();
+    this.refreshSyncRevenueInfo();
+  }
 
-    this.isSyncRevenueLoading$.next(true);
-    this.syncRevenueService.getSyncInfo$()
-      .pipe(take(1), finalize(() => this.isSyncRevenueLoading$.next(false)))
-      .subscribe(info => this.syncRevenueInfo$.next(info));
+  public syncRevenue(): void {
+    this.syncRevenueService.synchronise$()
+      .pipe(
+        take(1),
+        toSubmissionState(),
+        map(state => getButtonState(state)),
+        finalize(() => this.refreshSyncRevenueInfo()),
+      )
+      .subscribe(buttonState => this.syncButtonState$.next(buttonState));
   }
 
   public closeCurrentPeriod(currentPeriod: Date): void {
@@ -50,5 +58,12 @@ export class AccountingRevenueComponent implements OnInit {
     this.accountingPeriodService.getCurrentAccountingPeriod$()
       .pipe(take(1), finalize(() => this.isCurrentPeriodLoading$.next(false)))
       .subscribe(period => this.currentPeriod$.next(period));
+  }
+
+  private refreshSyncRevenueInfo(): void {
+    this.isSyncRevenueLoading$.next(true);
+    this.syncRevenueService.getSyncInfo$()
+      .pipe(take(1), finalize(() => this.isSyncRevenueLoading$.next(false)))
+      .subscribe(info => this.syncRevenueInfo$.next(info));
   }
 }
