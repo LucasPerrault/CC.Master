@@ -28,6 +28,7 @@
     "@ngx-translate/core": "~12.0.0",
     "@sentry/browser": "^6.0.0",
     "@sentry/cli": "^1.64.2",
+    "date-fns": "^2.22.1",
     "rxjs": "~6.6.0",
     "tslib": "^2.0.0",
     "zone.js": "~0.11.4"
