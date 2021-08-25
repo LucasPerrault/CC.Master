@@ -1,8 +1,10 @@
-﻿using AdvancedFilters.Domain;
 using AdvancedFilters.Domain.DataSources;
+using System;
+using System.Collections.Generic;
+using System.Text;
 using System.Threading.Tasks;
 
-namespace AdvancedFilters.Web
+namespace AdvancedFilters.Infra.Services
 {
     public class HugeSyncService
     {
@@ -17,10 +19,11 @@ namespace AdvancedFilters.Web
 
         public async Task SyncAsync()
         {
-
-            foreach (var syncConf in _dataSourcesRepository.GetAll())
+            var dataSources = _dataSourcesRepository.GetAll();
+            foreach (var dataSource in dataSources)
             {
-                await syncConf.GetSynchronizer(_builder).SyncAsync();
+                var synchronizer = dataSource.GetSynchronizer(_builder);
+                await synchronizer.SyncAsync();
             }
         }
     }

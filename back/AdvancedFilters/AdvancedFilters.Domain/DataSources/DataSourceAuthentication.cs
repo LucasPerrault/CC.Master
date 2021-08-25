@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 namespace AdvancedFilters.Domain.DataSources
 {
@@ -15,8 +15,7 @@ namespace AdvancedFilters.Domain.DataSources
 
     public class AuthorizationAuthentication : IDataSourceAuthentication
     {
-
-        public DataSourceAuthType Type => DataSourceAuthType.Authorization;
+        public virtual DataSourceAuthType Type => DataSourceAuthType.Authorization;
 
         public string Scheme { get; }
         public string Parameter { get; }
@@ -26,14 +25,14 @@ namespace AdvancedFilters.Domain.DataSources
             Scheme = scheme;
             Parameter = parameter;
         }
-
     }
 
     public class LuccaAuthentication : AuthorizationAuthentication
     {
-        public DataSourceAuthType Type => DataSourceAuthType.Lucca;
+        public override DataSourceAuthType Type => DataSourceAuthType.Lucca;
 
-        public LuccaAuthentication(Guid token) : base("Lucca", $"webservice={token}")
+        public LuccaAuthentication(Guid token)
+            : base("Lucca", $"webservice={token}")
         { }
     }
 }
