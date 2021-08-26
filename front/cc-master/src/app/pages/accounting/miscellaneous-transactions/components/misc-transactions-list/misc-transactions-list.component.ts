@@ -10,6 +10,7 @@ import { IMiscellaneousTransaction } from '../../models/miscellaneous-transactio
 export class MiscTransactionsListComponent {
   @Input() public transactions: IMiscellaneousTransaction[];
   @Output() public cancelTransaction: EventEmitter<IMiscellaneousTransaction> = new EventEmitter();
+  @Output() public updateSelectedTransactions: EventEmitter<IMiscellaneousTransaction[]> = new EventEmitter();
 
   public selectedTransactions: IMiscellaneousTransaction[] = [];
   public cancellingTransactions: IMiscellaneousTransaction[] = [];
@@ -33,6 +34,8 @@ export class MiscTransactionsListComponent {
     this.selectedTransactions = this.isSelected(transaction)
       ? this.selectedTransactions.filter(t => t.id !== transaction.id)
       : [...this.selectedTransactions, transaction];
+
+    this.updateSelectedTransactions.emit(this.selectedTransactions);
   }
 
   public getAccountingDate(transaction: IMiscellaneousTransaction): string {

@@ -8,6 +8,7 @@ import { IMiscellaneousTransaction, miscTransactionFields } from '../models/misc
 
 class MiscTransactionEndPoint {
   public static base = '/api/v3/miscellaneousTransactions';
+  public static bill = '/api/v3/miscellaneousTransactions/bill';
   public static cancel = (id: number) => `/api/v3/miscellaneousTransactions/${ id }/cancel`;
 }
 
@@ -30,5 +31,9 @@ export class MiscellaneousTransactionsService {
 
   public cancelMiscellaneousTransaction$(id: number): Observable<void> {
     return this.httpClient.post<void>(MiscTransactionEndPoint.cancel(id), null);
+  }
+
+  public billMiscellaneousTransaction$(ids: number[]): Observable<void> {
+    return this.httpClient.post<void>(MiscTransactionEndPoint.bill, { ids });
   }
 }

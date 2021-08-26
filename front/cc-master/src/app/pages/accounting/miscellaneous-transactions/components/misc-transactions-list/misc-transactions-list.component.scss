@@ -1,9 +1,7 @@
 @import "theming.import";
 
-.is-canceled .table-body-row-cell {
+.is-canceled .table-body-row-cell,
+.is-canceled .table-body-row-cell .actionIcon,
+.actionIcon:disabled {
   color: _color('grey', 400);
-
-  .actionIcon {
-    color: _color('grey', 400);
-  }
 }
