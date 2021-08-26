@@ -8,6 +8,7 @@ import { IMiscellaneousTransaction, miscTransactionFields } from '../models/misc
 
 class MiscTransactionEndPoint {
   public static base = '/api/v3/miscellaneousTransactions';
+  public static cancel = (id: number) => `/api/v3/miscellaneousTransactions/${ id }/cancel`;
 }
 
 @Injectable()
@@ -25,5 +26,9 @@ export class MiscellaneousTransactionsService {
 
     return this.httpClient.get<IHttpApiV3CollectionResponse<IMiscellaneousTransaction>>(MiscTransactionEndPoint.base, { params })
       .pipe(map(res => res.data.items));
+  }
+
+  public cancelMiscellaneousTransaction$(id: number): Observable<void> {
+    return this.httpClient.post<void>(MiscTransactionEndPoint.cancel(id), null);
   }
 }
