@@ -29,11 +29,12 @@ namespace Authentication.Web
             services.AddSingleton(config);
             services.AddSingleton<ApiKeyInMemoryCache>();
             services.AddSingleton<UserInMemoryCache>();
+            services.AddSingleton<AuthRedirectionRemoteService>();
 
             services.AddScoped<IUserAuthenticationRemoteService, UserAuthenticationRemoteService>();
 
 
-            services.AddHttpClient<AuthRedirectionRemoteService>((provider, client) =>
+            services.AddHttpClient<LogoutService>((provider, client) =>
             {
                 client.WithUserAgent(nameof(ApiKeyAuthenticationRemoteService))
                     .WithAuthScheme("Lucca")

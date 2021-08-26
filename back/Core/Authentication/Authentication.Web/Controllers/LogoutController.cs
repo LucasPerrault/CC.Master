@@ -1,4 +1,4 @@
-﻿using Authentication.Infra.Services;
+using Authentication.Infra.Services;
 using IpFilter.Domain;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -12,15 +12,18 @@ namespace Authentication.Web.Controllers
     public class LogoutController : Controller
     {
         private readonly AuthRedirectionRemoteService _authRedirectionRemoteService;
+        private readonly LogoutService _logoutService;
         private readonly AuthTokenCookieService _cookieService;
 
         public LogoutController
         (
             AuthRedirectionRemoteService authRedirectionRemoteService,
+            LogoutService logoutService,
             AuthTokenCookieService cookieService
         )
         {
             _authRedirectionRemoteService = authRedirectionRemoteService;
+            _logoutService = logoutService;
             _cookieService = cookieService;
         }
 
@@ -29,7 +32,7 @@ namespace Authentication.Web.Controllers
         {
             _cookieService.InvalidateAuthTokenCookie(HttpContext);
             var redirectionCallback = $"https://{Request.Host.Value}";
-            await _authRedirectionRemoteService.LogoutAsync();
+            await _logoutService.LogoutAsync();
             var authUrl = _authRedirectionRemoteService.GetAuthRedirectionUri(redirectionCallback);
 
             return Redirect(authUrl.ToString());
