@@ -1,1 +1,11 @@
-<p>miscellaneous-transactions works!</p>
+<div class="page mod-fullWidth mod-withFullwidthTable">
+  <header class="page-header blockWithFixedSizeInFlex">
+    <h1>{{ "front_miscTransactionsPage_title" | translate }}</h1>
+  </header>
+
+  <div class="loading mod-fullPage" *ngIf="isLoading$ | async; else isNotLoading"></div>
+
+  <ng-template #isNotLoading>
+    <cc-misc-transactions-list [transactions]="transactions$ | async"></cc-misc-transactions-list>
+  </ng-template>
+</div>

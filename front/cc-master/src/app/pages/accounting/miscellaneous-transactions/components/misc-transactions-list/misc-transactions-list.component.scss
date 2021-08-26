@@ -1,0 +1,9 @@
+@import "theming.import";
+
+.is-canceled .table-body-row-cell {
+  color: _color('grey', 400);
+
+  .actionIcon {
+    color: _color('grey', 400);
+  }
+}
