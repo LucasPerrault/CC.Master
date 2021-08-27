@@ -93,6 +93,8 @@ export class MiscellaneousTransactionsComponent implements OnInit, OnDestroy {
   }
 
   private updateTransactions(contracts?: IContract[]): void {
+    this.resetSelectedTransactions();
+
     this.getMiscellaneousTransactions$(contracts)
       .pipe(take(1))
       .subscribe(transactions => this.transactions$.next(transactions));
@@ -104,5 +106,9 @@ export class MiscellaneousTransactionsComponent implements OnInit, OnDestroy {
     const contractIds = contracts?.map(c => c.id);
     return this.transactionsService.getMiscellaneousTransactions$(contractIds)
       .pipe(finalize(() => this.isLoading$.next(false)));
+  }
+
+  private resetSelectedTransactions(): void {
+    this.selectedTransactions = [];
   }
 }
