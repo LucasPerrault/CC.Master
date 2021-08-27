@@ -2,9 +2,13 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { getButtonState, toSubmissionState } from '@cc/common/forms';
 import { IContract } from '@cc/domain/billing/contracts';
+import { LuSidepanel } from '@lucca-front/ng/sidepanel';
 import { Observable, ReplaySubject, Subject } from 'rxjs';
 import { finalize, map, startWith, take, takeUntil } from 'rxjs/operators';
 
+import {
+  MiscTransactionCreationModalComponent,
+} from './components/misc-transaction-creation-modal/misc-transaction-creation-modal.component';
 import { IMiscellaneousTransaction } from './models/miscellaneous-transaction.interface';
 import { MiscellaneousTransactionsService } from './services/miscellaneous-transactions.service';
 
@@ -45,7 +49,10 @@ export class MiscellaneousTransactionsComponent implements OnInit, OnDestroy {
 
   private destroy$: Subject<void> = new Subject();
 
-  constructor(private transactionsService: MiscellaneousTransactionsService) { }
+  constructor(
+    private luSidepanel: LuSidepanel,
+    private transactionsService: MiscellaneousTransactionsService,
+  ) { }
 
   public ngOnInit(): void {
     this.formControl.valueChanges
@@ -56,6 +63,11 @@ export class MiscellaneousTransactionsComponent implements OnInit, OnDestroy {
   public ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
+  }
+
+  public openCreationModal(): void {
+    const dialog = this.luSidepanel.open(MiscTransactionCreationModalComponent);
+    dialog.onClose.subscribe( () => this.updateTransactions(this.formControl.value));
   }
 
   public updateSelectedTransactions(transactions: IMiscellaneousTransaction[]): void {
