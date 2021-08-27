@@ -77,7 +77,7 @@ export class MiscellaneousTransactionsComponent implements OnInit, OnDestroy {
   public cancelTransaction(transaction: IMiscellaneousTransaction): void {
     this.transactionsService.cancelMiscellaneousTransaction$(transaction?.id)
       .pipe(take(1))
-      .subscribe(() => this.updateTransactions());
+      .subscribe(() => this.updateTransactions(this.formControl.value));
   }
 
   public billTransaction(): void {
