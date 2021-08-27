@@ -20,23 +20,41 @@ using Users.Domain;
 
 namespace CloudControl.Web.Tests.Mocks
 {
+    public class MockedWebApplicationMocks
+    {
+        public List<(Type, Func<IServiceProvider, object>)> Singletons { get; } = new List<(Type, Func<IServiceProvider, object>)>();
+        public List<(Type, Func<IServiceProvider, object>)> Transients { get; } = new List<(Type, Func<IServiceProvider, object>)>();
+
+        public void ConfigureAdditionalServices(IServiceCollection services)
+        {
+            foreach (var (type, singleton) in Singletons)
+            {
+                services.AddSingleton(type, singleton);
+            }
+
+            foreach (var (type, service) in Transients)
+            {
+                services.AddTransient(type, service);
+            }
+        }
+    }
 
     public class MockedWebApplicationFactory : WebApplicationFactory<Startup>
     {
-        private readonly List<(Type, Mock)> _mocks = new List<(Type, Mock)>();
-
+        private readonly MockedWebApplicationMocks _mocks = new MockedWebApplicationMocks();
         protected override IWebHostBuilder CreateWebHostBuilder()
         {
             return WebHost.CreateDefaultBuilder(null)
                 .UseEnvironment("Development")
                 .ConfigureServices(s =>
                 {
-                    s.AddSingleton<ServicesConfiguration>(sp => new MockedServicesConfiguration(sp.GetRequiredService<IConfiguration>(), sp.GetRequiredService<IWebHostEnvironment>()));
-                    foreach (var (type, mock) in _mocks)
-                    {
-                        s.AddSingleton(type, mock.Object);
-                    }
+                    s.AddSingleton<ServicesConfiguration>(sp => new MockedServicesConfiguration
+                    (
+                        sp.GetRequiredService<IConfiguration>(),
+                        sp.GetRequiredService<IWebHostEnvironment>()
+                    ));
                 })
+                .ConfigureTestServices(_mocks.ConfigureAdditionalServices)
                 .UseStartup<Startup>()
                 .UseSetting(WebHostDefaults.ApplicationKey, typeof(Startup).Assembly.GetName().Name)
                 .UseTestServer();
@@ -44,25 +62,38 @@ namespace CloudControl.Web.Tests.Mocks
 
         public HttpClient CreateAuthenticatedClient()
         {
-            var httpClient = this.CreateClient();
+            var httpClient = this.CreateClient(new WebApplicationFactoryClientOptions { AllowAutoRedirect = false });
             var fakeUserToken = "5b2c0440-2acf-443a-9b1d-3a2a1e09dad4";
             httpClient.DefaultRequestHeaders.Authorization = System.Net.Http.Headers.AuthenticationHeaderValue.Parse($"Cloudcontrol user={fakeUserToken}");
             return httpClient;
         }
 
-        public void AddServiceMock<T>(Mock<T> mock) where T : class
+        public void AddSingleton<T>(Func<IServiceProvider, T> func) where T : class
         {
-            _mocks.Add((typeof(T), mock));
+            _mocks.Singletons.Add((typeof(T), func));
         }
 
+        public void AddSingleton<T>(T singleton) where T : class
+        {
+            _mocks.Singletons.Add((typeof(T), sp => singleton));
+        }
+
+        public void AddTransient<T>(Func<IServiceProvider, T> serviceFunc) where T : class
+        {
+            _mocks.Transients.Add((typeof(T), serviceFunc));
+        }
+
+        public void AddTransient<T>(T service) where T : class
+        {
+            _mocks.Transients.Add((typeof(T), sp => service));
+        }
     }
 
     public class MockedServicesConfiguration : ServicesConfiguration
     {
         public MockedServicesConfiguration(IConfiguration configuration, IWebHostEnvironment env)
             : base(configuration, env)
-        {
-        }
+        { }
 
         public override AppConfiguration ConfigureConfiguration(IServiceCollection services)
         {
@@ -159,7 +190,6 @@ namespace CloudControl.Web.Tests.Mocks
         }
 
         public override void ConfigureSalesforce(IServiceCollection services, AppConfiguration configuration)
-        {
-        }
+        { }
     }
 }
