@@ -33,8 +33,8 @@ namespace Authentication.Web.Tests.Controllers
             var authRemoteService = new AuthRedirectionRemoteService(config);
 
             var webApplicationFactory = new MockedWebApplicationFactory();
-            webApplicationFactory.AddTransient(logoutService);
-            webApplicationFactory.AddSingleton(authRemoteService);
+            webApplicationFactory.Mocks.AddTransient(logoutService);
+            webApplicationFactory.Mocks.AddSingleton(authRemoteService);
 
             var client = webApplicationFactory.CreateAuthenticatedClient();
             var response = await client.GetAsync("/logout");

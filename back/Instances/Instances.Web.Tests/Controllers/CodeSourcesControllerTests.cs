@@ -24,7 +24,7 @@ namespace Instances.Web.Tests.Controllers
                 .ReturnsAsync(responseUrl);
 
             var webApplicationFactory = new MockedWebApplicationFactory();
-            webApplicationFactory.AddSingleton(codeSourcesRepositoryMock);
+            webApplicationFactory.Mocks.AddSingleton(codeSourcesRepositoryMock.Object);
 
             var httpClient = webApplicationFactory.CreateAuthenticatedClient();
 
@@ -50,7 +50,7 @@ namespace Instances.Web.Tests.Controllers
                 .ReturnsAsync("");
 
             var webApplicationFactory = new MockedWebApplicationFactory();
-            webApplicationFactory.AddSingleton(codeSourcesRepositoryMock.Object);
+            webApplicationFactory.Mocks.AddSingleton(codeSourcesRepositoryMock.Object);
 
             var httpClient = webApplicationFactory.CreateAuthenticatedClient();
 
@@ -76,7 +76,7 @@ namespace Instances.Web.Tests.Controllers
                 .ReturnsAsync(responseUrl);
 
             var webApplicationFactory = new MockedWebApplicationFactory();
-            webApplicationFactory.AddSingleton(codeSourcesRepositoryMock);
+            webApplicationFactory.Mocks.AddTransient(codeSourcesRepositoryMock.Object);
 
             var httpClient = webApplicationFactory.CreateAuthenticatedClient();
 
@@ -101,7 +101,7 @@ namespace Instances.Web.Tests.Controllers
                 });
 
             var webApplicationFactory = new MockedWebApplicationFactory();
-            webApplicationFactory.AddSingleton(codeSourcesRepositoryMock);
+            webApplicationFactory.Mocks.AddTransient(codeSourcesRepositoryMock.Object);
 
             var httpClient = webApplicationFactory.CreateAuthenticatedClient();
 

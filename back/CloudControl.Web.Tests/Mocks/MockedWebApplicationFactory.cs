@@ -20,28 +20,11 @@ using Users.Domain;
 
 namespace CloudControl.Web.Tests.Mocks
 {
-    public class MockedWebApplicationMocks
-    {
-        public List<(Type, Func<IServiceProvider, object>)> Singletons { get; } = new List<(Type, Func<IServiceProvider, object>)>();
-        public List<(Type, Func<IServiceProvider, object>)> Transients { get; } = new List<(Type, Func<IServiceProvider, object>)>();
-
-        public void ConfigureAdditionalServices(IServiceCollection services)
-        {
-            foreach (var (type, singleton) in Singletons)
-            {
-                services.AddSingleton(type, singleton);
-            }
-
-            foreach (var (type, service) in Transients)
-            {
-                services.AddTransient(type, service);
-            }
-        }
-    }
 
     public class MockedWebApplicationFactory : WebApplicationFactory<Startup>
     {
-        private readonly MockedWebApplicationMocks _mocks = new MockedWebApplicationMocks();
+        public MockedWebApplicationMocks Mocks { get; } = new MockedWebApplicationMocks();
+
         protected override IWebHostBuilder CreateWebHostBuilder()
         {
             return WebHost.CreateDefaultBuilder(null)
@@ -54,7 +37,7 @@ namespace CloudControl.Web.Tests.Mocks
                         sp.GetRequiredService<IWebHostEnvironment>()
                     ));
                 })
-                .ConfigureTestServices(_mocks.ConfigureAdditionalServices)
+                .ConfigureTestServices(Mocks.ConfigureAdditionalServices)
                 .UseStartup<Startup>()
                 .UseSetting(WebHostDefaults.ApplicationKey, typeof(Startup).Assembly.GetName().Name)
                 .UseTestServer();
@@ -68,24 +51,10 @@ namespace CloudControl.Web.Tests.Mocks
             return httpClient;
         }
 
-        public void AddSingleton<T>(Func<IServiceProvider, T> func) where T : class
-        {
-            _mocks.Singletons.Add((typeof(T), func));
-        }
 
-        public void AddSingleton<T>(T singleton) where T : class
+        public new HttpClient CreateClient()
         {
-            _mocks.Singletons.Add((typeof(T), sp => singleton));
-        }
-
-        public void AddTransient<T>(Func<IServiceProvider, T> serviceFunc) where T : class
-        {
-            _mocks.Transients.Add((typeof(T), serviceFunc));
-        }
-
-        public void AddTransient<T>(T service) where T : class
-        {
-            _mocks.Transients.Add((typeof(T), sp => service));
+            return CreateClient(new WebApplicationFactoryClientOptions { AllowAutoRedirect = false });
         }
     }
 
