@@ -14,10 +14,14 @@ class MiscTransactionEndPoint {
 export class MiscellaneousTransactionsService {
   constructor(private httpClient: HttpClient) {}
 
-  public getMiscellaneousTransactions$(): Observable<IMiscellaneousTransaction[]> {
-    const params = new HttpParams()
+  public getMiscellaneousTransactions$(contractIds: number[]): Observable<IMiscellaneousTransaction[]> {
+    let params = new HttpParams()
       .set('fields', miscTransactionFields)
       .set(apiV3SortKey, `periodOn,${ apiV3SortOrderDescendingKey },contract.Id,${ apiV3SortOrderAscendingKey }`);
+
+    if (!!contractIds?.length) {
+      params = params.set('contractId', contractIds.join(','));
+    }
 
     return this.httpClient.get<IHttpApiV3CollectionResponse<IMiscellaneousTransaction>>(MiscTransactionEndPoint.base, { params })
       .pipe(map(res => res.data.items));

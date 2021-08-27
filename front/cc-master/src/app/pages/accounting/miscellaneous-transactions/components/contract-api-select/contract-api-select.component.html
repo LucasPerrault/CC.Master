@@ -1,0 +1,39 @@
+<label class="textfield {{ textfieldClass}}" [ngClass]="{ 'is-required': required }">
+  <lu-select [formControl]="formControl"
+             class="textfield-input"
+             [placeholder]="placeholder"
+             [required]="required"
+             (onOpen)="onOpen()"
+             [multiple]="multiple">
+
+    <ng-container *luDisplayer="let value; multiple: multiple">
+      <ng-container *ngIf="multiple; else notMultiple">
+        <span *ngIf="value?.length !== 1; else: singleView">
+        <span class="label">{{ value.length }}</span>
+          {{ 'front_miscTransactionsPage_contract_filter_selection' | translate: { count: value.length } }}
+      </span>
+        <ng-template #singleView>{{ value[0].name }}</ng-template>
+      </ng-container>
+
+      <ng-template #notMultiple>{{ value.name }}</ng-template>
+    </ng-container>
+
+    <lu-option-picker-advanced>
+      <header class="lu-picker-header">
+        <lu-api-paged-searcher [api]="apiUrl" [fields]="apiFields" [filters]="filtersToExcludeSelection"></lu-api-paged-searcher>
+      </header>
+      <lu-option-pager></lu-option-pager>
+      <lu-option *ngFor="let selectedContract of selectedContracts" [value]="selectedContract" selected>
+        {{ selectedContract.name }}
+      </lu-option>
+
+      <lu-option *luForOptions="let contractNotSelected; trackBy: trackBy" [value]="contractNotSelected">
+          {{ contractNotSelected.name }}
+      </lu-option>
+    </lu-option-picker-advanced>
+    <lu-input-clearer></lu-input-clearer>
+  </lu-select>
+  <span *ngIf="label" class="textfield-label">{{ label }}</span>
+  <ng-content select="[textfield-messages]"></ng-content>
+</label>
+

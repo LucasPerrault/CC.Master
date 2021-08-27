@@ -3,6 +3,14 @@
     <h1>{{ "front_miscTransactionsPage_title" | translate }}</h1>
   </header>
 
+  <div class="header blockWithFixedSizeInFlex">
+    <cc-contract-api-select [placeholder]="'front_miscTransactionsPage_contract_filter_label' | translate"
+                            [multiple]="true"
+                            textfieldClass="palette-grey mod-longest mod-outlined"
+                            [formControl]="formControl">
+    </cc-contract-api-select>
+  </div>
+
   <div class="loading mod-fullPage" *ngIf="isLoading$ | async; else isNotLoading"></div>
 
   <ng-template #isNotLoading>
