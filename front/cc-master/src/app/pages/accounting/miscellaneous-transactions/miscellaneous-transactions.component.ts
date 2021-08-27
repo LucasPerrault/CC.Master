@@ -83,7 +83,12 @@ export class MiscellaneousTransactionsComponent implements OnInit, OnDestroy {
   public billTransaction(): void {
     const transactionIds = this.selectedTransactions.map(t => t.id);
     this.transactionsService.billMiscellaneousTransaction$(transactionIds)
-      .pipe(take(1), toSubmissionState(), map(state => getButtonState(state)))
+      .pipe(
+        take(1),
+        toSubmissionState(),
+        map(state => getButtonState(state)),
+        finalize(() => this.updateTransactions(this.formControl.value)),
+      )
       .subscribe(buttonState => this.billButtonState$.next(buttonState));
   }
 
