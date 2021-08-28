@@ -45,7 +45,7 @@ namespace CloudControl.Web.Tests.Mocks
 
         public HttpClient CreateAuthenticatedClient()
         {
-            var httpClient = this.CreateClient(new WebApplicationFactoryClientOptions { AllowAutoRedirect = false });
+            var httpClient = CreateClient();
             var fakeUserToken = "5b2c0440-2acf-443a-9b1d-3a2a1e09dad4";
             httpClient.DefaultRequestHeaders.Authorization = System.Net.Http.Headers.AuthenticationHeaderValue.Parse($"Cloudcontrol user={fakeUserToken}");
             return httpClient;

@@ -17,17 +17,18 @@ namespace Authentication.Web.Tests.Controllers
         [Fact]
         public async Task ShouldRedirectLogoutRequest()
         {
-            var handlerMock = new Mock<HttpClientHandler>();
-            handlerMock
-                .SetupSendAsync(ItIsRequestMessage.Matching(h => h.RequestUri.ToString() == "https://mocked-partenaires.mocked/log-me-out"))
-                .ReturnsAsync(new HttpResponseMessage());
-
             var config = new AuthenticationConfiguration
             {
-                ServerUri = new Uri("https://mocked-partenaires.mocked/"),
+                ServerUri = new Uri("https://example.org/"),
                 LogoutEndpointPath = "log-me-out",
                 RedirectEndpointPath = "redirect-user-here",
             };
+
+            var handlerMock = new Mock<HttpClientHandler>();
+            handlerMock
+                .SetupSendAsync(ItIsRequestMessage.Matching(h => h.RequestUri.ToString() == $"{config.ServerUri}{config.LogoutEndpointPath}"))
+                .ReturnsAsync(new HttpResponseMessage());
+
 
             var logoutService = new LogoutService(config, new TestPrincipal().Principal, new HttpClient(handlerMock.Object));
             var authRemoteService = new AuthRedirectionRemoteService(config);
@@ -42,7 +43,7 @@ namespace Authentication.Web.Tests.Controllers
             Assert.Equal(HttpStatusCode.Redirect, response.StatusCode);
             Assert.Contains
             (
-                "https://mocked-partenaires.mocked/redirect-user-here?callback=https://localhost",
+                $"{config.ServerUri}{config.RedirectEndpointPath}?callback=https://localhost",
                 response.Headers.GetValues("Location")
             );
         }
