@@ -53,7 +53,8 @@ namespace Environments.Infra.Storage.Stores
                 .Apply(filter.Subdomain).To(e => e.Subdomain)
                 .Apply(filter.IsActive).To(e => e.IsActive)
                 .WhenNotNullOrEmpty(filter.Ids).ApplyWhere(e => filter.Ids.Contains(e.Id))
-                .WhenNotNullOrEmpty(filter.Search).ApplyWhere(e => e.Subdomain.Contains(filter.Search));
+                .WhenNotNullOrEmpty(filter.Search).ApplyWhere(e => e.Subdomain.Contains(filter.Search))
+                .WhenNotNullOrEmpty(filter.Purposes).ApplyWhere(e => filter.Purposes.Contains(e.Purpose));
         }
 
         public static IQueryable<Environment> ForRights

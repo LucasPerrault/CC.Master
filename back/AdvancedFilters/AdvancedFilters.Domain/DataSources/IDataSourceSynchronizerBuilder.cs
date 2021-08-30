@@ -1,12 +1,13 @@
 ﻿using AdvancedFilters.Domain.Instance;
+using System.Threading.Tasks;
 
 namespace AdvancedFilters.Domain.DataSources
 {
     public interface IDataSourceSynchronizerBuilder
     {
-        IDataSourceSynchronizer BuildFrom(EnvironmentDataSource configuration);
-        IDataSourceSynchronizer BuildFrom(EstablishmentDataSource configuration);
-        IDataSourceSynchronizer BuildFrom(AppInstanceDataSource configuration);
-        IDataSourceSynchronizer BuildFrom(LegalUnitDataSource configuration);
+        Task<IDataSourceSynchronizer> BuildFromAsync(EnvironmentDataSource configuration);
+        Task<IDataSourceSynchronizer> BuildFromAsync(EstablishmentDataSource configuration);
+        Task<IDataSourceSynchronizer> BuildFromAsync(AppInstanceDataSource configuration);
+        Task<IDataSourceSynchronizer> BuildFromAsync(LegalUnitDataSource configuration);
     }
 }

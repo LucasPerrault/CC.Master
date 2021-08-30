@@ -1,74 +1,101 @@
 using AdvancedFilters.Domain.DataSources;
-using AdvancedFilters.Infra.Storage.Services;
 using System;
+using System.Collections.Generic;
 using System.Net.Http;
-using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using Tools;
 
 namespace AdvancedFilters.Infra.Services
 {
+    public class FetchJob<T>
+    {
+        public FetchJobHttpRequestDescription RequestDescription { get; }
+        public Action<T> ObjectCreationFinalization { get; }
+
+        public FetchJob(Uri uri, Action<HttpRequestMessage> authentication, Action<T> objectCreationFinalization)
+        {
+            RequestDescription = new FetchJobHttpRequestDescription(uri, authentication);
+            ObjectCreationFinalization = objectCreationFinalization;
+        }
+
+        public class FetchJobHttpRequestDescription
+        {
+            private Uri Uri { get; }
+            private Action<HttpRequestMessage> Authentication { get; }
+
+            public FetchJobHttpRequestDescription(Uri uri, Action<HttpRequestMessage> authentication)
+            {
+                Uri = uri;
+                Authentication = authentication;
+            }
+
+            public HttpRequestMessage ToRequest()
+            {
+                var requestMsg = new HttpRequestMessage(HttpMethod.Get, Uri);
+                Authentication(requestMsg);
+                return requestMsg;
+            }
+        }
+    }
+
     public class DataSourceSynchronizer<TDto, T> : IDataSourceSynchronizer
         where TDto : IDto<T>
         where T : class
     {
-        private readonly HttpClient _httpClient;
-        private readonly BulkUpsertService _bulk;
-        private readonly DataSource _dataSource;
+        private readonly List<FetchJob<T>> _jobs;
+        private readonly Func<List<T>, Task> _upsertAction;
+        private readonly Func<HttpRequestMessage, Task<HttpResponseMessage>> _fetchAction;
 
-        public DataSourceSynchronizer(HttpClient httpClient, BulkUpsertService bulk, DataSource dataSource)
+        public DataSourceSynchronizer
+        (
+            List<FetchJob<T>> jobs,
+            Func<HttpRequestMessage, Task<HttpResponseMessage>> fetchAction,
+            Func<List<T>, Task> upsertAction
+        )
         {
-            _httpClient = httpClient;
-            _bulk = bulk;
-            _dataSource = dataSource;
+            _jobs = jobs;
+            _upsertAction = upsertAction;
+            _fetchAction = fetchAction;
         }
 
         public async Task SyncAsync()
         {
-            var requestUri = GetRequestUri();
-            using var requestMsg = new HttpRequestMessage(HttpMethod.Get, requestUri);
-
-            Authenticate(requestMsg);
-
-            using var response = await _httpClient.SendAsync(requestMsg);
-            using var stream = await response.Content.ReadAsStreamAsync();
-
-            var dto = await Serializer.DeserializeAsync<TDto>(stream);
-            var items = dto.ToItems();
-
-            await _bulk.InsertOrUpdateOrDeleteAsync(items);
+            var items = await FetchAsync();
+            await _upsertAction(items);
         }
 
-        private string GetRequestUri()
+        private async Task<List<T>> FetchAsync()
         {
-            var route = _dataSource.DataSourceRoute;
-            switch (route)
+            var items = new List<T>();
+            foreach (var job in _jobs)
             {
-                case TenantDataSourceRoute tenantRoute:
-                    return tenantRoute.Endpoint;
-                case HostDataSourceRoute hostRoute:
-                    return hostRoute.Host;
-                default:
-                    throw new ApplicationException($"DataSourceRoute { route.GetType() } not supported");
+                var batch = await FetchOneBatchAsync(job);
+                foreach (var item in batch)
+                {
+                    job.ObjectCreationFinalization(item);
+                }
+                items.AddRange(batch);
             }
+
+            return items;
         }
 
-        private void Authenticate(HttpRequestMessage msg)
+        private async Task<List<T>> FetchOneBatchAsync(FetchJob<T> job)
         {
-            var auth = _dataSource.Authentication;
-            switch (auth)
+            try
             {
-                case AuthorizationAuthentication authorizationAuth:
-                    Authenticate(msg, authorizationAuth);
-                    break;
-                default:
-                    throw new ApplicationException($"Authentication type { auth.GetType() } not supported");
-            }
-        }
+                using var message = job.RequestDescription.ToRequest();
+                using var response = await _fetchAction(message);
+                await using var stream = await response.Content.ReadAsStreamAsync();
 
-        private void Authenticate(HttpRequestMessage msg, AuthorizationAuthentication authAuth)
-        {
-            msg.Headers.Authorization = new AuthenticationHeaderValue(authAuth.Scheme, authAuth.Parameter);
+                var dto = await Serializer.DeserializeAsync<TDto>(stream);
+                var batch = dto.ToItems();
+                return batch;
+            }
+            catch (Exception)
+            {
+                return new List<T>();
+            }
         }
     }
 }

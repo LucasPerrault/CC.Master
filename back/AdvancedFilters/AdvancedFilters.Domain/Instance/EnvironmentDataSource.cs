@@ -1,12 +1,13 @@
 ﻿using AdvancedFilters.Domain.DataSources;
+using System.Threading.Tasks;
 
 namespace AdvancedFilters.Domain.Instance
 {
     public class EnvironmentDataSource : DataSource
     {
-        public override IDataSourceSynchronizer GetSynchronizer(IDataSourceSynchronizerBuilder synchronizerBuilder)
+        public override Task<IDataSourceSynchronizer> GetSynchronizer(IDataSourceSynchronizerBuilder synchronizerBuilder)
         {
-            return synchronizerBuilder.BuildFrom(this);
+            return synchronizerBuilder.BuildFromAsync(this);
         }
 
         public EnvironmentDataSource(IDataSourceAuthentication authentication, IDataSourceRoute dataSourceRoute)

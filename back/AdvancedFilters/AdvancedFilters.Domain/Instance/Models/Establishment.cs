@@ -17,5 +17,6 @@ namespace AdvancedFilters.Domain.Instance.Models
         public bool IsArchived { get; set; }
 
         public LegalUnit LegalUnit { get; set; }
+        public int EnvironmentId { get; set; }
     }
 }

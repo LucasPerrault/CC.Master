@@ -127,8 +127,11 @@
     },
     "AdvancedFilters": {
         "Routes": {
-            "HostSources": {
-                "CloudControlHost": "https://cc.ilucca.local"
+            "Hosts": {
+                "CloudControl": {
+                    "Host": "https://cc.ilucca.local",
+                    "EnvironmentsEndpoint": "/api/environments?limit=10000&isActive=true,false&purpose=contractual"
+                }
             },
             "TenantSources": {
                 "EstablishmentsEndpoint": "api/establishments"

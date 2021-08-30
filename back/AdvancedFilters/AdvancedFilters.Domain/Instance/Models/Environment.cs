@@ -10,6 +10,8 @@ namespace AdvancedFilters.Domain.Instance.Models
         public string Domain { get; set; }
         public bool IsActive { get; set; }
 
+        public string ProductionHost => $"https://{Subdomain}.{Domain}";
+
         public IReadOnlyCollection<LegalUnit> LegalUnits { get; set; }
     }
 }

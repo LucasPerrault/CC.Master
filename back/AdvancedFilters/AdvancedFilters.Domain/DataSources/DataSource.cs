@@ -1,3 +1,5 @@
+using System.Threading.Tasks;
+
 namespace AdvancedFilters.Domain.DataSources
 {
     public enum DataSources
@@ -13,12 +15,12 @@ namespace AdvancedFilters.Domain.DataSources
         public IDataSourceAuthentication Authentication { get; }
         public IDataSourceRoute DataSourceRoute { get; }
 
-        public DataSource(IDataSourceAuthentication authentication, IDataSourceRoute dataSourceRoute)
+        protected DataSource(IDataSourceAuthentication authentication, IDataSourceRoute dataSourceRoute)
         {
             Authentication = authentication;
             DataSourceRoute = dataSourceRoute;
         }
 
-        public abstract IDataSourceSynchronizer GetSynchronizer(IDataSourceSynchronizerBuilder synchronizerBuilder);
+        public abstract Task<IDataSourceSynchronizer> GetSynchronizer(IDataSourceSynchronizerBuilder synchronizerBuilder);
     }
 }

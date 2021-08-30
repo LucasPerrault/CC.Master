@@ -31,6 +31,7 @@ namespace AdvancedFilters.Web
 
         public static void ConfigureSync(this IServiceCollection services)
         {
+            services.AddSingleton<FetchAuthenticator>();
             services.AddHttpClient<IDataSourceSynchronizerBuilder, DataSourceSynchronizerBuilder>();
             services.AddScoped<HugeSyncService>();
         }

@@ -1,4 +1,6 @@
-﻿namespace AdvancedFilters.Web.Configuration
+﻿using System;
+
+namespace AdvancedFilters.Web.Configuration
 {
     public class RoutesConfiguration
     {
@@ -16,6 +18,12 @@
 
     public class HostRoutesConfiguration
     {
-        public string CloudControlHost { get; set; }
+        public CloudControlHostConfiguration CloudControl { get; set; }
+    }
+
+    public class CloudControlHostConfiguration
+    {
+        public Uri Host { get; set; }
+        public string EnvironmentsEndpoint { get; set; }
     }
 }

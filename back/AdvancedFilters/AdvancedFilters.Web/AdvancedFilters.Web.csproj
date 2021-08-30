@@ -10,6 +10,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\Core\Rights\Rights.Domain\Rights.Domain.csproj" />
+    <ProjectReference Include="..\..\Core\Rights\Rights.Web\Rights.Web.csproj" />
     <ProjectReference Include="..\..\Core\Tools\Tools\Tools.csproj" />
     <ProjectReference Include="..\AdvancedFilters.Domain\AdvancedFilters.Domain.csproj" />
     <ProjectReference Include="..\AdvancedFilters.Infra\AdvancedFilters.Infra.csproj" />

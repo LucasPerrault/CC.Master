@@ -1,7 +1,4 @@
 using AdvancedFilters.Domain.DataSources;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace AdvancedFilters.Infra.Services
@@ -22,7 +19,7 @@ namespace AdvancedFilters.Infra.Services
             var dataSources = _dataSourcesRepository.GetAll();
             foreach (var dataSource in dataSources)
             {
-                var synchronizer = dataSource.GetSynchronizer(_builder);
+                var synchronizer = await dataSource.GetSynchronizer(_builder);
                 await synchronizer.SyncAsync();
             }
         }
