@@ -34,34 +34,35 @@ namespace AdvancedFilters.Infra.Services
             _authenticator = authenticator;
         }
 
-        public async Task<IDataSourceSynchronizer> BuildFromAsync(EnvironmentDataSource dataSource)
+        public Task<IDataSourceSynchronizer> BuildFromAsync(EnvironmentDataSource dataSource)
         {
             var contexts = new EmptyDataSourceContext<Environment>();
-            return await BuildFromAsync<EnvironmentsDto, Environment, EmptyDataSourceContext<Environment>>(dataSource, new List<EmptyDataSourceContext<Environment>> { contexts });
+            var synchronizer = BuildFrom<EnvironmentsDto, Environment, EmptyDataSourceContext<Environment>>(dataSource, new List<EmptyDataSourceContext<Environment>> { contexts });
+            return Task.FromResult(synchronizer);
         }
 
         public async Task<IDataSourceSynchronizer> BuildFromAsync(EstablishmentDataSource dataSource)
         {
             Action<Environment, Establishment> finalizeAction = (environment, establishment) => { establishment.EnvironmentId = environment.Id; };
             var contexts = await GetEnvironmentContextsAsync(finalizeAction);
-            return await BuildFromAsync<EstablishmentDto, Establishment, EnvironmentDataSourceContext<Establishment>>(dataSource, contexts);
+            return BuildFrom<EstablishmentDto, Establishment, EnvironmentDataSourceContext<Establishment>>(dataSource, contexts);
         }
 
         public async Task<IDataSourceSynchronizer> BuildFromAsync(AppInstanceDataSource dataSource)
         {
             Action<Environment, AppInstance> finalizeAction = (environment, appInstance) => { appInstance.EnvironmentId = environment.Id; };
             var contexts = await GetEnvironmentContextsAsync(finalizeAction);
-            return await BuildFromAsync<AppInstancesDto, AppInstance, EnvironmentDataSourceContext<AppInstance>>(dataSource, contexts);
+            return BuildFrom<AppInstancesDto, AppInstance, EnvironmentDataSourceContext<AppInstance>>(dataSource, contexts);
         }
 
         public async Task<IDataSourceSynchronizer> BuildFromAsync(LegalUnitDataSource dataSource)
         {
             Action<Environment, LegalUnit> finalizeAction = (environment, legalUnit) => { legalUnit.EnvironmentId = environment.Id; };
             var contexts = await GetEnvironmentContextsAsync(finalizeAction);
-            return await BuildFromAsync<LegalUnitDto, LegalUnit, EnvironmentDataSourceContext<LegalUnit>>(dataSource, contexts);
+            return BuildFrom<LegalUnitDto, LegalUnit, EnvironmentDataSourceContext<LegalUnit>>(dataSource, contexts);
         }
 
-        private async Task<IDataSourceSynchronizer> BuildFromAsync<TDto, T, TContext>
+        private IDataSourceSynchronizer BuildFrom<TDto, T, TContext>
             (DataSource dataSource, IReadOnlyCollection<TContext> contexts)
             where TDto : IDto<T> where T : class where TContext : IDataSourceContext<T>
         {
