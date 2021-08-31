@@ -1,4 +1,5 @@
 ﻿using Billing.Contracts.Domain.Clients;
+using Billing.Products.Domain;
 using Distributors.Domain.Models;
 using System;
 using System.Collections.Generic;
@@ -19,6 +20,10 @@ namespace Billing.Contracts.Domain.Contracts
 
         public int ClientId { get; set; }
         public Client Client { get; set; }
+
+
+        public int CommercialOfferId { get; set; }
+        public CommercialOffer CommercialOffer { get; set; }
 
         public List<EstablishmentAttachment> Attachments { get; set; }
     }

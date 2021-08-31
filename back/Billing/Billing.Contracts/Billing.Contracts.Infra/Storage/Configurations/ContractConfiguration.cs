@@ -17,9 +17,11 @@ namespace Billing.Contracts.Infra.Storage.Configurations
             builder.Property(d => d.DistributorId).HasColumnName("DistributorId");
             builder.Property(d => d.EnvironmentSubdomain).HasColumnName("EnvironmentSubdomain");
             builder.Property(d => d.ArchivedAt).HasColumnName("ArchivedAt");
+            builder.Property(d => d.CommercialOfferId).HasColumnName("CommercialOfferId");
 
             builder.HasOne(d => d.Distributor).WithMany().HasForeignKey(d => d.DistributorId);
             builder.HasOne(d => d.Client).WithMany(c => c.Contracts).HasForeignKey(d => d.ClientId);
+            builder.HasOne(d => d.CommercialOffer).WithMany().HasForeignKey(d => d.CommercialOfferId);
 
             builder.HasMany(d => d.Attachments).WithOne().HasForeignKey(a => a.ContractId);
         }
