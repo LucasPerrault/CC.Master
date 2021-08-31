@@ -2,7 +2,7 @@
 
 namespace AdvancedFilters.Domain.DataSources
 {
-    public interface IFetchContextPayload<in T>
+    public interface IDataSourceContext<in T>
     {
         public void Finalize(T item);
         public Uri GetUri(TenantDataSourceRoute route);

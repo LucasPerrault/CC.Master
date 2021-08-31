@@ -5,7 +5,7 @@ namespace AdvancedFilters.Domain.DataSources
 
     public interface IDataSourceRoute
     {
-        Uri GetUri<T, TPayload>(TPayload p) where TPayload : IFetchContextPayload<T>;
+        Uri GetUri<T, TContext>(TContext c) where TContext : IDataSourceContext<T>;
     }
 
     public class TenantDataSourceRoute : IDataSourceRoute
@@ -17,9 +17,9 @@ namespace AdvancedFilters.Domain.DataSources
             Endpoint = endpoint;
         }
 
-        public Uri GetUri<T, TPayload>(TPayload p) where TPayload : IFetchContextPayload<T>
+        public Uri GetUri<T, TContext>(TContext c) where TContext : IDataSourceContext<T>
         {
-            return p.GetUri(this);
+            return c.GetUri(this);
         }
     }
 
@@ -32,7 +32,7 @@ namespace AdvancedFilters.Domain.DataSources
             Uri = new Uri(host, endpoint);
         }
 
-        public Uri GetUri<T, TPayload>(TPayload p) where TPayload : IFetchContextPayload<T>
+        public Uri GetUri<T, TContext>(TContext c) where TContext : IDataSourceContext<T>
         {
             return Uri;
         }

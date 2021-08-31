@@ -36,43 +36,43 @@ namespace AdvancedFilters.Infra.Services
 
         public async Task<IDataSourceSynchronizer> BuildFromAsync(EnvironmentDataSource dataSource)
         {
-            var payload = new EmptyPayload<Environment>();
-            return await BuildFromAsync<EnvironmentsDto, Environment, EmptyPayload<Environment>>(dataSource, new List<EmptyPayload<Environment>> { payload });
+            var contexts = new EmptyDataSourceContext<Environment>();
+            return await BuildFromAsync<EnvironmentsDto, Environment, EmptyDataSourceContext<Environment>>(dataSource, new List<EmptyDataSourceContext<Environment>> { contexts });
         }
 
         public async Task<IDataSourceSynchronizer> BuildFromAsync(EstablishmentDataSource dataSource)
         {
             Action<Environment, Establishment> finalizeAction = (environment, establishment) => { establishment.EnvironmentId = environment.Id; };
-            var payloads = await GetEnvironmentPayloadsAsync(finalizeAction);
-            return await BuildFromAsync<EstablishmentDto, Establishment, EnvironmentPayload<Establishment>>(dataSource, payloads);
+            var contexts = await GetEnvironmentContextsAsync(finalizeAction);
+            return await BuildFromAsync<EstablishmentDto, Establishment, EnvironmentDataSourceContext<Establishment>>(dataSource, contexts);
         }
 
         public async Task<IDataSourceSynchronizer> BuildFromAsync(AppInstanceDataSource dataSource)
         {
             Action<Environment, AppInstance> finalizeAction = (environment, appInstance) => { appInstance.EnvironmentId = environment.Id; };
-            var payloads = await GetEnvironmentPayloadsAsync(finalizeAction);
-            return await BuildFromAsync<AppInstancesDto, AppInstance, EnvironmentPayload<AppInstance>>(dataSource, payloads);
+            var contexts = await GetEnvironmentContextsAsync(finalizeAction);
+            return await BuildFromAsync<AppInstancesDto, AppInstance, EnvironmentDataSourceContext<AppInstance>>(dataSource, contexts);
         }
 
         public async Task<IDataSourceSynchronizer> BuildFromAsync(LegalUnitDataSource dataSource)
         {
             Action<Environment, LegalUnit> finalizeAction = (environment, legalUnit) => { legalUnit.EnvironmentId = environment.Id; };
-            var payloads = await GetEnvironmentPayloadsAsync(finalizeAction);
-            return await BuildFromAsync<LegalUnitDto, LegalUnit, EnvironmentPayload<LegalUnit>>(dataSource, payloads);
+            var contexts = await GetEnvironmentContextsAsync(finalizeAction);
+            return await BuildFromAsync<LegalUnitDto, LegalUnit, EnvironmentDataSourceContext<LegalUnit>>(dataSource, contexts);
         }
 
-        private async Task<IDataSourceSynchronizer> BuildFromAsync<TDto, T, TPayload>
-            (DataSource dataSource, IReadOnlyCollection<TPayload> payloads)
-            where TDto : IDto<T> where T : class where TPayload : IFetchContextPayload<T>
+        private async Task<IDataSourceSynchronizer> BuildFromAsync<TDto, T, TContext>
+            (DataSource dataSource, IReadOnlyCollection<TContext> contexts)
+            where TDto : IDto<T> where T : class where TContext : IDataSourceContext<T>
         {
-            var jobs = GetJobs<T, TPayload>(dataSource, payloads).ToList();
+            var jobs = GetJobs<T, TContext>(dataSource, contexts).ToList();
             return FromJobs<TDto, T>(jobs);
         }
 
-        private async Task<List<EnvironmentPayload<T>>> GetEnvironmentPayloadsAsync<T>(Action<Environment, T> finalizeAction)
+        private async Task<List<EnvironmentDataSourceContext<T>>> GetEnvironmentContextsAsync<T>(Action<Environment, T> finalizeAction)
         {
             var envs = await _store.GetAsync(new EnvironmentFilter());
-            return envs.Select(e => new EnvironmentPayload<T>(e, finalizeAction)).ToList();
+            return envs.Select(e => new EnvironmentDataSourceContext<T>(e, finalizeAction)).ToList();
         }
 
         private DataSourceSynchronizer<TDto, T> FromJobs<TDto, T>(List<FetchJob<T>> jobs) where TDto : IDto<T> where T : class
@@ -81,7 +81,7 @@ namespace AdvancedFilters.Infra.Services
         }
 
 
-        private sealed class EmptyPayload<T> : IFetchContextPayload<T>
+        private sealed class EmptyDataSourceContext<T> : IDataSourceContext<T>
         {
             public void Finalize(T item)
             { }
@@ -92,12 +92,12 @@ namespace AdvancedFilters.Infra.Services
             }
         }
 
-        private sealed class EnvironmentPayload<T> : IFetchContextPayload<T>
+        private sealed class EnvironmentDataSourceContext<T> : IDataSourceContext<T>
         {
             private readonly Action<Environment, T> _finalizeAction;
             public Environment Environment { get; }
 
-            public EnvironmentPayload(Environment environment, Action<Environment, T> finalizeAction)
+            public EnvironmentDataSourceContext(Environment environment, Action<Environment, T> finalizeAction)
             {
                 _finalizeAction = finalizeAction;
                 Environment = environment;
@@ -114,10 +114,10 @@ namespace AdvancedFilters.Infra.Services
             }
         }
 
-        private IEnumerable<FetchJob<T>> GetJobs<T, TPayload>(DataSource dataSource, IReadOnlyCollection<TPayload> payloads) where TPayload : IFetchContextPayload<T>
+        private IEnumerable<FetchJob<T>> GetJobs<T, TContext>(DataSource dataSource, IReadOnlyCollection<TContext> contexts) where TContext : IDataSourceContext<T>
         {
-            return payloads
-                .Select(p => new FetchJob<T>(dataSource.DataSourceRoute.GetUri<T, TPayload>(p), _authenticator.Authenticate(dataSource.Authentication), p.Finalize))
+            return contexts
+                .Select(p => new FetchJob<T>(dataSource.DataSourceRoute.GetUri<T, TContext>(p), _authenticator.Authenticate(dataSource.Authentication), p.Finalize))
                 .ToList();
         }
     }
