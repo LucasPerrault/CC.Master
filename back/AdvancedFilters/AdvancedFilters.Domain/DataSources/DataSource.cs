@@ -7,7 +7,7 @@ namespace AdvancedFilters.Domain.DataSources
         Environments,
         Establishments,
         AppInstances,
-        LegalUnit
+        LegalUnits
     }
 
     public abstract class DataSource

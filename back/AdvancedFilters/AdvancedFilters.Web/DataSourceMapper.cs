@@ -20,7 +20,7 @@ namespace AdvancedFilters.Web
             DataSources.Environments => configuration.Environment(),
             DataSources.Establishments => configuration.Establishment(),
             DataSources.AppInstances => configuration.AppInstance(),
-            DataSources.LegalUnit => configuration.LegalUnit(),
+            DataSources.LegalUnits => configuration.LegalUnit(),
             _ => throw new InvalidEnumArgumentException(nameof(source), (int)source, typeof(DataSources))
         };
     }

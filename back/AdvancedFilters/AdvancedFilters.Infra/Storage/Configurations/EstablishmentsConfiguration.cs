@@ -1,4 +1,3 @@
-using AdvancedFilters.Domain.Billing.Models;
 using AdvancedFilters.Domain.Instance.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;

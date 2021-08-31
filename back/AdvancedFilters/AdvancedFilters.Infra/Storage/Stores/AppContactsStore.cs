@@ -45,7 +45,6 @@ namespace AdvancedFilters.Infra.Storage.Stores
                 //.When(filter.EnvironmentId.HasValue).ApplyWhere(c => c.EnvironmentId == filter.EnvironmentId.Value)
                 .Apply(filter.IsActive).To(c => !c.ExpiresAt.HasValue || c.ExpiresAt > DateTime.Now) // TODO CompareDateTime ?
                 .Apply(filter.IsConfirmed).To(c => c.IsConfirmed);
-
         }
     }
 }

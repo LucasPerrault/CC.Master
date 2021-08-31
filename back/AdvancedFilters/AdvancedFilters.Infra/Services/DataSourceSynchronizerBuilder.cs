@@ -36,8 +36,8 @@ namespace AdvancedFilters.Infra.Services
 
         public Task<IDataSourceSynchronizer> BuildFromAsync(EnvironmentDataSource dataSource)
         {
-            var contexts = new EmptyDataSourceContext<Environment>();
-            var synchronizer = BuildFrom<EnvironmentsDto, Environment, EmptyDataSourceContext<Environment>>(dataSource, new List<EmptyDataSourceContext<Environment>> { contexts });
+            var context = new EmptyDataSourceContext<Environment>();
+            var synchronizer = BuildFrom<EnvironmentsDto, Environment, EmptyDataSourceContext<Environment>>(dataSource, new List<EmptyDataSourceContext<Environment>> { context });
             return Task.FromResult(synchronizer);
         }
 
