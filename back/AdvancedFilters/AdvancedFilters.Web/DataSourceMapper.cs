@@ -21,6 +21,7 @@ namespace AdvancedFilters.Web
             DataSources.Establishments => configuration.Establishment(),
             DataSources.AppInstances => configuration.AppInstance(),
             DataSources.LegalUnits => configuration.LegalUnit(),
+            DataSources.Contracts => configuration.Contract(),
             _ => throw new InvalidEnumArgumentException(nameof(source), (int)source, typeof(DataSources))
         };
     }

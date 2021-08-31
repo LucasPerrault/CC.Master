@@ -1,3 +1,5 @@
+using AdvancedFilters.Domain.Billing;
+using AdvancedFilters.Domain.Billing.Models;
 using AdvancedFilters.Domain.DataSources;
 using AdvancedFilters.Domain.Instance;
 using AdvancedFilters.Domain.Instance.Filters;
@@ -62,6 +64,12 @@ namespace AdvancedFilters.Infra.Services
             return BuildFrom<LegalUnitDto, LegalUnit, EnvironmentDataSourceContext<LegalUnit>>(dataSource, contexts);
         }
 
+        public Task<IDataSourceSynchronizer> BuildFromAsync(ContractDataSource dataSource)
+        {
+            var context = new EmptyDataSourceContext<Contract>();
+            var synchronizer = BuildFrom<ContractsDto, Contract, EmptyDataSourceContext<Contract>>(dataSource, new List<EmptyDataSourceContext<Contract>> { context });
+            return Task.FromResult(synchronizer);
+        }
         private IDataSourceSynchronizer BuildFrom<TDto, T, TContext>
             (DataSource dataSource, IReadOnlyCollection<TContext> contexts)
             where TDto : IDto<T> where T : class where TContext : IDataSourceContext<T>

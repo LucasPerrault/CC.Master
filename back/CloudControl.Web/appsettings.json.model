@@ -130,7 +130,8 @@
             "Hosts": {
                 "CloudControl": {
                     "Host": "https://cc.ilucca.local",
-                    "EnvironmentsEndpoint": "/api/environments?limit=10000&isActive=true,false&purpose=contractual"
+                    "EnvironmentsEndpoint": "/api/environments?limit=10000&isActive=true,false&purpose=contractual",
+                    "ContractsEndpoint": "/api/contracts?limit=10000&isActive=true,false"
                 }
             },
             "TenantSources": {

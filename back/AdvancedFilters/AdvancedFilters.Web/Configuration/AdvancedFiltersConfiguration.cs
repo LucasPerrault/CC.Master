@@ -1,3 +1,4 @@
+using AdvancedFilters.Domain.Billing;
 using AdvancedFilters.Domain.DataSources;
 using AdvancedFilters.Domain.Instance;
 
@@ -33,6 +34,12 @@ namespace AdvancedFilters.Web.Configuration
         (
             new LuccaAuthentication(c.Auth.LuccaWebserviceToken),
             new TenantDataSourceRoute(c.Routes.Tenants.LegalUnitsEndpoint)
+        );
+
+        public static DataSource Contract(this AdvancedFiltersConfiguration c) => new ContractDataSource
+        (
+            new AuthorizationAuthentication(c.Auth.CloudControlAuthScheme, c.Auth.CloudControlAuthParameter),
+            new HostDataSourceRoute(c.Routes.Hosts.CloudControl.Host, c.Routes.Hosts.CloudControl.ContractsEndpoint)
         );
     }
 }

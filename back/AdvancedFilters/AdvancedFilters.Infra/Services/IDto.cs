@@ -1,3 +1,4 @@
+using AdvancedFilters.Domain.Billing.Models;
 using AdvancedFilters.Domain.Instance.Models;
 using System.Collections.Generic;
 
@@ -44,6 +45,16 @@ namespace AdvancedFilters.Infra.Services
         public List<LegalUnit> Items { get; set; }
 
         public List<LegalUnit> ToItems()
+        {
+            return Items;
+        }
+    }
+
+    internal class ContractsDto : IDto<Contract>
+    {
+        public List<Contract> Items { get; set; }
+
+        public List<Contract> ToItems()
         {
             return Items;
         }

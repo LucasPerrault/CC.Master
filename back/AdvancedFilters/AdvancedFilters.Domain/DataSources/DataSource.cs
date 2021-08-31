@@ -8,6 +8,8 @@ namespace AdvancedFilters.Domain.DataSources
         Establishments,
         AppInstances,
         LegalUnits
+        LegalUnits,
+        Contracts
     }
 
     public abstract class DataSource
