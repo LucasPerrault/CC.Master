@@ -6,7 +6,7 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using Tools;
 
-namespace AdvancedFilters.Infra.Services
+namespace AdvancedFilters.Infra.Services.Sync
 {
     public class FetchJob<T>
     {

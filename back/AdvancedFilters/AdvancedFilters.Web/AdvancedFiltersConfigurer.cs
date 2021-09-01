@@ -2,7 +2,7 @@ using AdvancedFilters.Domain.Billing.Interfaces;
 using AdvancedFilters.Domain.Contacts.Interfaces;
 using AdvancedFilters.Domain.DataSources;
 using AdvancedFilters.Domain.Instance.Interfaces;
-using AdvancedFilters.Infra.Services;
+using AdvancedFilters.Infra.Services.Sync;
 using AdvancedFilters.Infra.Storage.Services;
 using AdvancedFilters.Infra.Storage.Stores;
 using AdvancedFilters.Web.Configuration;

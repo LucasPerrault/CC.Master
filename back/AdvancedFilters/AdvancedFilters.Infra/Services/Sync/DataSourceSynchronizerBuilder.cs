@@ -16,7 +16,7 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using Environment = AdvancedFilters.Domain.Instance.Models.Environment;
 
-namespace AdvancedFilters.Infra.Services
+namespace AdvancedFilters.Infra.Services.Sync
 {
     public class DataSourceSynchronizerBuilder : IDataSourceSynchronizerBuilder
     {

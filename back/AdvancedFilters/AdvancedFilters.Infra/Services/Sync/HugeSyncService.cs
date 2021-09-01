@@ -1,7 +1,7 @@
 using AdvancedFilters.Domain.DataSources;
 using System.Threading.Tasks;
 
-namespace AdvancedFilters.Infra.Services
+namespace AdvancedFilters.Infra.Services.Sync
 {
     public class HugeSyncService
     {

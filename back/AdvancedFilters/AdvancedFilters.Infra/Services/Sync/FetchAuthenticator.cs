@@ -1,9 +1,9 @@
-﻿using AdvancedFilters.Domain.DataSources;
+using AdvancedFilters.Domain.DataSources;
 using System;
 using System.Net.Http;
 using System.Net.Http.Headers;
 
-namespace AdvancedFilters.Infra.Services
+namespace AdvancedFilters.Infra.Services.Sync
 {
     public class FetchAuthenticator
     {
