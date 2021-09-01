@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 
 namespace AdvancedFilters.Domain.Billing.Models
 {
@@ -10,5 +11,6 @@ namespace AdvancedFilters.Domain.Billing.Models
         public int ClientId { get; set; }
 
         public Client Client { get; set; }
+        public IReadOnlyCollection<EstablishmentContract> EstablishmentAttachments { get; set; }
     }
 }

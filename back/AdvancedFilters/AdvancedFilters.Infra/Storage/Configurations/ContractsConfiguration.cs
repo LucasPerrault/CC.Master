@@ -15,6 +15,7 @@ namespace AdvancedFilters.Infra.Storage.Configurations
             builder.Property(c => c.ClientId).HasColumnName("ClientId").IsRequired();
 
             builder.HasOne(c => c.Client).WithMany().HasPrincipalKey(cl => cl.RemoteId).HasForeignKey(c => c.ClientId);
+            builder.HasMany(c => c.EstablishmentAttachments).WithOne().HasPrincipalKey(c => c.RemoteId).HasForeignKey(e => e.ContractId);
 
             builder.HasIndex(ai => ai.RemoteId).IsUnique();
         }
