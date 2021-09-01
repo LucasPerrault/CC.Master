@@ -144,7 +144,11 @@ namespace CloudControl.Web
         {
             services
                 .AddControllers()
-                .AddJsonOptions(o => o.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));
+                .AddJsonOptions(o =>
+                {
+                    o.JsonSerializerOptions.Converters.Add(new DomainEnumJsonConverter());
+                    o.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+                });
 
             services.AddLuccaApi(luccaApiBuilder =>
             {
