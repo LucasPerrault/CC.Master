@@ -7,7 +7,6 @@ namespace AdvancedFilters.Domain.DataSources
         Environments,
         Establishments,
         AppInstances,
-        LegalUnits
         LegalUnits,
         Contracts
     }
