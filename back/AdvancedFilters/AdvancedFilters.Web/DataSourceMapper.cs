@@ -23,6 +23,9 @@ namespace AdvancedFilters.Web
             DataSources.LegalUnits => configuration.LegalUnit(),
             DataSources.Contracts => configuration.Contract(),
             DataSources.Clients => configuration.Client(),
+            DataSources.AppContacts => configuration.AppContact(),
+            DataSources.ClientContacts => configuration.ClientContact(),
+            DataSources.SpecializedContacts => configuration.SpecializedContact(),
             _ => throw new InvalidEnumArgumentException(nameof(source), (int)source, typeof(DataSources))
         };
     }

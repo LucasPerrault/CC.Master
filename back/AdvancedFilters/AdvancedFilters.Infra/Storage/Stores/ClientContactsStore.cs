@@ -43,9 +43,9 @@ namespace AdvancedFilters.Infra.Storage.Stores
             return contacts
                 .When(filter.RoleId.HasValue).ApplyWhere(c => c.RoleId == filter.RoleId.Value)
                 .When(filter.ClientId.HasValue).ApplyWhere(c => c.ClientId == filter.ClientId.Value)
-                //.When(filter.EnvironmentId.HasValue).ApplyWhere(c => c.EnvironmentId == filter.EnvironmentId.Value)
+                .When(filter.EnvironmentId.HasValue).ApplyWhere(c => c.EnvironmentId == filter.EnvironmentId.Value)
                 //.When(filter.EstablishmentId.HasValue).ApplyWhere(c => c.EstablishmentId == filter.EstablishmentId.Value)
-                .Apply(filter.IsActive).To(c => !c.ExpiresAt.HasValue || c.ExpiresAt > DateTime.Now) // TODO CompareDateTime ?
+                .Apply(filter.IsActive).To(c => !c.ExpiresAt.HasValue || c.ExpiresAt > DateTime.Now)
                 .Apply(filter.IsConfirmed).To(c => c.IsConfirmed);
         }
     }

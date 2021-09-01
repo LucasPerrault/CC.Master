@@ -42,8 +42,8 @@ namespace AdvancedFilters.Infra.Storage.Stores
         {
             return contacts
                 .Apply(filter.ApplicationId).To(c => c.AppInstance.ApplicationId)
-                //.When(filter.EnvironmentId.HasValue).ApplyWhere(c => c.EnvironmentId == filter.EnvironmentId.Value)
-                .Apply(filter.IsActive).To(c => !c.ExpiresAt.HasValue || c.ExpiresAt > DateTime.Now) // TODO CompareDateTime ?
+                .When(filter.EnvironmentId.HasValue).ApplyWhere(c => c.AppInstance.EnvironmentId == filter.EnvironmentId.Value)
+                .Apply(filter.IsActive).To(c => !c.ExpiresAt.HasValue || c.ExpiresAt > DateTime.Now)
                 .Apply(filter.IsConfirmed).To(c => c.IsConfirmed);
         }
     }

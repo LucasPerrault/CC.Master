@@ -9,7 +9,10 @@ namespace AdvancedFilters.Domain.DataSources
         AppInstances,
         LegalUnits,
         Contracts,
-        Clients
+        Clients,
+        AppContacts,
+        ClientContacts,
+        SpecializedContacts
     }
 
     public abstract class DataSource

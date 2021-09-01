@@ -17,7 +17,10 @@ namespace AdvancedFilters.Infra.Storage.Configurations
             builder.Property(c => c.CreatedAt).HasColumnName("CreatedAt").IsRequired();
             builder.Property(c => c.ExpiresAt).HasColumnName("ExpiresAt");
             builder.Property(c => c.IsConfirmed).HasColumnName("IsConfirmed").IsRequired();
+            builder.Property(c => c.EnvironmentId).HasColumnName("EnvironmentId").IsRequired();
+
             builder.HasOne(c => c.Client).WithMany().HasPrincipalKey(c => c.ExternalId).HasForeignKey(c => c.ClientId);
+            builder.HasOne(c => c.Environment).WithMany().HasPrincipalKey(e => e.RemoteId).HasForeignKey(c => c.EnvironmentId);
         }
     }
 }

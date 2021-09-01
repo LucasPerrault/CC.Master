@@ -1,5 +1,6 @@
 using AdvancedFilters.Domain.Instance.Models;
 using System;
+using Environment = AdvancedFilters.Domain.Instance.Models.Environment;
 
 namespace AdvancedFilters.Domain.Contacts.Models
 {

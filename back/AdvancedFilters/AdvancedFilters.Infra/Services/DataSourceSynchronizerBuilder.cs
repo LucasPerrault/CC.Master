@@ -1,5 +1,7 @@
 using AdvancedFilters.Domain.Billing;
 using AdvancedFilters.Domain.Billing.Models;
+using AdvancedFilters.Domain.Contacts;
+using AdvancedFilters.Domain.Contacts.Models;
 using AdvancedFilters.Domain.DataSources;
 using AdvancedFilters.Domain.Instance;
 using AdvancedFilters.Domain.Instance.Filters;
@@ -77,6 +79,28 @@ namespace AdvancedFilters.Infra.Services
             var synchronizer = BuildFrom<ClientsDto, Client, EmptyDataSourceContext<Client>>(dataSource, new List<EmptyDataSourceContext<Client>> { context });
             return Task.FromResult(synchronizer);
         }
+
+        public Task<IDataSourceSynchronizer> BuildFromAsync(AppContactDataSource dataSource)
+        {
+            var context = new EmptyDataSourceContext<AppContact>();
+            var synchronizer = BuildFrom<AppContactDto, AppContact, EmptyDataSourceContext<AppContact>>(dataSource, new List<EmptyDataSourceContext<AppContact>> { context });
+            return Task.FromResult(synchronizer);
+        }
+
+        public async Task<IDataSourceSynchronizer> BuildFromAsync(ClientContactDataSource dataSource)
+        {
+            Action<Environment, ClientContact> finalizeAction = (environment, c) => { c.EnvironmentId = environment.Id; };
+            var contexts = await GetEnvironmentContextsAsync(finalizeAction);
+            return BuildFrom<ClientContactDto, ClientContact, EnvironmentDataSourceContext<ClientContact>>(dataSource, contexts);
+        }
+
+        public async Task<IDataSourceSynchronizer> BuildFromAsync(SpecializedContactDataSource dataSource)
+        {
+            Action<Environment, SpecializedContact> finalizeAction = (environment, c) => { c.EnvironmentId = environment.Id; };
+            var contexts = await GetEnvironmentContextsAsync(finalizeAction);
+            return BuildFrom<SpecializedContactDto, SpecializedContact, EnvironmentDataSourceContext<SpecializedContact>>(dataSource, contexts);
+        }
+
         private IDataSourceSynchronizer BuildFrom<TDto, T, TContext>
             (DataSource dataSource, IReadOnlyCollection<TContext> contexts)
             where TDto : IDto<T> where T : class where TContext : IDataSourceContext<T>

@@ -1,4 +1,5 @@
 using System;
+using Environment = AdvancedFilters.Domain.Instance.Models.Environment;
 
 namespace AdvancedFilters.Domain.Contacts.Models
 {
@@ -11,5 +12,8 @@ namespace AdvancedFilters.Domain.Contacts.Models
         public DateTime CreatedAt { get; set; }
         public DateTime? ExpiresAt { get; set; }
         public bool IsConfirmed { get; set; }
+        public int EnvironmentId { get; set; }
+
+        public Environment Environment { get; set; }
     }
 }

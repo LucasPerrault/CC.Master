@@ -1,6 +1,8 @@
 using AdvancedFilters.Domain.Billing;
+using AdvancedFilters.Domain.Contacts;
 using AdvancedFilters.Domain.DataSources;
 using AdvancedFilters.Domain.Instance;
+using System;
 
 namespace AdvancedFilters.Web.Configuration
 {
@@ -46,6 +48,24 @@ namespace AdvancedFilters.Web.Configuration
         (
             new AuthorizationAuthentication(c.Auth.CloudControlAuthScheme, c.Auth.CloudControlAuthParameter),
             new HostDataSourceRoute(c.Routes.Hosts.CloudControl.Host, c.Routes.Hosts.CloudControl.ClientsEndpoint)
+        );
+
+        public static DataSource AppContact(this AdvancedFiltersConfiguration c) => new AppContactDataSource
+        (
+            new LuccaAuthentication(c.Auth.LuccaWebserviceToken),
+            new TenantDataSourceRoute(c.Routes.Tenants.AppContactsEndpoint)
+        );
+
+        public static DataSource ClientContact(this AdvancedFiltersConfiguration c) => new ClientContactDataSource
+        (
+            new LuccaAuthentication(c.Auth.LuccaWebserviceToken),
+            new TenantDataSourceRoute(c.Routes.Tenants.ClientContactsEndpoint)
+        );
+
+        public static DataSource SpecializedContact(this AdvancedFiltersConfiguration c) => new SpecializedContactDataSource
+        (
+            new LuccaAuthentication(c.Auth.LuccaWebserviceToken),
+            new TenantDataSourceRoute(c.Routes.Tenants.SpecializedContactsEndpoint)
         );
     }
 }

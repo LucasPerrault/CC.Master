@@ -14,6 +14,9 @@ namespace AdvancedFilters.Web.Configuration
         public string EstablishmentsEndpoint { get; set; }
         public string AppInstancesEndpoint { get; set; }
         public string LegalUnitsEndpoint { get; set; }
+        public string AppContactsEndpoint { get; set; }
+        public string ClientContactsEndpoint { get; set; }
+        public string SpecializedContactsEndpoint { get; set; }
     }
 
     public class HostRoutesConfiguration
