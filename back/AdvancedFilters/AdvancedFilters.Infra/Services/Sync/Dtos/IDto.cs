@@ -3,7 +3,7 @@ using AdvancedFilters.Domain.Contacts.Models;
 using AdvancedFilters.Domain.Instance.Models;
 using System.Collections.Generic;
 
-namespace AdvancedFilters.Infra.Services
+namespace AdvancedFilters.Infra.Services.Sync.Dtos
 {
     public interface IDto<T>
         where T : class
@@ -21,7 +21,7 @@ namespace AdvancedFilters.Infra.Services
         }
     }
 
-    internal class EstablishmentDto : IDto<Establishment>
+    internal class EstablishmentsDto : IDto<Establishment>
     {
         public List<Establishment> Items { get; set; }
 
@@ -41,7 +41,7 @@ namespace AdvancedFilters.Infra.Services
         }
     }
 
-    internal class LegalUnitDto : IDto<LegalUnit>
+    internal class LegalUnitsDto : IDto<LegalUnit>
     {
         public List<LegalUnit> Items { get; set; }
 
@@ -71,7 +71,7 @@ namespace AdvancedFilters.Infra.Services
         }
     }
 
-    internal class AppContactDto : IDto<AppContact>
+    internal class AppContactsDto : IDto<AppContact>
     {
         public List<AppContact> Items { get; set; }
 
@@ -81,7 +81,7 @@ namespace AdvancedFilters.Infra.Services
         }
     }
 
-    internal class ClientContactDto : IDto<ClientContact>
+    internal class ClientContactsDto : IDto<ClientContact>
     {
         public List<ClientContact> Items { get; set; }
 
@@ -91,7 +91,7 @@ namespace AdvancedFilters.Infra.Services
         }
     }
 
-    internal class SpecializedContactDto : IDto<SpecializedContact>
+    internal class SpecializedContactsDto : IDto<SpecializedContact>
     {
         public List<SpecializedContact> Items { get; set; }
 

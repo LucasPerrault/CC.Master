@@ -7,6 +7,7 @@ using AdvancedFilters.Domain.Instance;
 using AdvancedFilters.Domain.Instance.Filters;
 using AdvancedFilters.Domain.Instance.Interfaces;
 using AdvancedFilters.Domain.Instance.Models;
+using AdvancedFilters.Infra.Services.Sync.Dtos;
 using AdvancedFilters.Infra.Storage.Services;
 using System;
 using System.Collections.Generic;
@@ -49,7 +50,7 @@ namespace AdvancedFilters.Infra.Services
         {
             Action<Environment, Establishment> finalizeAction = (environment, establishment) => { establishment.EnvironmentId = environment.Id; };
             var contexts = await GetEnvironmentContextsAsync(finalizeAction);
-            return BuildFrom<EstablishmentDto, Establishment, EnvironmentDataSourceContext<Establishment>>(dataSource, contexts);
+            return BuildFrom<EstablishmentsDto, Establishment, EnvironmentDataSourceContext<Establishment>>(dataSource, contexts);
         }
 
         public async Task<IDataSourceSynchronizer> BuildFromAsync(AppInstanceDataSource dataSource)
@@ -63,7 +64,7 @@ namespace AdvancedFilters.Infra.Services
         {
             Action<Environment, LegalUnit> finalizeAction = (environment, legalUnit) => { legalUnit.EnvironmentId = environment.Id; };
             var contexts = await GetEnvironmentContextsAsync(finalizeAction);
-            return BuildFrom<LegalUnitDto, LegalUnit, EnvironmentDataSourceContext<LegalUnit>>(dataSource, contexts);
+            return BuildFrom<LegalUnitsDto, LegalUnit, EnvironmentDataSourceContext<LegalUnit>>(dataSource, contexts);
         }
 
         public Task<IDataSourceSynchronizer> BuildFromAsync(ContractDataSource dataSource)
@@ -83,7 +84,7 @@ namespace AdvancedFilters.Infra.Services
         public Task<IDataSourceSynchronizer> BuildFromAsync(AppContactDataSource dataSource)
         {
             var context = new EmptyDataSourceContext<AppContact>();
-            var synchronizer = BuildFrom<AppContactDto, AppContact, EmptyDataSourceContext<AppContact>>(dataSource, new List<EmptyDataSourceContext<AppContact>> { context });
+            var synchronizer = BuildFrom<AppContactsDto, AppContact, EmptyDataSourceContext<AppContact>>(dataSource, new List<EmptyDataSourceContext<AppContact>> { context });
             return Task.FromResult(synchronizer);
         }
 
@@ -91,14 +92,14 @@ namespace AdvancedFilters.Infra.Services
         {
             Action<Environment, ClientContact> finalizeAction = (environment, c) => { c.EnvironmentId = environment.Id; };
             var contexts = await GetEnvironmentContextsAsync(finalizeAction);
-            return BuildFrom<ClientContactDto, ClientContact, EnvironmentDataSourceContext<ClientContact>>(dataSource, contexts);
+            return BuildFrom<ClientContactsDto, ClientContact, EnvironmentDataSourceContext<ClientContact>>(dataSource, contexts);
         }
 
         public async Task<IDataSourceSynchronizer> BuildFromAsync(SpecializedContactDataSource dataSource)
         {
             Action<Environment, SpecializedContact> finalizeAction = (environment, c) => { c.EnvironmentId = environment.Id; };
             var contexts = await GetEnvironmentContextsAsync(finalizeAction);
-            return BuildFrom<SpecializedContactDto, SpecializedContact, EnvironmentDataSourceContext<SpecializedContact>>(dataSource, contexts);
+            return BuildFrom<SpecializedContactsDto, SpecializedContact, EnvironmentDataSourceContext<SpecializedContact>>(dataSource, contexts);
         }
 
         private IDataSourceSynchronizer BuildFrom<TDto, T, TContext>

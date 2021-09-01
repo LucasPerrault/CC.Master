@@ -1,4 +1,5 @@
 using AdvancedFilters.Domain.DataSources;
+using AdvancedFilters.Infra.Services.Sync.Dtos;
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
