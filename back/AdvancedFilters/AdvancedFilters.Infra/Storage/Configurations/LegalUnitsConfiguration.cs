@@ -25,6 +25,7 @@ namespace AdvancedFilters.Infra.Storage.Configurations
             builder.HasMany(lu => lu.Establishments).WithOne().HasPrincipalKey(e => e.RemoteId).HasForeignKey(e => e.LegalUnitId);
 
             builder.HasIndex(e => e.RemoteId).IsUnique();
+            builder.HasIndex(ai => ai.EnvironmentId);
         }
     }
 }

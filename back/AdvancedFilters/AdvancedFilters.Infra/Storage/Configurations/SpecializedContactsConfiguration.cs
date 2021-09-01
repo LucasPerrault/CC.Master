@@ -19,6 +19,10 @@ namespace AdvancedFilters.Infra.Storage.Configurations
             builder.Property(c => c.EnvironmentId).HasColumnName("EnvironmentId").IsRequired();
 
             builder.HasOne(c => c.Environment).WithMany().HasPrincipalKey(e => e.RemoteId).HasForeignKey(c => c.EnvironmentId);
+
+            builder.HasIndex(ai => ai.RemoteId).IsUnique();
+            builder.HasIndex(ai => ai.EnvironmentId);
+            builder.HasIndex(ai => ai.RoleId);
         }
     }
 }
