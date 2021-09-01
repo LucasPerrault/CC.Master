@@ -70,6 +70,13 @@ namespace AdvancedFilters.Infra.Services
             var synchronizer = BuildFrom<ContractsDto, Contract, EmptyDataSourceContext<Contract>>(dataSource, new List<EmptyDataSourceContext<Contract>> { context });
             return Task.FromResult(synchronizer);
         }
+
+        public Task<IDataSourceSynchronizer> BuildFromAsync(ClientDataSource dataSource)
+        {
+            var context = new EmptyDataSourceContext<Client>();
+            var synchronizer = BuildFrom<ClientsDto, Client, EmptyDataSourceContext<Client>>(dataSource, new List<EmptyDataSourceContext<Client>> { context });
+            return Task.FromResult(synchronizer);
+        }
         private IDataSourceSynchronizer BuildFrom<TDto, T, TContext>
             (DataSource dataSource, IReadOnlyCollection<TContext> contexts)
             where TDto : IDto<T> where T : class where TContext : IDataSourceContext<T>

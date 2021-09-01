@@ -59,4 +59,14 @@ namespace AdvancedFilters.Infra.Services
             return Items;
         }
     }
+
+    internal class ClientsDto : IDto<Client>
+    {
+        public List<Client> Items { get; set; }
+
+        public List<Client> ToItems()
+        {
+            return Items;
+        }
+    }
 }

@@ -11,5 +11,6 @@ namespace AdvancedFilters.Domain.DataSources
         Task<IDataSourceSynchronizer> BuildFromAsync(AppInstanceDataSource configuration);
         Task<IDataSourceSynchronizer> BuildFromAsync(ContractDataSource configuration);
         Task<IDataSourceSynchronizer> BuildFromAsync(LegalUnitDataSource configuration);
+        Task<IDataSourceSynchronizer> BuildFromAsync(ClientDataSource configuration);
     }
 }
