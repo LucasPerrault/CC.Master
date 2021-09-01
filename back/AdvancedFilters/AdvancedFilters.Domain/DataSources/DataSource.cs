@@ -8,8 +8,8 @@ namespace AdvancedFilters.Domain.DataSources
         Establishments,
         AppInstances,
         LegalUnits,
-        Contracts,
         Clients,
+        Contracts,
         AppContacts,
         ClientContacts,
         SpecializedContacts
