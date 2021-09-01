@@ -51,16 +51,6 @@ namespace AdvancedFilters.Infra.Services.Sync.Dtos
         }
     }
 
-    internal class ContractsDto : IDto<Contract>
-    {
-        public List<Contract> Items { get; set; }
-
-        public List<Contract> ToItems()
-        {
-            return Items;
-        }
-    }
-
     internal class ClientsDto : IDto<Client>
     {
         public List<Client> Items { get; set; }

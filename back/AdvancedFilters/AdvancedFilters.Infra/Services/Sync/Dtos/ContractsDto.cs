@@ -31,7 +31,7 @@ namespace AdvancedFilters.Infra.Services.Sync.Dtos
                 RemoteId = Id,
                 ClientId = ClientId,
                 ExternalId = ExternalId,
-                EstablishmentAttachments = EstablishmentAttachments // TODO where active (DateTime.Now entre StartAt et EndsAt)
+                EstablishmentAttachments = EstablishmentAttachments
                     .Select(ea => ea.ToEstablishmentContract(Id))
                     .ToList()
             };
