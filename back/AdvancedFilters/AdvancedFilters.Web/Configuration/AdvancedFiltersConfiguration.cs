@@ -52,19 +52,19 @@ namespace AdvancedFilters.Web.Configuration
 
         public static DataSource AppContact(this AdvancedFiltersConfiguration c) => new AppContactDataSource
         (
-            new LuccaAuthentication(c.Auth.LuccaWebserviceToken),
+            new LuccaAuthentication(c.Auth.ClientCenterWebserviceToken),
             new TenantDataSourceRoute(c.Routes.Tenants.AppContactsEndpoint)
         );
 
         public static DataSource ClientContact(this AdvancedFiltersConfiguration c) => new ClientContactDataSource
         (
-            new LuccaAuthentication(c.Auth.LuccaWebserviceToken),
+            new LuccaAuthentication(c.Auth.ClientCenterWebserviceToken),
             new TenantDataSourceRoute(c.Routes.Tenants.ClientContactsEndpoint)
         );
 
         public static DataSource SpecializedContact(this AdvancedFiltersConfiguration c) => new SpecializedContactDataSource
         (
-            new LuccaAuthentication(c.Auth.LuccaWebserviceToken),
+            new LuccaAuthentication(c.Auth.ClientCenterWebserviceToken),
             new TenantDataSourceRoute(c.Routes.Tenants.SpecializedContactsEndpoint)
         );
     }

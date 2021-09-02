@@ -136,13 +136,19 @@
                 }
             },
             "TenantSources": {
-                "EstablishmentsEndpoint": "api/establishments"
+                "EstablishmentsEndpoint": "organization/structure/api/establishments",
+                "LegalUnitsEndpoint": "organization/structure/api/legal-units",
+                "AppInstancesEndpoint": "api/v3/appInstances",
+                "AppContactsEndpoint": "admin/account-and-billing/api/app-contacts",
+                "ClientContactsEndpoint": "admin/account-and-billing/api/client-contacts",
+                "SpecializedContactsEndpoint": "admin/account-and-billing/api/specialized-contacts"
             }
         },
         "Auth": {
             "CloudControlAuthScheme": "Cloudcontrol",
             "CloudControlAuthParameter": "webservice=blablabla",
-            "LuccaWebserviceToken": "eeaaaaaa-0000-0000-0000-000000000000"
+            "LuccaWebserviceToken": "eeaaaaaa-0000-0000-0000-000000000000",
+            "ClientCenterWebserviceToken": "{{ Organization.ClientCenter:CafeToken }}"
         }
     }
 }
