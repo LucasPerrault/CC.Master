@@ -20,15 +20,64 @@ namespace CloudControl.Web.Controllers
                 .Select(d => new LuccaOperation(d))
                 .ToList());
 
+        private static readonly Lazy<LuccaBusinessItemsCollection> BusinessItemsCollection
+            = new Lazy<LuccaBusinessItemsCollection>
+            (
+                () => new LuccaBusinessItemsCollection
+                {
+                    Label = "Types d'environnement",
+                    Items = Enum.GetValues(typeof(EnvironmentPurpose))
+                        .Cast<EnvironmentPurpose>()
+                        .Select(p => new LuccaBusinessItem(p))
+                        .ToList()
+                }
+            );
+
         [HttpGet("operations")]
-        public Page<LuccaOperation> GetAll() => new Page<LuccaOperation>
+        public Page<LuccaOperation> GetAllOperations() => new Page<LuccaOperation>
         {
             Items = AllDescriptions.Value,
             Count = AllDescriptions.Value.Count
         };
 
         [HttpGet("operations/v3-compatibility")]
-        public RestApiV3CompatibilityFormat<LuccaOperation> GetAllButInV3() => new RestApiV3CompatibilityFormat<LuccaOperation>(AllDescriptions.Value);
+        public RestApiV3CollectionCompatibilityFormat<LuccaOperation> GetAllOperationsInV3() => new RestApiV3CollectionCompatibilityFormat<LuccaOperation>(AllDescriptions.Value);
+
+        [HttpGet("business-items")]
+        public LuccaBusinessItemsCollection GetAllBusinessItems() => BusinessItemsCollection.Value;
+
+        [HttpGet("business-items/v3-compatibility")]
+        public RestApiV3CompatibilityFormat<LuccaBusinessItemsCollection> GetAllBusinessItemsInV3() => new RestApiV3CompatibilityFormat<LuccaBusinessItemsCollection>(BusinessItemsCollection.Value);
+    }
+
+    public class LuccaBusinessItem
+    {
+        public int Id { get; set; }
+        public string Name { get; set; }
+
+        public LuccaBusinessItem(EnvironmentPurpose environmentPurpose)
+        {
+            Id = (int)environmentPurpose;
+            Name = GetName(environmentPurpose);
+        }
+
+        private static string GetName(EnvironmentPurpose purpose)
+        {
+            return purpose switch
+            {
+                EnvironmentPurpose.Contractual => "Contractuel",
+                EnvironmentPurpose.Lucca => "Lucca",
+                EnvironmentPurpose.InternalUse => "Usage interne",
+                EnvironmentPurpose.QA => "QA",
+                EnvironmentPurpose.Virgin => "Vierge",
+                EnvironmentPurpose.Cluster => "Test de cluster",
+                EnvironmentPurpose.Security => "Sécurité",
+                EnvironmentPurpose.InternalTest => "Test interne",
+                EnvironmentPurpose.ExternalTest => "Test externe",
+                EnvironmentPurpose.UrbaHack => "Hack Urba",
+                _ => throw new InvalidEnumArgumentException(nameof(purpose), (int)purpose, typeof(EnvironmentPurpose))
+            };
+        }
     }
 
     public class LuccaOperation
@@ -62,18 +111,34 @@ namespace CloudControl.Web.Controllers
         }
     }
 
+    public class LuccaBusinessItemsCollection
+    {
+        public string Label { get; set; }
+        public IReadOnlyCollection<LuccaBusinessItem> Items { get; set; }
+    }
+
+    public class RestApiV3CollectionCompatibilityFormat<T>
+    {
+        public RestApiV3Collection<T> Data { get; }
+
+        public RestApiV3CollectionCompatibilityFormat(ICollection<T> items)
+        {
+            Data = new RestApiV3Collection<T>{ Items = items};
+        }
+    }
+
     public class RestApiV3CompatibilityFormat<T>
     {
-        public RestApiV3Data Data { get; }
+        public T Data { get; }
 
-        public RestApiV3CompatibilityFormat(ICollection<T> items)
+        public RestApiV3CompatibilityFormat(T data)
         {
-            Data = new RestApiV3Data { Items = items };
+            Data = data;
         }
+    }
 
-        public class RestApiV3Data
-        {
-            public ICollection<T> Items { get; set; }
-        }
+    public class RestApiV3Collection<T>
+    {
+        public ICollection<T> Items { get; set; }
     }
 }
