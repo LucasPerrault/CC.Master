@@ -31,16 +31,34 @@ namespace AdvancedFilters.Infra.Services.Sync.Dtos
                 RemoteId = Id,
                 ClientId = ClientId,
                 ExternalId = ExternalId,
-                EstablishmentAttachments = EstablishmentAttachments
-                    .Select(ea => ea.ToEstablishmentContract(Id))
-                    .ToList()
+                EstablishmentAttachments = GetFromDto(EstablishmentAttachments)
             };
+        }
+
+        private IReadOnlyCollection<EstablishmentContract> GetFromDto(IReadOnlyCollection<EstablishmentAttachmentDto> establishmentAttachments)
+        {
+            return establishmentAttachments
+                .Where(ea => ea.IsActive)
+                .Select(ea => ea.ToEstablishmentContract(Id))
+                .ToList();
         }
     }
 
     internal class EstablishmentAttachmentDto
     {
         public int EstablishmentId { get; set; }
+        public DateTime StartsOn { get; set; }
+        public DateTime? EndsOn { get; set; }
+
+        public bool IsActive
+        {
+            get
+            {
+                var hasStarted = DateTime.Now > StartsOn;
+                var hasNotEnded = !EndsOn.HasValue || DateTime.Now < EndsOn.Value;
+                return hasStarted && hasNotEnded;
+            }
+        }
 
         public EstablishmentContract ToEstablishmentContract(int contractId)
         {
