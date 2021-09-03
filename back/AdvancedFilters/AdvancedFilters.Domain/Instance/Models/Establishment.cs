@@ -4,7 +4,6 @@ namespace AdvancedFilters.Domain.Instance.Models
 {
     public class Establishment
     {
-        public int Id { get; set; }
         public int RemoteId { get; set; }
         public string Name { get; set; }
         public string Code { get; set; }
@@ -15,8 +14,9 @@ namespace AdvancedFilters.Domain.Instance.Models
         public int UsersCount { get; set; }
         public DateTime CreatedAt { get; set; }
         public bool IsArchived { get; set; }
+        public int EnvironmentId { get; set; }
 
         public LegalUnit LegalUnit { get; set; }
-        public int EnvironmentId { get; set; }
+        public Environment Environment { get; set; }
     }
 }

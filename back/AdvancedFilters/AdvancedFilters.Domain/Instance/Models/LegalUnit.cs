@@ -5,7 +5,6 @@ namespace AdvancedFilters.Domain.Instance.Models
 {
     public class LegalUnit
     {
-        public int Id { get; set; }
         public int RemoteId { get; set; }
         public int EnvironmentId { get; set; }
         public string Name { get; set; }

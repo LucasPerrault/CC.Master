@@ -9,15 +9,13 @@ namespace AdvancedFilters.Infra.Storage.Configurations
         public void Configure(EntityTypeBuilder<Environment> builder)
         {
             builder.ToTable("Environments");
-            builder.HasKey(e => e.Id);
-            builder.Property(e => e.RemoteId).HasColumnName("RemoteId").IsRequired();
+            builder.HasKey(e => e.RemoteId);
+
             builder.Property(e => e.Subdomain).HasColumnName("Subdomain").IsRequired();
             builder.Property(e => e.Domain).HasColumnName("Domain").IsRequired();
             builder.Property(e => e.IsActive).HasColumnName("IsActive").IsRequired();
 
-            builder.HasMany(e => e.LegalUnits).WithOne().HasPrincipalKey(e => e.RemoteId).HasForeignKey(lu => lu.EnvironmentId);
-
-            builder.HasIndex(e => e.RemoteId).IsUnique();
+            builder.HasMany(e => e.LegalUnits).WithOne().HasForeignKey(lu => lu.EnvironmentId);
         }
     }
 }

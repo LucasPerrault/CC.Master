@@ -9,8 +9,8 @@ namespace AdvancedFilters.Infra.Storage.Configurations
         public void Configure(EntityTypeBuilder<Establishment> builder)
         {
             builder.ToTable("Establishments");
-            builder.HasKey(e => e.Id);
-            builder.Property(e => e.RemoteId).HasColumnName("RemoteId").IsRequired();
+            builder.HasKey(e => new { e.EnvironmentId, e.RemoteId });
+
             builder.Property(e => e.Name).HasColumnName("Name").IsRequired();
             builder.Property(e => e.Code).HasColumnName("Code");
             builder.Property(e => e.LegalUnitId).HasColumnName("LegalUnitId").IsRequired();
@@ -21,9 +21,8 @@ namespace AdvancedFilters.Infra.Storage.Configurations
             builder.Property(e => e.CreatedAt).HasColumnName("CreatedAt").IsRequired();
             builder.Property(e => e.IsArchived).HasColumnName("IsArchived").IsRequired();
 
-            builder.HasOne(e => e.LegalUnit).WithMany().HasPrincipalKey(lu => lu.RemoteId).HasForeignKey(e => e.LegalUnitId);
-
-            builder.HasIndex(e => e.RemoteId).IsUnique();
+            builder.HasOne(e => e.Environment).WithMany().HasForeignKey(e => e.EnvironmentId);
+            builder.HasOne(e => e.LegalUnit).WithMany().HasForeignKey(e => new { e.EnvironmentId, e.LegalUnitId });
         }
     }
 }

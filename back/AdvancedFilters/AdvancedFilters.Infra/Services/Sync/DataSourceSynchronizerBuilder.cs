@@ -48,21 +48,21 @@ namespace AdvancedFilters.Infra.Services.Sync
 
         public async Task<IDataSourceSynchronizer> BuildFromAsync(EstablishmentDataSource dataSource)
         {
-            Action<Environment, Establishment> finalizeAction = (environment, establishment) => { establishment.EnvironmentId = environment.Id; };
+            Action<Environment, Establishment> finalizeAction = (environment, establishment) => { establishment.EnvironmentId = environment.RemoteId; };
             var contexts = await GetEnvironmentContextsAsync(finalizeAction);
             return BuildFrom<EstablishmentsDto, Establishment, EnvironmentDataSourceContext<Establishment>>(dataSource, contexts);
         }
 
         public async Task<IDataSourceSynchronizer> BuildFromAsync(AppInstanceDataSource dataSource)
         {
-            Action<Environment, AppInstance> finalizeAction = (environment, appInstance) => { appInstance.EnvironmentId = environment.Id; };
+            Action<Environment, AppInstance> finalizeAction = (environment, appInstance) => { appInstance.EnvironmentId = environment.RemoteId; };
             var contexts = await GetEnvironmentContextsAsync(finalizeAction);
             return BuildFrom<AppInstancesDto, AppInstance, EnvironmentDataSourceContext<AppInstance>>(dataSource, contexts);
         }
 
         public async Task<IDataSourceSynchronizer> BuildFromAsync(LegalUnitDataSource dataSource)
         {
-            Action<Environment, LegalUnit> finalizeAction = (environment, legalUnit) => { legalUnit.EnvironmentId = environment.Id; };
+            Action<Environment, LegalUnit> finalizeAction = (environment, legalUnit) => { legalUnit.EnvironmentId = environment.RemoteId; };
             var contexts = await GetEnvironmentContextsAsync(finalizeAction);
             return BuildFrom<LegalUnitsDto, LegalUnit, EnvironmentDataSourceContext<LegalUnit>>(dataSource, contexts);
         }
@@ -81,23 +81,23 @@ namespace AdvancedFilters.Infra.Services.Sync
             return Task.FromResult(synchronizer);
         }
 
-        public Task<IDataSourceSynchronizer> BuildFromAsync(AppContactDataSource dataSource)
+        public async Task<IDataSourceSynchronizer> BuildFromAsync(AppContactDataSource dataSource)
         {
-            var context = new EmptyDataSourceContext<AppContact>();
-            var synchronizer = BuildFrom<AppContactsDto, AppContact, EmptyDataSourceContext<AppContact>>(dataSource, new List<EmptyDataSourceContext<AppContact>> { context });
-            return Task.FromResult(synchronizer);
+            Action<Environment, AppContact> finalizeAction = (environment, contact) => { contact.EnvironmentId = environment.RemoteId; };
+            var contexts = await GetEnvironmentContextsAsync(finalizeAction);
+            return BuildFrom<AppContactsDto, AppContact, EnvironmentDataSourceContext<AppContact>>(dataSource, contexts);
         }
 
         public async Task<IDataSourceSynchronizer> BuildFromAsync(ClientContactDataSource dataSource)
         {
-            Action<Environment, ClientContact> finalizeAction = (environment, c) => { c.EnvironmentId = environment.Id; };
+            Action<Environment, ClientContact> finalizeAction = (environment, c) => { c.EnvironmentId = environment.RemoteId; };
             var contexts = await GetEnvironmentContextsAsync(finalizeAction);
             return BuildFrom<ClientContactsDto, ClientContact, EnvironmentDataSourceContext<ClientContact>>(dataSource, contexts);
         }
 
         public async Task<IDataSourceSynchronizer> BuildFromAsync(SpecializedContactDataSource dataSource)
         {
-            Action<Environment, SpecializedContact> finalizeAction = (environment, c) => { c.EnvironmentId = environment.Id; };
+            Action<Environment, SpecializedContact> finalizeAction = (environment, c) => { c.EnvironmentId = environment.RemoteId; };
             var contexts = await GetEnvironmentContextsAsync(finalizeAction);
             return BuildFrom<SpecializedContactsDto, SpecializedContact, EnvironmentDataSourceContext<SpecializedContact>>(dataSource, contexts);
         }

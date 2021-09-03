@@ -9,15 +9,13 @@ namespace AdvancedFilters.Infra.Storage.Configurations
         public void Configure(EntityTypeBuilder<Contract> builder)
         {
             builder.ToTable("Contracts");
-            builder.HasKey(c => c.Id);
-            builder.Property(c => c.RemoteId).HasColumnName("RemoteId").IsRequired();
+            builder.HasKey(c => c.RemoteId);
+
             builder.Property(c => c.ExternalId).HasColumnName("ExternalId").HasMaxLength(36).IsRequired();
             builder.Property(c => c.ClientId).HasColumnName("ClientId").IsRequired();
 
-            builder.HasOne(c => c.Client).WithMany().HasPrincipalKey(cl => cl.RemoteId).HasForeignKey(c => c.ClientId);
-            builder.HasMany(c => c.EstablishmentAttachments).WithOne().HasPrincipalKey(c => c.RemoteId).HasForeignKey(e => e.ContractId);
-
-            builder.HasIndex(ai => ai.RemoteId).IsUnique();
+            builder.HasOne(c => c.Client).WithMany().HasForeignKey(c => c.ClientId);
+            builder.HasMany(c => c.EstablishmentAttachments).WithOne().HasForeignKey(e => e.ContractId);
         }
     }
 }

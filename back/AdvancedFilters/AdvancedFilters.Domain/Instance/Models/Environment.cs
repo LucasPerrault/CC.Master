@@ -1,10 +1,10 @@
+using System;
 using System.Collections.Generic;
 
 namespace AdvancedFilters.Domain.Instance.Models
 {
     public class Environment
     {
-        public int Id { get; set; }
         public int RemoteId { get; set; }
         public string Subdomain { get; set; }
         public string Domain { get; set; }
@@ -13,5 +13,10 @@ namespace AdvancedFilters.Domain.Instance.Models
         public string ProductionHost => $"https://{Subdomain}.{Domain}";
 
         public IReadOnlyCollection<LegalUnit> LegalUnits { get; set; }
+
+        public object GetKey()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

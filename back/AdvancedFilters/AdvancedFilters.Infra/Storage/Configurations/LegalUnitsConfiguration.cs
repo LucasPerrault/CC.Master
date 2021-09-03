@@ -9,9 +9,8 @@ namespace AdvancedFilters.Infra.Storage.Configurations
         public void Configure(EntityTypeBuilder<LegalUnit> builder)
         {
             builder.ToTable("LegalUnits");
-            builder.HasKey(lu => lu.Id);
-            builder.Property(lu => lu.RemoteId).HasColumnName("RemoteId").IsRequired();
-            builder.Property(lu => lu.EnvironmentId).HasColumnName("EnvironmentId").IsRequired();
+            builder.HasKey(lu => new { lu.EnvironmentId, lu.RemoteId });
+
             builder.Property(lu => lu.Name).HasColumnName("Name");
             builder.Property(lu => lu.Code).HasColumnName("Code");
             builder.Property(lu => lu.LegalIdentificationNumber).HasColumnName("LegalIdentificationNumber");
@@ -21,11 +20,8 @@ namespace AdvancedFilters.Infra.Storage.Configurations
             builder.Property(lu => lu.CreatedAt).HasColumnName("CreatedAt").IsRequired();
             builder.Property(lu => lu.IsArchived).HasColumnName("IsArchived").IsRequired();
 
-            builder.HasOne(lu => lu.Environment).WithMany().HasPrincipalKey(e => e.RemoteId).HasForeignKey(lu => lu.EnvironmentId);
-            builder.HasMany(lu => lu.Establishments).WithOne().HasPrincipalKey(e => e.RemoteId).HasForeignKey(e => e.LegalUnitId);
-
-            builder.HasIndex(e => e.RemoteId).IsUnique();
-            builder.HasIndex(ai => ai.EnvironmentId);
+            builder.HasOne(lu => lu.Environment).WithMany().HasForeignKey(lu => lu.EnvironmentId);
+            builder.HasMany(lu => lu.Establishments).WithOne().HasForeignKey(e => new { e.EnvironmentId, e.LegalUnitId });
         }
     }
 }
