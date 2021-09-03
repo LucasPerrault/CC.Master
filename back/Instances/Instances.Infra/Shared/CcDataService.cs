@@ -118,13 +118,13 @@ namespace Instances.Infra.Shared
         {
             var subdomain = GetCcDataSubdomainPart();
             var clusterSubdomainPart = ClusterNameConvertor.GetShortName(cluster);
-
-            var domain = _ccDataConfiguration.Domain;
-            if (cluster.Equals("ch1", StringComparison.InvariantCultureIgnoreCase))
-            {
-                domain = "lucca-ch.local";
-            }
+            var domain = ClusterNameConvertor.GetSpecificDomain(cluster) ?? GetDefaultDomain();
             return new Uri($"{_ccDataConfiguration.Scheme}://{subdomain}.{clusterSubdomainPart}.{domain}");
+        }
+
+        private string GetDefaultDomain()
+        {
+            return _ccDataConfiguration.Domain;
         }
 
         // Changements à reporter dans le CClithe
