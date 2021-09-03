@@ -33,6 +33,9 @@ namespace Billing.Contracts.Infra.Storage.Stores
             return _dbContext.Set<Contract>()
                 .Where(c => !c.ArchivedAt.HasValue || c.ArchivedAt > DateTime.Today)
                 .Include(c => c.Attachments)
+                .Include(c => c.Client)
+                .Include(c => c.Distributor)
+                .Include(c => c.CommercialOffer).ThenInclude(o => o.Product)
                 .WhereHasRight(accessRight)
                 .WhereMatches(filter);
         }
