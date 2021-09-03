@@ -113,6 +113,7 @@ namespace Instances.Infra.Tests.Shared
         [InlineData("Preview", "http://cc-data.pw.lucca.local")]
         [InlineData("SECURITY", "http://cc-data.se.lucca.local")]
         [InlineData("RECETTE", "http://cc-data.re.lucca.local")]
+        [InlineData("CH1", "http://cc-data.ch1.lucca-ch.local")]
         public void GetCcDataBaseUri_BetaFalseOk(string input, string expectedOutput)
         {
             var result = _ccDataService.GetCcDataBaseUri(input);
@@ -129,6 +130,7 @@ namespace Instances.Infra.Tests.Shared
         [InlineData("Preview", "http://cc-data.beta.pw.lucca.local")]
         [InlineData("SECURITY", "http://cc-data.beta.se.lucca.local")]
         [InlineData("RECETTE", "http://cc-data.beta.re.lucca.local")]
+        [InlineData("CH1", "http://cc-data.beta.ch1.lucca-ch.local")]
         public void GetCcDataBaseUri_BetaTrueOk(string input, string expectedOutput)
         {
             _ccDataConfiguration.ShouldTargetBeta = true;

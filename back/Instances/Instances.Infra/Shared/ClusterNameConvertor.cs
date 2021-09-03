@@ -40,6 +40,7 @@ namespace Instances.Infra.Shared
         {
             return context.Name switch
             {
+                "ch" => "ch",
                 "cluster" => "c",
                 "demo" => "dm",
                 "preview" => "pw",

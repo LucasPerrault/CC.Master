@@ -33,6 +33,7 @@ namespace Instances.Infra.Tests.Shared
         [InlineData("green")]
         [InlineData("security")]
         [InlineData("recette")]
+        [InlineData("ch1")]
         public void GetShortName_ShouldHandleKnownClusterNames(string clusterName)
         {
             Action act = () => ClusterNameConvertor.GetShortName(clusterName);
