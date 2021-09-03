@@ -93,7 +93,8 @@ namespace Instances.Application.Tests.Demos
             {
                 AuthorId = 440,
                 Subdomain = "recently-used",
-                Instance = new Instance { IsProtected = false, Cluster = "mocked-demo-cluster" },
+                Cluster = "mocked-demo-cluster",
+                Instance = new Instance { IsProtected = false },
             };
             var demos = new List<Demo> { demo };
 
@@ -147,7 +148,8 @@ namespace Instances.Application.Tests.Demos
             {
                 AuthorId = 0,  // hubspot author id
                 Subdomain = "recently-used",
-                Instance = new Instance { IsProtected = false, Cluster = "mocked-demo-cluster" },
+                Cluster = "mocked-demo-cluster",
+                Instance = new Instance { IsProtected = false },
             };
             var demos = new List<Demo> { demo };
 
@@ -196,7 +198,8 @@ namespace Instances.Application.Tests.Demos
                 AuthorId = 440,
                 CreatedAt = new DateTime(2020, 01, 01),
                 Subdomain = "recently-used",
-                Instance = new Instance { IsProtected = false, Cluster = "mocked-demo-cluster" },
+                Cluster = "mocked-demo-cluster",
+                Instance = new Instance { IsProtected = false },
             };
             var demos = new List<Demo> { demo };
 
@@ -248,7 +251,8 @@ namespace Instances.Application.Tests.Demos
                 new Demo
                 {
                     Subdomain = "recently-used",
-                    Instance = new Instance { IsProtected = false, Cluster = "mocked-demo-cluster"},
+                    Cluster = "mocked-demo-cluster",
+                    Instance = new Instance { IsProtected = false },
                     DeletionScheduledOn = new DateTime(2010, 10, 02)
                 }
             };
@@ -289,7 +293,8 @@ namespace Instances.Application.Tests.Demos
                 new Demo
                 {
                     Subdomain = "inactive-for-too-long",
-                    Instance = new Instance { IsProtected = false, Cluster = "mocked-demo-cluster"},
+                    Cluster = "mocked-demo-cluster",
+                    Instance = new Instance { IsProtected = false },
                     DeletionScheduledOn = new DateTime(2010, 10, 01)
                 }
             };
@@ -338,7 +343,8 @@ namespace Instances.Application.Tests.Demos
                 new Demo
                 {
                     Subdomain = "inactive-for-too-long",
-                    Instance = new Instance { IsProtected = false, Cluster = "mocked-demo-cluster"},
+                    Cluster = "mocked-demo-cluster",
+                    Instance = new Instance { IsProtected = false },
                     DeletionScheduledOn = new DateTime(2010, 10, 01)
                 }
             };
@@ -382,19 +388,22 @@ namespace Instances.Application.Tests.Demos
                 new Demo
                 {
                     Subdomain = "d1-c1",
-                    Instance = new Instance { IsProtected = false, Cluster = "cluster-demo-1"},
+                    Cluster = "cluster-demo-1",
+                    Instance = new Instance { IsProtected = false },
                     DeletionScheduledOn = new DateTime(2010, 10, 01)
                 },
                 new Demo
                 {
                     Subdomain = "d2-c1",
-                    Instance = new Instance { IsProtected = false, Cluster = "cluster-demo-1"},
+                    Cluster = "cluster-demo-1",
+                    Instance = new Instance { IsProtected = false },
                     DeletionScheduledOn = new DateTime(2010, 10, 01)
                 },
                 new Demo
                 {
                     Subdomain = "d1-c2",
-                    Instance = new Instance { IsProtected = false, Cluster = "cluster-demo-2"},
+                    Cluster = "cluster-demo-2",
+                    Instance = new Instance { IsProtected = false },
                     DeletionScheduledOn = new DateTime(2010, 10, 01)
                 }
             };

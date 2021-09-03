@@ -206,12 +206,12 @@ namespace Instances.Application.Specflow.Tests.Demos.Steps
             var instancesStoreMock = new Mock<IInstancesStore>();
             var dnsMock = new Mock<IDnsService>();
             instancesStoreMock
-                .Setup(s => s.CreateForDemoAsync(It.IsAny<string>(), It.IsAny<string>()))
-                .Callback<string,string>(
-                    (password, cluster) =>
+                .Setup(s => s.CreateForDemoAsync(It.IsAny<string>()))
+                .Callback<string>(
+                    password =>
                     {
                         _demosContext.Results.CreatedInstances
-                            .Add(new Instance { AllUsersImposedPassword = password, Cluster = cluster});
+                            .Add(new Instance { AllUsersImposedPassword = password });
                     })
                 .Returns(Task.FromResult(new Instance { Id = 1 }));
 

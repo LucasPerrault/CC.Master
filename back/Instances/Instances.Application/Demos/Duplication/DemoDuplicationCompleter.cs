@@ -68,7 +68,7 @@ namespace Instances.Application.Demos.Duplication
 
             try
             {
-                var instance = await _instancesStore.CreateForDemoAsync(duplication.Password, duplication.InstanceDuplication.TargetCluster);
+                var instance = await _instancesStore.CreateForDemoAsync(duplication.Password);
                 await CreateAndStoreDemoAsync(duplication, instance);
                 await _instanceDuplicationsStore.MarkAsCompleteAsync(duplication.InstanceDuplication, InstanceDuplicationProgress.FinishedWithSuccess);
             }
@@ -92,7 +92,7 @@ namespace Instances.Application.Demos.Duplication
             {
                 _logger.LogError(e, "Could not create demo, following instance duplication");
                 await _instancesStore.DeleteForDemoAsync(instance);
-                await _dnsService.DeleteAsync(DnsEntry.ForDemo(demo.Subdomain, instance.Cluster));
+                await _dnsService.DeleteAsync(DnsEntry.ForDemo(demo.Subdomain, demo.Cluster));
                 await _demosStore.DeleteAsync(demo);
                 throw;
             }
