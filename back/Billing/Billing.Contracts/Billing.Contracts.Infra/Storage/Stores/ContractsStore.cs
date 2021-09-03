@@ -31,7 +31,6 @@ namespace Billing.Contracts.Infra.Storage.Stores
         private IQueryable<Contract> Set(AccessRight accessRight, ContractFilter filter)
         {
             return _dbContext.Set<Contract>()
-                .Where(c => !c.ArchivedAt.HasValue || c.ArchivedAt > DateTime.Today)
                 .Include(c => c.Attachments)
                 .Include(c => c.Client)
                 .Include(c => c.Distributor)
@@ -47,6 +46,7 @@ namespace Billing.Contracts.Infra.Storage.Stores
         {
             return contracts
                 .Apply(filter.Subdomain).To(c => c.EnvironmentSubdomain)
+                .Apply(filter.ArchivedAt).To(c => c.ArchivedAt)
                 .When(filter.ClientExternalId.HasValue).ApplyWhere(c => c.ClientExternalId == filter.ClientExternalId.Value);
         }
 
