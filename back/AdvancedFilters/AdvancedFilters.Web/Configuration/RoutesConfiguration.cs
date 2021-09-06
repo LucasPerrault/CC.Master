@@ -4,7 +4,6 @@ namespace AdvancedFilters.Web.Configuration
 {
     public class RoutesConfiguration
     {
-
         public HostRoutesConfiguration Hosts { get; set; }
         public TenantRoutesConfiguration Tenants { get; set; }
     }

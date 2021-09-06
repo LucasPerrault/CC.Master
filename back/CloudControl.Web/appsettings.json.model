@@ -135,7 +135,7 @@
                     "ClientsEndpoint": "/api/clients?limit=10000&isActive=true,false"
                 }
             },
-            "TenantSources": {
+            "Tenants": {
                 "EstablishmentsEndpoint": "organization/structure/api/establishments",
                 "LegalUnitsEndpoint": "organization/structure/api/legal-units",
                 "AppInstancesEndpoint": "api/v3/appInstances",
