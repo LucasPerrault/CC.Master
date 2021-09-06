@@ -1,5 +1,4 @@
 using CloudControl.Web.Tests.Mocks;
-using Microsoft.AspNetCore.TestHost;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -12,7 +11,7 @@ namespace Authentication.Web.Tests.Middlewares
         private readonly HttpClient _client;
         public SessionKeyAuthMiddlewareTests()
         {
-            var server = new TestServer(TestHostBuilder<TestUserAuthenticationHandler>.GetInMemory());
+            var server = new MockedWebApplicationFactory();
             _client = server.CreateClient();
         }
 
