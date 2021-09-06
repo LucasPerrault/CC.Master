@@ -38,6 +38,7 @@ namespace Core.Proxy.Infra.Extensions
             "/cc-master",
             "/logs",
             "/sources",
+            "/reports",
         };
 
         private static readonly HashSet<string> BetaNonRedirectableSegments = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
