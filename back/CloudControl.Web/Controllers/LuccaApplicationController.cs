@@ -1,6 +1,7 @@
 ﻿using Environments.Domain;
 using Lucca.Core.Api.Abstractions.Paging;
 using Lucca.Core.Rights.Abstractions;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Rights.Web;
 using System;
@@ -10,6 +11,7 @@ using System.Linq;
 
 namespace CloudControl.Web.Controllers
 {
+    [AllowAnonymous]
     [ApiController, Route("api/application-description")]
     public class LuccaApplicationController
     {
@@ -117,28 +119,30 @@ namespace CloudControl.Web.Controllers
         public IReadOnlyCollection<LuccaBusinessItem> Items { get; set; }
     }
 
-    public class RestApiV3CollectionCompatibilityFormat<T>
-    {
-        public RestApiV3Collection<T> Data { get; }
-
-        public RestApiV3CollectionCompatibilityFormat(ICollection<T> items)
-        {
-            Data = new RestApiV3Collection<T>{ Items = items};
-        }
-    }
-
     public class RestApiV3CompatibilityFormat<T>
     {
+        public RestApiV3Header Header { get; } = new RestApiV3Header();
         public T Data { get; }
 
         public RestApiV3CompatibilityFormat(T data)
         {
             Data = data;
         }
+
+        public class RestApiV3Header
+        {
+            public DateTime Generated { get; } = DateTime.Now;
+        }
     }
 
     public class RestApiV3Collection<T>
     {
         public ICollection<T> Items { get; set; }
+    }
+
+    public class RestApiV3CollectionCompatibilityFormat<T> : RestApiV3CompatibilityFormat<RestApiV3Collection<T>>
+    {
+        public RestApiV3CollectionCompatibilityFormat(ICollection<T> items) : base(new RestApiV3Collection<T> { Items = items })
+        { }
     }
 }
