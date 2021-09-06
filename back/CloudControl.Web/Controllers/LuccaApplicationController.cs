@@ -131,7 +131,7 @@ namespace CloudControl.Web.Controllers
 
         public class RestApiV3Header
         {
-            public DateTime Generated { get; } = DateTime.Now;
+            public DateTime Generated => DateTime.Now;
         }
     }
 
