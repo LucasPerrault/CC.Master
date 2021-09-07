@@ -9,7 +9,7 @@ namespace AdvancedFilters.Infra.Storage.Configurations
         public void Configure(EntityTypeBuilder<Establishment> builder)
         {
             builder.ToTable("Establishments");
-            builder.HasKey(e => new { e.EnvironmentId, e.RemoteId });
+            builder.HasKey(e => new { e.EnvironmentId, e.Id });
 
             builder.Property(e => e.Name).HasColumnName("Name").IsRequired();
             builder.Property(e => e.Code).HasColumnName("Code");

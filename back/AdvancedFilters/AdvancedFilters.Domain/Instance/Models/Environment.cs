@@ -5,7 +5,7 @@ namespace AdvancedFilters.Domain.Instance.Models
 {
     public class Environment
     {
-        public int RemoteId { get; set; }
+        public int Id { get; set; }
         public string Subdomain { get; set; }
         public string Domain { get; set; }
         public bool IsActive { get; set; }

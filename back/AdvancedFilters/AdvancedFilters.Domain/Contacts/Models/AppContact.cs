@@ -6,7 +6,7 @@ namespace AdvancedFilters.Domain.Contacts.Models
 {
     public class AppContact
     {
-        public int RemoteId { get; set; }
+        public int Id { get; set; }
         public int AppInstanceId { get; set; }
         public int UserId { get; set; }
         public DateTime CreatedAt { get; set; }

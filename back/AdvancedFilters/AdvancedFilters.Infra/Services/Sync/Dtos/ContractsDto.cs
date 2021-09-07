@@ -28,7 +28,7 @@ namespace AdvancedFilters.Infra.Services.Sync.Dtos
         {
             return new Contract
             {
-                RemoteId = Id,
+                Id = Id,
                 ClientId = ClientId,
                 ExternalId = ExternalId,
                 EstablishmentAttachments = GetFromDto(EstablishmentAttachments)

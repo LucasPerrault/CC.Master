@@ -7,7 +7,7 @@ namespace AdvancedFilters.Domain.Contacts.Models
 {
     public class ClientContact
     {
-        public int RemoteId { get; set; }
+        public int Id { get; set; }
         public int RoleId { get; set; }
         public Guid ClientId { get; set; }
         public int UserId { get; set; }

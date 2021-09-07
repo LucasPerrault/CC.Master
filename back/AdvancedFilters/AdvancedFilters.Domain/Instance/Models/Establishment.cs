@@ -4,7 +4,7 @@ namespace AdvancedFilters.Domain.Instance.Models
 {
     public class Establishment
     {
-        public int RemoteId { get; set; }
+        public int Id { get; set; }
         public string Name { get; set; }
         public string Code { get; set; }
         public int LegalUnitId { get; set; }

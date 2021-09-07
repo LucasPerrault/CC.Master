@@ -9,7 +9,7 @@ namespace AdvancedFilters.Infra.Storage.Configurations
         public void Configure(EntityTypeBuilder<AppInstance> builder)
         {
             builder.ToTable("AppInstances");
-            builder.HasKey(ai => new { ai.EnvironmentId, ai.RemoteId });
+            builder.HasKey(ai => new { ai.EnvironmentId, ai.Id });
 
             builder.Property(ai => ai.Name).HasColumnName("Name").IsRequired();
             builder.Property(ai => ai.ApplicationId).HasColumnName("ApplicationId").IsRequired();

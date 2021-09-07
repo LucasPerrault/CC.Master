@@ -4,7 +4,7 @@ namespace AdvancedFilters.Domain.Instance.Models
 {
     public class AppInstance
     {
-        public int RemoteId { get; set; }
+        public int Id { get; set; }
         public string Name { get; set; }
         public string ApplicationId { get; set; }
         public int EnvironmentId { get; set; }

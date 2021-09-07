@@ -40,7 +40,7 @@ namespace AdvancedFilters.Infra.Storage.Stores
         public static IQueryable<AppInstance> WhereMatches(this IQueryable<AppInstance> ais, AppInstanceFilter filter)
         {
             return ais
-                .WhenNotNullOrEmpty(filter.RemoteIds).ApplyWhere(ai => filter.RemoteIds.Contains(ai.RemoteId))
+                .WhenNotNullOrEmpty(filter.Ids).ApplyWhere(ai => filter.Ids.Contains(ai.Id))
                 .WhenNotNullOrEmpty(filter.ApplicationIds).ApplyWhere(ai => filter.ApplicationIds.Contains(ai.ApplicationId))
                 .WhenNotNullOrEmpty(filter.EnvironmentIds).ApplyWhere(ai => filter.EnvironmentIds.Contains(ai.EnvironmentId));
         }

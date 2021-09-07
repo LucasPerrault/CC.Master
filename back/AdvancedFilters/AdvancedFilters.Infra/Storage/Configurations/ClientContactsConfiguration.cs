@@ -9,7 +9,7 @@ namespace AdvancedFilters.Infra.Storage.Configurations
         public void Configure(EntityTypeBuilder<ClientContact> builder)
         {
             builder.ToTable("ClientContacts");
-            builder.HasKey(c => new { c.EnvironmentId, c.RemoteId });
+            builder.HasKey(c => new { c.EnvironmentId, c.Id });
 
             builder.Property(c => c.RoleId).HasColumnName("RoleId").IsRequired();
             builder.Property(c => c.ClientId).HasColumnName("ClientId").IsRequired();

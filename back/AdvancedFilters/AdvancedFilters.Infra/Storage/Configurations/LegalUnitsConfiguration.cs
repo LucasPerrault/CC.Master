@@ -9,7 +9,7 @@ namespace AdvancedFilters.Infra.Storage.Configurations
         public void Configure(EntityTypeBuilder<LegalUnit> builder)
         {
             builder.ToTable("LegalUnits");
-            builder.HasKey(lu => new { lu.EnvironmentId, lu.RemoteId });
+            builder.HasKey(lu => new { lu.EnvironmentId, lu.Id });
 
             builder.Property(lu => lu.Name).HasColumnName("Name");
             builder.Property(lu => lu.Code).HasColumnName("Code");

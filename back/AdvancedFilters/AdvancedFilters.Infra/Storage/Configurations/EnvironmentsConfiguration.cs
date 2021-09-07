@@ -9,7 +9,7 @@ namespace AdvancedFilters.Infra.Storage.Configurations
         public void Configure(EntityTypeBuilder<Environment> builder)
         {
             builder.ToTable("Environments");
-            builder.HasKey(e => e.RemoteId);
+            builder.HasKey(e => e.Id);
 
             builder.Property(e => e.Subdomain).HasColumnName("Subdomain").IsRequired();
             builder.Property(e => e.Domain).HasColumnName("Domain").IsRequired();

@@ -6,7 +6,7 @@ namespace AdvancedFilters.Domain.Contacts.Models
 {
     public class SpecializedContact
     {
-        public int RemoteId { get; set; }
+        public int Id { get; set; }
         public int RoleId { get; set; }
         public int UserId { get; set; }
         public DateTime CreatedAt { get; set; }
