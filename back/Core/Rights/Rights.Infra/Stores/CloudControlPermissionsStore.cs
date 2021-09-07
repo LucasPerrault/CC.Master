@@ -35,7 +35,7 @@ namespace Rights.Infra.Stores
 
         public Task<List<IApiKeyPermission>> GetApiKeyPermissionsAsync(int apiKeyId)
         {
-            var operations = Enum.GetValues(typeof(Operation)).Cast<Operation>().Select(o => (int)o).ToHashSet();
+            var operations = OperationHelper.GetAll().Select(o => (int)o).ToHashSet();
             return GetApiKeyPermissionsAsync(apiKeyId, operations);
         }
 
