@@ -11,9 +11,10 @@ namespace AdvancedFilters.Infra.Storage.Configurations
             builder.ToTable("Environments");
             builder.HasKey(e => e.Id);
 
-            builder.Property(e => e.Subdomain).HasColumnName("Subdomain").IsRequired();
+            builder.Property(e => e.Subdomain).HasColumnName("Subdomain").IsRequired().HasMaxLength(63);
             builder.Property(e => e.Domain).HasColumnName("Domain").IsRequired();
             builder.Property(e => e.IsActive).HasColumnName("IsActive").IsRequired();
+            builder.Property(e => e.ProductionHost).HasColumnName("ProductionHost").IsRequired();
 
             builder.HasMany(e => e.LegalUnits).WithOne().HasForeignKey(lu => lu.EnvironmentId);
         }

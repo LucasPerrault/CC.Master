@@ -9,14 +9,8 @@ namespace AdvancedFilters.Domain.Instance.Models
         public string Subdomain { get; set; }
         public string Domain { get; set; }
         public bool IsActive { get; set; }
-
-        public string ProductionHost => $"https://{Subdomain}.{Domain}";
+        public string ProductionHost { get; set; }
 
         public IReadOnlyCollection<LegalUnit> LegalUnits { get; set; }
-
-        public object GetKey()
-        {
-            throw new NotImplementedException();
-        }
     }
 }
