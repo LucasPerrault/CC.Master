@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AdvancedFilters.Infra.Migrations
 {
     [DbContext(typeof(AdvancedFiltersDbContext))]
-    [Migration("20210906142710_InitAdvancedFilters")]
+    [Migration("20210908153829_InitAdvancedFilters")]
     partial class InitAdvancedFilters
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -24,10 +24,8 @@ namespace AdvancedFilters.Infra.Migrations
 
             modelBuilder.Entity("AdvancedFilters.Domain.Billing.Models.Client", b =>
                 {
-                    b.Property<int>("RemoteId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                    b.Property<int>("Id")
+                        .HasColumnType("int");
 
                     b.Property<Guid>("ExternalId")
                         .HasColumnName("ExternalId")
@@ -39,7 +37,7 @@ namespace AdvancedFilters.Infra.Migrations
                         .HasColumnName("Name")
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("RemoteId");
+                    b.HasKey("Id");
 
                     b.HasIndex("ExternalId")
                         .IsUnique();
@@ -49,16 +47,10 @@ namespace AdvancedFilters.Infra.Migrations
 
             modelBuilder.Entity("AdvancedFilters.Domain.Billing.Models.Contract", b =>
                 {
-                    b.Property<int>("RemoteId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<int>("ClientId")
-                        .HasColumnName("ClientId")
+                    b.Property<int>("Id")
                         .HasColumnType("int");
 
-                    b.Property<int?>("ClientRemoteId")
+                    b.Property<int>("ClientId")
                         .HasColumnType("int");
 
                     b.Property<Guid>("ExternalId")
@@ -66,11 +58,9 @@ namespace AdvancedFilters.Infra.Migrations
                         .HasColumnType("uniqueidentifier")
                         .HasMaxLength(36);
 
-                    b.HasKey("RemoteId");
+                    b.HasKey("Id");
 
                     b.HasIndex("ClientId");
-
-                    b.HasIndex("ClientRemoteId");
 
                     b.ToTable("Contracts");
                 });
@@ -86,14 +76,9 @@ namespace AdvancedFilters.Infra.Migrations
                     b.Property<int>("ContractId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("ContractRemoteId")
-                        .HasColumnType("int");
-
                     b.HasKey("EnvironmentId", "EstablishmentId", "ContractId");
 
                     b.HasIndex("ContractId");
-
-                    b.HasIndex("ContractRemoteId");
 
                     b.ToTable("EstablishmentContracts");
                 });
@@ -103,7 +88,7 @@ namespace AdvancedFilters.Infra.Migrations
                     b.Property<int>("EnvironmentId")
                         .HasColumnType("int");
 
-                    b.Property<int>("RemoteId")
+                    b.Property<int>("Id")
                         .HasColumnType("int");
 
                     b.Property<int>("AppInstanceId")
@@ -130,7 +115,7 @@ namespace AdvancedFilters.Infra.Migrations
                         .HasColumnName("UserId")
                         .HasColumnType("int");
 
-                    b.HasKey("EnvironmentId", "RemoteId");
+                    b.HasKey("EnvironmentId", "Id");
 
                     b.HasIndex("EnvironmentId", "AppInstanceId");
 
@@ -144,7 +129,7 @@ namespace AdvancedFilters.Infra.Migrations
                     b.Property<int>("EnvironmentId")
                         .HasColumnType("int");
 
-                    b.Property<int>("RemoteId")
+                    b.Property<int>("Id")
                         .HasColumnType("int");
 
                     b.Property<Guid>("ClientId")
@@ -175,7 +160,7 @@ namespace AdvancedFilters.Infra.Migrations
                         .HasColumnName("UserId")
                         .HasColumnType("int");
 
-                    b.HasKey("EnvironmentId", "RemoteId");
+                    b.HasKey("EnvironmentId", "Id");
 
                     b.HasIndex("ClientId");
 
@@ -189,7 +174,7 @@ namespace AdvancedFilters.Infra.Migrations
                     b.Property<int>("EnvironmentId")
                         .HasColumnType("int");
 
-                    b.Property<int>("RemoteId")
+                    b.Property<int>("Id")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("CreatedAt")
@@ -216,7 +201,7 @@ namespace AdvancedFilters.Infra.Migrations
                         .HasColumnName("UserId")
                         .HasColumnType("int");
 
-                    b.HasKey("EnvironmentId", "RemoteId");
+                    b.HasKey("EnvironmentId", "Id");
 
                     b.HasIndex("EnvironmentId", "EstablishmentId");
 
@@ -228,7 +213,7 @@ namespace AdvancedFilters.Infra.Migrations
                     b.Property<int>("EnvironmentId")
                         .HasColumnType("int");
 
-                    b.Property<int>("RemoteId")
+                    b.Property<int>("Id")
                         .HasColumnType("int");
 
                     b.Property<string>("ApplicationId")
@@ -236,8 +221,8 @@ namespace AdvancedFilters.Infra.Migrations
                         .HasColumnName("ApplicationId")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime?>("DeleteAt")
-                        .HasColumnName("DeleteAt")
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnName("DeletedAt")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Name")
@@ -245,17 +230,15 @@ namespace AdvancedFilters.Infra.Migrations
                         .HasColumnName("Name")
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("EnvironmentId", "RemoteId");
+                    b.HasKey("EnvironmentId", "Id");
 
                     b.ToTable("AppInstances");
                 });
 
             modelBuilder.Entity("AdvancedFilters.Domain.Instance.Models.Environment", b =>
                 {
-                    b.Property<int>("RemoteId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                    b.Property<int>("Id")
+                        .HasColumnType("int");
 
                     b.Property<string>("Domain")
                         .IsRequired()
@@ -266,12 +249,18 @@ namespace AdvancedFilters.Infra.Migrations
                         .HasColumnName("IsActive")
                         .HasColumnType("bit");
 
+                    b.Property<string>("ProductionHost")
+                        .IsRequired()
+                        .HasColumnName("ProductionHost")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Subdomain")
                         .IsRequired()
                         .HasColumnName("Subdomain")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(63)")
+                        .HasMaxLength(63);
 
-                    b.HasKey("RemoteId");
+                    b.HasKey("Id");
 
                     b.ToTable("Environments");
                 });
@@ -281,7 +270,7 @@ namespace AdvancedFilters.Infra.Migrations
                     b.Property<int>("EnvironmentId")
                         .HasColumnType("int");
 
-                    b.Property<int>("RemoteId")
+                    b.Property<int>("Id")
                         .HasColumnType("int");
 
                     b.Property<string>("ActivityCode")
@@ -304,14 +293,8 @@ namespace AdvancedFilters.Infra.Migrations
                         .HasColumnName("LegalIdentificationNumber")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("LegalUnitEnvironmentId")
-                        .HasColumnType("int");
-
                     b.Property<int>("LegalUnitId")
                         .HasColumnName("LegalUnitId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("LegalUnitRemoteId")
                         .HasColumnType("int");
 
                     b.Property<string>("Name")
@@ -328,11 +311,9 @@ namespace AdvancedFilters.Infra.Migrations
                         .HasColumnName("UsersCount")
                         .HasColumnType("int");
 
-                    b.HasKey("EnvironmentId", "RemoteId");
+                    b.HasKey("EnvironmentId", "Id");
 
                     b.HasIndex("EnvironmentId", "LegalUnitId");
-
-                    b.HasIndex("LegalUnitEnvironmentId", "LegalUnitRemoteId");
 
                     b.ToTable("Establishments");
                 });
@@ -342,7 +323,7 @@ namespace AdvancedFilters.Infra.Migrations
                     b.Property<int>("EnvironmentId")
                         .HasColumnType("int");
 
-                    b.Property<int>("RemoteId")
+                    b.Property<int>("Id")
                         .HasColumnType("int");
 
                     b.Property<string>("ActivityCode")
@@ -361,9 +342,6 @@ namespace AdvancedFilters.Infra.Migrations
                         .HasColumnName("CreatedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<int?>("EnvironmentRemoteId")
-                        .HasColumnType("int");
-
                     b.Property<int>("HeadquartersId")
                         .HasColumnName("HeadquartersId")
                         .HasColumnType("int");
@@ -380,9 +358,7 @@ namespace AdvancedFilters.Infra.Migrations
                         .HasColumnName("Name")
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("EnvironmentId", "RemoteId");
-
-                    b.HasIndex("EnvironmentRemoteId");
+                    b.HasKey("EnvironmentId", "Id");
 
                     b.ToTable("LegalUnits");
                 });
@@ -390,32 +366,24 @@ namespace AdvancedFilters.Infra.Migrations
             modelBuilder.Entity("AdvancedFilters.Domain.Billing.Models.Contract", b =>
                 {
                     b.HasOne("AdvancedFilters.Domain.Billing.Models.Client", "Client")
-                        .WithMany()
-                        .HasForeignKey("ClientId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("AdvancedFilters.Domain.Billing.Models.Client", null)
                         .WithMany("Contracts")
-                        .HasForeignKey("ClientRemoteId");
+                        .HasForeignKey("ClientId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("AdvancedFilters.Domain.Billing.Models.EstablishmentContract", b =>
                 {
-                    b.HasOne("AdvancedFilters.Domain.Billing.Models.Contract", null)
+                    b.HasOne("AdvancedFilters.Domain.Billing.Models.Contract", "Contract")
                         .WithMany("EstablishmentAttachments")
                         .HasForeignKey("ContractId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("AdvancedFilters.Domain.Billing.Models.Contract", "Contract")
-                        .WithMany()
-                        .HasForeignKey("ContractRemoteId");
-
                     b.HasOne("AdvancedFilters.Domain.Instance.Models.Establishment", "Establishment")
                         .WithMany()
                         .HasForeignKey("EnvironmentId", "EstablishmentId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
                 });
 
@@ -424,19 +392,19 @@ namespace AdvancedFilters.Infra.Migrations
                     b.HasOne("AdvancedFilters.Domain.Instance.Models.Environment", "Environment")
                         .WithMany()
                         .HasForeignKey("EnvironmentId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.HasOne("AdvancedFilters.Domain.Instance.Models.AppInstance", "AppInstance")
                         .WithMany()
                         .HasForeignKey("EnvironmentId", "AppInstanceId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.HasOne("AdvancedFilters.Domain.Instance.Models.Establishment", "Establishment")
                         .WithMany()
                         .HasForeignKey("EnvironmentId", "EstablishmentId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
                 });
 
@@ -446,19 +414,19 @@ namespace AdvancedFilters.Infra.Migrations
                         .WithMany()
                         .HasForeignKey("ClientId")
                         .HasPrincipalKey("ExternalId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.HasOne("AdvancedFilters.Domain.Instance.Models.Environment", "Environment")
                         .WithMany()
                         .HasForeignKey("EnvironmentId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.HasOne("AdvancedFilters.Domain.Instance.Models.Establishment", "Establishment")
                         .WithMany()
                         .HasForeignKey("EnvironmentId", "EstablishmentId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
                 });
 
@@ -467,13 +435,13 @@ namespace AdvancedFilters.Infra.Migrations
                     b.HasOne("AdvancedFilters.Domain.Instance.Models.Environment", "Environment")
                         .WithMany()
                         .HasForeignKey("EnvironmentId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.HasOne("AdvancedFilters.Domain.Instance.Models.Establishment", "Establishment")
                         .WithMany()
                         .HasForeignKey("EnvironmentId", "EstablishmentId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
                 });
 
@@ -482,7 +450,7 @@ namespace AdvancedFilters.Infra.Migrations
                     b.HasOne("AdvancedFilters.Domain.Instance.Models.Environment", "Environment")
                         .WithMany()
                         .HasForeignKey("EnvironmentId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
                 });
 
@@ -491,31 +459,23 @@ namespace AdvancedFilters.Infra.Migrations
                     b.HasOne("AdvancedFilters.Domain.Instance.Models.Environment", "Environment")
                         .WithMany()
                         .HasForeignKey("EnvironmentId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.HasOne("AdvancedFilters.Domain.Instance.Models.LegalUnit", "LegalUnit")
-                        .WithMany()
-                        .HasForeignKey("EnvironmentId", "LegalUnitId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("AdvancedFilters.Domain.Instance.Models.LegalUnit", null)
                         .WithMany("Establishments")
-                        .HasForeignKey("LegalUnitEnvironmentId", "LegalUnitRemoteId");
+                        .HasForeignKey("EnvironmentId", "LegalUnitId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("AdvancedFilters.Domain.Instance.Models.LegalUnit", b =>
                 {
                     b.HasOne("AdvancedFilters.Domain.Instance.Models.Environment", "Environment")
-                        .WithMany()
-                        .HasForeignKey("EnvironmentId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("AdvancedFilters.Domain.Instance.Models.Environment", null)
                         .WithMany("LegalUnits")
-                        .HasForeignKey("EnvironmentRemoteId");
+                        .HasForeignKey("EnvironmentId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }
