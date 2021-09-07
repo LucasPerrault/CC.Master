@@ -8,7 +8,7 @@ namespace AdvancedFilters.Domain.Instance.Models
         public string Name { get; set; }
         public string ApplicationId { get; set; }
         public int EnvironmentId { get; set; }
-        public DateTime? DeleteAt { get; set; }
+        public DateTime? DeletedAt { get; set; }
 
         public Environment Environment { get; set; }
     }

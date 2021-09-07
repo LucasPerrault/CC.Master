@@ -138,7 +138,7 @@
             "Tenants": {
                 "EstablishmentsEndpoint": "organization/structure/api/establishments",
                 "LegalUnitsEndpoint": "organization/structure/api/legal-units",
-                "AppInstancesEndpoint": "api/v3/appInstances",
+                "AppInstancesEndpoint": "api/v3/appInstances?fields=id,name,applicationid,deletedat",
                 "AppContactsEndpoint": "admin/account-and-billing/api/app-contacts",
                 "ClientContactsEndpoint": "admin/account-and-billing/api/client-contacts",
                 "SpecializedContactsEndpoint": "admin/account-and-billing/api/specialized-contacts"
