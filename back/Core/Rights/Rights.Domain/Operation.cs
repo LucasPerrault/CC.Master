@@ -1,3 +1,7 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
 namespace Rights.Domain
 {
     public enum Operation : ushort
@@ -66,5 +70,10 @@ namespace Rights.Domain
         ReadTenantDataRequestStatus = 50002,
         CloudControlInternalRequest = 51000,
 
+    }
+
+    public static class OperationHelper
+    {
+        public static IEnumerable<Operation> GetAll() => Enum.GetValues(typeof(Operation)).Cast<Operation>();
     }
 }
