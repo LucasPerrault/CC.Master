@@ -19,7 +19,7 @@ namespace AdvancedFilters.Infra.Storage.Configurations
             builder.Property(c => c.IsConfirmed).HasColumnName("IsConfirmed").IsRequired();
 
             builder.HasOne(c => c.Environment).WithMany().HasForeignKey(c => c.EnvironmentId);
-            builder.HasOne(c => c.Establishment).WithMany().HasForeignKey(c => new { c.EnvironmentId, c.EstablishmentId });
+            builder.HasOne(c => c.Establishment).WithMany().HasForeignKey(c => new { c.EnvironmentId, c.EstablishmentId }).OnDelete(DeleteBehavior.NoAction);
         }
     }
 }

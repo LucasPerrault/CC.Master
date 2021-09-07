@@ -22,7 +22,7 @@ namespace AdvancedFilters.Infra.Storage.Configurations
             builder.Property(e => e.IsArchived).HasColumnName("IsArchived").IsRequired();
 
             builder.HasOne(e => e.Environment).WithMany().HasForeignKey(e => e.EnvironmentId);
-            builder.HasOne(e => e.LegalUnit).WithMany().HasForeignKey(e => new { e.EnvironmentId, e.LegalUnitId });
+            builder.HasOne(e => e.LegalUnit).WithMany().HasForeignKey(e => new { e.EnvironmentId, e.LegalUnitId }).OnDelete(DeleteBehavior.NoAction);
         }
     }
 }
