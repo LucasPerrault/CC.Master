@@ -12,6 +12,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Tools;
 
 namespace Billing.Contracts.Web
 {
@@ -28,9 +29,9 @@ namespace Billing.Contracts.Web
 
         [HttpGet]
         [ForbidIfMissing(Operation.ReadContracts)]
-        public async Task<Page<ContractDto>> GetAsync(IPageToken pageToken)
+        public async Task<Page<ContractDto>> GetAsync(IPageToken pageToken, [FromQuery]ContractListQuery query)
         {
-            var page = await _contractsRepository.GetPageAsync(pageToken);
+            var page = await _contractsRepository.GetPageAsync(pageToken, query.ToFilter());
             return new Page<ContractDto>
             {
                 Count = page.Count,
@@ -95,5 +96,16 @@ namespace Billing.Contracts.Web
                 SalesforceId = contractClient.SalesforceId;
             }
         }
+    }
+
+    public class ContractListQuery
+    {
+        public string Search { get; set; }
+
+        public ContractFilter ToFilter() => new ContractFilter
+        {
+            Search = Search?.Split(" ", StringSplitOptions.RemoveEmptyEntries).ToHashSet() ?? new HashSet<string>(),
+            ArchivedAt = CompareDateTime.IsStrictlyAfter(DateTime.Now).OrNull()
+        };
     }
 }

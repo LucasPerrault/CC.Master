@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using Rights.Domain.Filtering;
 using Storage.Infra.Extensions;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
@@ -44,10 +45,25 @@ namespace Billing.Contracts.Infra.Storage.Stores
     {
         public static IQueryable<Contract> WhereMatches(this IQueryable<Contract> contracts, ContractFilter filter)
         {
-            return contracts
+            return contracts.Search(filter.Search)
                 .Apply(filter.Subdomain).To(c => c.EnvironmentSubdomain)
                 .Apply(filter.ArchivedAt).To(c => c.ArchivedAt)
                 .When(filter.ClientExternalId.HasValue).ApplyWhere(c => c.ClientExternalId == filter.ClientExternalId.Value);
+        }
+
+        private static IQueryable<Contract> Search(this IQueryable<Contract> contracts, HashSet<string> words)
+        {
+            if (words == null || !words.Any())
+            {
+                return contracts;
+            }
+
+            return words.Aggregate(contracts, (current, word) => current.Where(c =>
+                c.Id.ToString().StartsWith(word)
+                || c.EnvironmentSubdomain.StartsWith(word)
+                || c.Client.Name.StartsWith(word)
+                || c.CommercialOffer.Name.StartsWith(word)
+            ));
         }
 
         public static IQueryable<Contract> WhereHasRight(this IQueryable<Contract> contracts, AccessRight accessRight)

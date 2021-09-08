@@ -19,10 +19,10 @@ namespace Billing.Contracts.Application.Clients
             _principal = principal;
         }
 
-        public async Task<Page<Contract>> GetPageAsync(IPageToken pageToken)
+        public async Task<Page<Contract>> GetPageAsync(IPageToken pageToken, ContractFilter contractFilter)
         {
             var accessRight = await _rightsFilter.GetReadAccessAsync(_principal);
-            return await _contractsStore.GetPageAsync(accessRight, ContractFilter.AllNotArchived(), pageToken);
+            return await _contractsStore.GetPageAsync(accessRight, contractFilter, pageToken);
         }
     }
 }
