@@ -8,6 +8,7 @@
     "lint": "ng lint",
     "sentry-generate": "lu-sentry generate",
     "sentry-post": "lu-sentry post",
+    "jenkins-test": "npm test",
     "test": "node --expose-gc ./node_modules/jest/bin/jest.js --no-cache --logHeapUsage",
     "test:coverage": "node --expose-gc ./node_modules/jest/bin/jest.js --no-cache --logHeapUsage --coverage"
   },
