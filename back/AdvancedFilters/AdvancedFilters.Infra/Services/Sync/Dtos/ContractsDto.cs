@@ -12,6 +12,7 @@ namespace AdvancedFilters.Infra.Services.Sync.Dtos
         public List<Contract> ToItems()
         {
             return Items
+                .Where(dto => dto.EnvironmentId.HasValue)
                 .Select(dto => dto.ToContract())
                 .ToList();
         }
@@ -22,7 +23,7 @@ namespace AdvancedFilters.Infra.Services.Sync.Dtos
         public int Id { get; set; }
         public int ClientId { get; set; }
         public Guid ExternalId { get; set; }
-        public IReadOnlyCollection<EstablishmentAttachmentDto> EstablishmentAttachments { get; set; }
+        public int? EnvironmentId { get; set; }
         public IReadOnlyCollection<EstablishmentAttachmentDto> Attachments { get; set; }
 
         public Contract ToContract()
@@ -40,7 +41,7 @@ namespace AdvancedFilters.Infra.Services.Sync.Dtos
         {
             return establishmentAttachments
                 .Where(ea => ea.IsActive)
-                .Select(ea => ea.ToEstablishmentContract(Id))
+                .Select(ea => ea.ToEstablishmentContract(Id, EnvironmentId.Value))
                 .ToList();
         }
     }
@@ -61,11 +62,12 @@ namespace AdvancedFilters.Infra.Services.Sync.Dtos
             }
         }
 
-        public EstablishmentContract ToEstablishmentContract(int contractId)
+        public EstablishmentContract ToEstablishmentContract(int contractId, int environmentId)
         {
             return new EstablishmentContract
             {
                 ContractId = contractId,
+                EnvironmentId = environmentId,
                 EstablishmentId = EstablishmentRemoteId
             };
         }
