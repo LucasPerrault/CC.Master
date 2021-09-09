@@ -87,6 +87,7 @@ namespace AdvancedFilters.Infra.Services.Sync
             {
                 using var message = job.RequestDescription.ToRequest();
                 using var response = await _fetchAction(message);
+                response.EnsureSuccessStatusCode();
                 await using var stream = await response.Content.ReadAsStreamAsync();
 
                 var dto = await Serializer.DeserializeAsync<TDto>(stream);
