@@ -15,7 +15,11 @@ namespace AdvancedFilters.Infra.Storage.Configurations
             builder.Property(ai => ai.ApplicationId).HasColumnName("ApplicationId").IsRequired();
             builder.Property(ai => ai.DeletedAt).HasColumnName("DeletedAt");
 
-            builder.HasOne(ai => ai.Environment).WithMany().HasForeignKey(ai => ai.EnvironmentId);
+            builder
+                .HasOne(ai => ai.Environment)
+                .WithMany()
+                .OnDelete(DeleteBehavior.NoAction)
+                .HasForeignKey(ai => ai.EnvironmentId);
         }
     }
 }

@@ -20,8 +20,12 @@ namespace AdvancedFilters.Infra.Storage.Configurations
             builder.Property(lu => lu.CreatedAt).HasColumnName("CreatedAt").IsRequired();
             builder.Property(lu => lu.IsArchived).HasColumnName("IsArchived").IsRequired();
 
-            builder.HasOne(lu => lu.Environment).WithMany().HasForeignKey(lu => lu.EnvironmentId);
-            builder.HasMany(lu => lu.Establishments).WithOne().HasForeignKey(e => new { e.EnvironmentId, e.LegalUnitId });
+            builder
+                .HasOne(lu => lu.Environment)
+                .WithMany(e => e.LegalUnits)
+                .HasForeignKey(lu => lu.EnvironmentId)
+                .IsRequired()
+                .OnDelete(DeleteBehavior.NoAction);
         }
     }
 }

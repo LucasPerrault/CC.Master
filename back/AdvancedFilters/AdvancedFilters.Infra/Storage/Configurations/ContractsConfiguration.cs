@@ -10,12 +10,16 @@ namespace AdvancedFilters.Infra.Storage.Configurations
         {
             builder.ToTable("Contracts");
             builder.HasKey(c => c.Id);
+            builder.Property(c => c.Id).ValueGeneratedNever();
 
             builder.Property(c => c.ExternalId).HasColumnName("ExternalId").HasMaxLength(36).IsRequired();
-            builder.Property(c => c.ClientId).HasColumnName("ClientId").IsRequired();
 
-            builder.HasOne(c => c.Client).WithMany().HasForeignKey(c => c.ClientId);
-            builder.HasMany(c => c.EstablishmentAttachments).WithOne().HasForeignKey(e => e.ContractId);
+            builder
+                .HasOne(c => c.Client)
+                .WithMany(c => c.Contracts)
+                .HasForeignKey(c => c.ClientId)
+                .IsRequired()
+                .OnDelete(DeleteBehavior.NoAction);
         }
     }
 }
