@@ -46,8 +46,9 @@ namespace Billing.Contracts.Infra.Storage.Stores
     {
         public static IQueryable<Client> WhereMatches(this IQueryable<Client> clients, ClientFilter filter)
         {
-            return clients
-                .When(filter.ExternalId.HasValue).ApplyWhere(c => c.ExternalId == filter.ExternalId.Value);
+            return clients.Search(filter.Search)
+                .When(filter.ExternalId.HasValue)
+                .ApplyWhere(c => c.ExternalId == filter.ExternalId.Value);
         }
 
         public static IQueryable<Client> WhereHasRight(this IQueryable<Client> clients, AccessRight accessRight)
@@ -55,13 +56,25 @@ namespace Billing.Contracts.Infra.Storage.Stores
             return clients.Where(accessRight.ToRightExpression());
         }
 
+        private static IQueryable<Client> Search(this IQueryable<Client> contracts, HashSet<string> words)
+        {
+            if (words == null || !words.Any())
+            {
+                return contracts;
+            }
+
+            return words.Aggregate(contracts, (current, word) => current.Where(c =>
+                c.Name.StartsWith(word)
+            ));
+        }
+
         private static Expression<Func<Client, bool>> ToRightExpression(this AccessRight accessRight)
         {
             return accessRight switch
             {
                 NoAccessRight _ => _ => false,
-                DistributorAccessRight r => c => c.Contracts.Any(c => c.DistributorId == r.DistributorId),
-                EnvironmentAccessRight r => c => c.Contracts.Any(c => c.EnvironmentSubdomain == r.Subdomain),
+                DistributorAccessRight r => c => c.Contracts.Any(contract => contract.DistributorId == r.DistributorId),
+                EnvironmentAccessRight r => c => c.Contracts.Any(contract => contract.EnvironmentSubdomain == r.Subdomain),
                 AllAccessRight _ => _ => true,
                 _ => throw new ApplicationException($"Unknown type of contract filter right {accessRight}")
             };

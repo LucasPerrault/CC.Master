@@ -64,7 +64,7 @@ namespace Billing.Contracts.Application.Tests
                 _salesforceAccountRemoteServiceMock.Object
             );
 
-            var clients = await repo.GetPageAsync(new NumberPageToken());
+            var clients = await repo.GetPageAsync(new NumberPageToken(), ClientFilter.All);
             clients.Count.Should().Be(1);
             clients.Items.Single().Should().Be(client);
         }
@@ -91,7 +91,7 @@ namespace Billing.Contracts.Application.Tests
                 _salesforceAccountRemoteServiceMock.Object
             );
 
-            var clients = await repo.GetPageAsync(new NumberPageToken());
+            var clients = await repo.GetPageAsync(new NumberPageToken(), ClientFilter.All);
             clients.Count.Should().Be(0);
             clients.Items.Should().BeEmpty();
         }
@@ -119,7 +119,7 @@ namespace Billing.Contracts.Application.Tests
             );
 
 
-            var clients = await repo.GetPageAsync(new NumberPageToken());
+            var clients = await repo.GetPageAsync(new NumberPageToken(), ClientFilter.All);
             clients.Count.Should().Be(1);
             clients.Items.Single().Should().Be(client);
         }
