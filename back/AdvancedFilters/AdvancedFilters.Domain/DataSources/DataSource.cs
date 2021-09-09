@@ -5,9 +5,9 @@ namespace AdvancedFilters.Domain.DataSources
     public enum DataSources
     {
         Environments,
-        Establishments,
         AppInstances,
         LegalUnits,
+        Establishments,
         Clients,
         Contracts,
         AppContacts,
