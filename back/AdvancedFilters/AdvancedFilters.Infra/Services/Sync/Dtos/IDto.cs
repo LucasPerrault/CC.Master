@@ -31,13 +31,11 @@ namespace AdvancedFilters.Infra.Services.Sync.Dtos
         }
     }
 
-    internal class AppInstancesDto : IDto<AppInstance>
+    internal class AppInstancesDto : ApiV3Dto<AppInstance>, IDto<AppInstance>
     {
-        public List<AppInstance> Items { get; set; }
-
         public List<AppInstance> ToItems()
         {
-            return Items;
+            return Data.Items;
         }
     }
 
