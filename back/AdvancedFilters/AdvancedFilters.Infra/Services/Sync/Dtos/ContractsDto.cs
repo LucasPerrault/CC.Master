@@ -23,6 +23,7 @@ namespace AdvancedFilters.Infra.Services.Sync.Dtos
         public int ClientId { get; set; }
         public Guid ExternalId { get; set; }
         public IReadOnlyCollection<EstablishmentAttachmentDto> EstablishmentAttachments { get; set; }
+        public IReadOnlyCollection<EstablishmentAttachmentDto> Attachments { get; set; }
 
         public Contract ToContract()
         {
@@ -31,7 +32,7 @@ namespace AdvancedFilters.Infra.Services.Sync.Dtos
                 Id = Id,
                 ClientId = ClientId,
                 ExternalId = ExternalId,
-                EstablishmentAttachments = GetFromDto(EstablishmentAttachments)
+                EstablishmentAttachments = GetFromDto(Attachments)
             };
         }
 
@@ -46,7 +47,7 @@ namespace AdvancedFilters.Infra.Services.Sync.Dtos
 
     internal class EstablishmentAttachmentDto
     {
-        public int EstablishmentId { get; set; }
+        public int EstablishmentRemoteId { get; set; }
         public DateTime StartsOn { get; set; }
         public DateTime? EndsOn { get; set; }
 
@@ -65,7 +66,7 @@ namespace AdvancedFilters.Infra.Services.Sync.Dtos
             return new EstablishmentContract
             {
                 ContractId = contractId,
-                EstablishmentId = EstablishmentId
+                EstablishmentId = EstablishmentRemoteId
             };
         }
     }
