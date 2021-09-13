@@ -70,7 +70,11 @@ namespace AdvancedFilters.Infra.Services.Sync
         public Task<IDataSourceSynchronizer> BuildFromAsync(ContractDataSource dataSource)
         {
             var context = new EmptyDataSourceContext<Contract>();
-            var synchronizer = BuildFrom<ContractsDto, Contract, EmptyDataSourceContext<Contract>>(dataSource, new List<EmptyDataSourceContext<Contract>> { context });
+            var bulkUpsertConfig = new BulkUpsertConfig
+            {
+                IncludeSubEntities = true
+            };
+            var synchronizer = BuildFrom<ContractsDto, Contract, EmptyDataSourceContext<Contract>>(dataSource, new List<EmptyDataSourceContext<Contract>> { context }, config: bulkUpsertConfig);
             return Task.FromResult(synchronizer);
         }
 
@@ -103,11 +107,15 @@ namespace AdvancedFilters.Infra.Services.Sync
         }
 
         private IDataSourceSynchronizer BuildFrom<TDto, T, TContext>
-            (DataSource dataSource, IReadOnlyCollection<TContext> contexts)
+        (
+            DataSource dataSource,
+            IReadOnlyCollection<TContext> contexts,
+            BulkUpsertConfig config = null
+        )
             where TDto : IDto<T> where T : class where TContext : IDataSourceContext<T>
         {
             var jobs = GetJobs<T, TContext>(dataSource, contexts).ToList();
-            return FromJobs<TDto, T>(jobs);
+            return FromJobs<TDto, T>(jobs, config ?? new BulkUpsertConfig());
         }
 
         private async Task<List<EnvironmentDataSourceContext<T>>> GetEnvironmentContextsAsync<T>(Action<Environment, T> finalizeAction)
@@ -116,11 +124,10 @@ namespace AdvancedFilters.Infra.Services.Sync
             return envs.Select(e => new EnvironmentDataSourceContext<T>(e, finalizeAction)).ToList();
         }
 
-        private DataSourceSynchronizer<TDto, T> FromJobs<TDto, T>(List<FetchJob<T>> jobs) where TDto : IDto<T> where T : class
+        private DataSourceSynchronizer<TDto, T> FromJobs<TDto, T>(List<FetchJob<T>> jobs, BulkUpsertConfig config) where TDto : IDto<T> where T : class
         {
-            return new DataSourceSynchronizer<TDto, T>(jobs, _httpClient.SendAsync, _bulk.InsertOrUpdateOrDeleteAsync);
+            return new DataSourceSynchronizer<TDto, T>(jobs, _httpClient.SendAsync, entities => _bulk.InsertOrUpdateOrDeleteAsync(entities, config));
         }
-
 
         private sealed class EmptyDataSourceContext<T> : IDataSourceContext<T>
         {

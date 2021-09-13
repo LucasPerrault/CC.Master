@@ -14,10 +14,19 @@ namespace AdvancedFilters.Infra.Storage.Services
             _context = context;
         }
 
-        public async Task InsertOrUpdateOrDeleteAsync<T>(IReadOnlyCollection<T> entities)
+        public async Task InsertOrUpdateOrDeleteAsync<T>(IReadOnlyCollection<T> entities, BulkUpsertConfig config)
             where T : class
         {
-            await _context.BulkInsertOrUpdateOrDeleteAsync(entities.ToList());
+            var bc = new BulkConfig
+            {
+                IncludeGraph = config.IncludeSubEntities
+            };
+            await _context.BulkInsertOrUpdateOrDeleteAsync(entities.ToList(), bulkConfig: bc);
         }
+    }
+
+    public class BulkUpsertConfig
+    {
+        public bool IncludeSubEntities { get; set; } = false;
     }
 }
