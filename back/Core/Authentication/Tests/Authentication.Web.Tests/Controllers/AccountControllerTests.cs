@@ -13,7 +13,7 @@ namespace Authentication.Web.Tests.Controllers
 
         public AccountControllerTests()
         {
-            var server = new TestServer(TestHostBuilder<TestUserAuthenticationHandler>.GetInMemory());
+            var server = new MockedWebApplicationFactory();
             _client = server.CreateClient();
         }
 

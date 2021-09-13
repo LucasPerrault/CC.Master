@@ -1,6 +1,10 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
 namespace Rights.Domain
 {
-    public enum Operation
+    public enum Operation : ushort
     {
         ReadInstances = 1,  // OBSOLETE
         ReadEnvironments = 1000,
@@ -8,6 +12,7 @@ namespace Rights.Domain
         RestoreInstances = 1002,
         ImpersonationOnTrainingAndPreview = 1003,
         ImpersonationOnProd = 1004,
+        EditEnvironmentGroup = 1005,
         Restore = 3,  // OBSOLETE
         CreateInstance = 4,
         UserImpersonationPreviewAndTraining = 5,  // OBSOLETE
@@ -56,6 +61,19 @@ namespace Rights.Domain
         EnvironmentLogTab = 39000,
         ContactRoles = 40000,
         EditClients = 41001,
-        HangfireNetcoreRequest = 52000
+        HangfireNetcoreRequest = 52000,
+
+        ReadDistributorRelations = 38003,
+
+        ReadTenantDataRequest = 50000,
+        WriteTenantDataRequest = 50001,
+        ReadTenantDataRequestStatus = 50002,
+        CloudControlInternalRequest = 51000,
+
+    }
+
+    public static class OperationHelper
+    {
+        public static IEnumerable<Operation> GetAll() => Enum.GetValues(typeof(Operation)).Cast<Operation>();
     }
 }

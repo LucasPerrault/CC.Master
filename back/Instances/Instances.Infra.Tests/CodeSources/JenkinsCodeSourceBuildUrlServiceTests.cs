@@ -1,8 +1,10 @@
 using FluentAssertions;
 using Instances.Domain.CodeSources;
 using Instances.Infra.CodeSources;
+using Lucca.Core.Shared.Domain.Exceptions;
 using Moq;
 using Moq.Protected;
+using System;
 using System.Net;
 using System.Net.Http;
 using System.Text;
@@ -81,6 +83,32 @@ namespace Instances.Infra.Tests.CodeSources
             var generatedUrl = await _jenkinsCodeSourceBuildUrlService.GenerateBuildUrlAsync(codeSource, branchName, buildNumber);
 
             generatedUrl.Should().Be(expected);
+        }
+
+        [Fact]
+        public async Task GenerateBuildUrlAsync_InvalidJenkins()
+        {
+            var branchName = "my-branch";
+            var codeSource = new CodeSource
+            {
+                JenkinsProjectUrl = "http://jenkins.lucca.test"
+            };
+            _httpHandlerMock
+                .Protected()
+                .Setup<Task<HttpResponseMessage>>(
+                      "SendAsync",
+                      ItExpr.Is<HttpRequestMessage>(m => m.RequestUri.ToString().StartsWith("http://jenkins.lucca.test/job/my-branch/api/json")),
+                      ItExpr.IsAny<CancellationToken>()
+                )
+                .ReturnsAsync(new HttpResponseMessage()
+                {
+                    StatusCode = HttpStatusCode.NotFound,
+                    Content = new StringContent("", Encoding.UTF8, "text/html")
+                });
+
+            Func<Task> act = () => _jenkinsCodeSourceBuildUrlService.GenerateBuildUrlAsync(codeSource, branchName, "badBranch");
+
+            await act.Should().ThrowAsync<BadRequestException>();
         }
         #endregion
     }

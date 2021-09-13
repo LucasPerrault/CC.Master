@@ -118,8 +118,13 @@ namespace Instances.Infra.Shared
         {
             var subdomain = GetCcDataSubdomainPart();
             var clusterSubdomainPart = ClusterNameConvertor.GetShortName(cluster);
+            var domain = ClusterNameConvertor.GetSpecificDomain(cluster) ?? GetDefaultDomain();
+            return new Uri($"{_ccDataConfiguration.Scheme}://{subdomain}.{clusterSubdomainPart}.{domain}");
+        }
 
-            return new Uri($"{_ccDataConfiguration.Scheme}://{subdomain}.{clusterSubdomainPart}.{_ccDataConfiguration.Domain}");
+        private string GetDefaultDomain()
+        {
+            return _ccDataConfiguration.Domain;
         }
 
         // Changements à reporter dans le CClithe

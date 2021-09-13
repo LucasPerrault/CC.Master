@@ -1,31 +1,51 @@
-﻿using CloudControl.Web.Tests.Mocks;
-using Microsoft.AspNetCore.TestHost;
+﻿using Authentication.Infra.Configurations;
+using Authentication.Infra.Services;
+using CloudControl.Web.Tests.Mocks;
+using Moq;
+using System;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
+using Testing.Infra;
 using Xunit;
 
 namespace Authentication.Web.Tests.Controllers
 {
     public class LogoutControllerTests
     {
-        private readonly HttpClient _client;
-
-        public LogoutControllerTests()
-        {
-            var server = new TestServer(TestHostBuilder<TestUserAuthenticationHandler>.GetInMemory());
-            _client = server.CreateClient();
-        }
 
         [Fact]
         public async Task ShouldRedirectLogoutRequest()
         {
-            var response = await _client.GetAsync("/logout");
+            var config = new AuthenticationConfiguration
+            {
+                ServerUri = new Uri("https://example.org/"),
+                LogoutEndpointPath = "log-me-out",
+                RedirectEndpointPath = "redirect-user-here",
+            };
+
+            var handlerMock = new Mock<HttpClientHandler>();
+            handlerMock
+                .SetupSendAsync(ItIsRequestMessage.Matching(h => h.RequestUri.ToString() == $"{config.ServerUri}{config.LogoutEndpointPath}"))
+                .ReturnsAsync(new HttpResponseMessage());
+
+
+            var logoutService = new LogoutService(config, new TestPrincipal().Principal, new HttpClient(handlerMock.Object));
+            var authRemoteService = new AuthRedirectionRemoteService(config);
+
+            var webApplicationFactory = new MockedWebApplicationFactory();
+            webApplicationFactory.Mocks.AddTransient(logoutService);
+            webApplicationFactory.Mocks.AddSingleton(authRemoteService);
+
+            var client = webApplicationFactory.CreateAuthenticatedClient();
+            var response = await client.GetAsync("/logout");
+
             Assert.Equal(HttpStatusCode.Redirect, response.StatusCode);
-            Assert.Contains(
-                    "https://mocked-partenaires.local/logout?callback=https://localhost",
-                    response.Headers.GetValues("Location")
-                );
+            Assert.Contains
+            (
+                $"{config.ServerUri}{config.RedirectEndpointPath}?callback=https://localhost",
+                response.Headers.GetValues("Location")
+            );
         }
     }
 }
