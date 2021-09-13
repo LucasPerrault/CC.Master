@@ -4,36 +4,65 @@ namespace Tools
 {
     public abstract class CompareDateTime
     {
+
         public static CompareDateTime Bypass() => new BypassCompareDateTime();
-        public static CompareDateTime IsAfterOrEqual(DateTime dateTime) => new IsAfterOrEqualCompareDateTime(dateTime);
-        public static CompareDateTime IsStrictlyAfter(DateTime dateTime) => new IsStrictlyAfterCompareDateTime(dateTime);
+        public static CompareDateTime IsAfterOrEqual(DateTime dateTime) => new IsAfterCompareDateTime(dateTime, isStrict:false);
+        public static CompareDateTime IsStrictlyAfter(DateTime dateTime) => new IsAfterCompareDateTime(dateTime, isStrict:true);
+        public static CompareDateTime IsBetweenOrEqual(DateTime min, DateTime max) => new IsBetweenCompareDateTime(min, max, isStrict:false);
+        public static CompareDateTime IsStrictlyBetween(DateTime min, DateTime max) => new IsBetweenCompareDateTime(min, max, isStrict:true);
+        public static CompareDateTime IsBeforeOrEqual(DateTime dateTime) => new IsBeforeCompareDateTime(dateTime, isStrict:false);
+        public static CompareDateTime IsStrictlyEqual(DateTime dateTime) => new IsBeforeCompareDateTime(dateTime, isStrict:true);
+        public static CompareDateTime IsEqual(DateTime dateTime) => new IsEqualCompareDateTime(dateTime);
     }
 
     public class BypassCompareDateTime : CompareDateTime
     {
-
         protected internal BypassCompareDateTime()
         { }
-
     }
 
-    public class IsAfterOrEqualCompareDateTime : CompareDateTime
+    public class IsEqualCompareDateTime : CompareDateTime
     {
         public DateTime Value { get; }
 
-        protected internal IsAfterOrEqualCompareDateTime(DateTime value)
+        protected internal IsEqualCompareDateTime(DateTime value) => Value = value;
+    }
+
+    public class IsAfterCompareDateTime : CompareDateTime
+    {
+        public DateTime Value { get; }
+        public bool IsStrict { get; }
+
+        protected internal IsAfterCompareDateTime(DateTime value, bool isStrict)
         {
             Value = value;
+            IsStrict = isStrict;
         }
     }
 
-    public class IsStrictlyAfterCompareDateTime : CompareDateTime
+    public class IsBeforeCompareDateTime : CompareDateTime
     {
         public DateTime Value { get; }
+        public bool IsStrict { get; }
 
-        protected internal IsStrictlyAfterCompareDateTime(DateTime value)
+        protected internal IsBeforeCompareDateTime(DateTime value, bool isStrict)
         {
             Value = value;
+            IsStrict = isStrict;
+        }
+    }
+
+    public class IsBetweenCompareDateTime : CompareDateTime
+    {
+        public DateTime Min { get; }
+        public DateTime Max { get; }
+        public bool IsStrict { get; }
+
+        protected internal IsBetweenCompareDateTime(DateTime min, DateTime max, bool isStrict)
+        {
+            Min = min;
+            Max = max;
+            IsStrict = isStrict;
         }
     }
 

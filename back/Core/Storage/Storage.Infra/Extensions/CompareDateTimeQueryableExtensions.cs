@@ -14,8 +14,13 @@ namespace Storage.Infra.Extensions
             return comparison switch
             {
                 BypassCompareDateTime _ => _ => true,
-                IsAfterOrEqualCompareDateTime aoe => d => d >= aoe.Value,
-                IsStrictlyAfterCompareDateTime isa => d => d > isa.Value,
+                IsAfterCompareDateTime { IsStrict: true } isAfter => d => d > isAfter.Value,
+                IsAfterCompareDateTime { IsStrict: false } isAfter => d => d >= isAfter.Value,
+                IsBeforeCompareDateTime { IsStrict: true } isBefore => d => d < isBefore.Value,
+                IsBeforeCompareDateTime { IsStrict: false } isBefore => d => d <= isBefore.Value,
+                IsBetweenCompareDateTime { IsStrict: true } isBetween => d => d < isBetween.Max && d > isBetween.Min,
+                IsBetweenCompareDateTime { IsStrict: false } isBetween => d => d <= isBetween.Max && d >= isBetween.Min,
+                IsEqualCompareDateTime isEqual => d => d == isEqual.Value,
                 _ => throw new InvalidEnumArgumentException(nameof(comparison)),
             };
         }
