@@ -2,6 +2,7 @@
 using Billing.Contracts.Domain.Contracts.Interfaces;
 using Lucca.Core.Api.Abstractions.Paging;
 using Lucca.Core.Api.Queryable.Paging;
+using Lucca.Core.Shared.Domain.Expressions;
 using Microsoft.EntityFrameworkCore;
 using Rights.Domain.Filtering;
 using Storage.Infra.Extensions;
@@ -58,12 +59,14 @@ namespace Billing.Contracts.Infra.Storage.Stores
                 return contracts;
             }
 
-            return words.Aggregate(contracts, (current, word) => current.Where(c =>
-                c.Id.ToString().StartsWith(word)
-                || c.EnvironmentSubdomain.StartsWith(word)
-                || c.Client.Name.StartsWith(word)
-                || c.CommercialOffer.Name.StartsWith(word)
-            ));
+            Expression<Func<Contract, bool>> fulltext = c => EF.Functions.Contains(c.Client.Name, words.ToFullTextContainsPredicate());
+
+            var startWith = words.Select<string, Expression<Func<Contract, bool>>>
+            (
+                w => c => c.EnvironmentSubdomain.StartsWith(w) || c.CommercialOffer.Name.StartsWith(w) || c.Id.ToString() == w
+            ).ToArray().CombineSafelyAnd();
+
+            return contracts.Where(fulltext.SmartOrElse(startWith));
         }
 
         public static IQueryable<Contract> WhereHasRight(this IQueryable<Contract> contracts, AccessRight accessRight)

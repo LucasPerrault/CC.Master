@@ -56,16 +56,14 @@ namespace Billing.Contracts.Infra.Storage.Stores
             return clients.Where(accessRight.ToRightExpression());
         }
 
-        private static IQueryable<Client> Search(this IQueryable<Client> contracts, HashSet<string> words)
+        private static IQueryable<Client> Search(this IQueryable<Client> clients, HashSet<string> words)
         {
             if (words == null || !words.Any())
             {
-                return contracts;
+                return clients;
             }
 
-            return words.Aggregate(contracts, (current, word) => current.Where(c =>
-                c.Name.StartsWith(word)
-            ));
+            return clients.Where(c => EF.Functions.Contains(c.Name, words.ToFullTextContainsPredicate()));
         }
 
         private static Expression<Func<Client, bool>> ToRightExpression(this AccessRight accessRight)
