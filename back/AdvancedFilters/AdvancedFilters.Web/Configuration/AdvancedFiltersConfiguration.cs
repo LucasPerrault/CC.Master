@@ -22,19 +22,19 @@ namespace AdvancedFilters.Web.Configuration
 
         public static DataSource AppInstance(this AdvancedFiltersConfiguration c) => new AppInstanceDataSource
         (
-            new LuccaAuthentication(c.Auth.LuccaWebserviceToken),
+            new LuccaAuthentication(c.Auth.MonolithWebserviceToken),
             new TenantDataSourceRoute(c.Routes.Tenants.AppInstancesEndpoint)
         );
 
         public static DataSource Establishment(this AdvancedFiltersConfiguration c) => new EstablishmentDataSource
         (
-            new LuccaAuthentication(c.Auth.LuccaWebserviceToken),
+            new LuccaAuthentication(c.Auth.OrganizationStructureWebserviceToken),
             new TenantDataSourceRoute(c.Routes.Tenants.EstablishmentsEndpoint)
         );
 
         public static DataSource LegalUnit(this AdvancedFiltersConfiguration c) => new LegalUnitDataSource
         (
-            new LuccaAuthentication(c.Auth.LuccaWebserviceToken),
+            new LuccaAuthentication(c.Auth.OrganizationStructureWebserviceToken),
             new TenantDataSourceRoute(c.Routes.Tenants.LegalUnitsEndpoint)
         );
 

@@ -147,7 +147,8 @@
         "Auth": {
             "CloudControlAuthScheme": "Cloudcontrol",
             "CloudControlAuthParameter": "webservice=blablabla",
-            "LuccaWebserviceToken": "eeaaaaaa-0000-0000-0000-000000000000",
+            "MonolithWebserviceToken": "{{ ilucca:CloudControlSharedToken }}",
+            "OrganizationStructureWebserviceToken": "{{ CC.Master:OrganizationStructureToken }}",
             "ClientCenterWebserviceToken": "{{ Organization.ClientCenter:CafeToken }}"
         }
     }
