@@ -11,7 +11,7 @@ namespace Tools
         public static CompareDateTime IsBetweenOrEqual(DateTime min, DateTime max) => new IsBetweenCompareDateTime(min, max, isStrict:false);
         public static CompareDateTime IsStrictlyBetween(DateTime min, DateTime max) => new IsBetweenCompareDateTime(min, max, isStrict:true);
         public static CompareDateTime IsBeforeOrEqual(DateTime dateTime) => new IsBeforeCompareDateTime(dateTime, isStrict:false);
-        public static CompareDateTime IsStrictlyEqual(DateTime dateTime) => new IsBeforeCompareDateTime(dateTime, isStrict:true);
+        public static CompareDateTime IsStrictlyBefore(DateTime dateTime) => new IsBeforeCompareDateTime(dateTime, isStrict:true);
         public static CompareDateTime IsEqual(DateTime dateTime) => new IsEqualCompareDateTime(dateTime);
     }
 

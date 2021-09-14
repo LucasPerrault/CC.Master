@@ -5,23 +5,24 @@ namespace Storage.Infra.Querying
 {
     public static class FullTextHelper
     {
-        private static IEnumerable<string> SanitizeClue(HashSet<string> words)
+        private const string Quote = "\"";
+        private static readonly string ClueSeparator = $"{Quote} AND {Quote}";
+
+        public static string ToFullTextContainsPredicate(this HashSet<string> clues)
+        {
+            var cluesWithAsterisk = SanitizeClues(clues).Select(c => $"{c}*");
+            var clue = string.Join(ClueSeparator, cluesWithAsterisk);
+            return $"{Quote}{clue}{Quote}";
+        }
+
+        private static IEnumerable<string> SanitizeClues(HashSet<string> words)
         {
             foreach (var word in words ?? new HashSet<string>())
             {
-                if (ContainsAlphaNumeric(word))
-                {
-                    yield return EscapeSpecialCharacters(word);
-                }
-
-                yield return word;
+                yield return ContainsAlphaNumeric(word)
+                    ? EscapeSpecialCharacters(word)
+                    : word;
             }
-        }
-
-        public static string ToFullTextContainsPredicate(this HashSet<string> clue)
-        {
-            var sanitizedClue = SanitizeClue(clue);
-            return "\"" + string.Join("*\" AND \"", sanitizedClue) + "*\"";
         }
 
         private static bool ContainsAlphaNumeric(string item)
