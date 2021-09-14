@@ -48,7 +48,7 @@ namespace AdvancedFilters.Infra.Storage.Stores
         public static IQueryable<Environment> WhereMatches(this IQueryable<Environment> envs, EnvironmentFilter filter)
         {
             return envs
-                .Apply(filter.Search).To(e => e.Subdomain)
+                .WhenNotNullOrEmpty(filter.Search).ApplyWhere(e => e.Subdomain.Contains(filter.Search))
                 .Apply(filter.Subdomain).To(e => e.Subdomain)
                 .Apply(filter.Domain).To(e => e.Domain)
                 .Apply(filter.IsActive).To(e => e.IsActive);
