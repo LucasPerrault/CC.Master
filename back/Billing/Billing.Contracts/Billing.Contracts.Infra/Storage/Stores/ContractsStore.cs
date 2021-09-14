@@ -65,7 +65,9 @@ namespace Billing.Contracts.Infra.Storage.Stores
                 return contracts;
             }
 
-            Expression<Func<Contract, bool>> fulltext = c => EF.Functions.Contains(c.Client.Name, words.ToFullTextContainsPredicate());
+            Expression<Func<Contract, bool>> fulltext = c =>
+                EF.Functions.Contains(c.Client.Name, words.ToFullTextContainsPredicate())
+                || EF.Functions.Contains(c.Client.SocialReason, words.ToFullTextContainsPredicate());
 
             var startWith = words.Select<string, Expression<Func<Contract, bool>>>
             (

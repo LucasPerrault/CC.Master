@@ -6,7 +6,7 @@ namespace Billing.Contracts.Infra.Migrations
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.Sql("CREATE FULLTEXT INDEX ON billing.Clients(name) KEY INDEX PK_Clients;", true);
+            migrationBuilder.Sql("CREATE FULLTEXT INDEX ON billing.Clients(name, socialReason) KEY INDEX PK_Clients;", true);
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)

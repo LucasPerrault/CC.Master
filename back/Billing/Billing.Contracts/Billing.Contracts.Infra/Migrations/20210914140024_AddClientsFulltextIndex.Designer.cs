@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Billing.Contracts.Infra.Migrations
 {
     [DbContext(typeof(ContractsDbContext))]
-    [Migration("20210909085246_AddClientsFulltextIndex")]
+    [Migration("20210914140024_AddClientsFulltextIndex")]
     partial class AddClientsFulltextIndex
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -67,6 +67,10 @@ namespace Billing.Contracts.Infra.Migrations
 
                     b.Property<string>("SalesforceId")
                         .HasColumnName("SalesforceId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("SocialReason")
+                        .HasColumnName("SocialReason")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");

@@ -63,7 +63,11 @@ namespace Billing.Contracts.Infra.Storage.Stores
                 return clients;
             }
 
-            return clients.Where(c => EF.Functions.Contains(c.Name, words.ToFullTextContainsPredicate()));
+            Expression<Func<Client, bool>> fullTextExpression = c =>
+                EF.Functions.Contains(c.Name, words.ToFullTextContainsPredicate())
+                || EF.Functions.Contains(c.SocialReason, words.ToFullTextContainsPredicate());
+
+            return clients.Where(fullTextExpression);
         }
 
         private static Expression<Func<Client, bool>> ToRightExpression(this AccessRight accessRight)

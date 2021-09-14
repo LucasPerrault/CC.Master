@@ -67,6 +67,10 @@ namespace Billing.Contracts.Infra.Migrations
                         .HasColumnName("SalesforceId")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("SocialReason")
+                        .HasColumnName("SocialReason")
+                        .HasColumnType("nvarchar(max)");
+
                     b.HasKey("Id");
 
                     b.ToTable("Clients");

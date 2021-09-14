@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Billing.Contracts.Infra.Migrations
 {
     [DbContext(typeof(ContractsDbContext))]
-    [Migration("20210909085152_AddClientsClusteredIndex")]
-    partial class AddClientsClusteredIndex
+    [Migration("20210914135129_AlterClientsAddSocialReason")]
+    partial class AlterClientsAddSocialReason
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
