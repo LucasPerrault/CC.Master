@@ -1,0 +1,24 @@
+<label class="textfield" [ngClass]="textfieldClass">
+  <lu-select [formControl]="formControl"
+             [placeholder]="'front_contractPage_select_additionalColumns_label' | translate"
+             class="textfield-input"
+             multiple>
+
+    <ng-container *luDisplayer="let value; multiple: true">
+      <ng-container>
+        <span *ngIf="value?.length !== 1; else: singleSelection">
+        <span class="label">{{ value.length }}</span>
+          {{ 'front_contractPage_select_additionalColumns_selection' | translate: { count: value.length } }}
+        </span>
+        <ng-template #singleSelection>{{ value[0].name }}</ng-template>
+      </ng-container>
+    </ng-container>
+
+    <lu-option-picker-advanced>
+      <lu-option-feeder [options]="columns"></lu-option-feeder>
+      <lu-option *luForOptions="let state; trackBy: trackBy" [value]="state">{{ state.name }}</lu-option>
+    </lu-option-picker-advanced>
+
+    <lu-input-clearer></lu-input-clearer>
+  </lu-select>
+</label>

@@ -14,7 +14,7 @@ import { environmentDomains, IEnvironmentDomain } from '@cc/domain/environments'
   ],
 })
 export class EnvironmentDomainSelectComponent implements ControlValueAccessor {
-  @Input() public class?: string;
+  @Input() public textfieldClass?: string;
 
   public onChange: (domainIds: IEnvironmentDomain[]) => void;
   public onTouch: () => void;

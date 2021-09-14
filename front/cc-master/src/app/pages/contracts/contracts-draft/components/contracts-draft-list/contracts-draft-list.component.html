@@ -1,0 +1,53 @@
+<table class="table" [ngClass]="{ 'mod-clickable': canCreateContracts }">
+  <thead class="table-head">
+  <tr class="table-head-row">
+    <th class="table-head-row-cell">{{ 'front_draftPage_columnTable_client' | translate }}</th>
+    <th class="table-head-row-cell">{{ 'front_draftPage_columnTable_distributor' | translate }}</th>
+    <th class="table-head-row-cell">{{ 'front_draftPage_columnTable_product' | translate }}</th>
+    <th class="table-head-row-cell">{{ 'front_draftPage_columnTable_offer' | translate }}</th>
+    <th class="table-head-row-cell">{{ 'front_draftPage_columnTable_clientRebate' | translate }}</th>
+    <th class="table-head-row-cell">{{ 'front_draftPage_columnTable_createdAt' | translate }}</th>
+    <th class="table-head-row-cell">{{ 'front_draftPage_columnTable_startAt' | translate }}</th>
+    <th class="table-head-row-cell mod-actions"></th>
+  </tr>
+  </thead>
+  <tbody class="table-body" *ngIf="!isLoading">
+    <tr class="table-body-row" *ngFor="let contractDraft of contractDrafts"
+        [routerLink]="getContractCreationUrl(contractDraft.id)">
+      <td class="table-body-row-cell">{{ contractDraft.client.name }}</td>
+      <td class="table-body-row-cell">{{ contractDraft.distributor.name }}</td>
+      <td class="table-body-row-cell">
+        <cc-product-chip *ngIf="!!contractDraft.product" [product]="contractDraft.product"></cc-product-chip>
+      </td>
+      <td class="table-body-row-cell">{{ contractDraft.offer?.name }}</td>
+      <td class="table-body-row-cell u-textRight">{{ contractDraft.clientRebate | number: '1.2-2' }}%</td>
+      <td class="table-body-row-cell">{{ contractDraft.createdAt | date: 'shortDate' }}</td>
+      <td class="table-body-row-cell">{{ contractDraft.theoricalStartOn | date: 'shortDate' }}</td>
+      <td class="table-body-row-cell mod-actions" (click)="$event.stopPropagation()">
+        <button type="button"
+                class="actionIcon"
+                luTooltip="{{ 'front_draftPage_actionColumn_externalUrl' | translate }}"
+                (click)="redirectTo(contractDraft.externalUrl)"
+                *ngIf="!!contractDraft.externalUrl">
+          <span aria-hidden="true" class="lucca-icon icon-outside"></span>
+          <span class="u-mask">{{ 'front_draftPage_actionColumn_externalUrl' | translate }}</span>
+        </button>
+        <button *ngIf="canCreateContracts"
+                type="button"
+                class="actionIcon"
+                luTooltip="{{ 'front_draftPage_actionColumn_remove' | translate }}"
+                (click)="remove(contractDraft)">
+          <span aria-hidden="true" class="lucca-icon icon-trash"></span>
+          <span class="u-mask">{{ 'front_draftPage_actionColumn_remove' | translate }}</span>
+        </button>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<section class="emptyState" *ngIf="isEmpty">
+  <h3 class="emptyState-title">{{ 'front_draftPage_emptyState_title' | translate }}</h3>
+  <p class="emptyState-description">{{ 'front_draftPage_emptyState_information' | translate }}</p>
+</section>
+
+

@@ -1,0 +1,36 @@
+<div class="radioButtons" [ngClass]="radioButtonsClass">
+  <div class="radioButtons-item">
+    <input type="radio"
+           class="radioButtons-item-input"
+           id="all"
+           [(ngModel)]="saleTypeSelected"
+           (ngModelChange)="safeOnChange($event)"
+           [value]="saleType.All"
+           checked>
+    <label class="radioButtons-item-label" for="all">
+      {{ 'front_filterLabel_all' | translate }}
+    </label>
+  </div>
+  <div class="radioButtons-item">
+    <input type="radio"
+           class="radioButtons-item-input"
+           id="direct"
+           [(ngModel)]="saleTypeSelected"
+           (ngModelChange)="safeOnChange($event)"
+           [value]="saleType.Direct">
+    <label class="radioButtons-item-label" for="direct">
+      {{ 'front_filterLabel_direct' | translate }}
+    </label>
+  </div>
+  <div class="radioButtons-item">
+    <input type="radio"
+           class="radioButtons-item-input"
+           id="indirect"
+           [(ngModel)]="saleTypeSelected"
+           (ngModelChange)="safeOnChange($event)"
+           [value]="saleType.Indirect">
+    <label class="radioButtons-item-label" for="indirect">
+      {{ 'front_filterLabel_indirect' | translate }}
+    </label>
+  </div>
+</div>

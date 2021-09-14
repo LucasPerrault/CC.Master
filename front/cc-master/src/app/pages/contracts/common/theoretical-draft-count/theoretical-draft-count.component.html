@@ -1,0 +1,23 @@
+<label class="textfield mod-withSuffix is-required {{ textfieldClass }}"
+       [ngClass]="{ 'is-error': hasRequiredError || hasMinError }">
+  <input class="textfield-input"
+         type="number"
+         [formControl]="theoreticalDraftCount"
+         (blur)="onTouch()"
+         [required]="true"
+         [min]="0">
+  <span class="textfield-label">{{ 'front_theoreticalDraftCount_label' | translate }}</span>
+  <span class="textfield-suffix">
+    {{ 'front_theoreticalDraftCount_suffix' | translate: { count: (theoreticalDraftCount || 0) } }}
+  </span>
+  <span class="textfield-messages" *ngIf="hasRequiredError">
+    <span class="textfield-messages-error">
+      {{ "front_theoreticalDraftCount_errorMessage_required" | translate }}
+    </span>
+  </span>
+  <span class="textfield-messages" *ngIf="hasMinError">
+    <span class="textfield-messages-error">
+      {{ "front_theoreticalDraftCount_errorMessage_min" | translate }}
+    </span>
+  </span>
+</label>

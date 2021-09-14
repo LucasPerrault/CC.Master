@@ -1,0 +1,91 @@
+<cc-establishment-list-actions-multiple *ngIf="canEditAttachments()"
+                                        [establishments]="selectedEstablishments"
+                                        [attachments]="selectedAttachments"
+                                        [context]="actionsContext">
+</cc-establishment-list-actions-multiple>
+
+<div class="mod-tableContainer">
+  <table class="table">
+    <thead class="table-head">
+      <tr class="table-head-row">
+        <th class="table-head-row-cell">
+          <label class="checkbox">
+            <input class="checkbox-input" type="checkbox" name="checkboxEtsList"
+                   [luTooltip]="'front_contractPage_establishments_selectAll_label' | translate"
+                   [checked]="areAllSelected" (click)="selectAll()">
+            <span class="checkbox-label"></span>
+          </label>
+        </th>
+        <th class="table-head-row-cell">
+          {{ 'front_contractPage_establishments_column_name' | translate }}
+        </th>
+        <th class="table-head-row-cell" *ngIf="isType(establishmentType.LinkedToAnotherContract)">
+          {{ 'front_contractPage_establishments_column_contract' | translate }}
+        </th>
+        <th class="table-head-row-cell" *ngIf="!isType(establishmentType.Excluded)">
+          {{ 'front_contractPage_establishments_column_state' | translate }}
+        </th>
+        <th class="table-head-row-cell" *ngIf="isLinked">
+          {{ 'front_contractPage_establishments_column_activation' | translate }}
+        </th>
+        <th class="table-head-row-cell" *ngIf="isLinked">
+          {{ 'front_contractPage_establishments_column_deactivation' | translate }}
+        </th>
+        <th class="table-head-row-cell" *ngIf="isLinked">
+          {{ 'front_contractPage_establishments_column_endReason' | translate }}
+        </th>
+        <th class="table-head-row-cell" *ngIf="isLinked">
+          {{ 'front_contractPage_establishments_column_monthFree' | translate }}
+        </th>
+        <th class="table-head-row-cell mod-actions"></th>
+      </tr>
+    </thead>
+    <tbody class="table-body">
+      <tr class="table-body-row" *ngFor="let entry of entries; trackBy: trackBy">
+        <td class="table-body-row-cell">
+          <label class="checkbox">
+            <input class="checkbox-input" type="checkbox" name="checkboxEtsList"
+                   [checked]="isSelected(entry)" (click)="select(entry)">
+            <span class="checkbox-label"></span>
+          </label>
+        </td>
+        <td class="table-body-row-cell">{{ entry.establishment.name }}</td>
+        <td class="table-body-row-cell" *ngIf="isType(establishmentType.LinkedToAnotherContract)">
+          {{ getAttachment(entry)?.contract?.name }}
+        </td>
+        <td class="table-body-row-cell" *ngIf="!isType(establishmentType.Excluded)">
+          {{ getEstablishmentStatus(entry) }}
+        </td>
+        <td class="table-body-row-cell" *ngIf="isLinked">
+          {{ getAttachment(entry)?.start | date : 'dd/MM/yyyy' }}
+        </td>
+        <td class="table-body-row-cell" *ngIf="isLinked">
+          {{ getAttachment(entry)?.end | date : 'dd/MM/yyyy' }}
+        </td>
+        <td class="table-body-row-cell" *ngIf="isLinked">
+          {{ getAttachmentEndReason(entry) }}
+        </td>
+        <td class="table-body-row-cell" *ngIf="isLinked">
+          {{ getAttachment(entry)?.nbMonthFree }}
+        </td>
+        <td class="table-body-row-cell mod-actions">
+          <cc-establishment-list-actions-single *ngIf="canEditAttachments()"
+                                                [establishment]="entry.establishment"
+                                                [attachment]="getAttachment(entry)"
+                                                [context]="actionsContext">
+          </cc-establishment-list-actions-single>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <section class="emptyState" *ngIf="isEmpty">
+    <h3 class="emptyState-title">
+      {{ 'front_contractPage_establishments_emptyState_title' | translate }}
+    </h3>
+    <p class="emptyState-description">
+      {{ 'front_contractPage_establishments_emptyState_description' | translate }}
+    </p>
+  </section>
+
+</div>

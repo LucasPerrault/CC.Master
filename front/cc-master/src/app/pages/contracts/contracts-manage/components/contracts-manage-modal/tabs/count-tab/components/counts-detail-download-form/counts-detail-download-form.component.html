@@ -1,0 +1,20 @@
+<form [formGroup]="formGroup" class="callout palette-grey u-displayFlex u-alignItemsCenter u-animatedSlideInTop">
+  <cc-date-range-select datesClass="u-displayFlex"
+                        [required]="true"
+                        [configuration]="dateRangeConfig$ | async"
+                        [formControlName]="formGroupKey.DateRange">
+  </cc-date-range-select>
+  <div class="u-marginLeftAuto">
+    <button class="button"
+            (click)="download()"
+            [disabled]="!formGroup.valid"
+            [ngClass]="downloadButtonState">
+      {{ 'front_contractPage_counts_details_download_action_label' | translate }}
+    </button>
+    <button class="button mod-link" (click)="cancelDownload()">
+      {{ 'front_contractPage_counts_details_download_cancel_label' | translate }}
+    </button>
+  </div>
+</form>
+
+

@@ -1,0 +1,20 @@
+<label class="textfield mod-multiline {{ textfieldClass }}">
+  <textarea class="textfield-input"
+            [ngClass]="{ 'is-error': isMaxLengthReached }"
+            [formControl]="comment"
+            [maxLength]="maxCommentLength"
+            name="commentary">
+  </textarea>
+  <span class="textfield-label">{{ 'front_contractForm_commentary_label' | translate }}</span>
+  <span class="textfield-messages">
+    <span class="textfield-messages-error u-textSmaller" *ngIf="isMaxLengthReached; else charactersRemainingInfo">
+      {{ "front_contractForm_comment_errorMessage_maxLengthReached" | translate: { charactersRemaining: charactersRemaining  } }}
+    </span>
+
+    <ng-template #charactersRemainingInfo>
+      <span class="textfield-messages-info u-textSmaller">
+        {{ "front_contractForm_comment_infoMessage_charactersRemaining" | translate: { charactersRemaining: charactersRemaining  } }}
+      </span>
+    </ng-template>
+  </span>
+</label>

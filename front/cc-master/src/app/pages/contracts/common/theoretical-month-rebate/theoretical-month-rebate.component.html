@@ -1,0 +1,23 @@
+<label class="textfield mod-withSuffix is-required {{ textfieldClass }}"
+       [ngClass]="{ 'is-error': hasRequiredError || hasMinError }">
+  <input class="textfield-input"
+         type="number"
+         [formControl]="theoreticalMonthRebate"
+         (blur)="onTouch()"
+         [required]="true"
+         [min]="0">
+  <span class="textfield-label">{{ 'front_theoreticalMonthRebate_label' | translate }}</span>
+  <span class="textfield-suffix">
+    {{ 'front_theoreticalMonthRebate_suffix' | translate }}
+  </span>
+  <span class="textfield-messages" *ngIf="hasRequiredError">
+    <span class="textfield-messages-error">
+      {{ "front_theoreticalMonthRebate_errorMessage_required" | translate }}
+    </span>
+  </span>
+  <span class="textfield-messages" *ngIf="hasMinError">
+    <span class="textfield-messages-error">
+      {{ "front_theoreticalMonthRebate_errorMessage_min" | translate }}
+    </span>
+  </span>
+</label>

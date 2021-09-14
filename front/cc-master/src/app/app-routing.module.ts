@@ -7,6 +7,8 @@ import { NoNavPath } from '@cc/common/routing';
 
 import { CodeSourcesComponent } from './pages/code-sources/code-sources.component';
 import { CodeSourcesModule } from './pages/code-sources/code-sources.module';
+import { ContractsComponent } from './pages/contracts/contracts.component';
+import { ContractsModule } from './pages/contracts/contracts.module';
 import { LogsComponent } from './pages/logs/logs.component';
 import { LogsModule } from './pages/logs/logs.module';
 
@@ -18,6 +20,10 @@ const pageRoutes: Routes = [
   {
     path: NavigationPath.CodeSources,
     component: CodeSourcesComponent,
+  },
+  {
+    path: NavigationPath.Contracts,
+    component: ContractsComponent,
   },
 ];
 
@@ -33,6 +39,7 @@ const routes: Routes = [
     RouterModule.forRoot(routes),
     LogsModule,
     CodeSourcesModule,
+    ContractsModule,
   ],
   exports: [RouterModule],
 })

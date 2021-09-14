@@ -1,0 +1,26 @@
+<div class="page mod-fullWidth mod-withFullwidthTable">
+  <header class="page-header blockWithFixedSizeInFlex">
+    <h1>{{ "front_draftPage_title" | translate }}</h1>
+    <button class="button" [ngClass]="{ 'u-displayNone': !canCreateContracts }" routerLink="create">
+      {{ "front_contracts_createButton_label" | translate }}
+    </button>
+  </header>
+
+  <cc-contracts-draft-filter class="header blockWithFixedSizeInFlex"
+                             [(ngModel)]="filters"
+                             (ngModelChange)="updateFilters($event)">
+  </cc-contracts-draft-filter>
+
+  <h4 class="page-content page-resultsCount blockWithFixedSizeInFlex">
+    {{ 'front_draftPage_label_draftNumber' | translate: { count: (drafts$ | async)?.length } }}
+  </h4>
+
+  <cc-contracts-draft-list [canCreateContracts]="canCreateContracts"
+                           [contractDrafts]="drafts$ | async"
+                           [isLoading]="isLoading$ | async">
+  </cc-contracts-draft-list>
+
+  <div class="loading mod-fullPage" *ngIf="isLoading$ | async"></div>
+
+  <router-outlet></router-outlet>
+</div>

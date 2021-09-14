@@ -11,6 +11,7 @@ $noCssVar: true;
 @import './scss/shame';
 @import './scss/table';
 @import './error-page';
+@import './sidepanel';
 
 :root {
 	@include generateCSSVarsFromTheme($theme);
