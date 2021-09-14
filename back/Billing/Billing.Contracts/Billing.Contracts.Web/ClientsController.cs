@@ -8,6 +8,7 @@ using MoreLinq;
 using Rights.Domain;
 using Rights.Web.Attributes;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Billing.Contracts.Web
@@ -44,11 +45,11 @@ namespace Billing.Contracts.Web
 
     public class ClientListQuery
     {
-        public string Search { get; set; }
+        public HashSet<string> Search { get; set; } = new HashSet<string>();
 
         public ClientFilter ToFilter() => new ClientFilter
         {
-            Search = Search?.Split(" ").ToHashSet() ?? null
+            Search = Search
         };
     }
 }

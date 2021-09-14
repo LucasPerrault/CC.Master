@@ -100,11 +100,11 @@ namespace Billing.Contracts.Web
 
     public class ContractListQuery
     {
-        public string Search { get; set; }
+        public HashSet<string> Search { get; set; } = new HashSet<string>();
 
         public ContractFilter ToFilter() => new ContractFilter
         {
-            Search = Search?.Split(" ", StringSplitOptions.RemoveEmptyEntries).ToHashSet() ?? new HashSet<string>(),
+            Search = Search,
             ArchivedAt = CompareDateTime.IsStrictlyAfter(DateTime.Now).OrNull()
         };
     }
