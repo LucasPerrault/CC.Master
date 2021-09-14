@@ -5,6 +5,7 @@ using Lucca.Core.Api.Queryable.Paging;
 using Microsoft.EntityFrameworkCore;
 using Rights.Domain.Filtering;
 using Storage.Infra.Extensions;
+using Storage.Infra.Querying;
 using System;
 using System.Collections.Generic;
 using System.Linq;

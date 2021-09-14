@@ -6,6 +6,7 @@ using Lucca.Core.Shared.Domain.Expressions;
 using Microsoft.EntityFrameworkCore;
 using Rights.Domain.Filtering;
 using Storage.Infra.Extensions;
+using Storage.Infra.Querying;
 using System;
 using System.Collections.Generic;
 using System.Linq;
