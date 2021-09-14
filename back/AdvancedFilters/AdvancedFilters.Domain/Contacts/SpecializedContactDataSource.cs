@@ -9,7 +9,7 @@ namespace AdvancedFilters.Domain.Contacts
             : base(authentication, dataSourceRoute)
         { }
 
-        public override Task<IDataSourceSynchronizer> GetSynchronizer(IDataSourceSynchronizerBuilder synchronizerBuilder)
+        public override Task<IDataSourceSynchronizer> GetSynchronizerAsync(IDataSourceSynchronizerBuilder synchronizerBuilder)
         {
             return synchronizerBuilder.BuildFromAsync(this);
         }

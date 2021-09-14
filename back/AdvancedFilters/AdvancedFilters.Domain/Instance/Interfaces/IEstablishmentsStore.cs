@@ -1,4 +1,3 @@
-using AdvancedFilters.Domain.Billing.Filters;
 using AdvancedFilters.Domain.Instance.Filters;
 using AdvancedFilters.Domain.Instance.Models;
 using Lucca.Core.Api.Abstractions.Paging;

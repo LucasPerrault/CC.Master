@@ -7,14 +7,14 @@ namespace AdvancedFilters.Domain.DataSources
 {
     public interface IDataSourceSynchronizerBuilder
     {
-        Task<IDataSourceSynchronizer> BuildFromAsync(EnvironmentDataSource configuration);
-        Task<IDataSourceSynchronizer> BuildFromAsync(EstablishmentDataSource configuration);
-        Task<IDataSourceSynchronizer> BuildFromAsync(AppInstanceDataSource configuration);
-        Task<IDataSourceSynchronizer> BuildFromAsync(ContractDataSource configuration);
-        Task<IDataSourceSynchronizer> BuildFromAsync(LegalUnitDataSource configuration);
-        Task<IDataSourceSynchronizer> BuildFromAsync(ClientDataSource configuration);
-        Task<IDataSourceSynchronizer> BuildFromAsync(AppContactDataSource configuration);
-        Task<IDataSourceSynchronizer> BuildFromAsync(ClientContactDataSource configuration);
-        Task<IDataSourceSynchronizer> BuildFromAsync(SpecializedContactDataSource configuration);
+        Task<IDataSourceSynchronizer> BuildFromAsync(EnvironmentDataSource dataSource);
+        Task<IDataSourceSynchronizer> BuildFromAsync(EstablishmentDataSource dataSource);
+        Task<IDataSourceSynchronizer> BuildFromAsync(AppInstanceDataSource dataSource);
+        Task<IDataSourceSynchronizer> BuildFromAsync(ContractDataSource dataSource);
+        Task<IDataSourceSynchronizer> BuildFromAsync(LegalUnitDataSource dataSource);
+        Task<IDataSourceSynchronizer> BuildFromAsync(ClientDataSource dataSource);
+        Task<IDataSourceSynchronizer> BuildFromAsync(AppContactDataSource dataSource);
+        Task<IDataSourceSynchronizer> BuildFromAsync(ClientContactDataSource dataSource);
+        Task<IDataSourceSynchronizer> BuildFromAsync(SpecializedContactDataSource dataSource);
     }
 }

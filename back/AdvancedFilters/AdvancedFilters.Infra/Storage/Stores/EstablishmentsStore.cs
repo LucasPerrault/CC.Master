@@ -1,6 +1,3 @@
-using AdvancedFilters.Domain.Billing.Filters;
-using AdvancedFilters.Domain.Billing.Interfaces;
-using AdvancedFilters.Domain.Billing.Models;
 using AdvancedFilters.Domain.Instance.Filters;
 using AdvancedFilters.Domain.Instance.Interfaces;
 using AdvancedFilters.Domain.Instance.Models;

@@ -5,7 +5,7 @@ namespace AdvancedFilters.Domain.Instance
 {
     public class EnvironmentDataSource : DataSource
     {
-        public override Task<IDataSourceSynchronizer> GetSynchronizer(IDataSourceSynchronizerBuilder synchronizerBuilder)
+        public override Task<IDataSourceSynchronizer> GetSynchronizerAsync(IDataSourceSynchronizerBuilder synchronizerBuilder)
         {
             return synchronizerBuilder.BuildFromAsync(this);
         }

@@ -26,6 +26,6 @@ namespace AdvancedFilters.Domain.DataSources
             DataSourceRoute = dataSourceRoute;
         }
 
-        public abstract Task<IDataSourceSynchronizer> GetSynchronizer(IDataSourceSynchronizerBuilder synchronizerBuilder);
+        public abstract Task<IDataSourceSynchronizer> GetSynchronizerAsync(IDataSourceSynchronizerBuilder synchronizerBuilder);
     }
 }

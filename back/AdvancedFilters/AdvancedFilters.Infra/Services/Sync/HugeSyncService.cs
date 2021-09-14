@@ -19,7 +19,7 @@ namespace AdvancedFilters.Infra.Services.Sync
             var dataSources = _dataSourcesRepository.GetAll();
             foreach (var dataSource in dataSources)
             {
-                var synchronizer = await dataSource.GetSynchronizer(_builder);
+                var synchronizer = await dataSource.GetSynchronizerAsync(_builder);
                 await synchronizer.SyncAsync();
             }
         }
