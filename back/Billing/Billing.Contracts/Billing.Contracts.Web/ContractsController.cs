@@ -5,6 +5,7 @@ using Billing.Products.Domain;
 using Distributors.Domain.Models;
 using Lucca.Core.Api.Abstractions.Paging;
 using Lucca.Core.Api.Web.ModelBinding.Sorting;
+using Lucca.Core.Shared.Domain.Exceptions;
 using Microsoft.AspNetCore.Mvc;
 using Rights.Domain;
 using Rights.Web.Attributes;
@@ -39,6 +40,19 @@ namespace Billing.Contracts.Web
                 Prev = page.Prev,
                 Items = page.Items.Select(p => new ContractDto(p))
             };
+        }
+
+        [HttpGet("{id:int}")]
+        [ForbidIfMissing(Operation.ReadContracts)]
+        public async Task<ContractDto> GetAsync([FromRoute]int id)
+        {
+            var contracts = await _contractsRepository.GetAsync(new ContractFilter { Id = id, ArchivedAt = ContractListQuery.NotArchived()});
+            if (!contracts.Any())
+            {
+                throw new NotFoundException();
+            }
+
+            return new ContractDto(contracts.Single());
         }
 
         public class ContractDto
@@ -100,12 +114,15 @@ namespace Billing.Contracts.Web
 
     public class ContractListQuery
     {
+        public static CompareNullableDateTime NotArchived() => CompareDateTime.IsStrictlyAfter(DateTime.Now).OrNull();
         public HashSet<string> Search { get; set; } = new HashSet<string>();
+        public int? Id { get; set; }
 
         public ContractFilter ToFilter() => new ContractFilter
         {
             Search = Search,
-            ArchivedAt = CompareDateTime.IsStrictlyAfter(DateTime.Now).OrNull()
+            Id = Id,
+            ArchivedAt = NotArchived()
         };
     }
 }

@@ -30,6 +30,11 @@ namespace Billing.Contracts.Infra.Storage.Stores
             return _queryPager.ToPageAsync(Set(accessRight, filter), pageToken);
         }
 
+        public Task<List<Contract>> GetAsync(AccessRight accessRight, ContractFilter filter)
+        {
+            return Set(accessRight, filter).ToListAsync();
+        }
+
         private IQueryable<Contract> Set(AccessRight accessRight, ContractFilter filter)
         {
             return _dbContext.Set<Contract>()
@@ -49,6 +54,7 @@ namespace Billing.Contracts.Infra.Storage.Stores
             return contracts.Search(filter.Search)
                 .Apply(filter.Subdomain).To(c => c.EnvironmentSubdomain)
                 .Apply(filter.ArchivedAt).To(c => c.ArchivedAt)
+                .WhenHasValue(filter.Id).ApplyWhere(c => c.Id == filter.Id.Value)
                 .When(filter.ClientExternalId.HasValue).ApplyWhere(c => c.ClientExternalId == filter.ClientExternalId.Value);
         }
 
