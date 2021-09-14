@@ -1,5 +1,7 @@
 using AdvancedFilters.Infra.Services.Sync;
 using Microsoft.AspNetCore.Mvc;
+using Rights.Domain;
+using Rights.Web.Attributes;
 using System.Threading.Tasks;
 
 namespace AdvancedFilters.Web.Controllers
@@ -15,6 +17,7 @@ namespace AdvancedFilters.Web.Controllers
         }
 
         [HttpPost("huge-sync")]
+        [ForbidIfMissing(Operation.SyncAllCafe)]
         public Task GetAsync()
         {
             return _hugeSync.SyncAsync();

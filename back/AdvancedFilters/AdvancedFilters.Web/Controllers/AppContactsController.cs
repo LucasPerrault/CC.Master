@@ -4,9 +4,10 @@ using AdvancedFilters.Domain.Contacts.Models;
 using Lucca.Core.Api.Abstractions.Paging;
 using Lucca.Core.Api.Web.ModelBinding.Sorting;
 using Microsoft.AspNetCore.Mvc;
+using Rights.Domain;
+using Rights.Web.Attributes;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Tools;
 using Tools.Web;
 
 namespace AdvancedFilters.Web.Controllers
@@ -23,6 +24,7 @@ namespace AdvancedFilters.Web.Controllers
         }
 
         [HttpGet]
+        [ForbidIfMissing(Operation.ReadAllCafe)]
         public Task<Page<AppContact>> GetAsync([FromQuery]AppContactsQuery query)
         {
             return _store.GetAsync(query.Page, query.ToFilter());

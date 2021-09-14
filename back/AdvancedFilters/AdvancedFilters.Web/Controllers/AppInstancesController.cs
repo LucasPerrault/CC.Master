@@ -4,6 +4,8 @@ using AdvancedFilters.Domain.Instance.Models;
 using Lucca.Core.Api.Abstractions.Paging;
 using Lucca.Core.Api.Web.ModelBinding.Sorting;
 using Microsoft.AspNetCore.Mvc;
+using Rights.Domain;
+using Rights.Web.Attributes;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -21,6 +23,7 @@ namespace AdvancedFilters.Web.Controllers
         }
 
         [HttpGet]
+        [ForbidIfMissing(Operation.ReadAllCafe)]
         public Task<Page<AppInstance>> GetAsync([FromQuery]AppInstancesQuery query)
         {
             return _store.GetAsync(query.Page, query.ToFilter());
