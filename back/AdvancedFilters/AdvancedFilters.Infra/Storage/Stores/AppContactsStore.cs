@@ -41,8 +41,8 @@ namespace AdvancedFilters.Infra.Storage.Stores
         public static IQueryable<AppContact> WhereMatches(this IQueryable<AppContact> contacts, AppContactFilter filter)
         {
             return contacts
-                .Apply(filter.ApplicationId).To(c => c.AppInstance.ApplicationId)
-                .When(filter.EnvironmentId.HasValue).ApplyWhere(c => c.AppInstance.EnvironmentId == filter.EnvironmentId.Value)
+                .WhenNotNullOrEmpty(filter.ApplicationIds).ApplyWhere(c => filter.ApplicationIds.Contains(c.AppInstance.ApplicationId))
+                .WhenNotNullOrEmpty(filter.EnvironmentIds).ApplyWhere(c => filter.EnvironmentIds.Contains(c.AppInstance.EnvironmentId))
                 .Apply(filter.IsActive).To(c => !c.ExpiresAt.HasValue || c.ExpiresAt > DateTime.Now)
                 .Apply(filter.IsConfirmed).To(c => c.IsConfirmed);
         }
