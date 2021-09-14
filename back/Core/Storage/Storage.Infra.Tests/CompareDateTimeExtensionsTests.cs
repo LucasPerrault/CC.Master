@@ -1,5 +1,5 @@
-﻿using FluentAssertions;
-using Storage.Infra.Extensions;
+﻿using Storage.Infra.Extensions;
+using Storage.Infra.Tests.Storage;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,100 +15,52 @@ namespace Storage.Infra.Tests
         [MemberData(nameof(TestElementsAsObjects))]
         public void ShouldProperlyFilterDates(DateTime[] ok, DateTime[] ko, CompareDateTime comparer)
         {
-            var allDates = ok.ToList();
-            allDates.AddRange(ko);
-            var filtered = allDates.AsQueryable().Apply(comparer).To(date => date).ToList();
-            filtered.Count.Should().Be(ok.Length);
-            filtered.Should().BeEquivalentTo(ok);
+            ComparerTestsHelper.ShouldProperlyFilter(ok, ko, dates => dates.Apply(comparer).To(d => d));
         }
 
         public static IEnumerable<object[]> TestElementsAsObjects() => TestElements().Select(e => e.ToObjects());
 
-        private static IEnumerable<TestElement> TestElements()
+        private static IEnumerable<TestElement<CompareDateTime, DateTime>> TestElements()
         {
-            yield return TestElement
+            yield return TestElement<CompareDateTime, DateTime>
                 .ForComparer(CompareDateTime.IsStrictlyAfter(new DateTime(2021, 01, 01)))
                 .Accepts(new DateTime(2021, 01, 02))
                 .AndRejects(new DateTime(2021, 01, 01), new DateTime(2020, 12, 31));
 
-            yield return TestElement
+            yield return TestElement<CompareDateTime, DateTime>
                 .ForComparer(CompareDateTime.IsAfterOrEqual(new DateTime(2021, 01, 01)))
                 .Accepts(new DateTime(2021, 01, 02), new DateTime(2021, 01, 01))
                 .AndRejects(new DateTime(2020, 12, 31));
 
-            yield return TestElement
+            yield return TestElement<CompareDateTime, DateTime>
                 .ForComparer(CompareDateTime.IsBetweenOrEqual(new DateTime(2021, 01, 01), new DateTime(2021, 01, 02)))
                 .Accepts(new DateTime(2021, 01, 02), new DateTime(2021, 01, 01))
                 .AndRejects(new DateTime(2020, 12, 31), new DateTime(2021, 01, 03));
 
-            yield return TestElement
+            yield return TestElement<CompareDateTime, DateTime>
                 .ForComparer(CompareDateTime.IsStrictlyBetween(new DateTime(2021, 01, 01), new DateTime(2021, 01, 02)))
                 .Accepts()
                 .AndRejects(new DateTime(2020, 12, 31), new DateTime(2021, 01, 03), new DateTime(2021, 01, 02), new DateTime(2021, 01, 01));
 
-            yield return TestElement
+            yield return TestElement<CompareDateTime, DateTime>
                 .ForComparer(CompareDateTime.IsStrictlyBetween(new DateTime(2021, 01, 01), new DateTime(2021, 01, 03)))
                 .Accepts(new DateTime(2021, 01, 02))
                 .AndRejects(new DateTime(2020, 12, 31), new DateTime(2021, 01, 03), new DateTime(2021, 01, 01));
 
-            yield return TestElement
+            yield return TestElement<CompareDateTime, DateTime>
                 .ForComparer(CompareDateTime.IsBeforeOrEqual(new DateTime(2021, 01, 01)))
                 .Accepts(new DateTime(2020, 12, 31),  new DateTime(2021, 01, 01))
                 .AndRejects(new DateTime(2021, 01, 03), new DateTime(2021, 01, 02));
 
-            yield return TestElement
+            yield return TestElement<CompareDateTime, DateTime>
                 .ForComparer(CompareDateTime.IsStrictlyBefore(new DateTime(2021, 01, 01)))
                 .Accepts(new DateTime(2020, 12, 31))
                 .AndRejects(new DateTime(2021, 01, 01), new DateTime(2021, 01, 03), new DateTime(2021, 01, 02));
 
-            yield return TestElement
+            yield return TestElement<CompareDateTime, DateTime>
                 .ForComparer(CompareDateTime.IsEqual(new DateTime(2021, 01, 01)))
                 .Accepts(new DateTime(2021, 01, 01))
                 .AndRejects(new DateTime(2020, 12, 31), new DateTime(2021, 01, 03), new DateTime(2021, 01, 02));
-        }
-
-        internal class TestElement
-        {
-            private CompareDateTime CompareDateTime { get; set; }
-            private DateTime[] Accepted { get; set; }
-            private DateTime[] Rejected { get; set; }
-
-            private TestElement() { }
-
-            public object[] ToObjects() => new object[]{ Accepted, Rejected, CompareDateTime };
-
-            public static IIsOk ForComparer(CompareDateTime compareDateTime) => new TestDataBuilder(compareDateTime);
-
-            internal interface IIsOk
-            {
-                IIsKo Accepts(params DateTime[] dateTimes);
-            }
-
-            internal interface IIsKo
-            {
-                TestElement AndRejects(params DateTime[] dateTimes);
-            }
-
-            private class TestDataBuilder : IIsKo, IIsOk
-            {
-                private readonly TestElement _testElement;
-
-                public TestDataBuilder(CompareDateTime compareDateTime)
-                {
-                    _testElement = new TestElement { CompareDateTime = compareDateTime };
-                }
-                public TestElement AndRejects(DateTime[] dateTimes)
-                {
-                    _testElement.Rejected = dateTimes;
-                    return _testElement;
-                }
-
-                public IIsKo Accepts(DateTime[] dateTimes)
-                {
-                    _testElement.Accepted = dateTimes;
-                    return this;
-                }
-            }
         }
     }
 }
