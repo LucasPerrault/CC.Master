@@ -13,6 +13,12 @@ namespace Billing.Contracts.Domain.Contracts
         public Guid ClientExternalId { get; set; }
         public int? EnvironmentId { get; set; }
         public string EnvironmentSubdomain { get; set; }
+        public DateTime CreatedAt { get; set; }
+
+        public DateTime TheoreticalStartOn { get; set; }
+        public DateTime? TheoreticalEndOn { get; set; }
+        public ContractEndReason EndReason { get; set; }
+
         public DateTime? ArchivedAt { get; set; }
 
         public int DistributorId { get; set; }
@@ -26,6 +32,39 @@ namespace Billing.Contracts.Domain.Contracts
         public CommercialOffer CommercialOffer { get; set; }
 
         public List<EstablishmentAttachment> Attachments { get; set; }
+
+        public decimal CountEstimation { get; set; }
+        public int TheoreticalFreeMonths { get; set; }
+        public double? RebatePercentage { get; set; }
+        public DateTime? RebateEndsOn { get; set; }
+        public double MinimalBillingPercentage { get; set; }
+        public BillingPeriodicity BillingPeriodicity { get; set; }
+    }
+
+    public enum ContractEndReason
+    {
+        Unknown = 0,
+        Modification = 1,
+        Resiliation = 2,
+        Deactivation = 3
+    }
+
+    public enum BillingPeriodicity
+    {
+        Unknown = 0,
+        AnnualJanuary = 1,
+        AnnualFebruary = 2,
+        AnnualMarch = 3,
+        AnnualApril = 4,
+        AnnualMay = 5,
+        AnnualJune = 6,
+        AnnualJuly = 7,
+        AnnualAugust = 8,
+        AnnualSeptember = 9,
+        AnnualOctober = 10,
+        AnnualNovember = 11,
+        AnnualDecember = 12,
+        Quarterly = 13,
     }
 
     public class EstablishmentAttachment

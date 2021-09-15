@@ -48,8 +48,8 @@ namespace Billing.Contracts.Infra.Storage.Stores
         public static IQueryable<Client> WhereMatches(this IQueryable<Client> clients, ClientFilter filter)
         {
             return clients.Search(filter.Search)
-                .When(filter.ExternalId.HasValue)
-                .ApplyWhere(c => c.ExternalId == filter.ExternalId.Value);
+                .WhenHasValue(filter.Id).ApplyWhere(c => c.Id == filter.Id.Value)
+                .WhenHasValue(filter.ExternalId).ApplyWhere(c => c.ExternalId == filter.ExternalId.Value);
         }
 
         public static IQueryable<Client> WhereHasRight(this IQueryable<Client> clients, AccessRight accessRight)

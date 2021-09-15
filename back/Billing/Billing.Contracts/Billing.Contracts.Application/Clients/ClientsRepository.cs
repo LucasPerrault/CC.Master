@@ -39,6 +39,18 @@ namespace Billing.Contracts.Application.Clients
             return await _clientsStore.GetPageAsync(pageToken, accessRight, clientFilter);
         }
 
+        public async Task<Client> GetByIdAsync(int id)
+        {
+            var accessRight = await _clientRightFilter.GetReadAccessAsync(_claimsPrincipal);
+            var clients = await _clientsStore.GetAsync(accessRight, new ClientFilter { Id = id });
+            if (!clients.Any())
+            {
+                throw new ClientNotVisibleException();
+            }
+
+            return clients.Single();
+        }
+
         public async Task PutAsync(Guid externalId, Client client, string subdomain)
         {
             var accessRight = _clientRightFilter.GetAccessForEnvironment(subdomain);

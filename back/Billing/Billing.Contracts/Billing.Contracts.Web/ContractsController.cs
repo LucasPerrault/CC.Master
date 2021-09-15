@@ -62,6 +62,13 @@ namespace Billing.Contracts.Web
             public Guid ClientExternalId { get; set; }
             public int? EnvironmentId { get; set; }
             public string EnvironmentSubdomain { get; set; }
+
+            public DateTime CreatedAt { get; set; }
+
+            public DateTime TheoreticalStartOn { get; set; }
+            public DateTime? TheoreticalEndOn { get; set; }
+            public ContractEndReason EndReason { get; set; }
+
             public DateTime? ArchivedAt { get; set; }
 
             public int DistributorId { get; set; }
@@ -76,6 +83,12 @@ namespace Billing.Contracts.Web
 
             public List<EstablishmentAttachment> Attachments { get; set; }
 
+            public decimal CountEstimation { get; set; }
+            public int TheoreticalFreeMonths { get; set; }
+            public double? RebatePercentage { get; set; }
+            public DateTime? RebateEndsOn { get; set; }
+            public double MinimalBillingPercentage { get; set; }
+            public BillingPeriodicity BillingPeriodicity { get; set; }
 
             public ContractDto(Contract contract)
             {
@@ -84,6 +97,9 @@ namespace Billing.Contracts.Web
                 ClientExternalId = contract.ClientExternalId;
                 EnvironmentId = contract.EnvironmentId;
                 EnvironmentSubdomain = contract.EnvironmentSubdomain;
+                TheoreticalStartOn = contract.TheoreticalStartOn;
+                TheoreticalEndOn = contract.TheoreticalEndOn;
+                CreatedAt = contract.CreatedAt;
                 ArchivedAt = contract.ArchivedAt;
                 DistributorId = contract.DistributorId;
                 Distributor = contract.Distributor;
@@ -92,6 +108,12 @@ namespace Billing.Contracts.Web
                 CommercialOfferId = contract.CommercialOfferId;
                 CommercialOffer = contract.CommercialOffer;
                 Attachments = contract.Attachments;
+                CountEstimation = contract.CountEstimation;
+                TheoreticalFreeMonths = contract.TheoreticalFreeMonths;
+                RebatePercentage = contract.RebatePercentage;
+                BillingPeriodicity = contract.BillingPeriodicity;
+                RebateEndsOn = contract.RebateEndsOn;
+                MinimalBillingPercentage = contract.MinimalBillingPercentage;
             }
         }
 
@@ -100,6 +122,7 @@ namespace Billing.Contracts.Web
             public int Id { get; set; }
             public Guid ExternalId { get; set; }
             public string Name { get; set; }
+            public string SocialReason { get; set; }
             public string SalesforceId { get; set; }
 
             public ContractDtoClient(Client contractClient)
@@ -107,6 +130,7 @@ namespace Billing.Contracts.Web
                 Id = contractClient.Id;
                 ExternalId = contractClient.ExternalId;
                 Name = contractClient.Name;
+                SocialReason = contractClient.SocialReason;
                 SalesforceId = contractClient.SalesforceId;
             }
         }

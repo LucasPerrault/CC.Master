@@ -16,12 +16,26 @@ namespace Billing.Contracts.Infra.Storage.Configurations
             builder.Property(d => d.EnvironmentId).HasColumnName("EnvironmentId");
             builder.Property(d => d.DistributorId).HasColumnName("DistributorId");
             builder.Property(d => d.EnvironmentSubdomain).HasColumnName("EnvironmentSubdomain");
+            builder.Property(d => d.CreatedAt).HasColumnName("CreatedAt");
+
+            builder.Property(d => d.TheoreticalStartOn).HasColumnName("TheoreticalStartOn");
+            builder.Property(d => d.TheoreticalEndOn).HasColumnName("TheoreticalEndOn");
+            builder.Property(d => d.EndReason).HasColumnName("EndReason");
+
             builder.Property(d => d.ArchivedAt).HasColumnName("ArchivedAt");
             builder.Property(d => d.CommercialOfferId).HasColumnName("CommercialOfferId");
 
             builder.HasOne(d => d.Distributor).WithMany().HasForeignKey(d => d.DistributorId);
             builder.HasOne(d => d.Client).WithMany(c => c.Contracts).HasForeignKey(d => d.ClientId);
             builder.HasOne(d => d.CommercialOffer).WithMany().HasForeignKey(d => d.CommercialOfferId);
+
+
+            builder.Property(d => d.CountEstimation).HasColumnName("CountEstimation");
+            builder.Property(d => d.TheoreticalFreeMonths).HasColumnName("TheoreticalFreeMonths");
+            builder.Property(d => d.RebatePercentage).HasColumnName("RebatePercentage");
+            builder.Property(d => d.RebateEndsOn).HasColumnName("RebateEndsOn");
+            builder.Property(d => d.MinimalBillingPercentage).HasColumnName("MinimalBillingPercentage");
+            builder.Property(d => d.BillingPeriodicity).HasColumnName("BillingPeriodicity");
 
             builder.HasMany(d => d.Attachments).WithOne().HasForeignKey(a => a.ContractId);
         }
