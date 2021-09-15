@@ -1,5 +1,6 @@
 using Core.Proxy.Infra.Extensions;
 using Microsoft.AspNetCore.Http;
+using Rights.Web;
 using Xunit;
 
 namespace Proxy.Tests
@@ -31,6 +32,18 @@ namespace Proxy.Tests
         public void ShouldNotRedirect(string url)
         {
             var context = new DefaultHttpContext();
+            context.Request.Path = url;
+            Assert.False(context.ShouldRedirect());
+        }
+
+        [Theory]
+        [InlineData("/contracts")]
+        public void ShouldNotRedirectForBetaTesters(string url)
+        {
+            var context = new DefaultHttpContext();
+            Assert.True(context.ShouldRedirect());
+
+            BetaTesterHelper.SetBetaTester(context, true);
             context.Request.Path = url;
             Assert.False(context.ShouldRedirect());
         }

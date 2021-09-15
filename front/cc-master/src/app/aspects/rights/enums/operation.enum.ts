@@ -50,4 +50,6 @@ export enum Operation {
   ReadTenantDataRequest = 50000,
   WriteTenantDataRequest = 50001,
   ReadTenantDataRequestStatus = 50002,
+
+  AccessBetaFeatures = 51001,
 }

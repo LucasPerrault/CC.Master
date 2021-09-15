@@ -6,7 +6,7 @@
       <a class="partenaires" href="/goToPartenaires">
         {{ "front_banner_link_partner" | translate }}
       </a>
-      <a class="lucca" href="/goToLucca" *ngIf="principal.isLuccaUser">
+      <a class="lucca" href="/goToLucca" *ngIf="shouldDisplayLuccaUrl">
         {{ "front_banner_link_lucca" | translate }}
       </a>
     </div>

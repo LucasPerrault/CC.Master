@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Rights.Web;
 
 namespace CloudControl.Web
 {
@@ -44,14 +45,14 @@ namespace CloudControl.Web
             app.UseHttpsRedirection();
 
             app.UseMiddleware<SessionKeyAuthMiddleware>();
+            app.UseAuthentication();
+            app.UseMiddleware<BetaTesterDetectionMiddleware>();
 
             app.UseLegacyCloudControlWebSocketProxy();
             app.UseLegacyCloudControlHttpProxy();
 
             app.UseFrontStaticFiles();
             app.UseFileServer();
-
-            app.UseAuthentication();
 
             app.UseMiddleware<UnauthorizedAccessMiddleware>();
             app.UseIpFilter(env);
