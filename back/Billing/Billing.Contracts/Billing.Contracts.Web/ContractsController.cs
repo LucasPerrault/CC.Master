@@ -116,11 +116,13 @@ namespace Billing.Contracts.Web
     {
         public static CompareNullableDateTime NotArchived() => CompareDateTime.IsStrictlyAfter(DateTime.Now).OrNull();
         public HashSet<string> Search { get; set; } = new HashSet<string>();
+        public HashSet<string> Subdomain { get; set; } = new HashSet<string>();
         public int? Id { get; set; }
 
         public ContractFilter ToFilter() => new ContractFilter
         {
             Search = Search,
+            Subdomains = Subdomain,
             Id = Id,
             ArchivedAt = NotArchived()
         };
