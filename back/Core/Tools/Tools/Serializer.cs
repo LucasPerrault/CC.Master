@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -165,7 +165,8 @@ namespace Tools
 
     internal class PolymorphicConverter<T, TKey> : JsonConverter<T> where TKey : Enum
     {
-        private readonly Dictionary<string, Type> _types = new Dictionary<string, Type>();
+        private readonly Dictionary<string, Type> _typesByName = new Dictionary<string, Type>();
+        private readonly Dictionary<int, Type> _typesByIntValue = new Dictionary<int, Type>();
         private readonly string _discriminatorPropertyName;
 
         public PolymorphicConverter(string discriminatorPropertyName)
@@ -176,7 +177,10 @@ namespace Tools
         public void AddMatch(TKey discriminator, Type type)
         {
             var name = Enum.GetName(typeof(TKey), discriminator);
-            _types[name] = type;
+            _typesByName[name] = type;
+
+            var intValue = Convert.ToInt32(discriminator);
+            _typesByIntValue[intValue] = type;
         }
 
         public override T Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
@@ -192,7 +196,8 @@ namespace Tools
                 throw new JsonException();
             }
 
-            if (!_types.TryGetValue(typeProperty.GetString(), out var type))
+            var type = GetDeserializationType(typeProperty);
+            if (type == null)
             {
                 throw new JsonException();
             }
@@ -201,6 +206,11 @@ namespace Tools
             var result = (T) JsonSerializer.Deserialize(jsonObject, type, options);
 
             return result;
+        }
+
+        public override void Write(Utf8JsonWriter writer, T value, JsonSerializerOptions options)
+        {
+            JsonSerializer.Serialize(writer, (object)value, options);
         }
 
         private static bool TryFind(JsonDocument jsonDocument, string propertyName, out JsonElement jsonElement)
@@ -213,9 +223,21 @@ namespace Tools
             return jsonElement.ValueKind != JsonValueKind.Undefined;
         }
 
-        public override void Write(Utf8JsonWriter writer, T value, JsonSerializerOptions options)
+        private Type GetDeserializationType(JsonElement typeProperty)
         {
-            JsonSerializer.Serialize(writer, (object)value, options);
+            Type type = null;
+
+            switch (typeProperty.ValueKind)
+            {
+                case JsonValueKind.Number:
+                    _typesByIntValue.TryGetValue(typeProperty.GetInt32(), out type);
+                    break;
+                case JsonValueKind.String:
+                    _typesByName.TryGetValue(typeProperty.GetString(), out type);
+                    break;
+            }
+
+            return type;
         }
     }
 }
