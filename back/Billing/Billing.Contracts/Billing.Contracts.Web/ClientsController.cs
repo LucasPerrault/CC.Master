@@ -34,6 +34,7 @@ namespace Billing.Contracts.Web
         }
 
         [HttpGet("{id:int}")]
+        [ForbidIfMissing(Operation.ReadContracts)]
         public Task<Client> GetById([FromRoute]int id)
         {
             return _clientsRepository.GetByIdAsync(id);
