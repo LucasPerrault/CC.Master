@@ -129,9 +129,9 @@
         "Routes": {
             "Hosts": {
                 "CloudControl": {
-                    "Host": "https://cc.ilucca.local",
-                    "EnvironmentsEndpoint": "/api/environments?limit=10000&isActive=true,false&purpose=contractual",
-                    "ContractsEndpoint": "/api/contracts?limit=10000&isActive=true,false",
+                    "Host": "{{ shared:UrlCloudControl }}",
+                    "EnvironmentsEndpoint": "/api/environments?limit=100000&isActive=true,false&purpose=contractual",
+                    "ContractsEndpoint": "/api/contracts?limit=100000&isActive=true,false",
                     "ClientsEndpoint": "/api/clients?limit=10000&isActive=true,false"
                 }
             },
@@ -146,7 +146,7 @@
         },
         "Auth": {
             "CloudControlAuthScheme": "Cloudcontrol",
-            "CloudControlAuthParameter": "webservice=blablabla",
+            "CloudControlAuthParameter": "webservice={{ CC.Master:CafeToken }}",
             "MonolithWebserviceToken": "{{ ilucca:CloudControlSharedToken }}",
             "OrganizationStructureWebserviceToken": "{{ CC.Master:OrganizationStructureToken }}",
             "ClientCenterWebserviceToken": "{{ Organization.ClientCenter:CafeToken }}"
