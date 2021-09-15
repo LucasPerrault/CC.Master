@@ -1,14 +1,16 @@
 ﻿using Billing.Contracts.Application.Clients;
 using Billing.Contracts.Domain.Clients;
+using Lucca.Core.Api.Abstractions.Fields;
 using Lucca.Core.Api.Abstractions.Paging;
+using Lucca.Core.Api.Abstractions.Sorting;
 using Lucca.Core.Api.Web.ModelBinding.Sorting;
 using Lucca.Core.Shared.Domain.Exceptions;
 using Microsoft.AspNetCore.Mvc;
-using MoreLinq;
 using Rights.Domain;
 using Rights.Web.Attributes;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Billing.Contracts.Web
@@ -29,6 +31,21 @@ namespace Billing.Contracts.Web
         public Task<Page<Client>> GetAsync(IPageToken pageToken, [FromQuery] ClientListQuery query)
         {
             return _clientsRepository.GetPageAsync(pageToken, query.ToFilter());
+        }
+
+        [HttpGet("{id:int}")]
+        public async Task<Client> GetById([FromRoute]int id)
+        {
+            var pageToken = new NumberPageToken(SortingQuery.FromRawValue(nameof(Client.Id)), 1, 2, RootFields.None);
+            var page = await _clientsRepository.GetPageAsync(pageToken, new ClientFilter { Id = id });
+
+            var clients = page.Items.ToList();
+            if (!clients.Any())
+            {
+                throw new NotFoundException();
+            }
+
+            return clients.Single();
         }
 
         [HttpPut("{id:guid}")]
