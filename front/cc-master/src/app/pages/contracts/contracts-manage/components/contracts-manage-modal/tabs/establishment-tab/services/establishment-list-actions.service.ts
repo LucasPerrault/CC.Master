@@ -14,10 +14,10 @@ import {
   IAttachmentExclusionModalData,
   IAttachmentLinkingModalData,
   IAttachmentStartEditionModalData,
-} from '../components/establishment-action-modals';
+} from '../components/modals';
 import {
   IAttachmentDeletionModalData,
-} from '../components/establishment-action-modals/attachment-deletion-modal/attachment-deletion-modal-data.interface';
+} from '../components/modals/deletion-modal/attachment-deletion-modal-data.interface';
 import { IContractEstablishment } from '../models/contract-establishment.interface';
 import { IEstablishmentAttachment } from '../models/establishment-attachment.interface';
 import { IEstablishmentContract } from '../models/establishment-contract.interface';
