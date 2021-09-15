@@ -33,10 +33,10 @@ namespace Billing.Contracts.Application.Clients
             _salesforceAccountsRemoteService = salesforceAccountsRemoteService;
         }
 
-        public async Task<Page<Client>> GetPageAsync(IPageToken pageToken)
+        public async Task<Page<Client>> GetPageAsync(IPageToken pageToken, ClientFilter clientFilter)
         {
             var accessRight = await _clientRightFilter.GetReadAccessAsync(_claimsPrincipal);
-            return await _clientsStore.GetPageAsync(pageToken, accessRight, ClientFilter.All);
+            return await _clientsStore.GetPageAsync(pageToken, accessRight, clientFilter);
         }
 
         public async Task PutAsync(Guid externalId, Client client, string subdomain)

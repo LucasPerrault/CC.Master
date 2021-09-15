@@ -1,6 +1,7 @@
 ﻿using Billing.Contracts.Domain.Contracts;
 using Billing.Contracts.Domain.Contracts.Interfaces;
 using Lucca.Core.Api.Abstractions.Paging;
+using System.Collections.Generic;
 using System.Security.Claims;
 using System.Threading.Tasks;
 
@@ -19,10 +20,16 @@ namespace Billing.Contracts.Application.Clients
             _principal = principal;
         }
 
-        public async Task<Page<Contract>> GetPageAsync(IPageToken pageToken)
+        public async Task<Page<Contract>> GetPageAsync(IPageToken pageToken, ContractFilter contractFilter)
         {
             var accessRight = await _rightsFilter.GetReadAccessAsync(_principal);
-            return await _contractsStore.GetPageAsync(accessRight, ContractFilter.All, pageToken);
+            return await _contractsStore.GetPageAsync(accessRight, contractFilter, pageToken);
+        }
+
+        public async Task<List<Contract>> GetAsync(ContractFilter contractFilter)
+        {
+            var accessRight = await _rightsFilter.GetReadAccessAsync(_principal);
+            return await _contractsStore.GetAsync(accessRight, contractFilter);
         }
     }
 }

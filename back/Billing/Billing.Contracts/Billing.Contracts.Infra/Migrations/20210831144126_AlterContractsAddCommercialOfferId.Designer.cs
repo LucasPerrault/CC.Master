@@ -4,14 +4,16 @@ using Billing.Contracts.Infra.Storage;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Billing.Contracts.Infra.Migrations
 {
     [DbContext(typeof(ContractsDbContext))]
-    partial class ContractsDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210831144126_AlterContractsAddCommercialOfferId")]
+    partial class AlterContractsAddCommercialOfferId
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -65,10 +67,6 @@ namespace Billing.Contracts.Infra.Migrations
 
                     b.Property<string>("SalesforceId")
                         .HasColumnName("SalesforceId")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("SocialReason")
-                        .HasColumnName("SocialReason")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
