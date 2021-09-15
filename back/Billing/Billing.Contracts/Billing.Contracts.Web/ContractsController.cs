@@ -100,6 +100,7 @@ namespace Billing.Contracts.Web
             public int Id { get; set; }
             public Guid ExternalId { get; set; }
             public string Name { get; set; }
+            public string SocialReason { get; set; }
             public string SalesforceId { get; set; }
 
             public ContractDtoClient(Client contractClient)
@@ -107,6 +108,7 @@ namespace Billing.Contracts.Web
                 Id = contractClient.Id;
                 ExternalId = contractClient.ExternalId;
                 Name = contractClient.Name;
+                SocialReason = contractClient.SocialReason;
                 SalesforceId = contractClient.SalesforceId;
             }
         }
