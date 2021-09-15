@@ -1,9 +1,7 @@
 ﻿using Billing.Contracts.Domain.Clients;
 using Billing.Contracts.Domain.Clients.Interfaces;
 using Billing.Contracts.Domain.Exceptions;
-using Lucca.Core.Api.Abstractions.Fields;
 using Lucca.Core.Api.Abstractions.Paging;
-using Lucca.Core.Api.Abstractions.Sorting;
 using Salesforce.Domain.Interfaces;
 using Salesforce.Domain.Models;
 using System;
@@ -43,10 +41,8 @@ namespace Billing.Contracts.Application.Clients
 
         public async Task<Client> GetByIdAsync(int id)
         {
-            var pageToken = new NumberPageToken(SortingQuery.FromRawValue(nameof(Client.Id)), 1, 2, RootFields.None);
-            var page = await GetPageAsync(pageToken, new ClientFilter { Id = id });
-
-            var clients = page.Items.ToList();
+            var accessRight = await _clientRightFilter.GetReadAccessAsync(_claimsPrincipal);
+            var clients = await _clientsStore.GetAsync(accessRight, new ClientFilter { Id = id });
             if (!clients.Any())
             {
                 throw new ClientNotVisibleException();
