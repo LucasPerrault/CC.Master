@@ -10,6 +10,11 @@ namespace Tools
         {
             var fi = value.GetType().GetField(value.ToString());
 
+            if (fi is null)
+            {
+                throw new InvalidEnumArgumentException($"Can't find {value.GetType()} enum member for value {value}");
+            }
+
             if (fi?.GetCustomAttributes(typeof(DescriptionAttribute), false) is DescriptionAttribute[] attributes && attributes.Any())
             {
                 return attributes.First().Description;
