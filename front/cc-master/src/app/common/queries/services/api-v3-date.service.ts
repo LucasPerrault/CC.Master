@@ -12,6 +12,23 @@ export class ApiV3DateService {
   constructor(@Inject(LOCALE_ID) private locale) {
   }
 
+  public since(date: Date): string {
+    const format = this.toApiV3DateFormat(date);
+    return !!format ? `${ this.apiSinceKeyword },${ format }` : '';
+  }
+
+  public until(date: Date): string {
+    const format = this.toApiV3DateFormat(date);
+    return !!format ? `${ this.apiUntilKeyword },${ format }` : '';
+  }
+
+  public between(from: Date, to: Date): string {
+    const fromFormatted = this.toApiV3DateFormat(from);
+    const toFormatted = this.toApiV3DateFormat(to);
+
+    return !!fromFormatted && !!toFormatted ? `${ this.apiBetweenKeyword },${ fromFormatted },${ toFormatted }` : '';
+  }
+
   public toApiV3DateFormat(date: Date): string {
     if (!date || isNaN(date.getTime())) {
       return '';

@@ -1,0 +1,28 @@
+<div class="u-displayFlex">
+  <label class="textfield mod-withSuffix {{ textfieldClass }}" [ngClass]="{ 'is-error': hasRangeError }">
+    <input class="textfield-input"
+           type="number"
+           [formControl]="clientRebateCount"
+           [min]="range.min"
+           [max]="range.max"
+           name="count">
+    <span class="textfield-label">
+      {{ 'front_clientRebate_count_label' | translate }}
+    </span>
+    <span class="textfield-suffix">%</span>
+    <span class="textfield-messages" *ngIf="hasRangeError">
+      <span class="textfield-messages-error">
+        {{ "front_clientRebate_errorMessage_range" | translate }}
+      </span>
+    </span>
+  </label>
+
+  <label class="textfield u-marginLeftBig {{ textfieldClass }}">
+    <lu-date-select [formControl]="endClientRebateAt"
+                    granularity="month"
+                    class="textfield-input"
+                    name="endAt">
+    </lu-date-select>
+    <span class="textfield-label">{{ 'front_clientRebate_endAt_label' | translate }}</span>
+  </label>
+</div>

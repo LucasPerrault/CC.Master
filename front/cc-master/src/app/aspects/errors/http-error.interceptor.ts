@@ -1,9 +1,10 @@
-import { HttpErrorResponse, HttpEvent, HttpHandler, HttpInterceptor, HttpRequest } from '@angular/common/http';
+import { HttpContextToken, HttpErrorResponse, HttpEvent, HttpHandler, HttpInterceptor, HttpRequest } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { ToastsService, ToastType } from '@cc/common/toasts';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 
+export const BYPASS_INTERCEPTOR = new HttpContextToken<boolean>(() => false);
 
 @Injectable()
 export class HttpErrorInterceptor implements HttpInterceptor {
@@ -13,6 +14,9 @@ export class HttpErrorInterceptor implements HttpInterceptor {
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     return next.handle(request).pipe(
       catchError((httpErrorResponse: HttpErrorResponse) => {
+        if (request.context.get(BYPASS_INTERCEPTOR) === true) {
+          return throwError(httpErrorResponse);
+        }
 
         const message = httpErrorResponse.error instanceof ErrorEvent
           ? this.getClientSideErrorMessage(httpErrorResponse)

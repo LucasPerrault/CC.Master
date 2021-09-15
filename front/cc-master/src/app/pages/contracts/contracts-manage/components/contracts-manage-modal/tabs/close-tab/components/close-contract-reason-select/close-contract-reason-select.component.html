@@ -1,0 +1,14 @@
+<label class="textfield {{ textfieldClass }}" [ngClass]="{ 'is-required': required }">
+  <lu-select [(ngModel)]="endContractReason" (ngModelChange)="update()" class="textfield-input" [required]="required">
+    <ng-container *luDisplayer="let value">{{ value.name }}</ng-container>
+
+    <lu-option-picker-advanced>
+      <lu-option-feeder [options]="endReasons"></lu-option-feeder>
+      <lu-option *luForOptions="let endReason; trackBy: trackBy" [value]="endReason">{{ endReason.name }}</lu-option>
+    </lu-option-picker-advanced>
+
+    <lu-input-clearer></lu-input-clearer>
+  </lu-select>
+
+  <span class="textfield-label">{{ 'front_contractPage_endContractReasonSelect_label' | translate }}</span>
+</label>

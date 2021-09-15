@@ -1,0 +1,92 @@
+<form [formGroup]="formGroup">
+  <cc-billing-frequency-select textfieldClass="palette-grey"
+                               [formControlName]="formGroupKey.BillingMonth"
+                               [required]="true"></cc-billing-frequency-select>
+
+  <label class="textfield mod-longest u-marginTopStandard is-required palette-grey">
+    <lu-date-select [formControlName]="formGroupKey.TheoreticalStartOn"
+                    [required]="true"
+                    granularity="month"
+                    class="textfield-input">
+    </lu-date-select>
+    <span class="textfield-label">{{ 'front_theoreticalStartAt_label' | translate }}</span>
+    <span class="textfield-messages" *ngIf="formGroup.controls.theoreticalStartOn.touched && formGroup.controls.theoreticalStartOn.hasError('required')">
+      <span class="textfield-messages-error">
+        {{ "front_theoreticalStartAt_errorMessage_required" | translate }}
+      </span>
+    </span>
+    <span class="textfield-messages">
+			<span *ngIf="!!draftFormInformation?.externalDeploymentAt" class="textfield-messages-helper u-textSmaller">
+        {{ "front_draftForm_deploymentOn_info" | translate }}
+        {{ draftFormInformation.externalDeploymentAt | date : 'shortDate' }}
+      </span>
+		</span>
+  </label>
+
+  <div class="mod-widthFitContent">
+    <cc-distributor-api-select [formControlName]="formGroupKey.Distributor"
+                               [displayMode]="selectDisplayMode.Form"
+                               [required]="true"
+                               textfieldClass="palette-grey mod-longest u-marginTopStandard">
+    </cc-distributor-api-select>
+    <div class="textfield-messages">
+      <a *ngIf="!!draftFormInformation?.externalDistributorUrl"
+         class="textfield-messages-helper u-textSmaller" (click)="redirectToExternalDistributorUrl()">
+        {{ "front_draftForm_externalDistributorUrl_link" | translate }}
+      </a>
+      <span *ngIf="distributorRebate$ | async" class="textfield-messages-helper u-textSmaller u-right" >
+        {{ "front_draftForm_distributorRebate_info" | translate }} {{ distributorRebate$ | async }}%
+      </span>
+    </div>
+  </div>
+
+  <cc-client-api-select [formControlName]="formGroupKey.Client"
+                        [displayMode]="selectDisplayMode.Form"
+                        [required]="true"
+                        textfieldClass="palette-grey mod-longest u-marginTopStandard">
+  </cc-client-api-select>
+
+  <cc-product-api-select [formControlName]="formGroupKey.Product"
+                         [displayMode]="selectDisplayMode.Form"
+                         [required]="true"
+                         textfieldClass="palette-grey mod-longest u-marginTopStandard">
+  </cc-product-api-select>
+
+  <div class="u-marginTopStandard mod-widthFitContent">
+    <cc-offer-api-select [formControlName]="formGroupKey.Offer"
+                         [displayMode]="selectDisplayMode.Form"
+                         [required]="true"
+                         [filters]="offerApiFilters"
+                         textfieldClass="palette-grey mod-longest">
+    </cc-offer-api-select>
+    <div class="textfield-messages u-displayFlex u-flexWrapWrap u-justifyContentSpaceBetween">
+      <a class="textfield-messages-helper u-marginRightStandard u-textDefault" *ngIf="!!formGroup.value.offer" (click)="openPriceGridModal(formGroup.value.offer.id)">
+        {{ "front_priceGrid_openModal_link" | translate }}
+      </a>
+      <span *ngIf="!!draftFormInformation?.externalOfferName" class="textfield-messages-helper u-textSmaller" >
+        {{ "front_draftForm_externalOfferName_info" | translate }}
+        {{ draftFormInformation.externalOfferName }}
+      </span>
+    </div>
+  </div>
+
+  <div class="u-displayFlex u-marginTopStandard">
+    <cc-theoretical-draft-count textfieldClass="palette-grey" [formControlName]="formGroupKey.TheoreticalDraftCount" [required]="true"></cc-theoretical-draft-count>
+
+    <cc-theoretical-month-rebate [formControlName]="formGroupKey.TheoreticalMonthRebate" [required]="true"
+                                 textfieldClass="palette-grey u-marginLeftBig">
+    </cc-theoretical-month-rebate>
+  </div>
+
+  <cc-client-rebate [formControlName]="formGroupKey.ClientRebate" textfieldClass="palette-grey u-marginTopStandard">
+  </cc-client-rebate>
+
+  <cc-minimal-billing-percentage [formControlName]="formGroupKey.MinimalBillingPercentage"
+                                 [required]="true"
+                                 [min]="0"
+                                 [max]="100"
+                                 textfieldClass="palette-grey u-marginTopStandard">
+  </cc-minimal-billing-percentage>
+
+  <cc-comment [formControlName]="formGroupKey.Comment" textfieldClass="palette-grey mod-longest u-marginTopStandard"></cc-comment>
+</form>

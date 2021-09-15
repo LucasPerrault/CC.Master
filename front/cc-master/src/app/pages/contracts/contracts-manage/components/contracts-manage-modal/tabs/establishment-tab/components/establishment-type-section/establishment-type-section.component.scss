@@ -1,0 +1,25 @@
+@import "theming.import";
+
+.mod-accordion {
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  & i {
+    line-height: .6rem;
+  }
+}
+
+.section-header {
+  display: flex;
+  align-items: center;
+  background-color: _color('primary', 700);
+  color: _color('primary', 'text');
+  padding: _theme('spacings.smaller');
+  cursor: pointer;
+}
+
+.section-title {
+  margin: 0;
+  padding-left: _theme('spacings.smaller');
+  color: _color('primary', 'text');
+}

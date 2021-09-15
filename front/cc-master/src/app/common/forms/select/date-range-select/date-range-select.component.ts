@@ -1,8 +1,18 @@
 import { Component, forwardRef, Input, OnDestroy, OnInit } from '@angular/core';
-import { ControlValueAccessor, FormControl, FormGroup, NG_VALUE_ACCESSOR } from '@angular/forms';
+import {
+  AbstractControl,
+  ControlValueAccessor,
+  FormControl,
+  FormGroup, NG_VALIDATORS,
+  NG_VALUE_ACCESSOR,
+  ValidationErrors,
+  Validator,
+} from '@angular/forms';
 import { IDateRange } from '@cc/common/date';
 import { Subject } from 'rxjs';
 import { debounceTime, takeUntil } from 'rxjs/operators';
+
+import { defaultDateRangeConfiguration, IDateRangeConfiguration } from './date-range-configuration.interface';
 
 @Component({
   selector: 'cc-date-range-select',
@@ -13,16 +23,23 @@ import { debounceTime, takeUntil } from 'rxjs/operators';
       useExisting: forwardRef(() => DateRangeSelectComponent),
       multi: true,
     },
+    {
+      provide: NG_VALIDATORS,
+      multi: true,
+      useExisting: DateRangeSelectComponent,
+    },
   ],
 })
-export class DateRangeSelectComponent implements ControlValueAccessor, OnInit, OnDestroy {
-  @Input() public class?: string;
+export class DateRangeSelectComponent implements ControlValueAccessor, Validator, OnInit, OnDestroy {
+  @Input() public configuration: IDateRangeConfiguration = defaultDateRangeConfiguration;
+  @Input() public datesClass?: string;
+  @Input() public required = false;
+  @Input() public isError = false;
 
   public onChange: (range: IDateRange) => void;
   public onTouch: () => void;
 
   public dateRangeSelected: FormGroup;
-  public todayDate = new Date();
 
   private destroySubscription$: Subject<void> = new Subject<void>();
 
@@ -54,7 +71,13 @@ export class DateRangeSelectComponent implements ControlValueAccessor, OnInit, O
 
   public writeValue(rangeSelectionUpdated: IDateRange): void {
     if (rangeSelectionUpdated !== this.dateRangeSelected.value && rangeSelectionUpdated != null) {
-      this.dateRangeSelected.setValue(rangeSelectionUpdated, { emitEvent: false });
+      this.dateRangeSelected.patchValue(rangeSelectionUpdated);
+    }
+  }
+
+  public validate(control: AbstractControl): ValidationErrors | null {
+    if (this.dateRangeSelected.invalid) {
+      return { invalid: true };
     }
   }
 

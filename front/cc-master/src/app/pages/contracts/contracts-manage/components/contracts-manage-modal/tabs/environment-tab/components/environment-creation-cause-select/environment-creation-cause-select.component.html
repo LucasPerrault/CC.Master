@@ -1,0 +1,35 @@
+<ng-container *ngIf="!!previousContracts.length">
+  <h4 class="u-marginTopStandard u-animatedFadeIn">
+    {{ 'front_contractPage_environmentCreationCauseForm_title' | translate: { count: previousContracts.length } }}
+    <span [luTooltip]="'front_contractPage_environmentCreationCauseForm_description' | translate" aria-hidden="true" class="lucca-icon icon-info"></span>
+  </h4>
+
+  <fieldset class="radiosfield is-required">
+    <legend class="radiosfield-label">
+      {{ 'front_contractPage_environmentCreationCauseForm_radio_title' | translate: { count: previousContracts.length } }}
+    </legend>
+    <div class="radiosfield-input mod-row">
+      <div>
+        <label class="radio">
+          <input class="radio-input" type="radio" name="radioCreationCause" [formControl]="formControl" [value]="creationCause.Modification">
+          <span class="radio-label">{{ 'front_contractPage_environmentCreationCause_isModification_yes' | translate }}</span>
+        </label>
+      </div>
+      <div>
+        <label class="radio">
+          <input class="radio-input" type="radio" name="radioCreationCause" [formControl]="formControl" [value]="creationCause.NewBooking">
+          <span class="radio-label">{{ 'front_contractPage_environmentCreationCause_isModification_no' | translate }}</span>
+        </label>
+      </div>
+    </div>
+  </fieldset>
+
+  <ul class="list">
+    <li class="list-item" *ngFor="let previousContract of previousContracts">
+      <div class="list-item-content">
+        <p class="list-item-content-description">{{ previousContract.name }}</p>
+      </div>
+    </li>
+  </ul>
+
+</ng-container>
