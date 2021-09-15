@@ -34,18 +34,9 @@ namespace Billing.Contracts.Web
         }
 
         [HttpGet("{id:int}")]
-        public async Task<Client> GetById([FromRoute]int id)
+        public Task<Client> GetById([FromRoute]int id)
         {
-            var pageToken = new NumberPageToken(SortingQuery.FromRawValue(nameof(Client.Id)), 1, 2, RootFields.None);
-            var page = await _clientsRepository.GetPageAsync(pageToken, new ClientFilter { Id = id });
-
-            var clients = page.Items.ToList();
-            if (!clients.Any())
-            {
-                throw new NotFoundException();
-            }
-
-            return clients.Single();
+            return _clientsRepository.GetByIdAsync(id);
         }
 
         [HttpPut("{id:guid}")]
