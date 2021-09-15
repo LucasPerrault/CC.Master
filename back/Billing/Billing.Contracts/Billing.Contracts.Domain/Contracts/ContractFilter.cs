@@ -9,13 +9,7 @@ namespace Billing.Contracts.Domain.Contracts
         public int? Id { get; set; }
         public Guid? ClientExternalId { get; set; }
         public HashSet<string> Search { get; set; } = new HashSet<string>();
-        public CompareString Subdomain { get; set; } = CompareString.Bypass;
+        public HashSet<string> Subdomains { get; set; } = new HashSet<string>();
         public CompareNullableDateTime ArchivedAt { get; set; } = CompareNullableDateTime.Bypass();
-
-        public static ContractFilter AllNotArchived() => new ContractFilter
-        {
-            Subdomain = CompareString.Bypass,
-            ArchivedAt = CompareDateTime.IsAfterOrEqual(DateTime.Now).OrNull()
-        };
     }
 }

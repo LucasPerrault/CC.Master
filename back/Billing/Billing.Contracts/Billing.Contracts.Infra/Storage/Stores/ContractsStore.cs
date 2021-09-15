@@ -53,7 +53,7 @@ namespace Billing.Contracts.Infra.Storage.Stores
         public static IQueryable<Contract> WhereMatches(this IQueryable<Contract> contracts, ContractFilter filter)
         {
             return contracts.Search(filter.Search)
-                .Apply(filter.Subdomain).To(c => c.EnvironmentSubdomain)
+                .WhenNotNullOrEmpty(filter.Subdomains).ApplyWhere(c => filter.Subdomains.Contains(c.EnvironmentSubdomain))
                 .Apply(filter.ArchivedAt).To(c => c.ArchivedAt)
                 .WhenHasValue(filter.Id).ApplyWhere(c => c.Id == filter.Id.Value)
                 .When(filter.ClientExternalId.HasValue).ApplyWhere(c => c.ClientExternalId == filter.ClientExternalId.Value);
