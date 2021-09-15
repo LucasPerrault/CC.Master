@@ -4,14 +4,16 @@ using Billing.Contracts.Infra.Storage;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Billing.Contracts.Infra.Migrations
 {
     [DbContext(typeof(ContractsDbContext))]
-    partial class ContractsDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210915133008_AlterContractsAddColumns")]
+    partial class AlterContractsAddColumns
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -103,20 +105,12 @@ namespace Billing.Contracts.Infra.Migrations
                         .HasColumnName("CommercialOfferId")
                         .HasColumnType("int");
 
-                    b.Property<decimal>("CountEstimation")
+                    b.Property<int>("CountEstimation")
                         .HasColumnName("CountEstimation")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnName("CreatedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("int");
 
                     b.Property<int>("DistributorId")
                         .HasColumnName("DistributorId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("EndReason")
-                        .HasColumnName("EndReason")
                         .HasColumnType("int");
 
                     b.Property<int?>("EnvironmentId")
@@ -131,17 +125,17 @@ namespace Billing.Contracts.Infra.Migrations
                         .HasColumnName("ExternalId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<double>("MinimalBillingPercentage")
+                    b.Property<decimal>("MinimalBillingPercentage")
                         .HasColumnName("MinimalBillingPercentage")
-                        .HasColumnType("float");
+                        .HasColumnType("decimal(18,2)");
 
-                    b.Property<DateTime?>("RebateEndsOn")
+                    b.Property<DateTime>("RebateEndsOn")
                         .HasColumnName("RebateEndsOn")
                         .HasColumnType("datetime2");
 
-                    b.Property<double?>("RebatePercentage")
+                    b.Property<decimal>("RebatePercentage")
                         .HasColumnName("RebatePercentage")
-                        .HasColumnType("float");
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<DateTime?>("TheoreticalEndOn")
                         .HasColumnName("TheoreticalEndOn")
