@@ -1,6 +1,7 @@
 ﻿using Billing.Contracts.Domain.Contracts;
 using Billing.Contracts.Domain.Contracts.Interfaces;
 using Lucca.Core.Api.Abstractions.Paging;
+using Lucca.Core.Shared.Domain.Exceptions;
 using System.Collections.Generic;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -35,7 +36,8 @@ namespace Billing.Contracts.Application.Clients
         public async Task<ContractComment> GetCommentAsync(int contractId)
         {
             var accessRight = await _rightsFilter.GetReadAccessAsync(_principal);
-            return await _contractsStore.GetCommentAsync(accessRight, contractId);
+            var comment = await _contractsStore.GetCommentAsync(accessRight, contractId);
+            return comment ?? throw new NotFoundException();
         }
     }
 }
