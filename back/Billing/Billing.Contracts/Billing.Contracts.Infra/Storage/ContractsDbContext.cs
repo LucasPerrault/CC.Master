@@ -17,6 +17,7 @@ namespace Billing.Contracts.Infra.Storage
         {
             modelBuilder.ApplyConfiguration(new ClientConfiguration());
             modelBuilder.ApplyConfiguration(new ContractConfiguration());
+            modelBuilder.ApplyConfiguration(new ContractCommentConfiguration());
             modelBuilder.ApplyConfiguration(new EstablishmentAttachmentConfiguration());
 
             modelBuilder.ApplyConfiguration(new DistributorsConfiguration());

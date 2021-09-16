@@ -31,5 +31,11 @@ namespace Billing.Contracts.Application.Clients
             var accessRight = await _rightsFilter.GetReadAccessAsync(_principal);
             return await _contractsStore.GetAsync(accessRight, contractFilter);
         }
+
+        public async Task<ContractComment> GetCommentAsync(int contractId)
+        {
+            var accessRight = await _rightsFilter.GetReadAccessAsync(_principal);
+            return await _contractsStore.GetCommentAsync(accessRight, contractId);
+        }
     }
 }

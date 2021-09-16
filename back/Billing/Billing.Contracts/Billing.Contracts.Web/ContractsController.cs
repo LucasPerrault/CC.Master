@@ -55,6 +55,13 @@ namespace Billing.Contracts.Web
             return new ContractDto(contracts.Single());
         }
 
+        [HttpGet("{id:int}/comment")]
+        [ForbidIfMissing(Operation.ReadContracts)]
+        public Task<ContractComment> GetCommentAsync([FromRoute] int id)
+        {
+            return _contractsRepository.GetCommentAsync(id);
+        }
+
         public class ContractDto
         {
             public int Id { get; set; }
