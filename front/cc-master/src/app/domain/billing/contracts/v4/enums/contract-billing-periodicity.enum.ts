@@ -1,0 +1,16 @@
+export enum ContractBillingPeriodicity {
+  Unknown = 'Unknown',
+  AnnualJanuary = 'AnnualJanuary',
+  AnnualFebruary = 'AnnualFebruary',
+  AnnualMarch = 'AnnualMarch',
+  AnnualApril = 'AnnualApril',
+  AnnualMay = 'AnnualMay',
+  AnnualJune = 'AnnualJune',
+  AnnualJuly = 'AnnualJuly',
+  AnnualAugust = 'AnnualAugust',
+  AnnualSeptember = 'AnnualSeptember',
+  AnnualOctober = 'AnnualOctober',
+  AnnualNovember = 'AnnualNovember',
+  AnnualDecember = 'AnnualDecember',
+  Quarterly = 'Quarterly',
+}
