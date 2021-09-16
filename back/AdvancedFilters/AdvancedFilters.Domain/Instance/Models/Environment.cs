@@ -11,5 +11,6 @@ namespace AdvancedFilters.Domain.Instance.Models
         public string ProductionHost { get; set; }
 
         public IReadOnlyCollection<LegalUnit> LegalUnits { get; set; }
+        public IReadOnlyCollection<AppInstance> AppInstances { get; set; }
     }
 }

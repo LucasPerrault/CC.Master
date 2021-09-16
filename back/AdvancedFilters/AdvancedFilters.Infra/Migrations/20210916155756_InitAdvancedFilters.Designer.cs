@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AdvancedFilters.Infra.Migrations
 {
     [DbContext(typeof(AdvancedFiltersDbContext))]
-    [Migration("20210908153829_InitAdvancedFilters")]
+    [Migration("20210916155756_InitAdvancedFilters")]
     partial class InitAdvancedFilters
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -448,7 +448,7 @@ namespace AdvancedFilters.Infra.Migrations
             modelBuilder.Entity("AdvancedFilters.Domain.Instance.Models.AppInstance", b =>
                 {
                     b.HasOne("AdvancedFilters.Domain.Instance.Models.Environment", "Environment")
-                        .WithMany()
+                        .WithMany("AppInstances")
                         .HasForeignKey("EnvironmentId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();

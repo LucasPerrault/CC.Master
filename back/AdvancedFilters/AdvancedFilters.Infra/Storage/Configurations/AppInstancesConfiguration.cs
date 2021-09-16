@@ -17,9 +17,10 @@ namespace AdvancedFilters.Infra.Storage.Configurations
 
             builder
                 .HasOne(ai => ai.Environment)
-                .WithMany()
-                .OnDelete(DeleteBehavior.NoAction)
-                .HasForeignKey(ai => ai.EnvironmentId);
+                .WithMany(e => e.AppInstances)
+                .HasForeignKey(ai => ai.EnvironmentId)
+                .IsRequired()
+                .OnDelete(DeleteBehavior.NoAction);
         }
     }
 }

@@ -446,7 +446,7 @@ namespace AdvancedFilters.Infra.Migrations
             modelBuilder.Entity("AdvancedFilters.Domain.Instance.Models.AppInstance", b =>
                 {
                     b.HasOne("AdvancedFilters.Domain.Instance.Models.Environment", "Environment")
-                        .WithMany()
+                        .WithMany("AppInstances")
                         .HasForeignKey("EnvironmentId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
