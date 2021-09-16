@@ -34,7 +34,7 @@ namespace AdvancedFilters.Domain.DataSources
 
         public Uri GetUri<T, TContext>(TContext c) where TContext : IDataSourceContext<T>
         {
-            return Uri;
+            return c.GetUri(this);
         }
     }
 }

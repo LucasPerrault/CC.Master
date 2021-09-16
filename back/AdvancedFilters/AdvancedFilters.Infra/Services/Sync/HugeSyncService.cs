@@ -1,4 +1,5 @@
 using AdvancedFilters.Domain.DataSources;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace AdvancedFilters.Infra.Services.Sync
@@ -14,12 +15,14 @@ namespace AdvancedFilters.Infra.Services.Sync
             _builder = builder;
         }
 
-        public async Task SyncAsync()
+        public async Task SyncAsync(SyncFilter filter)
         {
+            var builderWithFilter = _builder.WithFilter(filter);
+
             var dataSources = _dataSourcesRepository.GetAll();
             foreach (var dataSource in dataSources)
             {
-                var synchronizer = await dataSource.GetSynchronizerAsync(_builder);
+                var synchronizer = await dataSource.GetSynchronizerAsync(builderWithFilter);
                 await synchronizer.SyncAsync();
             }
         }

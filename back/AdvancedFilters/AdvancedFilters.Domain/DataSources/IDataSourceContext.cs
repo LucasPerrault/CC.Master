@@ -4,7 +4,8 @@ namespace AdvancedFilters.Domain.DataSources
 {
     public interface IDataSourceContext<in T>
     {
-        public void Finalize(T item);
-        public Uri GetUri(TenantDataSourceRoute route);
+        void Finalize(T item);
+        Uri GetUri(TenantDataSourceRoute route);
+        Uri GetUri(HostDataSourceRoute hostDataSourceRoute);
     }
 }

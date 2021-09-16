@@ -7,6 +7,7 @@ namespace AdvancedFilters.Domain.DataSources
 {
     public interface IDataSourceSynchronizerBuilder
     {
+        IDataSourceSynchronizerBuilder WithFilter(SyncFilter filter);
         Task<IDataSourceSynchronizer> BuildFromAsync(EnvironmentDataSource dataSource);
         Task<IDataSourceSynchronizer> BuildFromAsync(EstablishmentDataSource dataSource);
         Task<IDataSourceSynchronizer> BuildFromAsync(AppInstanceDataSource dataSource);

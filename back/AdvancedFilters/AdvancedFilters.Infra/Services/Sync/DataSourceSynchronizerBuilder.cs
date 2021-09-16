@@ -14,6 +14,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
+using System.Web;
 using Environment = AdvancedFilters.Domain.Instance.Models.Environment;
 
 namespace AdvancedFilters.Infra.Services.Sync
@@ -24,6 +25,8 @@ namespace AdvancedFilters.Infra.Services.Sync
         private readonly BulkUpsertService _bulk;
         private readonly FetchAuthenticator _authenticator;
         private readonly IEnvironmentsStore _store;
+
+        public SyncFilter Filter { get; set; }
 
         public DataSourceSynchronizerBuilder
         (
@@ -38,6 +41,12 @@ namespace AdvancedFilters.Infra.Services.Sync
             _store = store;
             _authenticator = authenticator;
         }
+
+        public IDataSourceSynchronizerBuilder WithFilter(SyncFilter filter)
+            => new DataSourceSynchronizerBuilder(_httpClient, _bulk, _store, _authenticator)
+            {
+                Filter = filter
+            };
 
         public Task<IDataSourceSynchronizer> BuildFromAsync(EnvironmentDataSource dataSource)
         {
@@ -120,7 +129,11 @@ namespace AdvancedFilters.Infra.Services.Sync
 
         private async Task<List<EnvironmentDataSourceContext<T>>> GetEnvironmentContextsAsync<T>(Action<Environment, T> finalizeAction)
         {
-            var envs = await _store.GetAsync(new EnvironmentFilter());
+            var envFilter = Filter != null
+                ? new EnvironmentFilter { Subdomains = Filter.Subdomains }
+                : new EnvironmentFilter();
+
+            var envs = await _store.GetAsync(envFilter);
             return envs.Select(e => new EnvironmentDataSourceContext<T>(e, finalizeAction)).ToList();
         }
 
@@ -129,7 +142,7 @@ namespace AdvancedFilters.Infra.Services.Sync
             return new DataSourceSynchronizer<TDto, T>(jobs, _httpClient.SendAsync, entities => _bulk.InsertOrUpdateOrDeleteAsync(entities, config));
         }
 
-        private sealed class EmptyDataSourceContext<T> : IDataSourceContext<T>
+        private class EmptyDataSourceContext<T> : IDataSourceContext<T>
         {
             public void Finalize(T item)
             { }
@@ -137,6 +150,41 @@ namespace AdvancedFilters.Infra.Services.Sync
             public Uri GetUri(TenantDataSourceRoute route)
             {
                 throw new NotImplementedException();
+            }
+
+            public virtual Uri GetUri(HostDataSourceRoute hostDataSourceRoute)
+            {
+                return hostDataSourceRoute.Uri;
+            }
+        }
+
+        private sealed class SubdomainSubsetDataSourceContext<T> : EmptyDataSourceContext<T>
+        {
+            private readonly IReadOnlyCollection<string> _subdomains;
+            private readonly string _subdomainsParamName;
+
+            public SubdomainSubsetDataSourceContext(IReadOnlyCollection<string> subdomains, string environmentsParamName)
+            {
+                _subdomains = subdomains;
+                _subdomainsParamName = environmentsParamName;
+            }
+
+            public override Uri GetUri(HostDataSourceRoute hostDataSourceRoute)
+            {
+                if (!_subdomains?.Any() ?? false)
+                {
+                    return hostDataSourceRoute.Uri;
+                }
+
+                var uriBuilder = new UriBuilder(hostDataSourceRoute.Uri);
+                var paramValues = HttpUtility.ParseQueryString(uriBuilder.Query);
+
+                var environmentsParam = string.Join(",", _subdomains);
+                paramValues.Add(_subdomainsParamName, environmentsParam);
+
+                uriBuilder.Query = paramValues.ToString();
+
+                return uriBuilder.Uri;
             }
         }
 
@@ -156,16 +204,22 @@ namespace AdvancedFilters.Infra.Services.Sync
                 return new Uri(new Uri(Environment.ProductionHost), route.Endpoint);
             }
 
+            public Uri GetUri(HostDataSourceRoute hostDataSourceRoute)
+            {
+                return hostDataSourceRoute.Uri;
+            }
+
             public void Finalize(T item)
             {
                 _finalizeAction(Environment, item);
             }
         }
 
-        private IEnumerable<FetchJob<T>> GetJobs<T, TContext>(DataSource dataSource, IReadOnlyCollection<TContext> contexts) where TContext : IDataSourceContext<T>
+        private IEnumerable<FetchJob<T>> GetJobs<T, TContext>(DataSource dataSource, IReadOnlyCollection<TContext> contexts)
+            where TContext : IDataSourceContext<T>
         {
             return contexts
-                .Select(p => new FetchJob<T>(dataSource.DataSourceRoute.GetUri<T, TContext>(p), _authenticator.Authenticate(dataSource.Authentication), p.Finalize))
+                .Select(context => new FetchJob<T>(dataSource.DataSourceRoute.GetUri<T, TContext>(context), _authenticator.Authenticate(dataSource.Authentication), context.Finalize))
                 .ToList();
         }
     }
