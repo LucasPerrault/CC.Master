@@ -9,6 +9,7 @@ namespace AdvancedFilters.Domain.Contacts.Models
     {
         public int Id { get; set; }
         public int RoleId { get; set; }
+        public string RoleCode { get; set; }
         public Guid ClientId { get; set; }
         public int UserId { get; set; }
         public DateTime CreatedAt { get; set; }

@@ -41,7 +41,7 @@ namespace AdvancedFilters.Infra.Storage.Stores
         public static IQueryable<ClientContact> WhereMatches(this IQueryable<ClientContact> contacts, ClientContactFilter filter)
         {
             return contacts
-                .WhenNotNullOrEmpty(filter.RoleIds).ApplyWhere(c => filter.RoleIds.Contains(c.RoleId))
+                .WhenNotNullOrEmpty(filter.RoleCodes).ApplyWhere(c => filter.RoleCodes.Contains(c.RoleCode))
                 .WhenNotNullOrEmpty(filter.ClientIds).ApplyWhere(c => filter.ClientIds.Contains(c.ClientId))
                 .WhenNotNullOrEmpty(filter.EnvironmentIds).ApplyWhere(c => filter.EnvironmentIds.Contains(c.EnvironmentId))
                 .WhenNotNullOrEmpty(filter.EstablishmentIds).ApplyWhere(c => filter.EstablishmentIds.Contains(c.EstablishmentId))

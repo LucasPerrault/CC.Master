@@ -150,6 +150,12 @@ namespace AdvancedFilters.Infra.Migrations
                         .HasColumnName("IsConfirmed")
                         .HasColumnType("bit");
 
+                    b.Property<string>("RoleCode")
+                        .IsRequired()
+                        .HasColumnName("RoleCode")
+                        .HasColumnType("nvarchar(50)")
+                        .HasMaxLength(50);
+
                     b.Property<int>("RoleId")
                         .HasColumnName("RoleId")
                         .HasColumnType("int");
@@ -161,6 +167,8 @@ namespace AdvancedFilters.Infra.Migrations
                     b.HasKey("EnvironmentId", "Id");
 
                     b.HasIndex("ClientId");
+
+                    b.HasIndex("RoleCode");
 
                     b.HasIndex("EnvironmentId", "EstablishmentId");
 
@@ -191,6 +199,12 @@ namespace AdvancedFilters.Infra.Migrations
                         .HasColumnName("IsConfirmed")
                         .HasColumnType("bit");
 
+                    b.Property<string>("RoleCode")
+                        .IsRequired()
+                        .HasColumnName("RoleCode")
+                        .HasColumnType("nvarchar(50)")
+                        .HasMaxLength(50);
+
                     b.Property<int>("RoleId")
                         .HasColumnName("RoleId")
                         .HasColumnType("int");
@@ -200,6 +214,8 @@ namespace AdvancedFilters.Infra.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("EnvironmentId", "Id");
+
+                    b.HasIndex("RoleCode");
 
                     b.HasIndex("EnvironmentId", "EstablishmentId");
 

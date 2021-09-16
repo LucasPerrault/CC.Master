@@ -13,6 +13,7 @@ namespace AdvancedFilters.Infra.Storage.Configurations
 
             builder.Property(c => c.EstablishmentId).HasColumnName("EstablishmentId").IsRequired();
             builder.Property(c => c.RoleId).HasColumnName("RoleId").IsRequired();
+            builder.Property(c => c.RoleCode).HasColumnName("RoleCode").IsRequired().HasMaxLength(50);
             builder.Property(c => c.UserId).HasColumnName("UserId").IsRequired();
             builder.Property(c => c.CreatedAt).HasColumnName("CreatedAt").IsRequired();
             builder.Property(c => c.ExpiresAt).HasColumnName("ExpiresAt");
@@ -28,6 +29,8 @@ namespace AdvancedFilters.Infra.Storage.Configurations
                 .WithMany()
                 .HasForeignKey(c => new { c.EnvironmentId, c.EstablishmentId })
                 .OnDelete(DeleteBehavior.NoAction);
+
+            builder.HasIndex(c => c.RoleCode);
         }
     }
 }

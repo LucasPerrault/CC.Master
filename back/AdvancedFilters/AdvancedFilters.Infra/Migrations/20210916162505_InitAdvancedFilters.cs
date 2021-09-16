@@ -189,6 +189,7 @@ namespace AdvancedFilters.Infra.Migrations
                     Id = table.Column<int>(nullable: false),
                     EnvironmentId = table.Column<int>(nullable: false),
                     RoleId = table.Column<int>(nullable: false),
+                    RoleCode = table.Column<string>(maxLength: 50, nullable: false),
                     ClientId = table.Column<Guid>(nullable: false),
                     UserId = table.Column<int>(nullable: false),
                     CreatedAt = table.Column<DateTime>(nullable: false),
@@ -254,6 +255,7 @@ namespace AdvancedFilters.Infra.Migrations
                     Id = table.Column<int>(nullable: false),
                     EnvironmentId = table.Column<int>(nullable: false),
                     RoleId = table.Column<int>(nullable: false),
+                    RoleCode = table.Column<string>(maxLength: 50, nullable: false),
                     UserId = table.Column<int>(nullable: false),
                     CreatedAt = table.Column<DateTime>(nullable: false),
                     ExpiresAt = table.Column<DateTime>(nullable: true),
@@ -296,6 +298,12 @@ namespace AdvancedFilters.Infra.Migrations
                 column: "ClientId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_ClientContacts_RoleCode",
+                schema: "cafe",
+                table: "ClientContacts",
+                column: "RoleCode");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_ClientContacts_EnvironmentId_EstablishmentId",
                 schema: "cafe",
                 table: "ClientContacts",
@@ -325,6 +333,12 @@ namespace AdvancedFilters.Infra.Migrations
                 schema: "cafe",
                 table: "Establishments",
                 columns: new[] { "EnvironmentId", "LegalUnitId" });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_SpecializedContacts_RoleCode",
+                schema: "cafe",
+                table: "SpecializedContacts",
+                column: "RoleCode");
 
             migrationBuilder.CreateIndex(
                 name: "IX_SpecializedContacts_EnvironmentId_EstablishmentId",

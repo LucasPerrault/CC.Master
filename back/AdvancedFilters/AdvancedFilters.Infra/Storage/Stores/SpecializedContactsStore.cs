@@ -41,7 +41,7 @@ namespace AdvancedFilters.Infra.Storage.Stores
         public static IQueryable<SpecializedContact> WhereMatches(this IQueryable<SpecializedContact> contacts, SpecializedContactFilter filter)
         {
             return contacts
-                .WhenNotNullOrEmpty(filter.RoleIds).ApplyWhere(c => filter.RoleIds.Contains(c.RoleId))
+                .WhenNotNullOrEmpty(filter.RoleCodes).ApplyWhere(c => filter.RoleCodes.Contains(c.RoleCode))
                 .WhenNotNullOrEmpty(filter.EnvironmentIds).ApplyWhere(c => filter.EnvironmentIds.Contains(c.EnvironmentId))
                 .Apply(filter.IsActive).To(c => !c.ExpiresAt.HasValue || c.ExpiresAt > DateTime.Now)
                 .Apply(filter.IsConfirmed).To(c => c.IsConfirmed);

@@ -12,6 +12,7 @@ namespace AdvancedFilters.Infra.Storage.Configurations
             builder.HasKey(c => new { c.EnvironmentId, c.Id });
 
             builder.Property(c => c.RoleId).HasColumnName("RoleId").IsRequired();
+            builder.Property(c => c.RoleCode).HasColumnName("RoleCode").IsRequired().HasMaxLength(50);
             builder.Property(c => c.ClientId).HasColumnName("ClientId").IsRequired();
             builder.Property(c => c.UserId).HasColumnName("UserId").IsRequired();
             builder.Property(c => c.CreatedAt).HasColumnName("CreatedAt").IsRequired();
@@ -35,6 +36,8 @@ namespace AdvancedFilters.Infra.Storage.Configurations
                 .HasPrincipalKey(c => c.ExternalId)
                 .HasForeignKey(c => c.ClientId)
                 .OnDelete(DeleteBehavior.NoAction);
+
+            builder.HasIndex(c => c.RoleCode);
         }
     }
 }

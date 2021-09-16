@@ -36,7 +36,7 @@ namespace AdvancedFilters.Web.Controllers
     {
         public IPageToken Page { get; set; } = null;
 
-        public IReadOnlyCollection<int> RoleId { get; set; }
+        public IReadOnlyCollection<string> RoleCode { get; set; }
         public IReadOnlyCollection<Guid> ClientId { get; set; }
         public IReadOnlyCollection<int> EnvironmentId { get; set; }
         public IReadOnlyCollection<int> EstablishmentId { get; set; }
@@ -47,7 +47,7 @@ namespace AdvancedFilters.Web.Controllers
         {
             return new ClientContactFilter
             {
-                RoleIds = RoleId,
+                RoleCodes = RoleCode,
                 ClientIds = ClientId,
                 EnvironmentIds = EnvironmentId,
                 EstablishmentIds = EstablishmentId,

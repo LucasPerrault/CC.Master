@@ -35,7 +35,7 @@ namespace AdvancedFilters.Web.Controllers
     {
         public IPageToken Page { get; set; } = null;
 
-        public IReadOnlyCollection<int> RoleId { get; set; }
+        public IReadOnlyCollection<string> RoleCode { get; set; }
         public IReadOnlyCollection<int> EnvironmentId { get; set; }
         public HashSet<bool> IsActive { get; set; } = new HashSet<bool> { true, false };
         public HashSet<bool> IsConfirmed { get; set; } = new HashSet<bool> { true, false };
@@ -44,7 +44,7 @@ namespace AdvancedFilters.Web.Controllers
         {
             return new SpecializedContactFilter
             {
-                RoleIds = RoleId,
+                RoleCodes = RoleCode,
                 EnvironmentIds = EnvironmentId,
                 IsActive = IsActive.ToCompareBoolean(),
                 IsConfirmed = IsConfirmed.ToCompareBoolean()

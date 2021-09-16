@@ -6,7 +6,7 @@ namespace AdvancedFilters.Domain.Contacts.Filters
 {
     public class ClientContactFilter
     {
-        public IReadOnlyCollection<int> RoleIds { get; set; }
+        public IReadOnlyCollection<string> RoleCodes { get; set; }
         public IReadOnlyCollection<Guid> ClientIds { get; set; }
         public IReadOnlyCollection<int> EnvironmentIds { get; set; }
         public IReadOnlyCollection<int> EstablishmentIds { get; set; }
