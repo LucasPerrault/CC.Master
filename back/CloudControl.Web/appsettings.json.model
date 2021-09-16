@@ -132,6 +132,7 @@
                     "Host": "{{ shared:UrlCloudControl }}",
                     "EnvironmentsEndpoint": "/api/environments?limit=100000&isActive=true,false&purpose=contractual",
                     "ContractsEndpoint": "/api/contracts?limit=100000&isActive=true,false",
+                    "ContractsSubdomainParamName": "subdomain",
                     "ClientsEndpoint": "/api/clients?limit=10000&isActive=true,false"
                 }
             },

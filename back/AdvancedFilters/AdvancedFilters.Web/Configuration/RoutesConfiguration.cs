@@ -28,6 +28,7 @@ namespace AdvancedFilters.Web.Configuration
         public Uri Host { get; set; }
         public string EnvironmentsEndpoint { get; set; }
         public string ContractsEndpoint { get; set; }
+        public string ContractsSubdomainParamName { get; set; }
         public string ClientsEndpoint { get; set; }
     }
 }

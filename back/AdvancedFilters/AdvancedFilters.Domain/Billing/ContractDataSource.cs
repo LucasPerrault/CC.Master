@@ -5,6 +5,8 @@ namespace AdvancedFilters.Domain.Billing
 {
     public class ContractDataSource : DataSource
     {
+        public string SubdomainsParamName { get; set; }
+
         public ContractDataSource(IDataSourceAuthentication authentication, IDataSourceRoute dataSourceRoute)
             : base(authentication, dataSourceRoute)
         { }

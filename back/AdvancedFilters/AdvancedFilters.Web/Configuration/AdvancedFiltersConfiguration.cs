@@ -42,7 +42,10 @@ namespace AdvancedFilters.Web.Configuration
         (
             new AuthorizationAuthentication(c.Auth.CloudControlAuthScheme, c.Auth.CloudControlAuthParameter),
             new HostDataSourceRoute(c.Routes.Hosts.CloudControl.Host, c.Routes.Hosts.CloudControl.ContractsEndpoint)
-        );
+        )
+        {
+            SubdomainsParamName = c.Routes.Hosts.CloudControl.ContractsSubdomainParamName
+        };
 
         public static DataSource Client(this AdvancedFiltersConfiguration c) => new ClientDataSource
         (

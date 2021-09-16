@@ -78,7 +78,7 @@ namespace AdvancedFilters.Infra.Services.Sync
 
         public Task<IDataSourceSynchronizer> BuildFromAsync(ContractDataSource dataSource)
         {
-            var context = new EmptyDataSourceContext<Contract>();
+            var context = new SubdomainSubsetDataSourceContext<Contract>(Filter.Subdomains, dataSource.SubdomainsParamName);
             var bulkUpsertConfig = new BulkUpsertConfig
             {
                 IncludeSubEntities = true
