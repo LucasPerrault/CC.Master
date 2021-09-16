@@ -8,7 +8,6 @@ using Rights.Domain;
 using Rights.Web.Attributes;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Tools;
 using Tools.Web;
 
 namespace AdvancedFilters.Web.Controllers
@@ -37,8 +36,8 @@ namespace AdvancedFilters.Web.Controllers
         public IPageToken Page { get; set; } = null;
 
         public string Search { get; set; }
-        public string Subdomain { get; set; }
-        public string Domain { get; set; }
+        public HashSet<string> Subdomain { get; set; } = new HashSet<string>();
+        public HashSet<string> Domain { get; set; } = new HashSet<string>();
         public HashSet<bool> IsActive { get; set; } = new HashSet<bool> { true, false };
 
         public EnvironmentFilter ToFilter()
@@ -46,8 +45,8 @@ namespace AdvancedFilters.Web.Controllers
             return new EnvironmentFilter
             {
                 Search = Search,
-                Subdomain = string.IsNullOrEmpty(Subdomain) ? CompareString.Bypass : CompareString.Equals(Subdomain),
-                Domain = string.IsNullOrEmpty(Domain) ? CompareString.Bypass : CompareString.Equals(Domain),
+                Subdomains = Subdomain,
+                Domains = Domain,
                 IsActive = IsActive.ToCompareBoolean()
             };
         }

@@ -49,8 +49,8 @@ namespace AdvancedFilters.Infra.Storage.Stores
         {
             return envs
                 .WhenNotNullOrEmpty(filter.Search).ApplyWhere(e => e.Subdomain.Contains(filter.Search))
-                .Apply(filter.Subdomain).To(e => e.Subdomain)
-                .Apply(filter.Domain).To(e => e.Domain)
+                .WhenNotNullOrEmpty(filter.Subdomains).ApplyWhere(e => filter.Subdomains.Contains(e.Subdomain))
+                .WhenNotNullOrEmpty(filter.Domains).ApplyWhere(e => filter.Domains.Contains(e.Domain))
                 .Apply(filter.IsActive).To(e => e.IsActive);
         }
     }
