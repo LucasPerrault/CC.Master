@@ -143,7 +143,6 @@ export const navigationTabs: INavigationTab[] = [
       name: 'front_navigation_cafeTab',
       url: NavigationPath.Cafe,
       icon: 'table',
-      // TODO : Add a restriction tab
-      restriction: { operations: [] },
+      restriction: { operations: [Operation.ReadAllCafe] },
     },
   ];
