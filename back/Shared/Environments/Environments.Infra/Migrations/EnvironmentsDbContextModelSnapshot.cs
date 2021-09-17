@@ -87,7 +87,7 @@ namespace Environments.Infra.Migrations
                         .HasColumnName("Comment")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("DistributorId")
+                    b.Property<int>("DistributorId")
                         .HasColumnName("DistributorId")
                         .HasColumnType("int");
 
@@ -132,9 +132,9 @@ namespace Environments.Infra.Migrations
                     b.Property<int>("Id")
                         .HasColumnType("int");
 
-                    b.Property<string>("ConsumerId")
+                    b.Property<int>("ConsumerId")
                         .HasColumnName("ConsumerId")
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("int");
 
                     b.Property<int>("EnvironmentId")
                         .HasColumnName("EnvironmentId")
@@ -153,7 +153,9 @@ namespace Environments.Infra.Migrations
                 {
                     b.HasOne("Distributors.Domain.Models.Distributor", "Consumer")
                         .WithMany()
-                        .HasForeignKey("ConsumerId");
+                        .HasForeignKey("ConsumerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("Environments.Domain.Environment", null)
                         .WithMany("ActiveAccesses")
