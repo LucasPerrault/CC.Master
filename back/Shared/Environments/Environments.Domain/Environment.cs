@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Text.Json.Serialization;
 
@@ -11,6 +12,7 @@ namespace Environments.Domain
         public EnvironmentDomain Domain { get; set; }
         public EnvironmentPurpose Purpose { get; set; }
         public bool IsActive { get; set; }
+        public DateTime CreatedAt { get; set; }
 
         public string ProductionHost => $"https://{Subdomain}.{GetDomainAsString(Domain)}";
 

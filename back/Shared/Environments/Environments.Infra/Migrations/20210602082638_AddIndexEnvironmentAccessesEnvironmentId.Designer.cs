@@ -87,7 +87,7 @@ namespace Environments.Infra.Migrations
                         .HasColumnName("Comment")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("DistributorId")
+                    b.Property<int>("DistributorId")
                         .HasColumnName("DistributorId")
                         .HasColumnType("nvarchar(max)");
 
