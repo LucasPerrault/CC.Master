@@ -51,7 +51,7 @@ export class ContractApiSelectComponent implements ControlValueAccessor, Validat
     }
 
     const selectedContractIds = this.selectedContracts.map(e => e.id);
-    return [`id=notequal,${ selectedContractIds.join(',') }`];
+    return [`excludedId=${ selectedContractIds.join(',') }`];
   }
 
   private destroy$: Subject<void> = new Subject();
