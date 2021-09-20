@@ -254,6 +254,10 @@ namespace AdvancedFilters.Infra.Migrations
                     b.Property<int>("Id")
                         .HasColumnType("int");
 
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnName("CreatedAt")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("Domain")
                         .IsRequired()
                         .HasColumnName("Domain")

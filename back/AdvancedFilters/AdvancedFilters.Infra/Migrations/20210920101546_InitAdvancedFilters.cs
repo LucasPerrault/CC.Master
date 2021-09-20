@@ -34,6 +34,7 @@ namespace AdvancedFilters.Infra.Migrations
                     Subdomain = table.Column<string>(maxLength: 63, nullable: false),
                     Domain = table.Column<string>(nullable: false),
                     IsActive = table.Column<bool>(nullable: false),
+                    CreatedAt = table.Column<DateTime>(nullable: false),
                     ProductionHost = table.Column<string>(nullable: false)
                 },
                 constraints: table =>

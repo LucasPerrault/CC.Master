@@ -6,6 +6,7 @@ using AdvancedFilters.Infra.Services.Sync;
 using AdvancedFilters.Infra.Storage.Services;
 using AdvancedFilters.Infra.Storage.Stores;
 using AdvancedFilters.Web.Configuration;
+using Lucca.Core.PublicData;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace AdvancedFilters.Web
@@ -44,6 +45,8 @@ namespace AdvancedFilters.Web
 
         private static void ConfigureBilling(this IServiceCollection services)
         {
+            services.AddPublicData();
+
             services.AddScoped<IClientsStore, ClientsStore>();
             services.AddScoped<IContractsStore, ContractsStore>();
             services.AddScoped<ILegalUnitsStore, LegalUnitsStore>();

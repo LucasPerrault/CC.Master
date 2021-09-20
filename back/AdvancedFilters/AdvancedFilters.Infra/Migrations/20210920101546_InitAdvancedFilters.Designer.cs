@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AdvancedFilters.Infra.Migrations
 {
     [DbContext(typeof(AdvancedFiltersDbContext))]
-    [Migration("20210916162505_InitAdvancedFilters")]
+    [Migration("20210920101546_InitAdvancedFilters")]
     partial class InitAdvancedFilters
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -255,6 +255,10 @@ namespace AdvancedFilters.Infra.Migrations
                 {
                     b.Property<int>("Id")
                         .HasColumnType("int");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnName("CreatedAt")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("Domain")
                         .IsRequired()

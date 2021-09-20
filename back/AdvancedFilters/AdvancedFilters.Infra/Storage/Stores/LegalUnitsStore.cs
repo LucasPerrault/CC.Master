@@ -3,6 +3,7 @@ using AdvancedFilters.Domain.Instance.Interfaces;
 using AdvancedFilters.Domain.Instance.Models;
 using Lucca.Core.Api.Abstractions.Paging;
 using Lucca.Core.Api.Queryable.Paging;
+using Lucca.Core.PublicData.Domain;
 using Storage.Infra.Extensions;
 using System.Linq;
 using System.Threading.Tasks;
@@ -13,23 +14,47 @@ namespace AdvancedFilters.Infra.Storage.Stores
     {
         private readonly AdvancedFiltersDbContext _dbContext;
         private readonly IQueryPager _queryPager;
+        private readonly ILuccaCountriesCollection _countriesCollection;
 
-        public LegalUnitsStore(AdvancedFiltersDbContext dbContext, IQueryPager queryPager)
+        public LegalUnitsStore
+        (
+            AdvancedFiltersDbContext dbContext,
+            IQueryPager queryPager,
+            ILuccaCountriesCollection countriesCollection
+        )
         {
             _dbContext = dbContext;
             _queryPager = queryPager;
+            _countriesCollection = countriesCollection;
         }
 
-        public Task<Page<LegalUnit>> GetAsync(IPageToken pageToken, LegalUnitFilter filter)
+        public async Task<Page<LegalUnit>> GetAsync(IPageToken pageToken, LegalUnitFilter filter)
         {
             var lus = Get(filter);
-            return _queryPager.ToPageAsync(lus, pageToken);
+            var page = await _queryPager.ToPageAsync(lus, pageToken);
+
+            return new Page<LegalUnit>
+            {
+                Count = page.Count,
+                Items = page.Items.Select(Populate),
+                Next = page.Next,
+                Prev = page.Prev
+            };
         }
 
         private IQueryable<LegalUnit> Get(LegalUnitFilter filter)
         {
             return LegalUnits
-                .WhereMatches(filter);
+                .WhereMatches(filter)
+                .AsQueryable();
+        }
+
+        private LegalUnit Populate(LegalUnit lu)
+        {
+            var luccaCountry = _countriesCollection.GetById(lu.CountryId);
+            lu.Country = new Country(luccaCountry);
+
+            return lu;
         }
 
         private IQueryable<LegalUnit> LegalUnits => _dbContext.Set<LegalUnit>();

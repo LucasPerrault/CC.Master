@@ -15,6 +15,7 @@ namespace AdvancedFilters.Infra.Storage.Configurations
             builder.Property(e => e.Subdomain).HasColumnName("Subdomain").IsRequired().HasMaxLength(63);
             builder.Property(e => e.Domain).HasColumnName("Domain").IsRequired();
             builder.Property(e => e.IsActive).HasColumnName("IsActive").IsRequired();
+            builder.Property(e => e.CreatedAt).HasColumnName("CreatedAt").IsRequired();
             builder.Property(e => e.ProductionHost).HasColumnName("ProductionHost").IsRequired();
         }
     }

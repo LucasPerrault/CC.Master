@@ -26,6 +26,8 @@ namespace AdvancedFilters.Infra.Storage.Configurations
                 .HasForeignKey(lu => lu.EnvironmentId)
                 .IsRequired()
                 .OnDelete(DeleteBehavior.NoAction);
+
+            builder.Ignore(lu => lu.Country);
         }
     }
 }
