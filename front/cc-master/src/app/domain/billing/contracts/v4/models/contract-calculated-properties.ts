@@ -12,7 +12,7 @@ export class ContractCalculatedProperties {
     const startOnCode = startedYear?.toString()?.substr(2, 2) ?? '?';
     const productAndStartOnCode = `${ productCode }${ startOnCode }`;
 
-    return [clientName, distributorName, productAndStartOnCode].join(' - ');
+    return [contract.id, clientName, distributorName, productAndStartOnCode].join(' • ');
   }
 
   public static startOn(attachments: IContractAttachment[], theoreticalStartOn: string): Date {
