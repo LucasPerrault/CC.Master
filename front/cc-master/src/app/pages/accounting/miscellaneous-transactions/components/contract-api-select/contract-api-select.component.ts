@@ -40,7 +40,6 @@ export class ContractApiSelectComponent implements ControlValueAccessor, Validat
   public onTouch: () => void;
 
   public apiUrl = '/api/contracts';
-  public apiFields = 'id,name';
 
   public formControl: FormControl = new FormControl();
   public selectedContracts: IContract[];
