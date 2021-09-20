@@ -1,0 +1,21 @@
+<label class="textfield mod-withSuffix mod-longest {{ textfieldClass }}" [ngClass]="{ 'is-error': hasRangeError }">
+  <input class="textfield-input"
+         type="number"
+         [formControl]="minimalBilling"
+         [min]="min"
+         [max]="max"
+         name="minimalBilling">
+  <span class="textfield-label">
+    {{ 'front_minimalBilling_label' | translate }}
+    <span aria-hidden="true"
+          class="lucca-icon icon-info"
+          [luTooltip]="'front_minimalBilling_eligibility_info' | translate">
+    </span>
+  </span>
+  <span class="textfield-suffix">%</span>
+  <span class="textfield-messages" *ngIf="hasRangeError">
+    <span class="textfield-messages-error">
+      {{ "front_minimalBilling_errorMessage_range" | translate: { min: min, max: max } }}
+    </span>
+  </span>
+</label>

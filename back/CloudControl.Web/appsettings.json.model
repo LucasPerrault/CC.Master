@@ -19,7 +19,7 @@
         "AllUsersEndpointPath": "/api/v3/users",
         "ApiKeysEndpointPath": "/api/v3/apikeys",
         "RedirectEndpointPath": "/auth/userlogin",
-        "LogoutEndpointPath": "/logout"
+        "LogoutEndpointPath": "/identity/logout"
     },
     "Rights": {
         "ServerUri": "{{ CC.Master:PartenairesUri }}",

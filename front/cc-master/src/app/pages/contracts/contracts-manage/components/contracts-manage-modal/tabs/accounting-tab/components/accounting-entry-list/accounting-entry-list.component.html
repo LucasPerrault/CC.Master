@@ -1,0 +1,64 @@
+<table class="table mod-small">
+  <thead class="table-head">
+    <tr class="table-head-row">
+      <th class="table-head-row-cell">
+        {{ 'front_contractPage_accountingList_column_accountingDate' | translate }}
+      </th>
+      <th class="table-head-row-cell">
+        {{ 'front_contractPage_accountingList_column_label' | translate }}
+      </th>
+      <th class="table-head-row-cell">
+        {{ 'front_contractPage_accountingList_column_journalCode' | translate }}
+      </th>
+      <th class="table-head-row-cell">
+        {{ 'front_contractPage_accountingList_column_reference' | translate }}
+      </th>
+      <th class="table-head-row-cell">
+        {{ 'front_contractPage_accountingList_column_debit' | translate }}
+      </th>
+      <th class="table-head-row-cell">
+        {{ 'front_contractPage_accountingList_column_credit' | translate }}
+      </th>
+      <th class="table-head-row-cell">
+        {{ 'front_contractPage_accountingList_column_lettering' | translate }}
+      </th>
+    </tr>
+  </thead>
+  <tbody class="table-body">
+    <tr class="table-body-row"
+        *ngFor="let accountingEntry of accountingEntries; trackBy: trackBy"
+        [ngClass]="{ 'mod-lettered': isLettered(accountingEntry) }">
+      <td class="table-body-row-cell">{{ accountingEntry.accountingDate | date : 'MM/y' }}</td>
+      <td class="table-body-row-cell">{{ accountingEntry.label }}</td>
+      <td class="table-body-row-cell">{{ accountingEntry.journalCode }}</td>
+      <td class="table-body-row-cell">
+        <ng-container *ngIf="isBill(accountingEntry.journalCode)">
+          {{ accountingEntry.reference }}
+        </ng-container>
+      </td>
+      <td class="table-body-row-cell">
+        <ng-container *ngIf="!accountingEntry.isCredit">
+          {{ accountingEntry.euroAmount | currency : 'EUR' : 'symbol' : '1.2-2' }}
+        </ng-container>
+      </td>
+      <td class="table-body-row-cell">
+        <ng-container *ngIf="accountingEntry.isCredit">
+          {{ accountingEntry.euroAmount | currency : 'EUR' : 'symbol' : '1.2-2' }}
+        </ng-container>
+      </td>
+      <td class="table-body-row-cell">
+        {{ accountingEntry.letter }}
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="loading mod-dialog u-marginTopBig" *ngIf="isUpdated"></div>
+
+
+<div class="loading u-positionSticky u-left0" *ngIf="isLoadingMore"></div>
+
+<section class="emptyState" *ngIf="isEmpty">
+  <h3 class="emptyState-title">{{ 'front_contractPage_accountingList_emptyState_title' | translate }}</h3>
+  <p class="emptyState-description">{{ 'front_contractPage_accountingList_emptyState_information' | translate }}</p>
+</section>

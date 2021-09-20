@@ -1,0 +1,39 @@
+<div class="loading mod-dialog" *ngIf="isLoading$ | async; else isNotLoading"></div>
+
+<ng-template #isNotLoading>
+  <table class="table">
+    <thead class="table-head">
+    <tr class="table-head-row">
+      <th class="table-head-row-cell">{{ 'front_contractPage_contractLog_column_type' | translate }}</th>
+      <th class="table-head-row-cell">{{ 'front_contractPage_contractLog_column_field' | translate }}</th>
+      <th class="table-head-row-cell">{{ 'front_contractPage_contractLog_column_value' | translate }}</th>
+      <th class="table-head-row-cell">{{ 'front_contractPage_contractLog_column_updatedAt' | translate }}</th>
+      <th class="table-head-row-cell">{{ 'front_contractPage_contractLog_column_editor' | translate }}</th>
+    </tr>
+    </thead>
+    <tbody class="table-body">
+    <tr class="table-body-row" *ngFor="let contractLog of (contractLogs$ | async)">
+      <td class="table-body-row-cell">
+        {{ getContractLogType(contractLog.logType) }}
+      </td>
+      <td class="table-body-row-cell">
+        {{ contractLog.dataName }}
+      </td>
+      <td class="table-body-row-cell">
+        {{ contractLog.dataValue }}
+      </td>
+      <td class="table-body-row-cell">
+        {{ contractLog.logDate | date: 'shortDate' }} {{ contractLog.logDate | date: 'mediumTime' }}
+      </td>
+      <td class="table-body-row-cell">
+        {{ contractLog.nameAuthor }}
+      </td>
+    </tr>
+    </tbody>
+  </table>
+
+  <section class="emptyState" *ngIf="isEmpty$ | async">
+    <h3 class="emptyState-title">{{ 'front_contractPage_contractLogs_emptyState_title' | translate }}</h3>
+    <p class="emptyState-description">{{ 'front_contractPage_contractLogs_emptyState_information' | translate }}</p>
+  </section>
+</ng-template>

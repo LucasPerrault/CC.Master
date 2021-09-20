@@ -4,6 +4,73 @@ $commons: (
     base: #FFFFFF,
     lightest: #F2F5F6,
   ),
+  softs: (
+    cleemy: (
+      color: #5FC871,
+      text: #FFFFFF,
+      dark: #17441F,
+    ),
+    figgo: (
+      color: #686ACF,
+      text: #FFFFFF,
+      dark: #2E307A
+    ),
+    pagga: (
+      color: #FFB900,
+      text: #000000,
+      dark: #EB7900,
+    ),
+    timmi-timesheet: (
+      color: #0BA389,
+      text: #FFFFFF,
+      dark: #00806A
+    ),
+    timmi-project: (
+      color: #7842AE,
+      text: #FFFFFF,
+      dark: #542B7D
+    ),
+    poplee-core-rh: (
+      color: #0C88EF,
+      text: #FFFFFF,
+      dark: #04365E
+    ),
+    poplee-rem: (
+      color: #345be5,
+      text: #FFFFFF,
+      dark: #192d75,
+    ),
+    poplee-entretiens: (
+      color: #2DB7D3,
+      text: #000000,
+      dark: #1D7587
+    ),
+    sirh-paie: (
+      color: #F60,
+      text: #FFFFFF,
+      dark: #e63a00
+    ),
+    essentiel: (
+      color: #0c88ef,
+      text: #FFFFFF,
+      dark: #076aad
+    ),
+    startup: (
+      color: #0497a7,
+      text: #000000,
+      dark: #0c4147
+    ),
+    nikoniko: (
+      color: #6dcdc8,
+      text: #FFFFFF,
+      dark: #4c9187,
+    ),
+    others: (
+      color: #88A0C3,
+      text: #FFFFFF,
+      dark: #112036,
+    )
+  )
 );
 
-$theme: _set($theme, "commons", $commons);
+$theme: _set($theme, 'commons', $commons);

@@ -1,17 +1,24 @@
-<form [formGroup]="dateRangeSelected" class="u-displayInlineFlex u-alignItemsCenter u-flexWrapWrap u-middle">
-  <label class="textfield" [ngClass]="class">
+<form [formGroup]="dateRangeSelected" (focusin)="onTouch()" [ngClass]="datesClass">
+  <label class="textfield {{ configuration.startDateConfiguration.class }}"
+         [ngClass]="{ 'is-required': required, 'is-error': isError }">
     <lu-date-select class="textfield-input"
                     formControlName="startDate"
-                    [max]="endDate || todayDate"
+                    [granularity]="configuration.startDateConfiguration.granularity"
+                    [required]="required"
+                    [min]="configuration.startDateConfiguration.min"
+                    [max]="endDate || configuration.startDateConfiguration.max"
                     [placeholder]="'front_filterLabel_startDate' | translate">
     </lu-date-select>
   </label>
 
-  <label class="textfield" [ngClass]="class">
+  <label class="textfield {{ configuration.endDateConfiguration.class }}"
+         [ngClass]="{ 'is-required': required, 'is-error': isError }">
     <lu-date-select class="textfield-input"
                     formControlName="endDate"
-                    [min]="startDate"
-                    [max]="todayDate"
+                    [granularity]="configuration.startDateConfiguration.granularity"
+                    [required]="required"
+                    [min]="startDate || configuration.endDateConfiguration.min"
+                    [max]="configuration.endDateConfiguration.max"
                     [placeholder]="'front_filterLabel_endDate' | translate">
     </lu-date-select>
   </label>

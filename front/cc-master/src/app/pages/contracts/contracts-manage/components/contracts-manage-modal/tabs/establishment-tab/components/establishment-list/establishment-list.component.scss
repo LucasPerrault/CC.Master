@@ -1,0 +1,12 @@
+.mod-tableContainer {
+  overflow: auto;
+  display: block;
+  max-height: 20rem;
+}
+
+.table .table-head-row {
+  position: sticky;
+  z-index: 10;
+  top: 0;
+  background-color: white;
+}

@@ -36,10 +36,20 @@ namespace Instances.Infra.Shared
             return GetShortNamePrefix(parsedCluster) + GetClusterNumber(parsedCluster);
         }
 
+        public static string GetSpecificDomain(string cluster)
+        {
+            return cluster.ToLowerInvariant() switch
+            {
+                "ch1" => "lucca-ch.local",
+                _ => null
+            };
+        }
+
         private static string GetShortNamePrefix(ParsedCluster context)
         {
             return context.Name switch
             {
+                "ch" => "ch",
                 "cluster" => "c",
                 "demo" => "dm",
                 "preview" => "pw",

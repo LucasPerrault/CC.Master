@@ -37,6 +37,7 @@ namespace Core.Proxy.Infra.Extensions
             "/cc-master",
             "/logs",
             "/sources",
+            "/accounting"
         };
 
         public static IApplicationBuilder UseLegacyCloudControlHttpProxy(this IApplicationBuilder app)

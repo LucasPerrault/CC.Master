@@ -1,4 +1,5 @@
 using Instances.Domain.CodeSources;
+using Lucca.Core.Shared.Domain.Exceptions;
 using System.Net.Http;
 using System.Text;
 using System.Text.Json;
@@ -56,6 +57,10 @@ namespace Instances.Infra.CodeSources
         private async Task<string> GetBuildNumberAsync(string baseUri, string type)
         {
             var response = await _httpClient.GetAsync($"{baseUri}api/json");
+            if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
+            {
+                throw new BadRequestException("Jenkins job not found (invalid branch)");
+            }
             response.EnsureSuccessStatusCode();
 
             await using var body = await response.Content.ReadAsStreamAsync();

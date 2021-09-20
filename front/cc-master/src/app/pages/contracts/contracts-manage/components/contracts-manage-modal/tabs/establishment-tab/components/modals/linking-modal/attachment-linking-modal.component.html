@@ -1,0 +1,26 @@
+<div class="callout mod-icon palette-grey">
+  <div class="callout-icon">
+    <span aria-hidden="true" class="lucca-icon icon-info"></span>
+  </div>
+  {{ 'front_contractPage_establishments_linking_modal_monthRebate_info' | translate }}
+</div>
+
+
+<form [formGroup]="formGroup">
+  <label class="textfield is-required palette-grey mod-block">
+    <lu-date-select class="textfield-input"
+                    [granularity]="granularity.month"
+                    [formControlName]="formKey.StartDate"
+                    [min]="min"
+                    [required]="true">
+    </lu-date-select>
+    <span class="textfield-label">
+      {{ 'front_contractPage_establishments_startDate_select_label' | translate }}
+    </span>
+  </label>
+
+  <cc-theoretical-month-rebate textfieldClass="palette-grey mod-block"
+                               [formControlName]="formKey.MonthRebate"
+                               [required]="true">
+  </cc-theoretical-month-rebate>
+</form>

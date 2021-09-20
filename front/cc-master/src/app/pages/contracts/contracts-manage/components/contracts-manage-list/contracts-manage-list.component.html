@@ -1,0 +1,120 @@
+<table class="table mod-clickable">
+  <thead class="table-head">
+    <tr class="table-head-row">
+      <th class="table-head-row-cell size-smaller u-textRight"
+          [ngClass]="{ 'mod-columnFixed': (hasHorizontalScroll$ | async) }">
+        {{ "front_contractPage_column_id" | translate }}
+      </th>
+      <th class="table-head-row-cell size-big"
+          [ngClass]="{ 'mod-columnFixed': (hasHorizontalScroll$ | async) }"
+          [attr.aria-sort]="getSortOrderClass(sortParamKey.Client)">
+        <button class="table-head-row-cell-sortableButton" (click)="sortBy(sortParamKey.Client)">
+          {{ "front_contractPage_column_client" | translate }}
+        </button>
+      </th>
+      <th class="table-head-row-cell size-small"
+          [ngClass]="isHidden(contractHiddenColumn.Distributor)"
+          [attr.aria-sort]="getSortOrderClass(sortParamKey.Distributor)">
+        <button class="table-head-row-cell-sortableButton" (click)="sortBy(sortParamKey.Distributor)">
+          {{ getHiddenColumnName(contractHiddenColumn.Distributor) }}
+        </button>
+      </th>
+      <th class="table-head-row-cell size-smaller" [ngClass]="isHidden(contractHiddenColumn.Vintage)">
+          {{ getHiddenColumnName(contractHiddenColumn.Vintage) }}
+      </th>
+      <th class="table-head-row-cell size-medium"
+          [ngClass]="isHidden(contractHiddenColumn.Product)"
+          [attr.aria-sort]="getSortOrderClass(sortParamKey.Product)">
+        <button class="table-head-row-cell-sortableButton" (click)="sortBy(sortParamKey.Product)">
+          {{ getHiddenColumnName(contractHiddenColumn.Product) }}
+        </button>
+      </th>
+      <th class="table-head-row-cell size-small"
+          [ngClass]="isHidden(contractHiddenColumn.Offer)"
+          [attr.aria-sort]="getSortOrderClass(sortParamKey.Offer)">
+        <button class="table-head-row-cell-sortableButton" (click)="sortBy(sortParamKey.Offer)">
+          {{ getHiddenColumnName(contractHiddenColumn.Offer) }}
+        </button>
+      </th>
+      <th class="table-head-row-cell size-big" [ngClass]="isHidden(contractHiddenColumn.Status)">
+        {{ getHiddenColumnName(contractHiddenColumn.Status) }}
+      </th>
+      <th class="table-head-row-cell size-small" [ngClass]="isHidden(contractHiddenColumn.StartAt)">
+        {{ getHiddenColumnName(contractHiddenColumn.StartAt) }}
+      </th>
+      <th class="table-head-row-cell size-small"
+          [ngClass]="isHidden(contractHiddenColumn.CloseOn)"
+          [attr.aria-sort]="getSortOrderClass(sortParamKey.CloseOn)">
+        <button class="table-head-row-cell-sortableButton" (click)="sortBy(sortParamKey.CloseOn)">
+          {{ getHiddenColumnName(contractHiddenColumn.CloseOn) }}
+        </button>
+      </th>
+      <th class="table-head-row-cell size-small"
+          [ngClass]="isHidden(contractHiddenColumn.CreatedOn)"
+          [attr.aria-sort]="getSortOrderClass(sortParamKey.CreatedOn)">
+        <button class="table-head-row-cell-sortableButton u-nowrap" (click)="sortBy(sortParamKey.CreatedOn)">
+          {{ getHiddenColumnName(contractHiddenColumn.CreatedOn) }}
+        </button>
+      </th>
+      <th class="table-head-row-cell size-bigger" [ngClass]="isHidden(contractHiddenColumn.Establishments)">
+        {{ getHiddenColumnName(contractHiddenColumn.Establishments) }}
+      </th>
+      <th class="table-head-row-cell size-smallest" [ngClass]="isHidden(contractHiddenColumn.EstablishmentsHealth)"></th>
+    </tr>
+  </thead>
+  <tbody class="table-body">
+    <tr *ngFor="let contract of contracts" class="table-body-row" [routerLink]="[contract.id]" queryParamsHandling="preserve">
+      <td class="table-body-row-cell size-smaller u-textRight"
+          [ngClass]="{ 'mod-columnFixed': (hasHorizontalScroll$ | async) }">
+        {{ contract.id }}
+      </td>
+      <td class="table-body-row-cell size-big"
+          [ngClass]="{ 'mod-columnFixed': (hasHorizontalScroll$ | async) }">
+        {{ contract.client.name }}
+      </td>
+      <td class="table-body-row-cell size-small" [ngClass]="isHidden(contractHiddenColumn.Distributor)">
+        {{ getOnlyDistributorName(contract.distributor.name) }}
+      </td>
+      <td class="table-body-row-cell size-smaller" [ngClass]="isHidden(contractHiddenColumn.Vintage)">
+        {{ getContractVintage(contract) }}
+      </td>
+      <td class="table-body-row-cell size-medium" [ngClass]="isHidden(contractHiddenColumn.Product)">
+        <cc-product-chip [product]="contract.product"></cc-product-chip>
+      </td>
+      <td class="table-body-row-cell size-small" [ngClass]="isHidden(contractHiddenColumn.Offer)">
+        {{ contract.offer.name }}
+      </td>
+      <td class="table-body-row-cell size-big" [ngClass]="isHidden(contractHiddenColumn.Status)">
+        {{ getContractStatus(contract.theoricalStartOn, contract.closeOn) }}
+      </td>
+      <td class="table-body-row-cell size-small" [ngClass]="isHidden(contractHiddenColumn.StartAt)">
+        {{ contract.theoricalStartOn | date : "shortDate" }}
+      </td>
+      <td class="table-body-row-cell size-small" [ngClass]="isHidden(contractHiddenColumn.CloseOn)">
+        {{ contract.closeOn | date : "shortDate" }}
+      </td>
+      <td class="table-body-row-cell size-small" [ngClass]="isHidden(contractHiddenColumn.CreatedOn)">
+        {{ contract.createdOn | date : "shortDate" }}
+      </td>
+      <td class="table-body-row-cell size-bigger" [ngClass]="isHidden(contractHiddenColumn.Establishments)">
+        {{ getEstablishmentNames(contract.activeLegalEntities) }}
+      </td>
+      <td class="table-body-row-cell size-smallest" [ngClass]="isHidden(contractHiddenColumn.EstablishmentsHealth)">
+        <span aria-hidden="true"
+              class="lucca-icon"
+              [luTooltip]="getEstablishmentHealthName(contract)"
+              [ngClass]="getEstablishmentHealth(contract).icon">
+        </span>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="loading u-positionSticky u-left0" *ngIf="isLoadingMore"></div>
+
+<section class="emptyState" *ngIf="isEmpty">
+  <h3 class="emptyState-title">{{ 'front_contractPage_emptyState_title' | translate }}</h3>
+  <p class="emptyState-description">{{ 'front_contractPage_emptyState_information' | translate }}</p>
+</section>
+
+

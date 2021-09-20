@@ -1,0 +1,19 @@
+<div class="loading mod-dialog" *ngIf="isLoading$ | async; else isNotLoading"></div>
+
+<ng-template #isNotLoading>
+  <cc-closure-cancellation *ngIf="(isContractClosed$ | async); else isContractOpened"
+                           [contractClosureDetailed]="contractClosureDetailed$ | async"
+                           [closeCancelButtonState]="cancelButtonState$ | async"
+                           (cancelClosure)="cancelClosure()">
+  </cc-closure-cancellation>
+
+  <ng-template #isContractOpened>
+    <cc-contract-closure-form [contractClosureDetailed]="contractClosureDetailed$ | async"
+                              [lastAttachmentEnded]="lastAttachmentEnded$ | async"
+                              [formValidationContext]="closureFormValidationContext$ | async"
+                              [maxContractClosedDate]="maxContractClosedDate$ | async"
+                              [closeButtonState]="closeButtonState$ | async"
+                              (closeContract)="closeContract($event)">
+    </cc-contract-closure-form>
+  </ng-template>
+</ng-template>

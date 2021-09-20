@@ -1,0 +1,15 @@
+<section class="u-marginBottomSmaller">
+  <header class="section-header" (click)="toggleEstablishmentSectionDisplay()">
+    <div class="mod-accordion">
+      <i class="lucca-icon">{{ isExpandedByDefault ? 'arrow_south': 'arrow_north' }}</i>
+      <i class="lucca-icon">{{ isExpandedByDefault ? 'arrow_north': 'arrow_south' }}</i>
+    </div>
+
+    <span class="label mod-number">{{ totalCount }}</span>
+    <h4 class="section-title">{{ title }}</h4>
+  </header>
+
+  <ng-container *ngIf="isExpandedByDefault">
+    <ng-content></ng-content>
+  </ng-container>
+</section>

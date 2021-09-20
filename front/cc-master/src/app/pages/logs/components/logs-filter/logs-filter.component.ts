@@ -1,5 +1,7 @@
 import { Component, forwardRef, OnDestroy, OnInit } from '@angular/core';
 import { ControlValueAccessor, FormControl, FormGroup, NG_VALUE_ACCESSOR } from '@angular/forms';
+import { IDateRangeConfiguration } from '@cc/common/forms/select/date-range-select';
+import { ELuDateGranularity } from '@lucca-front/ng/core';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
@@ -34,6 +36,19 @@ export class LogsFiltersComponent implements ControlValueAccessor, OnInit, OnDes
 
   public filtersFormGroup: FormGroup;
   public filtersKey = LogsFilterKey;
+
+  public dateRangeConfiguration: IDateRangeConfiguration = {
+    startDateConfiguration: {
+      granularity: ELuDateGranularity.day,
+      max: new Date(),
+      class: 'palette-grey mod-outlined mod-inline mod-short',
+    },
+    endDateConfiguration: {
+      granularity: ELuDateGranularity.day,
+      max: new Date(),
+      class: 'palette-grey mod-outlined mod-inline mod-short',
+    },
+  };
 
   private readonly additionalFiltersKey = [LogsFilterKey.Domains, LogsFilterKey.IsAnonymized];
 

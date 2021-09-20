@@ -1,16 +1,18 @@
 <form class="u-displayFlex u-flexDirectionColumn u-flexWrapWrap" [formGroup]="filtersFormGroup">
   <div class="u-displayFlex u-alignItemsFlexStart">
     <div class="u-displayFlex u-flexWrapWrap u-alignItemsFlexStart">
-      <cc-user-api-select class="palette-grey mod-outlined mod-inline" [formControlName]="filtersKey.Users">
+      <cc-user-api-select textfieldClass="palette-grey mod-outlined mod-inline" [formControlName]="filtersKey.Users">
       </cc-user-api-select>
 
-      <cc-environment-action-select class="palette-grey mod-outlined mod-inline u-marginBottomSmallest" [formControlName]="filtersKey.Actions">
+      <cc-environment-action-select textfieldClass="palette-grey mod-outlined mod-inline u-marginBottomSmallest" [formControlName]="filtersKey.Actions">
       </cc-environment-action-select>
 
-      <cc-environment-api-select class="palette-grey mod-outlined mod-inline u-marginBottomSmallest" [formControlName]="filtersKey.Environments">
+      <cc-environment-api-select [multiple]="true" textfieldClass="palette-grey mod-outlined mod-inline u-marginBottomSmallest" [formControlName]="filtersKey.Environments">
       </cc-environment-api-select>
 
-      <cc-date-range-select class="palette-grey mod-outlined mod-inline mod-short u-marginBottomSmallest" [formControlName]="filtersKey.CreatedOn">
+      <cc-date-range-select datesClass="palette-grey mod-outlined mod-inline mod-short u-marginBottomSmallest"
+                            [configuration]="dateRangeConfiguration"
+                            [formControlName]="filtersKey.CreatedOn">
       </cc-date-range-select>
     </div>
 
@@ -24,7 +26,7 @@
   </div>
 
   <div class="u-displayFlex u-flexWrapWrap u-alignItemsFlexStart u-animatedFadeIn u-marginTopSmallest" *ngIf="showMoreFilters">
-    <cc-environment-domain-select class="palette-grey mod-outlined mod-inline " [formControlName]="filtersKey.Domains">
+    <cc-environment-domain-select textfieldClass="palette-grey mod-outlined mod-inline " [formControlName]="filtersKey.Domains">
     </cc-environment-domain-select>
 
     <cc-anonymization-button-group class="u-marginRightSmallest" [formControlName]="filtersKey.IsAnonymized">

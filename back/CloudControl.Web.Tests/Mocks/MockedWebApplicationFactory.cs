@@ -23,7 +23,7 @@ namespace CloudControl.Web.Tests.Mocks
 
     public class MockedWebApplicationFactory : WebApplicationFactory<Startup>
     {
-        private readonly List<(Type, Mock)> _mocks = new List<(Type, Mock)>();
+        public MockedWebApplicationMocks Mocks { get; } = new MockedWebApplicationMocks();
 
         protected override IWebHostBuilder CreateWebHostBuilder()
         {
@@ -31,12 +31,13 @@ namespace CloudControl.Web.Tests.Mocks
                 .UseEnvironment("Development")
                 .ConfigureServices(s =>
                 {
-                    s.AddSingleton<ServicesConfiguration>(sp => new MockedServicesConfiguration(sp.GetRequiredService<IConfiguration>(), sp.GetRequiredService<IWebHostEnvironment>()));
-                    foreach (var (type, mock) in _mocks)
-                    {
-                        s.AddSingleton(type, mock.Object);
-                    }
+                    s.AddSingleton<ServicesConfiguration>(sp => new MockedServicesConfiguration
+                    (
+                        sp.GetRequiredService<IConfiguration>(),
+                        sp.GetRequiredService<IWebHostEnvironment>()
+                    ));
                 })
+                .ConfigureTestServices(Mocks.ConfigureAdditionalServices)
                 .UseStartup<Startup>()
                 .UseSetting(WebHostDefaults.ApplicationKey, typeof(Startup).Assembly.GetName().Name)
                 .UseTestServer();
@@ -44,25 +45,24 @@ namespace CloudControl.Web.Tests.Mocks
 
         public HttpClient CreateAuthenticatedClient()
         {
-            var httpClient = this.CreateClient();
+            var httpClient = CreateClient();
             var fakeUserToken = "5b2c0440-2acf-443a-9b1d-3a2a1e09dad4";
             httpClient.DefaultRequestHeaders.Authorization = System.Net.Http.Headers.AuthenticationHeaderValue.Parse($"Cloudcontrol user={fakeUserToken}");
             return httpClient;
         }
 
-        public void AddServiceMock<T>(Mock<T> mock) where T : class
-        {
-            _mocks.Add((typeof(T), mock));
-        }
 
+        public new HttpClient CreateClient()
+        {
+            return CreateClient(new WebApplicationFactoryClientOptions { AllowAutoRedirect = false });
+        }
     }
 
     public class MockedServicesConfiguration : ServicesConfiguration
     {
         public MockedServicesConfiguration(IConfiguration configuration, IWebHostEnvironment env)
             : base(configuration, env)
-        {
-        }
+        { }
 
         public override AppConfiguration ConfigureConfiguration(IServiceCollection services)
         {
@@ -159,7 +159,6 @@ namespace CloudControl.Web.Tests.Mocks
         }
 
         public override void ConfigureSalesforce(IServiceCollection services, AppConfiguration configuration)
-        {
-        }
+        { }
     }
 }

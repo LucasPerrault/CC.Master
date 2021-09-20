@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 
 import { SortOrder } from '../enums/sort-order.enum';
+import { SortOrderClass } from '../enums/sort-order-class.enum';
 import { ISortParams } from '../models/sort-params.interface';
 
 @Injectable()
@@ -11,6 +12,14 @@ export class SortService {
     }
 
     return sortParams.field === field && sortParams.order === order;
+  }
+
+  public getSortOrderClass(field: string, sortParams: ISortParams): string {
+    if (sortParams.field !== field) {
+      return SortOrderClass.None;
+    }
+
+    return sortParams.order === SortOrder.Asc ? SortOrderClass.Ascending : SortOrderClass.Descending;
   }
 
   public updateSortParam(field: string, order: SortOrder, sortParams: ISortParams): ISortParams {
