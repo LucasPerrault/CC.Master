@@ -8,7 +8,8 @@ import {
   ValidationErrors,
   Validator,
 } from '@angular/forms';
-import { IContract } from '@cc/domain/billing/contracts';
+import { IContract } from '@cc/domain/billing/contracts/v4';
+import { ContractCalculatedProperties } from '@cc/domain/billing/contracts/v4/models/contract-calculated-properties';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
@@ -38,7 +39,7 @@ export class ContractApiSelectComponent implements ControlValueAccessor, Validat
   public onChange: (contracts: IContract | IContract[]) => void;
   public onTouch: () => void;
 
-  public apiUrl = '/api/v3/newcontracts';
+  public apiUrl = '/api/contracts';
   public apiFields = 'id,name';
 
   public formControl: FormControl = new FormControl();
@@ -86,6 +87,10 @@ export class ContractApiSelectComponent implements ControlValueAccessor, Validat
     if (this.formControl.invalid) {
       return { invalid: true };
     }
+  }
+
+  public getContractName(contract: IContract): string {
+    return ContractCalculatedProperties.name(contract);
   }
 
   public onOpen(): void {

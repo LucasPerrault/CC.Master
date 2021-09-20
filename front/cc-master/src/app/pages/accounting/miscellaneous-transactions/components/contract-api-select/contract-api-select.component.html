@@ -12,23 +12,23 @@
         <span class="label">{{ value.length }}</span>
           {{ 'front_miscTransactionsPage_contract_filter_selection' | translate: { count: value.length } }}
       </span>
-        <ng-template #singleView>{{ value[0].name }}</ng-template>
+        <ng-template #singleView>{{ getContractName(value[0]) }}</ng-template>
       </ng-container>
 
-      <ng-template #notMultiple>{{ value.name }}</ng-template>
+      <ng-template #notMultiple>{{ getContractName(value) }}</ng-template>
     </ng-container>
 
     <lu-option-picker-advanced>
       <header class="lu-picker-header">
-        <lu-api-paged-searcher [api]="apiUrl" [fields]="apiFields" [filters]="filtersToExcludeSelection"></lu-api-paged-searcher>
+        <lu-api-paged-searcher [api]="apiUrl" standard="v4" [filters]="filtersToExcludeSelection"></lu-api-paged-searcher>
       </header>
       <lu-option-pager></lu-option-pager>
       <lu-option *ngFor="let selectedContract of selectedContracts" [value]="selectedContract" selected>
-        {{ selectedContract.name }}
+        {{ getContractName(selectedContract) }}
       </lu-option>
 
       <lu-option *luForOptions="let contractNotSelected; trackBy: trackBy" [value]="contractNotSelected">
-          {{ contractNotSelected.name }}
+          {{ getContractName(contractNotSelected) }}
       </lu-option>
     </lu-option-picker-advanced>
     <lu-input-clearer></lu-input-clearer>
