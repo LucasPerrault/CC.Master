@@ -29,15 +29,9 @@ namespace Environments.Web.Controllers
 
         [HttpGet("distributorAccesses")]
         [ForbidIfMissing(Operation.ReadEnvironments)]
-        public async Task<Page<EnvironmentWithAccess>> GetAccessesAsync([FromQuery]EnvironmentQuery query)
+        public Task<Page<EnvironmentWithAccess>> GetAccessesAsync([FromQuery]EnvironmentQuery query)
         {
-            var envsWithAccess = await _repository.GetAccessesAsync(query.ToFilter());
-
-            return new Page<EnvironmentWithAccess>
-            {
-                Count = envsWithAccess.Count,
-                Items = envsWithAccess
-            };
+            return _repository.GetAccessesAsync(query.Page, query.ToFilter());
         }
     }
 }

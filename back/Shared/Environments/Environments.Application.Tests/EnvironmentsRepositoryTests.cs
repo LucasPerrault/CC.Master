@@ -3,12 +3,14 @@ using Distributors.Domain.Models;
 using Environments.Domain;
 using Environments.Domain.Storage;
 using FluentAssertions;
-using Lucca.Core.Shared.Domain.Exceptions;
+using Lucca.Core.Api.Abstractions.Fields;
+using Lucca.Core.Api.Abstractions.Paging;
+using Lucca.Core.Api.Abstractions.Sorting;
 using Moq;
 using Rights.Domain;
 using Rights.Domain.Abstractions;
+using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Tools;
 using Users.Domain;
@@ -29,25 +31,7 @@ namespace Environments.Application.Tests
                 .ReturnsAsync(new List<ScopedPermission>());
         }
 
-        [Fact]
-        public async Task ShouldThrowWhenNotFound()
-        {
-
-            var environment = new Environment
-            {
-                Id = 24,
-                Subdomain = "black-mesa",
-                ActiveAccesses = new List<EnvironmentSharedAccess>()
-            };
-
-            _envStoreMock
-                .Setup(e => e.GetAsync(It.IsAny<List<EnvironmentAccessRight>>(), It.IsAny<EnvironmentFilter>()))
-                .ReturnsAsync(new List<Environment>());
-
-            var repository = NewRepository();
-            var accesses = await repository.GetAccessesAsync(FilterBySubdomain("aperture-science"));
-            accesses.Should().BeEmpty();
-        }
+        private static Page<Environment> ToPage(List<Environment> envs) => new Page<Environment> { Items = envs };
 
         [Fact]
         public async Task ShouldReturnNothingAccess()
@@ -60,11 +44,11 @@ namespace Environments.Application.Tests
             };
 
             _envStoreMock
-                .Setup(e => e.GetAsync(It.IsAny<List<EnvironmentAccessRight>>(), It.IsAny<EnvironmentFilter>()))
-                .ReturnsAsync(new List<Environment> { environment });
+                .Setup(e => e.GetAsync(It.IsAny<IPageToken>(), It.IsAny<List<EnvironmentAccessRight>>(), It.IsAny<EnvironmentFilter>()))
+                .ReturnsAsync(ToPage(new List<Environment> { environment }));
 
             var repository = NewRepository();
-            var accesses = await repository.GetAccessesAsync(FilterBySubdomain("aperture-science"));
+            var accesses = await repository.GetAccessesAsync(null, FilterBySubdomain("aperture-science"));
 
             var expected = new EnvironmentWithAccess
             {
@@ -73,7 +57,7 @@ namespace Environments.Application.Tests
                 Accesses = new HashSet<DistributorWithAccess>()
             };
 
-            accesses.Should().Equals(expected);
+            accesses.Items.Should().Equals(expected);
         }
 
         [Fact]
@@ -94,11 +78,11 @@ namespace Environments.Application.Tests
             };
 
             _envStoreMock
-                .Setup(e => e.GetAsync(It.IsAny<List<EnvironmentAccessRight>>(), It.IsAny<EnvironmentFilter>()))
-                .ReturnsAsync(new List<Environment> { environment });
+                .Setup(e => e.GetAsync(It.IsAny<IPageToken>(), It.IsAny<List<EnvironmentAccessRight>>(), It.IsAny<EnvironmentFilter>()))
+                .ReturnsAsync(ToPage(new List<Environment> { environment }));
 
             var repository = NewRepository();
-            var accesses = await repository.GetAccessesAsync(FilterBySubdomain("aperture-science"));
+            var accesses = await repository.GetAccessesAsync(null, FilterBySubdomain("aperture-science"));
 
             var expected = new EnvironmentWithAccess
             {
@@ -110,7 +94,7 @@ namespace Environments.Application.Tests
                 }
             };
 
-            accesses.Should().Equal(expected);
+            accesses.Items.Should().Equal(expected);
         }
 
         [Fact]
@@ -136,11 +120,11 @@ namespace Environments.Application.Tests
             };
 
             _envStoreMock
-                .Setup(e => e.GetAsync(It.IsAny<List<EnvironmentAccessRight>>(), It.IsAny<EnvironmentFilter>()))
-                .ReturnsAsync(new List<Environment> { environment });
+                .Setup(e => e.GetAsync(It.IsAny<IPageToken>(), It.IsAny<List<EnvironmentAccessRight>>(), It.IsAny<EnvironmentFilter>()))
+                .ReturnsAsync(ToPage(new List<Environment> { environment }));
 
             var repository = NewRepository();
-            var accesses = await repository.GetAccessesAsync(FilterBySubdomain("aperture-science"));
+            var accesses = await repository.GetAccessesAsync(null, FilterBySubdomain("aperture-science"));
 
             var expected = new EnvironmentWithAccess
             {
@@ -152,7 +136,7 @@ namespace Environments.Application.Tests
                 }
             };
 
-            accesses.Should().Equal(expected);
+            accesses.Items.Should().Equal(expected);
         }
 
         [Fact]
@@ -178,11 +162,11 @@ namespace Environments.Application.Tests
             };
 
             _envStoreMock
-                .Setup(e => e.GetAsync(It.IsAny<List<EnvironmentAccessRight>>(), It.IsAny<EnvironmentFilter>()))
-                .ReturnsAsync(new List<Environment> { environment });
+                .Setup(e => e.GetAsync(It.IsAny<IPageToken>(), It.IsAny<List<EnvironmentAccessRight>>(), It.IsAny<EnvironmentFilter>()))
+                .ReturnsAsync(ToPage(new List<Environment> { environment }));
 
             var repository = NewRepository();
-            var accesses = await repository.GetAccessesAsync(FilterBySubdomain("aperture-science"));
+            var accesses = await repository.GetAccessesAsync(null, FilterBySubdomain("aperture-science"));
 
             var expected = new EnvironmentWithAccess
             {
@@ -195,7 +179,7 @@ namespace Environments.Application.Tests
                 }
             };
 
-            accesses.Should().Equal(expected);
+            accesses.Items.Should().Equal(expected);
         }
 
         private EnvironmentsRepository NewRepository()

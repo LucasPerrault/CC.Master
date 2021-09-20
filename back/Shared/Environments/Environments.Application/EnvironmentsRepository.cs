@@ -28,11 +28,18 @@ namespace Environments.Application
             return await _store.GetAsync(page, rights, filter);
         }
 
-        public async Task<List<EnvironmentWithAccess>> GetAccessesAsync(EnvironmentFilter filter)
+        public async Task<Page<EnvironmentWithAccess>> GetAccessesAsync(IPageToken queryPage, EnvironmentFilter filter)
         {
             var rights = await _rightsFilter.GetAccessRightAsync(_principal, Operation.ReadEnvironments);
-            var envs = await _store.GetAsync(rights, filter);
-            return envs.Select(ToEnvironmentWithAccess).ToList();
+            var envs = await _store.GetAsync(queryPage, rights, filter);
+            var accesses = envs.Items.Select(ToEnvironmentWithAccess).ToList();
+            return new Page<EnvironmentWithAccess>
+            {
+                Items = accesses,
+                Count = envs.Count,
+                Next = envs.Next,
+                Prev = envs.Prev
+            };
         }
 
         private static EnvironmentWithAccess ToEnvironmentWithAccess(Environment environment)
