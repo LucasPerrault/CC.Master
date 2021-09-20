@@ -64,6 +64,7 @@ namespace Billing.Contracts.Infra.Storage.Stores
                 .WhenNotNullOrEmpty(filter.Subdomains).ApplyWhere(c => filter.Subdomains.Contains(c.EnvironmentSubdomain))
                 .Apply(filter.ArchivedAt).To(c => c.ArchivedAt)
                 .WhenHasValue(filter.Id).ApplyWhere(c => c.Id == filter.Id.Value)
+                .WhenNotNullOrEmpty(filter.ExcludedIds).ApplyWhere(c => !filter.ExcludedIds.Contains(c.Id))
                 .When(filter.ClientExternalId.HasValue).ApplyWhere(c => c.ClientExternalId == filter.ClientExternalId.Value);
         }
 
