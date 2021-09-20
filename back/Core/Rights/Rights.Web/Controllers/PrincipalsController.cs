@@ -66,7 +66,7 @@ namespace Rights.Web.Controllers
 
         private async Task<List<PermissionDto>> GetPermissionsAsync(CloudControlApiKeyClaimsPrincipal apiKey)
         {
-            var operations = Enum.GetValues(typeof(Operation)).Cast<int>().ToHashSet();
+            var operations = OperationHelper.GetAll().Select(o => (int)o).ToHashSet();
             var permissions = await _permissionsStore.GetApiKeyPermissionsAsync(apiKey.ApiKey.Id, operations);
 
             return permissions.Select

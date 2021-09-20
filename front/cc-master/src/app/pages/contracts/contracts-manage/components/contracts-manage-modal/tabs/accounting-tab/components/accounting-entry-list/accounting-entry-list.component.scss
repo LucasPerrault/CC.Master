@@ -1,0 +1,17 @@
+:host {
+  overflow: auto;
+  display: block;
+  height: 20rem;
+}
+
+.table .table-head-row {
+  position: sticky;
+  z-index: 10;
+  top: 0;
+  background-color: white;
+}
+
+.mod-lettered {
+  opacity: .9;
+  font-style: italic;
+}

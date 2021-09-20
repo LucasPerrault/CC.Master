@@ -1,0 +1,18 @@
+<div class="callout palette-grey u-animatedSlideInTop" *ngIf="!environment; else hasEnvironmentLinked">
+  {{ 'front_contractPage_environmentNoLinked_information' | translate }}
+</div>
+
+<ng-template #hasEnvironmentLinked>
+  <div class="callout palette-grey u-animatedSlideInTop u-displayFlex u-flexWrapWrap u-alignItemsCenter u-justifyContentSpaceBetween">
+    <div>
+      {{ 'front_contractPage_environmentLinked_information' | translate }}
+      <button class="link" (click)="redirectToEnvironment(environment)">{{ getEnvironmentName(environment) }}</button>
+    </div>
+    <button *ngIf="canRemoveEnvironmentLinked"
+            class="button"
+            [ngClass]="unlinkButtonState"
+            (click)="unlink()">
+      {{ 'front_contractPage_removeEnvironmentLinked_button_label' | translate }}
+    </button>
+  </div>
+</ng-template>

@@ -67,6 +67,10 @@ namespace Billing.Contracts.Infra.Migrations
                         .HasColumnName("SalesforceId")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("SocialReason")
+                        .HasColumnName("SocialReason")
+                        .HasColumnType("nvarchar(max)");
+
                     b.HasKey("Id");
 
                     b.ToTable("Clients");
@@ -83,6 +87,10 @@ namespace Billing.Contracts.Infra.Migrations
                         .HasColumnName("ArchivedAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<int>("BillingPeriodicity")
+                        .HasColumnName("BillingPeriodicity")
+                        .HasColumnType("int");
+
                     b.Property<Guid>("ClientExternalId")
                         .HasColumnName("ClientExternalId")
                         .HasColumnType("uniqueidentifier");
@@ -91,8 +99,24 @@ namespace Billing.Contracts.Infra.Migrations
                         .HasColumnName("ClientId")
                         .HasColumnType("int");
 
+                    b.Property<int>("CommercialOfferId")
+                        .HasColumnName("CommercialOfferId")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("CountEstimation")
+                        .HasColumnName("CountEstimation")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnName("CreatedAt")
+                        .HasColumnType("datetime2");
+
                     b.Property<int>("DistributorId")
                         .HasColumnName("DistributorId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("EndReason")
+                        .HasColumnName("EndReason")
                         .HasColumnType("int");
 
                     b.Property<int?>("EnvironmentId")
@@ -107,13 +131,59 @@ namespace Billing.Contracts.Infra.Migrations
                         .HasColumnName("ExternalId")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<double>("MinimalBillingPercentage")
+                        .HasColumnName("MinimalBillingPercentage")
+                        .HasColumnType("float");
+
+                    b.Property<DateTime?>("RebateEndsOn")
+                        .HasColumnName("RebateEndsOn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<double?>("RebatePercentage")
+                        .HasColumnName("RebatePercentage")
+                        .HasColumnType("float");
+
+                    b.Property<DateTime?>("TheoreticalEndOn")
+                        .HasColumnName("TheoreticalEndOn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("TheoreticalFreeMonths")
+                        .HasColumnName("TheoreticalFreeMonths")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("TheoreticalStartOn")
+                        .HasColumnName("TheoreticalStartOn")
+                        .HasColumnType("datetime2");
+
                     b.HasKey("Id");
 
                     b.HasIndex("ClientId");
 
+                    b.HasIndex("CommercialOfferId");
+
                     b.HasIndex("DistributorId");
 
                     b.ToTable("Contracts");
+                });
+
+            modelBuilder.Entity("Billing.Contracts.Domain.Contracts.ContractComment", b =>
+                {
+                    b.Property<int>("ContractId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Comment")
+                        .HasColumnName("Comment")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("DistributorId")
+                        .HasColumnName("DistributorId")
+                        .HasColumnType("int");
+
+                    b.HasKey("ContractId");
+
+                    b.ToTable("ContractComments");
                 });
 
             modelBuilder.Entity("Billing.Contracts.Domain.Contracts.EstablishmentAttachment", b =>
@@ -159,6 +229,178 @@ namespace Billing.Contracts.Infra.Migrations
                     b.ToTable("EstablishmentAttachments");
                 });
 
+            modelBuilder.Entity("Billing.Products.Domain.BusinessUnit", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("DisplayOrder")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("BusinessUnit");
+                });
+
+            modelBuilder.Entity("Billing.Products.Domain.CommercialOffer", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Name")
+                        .HasColumnName("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("ProductId")
+                        .HasColumnName("ProductId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProductId");
+
+                    b.ToTable("CommercialOffers");
+                });
+
+            modelBuilder.Entity("Billing.Products.Domain.Product", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("ApplicationCode")
+                        .HasColumnName("ApplicationCode")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Code")
+                        .HasColumnName("Code")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("DeployRoute")
+                        .HasColumnName("DeployRoute")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("FamilyId")
+                        .HasColumnName("FamilyId")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("IsEligibleToMinimalBilling")
+                        .HasColumnName("IsEligibleToMinimalBilling")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsFreeUse")
+                        .HasColumnName("IsFreeUse")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsMultiSuite")
+                        .HasColumnName("IsMultiSuite")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsPromoted")
+                        .HasColumnName("IsPromoted")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Name")
+                        .HasColumnName("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("ParentId")
+                        .HasColumnName("ParentId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("SalesForceCode")
+                        .HasColumnName("SalesForceCode")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("FamilyId");
+
+                    b.ToTable("Products");
+                });
+
+            modelBuilder.Entity("Billing.Products.Domain.ProductFamily", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("DisplayOrder")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ProductFamily");
+                });
+
+            modelBuilder.Entity("Billing.Products.Domain.ProductSolution", b =>
+                {
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("SolutionId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Share")
+                        .HasColumnName("share")
+                        .HasColumnType("int");
+
+                    b.HasKey("ProductId", "SolutionId");
+
+                    b.HasIndex("SolutionId");
+
+                    b.ToTable("ProductsSolutions");
+                });
+
+            modelBuilder.Entity("Billing.Products.Domain.Solution", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("BusinessUnitId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Code")
+                        .HasColumnName("Code")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("DefaultBreakdownShare")
+                        .HasColumnName("defaultBreakdownShare")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("IsContactNeeded")
+                        .HasColumnName("IsContactNeeded")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Name")
+                        .HasColumnName("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("ParentId")
+                        .HasColumnName("ParentId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("BusinessUnitId");
+
+                    b.ToTable("Solutions");
+                });
+
             modelBuilder.Entity("Distributors.Domain.Models.Distributor", b =>
                 {
                     b.Property<int>("Id")
@@ -191,6 +433,12 @@ namespace Billing.Contracts.Infra.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("Billing.Products.Domain.CommercialOffer", "CommercialOffer")
+                        .WithMany()
+                        .HasForeignKey("CommercialOfferId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("Distributors.Domain.Models.Distributor", "Distributor")
                         .WithMany()
                         .HasForeignKey("DistributorId")
@@ -203,6 +451,48 @@ namespace Billing.Contracts.Infra.Migrations
                     b.HasOne("Billing.Contracts.Domain.Contracts.Contract", null)
                         .WithMany("Attachments")
                         .HasForeignKey("ContractId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Billing.Products.Domain.CommercialOffer", b =>
+                {
+                    b.HasOne("Billing.Products.Domain.Product", "Product")
+                        .WithMany()
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Billing.Products.Domain.Product", b =>
+                {
+                    b.HasOne("Billing.Products.Domain.ProductFamily", "Family")
+                        .WithMany()
+                        .HasForeignKey("FamilyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Billing.Products.Domain.ProductSolution", b =>
+                {
+                    b.HasOne("Billing.Products.Domain.Product", "Product")
+                        .WithMany("ProductSolutions")
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Billing.Products.Domain.Solution", "Solution")
+                        .WithMany("ProductSolutions")
+                        .HasForeignKey("SolutionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Billing.Products.Domain.Solution", b =>
+                {
+                    b.HasOne("Billing.Products.Domain.BusinessUnit", "BusinessUnit")
+                        .WithMany("Solutions")
+                        .HasForeignKey("BusinessUnitId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });

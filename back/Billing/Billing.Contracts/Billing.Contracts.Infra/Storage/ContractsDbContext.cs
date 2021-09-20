@@ -1,4 +1,5 @@
 ﻿using Billing.Contracts.Infra.Storage.Configurations;
+using Billing.Products.Infra.Storage.Configurations;
 using Distributors.Infra.Storage.Configurations;
 using Microsoft.EntityFrameworkCore;
 using Storage.Infra.Context;
@@ -16,9 +17,14 @@ namespace Billing.Contracts.Infra.Storage
         {
             modelBuilder.ApplyConfiguration(new ClientConfiguration());
             modelBuilder.ApplyConfiguration(new ContractConfiguration());
+            modelBuilder.ApplyConfiguration(new ContractCommentConfiguration());
             modelBuilder.ApplyConfiguration(new EstablishmentAttachmentConfiguration());
 
             modelBuilder.ApplyConfiguration(new DistributorsConfiguration());
+            modelBuilder.ApplyConfiguration(new CommercialOfferConfiguration());
+            modelBuilder.ApplyConfiguration(new ProductConfiguration());
+            modelBuilder.ApplyConfiguration(new ProductSolutionsConfiguration());
+            modelBuilder.ApplyConfiguration(new SolutionConfiguration());
         }
     }
 

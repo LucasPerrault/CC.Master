@@ -1,0 +1,26 @@
+<label class="textfield {{ textfieldClass }}" [ngClass]="{ 'is-error': billingMonthCtrl.hasError('required') }">
+
+  <lu-select [ngModel]="monthSelected"
+             (ngModelChange)="update($event)"
+             (focusout)="onTouch()"
+             #billingMonthCtrl="ngModel"
+             class="textfield-input"
+             [placeholder]="'front_select_billingMonth_placeholder' | translate"
+             [required]="required"
+             [disabled]="disabled">
+    <ng-container *luDisplayer="let month">{{ month.name | translate }}</ng-container>
+    <lu-option-picker-advanced>
+      <lu-option-feeder [options]="months"></lu-option-feeder>
+      <lu-option *luForOptions="let month; trackBy: trackBy" [value]="month">
+        {{ month.name | translate }}
+      </lu-option>
+    </lu-option-picker-advanced>
+  </lu-select>
+
+  <span class="textfield-messages" *ngIf="billingMonthCtrl.hasError('required')">
+    <span class="textfield-messages-error">
+      {{ "front_select_billingMonth_errorMessage_required" | translate }}
+    </span>
+  </span>
+
+</label>

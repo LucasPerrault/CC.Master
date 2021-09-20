@@ -1,0 +1,26 @@
+<div class="" *ngIf="!!canChargeDraftCount() || hasDraftCounts">
+  <label class="switch palette-secondary">
+    <input class="switch-input" name="switchInline"
+           type="checkbox"
+           (click)="toggleDraftCountsDisplay()" [checked]="showDraftCounts">
+    <span class="switch-label">
+      {{ 'front_contractPage_counts_showDraft_action_label' | translate }}
+      <span class="label mod-number palette-grey" *ngIf="hasDraftCounts">{{ draftCounts.length }}</span>
+    </span>
+  </label>
+
+  <div [class.mod-hidden]="!showDraftCounts" class="u-paddingTopSmall">
+    <button *ngIf="canChargeDraftCount()"
+            class="button palette-secondary"
+            (click)="chargeDraftCounts()"
+            [ngClass]="chargeButtonState">
+      {{ 'front_contractPage_counts_chargeDraft_action_label' | translate }}
+    </button>
+    <button [disabled]="!hasDraftCounts"
+            class="button palette-secondary mod-link"
+            (click)="deleteDraftCount()"
+            [ngClass]="deleteButtonState">
+      {{ 'front_contractPage_counts_deleteDraft_action_label' | translate }}
+    </button>
+  </div>
+</div>

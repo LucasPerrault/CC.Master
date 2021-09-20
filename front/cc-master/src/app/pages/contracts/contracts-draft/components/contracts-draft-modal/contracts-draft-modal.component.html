@@ -1,0 +1,7 @@
+<div class="loading mod-dialog" *ngIf="isLoading$ | async; else isNotLoading"></div>
+
+<ng-template #isNotLoading>
+  <cc-contracts-draft-form  [draftFormInformation]="draftFormInformation$ | async"
+                            [formControl]="formControl">
+  </cc-contracts-draft-form>
+</ng-template>

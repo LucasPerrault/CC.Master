@@ -20,7 +20,7 @@ import { UserApiSelectService } from './user-api-select.service';
   ],
 })
 export class UserApiSelectComponent implements ControlValueAccessor {
-  @Input() public class?: string;
+  @Input() public textfieldClass?: string;
   public onChange: (users: IUser[]) => void;
   public onTouch: () => void;
 

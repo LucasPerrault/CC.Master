@@ -1,0 +1,28 @@
+:host {
+  overflow: auto;
+}
+
+.table .table-head-row {
+  position: sticky;
+  z-index: 10;
+  top: 0;
+  background-color: white;
+}
+
+.table .mod-columnFixed {
+  position: sticky;
+  background-color: white;
+
+  &:nth-child(1).size-smaller {
+    left: 0;
+    max-width: 100px;
+  }
+  &:nth-child(2) {
+    left: 100px;
+    box-shadow: .2rem 0 .5rem -.2rem rgb(214 214 214 / 40%);
+  }
+}
+
+.mod-hidden {
+  display: none;
+}

@@ -15,3 +15,15 @@
 .main.mod-withBanner .main-content.mod-withoutScroll {
   overflow: visible;
 }
+
+.button-group.palette-grey .button {
+  &.is-loading, &.is-success, &.is-error {
+    color: _color('grey', 600);
+  }
+}
+.button.mod-counter {
+  &.is-loading, &.is-success, &.is-error {
+    .button-counter { visibility: hidden; }
+    color: _color('primary', 600);
+  }
+}

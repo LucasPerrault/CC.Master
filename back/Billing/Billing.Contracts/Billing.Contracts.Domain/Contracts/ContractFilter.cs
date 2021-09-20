@@ -1,16 +1,15 @@
 ﻿using System;
+using System.Collections.Generic;
 using Tools;
 
 namespace Billing.Contracts.Domain.Contracts
 {
     public class ContractFilter
     {
+        public int? Id { get; set; }
         public Guid? ClientExternalId { get; set; }
-        public CompareString Subdomain { get; set; }
-
-        public static ContractFilter All => new ContractFilter
-        {
-            Subdomain = CompareString.Bypass
-        };
+        public HashSet<string> Search { get; set; } = new HashSet<string>();
+        public HashSet<string> Subdomains { get; set; } = new HashSet<string>();
+        public CompareNullableDateTime ArchivedAt { get; set; } = CompareNullableDateTime.Bypass();
     }
 }

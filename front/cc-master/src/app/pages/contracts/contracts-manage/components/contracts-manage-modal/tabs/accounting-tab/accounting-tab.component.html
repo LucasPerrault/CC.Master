@@ -1,0 +1,23 @@
+<div class="loading mod-dialog" *ngIf="isLoading$ | async; else isNotLoading"></div>
+
+<ng-template #isNotLoading>
+  <cc-account-overview [account]="luccaAccount"
+                       [balance]="luccaBalance$ | async"
+                       (updateFilters)="updateLuccaEntriesFilters($event)">
+      <cc-accounting-entry-list ccInfiniteScroll
+                                (bottomReached)="paginatedLuccaEntries.nextPage()"
+                                [accountingEntries]="paginatedLuccaEntries.items$ | async"
+                                [state]="paginatedLuccaEntries.state$ | async">
+      </cc-accounting-entry-list>
+  </cc-account-overview>
+
+  <cc-account-overview [account]="clientAccount"
+                       [balance]="clientBalance$ | async"
+                       (updateFilters)="updateClientEntriesFilters($event)">
+      <cc-accounting-entry-list ccInfiniteScroll
+                                (bottomReached)="paginatedClientEntries.nextPage()"
+                                [accountingEntries]="paginatedClientEntries.items$ | async"
+                                [state]="paginatedClientEntries.state$ | async">
+      </cc-accounting-entry-list>
+  </cc-account-overview>
+</ng-template>

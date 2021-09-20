@@ -1,0 +1,29 @@
+<div class="page mod-fullWidth mod-withFullwidthTable">
+  <header class="page-header blockWithFixedSizeInFlex">
+    <h1>{{ 'front_contractPage_title' | translate }}</h1>
+    <button class="button" (click)="export()" [ngClass]="downloadButtonStatus">
+      {{ 'front_contractPage_exportAction_label' | translate }}
+    </button>
+  </header>
+
+  <cc-contracts-manage-filter class="header blockWithFixedSizeInFlex" [formControl]="filters"></cc-contracts-manage-filter>
+
+  <h4 class="page-content page-resultsCount u-displayFlex u-alignItemsCenter u-justifyContentSpaceBetween">
+    {{ 'front_contractPage_resultsCount' | translate : { count: contractsCount$ | async } }}
+    <cc-contract-additional-column-select textfieldClass="palette-grey mod-outlined mod-long"
+                                          [formControl]="columnsSelectedFormControl">
+    </cc-contract-additional-column-select>
+  </h4>
+
+  <cc-contracts-manage-list ccInfiniteScroll (bottomReached)="nextPage()"
+                            [columnsSelected]="columnsSelected$ | async"
+                            [contracts]="contracts$ | async"
+                            [state]="contractsState$ | async"
+                            (updateSort)="updateSort($event)"
+                            [sortParams]="sortParams$ | async">
+  </cc-contracts-manage-list>
+
+  <div class="loading mod-fullPage" *ngIf="isLoading$ | async"></div>
+
+  <router-outlet></router-outlet>
+</div>

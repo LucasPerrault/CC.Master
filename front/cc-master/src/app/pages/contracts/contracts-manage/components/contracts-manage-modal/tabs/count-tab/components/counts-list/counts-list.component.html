@@ -1,0 +1,110 @@
+<table class="table">
+  <thead class="table-head">
+    <tr class="table-head-row">
+      <th class="table-head-row-cell">
+        <label class="checkbox" *ngIf="canDeleteAtLeastOneCount(entries)">
+          <input class="checkbox-input" type="checkbox" name="countSelection" [checked]="isAllSelected(entries)" (click)="selectAll(entries)">
+          <span class="checkbox-label"></span>
+        </label>
+      </th>
+      <th class="table-head-row-cell">{{ 'front_contractPage_countsList_column_month' | translate }}</th>
+      <th class="table-head-row-cell mod-alignRight">
+        {{ 'front_contractPage_countsList_column_number' | translate }}
+      </th>
+      <th class="table-head-row-cell mod-alignRight" *ngIf="!areAccountingNumberEqual">
+        {{ 'front_contractPage_countsList_column_accountingNumber' | translate }}
+      </th>
+      <th class="table-head-row-cell mod-alignRight">
+        {{ 'front_contractPage_countsList_column_fixedPrice' | translate }}
+      </th>
+      <th class="table-head-row-cell mod-alignRight">
+        {{ 'front_contractPage_countsList_column_unitPrice' | translate }}
+      </th>
+      <th class="table-head-row-cell mod-alignRight" *ngIf="!contract?.isDirectSales">
+        {{ 'front_contractPage_countsList_column_distributorRebate' | translate }}
+      </th>
+      <th class="table-head-row-cell mod-alignRight">
+        {{ 'front_contractPage_countsList_column_additionalRebate' | translate }}
+      </th>
+      <th class="table-head-row-cell mod-alignRight" *ngIf="!contract?.isDirectSales">
+        {{ 'front_contractPage_countsList_column_totalBillableInEuro' | translate }}
+      </th>
+      <th class="table-head-row-cell mod-alignRight">
+        {{ 'front_contractPage_countsList_column_totalLuccaInEuro' | translate }}
+      </th>
+      <th class="table-head-row-cell">
+        {{ 'front_contractPage_countsList_column_countDate' | translate }}
+      </th>
+      <th class="table-head-row-cell"></th>
+      <th class="table-head-row-cell mod-actions"></th>
+    </tr>
+  </thead>
+  <tbody class="table-body">
+    <tr class="table-body-row palette-error"
+        *ngFor="let entry of entries"
+        [ngClass]="{ 'mod-draft': isCountDraft(entry), 'mod-hidden': isCountDraft(entry) && !showDraftCounts }">
+      <td class="table-body-row-cell">
+        <span *ngIf="!entry.count"
+              class="lucca-icon icon-error u-textError"
+              [luTooltip]="'front_contractPage_countList_missingPeriod_text' | translate">
+        </span>
+        <label class="checkbox" *ngIf="!!entry.count && canDeleteCount(entry)">
+          <input class="checkbox-input" type="checkbox" name="countSelection" [checked]="isSelected(entry.count)" (click)="select(entry.count)">
+          <span class="checkbox-label"></span>
+        </label>
+      </td>
+      <td class="table-body-row-cell">
+        {{ entry.month | date: 'MM/y' }}
+      </td>
+      <td class="table-body-row-cell mod-alignRight">
+        {{ entry.count?.number | number }}
+      </td>
+      <td class="table-body-row-cell mod-alignRight" *ngIf="!areAccountingNumberEqual">
+        {{ entry.count?.accountingNumber }}
+      </td>
+      <td class="table-body-row-cell mod-alignRight">
+        {{ entry.count?.fixedPrice | currency: entry.count?.currency.name }}
+      </td>
+      <td class="table-body-row-cell mod-alignRight">
+        {{ entry.count?.unitPrice | currency: entry.count?.currency.name }}
+      </td>
+      <td class="table-body-row-cell mod-alignRight" *ngIf="!contract?.isDirectSales">
+        <ng-container *ngIf="!!entry.count">
+          {{ entry.count.distributorRebate | number }} %
+        </ng-container>
+      </td>
+      <td class="table-body-row-cell mod-alignRight">
+        <ng-container *ngIf="!!entry.count">
+          {{ entry.count.additionalRebate | number }} %
+        </ng-container>
+      </td>
+      <td class="table-body-row-cell mod-alignRight" *ngIf="!contract?.isDirectSales">
+        {{ entry.count?.totalBillableInEuro | currency:'EUR' }}
+      </td>
+      <td class="table-body-row-cell mod-alignRight">
+        {{ entry.count?.totalLuccaInEuro | currency:'EUR' }}
+      </td>
+      <td class="table-body-row-cell">
+        {{ entry.count?.countDate | date: "shortDate" }}
+      </td>
+      <td class="table-body-row-cell">
+        <span *ngIf="!!entry.count && isMinimalBillingStrategy(entry.count.billingStrategy)">
+          {{ contract?.minimalBillingPercentage }}%
+        </span>
+      </td>
+
+      <td class="table-body-row-cell">
+        <button *ngIf="!entry.count && canChargeContract()"
+                class="actionIcon" [ngClass]="entry.buttonStateClass"
+                [luTooltip]="'front_contractPage_countList_chargeAction_label' | translate">
+          <span aria-hidden="true" class="lucca-icon icon-refresh" (click)="chargeContract(entry.month)"></span>
+        </button>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<section *ngIf="!!entries && !entries.length" class="emptyState">
+  <h3 class="emptyState-title">{{ 'front_contractPage_countList_emptyState_title' | translate }}</h3>
+  <p class="emptyState-description">{{ 'front_contractPage_countList_emptyState_information' | translate }}</p>
+</section>

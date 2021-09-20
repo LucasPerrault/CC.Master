@@ -1,0 +1,5 @@
+<div class="loading mod-dialog" *ngIf="isLoading$ | async; else isNotLoading"></div>
+
+<ng-template #isNotLoading>
+  <cc-price-grid-list [offerPriceList]="offerPriceList"></cc-price-grid-list>
+</ng-template>

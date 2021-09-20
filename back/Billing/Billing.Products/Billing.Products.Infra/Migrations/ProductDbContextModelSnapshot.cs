@@ -16,7 +16,7 @@ namespace Billing.Products.Infra.Migrations
 #pragma warning disable 612, 618
             modelBuilder
                 .HasDefaultSchema("billing")
-                .HasAnnotation("ProductVersion", "3.1.10")
+                .HasAnnotation("ProductVersion", "3.1.16")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
@@ -36,6 +36,28 @@ namespace Billing.Products.Infra.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("BusinessUnit");
+                });
+
+            modelBuilder.Entity("Billing.Products.Domain.CommercialOffer", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Name")
+                        .HasColumnName("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("ProductId")
+                        .HasColumnName("ProductId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProductId");
+
+                    b.ToTable("CommercialOffers");
                 });
 
             modelBuilder.Entity("Billing.Products.Domain.Product", b =>
@@ -161,7 +183,7 @@ namespace Billing.Products.Infra.Migrations
                         .HasColumnName("Name")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("ParentId")
+                    b.Property<int?>("ParentId")
                         .HasColumnName("ParentId")
                         .HasColumnType("int");
 
@@ -170,6 +192,15 @@ namespace Billing.Products.Infra.Migrations
                     b.HasIndex("BusinessUnitId");
 
                     b.ToTable("Solutions");
+                });
+
+            modelBuilder.Entity("Billing.Products.Domain.CommercialOffer", b =>
+                {
+                    b.HasOne("Billing.Products.Domain.Product", "Product")
+                        .WithMany()
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Billing.Products.Domain.Product", b =>

@@ -1,0 +1,17 @@
+<label class="textfield" [ngClass]="textfieldClass">
+  <lu-select [(ngModel)]="establishmentHealth"
+             (ngModelChange)="update()"
+             [placeholder]="'front_contractPage_select_establishmentsHealth_label' | translate"
+             [multiple]="false"
+             class="textfield-input">
+
+    <ng-container *luDisplayer="let value">{{ value.name }}</ng-container>
+
+    <lu-option-picker-advanced>
+      <lu-option-feeder [options]="establishmentsHealth"></lu-option-feeder>
+      <lu-option *luForOptions="let state; trackBy: trackBy" [value]="state">{{ state.name }}</lu-option>
+    </lu-option-picker-advanced>
+
+    <lu-input-clearer></lu-input-clearer>
+  </lu-select>
+</label>

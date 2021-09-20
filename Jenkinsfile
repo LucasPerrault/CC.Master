@@ -63,12 +63,18 @@ node(label: CI.getSelectedNode(script: this)) {
 
 			parallel(
 				front: {
-					if (!isPr) {
-						restoreFront(spaSubPath: spaSubPath)
+					restoreFront(spaSubPath: spaSubPath)
+
+					if (isPr || isMainBranch) {
+                        lintFront(spaSubPath: spaSubPath)
+						testFront(spaSubPath: spaSubPath)
+                    }
+
+                    if (!isPr) {
 						sentryGenerate(spaSubPath: spaSubPath)
 						buildFront(spaSubPath: spaSubPath, outputPath: frontDistPath)
 						sentryPost(distPath: frontDistPath, spaSubPath: spaSubPath)
-					}
+                    }
 				},
 				back: {
 					cleanBack(slnFilepath: slnFilepath)

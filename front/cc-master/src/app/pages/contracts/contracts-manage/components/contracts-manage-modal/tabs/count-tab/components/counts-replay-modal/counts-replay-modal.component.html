@@ -1,0 +1,15 @@
+<p>
+  {{ 'front_contractPage_counts_replay_modal_description' | translate }}
+</p>
+<cc-date-range-select datesClass="mod-block"
+                      [isError]="(hasSelectedPeriodValid$ | async) === false"
+                      [formControl]="formControl"
+                      [configuration]="dateRangeConfiguration"
+                      [required]="true">
+</cc-date-range-select>
+
+<span class="textfield-messages" *ngIf="(hasSelectedPeriodValid$ | async) === false">
+  <span class="textfield-messages-error">
+    {{ 'front_contractPage_counts_replay_selectedPeriod_errorMessage' | translate }}
+  </span>
+</span>

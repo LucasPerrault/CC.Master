@@ -1,0 +1,16 @@
+<div class="callout palette-grey mod-icon">
+  <div class="callout-icon"><span aria-hidden="true" class="lucca-icon">info</span></div>
+  <p *ngIf="!!formValidationContext.lastAttachmentEndedDate; else othersReason">
+    {{ getCloseDateInformation() }}
+  </p>
+
+  <ng-template #othersReason>
+    <p *ngIf="!!formValidationContext.lastCountPeriod; else isTheoreticalStartOn">
+      {{ getLastCountDateInformation() }}
+    </p>
+
+    <ng-template #isTheoreticalStartOn>
+      <p>{{ getTheoreticalStartOnInformation() }}</p>
+    </ng-template>
+  </ng-template>
+</div>

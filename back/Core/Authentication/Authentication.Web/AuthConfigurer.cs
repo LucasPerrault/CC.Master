@@ -27,11 +27,19 @@ namespace Authentication.Web
             ConfigureCustomTokensReaders(services);
 
             services.AddSingleton(config);
-            services.AddSingleton<AuthRedirectionRemoteService>();
             services.AddSingleton<ApiKeyInMemoryCache>();
             services.AddSingleton<UserInMemoryCache>();
+            services.AddSingleton<AuthRedirectionRemoteService>();
 
             services.AddScoped<IUserAuthenticationRemoteService, UserAuthenticationRemoteService>();
+
+
+            services.AddHttpClient<LogoutService>((provider, client) =>
+            {
+                client.WithUserAgent(nameof(ApiKeyAuthenticationRemoteService))
+                    .WithAuthScheme("Lucca")
+                    .AuthenticateCurrentPrincipal(provider);
+            });
 
             services.AddHttpClient<IApiKeyAuthenticationRemoteService, ApiKeyAuthenticationRemoteService>(client =>
             {
