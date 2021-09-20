@@ -2,14 +2,18 @@ using Authentication.Domain;
 using Distributors.Domain.Models;
 using Environments.Domain;
 using Environments.Domain.Storage;
+using FluentAssertions;
 using Lucca.Core.Shared.Domain.Exceptions;
 using Moq;
 using Rights.Domain;
 using Rights.Domain.Abstractions;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
+using Tools;
 using Users.Domain;
 using Xunit;
+using Environment = Environments.Domain.Environment;
 
 namespace Environments.Application.Tests
 {
@@ -28,13 +32,21 @@ namespace Environments.Application.Tests
         [Fact]
         public async Task ShouldThrowWhenNotFound()
         {
+
+            var environment = new Environment
+            {
+                Id = 24,
+                Subdomain = "black-mesa",
+                ActiveAccesses = new List<EnvironmentSharedAccess>()
+            };
+
             _envStoreMock
                 .Setup(e => e.GetAsync(It.IsAny<List<EnvironmentAccessRight>>(), It.IsAny<EnvironmentFilter>()))
                 .ReturnsAsync(new List<Environment>());
 
             var repository = NewRepository();
-
-            await Assert.ThrowsAsync<NotFoundException>(() => repository.GetAccessesAsync("aperture-science"));
+            var accesses = await repository.GetAccessesAsync(FilterBySubdomain("aperture-science"));
+            accesses.Should().BeEmpty();
         }
 
         [Fact]
@@ -42,6 +54,7 @@ namespace Environments.Application.Tests
         {
             var environment = new Environment
             {
+                Id = 42,
                 Subdomain = "aperture-science",
                 ActiveAccesses = new List<EnvironmentSharedAccess>()
             };
@@ -51,9 +64,16 @@ namespace Environments.Application.Tests
                 .ReturnsAsync(new List<Environment> { environment });
 
             var repository = NewRepository();
-            var accesses = await repository.GetAccessesAsync("aperture-science");
+            var accesses = await repository.GetAccessesAsync(FilterBySubdomain("aperture-science"));
 
-            Assert.Equal(accesses, new HashSet<DistributorWithAccess>());
+            var expected = new EnvironmentWithAccess
+            {
+                Id = 42,
+                Subdomain = "aperture-science",
+                Accesses = new HashSet<DistributorWithAccess>()
+            };
+
+            accesses.Should().Equals(expected);
         }
 
         [Fact]
@@ -61,6 +81,7 @@ namespace Environments.Application.Tests
         {
             var environment = new Environment
             {
+                Id = 42,
                 Subdomain = "aperture-science",
                 ActiveAccesses = new List<EnvironmentSharedAccess>
                 {
@@ -77,12 +98,19 @@ namespace Environments.Application.Tests
                 .ReturnsAsync(new List<Environment> { environment });
 
             var repository = NewRepository();
-            var accesses = await repository.GetAccessesAsync("aperture-science");
+            var accesses = await repository.GetAccessesAsync(FilterBySubdomain("aperture-science"));
 
-            Assert.Equal(accesses, new HashSet<DistributorWithAccess>
+            var expected = new EnvironmentWithAccess
             {
-                new DistributorWithAccess("APERTURE", new List<EnvironmentAccessTypeEnum> { EnvironmentAccessTypeEnum.Contract })
-            });
+                Id = 42,
+                Subdomain = "aperture-science",
+                Accesses = new HashSet<DistributorWithAccess>
+                {
+                    new DistributorWithAccess("APERTURE", new List<EnvironmentAccessTypeEnum> { EnvironmentAccessTypeEnum.Contract })
+                }
+            };
+
+            accesses.Should().Equal(expected);
         }
 
         [Fact]
@@ -90,6 +118,7 @@ namespace Environments.Application.Tests
         {
             var environment = new Environment
             {
+                Id = 42,
                 Subdomain = "aperture-science",
                 ActiveAccesses = new List<EnvironmentSharedAccess>
                 {
@@ -111,12 +140,19 @@ namespace Environments.Application.Tests
                 .ReturnsAsync(new List<Environment> { environment });
 
             var repository = NewRepository();
-            var accesses = await repository.GetAccessesAsync("aperture-science");
+            var accesses = await repository.GetAccessesAsync(FilterBySubdomain("aperture-science"));
 
-            Assert.Equal(accesses, new HashSet<DistributorWithAccess>
+            var expected = new EnvironmentWithAccess
             {
-                new DistributorWithAccess("APERTURE", new List<EnvironmentAccessTypeEnum> { EnvironmentAccessTypeEnum.Contract, EnvironmentAccessTypeEnum.Manual })
-            });
+                Id = 42,
+                Subdomain = "aperture-science",
+                Accesses = new HashSet<DistributorWithAccess>
+                {
+                    new DistributorWithAccess("APERTURE", new List<EnvironmentAccessTypeEnum> { EnvironmentAccessTypeEnum.Contract, EnvironmentAccessTypeEnum.Manual })
+                }
+            };
+
+            accesses.Should().Equal(expected);
         }
 
         [Fact]
@@ -124,6 +160,7 @@ namespace Environments.Application.Tests
         {
             var environment = new Environment
             {
+                Id = 42,
                 Subdomain = "aperture-science",
                 ActiveAccesses = new List<EnvironmentSharedAccess>
                 {
@@ -145,13 +182,20 @@ namespace Environments.Application.Tests
                 .ReturnsAsync(new List<Environment> { environment });
 
             var repository = NewRepository();
-            var accesses = await repository.GetAccessesAsync("aperture-science");
+            var accesses = await repository.GetAccessesAsync(FilterBySubdomain("aperture-science"));
 
-            Assert.Equal(accesses, new HashSet<DistributorWithAccess>
+            var expected = new EnvironmentWithAccess
             {
-                new DistributorWithAccess("APERTURE", new List<EnvironmentAccessTypeEnum> { EnvironmentAccessTypeEnum.Contract }),
-                new DistributorWithAccess("MESA", new List<EnvironmentAccessTypeEnum> { EnvironmentAccessTypeEnum.Contract }),
-            });
+                Id = 42,
+                Subdomain = "aperture-science",
+                Accesses = new HashSet<DistributorWithAccess>
+                {
+                    new DistributorWithAccess("APERTURE", new List<EnvironmentAccessTypeEnum> { EnvironmentAccessTypeEnum.Contract }),
+                    new DistributorWithAccess("MESA", new List<EnvironmentAccessTypeEnum> { EnvironmentAccessTypeEnum.Contract }),
+                }
+            };
+
+            accesses.Should().Equal(expected);
         }
 
         private EnvironmentsRepository NewRepository()
@@ -164,5 +208,7 @@ namespace Environments.Application.Tests
 
             return new EnvironmentsRepository(_envStoreMock.Object, principal, new EnvironmentRightsFilter(_rightServiceMock.Object));
         }
+
+        private EnvironmentFilter FilterBySubdomain(string subdomain) => new EnvironmentFilter { Subdomain = CompareString.Equals(subdomain)};
     }
 }

@@ -5,7 +5,6 @@ using Lucca.Core.Api.Web.ModelBinding.Sorting;
 using Microsoft.AspNetCore.Mvc;
 using Rights.Domain;
 using Rights.Web.Attributes;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Environments.Web.Controllers
@@ -28,21 +27,16 @@ namespace Environments.Web.Controllers
             return _repository.GetAsync(query.Page, query.ToFilter());
         }
 
-        public class DistributorWithAccessResponse
-        {
-            public string Subdomain { get; set; }
-            public HashSet<DistributorWithAccess> Accesses { get; set; }
-        }
-
         [HttpGet("distributorAccesses")]
         [ForbidIfMissing(Operation.ReadEnvironments)]
-        public async Task<DistributorWithAccessResponse> GetAccessesAsync([FromQuery]string subdomain)
+        public async Task<Page<EnvironmentWithAccess>> GetAccessesAsync([FromQuery]EnvironmentQuery query)
         {
-            var accesses = await _repository.GetAccessesAsync(subdomain);
-            return new DistributorWithAccessResponse
+            var envsWithAccess = await _repository.GetAccessesAsync(query.ToFilter());
+
+            return new Page<EnvironmentWithAccess>
             {
-                Subdomain = subdomain,
-                Accesses = accesses
+                Count = envsWithAccess.Count,
+                Items = envsWithAccess
             };
         }
     }

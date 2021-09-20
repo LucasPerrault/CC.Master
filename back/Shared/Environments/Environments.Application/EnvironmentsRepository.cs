@@ -1,13 +1,11 @@
 using Environments.Domain;
 using Environments.Domain.Storage;
 using Lucca.Core.Api.Abstractions.Paging;
-using Lucca.Core.Shared.Domain.Exceptions;
 using Rights.Domain;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
-using Tools;
 
 namespace Environments.Application
 {
@@ -30,26 +28,24 @@ namespace Environments.Application
             return await _store.GetAsync(page, rights, filter);
         }
 
-        public async Task<HashSet<DistributorWithAccess>> GetAccessesAsync(string subdomain)
+        public async Task<List<EnvironmentWithAccess>> GetAccessesAsync(EnvironmentFilter filter)
         {
             var rights = await _rightsFilter.GetAccessRightAsync(_principal, Operation.ReadEnvironments);
-            var envs = await _store.GetAsync(rights, new EnvironmentFilter
+            var envs = await _store.GetAsync(rights, filter);
+            return envs.Select(ToEnvironmentWithAccess).ToList();
+        }
+
+        private static EnvironmentWithAccess ToEnvironmentWithAccess(Environment environment)
+        {
+            return new EnvironmentWithAccess
             {
-                Subdomain = CompareString.Equals(subdomain),
-                IsActive = CompareBoolean.TrueOnly
-            });
-
-            var env = envs.FirstOrDefault();
-
-            if (env is null)
-            {
-                throw new NotFoundException($"No active environment with subdomain {subdomain} was found");
-            }
-
-            return env.ActiveAccesses
-                .GroupBy(a => a.Consumer.Code)
-                .Select(group => new DistributorWithAccess(group.Key, group.Select(i => i.Access.Type).ToHashSet()))
-                .ToHashSet();
+                Id = environment.Id,
+                Subdomain = environment.Subdomain,
+                Accesses = environment.ActiveAccesses
+                    .GroupBy(a => a.Consumer.Code)
+                    .Select(group => new DistributorWithAccess(group.Key, group.Select(i => i.Access.Type).ToHashSet()))
+                    .ToHashSet()
+            };
         }
     }
 }
