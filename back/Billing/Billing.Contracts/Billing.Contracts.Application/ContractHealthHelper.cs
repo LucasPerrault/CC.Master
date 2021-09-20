@@ -24,21 +24,23 @@ namespace Billing.Contracts.Application
             _contractHealthService = contractHealthService;
         }
 
-        public async Task<List<ContractHealth>> GetHealthAsync(HashSet<int> environmentIds)
+        public async Task<List<ContractHealth>> GetHealthAsync(ContractFilter filter)
         {
-            var environmentWithContracts = await GetKnownEnvironmentsWithContractsAsync(environmentIds);
-            return environmentWithContracts
+            var environmentWithContracts = await GetEnvironmentsWithContractsAsync(filter);
+            return FilterAndOrder(environmentWithContracts);
+        }
+
+        private List<ContractHealth> FilterAndOrder(List<EnvironmentWithContracts> contracts)
+        {
+            return contracts
                 .SelectMany(ewc => _contractHealthService.GetHealth(ewc.Environment, ewc.Contracts))
+                .OrderBy(h => h.ContractId)
                 .ToList();
         }
 
-        private async Task<List<EnvironmentWithContracts>> GetKnownEnvironmentsWithContractsAsync(HashSet<int> environmentIds)
+        private async Task<List<EnvironmentWithContracts>> GetEnvironmentsWithContractsAsync(ContractFilter filter)
         {
-            var contractsFilter = new ContractFilter
-            {
-                EnvironmentIds = environmentIds
-            };
-            var contracts = await _contractsRepository.GetAsync(contractsFilter);
+            var contracts = await _contractsRepository.GetAsync(filter);
             var contractsPerEnvironment = contracts
                 .Where(c => c.EnvironmentId.HasValue)
                 .GroupBy(c => c.EnvironmentId.Value)

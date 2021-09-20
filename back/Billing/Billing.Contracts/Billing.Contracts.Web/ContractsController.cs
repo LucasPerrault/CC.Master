@@ -49,14 +49,9 @@ namespace Billing.Contracts.Web
 
         [HttpGet("health")]
         [ForbidIfMissing(Operation.ReadContracts)]
-        public Task<List<ContractHealth>> GetHealthAsync([FromQuery]HashSet<int> environmentId)
+        public Task<List<ContractHealth>> GetHealthAsync([FromQuery]ContractFilter filter)
         {
-            if (environmentId == null || !environmentId.Any())
-            {
-                throw new BadRequestException("Query parameter environmentId is mandatory");
-            }
-
-            return _healthHelper.GetHealthAsync(environmentId);
+            return _healthHelper.GetHealthAsync(filter);
         }
 
         [HttpGet("{id:int}")]
