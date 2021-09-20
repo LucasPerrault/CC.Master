@@ -36,6 +36,14 @@ namespace Billing.Contracts.Infra.Storage.Stores
             return Set(accessRight, filter).ToListAsync();
         }
 
+        public Task<ContractComment> GetCommentAsync(AccessRight accessRight, int contractId)
+        {
+            return _dbContext.Set<ContractComment>()
+                .WhereHasRight(accessRight)
+                .Where(c => c.ContractId == contractId)
+                .SingleOrDefaultAsync();
+        }
+
         private IQueryable<Contract> Set(AccessRight accessRight, ContractFilter filter)
         {
             return _dbContext.Set<Contract>()
@@ -83,7 +91,23 @@ namespace Billing.Contracts.Infra.Storage.Stores
             return contracts.Where(ToExpression(accessRight));
         }
 
+        public static IQueryable<ContractComment> WhereHasRight(this IQueryable<ContractComment> contracts, AccessRight accessRight)
+        {
+            return contracts.Where(ToExpressionComment(accessRight));
+        }
+
         private static Expression<Func<Contract, bool>> ToExpression(this AccessRight accessRight)
+        {
+            return accessRight switch
+            {
+                NoAccessRight _ => _ => false,
+                DistributorAccessRight r => c => c.DistributorId == r.DistributorId,
+                AllAccessRight _ => _ => true,
+                _ => throw new ApplicationException($"Unknown type of contract filter right {accessRight}")
+            };
+        }
+
+        private static Expression<Func<ContractComment, bool>> ToExpressionComment(this AccessRight accessRight)
         {
             return accessRight switch
             {

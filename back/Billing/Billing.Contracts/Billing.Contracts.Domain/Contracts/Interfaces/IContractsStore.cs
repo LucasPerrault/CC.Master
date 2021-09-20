@@ -9,5 +9,6 @@ namespace Billing.Contracts.Domain.Contracts.Interfaces
     {
         Task<Page<Contract>> GetPageAsync(AccessRight accessRight, ContractFilter filter, IPageToken pageToken);
         Task<List<Contract>> GetAsync(AccessRight accessRight, ContractFilter filter);
+        Task<ContractComment> GetCommentAsync(AccessRight accessRight, int contractId);
     }
 }
