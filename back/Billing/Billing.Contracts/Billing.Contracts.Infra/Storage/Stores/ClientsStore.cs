@@ -59,14 +59,15 @@ namespace Billing.Contracts.Infra.Storage.Stores
 
         private static IQueryable<Client> Search(this IQueryable<Client> clients, HashSet<string> words)
         {
-            if (words == null || !words.Any())
+            var usableWords = words.Sanitize();
+            if (!usableWords.Any())
             {
                 return clients;
             }
 
             Expression<Func<Client, bool>> fullTextExpression = c =>
-                EF.Functions.Contains(c.Name, words.ToFullTextContainsPredicate())
-                || EF.Functions.Contains(c.SocialReason, words.ToFullTextContainsPredicate());
+                EF.Functions.Contains(c.Name, usableWords.ToFullTextContainsPredicate())
+                || EF.Functions.Contains(c.SocialReason, usableWords.ToFullTextContainsPredicate());
 
             return clients.Where(fullTextExpression);
         }
