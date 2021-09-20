@@ -11,6 +11,7 @@ namespace Billing.Contracts.Domain.Contracts.Health
         {
             return contracts
                 .Select(c => GetContractHealth(c, environment))
+                .Where(h => h.EstablishmentHealths.Any())
                 .ToList();
         }
 
@@ -22,6 +23,7 @@ namespace Billing.Contracts.Domain.Contracts.Health
                 EnvironmentId = environment.Id,
                 EstablishmentHealths = environment.Establishments
                     .Select(e => GetEstablishmentHealth(e, contract.CommercialOffer.ProductId))
+                    .Where(e => e.AttachmentErrors.Any())
                     .ToList()
             };
         }
