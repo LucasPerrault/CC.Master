@@ -1,4 +1,4 @@
-﻿using Environments.Domain.Storage;
+using Environments.Domain.Storage;
 using Lucca.Core.Api.Abstractions.Paging;
 using System.Collections.Generic;
 using Tools;
@@ -17,7 +17,7 @@ namespace Environments.Web
         {
             return new EnvironmentFilter
             {
-                Subdomain = string.IsNullOrEmpty(Subdomain)  ? CompareString.Bypass : CompareString.Equals(Subdomain),
+                Subdomain = Subdomain.Any() ? CompareString.Equals(Subdomain) : CompareString.Bypass,
                 Search = Search,
                 IsActive = IsActive.ToCompareBoolean()
             };
