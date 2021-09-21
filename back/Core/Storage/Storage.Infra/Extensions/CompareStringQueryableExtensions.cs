@@ -1,5 +1,5 @@
 ﻿using System;
-using System.ComponentModel;
+using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using Tools;
@@ -10,13 +10,13 @@ namespace Storage.Infra.Extensions
     {
         public static ICompareStringQueryableBuilder<T> Apply<T>(this IQueryable<T> query, CompareString comparison)
         {
-            return comparison.Type switch
+            return comparison switch
             {
-                CompareStringType.Bypass => new BypassCompareStringQueryableBuilder<T>(query),
-                CompareStringType.Equals => new CompareEqualStringQueryableBuilder<T>(query, comparison.Value),
-                CompareStringType.DoesNotEqual => new CompareNotEqualStringQueryableBuilder<T>(query, comparison.Value),
-                CompareStringType.StartsWith => new CompareStartsWithStringQueryableBuilder<T>(query, comparison.Value),
-                _ => throw new InvalidEnumArgumentException(nameof(comparison.Type), (int)comparison.Type, typeof(CompareStringType)),
+                BypassCompareString _ => new BypassCompareStringQueryableBuilder<T>(query),
+                EqualsCompareString eq => new CompareEqualStringQueryableBuilder<T>(query, eq.Values),
+                DoesNotEqualCompareString neq => new CompareNotEqualStringQueryableBuilder<T>(query, neq.Values),
+                StartsWithCompareString start => new CompareStartsWithStringQueryableBuilder<T>(query, start.Value),
+                _ => throw new ApplicationException("Type of StringCompare not supported"),
             };
         }
 
@@ -35,27 +35,27 @@ namespace Storage.Infra.Extensions
         private class CompareEqualStringQueryableBuilder<T> : ICompareStringQueryableBuilder<T>
         {
             private readonly IQueryable<T> _query;
-            private readonly string _value;
-            public CompareEqualStringQueryableBuilder(IQueryable<T> query, string value)
+            private readonly HashSet<string> _values;
+            public CompareEqualStringQueryableBuilder(IQueryable<T> query, HashSet<string> values)
             {
                 _query = query;
-                _value = value;
+                _values = values;
             }
 
-            public IQueryable<T> To(Expression<Func<T, string>> expression) => _query.Where(expression.Chain(s => s == _value));
+            public IQueryable<T> To(Expression<Func<T, string>> expression) => _query.Where(expression.Chain(s => _values.Contains(s)));
         }
 
         private class CompareNotEqualStringQueryableBuilder<T> : ICompareStringQueryableBuilder<T>
         {
             private readonly IQueryable<T> _query;
-            private readonly string _value;
-            public CompareNotEqualStringQueryableBuilder(IQueryable<T> query, string value)
+            private readonly HashSet<string> _values;
+            public CompareNotEqualStringQueryableBuilder(IQueryable<T> query, HashSet<string> values)
             {
                 _query = query;
-                _value = value;
+                _values = values;
             }
 
-            public IQueryable<T> To(Expression<Func<T, string>> expression) => _query.Where(expression.Chain(s => s != _value));
+            public IQueryable<T> To(Expression<Func<T, string>> expression) => _query.Where(expression.Chain(s => !_values.Contains(s)));
         }
 
         private class CompareStartsWithStringQueryableBuilder<T> : ICompareStringQueryableBuilder<T>
