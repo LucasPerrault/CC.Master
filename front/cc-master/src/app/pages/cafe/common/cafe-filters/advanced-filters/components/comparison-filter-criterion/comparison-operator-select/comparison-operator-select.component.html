@@ -1,0 +1,18 @@
+<label class="textfield {{ textfieldClass }}" [ngClass]="{ 'is-required': required }">
+  <lu-select [formControl]="formControl" class="textfield-input"
+             [placeholder]="'cafe_criterionOperator_select_label' | translate"
+             [required]="required"
+             (blur)="onTouch()">
+    <ng-container *luDisplayer="let operator">{{ operator.name }}</ng-container>
+
+    <lu-option-picker-advanced>
+      <lu-option-feeder [options]="comparisonOperators"></lu-option-feeder>
+      <header class="lu-picker-header">
+        <lu-option-searcher [searchFn]="searchFn"></lu-option-searcher>
+      </header>
+      <lu-option *luForOptions="let operator; trackBy: trackBy" [value]="operator">
+        {{ operator.name | translate }}
+      </lu-option>
+    </lu-option-picker-advanced>
+  </lu-select>
+</label>
