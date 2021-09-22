@@ -1,0 +1,14 @@
+<div class="u-displayFlex">
+  <cc-category-select textfieldClass="palette-grey mod-outlined"
+                      [placeholder]="'cafe_category_select_label' | translate"
+                      [categories]="categories"
+                      [formControl]="parentCategory">
+  </cc-category-select>
+
+  <ng-container *ngIf="!!parent?.children?.length">
+    <cc-category-select textfieldClass="palette-grey mod-outlined"
+                        [categories]="parent.children"
+                        [formControl]="childCategory">
+    </cc-category-select>
+  </ng-container>
+</div>
