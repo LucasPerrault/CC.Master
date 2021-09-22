@@ -1,0 +1,22 @@
+<form [formGroup]="formGroup" class="u-displayFlex u-flexWrapWrap u-alignItemsCenter u-flexGrow0 u-flexShrink1">
+  <cc-comparison-criterion-select textfieldClass="palette-grey mod-outlined mod-inline"
+                                  [formControlName]="formKey.Criterion"
+                                  [configurations]="configurations"
+                                  [required]="true"
+                                  (blur)="onTouch()">
+  </cc-comparison-criterion-select>
+
+  <ng-container *ngIf="configuration$ | async; let configuration">
+    <cc-comparison-operator-select textfieldClass="palette-grey mod-outlined mod-inline"
+                                   [formControlName]="formKey.Operator"
+                                   [operators]="configuration.operators"
+                                   [required]="true"
+                                   (blur)="onTouch()">
+    </cc-comparison-operator-select>
+
+    <cc-comparison-value-select [formControlName]="formKey.Values"
+                                [configurations]="configuration.fields"
+                                (blur)="onTouch()">
+    </cc-comparison-value-select>
+  </ng-container>
+</form>
