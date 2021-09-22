@@ -4,4 +4,15 @@
   </header>
 
   <div class="header blockWithFixedSizeInFlex"></div>
+
+  <div class="loading mod-fullPage" *ngIf="isLoading$ | async; else isNotLoading"></div>
+
+  <ng-template #isNotLoading>
+    <cc-offer-list ccInfiniteScroll
+                   (bottomReached)="nextPage()"
+                   (sort)="updateSort($event)"
+                   [offers]="offers$ | async"
+                   [sortParams]="sortParams$ | async">
+    </cc-offer-list>
+  </ng-template>
 </div>

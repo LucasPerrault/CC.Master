@@ -23,3 +23,9 @@ export interface IPriceRow {
   fixedPrice: number;
   listId: number;
 }
+
+export const offerPriceListFields = `currency[${currencyFields}],priceLists[${ priceListFields }]`;
+export interface IOfferPriceList {
+  currency: ICurrency;
+  priceLists: IPriceList[];
+}
