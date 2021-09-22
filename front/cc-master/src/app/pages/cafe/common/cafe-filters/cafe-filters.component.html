@@ -1,0 +1,18 @@
+<div class="u-displayFlex u-flexShrink0 u-flexGrow1">
+  <cc-category-filter [categories]="categories" [formControl]="category"></cc-category-filter>
+
+  <button class="button palette-grey mod-outlined mod-counter u-marginLeftAuto"
+          *ngIf="hasSelectedConfiguration$ | async"
+          (click)="toggleAdvancedFiltersDisplay()">
+    {{ 'cafe_filters_button_label' | translate }}
+    <span class="button-counter">{{ filtersCount }}</span>
+  </button>
+</div>
+
+<cc-advanced-filters *ngIf="hasSelectedConfiguration$ | async"
+                     [ngClass]="{ 'mod-hidden': !showAdvancedFilters }"
+                     class="u-marginTopSmaller"
+                     [configuration]="configuration$ | async"
+                     (updateFilters)="update($event)"
+                     (cancel)="toggleAdvancedFiltersDisplay()">
+</cc-advanced-filters>
