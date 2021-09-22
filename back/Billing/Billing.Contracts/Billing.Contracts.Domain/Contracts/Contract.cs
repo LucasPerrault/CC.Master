@@ -3,6 +3,8 @@ using Billing.Products.Domain;
 using Distributors.Domain.Models;
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Linq.Expressions;
 
 namespace Billing.Contracts.Domain.Contracts
 {
@@ -39,6 +41,23 @@ namespace Billing.Contracts.Domain.Contracts
         public DateTime? RebateEndsOn { get; set; }
         public double MinimalBillingPercentage { get; set; }
         public BillingPeriodicity BillingPeriodicity { get; set; }
+    }
+
+    public static class ContractExpressions
+    {
+        public static readonly Expression<Func<Contract, DateTime>> StartsOn = c => c.Attachments.Any()
+            ? c.Attachments
+                .Where(a => a.IsActive)
+                .Select(a => a.StartsOn)
+                .Min()
+            : c.TheoreticalStartOn;
+
+        public static readonly Expression<Func<Contract, DateTime?>> EndsOn = c => c.Attachments.Any()
+            ? c.Attachments
+                .Where(a => a.IsActive)
+                .Select(a => a.EndsOn)
+                .Min()
+            : null;
     }
 
     public enum ContractEndReason
