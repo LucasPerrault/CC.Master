@@ -19,4 +19,9 @@ export class OffersDataService {
     return this.httpClient.get<IHttpApiV3CollectionCountResponse<IDetailedOffer>>(this.offersEndpoint, { params })
       .pipe(map(res => res.data));
   }
+
+  public delete$(offerId: number): Observable<void> {
+    const url = `${ this.offersEndpoint }/${ offerId }`;
+    return this.httpClient.delete<void>(url);
+  }
 }
