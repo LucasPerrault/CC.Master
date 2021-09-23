@@ -3,11 +3,12 @@ import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { defaultPagingParams, IPaginatedResult, PaginatedList, PaginatedListState, PagingService } from '@cc/common/paging';
 import { ISortParams, SortOrder } from '@cc/common/sort';
-import { combineLatest, Observable, ReplaySubject, Subject } from 'rxjs';
+import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
 import { debounceTime, map, takeUntil } from 'rxjs/operators';
 
 import { OfferSortParamKey } from './enums/offer-sort-param-key.enum';
 import { IDetailedOffer } from './models/detailed-offer.interface';
+import { OfferListService } from './services/offer-list.service';
 import { OffersApiMappingService } from './services/offers-api-mapping.service';
 import { OffersDataService } from './services/offers-data.service';
 
@@ -37,7 +38,7 @@ export class OffersComponent implements OnInit {
   }
 
   public filters: FormControl = new FormControl();
-  public sortParams$: ReplaySubject<ISortParams> = new ReplaySubject<ISortParams>(1);
+  public sortParams$: BehaviorSubject<ISortParams> = new BehaviorSubject<ISortParams>(null);
 
   public paginatedOffers: PaginatedList<IDetailedOffer>;
 
@@ -46,6 +47,7 @@ export class OffersComponent implements OnInit {
   constructor(
     private apiMappingService: OffersApiMappingService,
     private offersDataService: OffersDataService,
+    private offerListService: OfferListService,
     private pagingService: PagingService,
   ) {
   }
@@ -66,6 +68,10 @@ export class OffersComponent implements OnInit {
       (httpParams) => this.getPaginatedOffers$(httpParams),
       { page: defaultPagingParams.page, limit: 100 },
     );
+
+    this.offerListService.refresh$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(() => this.refresh());
   }
 
   public nextPage(): void {
@@ -74,6 +80,13 @@ export class OffersComponent implements OnInit {
 
   public updateSort(sortParams: ISortParams) {
     this.sortParams$.next(sortParams);
+  }
+
+  private refresh(): void {
+    const filters = this.filters.value;
+    const sort = this.sortParams$.value;
+    const httpParams = this.apiMappingService.toHttpParams({ filters, sort });
+    this.paginatedOffers.updateHttpParams(httpParams);
   }
 
   private getPaginatedOffers$(httpParams: HttpParams): Observable<IPaginatedResult<IDetailedOffer>> {
@@ -86,5 +99,4 @@ export class OffersComponent implements OnInit {
     this.sortParams$.next({ field: OfferSortParamKey.Name, order: SortOrder.Asc });
     this.filters.patchValue({ tag: offerPrincipalTag });
   }
-
 }
