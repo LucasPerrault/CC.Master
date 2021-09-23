@@ -3,7 +3,11 @@
     <h1>{{ "offers_page_title" | translate }}</h1>
   </header>
 
-  <div class="header blockWithFixedSizeInFlex"></div>
+  <cc-offer-filters class="header blockWithFixedSizeInFlex" [formControl]="filters"></cc-offer-filters>
+
+  <h4 class="page-content page-resultsCount u-displayFlex u-alignItemsCenter u-justifyContentSpaceBetween">
+    {{ 'offers_count' | translate : { count: totalCounts$ | async } }}
+  </h4>
 
   <div class="loading mod-fullPage" *ngIf="isLoading$ | async; else isNotLoading"></div>
 
