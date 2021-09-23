@@ -17,13 +17,8 @@ namespace Billing.Cmrr.Domain.Situation
 
     public class CmrrClientSituation
     {
-        public List<CmrrClient> Acquired { get; } = new List<CmrrClient>();
-        public List<CmrrClient> Terminated { get; } = new List<CmrrClient>();
-    }
-
-    public class CmrrClient
-    {
-        public string Name { get; set; }
+        public CmrrAmount Acquired { get; } = new CmrrAmount();
+        public CmrrAmount Terminated { get; } = new CmrrAmount();
     }
 
     public class CmrrLine
@@ -107,6 +102,16 @@ namespace Billing.Cmrr.Domain.Situation
                 UserCount = userCount
             };
         }
+
+        public static CmrrAmountTopElement FromRaw(decimal amount, int userCount, CmrrAmountTopElementContract contract)
+        {
+            return new CmrrAmountTopElement
+            {
+                Amount = amount,
+                Contract = contract,
+                UserCount = userCount
+            };
+        }
     }
 
     public class CmrrAmountTopElementCount
@@ -149,6 +154,16 @@ namespace Billing.Cmrr.Domain.Situation
                 ClientName = contract.ClientName,
                 ClientId = contract.ClientId,
                 Id = contract.Id
+            };
+        }
+
+        public static CmrrAmountTopElementContract FromRaw(int Id, int clientId, string clientName)
+        {
+            return new CmrrAmountTopElementContract
+            {
+                ClientName = clientName,
+                ClientId = clientId,
+                Id = Id
             };
         }
     }
