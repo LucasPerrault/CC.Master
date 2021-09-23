@@ -2,11 +2,13 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { TranslatePipe } from '@cc/aspects/translate';
 import { NavigationPath } from '@cc/common/navigation';
 import { ISortParams, SortOrder, SortService } from '@cc/common/sort';
+import { LuModal } from '@lucca-front/ng/modal';
 
 import { ContractsRoutingKey } from '../../../contracts/contracts-manage/services/contracts-routing.service';
 import { BillingMode, billingModes, IBillingMode } from '../../enums/billing-mode.enum';
 import { OfferSortParamKey } from '../../enums/offer-sort-param-key.enum';
 import { IDetailedOffer } from '../../models/detailed-offer.interface';
+import { OfferDeletionComponent } from '../offer-deletion/offer-deletion.component';
 
 @Component({
   selector: 'cc-offer-list',
@@ -23,6 +25,7 @@ export class OfferListComponent implements OnInit {
   public sortOrder = SortOrder;
 
   constructor(
+    private luModal: LuModal,
     private translatePipe: TranslatePipe,
     private sortService: SortService,
   ) { }
@@ -54,5 +57,9 @@ export class OfferListComponent implements OnInit {
 
   public canBeDeleted(offer: IDetailedOffer): boolean {
     return offer.activeContractNumber === 0;
+  }
+
+  public openDeletionModal(offer: IDetailedOffer): void {
+    this.luModal.open(OfferDeletionComponent, offer);
   }
 }

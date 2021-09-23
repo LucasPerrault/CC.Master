@@ -47,7 +47,10 @@
       <button class="link" (click)="redirectToContracts(offer.id)">{{ offer.activeContractNumber }}</button>
     </td>
     <td class="table-body-row-cell mod-actions">
-      <button class="actionIcon" *ngIf="canBeDeleted(offer)" [luTooltip]="'offers_list_actions_delete' | translate">
+      <button class="actionIcon"
+              *ngIf="canBeDeleted(offer)"
+              (click)="openDeletionModal(offer)"
+              [luTooltip]="'offers_list_actions_delete' | translate">
         <span aria-hidden="true" class="lucca-icon icon-close"></span>
       </button>
       <button class="actionIcon" [luTooltip]="'offers_list_actions_edit' | translate">
