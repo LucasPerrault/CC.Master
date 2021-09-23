@@ -43,9 +43,14 @@ namespace Billing.Cmrr.Domain
             if (startPeriodCount is null)
             {
                 var isModification = contract.CreationCause == ContractCreationCause.Modification;
-                if (!isModification && contract.EnvironmentCreatedAt.AddMonths(MaxMonthDurationForUpsell) < contract.StartDate)
-                    return CmrrLifeCycle.Upsell;
-                return CmrrLifeCycle.Creation;
+                if (!isModification)
+                {
+                    if (contract.EnvironmentCreatedAt.AddMonths(MaxMonthDurationForUpsell) < contract.StartDate)
+                        return CmrrLifeCycle.Upsell;
+                    return CmrrLifeCycle.Creation;
+                }
+
+                return CmrrLifeCycle.Expansion;
             }
 
             if (startPeriodCount.EuroTotal >= endPeriodCount.EuroTotal)
