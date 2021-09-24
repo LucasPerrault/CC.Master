@@ -3,7 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 
 import { IContractsRoutingParams } from '../models/contracts-routing-params.interface';
 
-enum ContractsRoutingKey {
+export enum ContractsRoutingKey {
   Ids = 'contractIds',
   Name = 'name',
   State = 'stateids',
