@@ -1,0 +1,12 @@
+<lu-select [formControl]="formControl" [placeholder]="placeholder" class="textfield-input" multiple>
+
+  <span class="chip mod-unkillable" *luDisplayer="let billingMode">{{ billingMode.name }}</span>
+
+  <lu-option-picker-advanced>
+    <lu-option-feeder [options]="billingModes"></lu-option-feeder>
+    <lu-option *luForOptions="let billingMode; trackBy: trackBy" [value]="billingMode">{{ billingMode.name }}</lu-option>
+  </lu-option-picker-advanced>
+
+  <lu-input-clearer></lu-input-clearer>
+
+</lu-select>
