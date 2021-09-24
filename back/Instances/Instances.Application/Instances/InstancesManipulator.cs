@@ -1,3 +1,4 @@
+using Environments.Domain;
 using Instances.Domain.Instances;
 using Instances.Domain.Instances.Models;
 using Instances.Domain.Shared;
@@ -42,6 +43,15 @@ namespace Instances.Application.Instances
                 duplicateInstanceRequest,
                 duplication.TargetCluster,
                 callbackPath
+            );
+        }
+
+        internal Task RequestRemoteBackupAsync(Environment environment, InstanceType instanceType)
+        {
+            return _ccDataService.CreateInstanceBackupAsync
+            (
+                new CreateInstanceBackupRequestDto(environment.Subdomain),
+                environment.GetInstanceExecutingCluster(instanceType)
             );
         }
     }
