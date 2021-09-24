@@ -6,6 +6,7 @@ namespace Instances.Domain.Instances
 {
     public interface IInstancesStore
     {
+        Task<Instance> CreateForTrainingAsync(int environmentId, bool isAnonymized);
         Task<Instance> CreateForDemoAsync(string password);
         Task DeleteByIdAsync(int instanceId);
         Task DeleteByIdsAsync(IEnumerable<int> instanceIds);
