@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
+using Tools;
 using Environment = Environments.Domain.Environment;
 
 namespace Environments.Infra.Storage.Stores
@@ -30,6 +31,12 @@ namespace Environments.Infra.Storage.Stores
             _environmentsRemoteStore = environmentsRemoteStore;
         }
 
+        public Task<Environment> GetActiveByIdAsync(List<EnvironmentAccessRight> rights, int id)
+        {
+            return GetQueryable(rights, new EnvironmentFilter { IsActive = CompareBoolean.TrueOnly, Ids = new HashSet<int> { id } })
+                .SingleOrDefaultAsync();
+        }
+
         public Task<List<Environment>> GetAsync(List<EnvironmentAccessRight> rights, EnvironmentFilter filter)
         {
             return GetQueryable(rights, filter).ToListAsync();
@@ -41,7 +48,15 @@ namespace Environments.Infra.Storage.Stores
         }
 
         public Task UpdateSubDomainAsync(Environment environement, string newName)
-            => _environmentsRemoteStore.UpdateSubDomainAsync(environement, newName);   
+            => _environmentsRemoteStore.UpdateSubDomainAsync(environement, newName);
+
+        public Task<bool> HasAccessAsync(List<EnvironmentAccessRight> rights, int environmentId)
+        {
+            return GetQueryable(rights, new EnvironmentFilter
+            {
+                Ids = new HashSet<int> { environmentId }
+            }).AnyAsync();
+        }
 
         private IQueryable<Environment> GetQueryable(List<EnvironmentAccessRight> rights, EnvironmentFilter filter)
         {
