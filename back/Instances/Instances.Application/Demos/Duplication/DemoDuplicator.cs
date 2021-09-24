@@ -1,4 +1,5 @@
 using Authentication.Domain;
+using Authentication.Domain.Helpers;
 using Distributors.Domain;
 using Instances.Application.Instances;
 using Instances.Domain.Demos;
@@ -90,12 +91,13 @@ namespace Instances.Application.Demos.Duplication
 
         private int GetAuthorId(ClaimsPrincipal principal)
         {
-            if (!(principal is CloudControlUserClaimsPrincipal user))
+            var authorId = _principal.GetAuthorIdOnlyWhenUser();
+            if (authorId == null)
             {
                 throw new BadRequestException("Duplication api is opened to users only");
             }
 
-            return user.UserId.Value;
+            return authorId.Value;
         }
 
         private void ThrowIfInvalid(DemoDuplicationRequest request)
