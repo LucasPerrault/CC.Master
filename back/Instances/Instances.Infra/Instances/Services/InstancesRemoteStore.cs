@@ -35,26 +35,26 @@ namespace Instances.Infra.Instances.Services
             return response.Data;
         }
 
-        public class DeleteForDemoDto
+        public class DeleteDto
         {
             public int Id { get; set; }
         }
 
-        public async Task DeleteForDemoAsync(Instance demoInstance)
+        public async Task DeleteAsync(Instance instance)
         {
-            await _httpClientHelper.PostObjectResponseAsync<DeleteForDemoDto, Instance>
+            await _httpClientHelper.PostObjectResponseAsync<DeleteDto, Instance>
             (
-                "deleteForDemo",
-                new DeleteForDemoDto { Id =  demoInstance.Id },
+                "deleteForCCMaster",
+                new DeleteDto { Id =  instance.Id },
                 new Dictionary<string, string>()
             );
         }
 
-        public async Task DeleteForDemoAsync(IEnumerable<Instance> demoInstances)
+        public async Task DeleteAsync(IEnumerable<Instance> instances)
         {
-            foreach (var demoInstance in demoInstances)
+            foreach (var instance in instances)
             {
-                await DeleteForDemoAsync(demoInstance);
+                await DeleteAsync(instance);
             }
         }
     }

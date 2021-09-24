@@ -70,7 +70,7 @@ namespace Instances.Application.Tests.Demos
             await demosRepo.DeleteAsync(12);
 
             _demosStoreMock.Verify(s => s.DeleteAsync(It.Is<Demo>(d => d.Id == 12)), Times.Once);
-            _instancesStoreMock.Verify(s => s.DeleteForDemoAsync(It.Is<Instance>(i => i.Id == 123456)), Times.Once);
+            _instancesStoreMock.Verify(s => s.DeleteAsync(It.Is<Instance>(i => i.Id == 123456)), Times.Once);
             _iCcDataServiceMock.Verify(s => s.DeleteInstanceAsync
                 (
                     It.Is<string>(s => s == "aperture-science"),

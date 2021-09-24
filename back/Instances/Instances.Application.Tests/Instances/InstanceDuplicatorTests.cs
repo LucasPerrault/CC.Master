@@ -28,7 +28,7 @@ namespace Instances.Application.Tests
             };
             _ccDataServiceMock.Setup(ccDataService => ccDataService.StartDuplicateInstanceAsync(It.IsAny<DuplicateInstanceRequestDto>(), It.IsAny<string>(), It.IsAny<string>())).Verifiable();
 
-            var instanceDuplicator = new InstancesDuplicator(
+            var instanceDuplicator = new InstancesManipulator(
                 new SqlScriptPicker(new SqlScriptPickerConfiguration
                 {
                     JenkinsBaseUri = new Uri("http://localhost/"),
@@ -52,7 +52,7 @@ namespace Instances.Application.Tests
             };
             _ccDataServiceMock.Setup(ccDataService => ccDataService.StartDuplicateInstanceAsync(It.IsAny<DuplicateInstanceRequestDto>(), It.IsAny<string>(), It.IsAny<string>())).Verifiable();
 
-            var instanceDuplicator = new InstancesDuplicator(
+            var instanceDuplicator = new InstancesManipulator(
                 new SqlScriptPicker(new SqlScriptPickerConfiguration
                 {
                     JenkinsBaseUri = new Uri("http://localhost/"),

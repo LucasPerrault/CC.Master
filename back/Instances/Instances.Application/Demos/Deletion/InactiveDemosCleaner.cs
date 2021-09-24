@@ -131,7 +131,7 @@ namespace Instances.Application.Demos.Deletion
             }
 
             await _demosStore.DeleteAsync(info.Select(i => i.Demo));
-            await _instancesStore.DeleteForDemoAsync(info.Select(i => i.Demo.Instance));
+            await _instancesStore.DeleteAsync(info.Select(i => i.Demo.Instance));
         }
 
         private Task ReportCleanupIntentionsAsync(IEnumerable<DemoCleanupInfo> info)
