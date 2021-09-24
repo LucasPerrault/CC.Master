@@ -1,7 +1,8 @@
-﻿using Instances.Domain.Instances;
+using Instances.Domain.Instances;
 using Instances.Domain.Instances.Models;
 using Remote.Infra.Services;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 
@@ -20,6 +21,25 @@ namespace Instances.Infra.Instances.Services
         private class CreateForDemoDto
         {
             public string Password { get; set; }
+        }
+
+        private class CreateForTrainingDto
+        {
+            public int EnvironmentId { get; set; }
+            public bool IsAnonymized { get; set; }
+        }
+
+        public async Task<Instance> CreateForTrainingAsync(int environmentId, bool isAnonymized)
+        {
+            var dto = new CreateForTrainingDto { EnvironmentId = environmentId, IsAnonymized = isAnonymized };
+            var response = await _httpClientHelper.PostObjectResponseAsync<CreateForTrainingDto, Instance>
+            (
+                "createForTraining",
+                dto,
+                new Dictionary<string, string>()
+            );
+
+            return response.Data;
         }
 
         public async Task<Instance> CreateForDemoAsync(string password)
