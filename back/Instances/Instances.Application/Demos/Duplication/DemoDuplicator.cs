@@ -17,7 +17,7 @@ namespace Instances.Application.Demos.Duplication
     public class DemoDuplicator
     {
         private readonly ClaimsPrincipal _principal;
-        private readonly InstancesDuplicator _instancesDuplicator;
+        private readonly InstancesManipulator _instancesDuplicator;
         private readonly IDemosStore _demosStore;
         private readonly IDemoDuplicationsStore _duplicationsStore;
         private readonly IRightsService _rightsService;
@@ -31,7 +31,7 @@ namespace Instances.Application.Demos.Duplication
         public DemoDuplicator
         (
             ClaimsPrincipal principal,
-            InstancesDuplicator instancesDuplicator,
+            InstancesManipulator instancesDuplicator,
             IDemosStore demosStore,
             IDemoDuplicationsStore duplicationsStore,
             IRightsService rightsService,
@@ -65,7 +65,7 @@ namespace Instances.Application.Demos.Duplication
             var distributor = await _distributorsStore.GetActiveByCodeAsync(request.DistributorCode);
             var targetCluster = await _clusterSelector.GetFillingClusterAsync(request.Subdomain);
 
-            var duplication = DuplicationFactory.New
+            var duplication = DemoDuplicationFactory.New
             (
                 distributor.Id,
                 GetAuthorId(_principal),

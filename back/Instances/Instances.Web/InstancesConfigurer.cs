@@ -109,7 +109,7 @@ namespace Instances.Web
             services.AddScoped<HarborWebhookHandler>();
 
             services.AddScoped<InactiveDemosCleaner>();
-            services.AddScoped<InstancesDuplicator>();
+            services.AddScoped<InstancesManipulator>();
             services.AddScoped<DemoDuplicator>();
             services.AddScoped<HubspotDemoDuplicator>();
             services.AddScoped<IDemoDuplicationCompleter, DemoDuplicationCompleter>();

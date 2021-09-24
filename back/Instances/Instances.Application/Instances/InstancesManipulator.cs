@@ -1,16 +1,17 @@
 using Instances.Domain.Instances;
+using Instances.Domain.Instances.Models;
 using Instances.Domain.Shared;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace Instances.Application.Instances
 {
-    public class InstancesDuplicator
+    public class InstancesManipulator
     {
         private readonly ICcDataService _ccDataService;
         private readonly ISqlScriptPicker _scriptPicker;
 
-        public InstancesDuplicator(ISqlScriptPicker scriptPicker, ICcDataService ccDataService)
+        public InstancesManipulator(ISqlScriptPicker scriptPicker, ICcDataService ccDataService)
         {
             _scriptPicker = scriptPicker;
             _ccDataService = ccDataService;
