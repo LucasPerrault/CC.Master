@@ -26,6 +26,16 @@ namespace Authentication.Domain.Helpers
             };
         }
 
+        public static int GetDistributorId(this ClaimsPrincipal principal)
+        {
+            return principal switch
+            {
+                CloudControlUserClaimsPrincipal user => user.User.DistributorId,
+                CloudControlApiKeyClaimsPrincipal apiKey => apiKey.ApiKey.DistributorId,
+                _ => throw new NotImplementedException()
+            };
+        }
+
         public static string GetApiKeyStorableId(this ClaimsPrincipal principal)
         {
             return principal switch
