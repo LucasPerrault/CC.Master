@@ -91,11 +91,6 @@ namespace Environments.Infra.Storage.Stores
             List<EnvironmentAccessRight> accessRights
         )
         {
-            if (!accessRights.Any())
-            {
-                return environments.Where(_ => false);
-            }
-
             var rightsExpression = ForRightsExpression(accessRights);
 
             return environments.Where(rightsExpression);
