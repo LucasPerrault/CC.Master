@@ -5,6 +5,8 @@ using Instances.Application.Demos.Deletion;
 using Instances.Application.Demos.Duplication;
 using Instances.Application.Demos.Emails;
 using Instances.Application.Instances;
+using Instances.Application.Trainings;
+using Instances.Application.Trainings.Restoration;
 using Instances.Application.Webhooks.Github;
 using Instances.Application.Webhooks.Harbor;
 using Instances.Domain.CodeSources;
@@ -17,6 +19,7 @@ using Instances.Domain.Instances;
 using Instances.Domain.Preview;
 using Instances.Domain.Renaming;
 using Instances.Domain.Shared;
+using Instances.Domain.Trainings;
 using Instances.Infra.CodeSources;
 using Instances.Infra.DataDuplication;
 using Instances.Infra.Demos;
@@ -114,6 +117,9 @@ namespace Instances.Web
             services.AddScoped<HubspotDemoDuplicator>();
             services.AddScoped<IDemoDuplicationCompleter, DemoDuplicationCompleter>();
 
+            services.AddScoped<TrainingRestorer>();
+            services.AddScoped<ITrainingRestorationCompleter, TrainingRestorationCompleter>();
+
             services.AddScoped<ICodeSourcesRepository, CodeSourcesRepository>();
             services.AddHttpClient<ICodeSourceFetcherService, CodeSourceFetcherService>(c =>
                 c.WithUserAgent(nameof(CodeSourceFetcherService))
@@ -131,13 +137,17 @@ namespace Instances.Web
             services.AddScoped<DemoRightsFilter>();
             services.AddScoped<DemosRepository>();
             services.AddScoped<InstanceDuplicationsRepository>();
-            services.AddScoped<InstanceDuplicationsRepository>();
             services.AddScoped<ISubdomainGenerator, SubdomainGenerator>();
             services.AddScoped<IClusterSelector, ClusterSelector>();
             services.AddScoped<ICodeSourcesStore, CodeSourcesStore>();
             services.AddScoped<IGithubPullRequestsStore, GithubPullRequestsStore>();
             services.AddScoped<IGithubBranchesStore, GithubBranchesStore>();
             services.AddScoped<IGithubReposStore, GithubReposStore>();
+
+            services.AddScoped<ITrainingsStore, TrainingsStore>();
+            services.AddScoped<ITrainingRestorationsStore, TrainingRestorationsStore>();
+            services.AddScoped<TrainingsRepository>();
+            services.AddScoped<TrainingRestorationLogsRepository>();
 
             services.AddScoped<ISubdomainValidationTranslator, SubdomainValidationTranslator>();
             services.AddScoped<ISubdomainValidator, SubdomainValidator>();

@@ -62,5 +62,17 @@ namespace Instances.Domain.Instances
                 CallbackPath = callBackPath,
             };
         }
+
+        public static InstanceDuplicationOptions ForTraining(bool withAnonymization, bool keepExistingPasswords,string callBackPath)
+        {
+            return new InstanceDuplicationOptions
+            {
+                WithAnonymization = withAnonymization,
+                SkipBufferServer = false,
+                SpecificPreRestoreScriptKeywordSelector = keepExistingPasswords ? new string[] { KeepExistingPasswordsScriptKeyword }  : Array.Empty<string>(),
+                SpecificPostRestoreScriptKeywordSelector = keepExistingPasswords ? new string[] { KeepExistingPasswordsScriptKeyword } : Array.Empty<string>(),
+                CallbackPath = callBackPath,
+            };
+        }
     }
 }
