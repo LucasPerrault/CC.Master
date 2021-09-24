@@ -1,0 +1,16 @@
+<lu-select [formControl]="formControl" [placeholder]="placeholder" class="textfield-input" multiple>
+
+  <span class="chip mod-unkillable" *luDisplayer="let currency">{{ currency.name }}</span>
+
+  <lu-option-picker-advanced>
+    <header class="lu-picker-header">
+      <lu-api-searcher></lu-api-searcher>
+    </header>
+
+    <lu-option *luForOptions="let currency; trackBy: trackBy" [value]="currency">{{ currency.name }}</lu-option>
+
+  </lu-option-picker-advanced>
+
+  <lu-input-clearer></lu-input-clearer>
+
+</lu-select>
