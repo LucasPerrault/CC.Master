@@ -1,11 +1,11 @@
 import { Component, Input } from '@angular/core';
+import { TranslatePipe } from '@cc/aspects/translate';
 import { LuModal } from '@lucca-front/ng/modal';
 
 import { IAppInstance } from '../../models/app-instance.interface';
 import { IEnvironment } from '../../models/environment.interface';
 import { ILegalUnit } from '../../models/legal-unit.interface';
 import { CountryListModalComponent } from '../country-list-modal/country-list-modal.component';
-import { TranslatePipe } from '@cc/aspects/translate';
 import {
   EnvironmentAdditionalColumn,
   IEnvironmentAdditionalColumn

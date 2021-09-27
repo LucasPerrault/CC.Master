@@ -1,8 +1,9 @@
 import { Component, Inject } from '@angular/core';
 import { TranslatePipe } from '@cc/aspects/translate';
 import { ILuModalContent, LU_MODAL_DATA } from '@lucca-front/ng/modal';
-import { ICountry } from '../../models/legal-unit.interface';
+
 import { IEnvironment } from '../../models/environment.interface';
+import { ICountry } from '../../models/legal-unit.interface';
 
 @Component({
   selector: 'cc-country-list-modal',
