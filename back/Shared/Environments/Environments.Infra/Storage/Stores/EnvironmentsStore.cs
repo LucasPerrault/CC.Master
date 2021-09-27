@@ -68,7 +68,7 @@ namespace Environments.Infra.Storage.Stores
         }
     }
 
-    internal static class EnvironmentQueryableExtensions
+    public static class EnvironmentQueryableExtensions
     {
         public static IQueryable<Environment> FilterBy(this IQueryable<Environment> environments, EnvironmentFilter filter)
         {
@@ -90,16 +90,25 @@ namespace Environments.Infra.Storage.Stores
             List<EnvironmentAccessRight> accessRights
         )
         {
+            var rightsExpression = ForRightsExpression(accessRights);
+
+            return environments.Where(rightsExpression);
+        }
+
+        public static Expression<Func<Environment, bool>> ForRightsExpression
+        (
+            List<EnvironmentAccessRight> accessRights
+        )
+        {
             if (!accessRights.Any())
             {
-                return environments.Where(_ => false);
+                return (e => false);
             }
 
-            var expressions = accessRights
+            return accessRights
                 .Select(r => WithPurposes(r.Purposes).SmartAndAlso(WithAccessRight(r.AccessRight)))
-                .ToArray();
-
-            return environments.Where(expressions.CombineSafelyOr());
+                .ToArray()
+                .CombineSafelyOr();
         }
 
         private static Expression<Func<Environment, bool>> WithPurposes(PurposeAccessRight accessRight)
