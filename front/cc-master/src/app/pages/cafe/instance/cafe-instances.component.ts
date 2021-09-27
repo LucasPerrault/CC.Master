@@ -1,12 +1,12 @@
 import { HttpParams } from '@angular/common/http';
 import { Component } from '@angular/core';
-import { PaginatedList, PaginatedListState } from '@cc/common/paging';
+import { FormControl } from '@angular/forms';
+import { defaultPagingParams, IPaginatedResult, PaginatedList, PaginatedListState, PagingService } from '@cc/common/paging';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 import { IEnvironment } from './models/environment.interface';
-import { EnvironmentListService } from './services/environment-list.service';
-import { FormControl } from '@angular/forms';
+import { EnvironmentDataService } from './services/environment-data.service';
 
 @Component({
   selector: 'cc-cafe-instances',
@@ -30,15 +30,24 @@ export class CafeInstancesComponent {
 
   private paginatedEnvironments: PaginatedList<IEnvironment>;
 
-  constructor(private environmentsService: EnvironmentListService) {
-    this.paginatedEnvironments = this.environmentsService.getPaginatedEnvironments$();
+  constructor(private pagingService: PagingService, private environmentsDataService: EnvironmentDataService) {
+    this.paginatedEnvironments = this.getPaginatedEnvironments$();
   }
 
   public nextPage(): void {
     this.paginatedEnvironments.nextPage();
   }
 
-  public updateHttpParams(params: HttpParams): void {
-    this.paginatedEnvironments.updateHttpParams(params);
+  public getPaginatedEnvironments$(): PaginatedList<IEnvironment> {
+    return this.pagingService.paginate<IEnvironment>(
+      (httpParams) => this.getEnvironments$(httpParams),
+      { page: defaultPagingParams.page, limit: 50 },
+    );
+  }
+
+  private getEnvironments$(httpParams: HttpParams): Observable<IPaginatedResult<IEnvironment>> {
+    return this.environmentsDataService.getEnvironments$(httpParams).pipe(
+      map(response => ({ items: response.items, totalCount: response.count })),
+    );
   }
 }

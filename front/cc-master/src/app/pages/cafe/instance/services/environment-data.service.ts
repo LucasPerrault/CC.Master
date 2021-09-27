@@ -13,9 +13,12 @@ export class EnvironmentDataService {
 
   public getEnvironments$(params: HttpParams = new HttpParams()): Observable<IHttpApiV4CollectionCountResponse<IEnvironment>> {
     params = params.set('field.root', 'count');
-    const url = '/api/cafe/environments';
 
-    return this.httpClient.get<IHttpApiV4CollectionCountResponse<IEnvironment>>(url, { params }).pipe(
+    const query = params.toString();
+    const route = '/api/cafe/environments/search';
+    const url = [route, query].join('?');
+
+    return this.httpClient.post<IHttpApiV4CollectionCountResponse<IEnvironment>>(url, {}).pipe(
       catchError(() => of({ items: [], count: 0 })),
       delay(2000),
     );
