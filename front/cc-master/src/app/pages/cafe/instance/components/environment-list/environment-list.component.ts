@@ -8,7 +8,7 @@ import { ILegalUnit } from '../../models/legal-unit.interface';
 import { CountryListModalComponent } from '../country-list-modal/country-list-modal.component';
 import {
   EnvironmentAdditionalColumn,
-  IEnvironmentAdditionalColumn
+  IEnvironmentAdditionalColumn,
 } from '../environment-additional-column-select/environment-additional-column.enum';
 
 @Component({
@@ -37,7 +37,8 @@ export class EnvironmentListComponent {
   }
 
   public openCountryListModal(legalUnits: ILegalUnit[]): void {
-    this.luModal.open(CountryListModalComponent);
+    const countries = legalUnits.map(l => l.country);
+    this.luModal.open(CountryListModalComponent, countries);
   }
 
   public getTranslatedIsArchived(isActive: boolean): string {
