@@ -14,9 +14,11 @@ export class CommonContactsDataService {
   public getContacts$(params: HttpParams): Observable<IHttpApiV4CollectionCountResponse<ICommonContact>> {
     params = params.set('field.root', 'count');
 
-    const url = '/api/cafe/contacts';
+    const query = params.toString();
+    const route = '/api/cafe/contacts/search';
+    const url = [route, query].join('?');
 
-    return this.httpClient.get<IHttpApiV4CollectionCountResponse<ICommonContact>>(url, { params }).pipe(
+    return this.httpClient.post<IHttpApiV4CollectionCountResponse<ICommonContact>>(url, { }).pipe(
       catchError(() => of({ items: [], count: 0 })),
       delay(2000),
     );

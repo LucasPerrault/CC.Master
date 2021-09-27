@@ -14,9 +14,11 @@ export class ClientContactsDataService {
   public getClientContacts$(params: HttpParams): Observable<IHttpApiV4CollectionCountResponse<IClientContact>> {
     params = params.set('field.root', 'count');
 
-    const url = '/api/cafe/client-contacts';
+    const query = params.toString();
+    const route = '/api/cafe/client-contacts/search';
+    const url = [route, query].join('?');
 
-    return this.httpClient.get<IHttpApiV4CollectionCountResponse<IClientContact>>(url, { params }).pipe(
+    return this.httpClient.post<IHttpApiV4CollectionCountResponse<IClientContact>>(url, { }).pipe(
       catchError(() => of({ items: [], count: 0 })),
       delay(2000),
     );
