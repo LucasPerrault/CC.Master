@@ -1,0 +1,78 @@
+<form [formGroup]="formGroup" class="u-displayFlex">
+  <div>
+    <h4>{{ 'offers_forms_title_information' | translate }}</h4>
+
+    <label class="textfield palette-grey is-required u-marginBottomStandard mod-longer">
+      <input class="textfield-input"
+             type="text"
+             [formControlName]="formKey.Name"
+             [required]="true">
+      <span class="textfield-label">{{ 'offers_form_name' | translate }}</span>
+    </label>
+
+    <cc-product-api-select textfieldClass="textfield palette-grey u-marginBottomStandard mod-longer"
+                           [displayMode]="formMode"
+                           [formControlName]="formKey.Product"
+                           [required]="true">
+    </cc-product-api-select>
+
+    <label class="textfield palette-grey is-required u-marginBottomStandard mod-longer">
+      <cc-offer-billing-unit-select [formControlName]="formKey.BillingUnit" [required]="true">
+      </cc-offer-billing-unit-select>
+      <span class="textfield-label">{{ 'offers_form_billingUnit' | translate }}</span>
+    </label>
+
+    <label class="textfield palette-grey is-required u-marginBottomStandard mod-longer">
+      <cc-offer-currency-api-select [formControlName]="formKey.Currency" [required]="true">
+      </cc-offer-currency-api-select>
+      <span class="textfield-label">{{ 'offers_form_currency' | translate }}</span>
+    </label>
+
+    <label class="textfield palette-grey is-required u-marginBottomStandard mod-longer">
+      <input class="textfield-input" type="text"
+             [formControlName]="formKey.SageBusiness" [required]="true">
+      <span class="textfield-label">{{ 'offers_form_sageBusiness' | translate }}</span>
+    </label>
+
+    <label class="textfield palette-grey is-required u-marginBottomStandard mod-longer">
+      <cc-offer-tag-autocomplete-select [formControlName]="formKey.Tag" [required]="true"></cc-offer-tag-autocomplete-select>
+      <span class="textfield-label">{{ 'offers_form_tag' | translate }}</span>
+    </label>
+
+    <h4 class="u-marginTopStandard">{{ 'offers_forms_title_billing_mode_algo' | translate }}</h4>
+
+    <label class="textfield palette-grey is-required u-marginBottomStandard mod-longer">
+      <cc-offer-billing-mode-select [formControlName]="formKey.BillingMode" [required]="true">
+      </cc-offer-billing-mode-select>
+      <span class="textfield-label">{{ 'offers_form_billingMode' | translate }}</span>
+    </label>
+
+    <label class="textfield palette-grey is-required u-marginBottomStandard mod-longer">
+      <cc-offer-pricing-method-api-select [formControlName]="formKey.PricingMethod" [required]="true">
+      </cc-offer-pricing-method-api-select>
+      <span class="textfield-label">{{ 'offers_form_pricingMethod' | translate }}</span>
+    </label>
+
+    <label class="textfield palette-grey is-required u-marginBottomStandard mod-longer">
+      <cc-offer-forecast-method-api-select [formControlName]="formKey.ForecastMethod" [required]="true">
+      </cc-offer-forecast-method-api-select>
+      <span class="textfield-label">{{ 'offers_form_forecast_method' | translate }}</span>
+    </label>
+  </div>
+
+  <div class="u-marginLeftSmall u-displayFlex u-flexDirectionColumn">
+    <h4>{{ 'offers_forms_title_priceGrid' | translate }}
+      <span aria-hidden="true" class="lucca-icon icon-info"
+            [luTooltip]="'offers_forms_title_priceGrid_info' | translate">
+      </span>
+    </h4>
+
+    <div class="u-displayFlex u-alignItemsCenter">
+      <cc-offer-api-select textfieldClass="palette-grey mod-longer" [displayMode]="formMode" [formControl]="offer">
+      </cc-offer-api-select>
+      <div class="u-marginTopStandard loading" *ngIf="isPriceListsLoading$ | async"></div>
+    </div>
+
+    <cc-editable-price-grid [formControlName]="formKey.PriceList"></cc-editable-price-grid>
+  </div>
+</form>

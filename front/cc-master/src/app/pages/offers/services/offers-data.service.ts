@@ -1,10 +1,12 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { IHttpApiV3CollectionCount, IHttpApiV3CollectionCountResponse } from '@cc/common/queries';
+import { IHttpApiV3CollectionCount, IHttpApiV3CollectionCountResponse, IHttpApiV3Response } from '@cc/common/queries';
+import { IPriceList } from '@cc/domain/billing/offers';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 import { detailedOfferFields, IDetailedOffer } from '../models/detailed-offer.interface';
+import { IPriceListsOffer, priceListsOfferFields } from '../models/price-lists-offer.interface';
 
 @Injectable()
 export class OffersDataService {
@@ -23,5 +25,12 @@ export class OffersDataService {
   public delete$(offerId: number): Observable<void> {
     const url = `${ this.offersEndpoint }/${ offerId }`;
     return this.httpClient.delete<void>(url);
+  }
+
+  public getPriceLists$(offerId: number): Observable<IPriceList[]> {
+    const params = new HttpParams().set('fields', priceListsOfferFields);
+    const url = `${ this.offersEndpoint }/${ offerId }`;
+    return this.httpClient.get<IHttpApiV3Response<IPriceListsOffer>>(url, { params })
+      .pipe(map(res => res.data.priceLists));
   }
 }
