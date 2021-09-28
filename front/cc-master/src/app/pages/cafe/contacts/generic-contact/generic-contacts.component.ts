@@ -7,6 +7,7 @@ import { map } from 'rxjs/operators';
 
 import { IGenericContact } from './generic-contact.interface';
 import { GenericContactsDataService } from './generic-contacts-data.service';
+import { genericContactAdditionalColumns } from './generic-contact-additional-column.enum';
 
 @Component({
   selector: 'cc-generic-contacts',
@@ -27,6 +28,7 @@ export class GenericContactsComponent {
   }
 
   public selectedColumns: FormControl = new FormControl([]);
+  public additionalColumns = genericContactAdditionalColumns;
   private paginatedContacts: PaginatedList<IGenericContact>;
 
   constructor(

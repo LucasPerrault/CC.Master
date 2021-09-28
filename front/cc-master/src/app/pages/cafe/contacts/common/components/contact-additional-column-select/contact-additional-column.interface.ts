@@ -4,7 +4,7 @@ export enum ContactAdditionalColumn {
 }
 
 export interface IContactAdditionalColumn {
-  id: ContactAdditionalColumn;
+  id: string;
   name: string;
 }
 

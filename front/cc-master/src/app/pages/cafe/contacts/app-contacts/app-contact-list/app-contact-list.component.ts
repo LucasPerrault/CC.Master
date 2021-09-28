@@ -4,10 +4,10 @@ import { NavigationPath } from '@cc/common/navigation';
 
 import { ContractsRoutingKey } from '../../../../contracts/contracts-manage/services/contracts-routing.service';
 import {
-  ContactAdditionalColumn,
   IContactAdditionalColumn,
-} from '../../common/components/contact-additional-column-select/contact-additional-column.enum';
+} from '../../common/components/contact-additional-column-select/contact-additional-column.interface';
 import { IAppContact } from '../app-contact.interface';
+import { AppContactAdditionalColumn } from '../app-contact-additional-column.enum';
 
 @Component({
   selector: 'cc-app-contact-list',
@@ -18,7 +18,7 @@ export class AppContactListComponent {
   @Input() public contacts: IAppContact[];
   @Input() public selectedColumns: IContactAdditionalColumn[];
 
-  public additionalColumn = ContactAdditionalColumn;
+  public additionalColumn = AppContactAdditionalColumn;
 
   constructor(private translatePipe: TranslatePipe) { }
 
@@ -32,7 +32,7 @@ export class AppContactListComponent {
       : this.translatePipe.transform('cafe_contacts_list_isConfirmed_false');
   }
 
-  public isHidden(column: ContactAdditionalColumn): boolean {
+  public isHidden(column: AppContactAdditionalColumn): boolean {
     return !this.selectedColumns.find(c => c.id === column);
   }
 

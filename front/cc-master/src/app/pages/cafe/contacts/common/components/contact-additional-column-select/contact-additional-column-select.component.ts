@@ -4,7 +4,7 @@ import { TranslatePipe } from '@cc/aspects/translate';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { contactAdditionalColumns, IContactAdditionalColumn } from './contact-additional-column.enum';
+import { IContactAdditionalColumn } from './contact-additional-column.interface';
 
 @Component({
   selector: 'cc-contact-additional-column-select',
@@ -19,13 +19,14 @@ import { contactAdditionalColumns, IContactAdditionalColumn } from './contact-ad
   ],
 })
 export class ContactAdditionalColumnSelectComponent implements ControlValueAccessor, OnInit, OnDestroy {
+  @Input() public additionalColumns: IContactAdditionalColumn[];
   @Input() public textfieldClass: string;
   public onChange: (columns: IContactAdditionalColumn[]) => void;
   public onTouch: () => void;
 
   public formControl: FormControl = new FormControl();
   public get columns(): IContactAdditionalColumn[] {
-    return this.getTranslations(contactAdditionalColumns);
+    return this.getTranslations(this.additionalColumns);
   }
 
   private destroy$: Subject<void> = new Subject<void>();

@@ -6,6 +6,7 @@ import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 import { IAppContact } from './app-contact.interface';
+import { appContactAdditionalColumns } from './app-contact-additional-column.enum';
 import { AppContactsDataService } from './app-contacts-data.service';
 
 @Component({
@@ -27,6 +28,7 @@ export class AppContactsComponent {
   }
 
   public selectedColumns: FormControl = new FormControl([]);
+  public additionalColumns = appContactAdditionalColumns;
   private paginatedContacts: PaginatedList<IAppContact>;
 
   constructor(

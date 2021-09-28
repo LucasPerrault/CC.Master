@@ -7,6 +7,7 @@ import { map } from 'rxjs/operators';
 
 import { ISpecializedContact } from './specialized-contact.interface';
 import { SpecializedContactsDataService } from './specialized-contacts-data.service';
+import { specializedContactAdditionalColumns } from './specialized-contact-additional-column.enum';
 
 
 @Component({
@@ -28,6 +29,7 @@ export class SpecializedContactsComponent {
   }
 
   public selectedColumns: FormControl = new FormControl([]);
+  public additionalColumns = specializedContactAdditionalColumns;
   private paginatedContacts: PaginatedList<ISpecializedContact>;
 
   constructor(

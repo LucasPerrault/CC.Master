@@ -4,11 +4,11 @@ import { NavigationPath } from '@cc/common/navigation';
 
 import { ContractsRoutingKey } from '../../../../contracts/contracts-manage/services/contracts-routing.service';
 import {
-  ContactAdditionalColumn,
   IContactAdditionalColumn,
-} from '../../common/components/contact-additional-column-select/contact-additional-column.enum';
+} from '../../common/components/contact-additional-column-select/contact-additional-column.interface';
 import { ContactRolesService } from '../../common/services/contact-roles.service';
 import { IClientContact } from '../client-contact.interface';
+import { ClientContactAdditionalColumn } from '../client-contact-additional-column.enum';
 
 @Component({
   selector: 'cc-client-contact-list',
@@ -19,7 +19,7 @@ export class ClientContactListComponent {
   @Input() public contacts: IClientContact[];
   @Input() public selectedColumns: IContactAdditionalColumn[];
 
-  public additionalColumn = ContactAdditionalColumn;
+  public additionalColumn = ClientContactAdditionalColumn;
 
   constructor(
     private translatePipe: TranslatePipe,
@@ -40,7 +40,7 @@ export class ClientContactListComponent {
     return this.rolesService.getClientContactRole(code);
   }
 
-  public isHidden(column: ContactAdditionalColumn): boolean {
+  public isHidden(column: ClientContactAdditionalColumn): boolean {
     return !this.selectedColumns.find(c => c.id === column);
   }
 

@@ -13,6 +13,9 @@
       <th class="table-head-row-cell">
         {{ 'cafe_contacts_list_mail' | translate }}
       </th>
+      <th class="table-head-row-cell" [ngClass]="{ 'mod-hidden': isHidden(additionalColumn.Client) }">
+        {{ 'cafe_contacts_list_client' | translate }}
+      </th>
       <th class="table-head-row-cell">
         {{ 'cafe_contacts_list_isConfirmed' | translate }}
       </th>
@@ -38,6 +41,9 @@
       </td>
       <td class="table-body-row-cell">
         {{ contact.user?.mail }}
+      </td>
+      <td class="table-body-row-cell" [ngClass]="{ 'mod-hidden': isHidden(additionalColumn.Client) }">
+        {{ contact.client?.name }}
       </td>
       <td class="table-body-row-cell">
         {{ getIsConfirmedTranslation(contact.isConfirmed) }}
