@@ -11,6 +11,8 @@ namespace Proxy.Tests
         [Theory]
         [InlineData("/api/v3/contracts")]
         [InlineData("/billing")]
+        [InlineData("/back-office")]
+        [InlineData("/any-route-not-understood")]
         [InlineData("/api/workerprocesses/blablabla")]
         [InlineData("/")]
         [InlineData("")]

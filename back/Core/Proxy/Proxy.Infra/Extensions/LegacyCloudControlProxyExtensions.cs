@@ -95,12 +95,9 @@ namespace Core.Proxy.Infra.Extensions
                 return false;
             }
 
-            if (httpContext.Request.Path.StartsWithSegments("/api/v3") || !httpContext.Request.Path.StartsWithSegments("/api"))
-            {
-                return true;
-            }
-
-            return httpContext.Request.Path.IsNonV3LegacyApiPath();
+            return httpContext.Request.Path.StartsWithSegments("/api/v3")
+                   || httpContext.Request.Path.IsNonV3LegacyApiPath()
+                   || !httpContext.Request.Path.StartsWithSegments("/api");
         }
 
         public static bool IsRootCall(this PathString pathString)
