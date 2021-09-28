@@ -1,10 +1,9 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { IHttpApiV4CollectionCountResponse } from '@cc/common/queries';
-import { Observable, of } from 'rxjs';
-import { catchError, delay } from 'rxjs/operators';
+import { Observable } from 'rxjs';
 
-import { ISpecializedContact } from '../models/specialized-contact.interface';
+import { ISpecializedContact } from './specialized-contact.interface';
 
 @Injectable()
 export class SpecializedContactsDataService {
@@ -18,9 +17,6 @@ export class SpecializedContactsDataService {
     const route = '/api/cafe/specialized-contacts/search';
     const url = [route, query].join('?');
 
-    return this.httpClient.post<IHttpApiV4CollectionCountResponse<ISpecializedContact>>(url, { }).pipe(
-      catchError(() => of({ items: [], count: 0 })),
-      delay(2000),
-    );
+    return this.httpClient.post<IHttpApiV4CollectionCountResponse<ISpecializedContact>>(url, { });
   }
 }

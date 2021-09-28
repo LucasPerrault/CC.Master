@@ -1,5 +1,5 @@
-import { IEnvironment } from '../../instance/models/environment.interface';
-import { IEstablishment } from '../../instance/models/establishment.interface';
+import { IEnvironment } from '../../../instance/models/environment.interface';
+import { IEstablishment } from '../../../instance/models/establishment.interface';
 import { IContactUser } from './contact-user.interface';
 import { IContactWarning } from './contact-warning.interface';
 

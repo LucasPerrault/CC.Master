@@ -31,13 +31,13 @@
         {{ contact.environment?.subdomain }}
       </td>
       <td class="table-body-row-cell">
-        {{ contact.lastname }} {{ contact.firstname }}
+        {{ contact.user?.lastName }} {{ contact.user?.firstName }}
       </td>
       <td class="table-body-row-cell">
-        {{ contact.role }}
+        {{ getRole(contact?.roleCode) }}
       </td>
       <td class="table-body-row-cell">
-        {{ contact.mail }}
+        {{ contact.user?.mail }}
       </td>
       <td class="table-body-row-cell">
         {{ getIsConfirmedTranslation(contact.isConfirmed) }}
@@ -46,7 +46,7 @@
         {{ contact.createdAt | date: 'shortDate' }}
       </td>
       <td class="table-body-row-cell" [ngClass]="{ 'mod-hidden': isHidden(additionalColumn.ExpiresAt) }">
-        {{ contact.expiredAt | date: 'shortDate' }}
+        {{ contact.expiresAt | date: 'shortDate' }}
       </td>
       <td class="table-body-row-cell mod-actions">
         <button class="actionIcon"

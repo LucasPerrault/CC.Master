@@ -1,5 +1,5 @@
 import { IClient } from '../../billing/models/client.interface';
-import { IContact } from './contact.interface';
+import { IContact } from '../common/models/contact.interface';
 
 export interface IClientContact extends IContact {
   id: number;

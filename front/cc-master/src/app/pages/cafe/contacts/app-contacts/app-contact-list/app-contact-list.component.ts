@@ -3,23 +3,26 @@ import { TranslatePipe } from '@cc/aspects/translate';
 import { NavigationPath } from '@cc/common/navigation';
 
 import { ContractsRoutingKey } from '../../../../contracts/contracts-manage/services/contracts-routing.service';
-import { ContactAdditionalColumn, IContactAdditionalColumn } from '../contact-additional-column-select/contact-additional-column.enum';
-import { IContactListEntry } from './contact-list.interface';
+import {
+  ContactAdditionalColumn,
+  IContactAdditionalColumn,
+} from '../../common/components/contact-additional-column-select/contact-additional-column.enum';
+import { IAppContact } from '../app-contact.interface';
 
 @Component({
-  selector: 'cc-contacts-list',
-  templateUrl: './contact-list.component.html',
-  styleUrls: ['./contact-list.component.scss'],
+  selector: 'cc-app-contact-list',
+  templateUrl: './app-contact-list.component.html',
+  styleUrls: ['./app-contact-list.component.scss'],
 })
-export class ContactListComponent {
-  @Input() public contacts: IContactListEntry[];
+export class AppContactListComponent {
+  @Input() public contacts: IAppContact[];
   @Input() public selectedColumns: IContactAdditionalColumn[];
 
   public additionalColumn = ContactAdditionalColumn;
 
   constructor(private translatePipe: TranslatePipe) { }
 
-  public trackBy(index: number, contact: IContactListEntry): number {
+  public trackBy(index: number, contact: IAppContact): number {
     return contact.id;
   }
 

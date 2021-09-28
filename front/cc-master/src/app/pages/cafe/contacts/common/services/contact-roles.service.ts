@@ -1,8 +1,6 @@
 import { Injectable } from '@angular/core';
 import { TranslatePipe } from '@cc/aspects/translate';
 
-import { IAppInstance } from '../../instance/models/app-instance.interface';
-
 enum ContactTranslationKey {
   Client = 'cli',
   Specialized = 'spe',
@@ -12,7 +10,7 @@ enum ContactTranslationKey {
 export class ContactRolesService {
   constructor(private translatePipe: TranslatePipe) {}
 
-  public getCommonContactRole(code: string): string {
+  public getGenericContactRole(code: string): string {
     // TODO : Add AppContactRole when you will know the code & key for each app.
     return this.getSpeContactRole(code) || this.getClientContactRole(code);
   }
@@ -25,10 +23,6 @@ export class ContactRolesService {
   public getClientContactRole(code: string): string {
     const translationKey = this.getRoleTranslationKey(ContactTranslationKey.Client, code);
     return this.translatePipe.transform(translationKey);
-  }
-
-  public getAppContactRole(appInstance: IAppInstance): string {
-    return this.translatePipe.transform('cafe_role_app', { name: appInstance?.name });
   }
 
   private getRoleTranslationKey(key: ContactTranslationKey, code: string): string {

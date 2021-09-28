@@ -1,17 +1,12 @@
-<div class="loading mod-fullPage" *ngIf="isLoading$ | async; else isNotLoading"></div>
+<ng-container [ngSwitch]="category">
 
-<ng-template #isNotLoading>
-  <h4 class="page-content page-resultsCount u-displayFlex u-alignItemsCenter u-justifyContentSpaceBetween">
-    {{ 'cafe_contacts_count' | translate : { count: contactsCount$ | async } }}
-    <cc-contact-additional-column-select textfieldClass="palette-grey mod-outlined mod-long"
-                                         [formControl]="selectedColumns">
-    </cc-contact-additional-column-select>
-  </h4>
+  <cc-generic-contacts *ngSwitchCase="contactCategory.All"></cc-generic-contacts>
 
-  <cc-contacts-list ccInfiniteScroll
-                    (bottomReached)="nextPage()"
-                    [contacts]="contacts$ | async"
-                    [selectedColumns]="selectedColumns.value">
-  </cc-contacts-list>
-</ng-template>
+  <cc-app-contacts *ngSwitchCase="contactCategory.Application"></cc-app-contacts>
+
+  <cc-client-contacts *ngSwitchCase="contactCategory.Client"></cc-client-contacts>
+
+  <cc-specialized-contacts *ngSwitchCase="contactCategory.Specialized"></cc-specialized-contacts>
+
+</ng-container>
 
