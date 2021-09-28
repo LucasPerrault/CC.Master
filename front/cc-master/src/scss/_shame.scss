@@ -8,8 +8,18 @@
   background-color: _color('white');
 }
 
-.button.mod-outline {
+
+.button-group.palette-grey.mod-outline .button {
   background-color: _color('white');
+  box-shadow: inset 0 0 0 1px _color("grey", "500");
+  color: _color("text.default");
+  border-right: 0;
+
+  &:hover {
+    background-color: _color("grey", "50");
+    color: _color("grey");
+    box-shadow: inset 0 0 0 1px _color("grey", "700");
+  }
 }
 
 .main.mod-withBanner .main-content.mod-withoutScroll {
