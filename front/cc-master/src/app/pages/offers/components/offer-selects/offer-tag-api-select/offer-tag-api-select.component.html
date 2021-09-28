@@ -1,4 +1,4 @@
-<lu-select [formControl]="formControl" [placeholder]="placeholder" class="textfield-input">
+<lu-select [formControl]="formControl" [placeholder]="placeholder" class="textfield-input" [required]="required" (blur)="onTouch()">
 
   <ng-container *luDisplayer="let tag">{{ tag }}</ng-container>
 

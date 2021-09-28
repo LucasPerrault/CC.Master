@@ -30,13 +30,15 @@
 
     <label class="textfield palette-grey mod-outlined mod-inline">
       <cc-offer-currency-api-select [formControlName]="formKey.Currencies"
-                                    [placeholder]="'offers_filters_currency' | translate">
+                                    [placeholder]="'offers_filters_currency' | translate"
+                                    [multiple]="true">
       </cc-offer-currency-api-select>
     </label>
 
     <label class="textfield palette-grey mod-outlined mod-inline">
       <cc-offer-billing-mode-select [formControlName]="formKey.BillingModes"
-                                    [placeholder]="'offers_filters_billingModes' | translate">
+                                    [placeholder]="'offers_filters_billingModes' | translate"
+                                    [multiple]="true">
       </cc-offer-billing-mode-select>
     </label>
   </div>

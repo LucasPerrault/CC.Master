@@ -20,14 +20,17 @@ import { billingModes, IBillingMode } from '../../../enums/billing-mode.enum';
   ],
 })
 export class OfferBillingModeSelectComponent implements OnInit, OnDestroy, ControlValueAccessor {
+  @Input() public required = false;
   @Input() public placeholder: string;
+  @Input() public multiple = false;
+
   public billingModes: IBillingMode[];
   public formControl: FormControl = new FormControl();
 
   private destroy$: Subject<void> = new Subject<void>();
 
   constructor(private translatePipe: TranslatePipe) {
-    this.billingModes = this.getTranslatedBillingModes(billingModes);
+    this.billingModes = billingModes.map(b => this.getTranslatedBillingMode(b));
   }
 
   public ngOnInit(): void {
@@ -54,7 +57,7 @@ export class OfferBillingModeSelectComponent implements OnInit, OnDestroy, Contr
 
   public writeValue(billingMode: IBillingMode): void {
     if (!!billingMode && this.formControl.value !== billingMode) {
-      this.formControl.setValue(billingMode);
+      this.formControl.setValue(this.getTranslatedBillingMode(billingMode));
     }
   }
 
@@ -62,7 +65,7 @@ export class OfferBillingModeSelectComponent implements OnInit, OnDestroy, Contr
     return billingMode.id;
   }
 
-  private getTranslatedBillingModes(modes: IBillingMode[]) {
-    return modes.map(b => ({ ...b, name: this.translatePipe.transform(b.name) }));
+  private getTranslatedBillingMode(mode: IBillingMode): IBillingMode {
+    return { ...mode, name: this.translatePipe.transform(mode.name) };
   }
 }

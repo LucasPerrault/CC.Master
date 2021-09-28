@@ -26,6 +26,9 @@ import { OfferCurrencyApiSelectService } from './offer-currency-api-select.servi
 })
 export class OfferCurrencyApiSelectComponent implements OnInit, OnDestroy, ControlValueAccessor {
   @Input() public placeholder: string;
+  @Input() public multiple = false;
+  @Input() public required = false;
+
   public formControl: FormControl = new FormControl();
 
   private destroy$: Subject<void> = new Subject<void>();

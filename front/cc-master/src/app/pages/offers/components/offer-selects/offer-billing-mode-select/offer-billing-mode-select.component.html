@@ -1,6 +1,7 @@
-<lu-select [formControl]="formControl" [placeholder]="placeholder" class="textfield-input" multiple>
+<lu-select [formControl]="formControl" [placeholder]="placeholder" class="textfield-input"
+           [required]="required" [multiple]="multiple" (blur)="onTouch()">
 
-  <span class="chip mod-unkillable" *luDisplayer="let billingMode">{{ billingMode.name }}</span>
+  <span  [ngClass]="{ 'chip mod-unkillable': multiple }" *luDisplayer="let billingMode">{{ billingMode.name }}</span>
 
   <lu-option-picker-advanced>
     <lu-option-feeder [options]="billingModes"></lu-option-feeder>

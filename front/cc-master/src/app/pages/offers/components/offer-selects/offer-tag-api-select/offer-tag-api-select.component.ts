@@ -24,7 +24,10 @@ import { OfferTagApiSelectService } from './offer-tag-api-select.service';
   ],
 })
 export class OfferTagApiSelectComponent implements OnInit, OnDestroy, ControlValueAccessor {
+  @Input() public required = false;
   @Input() public placeholder: string;
+  @Input() public multiple: string;
+
   public formControl: FormControl = new FormControl();
   private destroy$: Subject<void> = new Subject<void>();
 

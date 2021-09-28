@@ -1,6 +1,10 @@
-<lu-select [formControl]="formControl" [placeholder]="placeholder" class="textfield-input" multiple>
+<lu-select [formControl]="formControl"
+           [placeholder]="placeholder" class="textfield-input"
+           [multiple]="multiple"
+           [required]="required"
+           (blur)="onTouch()">
 
-  <span class="chip mod-unkillable" *luDisplayer="let currency">{{ currency.name }}</span>
+  <span [ngClass]="{ 'chip mod-unkillable' : multiple }" *luDisplayer="let currency">{{ currency.name }}</span>
 
   <lu-option-picker-advanced>
     <header class="lu-picker-header">
