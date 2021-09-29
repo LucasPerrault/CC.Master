@@ -6,7 +6,7 @@ import {
   NG_VALIDATORS,
   NG_VALUE_ACCESSOR,
   ValidationErrors,
-  Validator, Validators,
+  Validator,
 } from '@angular/forms';
 import { FormlyFieldConfig } from '@ngx-formly/core/lib/components/formly.field.config';
 import { Subject } from 'rxjs';

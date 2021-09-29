@@ -6,6 +6,7 @@ import { LuInputModule } from '@lucca-front/ng/input';
 import { LuOptionModule } from '@lucca-front/ng/option';
 import { LuSelectInputModule } from '@lucca-front/ng/select';
 import { LuTooltipTriggerModule } from '@lucca-front/ng/tooltip';
+import { FormlyModule } from '@ngx-formly/core';
 
 import { EnvironmentDomainSelectComponent } from './environment-domain-select.component';
 
@@ -19,7 +20,9 @@ import { EnvironmentDomainSelectComponent } from './environment-domain-select.co
     TranslateModule,
     LuTooltipTriggerModule,
     CommonModule,
+    FormlyModule,
   ],
   exports: [EnvironmentDomainSelectComponent],
 })
-export class EnvironmentDomainSelectModule { }
+export class EnvironmentDomainSelectModule {
+}

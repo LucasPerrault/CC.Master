@@ -1,6 +1,7 @@
 import { Component, forwardRef, Input } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { environmentDomains, IEnvironmentDomain } from '@cc/domain/environments';
+import { FormlyFieldConfig } from '@ngx-formly/core/lib/components/formly.field.config';
 
 @Component({
   selector: 'cc-environment-domain-select',
@@ -14,7 +15,9 @@ import { environmentDomains, IEnvironmentDomain } from '@cc/domain/environments'
   ],
 })
 export class EnvironmentDomainSelectComponent implements ControlValueAccessor {
-  @Input() public textfieldClass?: string;
+  @Input() public placeholder: string;
+  @Input() public formlyAttributes: FormlyFieldConfig = {};
+  @Input() public multiple = false;
 
   public onChange: (domainIds: IEnvironmentDomain[]) => void;
   public onTouch: () => void;
