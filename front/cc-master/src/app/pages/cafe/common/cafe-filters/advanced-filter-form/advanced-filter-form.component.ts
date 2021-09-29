@@ -1,5 +1,14 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, forwardRef, Input, OnDestroy, OnInit, Output } from '@angular/core';
-import { AbstractControl, ControlValueAccessor, FormArray, FormControl, FormGroup, NG_VALUE_ACCESSOR, } from '@angular/forms';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  EventEmitter,
+  forwardRef,
+  Input,
+  OnDestroy,
+  OnInit,
+  Output,
+} from '@angular/core';
+import { AbstractControl, ControlValueAccessor, FormArray, FormControl, FormGroup, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { Subject } from 'rxjs';
 import { filter, takeUntil } from 'rxjs/operators';
 
@@ -78,17 +87,15 @@ export class AdvancedFilterFormComponent implements ControlValueAccessor, OnInit
       return;
     }
 
-    this.add();
+    this.insertAt(0);
   }
 
   public trackBy(index: number, control: AbstractControl): number {
     return index;
   }
 
-  public add(): void {
-    this.formArray.push(new FormControl({
-      [CriterionFormsKey.ComparisonFilterCriterionForm]: null,
-    }));
+  public insertAt(index: number): void {
+    this.formArray.insert(index, new FormControl({ [CriterionFormsKey.ComparisonFilterCriterionForm]: null }));
   }
 
   public remove(index: number) {
@@ -98,6 +105,7 @@ export class AdvancedFilterFormComponent implements ControlValueAccessor, OnInit
   public clear(): void {
     this.logicalOperator.reset();
     this.formArray.clear();
+    this.insertAt(0);
   }
 
   public cancelForm(): void {

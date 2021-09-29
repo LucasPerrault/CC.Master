@@ -5,7 +5,6 @@ import { TranslateModule } from '@cc/aspects/translate';
 import { LuTooltipTriggerModule } from '@lucca-front/ng/tooltip';
 
 import { AdvancedFilterFormComponent } from './advanced-filter-form.component';
-import { AdvancedFiltersActionsModule } from './components/advanced-filters-actions/advanced-filters-actions.module';
 import { ComparisonFilterCriterionFormModule } from './components/comparison-filter-criterion';
 import { LogicalOperatorSelectModule } from './components/logical-operator-select';
 
@@ -19,7 +18,6 @@ import { LogicalOperatorSelectModule } from './components/logical-operator-selec
     ComparisonFilterCriterionFormModule,
     TranslateModule,
     LogicalOperatorSelectModule,
-    AdvancedFiltersActionsModule,
   ],
   exports: [AdvancedFilterFormComponent],
 })

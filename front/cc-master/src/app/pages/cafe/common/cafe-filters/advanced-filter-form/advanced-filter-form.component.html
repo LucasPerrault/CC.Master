@@ -1,4 +1,11 @@
-<form [formGroup]="formGroup" class="u-displayFlex u-flexDirectionColumn u-flexShrink0 u-flexGrow1 u-marginTopSmall">
+<form [formGroup]="formGroup" class="u-displayFlex u-flexDirectionColumn u-flexShrink0 u-flexGrow1">
+  <button type="button" class="actionIcon mod-clearer"
+          [luTooltip]="'cafe_filters_delete_all_button_label' | translate"
+          (click)="clear()">
+    <span aria-hidden="true" class="lucca-icon icon-cross"></span>
+    <span class="u-mask">{{ 'cafe_filters_delete_one_button_label' | translate }}</span>
+  </button>
+
   <div [formArrayName]="formArrayKey">
 
     <div *ngFor="let formControl of formArray.controls; let i = index; trackBy: trackBy"
@@ -22,18 +29,24 @@
                                            [required]="true">
       </cc-comparison-filter-criterion-form>
 
-      <button type="button" class="actionIcon u-marginLeftAuto"
-              [luTooltip]="'cafe_filters_delete_one_button_label' | translate"
-              (click)="remove(i)">
-        <span aria-hidden="true" class="lucca-icon icon-cross"></span>
-        <span class="u-mask">{{ 'cafe_filters_delete_one_button_label' | translate }}</span>
-      </button>
+      <div class="u-marginLeftAuto">
+        <button type="button" class="actionIcon"
+                [luTooltip]="'cafe_filters_add_one_button_label' | translate"
+                (click)="insertAt(i)">
+          <span aria-hidden="true" class="lucca-icon icon-plus"></span>
+          <span class="u-mask">{{ 'cafe_filters_add_one_button_label' | translate }}</span>
+        </button>
+        <button type="button" class="actionIcon"
+                [disabled]="i === 0"
+                [luTooltip]="'cafe_filters_delete_one_button_label' | translate"
+                (click)="remove(i)">
+          <span aria-hidden="true" class="lucca-icon icon-cross"></span>
+          <span class="u-mask">{{ 'cafe_filters_delete_one_button_label' | translate }}</span>
+        </button>
+      </div>
     </div>
-  </div>
 
-  <cc-advanced-filters-actions class="u-displayFlex u-marginLeftAuto u-marginTopStandard"
-                               [disabled]="invalid" (add)="add()" (clear)="clear()">
-  </cc-advanced-filters-actions>
+  </div>
 </form>
 
 <div class="u-displayFlex u-right u-marginTopStandard">
