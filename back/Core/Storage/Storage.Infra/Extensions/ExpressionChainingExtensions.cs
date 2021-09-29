@@ -5,7 +5,7 @@ namespace Storage.Infra.Extensions
 {
     public static class ExpressionChainingExtensions
     {
-        internal static Expression<Func<TIn, TOut>> Chain<TIn, TInterstitial, TOut>(
+        public static Expression<Func<TIn, TOut>> Chain<TIn, TInterstitial, TOut>(
             this Expression<Func<TIn, TInterstitial>> inner,
             Expression<Func<TInterstitial, TOut>> outer)
         {
