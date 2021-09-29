@@ -1,6 +1,8 @@
+using AdvancedFilters.Domain.Filters.Models;
 using AdvancedFilters.Domain.Instance.Filters;
 using AdvancedFilters.Domain.Instance.Interfaces;
 using AdvancedFilters.Domain.Instance.Models;
+using AdvancedFilters.Web.Binding;
 using Lucca.Core.Api.Abstractions.Paging;
 using Lucca.Core.Api.Web.ModelBinding.Sorting;
 using Microsoft.AspNetCore.Mvc;
@@ -9,6 +11,7 @@ using Rights.Web.Attributes;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Tools.Web;
+using Environment = AdvancedFilters.Domain.Instance.Models.Environment;
 
 namespace AdvancedFilters.Web.Controllers
 {
@@ -28,6 +31,18 @@ namespace AdvancedFilters.Web.Controllers
         public Task<Page<Environment>> GetAsync([FromQuery]EnvironmentsQuery query)
         {
             return _store.GetAsync(query.Page, query.ToFilter());
+        }
+
+        [HttpPost("search")]
+        [ForbidIfMissing(Operation.ReadAllCafe)]
+        public Task<Page<Environment>> SearchAsync
+        (
+            IPageToken page,
+            [FromBody, ModelBinder(BinderType = typeof(AdvancedFilterModelBinder<EnvironmentAdvancedCriterion>))]
+            IAdvancedFilter criterion
+        )
+        {
+            return _store.SearchAsync(page, criterion);
         }
     }
 
