@@ -15,16 +15,28 @@ export class AppContactAdvancedFilterConfiguration implements IAdvancedFilterCon
   public readonly categoryId = ContactCategory.Application;
   public readonly criterions: ICriterionConfiguration[] = [
     {
+      key: AppContactAdvancedFilterKey.Environment,
+      name: this.translatePipe.transform('cafe_filters_environment'),
+      children: [
+        {
+          key: AppContactAdvancedFilterKey.EnvironmentApplications,
+          name: this.translatePipe.transform('cafe_filters_environmentApplications'),
+          operators: [ComparisonOperator.Equals, ComparisonOperator.DoesNotEqual],
+          fields: [this.formlyConfiguration.environmentApplications],
+        },
+      ],
+    },
+    {
       key: AppContactAdvancedFilterKey.Subdomain,
       name: this.translatePipe.transform('cafe_filters_subdomain'),
       operators: [ComparisonOperator.Equals, ComparisonOperator.DoesNotEqual],
       fields: [this.formlyConfiguration.subdomain],
     },
     {
-      key: AppContactAdvancedFilterKey.Application,
-      name: this.translatePipe.transform('cafe_filters_application'),
+      key: AppContactAdvancedFilterKey.Applications,
+      name: this.translatePipe.transform('cafe_filters_applications'),
       operators: [ComparisonOperator.Equals, ComparisonOperator.DoesNotEqual],
-      fields: [this.formlyConfiguration.application],
+      fields: [this.formlyConfiguration.applications],
     },
     {
       key: AppContactAdvancedFilterKey.IsConfirmed,

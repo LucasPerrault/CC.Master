@@ -43,7 +43,10 @@ export class AppContactAdvancedFilterApiMappingService {
 
   private getAdvancedFilter(attributes: IAdvancedFilterAttributes): AdvancedFilter {
     switch (attributes.filterKey) {
-      case AppContactAdvancedFilterKey.Application:
+      case AppContactAdvancedFilterKey.EnvironmentApplications:
+        const envAppInstances = attributes.value[attributes.filterKey];
+        return this.getEnvironmentAppInstancesAdvancedFilter(attributes.operator, envAppInstances);
+      case AppContactAdvancedFilterKey.Applications:
         const appInstances = attributes.value[attributes.filterKey];
         return this.getAppInstanceAdvancedFilter(attributes.operator, appInstances);
       case AppContactAdvancedFilterKey.IsConfirmed:
@@ -52,6 +55,21 @@ export class AppContactAdvancedFilterApiMappingService {
         const subdomain = attributes.value[attributes.filterKey];
         return this.getSubdomainAdvancedFilter(attributes.operator, subdomain);
     }
+  }
+
+  private getEnvironmentAppInstancesAdvancedFilter(operator: ComparisonOperator, appInstances: IAppInstance[]): AdvancedFilter {
+    const queries = appInstances.map(a => `${ a.id }`);
+    const comparisons = queries.map(q => AdvancedFilterTypeMapping.toComparisonFilterCriterion(operator, q));
+
+    const criterions = comparisons.map(c => AdvancedFilterTypeMapping.toFilterCriterion({
+      environment: {
+        appInstances: {
+          applicationId: c,
+        },
+      },
+    }));
+
+    return AdvancedFilterTypeMapping.toFilterCombination(LogicalOperator.And, criterions);
   }
 
   private getAppInstanceAdvancedFilter(operator: ComparisonOperator, appInstances: IAppInstance[]): AdvancedFilter {

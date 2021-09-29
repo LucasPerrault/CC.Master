@@ -17,8 +17,8 @@ export class AppContactFormlyConfiguration {
     },
   };
 
-  public readonly application: FormlyFieldConfig = {
-    key: AppContactAdvancedFilterKey.Application,
+  public readonly applications: FormlyFieldConfig = {
+    key: AppContactAdvancedFilterKey.Applications,
     type: 'api',
     templateOptions: {
       api: '/api/v3/products',
@@ -26,7 +26,20 @@ export class AppContactFormlyConfiguration {
       multiple: true,
       required: true,
       mod: 'palette-grey mod-outlined mod-inline',
-      placeholder: this.translatePipe.transform('cafe_filters_application'),
+      placeholder: this.translatePipe.transform('cafe_filters_applications'),
+    },
+  };
+
+  public readonly environmentApplications: FormlyFieldConfig = {
+    key: AppContactAdvancedFilterKey.EnvironmentApplications,
+    type: 'api',
+    templateOptions: {
+      api: '/api/v3/products',
+      orderBy: 'name,asc',
+      multiple: true,
+      required: true,
+      mod: 'palette-grey mod-outlined mod-inline',
+      placeholder: this.translatePipe.transform('cafe_filters_environmentApplications'),
     },
   };
 
