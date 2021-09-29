@@ -1,3 +1,4 @@
+using AdvancedFilters.Domain.Filters.Models;
 using System;
 using System.Collections.Generic;
 
@@ -14,5 +15,12 @@ namespace AdvancedFilters.Domain.Instance.Models
 
         public IReadOnlyCollection<LegalUnit> LegalUnits { get; set; }
         public IReadOnlyCollection<AppInstance> AppInstances { get; set; }
+    }
+
+    public class EnvironmentAdvancedCriterion : AdvancedCriterion
+    {
+        public SingleValueComparisonCriterion<string> Subdomain { get; set; }
+        public LegalUnitAdvancedCriterion LegalUnits { get; set; }
+        public AppInstanceAdvancedCriterion AppInstances { get; set; }
     }
 }

@@ -1,3 +1,4 @@
+using AdvancedFilters.Domain.Filters.Models;
 using System;
 
 namespace AdvancedFilters.Domain.Instance.Models
@@ -11,5 +12,10 @@ namespace AdvancedFilters.Domain.Instance.Models
         public DateTime? DeletedAt { get; set; }
 
         public Environment Environment { get; set; }
+    }
+
+    public class AppInstanceAdvancedCriterion : AdvancedCriterion
+    {
+        public SingleValueComparisonCriterion<string> ApplicationId { get; set; }
     }
 }

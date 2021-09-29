@@ -2,6 +2,8 @@ using AdvancedFilters.Domain.Filters.Models;
 using AdvancedFilters.Domain.Instance.Filters;
 using AdvancedFilters.Domain.Instance.Interfaces;
 using AdvancedFilters.Domain.Instance.Models;
+using AdvancedFilters.Infra.Filters;
+using AdvancedFilters.Infra.Filters.Builders;
 using Lucca.Core.Api.Abstractions.Paging;
 using Lucca.Core.Api.Queryable.Paging;
 using Microsoft.EntityFrameworkCore;
@@ -37,6 +39,8 @@ namespace AdvancedFilters.Infra.Storage.Stores
 
         public Task<Page<Environment>> SearchAsync(IPageToken pageToken, IAdvancedFilter filter)
         {
+            var envs = Environments.Filter(filter, new EnvironmentAdvancedCriterionApplier());
+            return _queryPager.ToPageAsync(envs, pageToken);
         }
 
         private IQueryable<Environment> Get(EnvironmentFilter filter)
@@ -57,6 +61,17 @@ namespace AdvancedFilters.Infra.Storage.Stores
                 .WhenNotNullOrEmpty(filter.Subdomains).ApplyWhere(e => filter.Subdomains.Contains(e.Subdomain))
                 .WhenNotNullOrEmpty(filter.Domains).ApplyWhere(e => filter.Domains.Contains(e.Domain))
                 .Apply(filter.IsActive).To(e => e.IsActive);
+        }
+    }
+
+    internal class EnvironmentAdvancedCriterionApplier : IAdvancedCriterionApplier<Environment, EnvironmentAdvancedCriterion>
+    {
+        public IQueryable<Environment> Apply(IQueryable<Environment> queryable, EnvironmentAdvancedCriterion criterion)
+        {
+            return queryable
+                .Apply(criterion.Subdomain).To(e => e.Subdomain)
+                .Apply(criterion.AppInstances).To(e => e.AppInstances)
+                .Apply(criterion.LegalUnits).To(e => e.LegalUnits);
         }
     }
 }
