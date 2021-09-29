@@ -1,13 +1,11 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, forwardRef, Input, Output } from '@angular/core';
-import {
-  AbstractControl, ControlValueAccessor,
-  FormArray,
-  FormControl,
-  FormGroup,
-  NG_VALUE_ACCESSOR,
-} from '@angular/forms';
+import { ChangeDetectionStrategy, Component, EventEmitter, forwardRef, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import { AbstractControl, ControlValueAccessor, FormArray, FormControl, FormGroup, NG_VALUE_ACCESSOR, } from '@angular/forms';
+import { Subject } from 'rxjs';
+import { filter, takeUntil } from 'rxjs/operators';
 
 import { IAdvancedFilterForm } from './advanced-filter-form.interface';
+import { getLogicalOperator } from './components/logical-operator-select/logical-operator.interface';
+import { LogicalOperator } from './enums/logical-operator.enum';
 import { IAdvancedFilterConfiguration } from './models/advanced-filter-configuration.interface';
 
 enum CriterionFormsKey {
@@ -27,7 +25,7 @@ enum CriterionFormsKey {
     },
   ],
 })
-export class AdvancedFilterFormComponent implements ControlValueAccessor {
+export class AdvancedFilterFormComponent implements ControlValueAccessor, OnInit, OnDestroy {
   @Input() public configuration: IAdvancedFilterConfiguration;
   @Output() public cancel: EventEmitter<void> = new EventEmitter<void>();
 
@@ -43,6 +41,19 @@ export class AdvancedFilterFormComponent implements ControlValueAccessor {
   public formGroup: FormGroup = new FormGroup({
     [this.formArrayKey]: this.formArray,
   });
+
+  private destroy$: Subject<void> = new Subject<void>();
+
+  public ngOnInit(): void {
+    this.formArray.valueChanges
+      .pipe(takeUntil(this.destroy$), filter(forms => forms.length === 1))
+      .subscribe(() => this.logicalOperator.patchValue(getLogicalOperator(LogicalOperator.And)));
+  }
+
+  public ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
 
   public onChange: (form: IAdvancedFilterForm) => void = () => {};
   public onTouch: () => void = () => {};
