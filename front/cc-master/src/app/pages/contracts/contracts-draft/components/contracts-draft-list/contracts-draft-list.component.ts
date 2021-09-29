@@ -25,7 +25,7 @@ export class ContractsDraftListComponent {
   }
 
   public getContractCreationUrl(draftId: string): string[] {
-    return this.canCreateContracts ? [draftId, 'create'] : [];
+    return this.canCreateContracts ? [draftId, 'form'] : [];
   }
 
   public remove(draft: IContractDraftListEntry): void {

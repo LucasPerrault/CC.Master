@@ -10,7 +10,7 @@ export enum NavigationPath {
   Cmrr = 'cmrr',
   Contracts = 'contracts',
   ContractsManage = 'manage',
-  ContractsDraft = 'draft',
+  ContractsDraft = 'create',
   Logs = 'logs',
   Offers = 'offers',
   Distributors = 'distributors',
