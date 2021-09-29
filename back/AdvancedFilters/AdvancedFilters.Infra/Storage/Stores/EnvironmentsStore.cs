@@ -2,6 +2,8 @@ using AdvancedFilters.Domain.Filters.Models;
 using AdvancedFilters.Domain.Instance.Filters;
 using AdvancedFilters.Domain.Instance.Interfaces;
 using AdvancedFilters.Domain.Instance.Models;
+using AdvancedFilters.Infra.Filters;
+using AdvancedFilters.Infra.Filters.Builders;
 using Lucca.Core.Api.Abstractions.Paging;
 using Lucca.Core.Api.Queryable.Paging;
 using Microsoft.EntityFrameworkCore;
@@ -37,6 +39,9 @@ namespace AdvancedFilters.Infra.Storage.Stores
 
         public Task<Page<Environment>> SearchAsync(IPageToken pageToken, IAdvancedFilter filter)
         {
+            var envs = Environments
+                .Filter(filter);
+            return _queryPager.ToPageAsync(envs, pageToken);
         }
 
         private IQueryable<Environment> Get(EnvironmentFilter filter)

@@ -19,5 +19,19 @@ namespace AdvancedFilters.Infra.Filters.Builders
 
     internal class AdvancedCriterionExpressionBuilderFactory : IQueryableExpressionBuilderFactory
     {
+        public IQueryableExpressionBuilder<Environment> Create(EnvironmentAdvancedCriterion criterion)
+        {
+            return new EnvironmentCriterionExpressionBuilder(criterion);
+        }
+
+        public IQueryableExpressionBuilder<AppInstance> Create(AppInstanceAdvancedCriterion criterion)
+        {
+            return new AppInstanceCriterionExpressionBuilder(criterion);
+        }
+
+        public IQueryableExpressionBuilder<LegalUnit> Create(LegalUnitAdvancedCriterion criterion)
+        {
+            return new LegalUnitCriterionExpressionBuilder(criterion);
+        }
     }
 }

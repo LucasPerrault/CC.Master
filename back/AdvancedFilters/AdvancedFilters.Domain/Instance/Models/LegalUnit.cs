@@ -1,4 +1,6 @@
 using AdvancedFilters.Domain.Core.Models;
+using AdvancedFilters.Domain.Filters.Builders;
+using AdvancedFilters.Domain.Filters.Models;
 using System;
 using System.Collections.Generic;
 
@@ -21,5 +23,13 @@ namespace AdvancedFilters.Domain.Instance.Models
         public IReadOnlyCollection<Establishment> Establishments { get; set; }
 
         public Country Country { get; set; }
+    }
+
+    public class LegalUnitAdvancedCriterion : AdvancedCriterion<LegalUnit>
+    {
+        public SingleValueComparisonCriterion<int> CountryId { get; set; }
+
+        public override IQueryableExpressionBuilder<LegalUnit> GetExpressionBuilder(IQueryableExpressionBuilderFactory factory)
+            => factory.Create(this);
     }
 }
