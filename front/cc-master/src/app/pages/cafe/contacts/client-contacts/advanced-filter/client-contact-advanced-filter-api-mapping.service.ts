@@ -1,16 +1,17 @@
 import { Injectable } from '@angular/core';
+import { IClient } from '@cc/domain/billing/clients';
 
 import {
   AdvancedFilter,
   AdvancedFilterTypeMapping,
   ComparisonOperator,
+  getComparisonBooleanValue,
   IAdvancedFilterForm,
   IComparisonFilterCriterionForm,
   IComparisonValue,
   LogicalOperator,
 } from '../../../common/cafe-filters/advanced-filter-form';
 import { ClientContactAdvancedFilterKey } from './client-contact-advanced-filter-key.enum';
-import { IClient } from '@cc/domain/billing/clients';
 
 interface IAdvancedFilterAttributes {
   filterKey: string;
@@ -65,7 +66,8 @@ export class ClientContactAdvancedFilterApiMappingService {
   }
 
   private getIsConfirmedAdvancedFilter(operator: ComparisonOperator): AdvancedFilter {
-    const comparison = AdvancedFilterTypeMapping.toComparisonFilterCriterion(operator, operator);
+    const query = getComparisonBooleanValue(operator);
+    const comparison = AdvancedFilterTypeMapping.toComparisonFilterCriterion(operator, query);
 
     return AdvancedFilterTypeMapping.toFilterCriterion({
       isConfirmed: comparison,

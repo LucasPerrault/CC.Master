@@ -4,6 +4,7 @@ import {
   AdvancedFilter,
   AdvancedFilterTypeMapping,
   ComparisonOperator,
+  getComparisonBooleanValue,
   IAdvancedFilterForm,
   IComparisonFilterCriterionForm,
   IComparisonValue,
@@ -67,7 +68,8 @@ export class AppContactAdvancedFilterApiMappingService {
   }
 
   private getIsConfirmedAdvancedFilter(operator: ComparisonOperator): AdvancedFilter {
-    const comparison = AdvancedFilterTypeMapping.toComparisonFilterCriterion(operator, operator);
+    const query = getComparisonBooleanValue(operator);
+    const comparison = AdvancedFilterTypeMapping.toComparisonFilterCriterion(operator, query);
 
     return AdvancedFilterTypeMapping.toFilterCriterion({
       isConfirmed: comparison,
