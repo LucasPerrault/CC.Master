@@ -8,9 +8,12 @@ import { LuTooltipTriggerModule } from '@lucca-front/ng/tooltip';
 import {
   ContactAdditionalColumnSelectModule,
 } from '../common/components/contact-additional-column-select/contract-additional-column-select.module';
+import { ClientContactAdvancedFilterConfiguration } from './advanced-filter/client-contact-advanced-filter.configuration';
+import { ClientContactFormlyConfiguration } from './advanced-filter/client-contact-formly-configuration.service';
 import { ClientContactListComponent } from './client-contact-list/client-contact-list.component';
 import { ClientContactsComponent } from './client-contacts.component';
 import { ClientContactsDataService } from './client-contacts-data.service';
+import { ClientContactAdvancedFilterApiMappingService } from './advanced-filter/client-contact-advanced-filter-api-mapping.service';
 
 @NgModule({
   declarations: [
@@ -25,7 +28,12 @@ import { ClientContactsDataService } from './client-contacts-data.service';
     LuTooltipTriggerModule,
     PagingModule,
   ],
-  providers: [ClientContactsDataService],
+  providers: [
+    ClientContactsDataService,
+    ClientContactAdvancedFilterConfiguration,
+    ClientContactFormlyConfiguration,
+    ClientContactAdvancedFilterApiMappingService,
+  ],
   exports: [ClientContactsComponent],
 })
 export class ClientContactsModule { }
