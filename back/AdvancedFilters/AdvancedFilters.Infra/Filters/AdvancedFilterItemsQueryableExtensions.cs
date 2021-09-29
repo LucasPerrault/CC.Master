@@ -30,7 +30,7 @@ namespace AdvancedFilters.Infra.Filters
 
     internal interface ICompareAdvancedFilterItemBuilder<TRoot, TItem>
     {
-        IQueryable<TRoot> To(Expression<Func<TRoot, IEnumerable<TItem>>> getAppInstancesExpression);
+        IQueryable<TRoot> To(Expression<Func<TRoot, IEnumerable<TItem>>> getItemsComparisonExpression);
     }
 
     internal class CompareAdvancedFilterItemBuilder<TRoot, TItem> : ICompareAdvancedFilterItemBuilder<TRoot, TItem>

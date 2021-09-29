@@ -3,7 +3,6 @@ using AdvancedFilters.Domain.Instance.Filters;
 using AdvancedFilters.Domain.Instance.Interfaces;
 using AdvancedFilters.Domain.Instance.Models;
 using AdvancedFilters.Infra.Filters;
-using AdvancedFilters.Infra.Filters.Builders;
 using Lucca.Core.Api.Abstractions.Paging;
 using Lucca.Core.Api.Queryable.Paging;
 using Microsoft.EntityFrameworkCore;

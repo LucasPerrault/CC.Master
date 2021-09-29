@@ -12,7 +12,7 @@ namespace AdvancedFilters.Infra.Filters.Builders
     {
         protected TCriterion Criterion { get; }
 
-        public AdvancedFiltersExpressionBuilder(TCriterion criterion)
+        protected AdvancedFiltersExpressionBuilder(TCriterion criterion)
         {
             Criterion = criterion;
         }

@@ -36,7 +36,6 @@ namespace AdvancedFilters.Web.Binding
                 bindingContext.ModelState.AddModelError(modelName, e.ToString());
                 bindingContext.Result = ModelBindingResult.Failed();
             }
-            return;
         }
 
         private IPolymorphicSerializer BuildPolymorphicSerializer()
