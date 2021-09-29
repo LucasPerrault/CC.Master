@@ -8,7 +8,6 @@ import { AdvancedFilterFormComponent } from './advanced-filter-form.component';
 import { AdvancedFiltersActionsModule } from './components/advanced-filters-actions/advanced-filters-actions.module';
 import { ComparisonFilterCriterionFormModule } from './components/comparison-filter-criterion';
 import { LogicalOperatorSelectModule } from './components/logical-operator-select';
-import { AdvancedFilterApiMappingService } from './services/advanced-filter-api-mapping.service';
 
 @NgModule({
   declarations: [AdvancedFilterFormComponent],
@@ -23,6 +22,5 @@ import { AdvancedFilterApiMappingService } from './services/advanced-filter-api-
     AdvancedFiltersActionsModule,
   ],
   exports: [AdvancedFilterFormComponent],
-  providers: [AdvancedFilterApiMappingService],
 })
 export class AdvancedFilterFormModule { }
