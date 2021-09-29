@@ -10,6 +10,7 @@ export interface IAdvancedFilterConfiguration {
 export interface ICriterionConfiguration {
   key: string;
   name: string;
-  operators: ComparisonOperator[];
+  operators?: ComparisonOperator[];
   fields?: FormlyFieldConfig[];
+  children?: ICriterionConfiguration[];
 }
