@@ -12,7 +12,7 @@ export class SpecializedContactFormlyConfiguration {
     type: 'input',
     templateOptions: {
       required: true,
-      mod: 'palette-grey mod-outlined mod-inline mod-search',
+      mod: 'palette-grey mod-outlined mod-inline mod-search mod-longer',
       placeholder: this.translatePipe.transform('cafe_filters_subdomain'),
     },
   };

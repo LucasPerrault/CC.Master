@@ -12,7 +12,7 @@ export class ClientContactFormlyConfiguration {
     type: 'input',
     templateOptions: {
       required: true,
-      mod: 'palette-grey mod-outlined mod-inline mod-search',
+      mod: 'palette-grey mod-outlined mod-inline mod-search mod-longer',
       placeholder: this.translatePipe.transform('cafe_filters_subdomain'),
     },
   };
@@ -25,7 +25,7 @@ export class ClientContactFormlyConfiguration {
       orderBy: 'name,asc',
       multiple: true,
       required: true,
-      mod: 'palette-grey mod-outlined mod-inline',
+      mod: 'palette-grey mod-outlined mod-inline mod-longer',
       placeholder: this.translatePipe.transform('cafe_filters_client'),
     },
   };

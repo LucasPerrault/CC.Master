@@ -6,6 +6,7 @@ import { FormlyFieldConfig } from '@ngx-formly/core/lib/components/formly.field.
 @Component({
   selector: 'cc-environment-domain-select',
   templateUrl: './environment-domain-select.component.html',
+  styleUrls: ['./environment-domain-select.component.scss'],
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,

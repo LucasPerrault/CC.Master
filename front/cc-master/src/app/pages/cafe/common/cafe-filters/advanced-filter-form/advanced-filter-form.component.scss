@@ -1,8 +1,17 @@
 @import "../../../../../../scss/theming.import";
 
-form {
+:host {
   display: block;
-  background-color: _color("grey", 100);
+  position: relative;
+  border: solid .15rem _color("grey", 100);
   border-radius: _theme("commons.border.radius");
-  padding: _theme("spacings.small") _theme("spacings.standard");
+  padding: _theme("spacings.smallest") _theme("spacings.smallest");
+}
+
+form {
+  padding: _theme("spacings.smallest") _theme("spacings.smallest");
+}
+
+.mod-clearer {
+  position: absolute;
 }
