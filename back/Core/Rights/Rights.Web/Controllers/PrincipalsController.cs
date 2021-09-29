@@ -5,6 +5,7 @@ using Rights.Domain;
 using Rights.Infra.Stores;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -35,7 +36,9 @@ namespace Rights.Web.Controllers
                     Mail = user.User.Mail,
                     Name = user.Name,
                     Token = user.Token,
-                    Permissions = await GetPermissionsAsync(user)
+                    Culture = new CultureDto { Code = CultureInfo.CurrentCulture.Name },
+                    Permissions = await GetPermissionsAsync(user),
+                    DistributorId = user.User.DistributorId
                 },
                 CloudControlApiKeyClaimsPrincipal apiKey => new MeDto
                 {
@@ -87,6 +90,8 @@ namespace Rights.Web.Controllers
         public string Mail { get; set; }
         public string Name { get; set; }
         public Guid Token { get; set; }
+        public CultureDto Culture { get; set; }
+        public int DistributorId { get; set; }
         public List<PermissionDto> Permissions { get; set; }
     }
 
@@ -98,5 +103,10 @@ namespace Rights.Web.Controllers
     public class OperationDto
     {
         public int Id { get; set; }
+    }
+
+    public class CultureDto
+    {
+        public string Code { get; set; }
     }
 }

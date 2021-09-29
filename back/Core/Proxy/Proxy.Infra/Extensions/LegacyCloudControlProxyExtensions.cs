@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using ProxyKit;
+using Rights.Web;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -37,6 +38,11 @@ namespace Core.Proxy.Infra.Extensions
             "/cc-master",
             "/logs",
             "/sources",
+        };
+
+        private static readonly HashSet<string> BetaNonRedirectableSegments = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+        {
+            "/contracts",
         };
 
         public static IApplicationBuilder UseLegacyCloudControlHttpProxy(this IApplicationBuilder app)
@@ -84,6 +90,11 @@ namespace Core.Proxy.Infra.Extensions
                 return false;
             }
 
+            if (BetaTesterHelper.IsBetaTester(httpContext) && httpContext.Request.Path.IsBetaKnownNonRedirectableSegment())
+            {
+                return false;
+            }
+
             return httpContext.Request.Path.StartsWithSegments("/api/v3")
                    || httpContext.Request.Path.IsNonV3LegacyApiPath()
                    || !httpContext.Request.Path.StartsWithSegments("/api");
@@ -97,6 +108,11 @@ namespace Core.Proxy.Infra.Extensions
         private static bool IsKnownNonRedirectableSegment(this PathString pathString)
         {
             return NonRedirectableSegments.Any(s => pathString.StartsWithSegments(s));
+        }
+
+        private static bool IsBetaKnownNonRedirectableSegment(this PathString pathString)
+        {
+            return BetaNonRedirectableSegments.Any(s => pathString.StartsWithSegments(s));
         }
 
         private static bool IsNonV3LegacyApiPath(this PathString pathString)
