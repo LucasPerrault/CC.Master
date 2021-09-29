@@ -1,3 +1,4 @@
+using AdvancedFilters.Domain.Filters.Models;
 using AdvancedFilters.Domain.Instance.Filters;
 using AdvancedFilters.Domain.Instance.Interfaces;
 using AdvancedFilters.Domain.Instance.Models;
@@ -32,6 +33,10 @@ namespace AdvancedFilters.Infra.Storage.Stores
         {
             var envs = Get(filter);
             return envs.ToListAsync();
+        }
+
+        public Task<Page<Environment>> SearchAsync(IPageToken pageToken, IAdvancedFilter filter)
+        {
         }
 
         private IQueryable<Environment> Get(EnvironmentFilter filter)
