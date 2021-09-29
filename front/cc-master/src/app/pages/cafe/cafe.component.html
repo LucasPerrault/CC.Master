@@ -7,7 +7,7 @@
     <cc-cafe-filters class="u-displayFlex u-flexDirectionColumn u-flexWrapWrap u-flexShrink0 u-flexGrow1"
                      [categories]="configuration.categories"
                      [configurations]="configuration.advancedFilters"
-                     (updateFilters)="updateFilters($event)">
+                     [formControl]="cafeFilters">
     </cc-cafe-filters>
   </div>
 </div>

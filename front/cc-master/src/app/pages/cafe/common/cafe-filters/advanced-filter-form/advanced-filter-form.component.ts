@@ -1,29 +1,34 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, forwardRef, Input, Output } from '@angular/core';
 import {
-  AbstractControl,
+  AbstractControl, ControlValueAccessor,
   FormArray,
   FormControl,
   FormGroup,
+  NG_VALUE_ACCESSOR,
 } from '@angular/forms';
 
-import { IAdvancedFilterAndCount } from './models/advanced-filter-and-count.interface';
+import { IAdvancedFilterForm } from './advanced-filter-form.interface';
 import { IAdvancedFilterConfiguration } from './models/advanced-filter-configuration.interface';
-import { AdvancedFilterApiMappingService } from './services/advanced-filter-api-mapping.service';
 
 enum CriterionFormsKey {
-  ComparisonFilterCriterionForm = 'comparisonFilterCriterionForm',
+  ComparisonFilterCriterionForm = 'criterionForm',
 }
 
 @Component({
-  selector: 'cc-advanced-filters',
-  templateUrl: './advanced-filters.component.html',
-  styleUrls: ['./advanced-filters.component.scss'],
+  selector: 'cc-advanced-filter-form',
+  templateUrl: './advanced-filter-form.component.html',
+  styleUrls: ['./advanced-filter-form.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [
+    {
+      provide: NG_VALUE_ACCESSOR,
+      useExisting: forwardRef(() => AdvancedFilterFormComponent),
+      multi: true,
+    },
+  ],
 })
-export class AdvancedFiltersComponent implements OnInit {
+export class AdvancedFilterFormComponent implements ControlValueAccessor {
   @Input() public configuration: IAdvancedFilterConfiguration;
-
-  @Output() public updateFilters: EventEmitter<IAdvancedFilterAndCount> = new EventEmitter<IAdvancedFilterAndCount>();
   @Output() public cancel: EventEmitter<void> = new EventEmitter<void>();
 
   public get invalid(): boolean {
@@ -39,10 +44,29 @@ export class AdvancedFiltersComponent implements OnInit {
     [this.formArrayKey]: this.formArray,
   });
 
-  constructor(private apiMappingService: AdvancedFilterApiMappingService) {
+  public onChange: (form: IAdvancedFilterForm) => void = () => {};
+  public onTouch: () => void = () => {};
+
+  public registerOnChange(fn: () => void): void {
+    this.onChange = fn;
   }
 
-  public ngOnInit(): void {
+  public registerOnTouched(fn: () => void): void {
+    this.onTouch = fn;
+  }
+
+  public writeValue(form: IAdvancedFilterForm): void {
+    const logicalOperator = form?.logicalOperator;
+    if (!!logicalOperator && this.logicalOperator.value !== logicalOperator) {
+      this.logicalOperator.setValue(logicalOperator);
+    }
+
+    const criterionForms = form?.criterionForms;
+    if (!!criterionForms?.length) {
+      this.formArray.setValue(form.criterionForms);
+      return;
+    }
+
     this.add();
   }
 
@@ -75,12 +99,9 @@ export class AdvancedFiltersComponent implements OnInit {
       return;
     }
 
-    const logicalOperator = this.logicalOperator.value?.id;
-    const advancedFilter = this.apiMappingService.toAdvancedFilter(logicalOperator, criterionForms, this.configuration);
+    const logicalOperator = this.logicalOperator.value;
+    const advancedFilterForm: IAdvancedFilterForm = { logicalOperator, criterionForms };
 
-    this.updateFilters.emit({
-      count: this.formArray.length,
-      filter: advancedFilter,
-    });
+    this.onChange(advancedFilterForm);
   }
 }

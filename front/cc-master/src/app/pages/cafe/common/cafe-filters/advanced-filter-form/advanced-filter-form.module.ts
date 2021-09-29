@@ -4,14 +4,14 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { TranslateModule } from '@cc/aspects/translate';
 import { LuTooltipTriggerModule } from '@lucca-front/ng/tooltip';
 
-import { AdvancedFiltersComponent } from './advanced-filters.component';
+import { AdvancedFilterFormComponent } from './advanced-filter-form.component';
 import { AdvancedFiltersActionsModule } from './components/advanced-filters-actions/advanced-filters-actions.module';
 import { ComparisonFilterCriterionFormModule } from './components/comparison-filter-criterion';
 import { LogicalOperatorSelectModule } from './components/logical-operator-select';
 import { AdvancedFilterApiMappingService } from './services/advanced-filter-api-mapping.service';
 
 @NgModule({
-  declarations: [AdvancedFiltersComponent],
+  declarations: [AdvancedFilterFormComponent],
   imports: [
     CommonModule,
     LogicalOperatorSelectModule,
@@ -22,7 +22,7 @@ import { AdvancedFilterApiMappingService } from './services/advanced-filter-api-
     LogicalOperatorSelectModule,
     AdvancedFiltersActionsModule,
   ],
-  exports: [AdvancedFiltersComponent],
+  exports: [AdvancedFilterFormComponent],
   providers: [AdvancedFilterApiMappingService],
 })
-export class AdvancedFiltersModule { }
+export class AdvancedFilterFormModule { }

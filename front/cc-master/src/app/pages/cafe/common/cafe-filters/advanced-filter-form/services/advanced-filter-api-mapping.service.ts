@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 
+import { IAdvancedFilterForm } from '../advanced-filter-form.interface';
 import { IComparisonFilterCriterionForm } from '../components/comparison-filter-criterion';
 import { LogicalOperator } from '../enums/logical-operator.enum';
 import {
@@ -11,13 +12,13 @@ import { IAdvancedFilterConfiguration } from '../models/advanced-filter-configur
 
 @Injectable()
 export class AdvancedFilterApiMappingService {
-  public toAdvancedFilter(logicalOperator: LogicalOperator, criterionForms: IComparisonFilterCriterionForm[], configuration: IAdvancedFilterConfiguration): AdvancedFilter {
-    const filtersCriterion: AdvancedFilter[] = criterionForms
+  public toAdvancedFilter(advancedFilterForm: IAdvancedFilterForm, configuration: IAdvancedFilterConfiguration): AdvancedFilter {
+    const filtersCriterion: AdvancedFilter[] = advancedFilterForm.criterionForms
       .filter((form: IComparisonFilterCriterionForm) => !!form.criterion && !!form.operator && !!form.values)
       .map(form => this.toAdvancedCriterionFilter(form, configuration));
 
-    return !!logicalOperator
-      ? AdvancedFilterTypeMapping.toFilterCombination(logicalOperator, filtersCriterion)
+    return !!advancedFilterForm.logicalOperator
+      ? AdvancedFilterTypeMapping.toFilterCombination(advancedFilterForm.logicalOperator.id, filtersCriterion)
       : filtersCriterion[0];
   }
 

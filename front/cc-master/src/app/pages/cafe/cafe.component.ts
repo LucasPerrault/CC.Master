@@ -1,28 +1,18 @@
-import { Component, OnInit } from '@angular/core';
-import { ReplaySubject } from 'rxjs';
+import { Component } from '@angular/core';
+import { FormControl } from '@angular/forms';
 
-import { AdvancedFilter } from './common/cafe-filters/advanced-filters';
-import { ICafeConfiguration } from './cafe-configuration.interface';
 import { CafeConfiguration } from './cafe-configuration';
+import { ICafeConfiguration } from './cafe-configuration.interface';
 
 @Component({
   selector: 'cc-cafe',
   templateUrl: './cafe.component.html',
 })
-export class CafeComponent implements OnInit {
-
+export class CafeComponent {
+  public cafeFilters: FormControl = new FormControl();
   public configuration: ICafeConfiguration;
-  public filters$: ReplaySubject<AdvancedFilter> = new ReplaySubject<AdvancedFilter>(1);
 
   constructor(cafeConfiguration: CafeConfiguration) {
     this.configuration = cafeConfiguration;
-  }
-
-  public ngOnInit(): void {
-    this.filters$.subscribe(f => console.log('[ADVANCED FILTER]: ', f));
-  }
-
-  public updateFilters(filters: AdvancedFilter) {
-    this.filters$.next(filters);
   }
 }

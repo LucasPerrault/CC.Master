@@ -1,12 +1,11 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
+import { TranslateModule } from '@cc/aspects/translate';
 
-import { ClientContactAdvancedFilterModule } from '../../contacts/advanced-filters/client-contacts';
-import { AdvancedFiltersModule } from './advanced-filters/advanced-filters.module';
+import { AdvancedFilterFormModule } from './advanced-filter-form/advanced-filter-form.module';
 import { CafeFiltersComponent } from './cafe-filters.component';
 import { CategoryFilterModule } from './category-filter/category-filter.module';
-import { TranslateModule } from '@cc/aspects/translate';
 
 
 @NgModule({
@@ -18,9 +17,8 @@ import { TranslateModule } from '@cc/aspects/translate';
   ],
   imports: [
     CommonModule,
-    AdvancedFiltersModule,
+    AdvancedFilterFormModule,
     ReactiveFormsModule,
-    ClientContactAdvancedFilterModule,
     CategoryFilterModule,
     TranslateModule,
   ],

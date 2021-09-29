@@ -1,39 +1,69 @@
-import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
-import { FormControl } from '@angular/forms';
-import { Observable, ReplaySubject, Subject } from 'rxjs';
+import { ChangeDetectionStrategy, Component, forwardRef, Input, OnDestroy, OnInit } from '@angular/core';
+import { ControlValueAccessor, FormControl, FormGroup, NG_VALUE_ACCESSOR } from '@angular/forms';
+import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { map, takeUntil } from 'rxjs/operators';
 
-import { AdvancedFilter, IAdvancedFilterConfiguration } from './advanced-filters';
-import { IAdvancedFilterAndCount } from './advanced-filters/models/advanced-filter-and-count.interface';
+import { IAdvancedFilterConfiguration } from './advanced-filter-form';
+import { ICafeFilters } from './cafe-filters.interface';
 import { ICategory } from './category-filter/category-select/category.interface';
+import { IAdvancedFilterForm } from './advanced-filter-form/advanced-filter-form.interface';
+
+enum CafeFilterKey {
+  Category = 'category',
+  AdvancedFilterForm = 'advancedFilterForm',
+}
 
 @Component({
   selector: 'cc-cafe-filters',
   templateUrl: './cafe-filters.component.html',
   styleUrls: ['./cafe-filters.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [
+    {
+      provide: NG_VALUE_ACCESSOR,
+      useExisting: forwardRef(() => CafeFiltersComponent),
+      multi: true,
+    },
+  ],
 })
-export class CafeFiltersComponent implements OnInit, OnDestroy {
+export class CafeFiltersComponent implements OnInit, OnDestroy, ControlValueAccessor {
   @Input() public categories: ICategory[];
   @Input() public configurations: IAdvancedFilterConfiguration[];
-  @Output() public updateFilters: EventEmitter<AdvancedFilter> = new EventEmitter<AdvancedFilter>();
 
-  public get hasSelectedConfiguration$(): Observable<boolean> {
-    return this.configuration$.pipe(map(c => !!c));
+  public get filtersCount(): number {
+    const filters: IAdvancedFilterForm = this.formGroup.get(CafeFilterKey.AdvancedFilterForm)?.value;
+    return filters?.criterionForms?.length || 0;
   }
 
-  public category: FormControl = new FormControl();
+  public get hasSelectedConfiguration$(): Observable<boolean> {
+    return this.selectedConfiguration$.pipe(map(c => !!c));
+  }
 
-  public filtersCount = 0;
-  public configuration$: ReplaySubject<IAdvancedFilterConfiguration> = new ReplaySubject(1);
+  public formGroup: FormGroup;
+  public formKey = CafeFilterKey;
+
+  public selectedConfiguration$: BehaviorSubject<IAdvancedFilterConfiguration> = new BehaviorSubject(null);
 
   public showAdvancedFilters = false;
 
   private destroy$: Subject<void> = new Subject();
 
+  constructor() {
+    this.formGroup = new FormGroup({
+      [CafeFilterKey.Category]: new FormControl(),
+      [CafeFilterKey.AdvancedFilterForm]: new FormControl(),
+    });
+  }
+
+
   public ngOnInit(): void {
-    this.category.valueChanges
+    this.formGroup.get(CafeFilterKey.Category).valueChanges
       .pipe(takeUntil(this.destroy$), map(category => this.getSelectedConfiguration(category)))
-      .subscribe(configuration => this.configuration$.next(configuration));
+      .subscribe(configuration => this.selectedConfiguration$.next(configuration));
+
+    this.formGroup.valueChanges
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(form => this.onChange(form));
   }
 
   public ngOnDestroy(): void {
@@ -41,13 +71,25 @@ export class CafeFiltersComponent implements OnInit, OnDestroy {
     this.destroy$.complete();
   }
 
-  public toggleAdvancedFiltersDisplay(): void {
-    this.showAdvancedFilters = !this.showAdvancedFilters;
+  public onChange: (form: ICafeFilters) => void = () => {};
+  public onTouch: () => void = () => {};
+
+  public registerOnChange(fn: () => void): void {
+    this.onChange = fn;
   }
 
-  public update(form: IAdvancedFilterAndCount): void {
-    this.filtersCount = form.count;
-    this.updateFilters.emit(form.filter);
+  public registerOnTouched(fn: () => void): void {
+    this.onTouch = fn;
+  }
+
+  public writeValue(form: ICafeFilters): void {
+    if (!!form) {
+      this.formGroup.patchValue(form);
+    }
+  }
+
+  public toggleAdvancedFiltersDisplay(): void {
+    this.showAdvancedFilters = !this.showAdvancedFilters;
   }
 
   private getSelectedConfiguration(category: ICategory): IAdvancedFilterConfiguration {
