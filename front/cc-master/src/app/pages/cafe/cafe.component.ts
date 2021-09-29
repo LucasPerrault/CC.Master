@@ -5,6 +5,7 @@ import { CafeConfiguration } from './cafe-configuration';
 import { ICafeConfiguration } from './cafe-configuration.interface';
 import { IAdvancedFilterForm } from './common/cafe-filters/advanced-filter-form';
 import { ContactCategory } from './contacts/common/enums/cafe-contacts-category.enum';
+import { InstanceCategory } from './instance/enums/instance-category.enum';
 
 @Component({
   selector: 'cc-cafe',
@@ -15,13 +16,29 @@ export class CafeComponent {
   public cafeFilters: FormControl = new FormControl();
   public configuration: ICafeConfiguration;
 
-  public get category(): ContactCategory {
+  public get category(): ContactCategory | InstanceCategory {
     return this.cafeFilters.value?.category?.id;
   }
 
   public get advancedFilterForm(): IAdvancedFilterForm {
     return this.cafeFilters.value?.advancedFilterForm;
   }
+
+  public get isEnvironmentCategory(): boolean {
+    return this.category === InstanceCategory.Environments;
+  }
+
+
+  public get isContactCategory(): boolean {
+    return !!this.contactCategories.find(c => c === this.category);
+  }
+
+  private readonly contactCategories = [
+    ContactCategory.Client,
+    ContactCategory.Specialized,
+    ContactCategory.Application,
+    ContactCategory.All,
+  ];
 
   constructor(cafeConfiguration: CafeConfiguration) {
     this.configuration = cafeConfiguration;

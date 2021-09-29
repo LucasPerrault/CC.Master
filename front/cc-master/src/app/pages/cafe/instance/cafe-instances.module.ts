@@ -11,6 +11,10 @@ import {
 } from './components/environment-additional-column-select/environment-additional-column-select.module';
 import { EnvironmentListComponent } from './components/environment-list/environment-list.component';
 import { EnvironmentDataService } from './services/environment-data.service';
+import { CafeInstanceConfiguration } from './cafe-instance.configuration';
+import { EnvironmentAdvancedFilterConfiguration } from './advanced-filter/environment-advanced-filter.configuration';
+import { EnvironmentContactFormlyConfiguration } from './advanced-filter/environment-contact-formly.configuration';
+import { EnvironmentAdvancedFilterApiMappingService } from './advanced-filter/environment-advanced-filter-api-mapping.service';
 
 @NgModule({
   declarations: [
@@ -30,6 +34,10 @@ import { EnvironmentDataService } from './services/environment-data.service';
   ],
   providers: [
     EnvironmentDataService,
+    CafeInstanceConfiguration,
+    EnvironmentAdvancedFilterConfiguration,
+    EnvironmentContactFormlyConfiguration,
+    EnvironmentAdvancedFilterApiMappingService,
   ],
 })
 export class CafeInstancesModule { }

@@ -11,7 +11,7 @@
     </cc-cafe-filters>
   </div>
 
-  <ng-container [ngSwitch]="category">
-    <cc-cafe-contacts [category]="category" [advancedFilterForm]="advancedFilterForm"></cc-cafe-contacts>
-  </ng-container>
+  <cc-cafe-contacts *ngIf="isContactCategory" [category]="category" [advancedFilterForm]="advancedFilterForm"></cc-cafe-contacts>
+
+  <cc-cafe-instances *ngIf="isEnvironmentCategory" [advancedFilterForm]="advancedFilterForm"></cc-cafe-instances>
 </div>
