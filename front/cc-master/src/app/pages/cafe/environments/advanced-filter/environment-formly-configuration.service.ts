@@ -4,7 +4,7 @@ import { FormlyFieldConfig } from '@ngx-formly/core/lib/components/formly.field.
 import { EnvironmentAdvancedFilterKey } from './environment-advanced-filter-key.enum';
 
 @Injectable()
-export class EnvironmentContactFormlyConfiguration {
+export class EnvironmentFormlyConfiguration {
 
   public readonly subdomain: FormlyFieldConfig = {
     key: EnvironmentAdvancedFilterKey.Subdomain,

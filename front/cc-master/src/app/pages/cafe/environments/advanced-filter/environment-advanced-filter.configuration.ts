@@ -4,7 +4,7 @@ import { TranslatePipe } from '@cc/aspects/translate';
 import { ComparisonOperator, IAdvancedFilterConfiguration, ICriterionConfiguration } from '../../common/cafe-filters/advanced-filter-form';
 import { EnvironmentsCategory } from '../enums/environments-category.enum';
 import { EnvironmentAdvancedFilterKey } from './environment-advanced-filter-key.enum';
-import { EnvironmentContactFormlyConfiguration } from './environment-contact-formly.configuration';
+import { EnvironmentFormlyConfiguration } from './environment-formly-configuration.service';
 
 @Injectable()
 export class EnvironmentAdvancedFilterConfiguration implements IAdvancedFilterConfiguration {
@@ -31,6 +31,6 @@ export class EnvironmentAdvancedFilterConfiguration implements IAdvancedFilterCo
 
   constructor(
     private translatePipe: TranslatePipe,
-    private formlyConfiguration: EnvironmentContactFormlyConfiguration,
+    private formlyConfiguration: EnvironmentFormlyConfiguration,
   ) {}
 }
