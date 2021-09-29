@@ -6,6 +6,9 @@ import { ICategory } from '../common/cafe-filters/category-filter/category-selec
 import { AppContactAdvancedFilterConfiguration } from './app-contacts/advanced-filter/app-contact-advanced-filter.configuration';
 import { ClientContactAdvancedFilterConfiguration } from './client-contacts/advanced-filter/client-contact-advanced-filter.configuration';
 import { ContactCategory } from './common/enums/cafe-contacts-category.enum';
+import {
+  SpecializedContactAdvancedFilterConfiguration,
+} from './specialized-contacts/advanced-filter/specialized-contact-advanced-filter.configuration';
 
 @Injectable()
 export class CafeContactConfiguration implements ICafeConfiguration {
@@ -22,6 +25,10 @@ export class CafeContactConfiguration implements ICafeConfiguration {
           id: ContactCategory.Client,
           name: 'cafe_category_clientContacts',
         },
+        {
+          id: ContactCategory.Specialized,
+          name: 'cafe_category_specializedContacts',
+        },
       ],
     },
   ];
@@ -29,10 +36,12 @@ export class CafeContactConfiguration implements ICafeConfiguration {
   public readonly advancedFilters: IAdvancedFilterConfiguration[] = [
     this.appContactsConfiguration,
     this.clientContactsConfiguration,
+    this.specializedContactsConfiguration,
   ];
 
   constructor(
     private appContactsConfiguration: AppContactAdvancedFilterConfiguration,
     private clientContactsConfiguration: ClientContactAdvancedFilterConfiguration,
+    private specializedContactsConfiguration: SpecializedContactAdvancedFilterConfiguration,
   ) {}
 }

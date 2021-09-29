@@ -8,6 +8,11 @@ import { LuTooltipTriggerModule } from '@lucca-front/ng/tooltip';
 import {
   ContactAdditionalColumnSelectModule,
 } from '../common/components/contact-additional-column-select/contract-additional-column-select.module';
+import { SpecializedContactAdvancedFilterConfiguration } from './advanced-filter/specialized-contact-advanced-filter.configuration';
+import {
+  SpecializedContactAdvancedFilterApiMappingService,
+} from './advanced-filter/specialized-contact-advanced-filter-api-mapping.service';
+import { SpecializedContactFormlyConfiguration } from './advanced-filter/specialized-contact-formly-configuration.service';
 import { SpecializedContactListComponent } from './specialized-contact-list/specialized-contact-list.component';
 import { SpecializedContactsComponent } from './specialized-contacts.component';
 import { SpecializedContactsDataService } from './specialized-contacts-data.service';
@@ -25,7 +30,12 @@ import { SpecializedContactsDataService } from './specialized-contacts-data.serv
     LuTooltipTriggerModule,
     PagingModule,
   ],
-  providers: [SpecializedContactsDataService],
+  providers: [
+    SpecializedContactsDataService,
+    SpecializedContactFormlyConfiguration,
+    SpecializedContactAdvancedFilterConfiguration,
+    SpecializedContactAdvancedFilterApiMappingService,
+  ],
   exports: [SpecializedContactsComponent],
 })
 export class SpecializedContactsModule { }
