@@ -20,11 +20,6 @@ namespace Storage.Infra.Extensions
             };
         }
 
-        public interface ICompareStringQueryableBuilder<T>
-        {
-            IQueryable<T> To(Expression<Func<T, string>> expression);
-        }
-
         private class BypassCompareStringQueryableBuilder<T> : ICompareStringQueryableBuilder<T>
         {
             private readonly IQueryable<T> _query;
@@ -83,5 +78,10 @@ namespace Storage.Infra.Extensions
 
             public IQueryable<T> To(Expression<Func<T, string>> expression) => _query.Where(expression.Chain(s => s.Contains(_value)));
         }
+    }
+
+    public interface ICompareStringQueryableBuilder<T>
+    {
+        IQueryable<T> To(Expression<Func<T, string>> expression);
     }
 }
