@@ -6,8 +6,8 @@ import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 import { ISpecializedContact } from './specialized-contact.interface';
-import { SpecializedContactsDataService } from './specialized-contacts-data.service';
 import { specializedContactAdditionalColumns } from './specialized-contact-additional-column.enum';
+import { SpecializedContactsDataService } from './specialized-contacts-data.service';
 
 
 @Component({

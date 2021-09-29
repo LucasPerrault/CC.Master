@@ -6,8 +6,8 @@ import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 import { IGenericContact } from './generic-contact.interface';
-import { GenericContactsDataService } from './generic-contacts-data.service';
 import { genericContactAdditionalColumns } from './generic-contact-additional-column.enum';
+import { GenericContactsDataService } from './generic-contacts-data.service';
 
 @Component({
   selector: 'cc-generic-contacts',
