@@ -17,7 +17,7 @@ interface IFilterCombination {
 
 export interface IComparisonFilterCriterion {
   operator: ComparisonOperator;
-  value: string;
+  value?: string;
 }
 
 export interface IFilterCriterion {

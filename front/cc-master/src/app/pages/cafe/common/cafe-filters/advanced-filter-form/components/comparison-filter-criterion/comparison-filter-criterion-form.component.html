@@ -15,7 +15,7 @@
     </cc-comparison-operator-select>
 
     <cc-comparison-value-select [formControlName]="formKey.Values"
-                                [configurations]="configuration.fields"
+                                [configurations]="configuration?.fields"
                                 (blur)="onTouch()">
     </cc-comparison-value-select>
   </ng-container>

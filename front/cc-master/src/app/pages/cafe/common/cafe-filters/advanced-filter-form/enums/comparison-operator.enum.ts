@@ -7,6 +7,7 @@ export enum ComparisonOperator {
   StartsWith = 'StartsWith',
   TrueOnly = 'TrueOnly',
   FalseOnly = 'FalseOnly',
+  ByPass = 'ByPass',
   Until = 'Until',
   Since = 'Since',
   GreaterThan = 'GreaterThan',

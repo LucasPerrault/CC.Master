@@ -1,3 +1,3 @@
-<form [formGroup]="formGroup">
+<form [formGroup]="formGroup" *ngIf="!!configurations?.length">
   <formly-form [form]="formGroup" [fields]="configurations" [model]="model" (blur)="onTouch()"></formly-form>
 </form>

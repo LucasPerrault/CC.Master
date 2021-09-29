@@ -39,6 +39,10 @@ export const criterionOperators: IComparisonOperator[] = [
     name: 'cafe_criterionOperator_falseOnly',
   },
   {
+    id: ComparisonOperator.ByPass,
+    name: 'cafe_criterionOperator_byPass',
+  },
+  {
     id: ComparisonOperator.Until,
     name: 'cafe_criterionOperator_until',
   },

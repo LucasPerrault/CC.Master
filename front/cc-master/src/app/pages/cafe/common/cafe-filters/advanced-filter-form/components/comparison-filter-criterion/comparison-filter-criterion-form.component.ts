@@ -5,7 +5,7 @@ import {
   FormControl, FormGroup,
   NG_VALIDATORS,
   NG_VALUE_ACCESSOR,
-  ValidationErrors, Validators,
+  ValidationErrors, Validator,
 } from '@angular/forms';
 import { ReplaySubject, Subject } from 'rxjs';
 import { map, takeUntil } from 'rxjs/operators';
@@ -38,7 +38,7 @@ enum ComparisonFilterCriterionFormKey {
     },
   ],
 })
-export class ComparisonFilterCriterionFormComponent implements OnInit, OnDestroy, ControlValueAccessor {
+export class ComparisonFilterCriterionFormComponent implements OnInit, OnDestroy, ControlValueAccessor, Validator {
   @Input() public configurations: ICriterionConfiguration[];
 
   public configuration$: ReplaySubject<ICriterionConfiguration> = new ReplaySubject<ICriterionConfiguration>(1);
@@ -50,9 +50,9 @@ export class ComparisonFilterCriterionFormComponent implements OnInit, OnDestroy
 
   public ngOnInit(): void {
     this.formGroup = new FormGroup({
-      [ComparisonFilterCriterionFormKey.Criterion]: new FormControl(null, Validators.required),
-      [ComparisonFilterCriterionFormKey.Operator]: new FormControl(null, Validators.required),
-      [ComparisonFilterCriterionFormKey.Values]: new FormControl(null, Validators.required),
+      [ComparisonFilterCriterionFormKey.Criterion]: new FormControl(null),
+      [ComparisonFilterCriterionFormKey.Operator]: new FormControl(null),
+      [ComparisonFilterCriterionFormKey.Values]: new FormControl(null),
     });
 
     this.formGroup.get(ComparisonFilterCriterionFormKey.Criterion).valueChanges

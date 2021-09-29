@@ -1,4 +1,4 @@
-import { Component, forwardRef, Input, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, forwardRef, Input, OnDestroy, OnInit } from '@angular/core';
 import {
   AbstractControl,
   ControlValueAccessor,
@@ -6,7 +6,7 @@ import {
   NG_VALIDATORS,
   NG_VALUE_ACCESSOR,
   ValidationErrors,
-  Validator,
+  Validator, Validators,
 } from '@angular/forms';
 import { FormlyFieldConfig } from '@ngx-formly/core/lib/components/formly.field.config';
 import { Subject } from 'rxjs';
@@ -17,6 +17,7 @@ import { IComparisonValue } from './comparison-value.interface';
 @Component({
   selector: 'cc-comparison-value-select',
   templateUrl: './comparison-value-select.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,
@@ -69,6 +70,10 @@ export class ComparisonValueSelectComponent implements OnInit, OnDestroy, Valida
   }
 
   public validate(control: AbstractControl): ValidationErrors | null {
+    if (!this.configurations?.length) {
+      return null;
+    }
+
     if (this.formGroup.invalid) {
       return  { invalid: true };
     }
