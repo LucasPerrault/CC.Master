@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 
+import { IAdvancedFilterForm } from '../common/cafe-filters/advanced-filter-form';
 import { ContactCategory } from './common/enums/cafe-contacts-category.enum';
 
 @Component({
@@ -8,6 +9,7 @@ import { ContactCategory } from './common/enums/cafe-contacts-category.enum';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CafeContactsComponent {
+  @Input() public advancedFilterForm: IAdvancedFilterForm;
   @Input() public category: ContactCategory;
 
   public contactCategory = ContactCategory;

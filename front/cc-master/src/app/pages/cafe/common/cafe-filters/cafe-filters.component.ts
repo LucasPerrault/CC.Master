@@ -4,9 +4,9 @@ import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { map, takeUntil } from 'rxjs/operators';
 
 import { IAdvancedFilterConfiguration } from './advanced-filter-form';
+import { IAdvancedFilterForm } from './advanced-filter-form/advanced-filter-form.interface';
 import { ICafeFilters } from './cafe-filters.interface';
 import { ICategory } from './category-filter/category-select/category.interface';
-import { IAdvancedFilterForm } from './advanced-filter-form/advanced-filter-form.interface';
 
 enum CafeFilterKey {
   Category = 'category',

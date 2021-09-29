@@ -10,4 +10,8 @@
                      [formControl]="cafeFilters">
     </cc-cafe-filters>
   </div>
+
+  <ng-container [ngSwitch]="category">
+    <cc-cafe-contacts [category]="category" [advancedFilterForm]="advancedFilterForm"></cc-cafe-contacts>
+  </ng-container>
 </div>

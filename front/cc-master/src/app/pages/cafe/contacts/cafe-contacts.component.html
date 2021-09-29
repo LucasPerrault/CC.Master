@@ -2,7 +2,7 @@
 
   <cc-generic-contacts *ngSwitchCase="contactCategory.All"></cc-generic-contacts>
 
-  <cc-app-contacts *ngSwitchCase="contactCategory.Application"></cc-app-contacts>
+  <cc-app-contacts *ngSwitchCase="contactCategory.Application" [advancedFilterForm]="advancedFilterForm"></cc-app-contacts>
 
   <cc-client-contacts *ngSwitchCase="contactCategory.Client"></cc-client-contacts>
 
