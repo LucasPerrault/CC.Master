@@ -10,7 +10,7 @@ import {
   IComparisonValue,
   LogicalOperator,
 } from '../../../common/cafe-filters/advanced-filter-form';
-import { IAppInstance } from '../../../instance/models/app-instance.interface';
+import { IAppInstance } from '../../../environments/models/app-instance.interface';
 import { AppContactAdvancedFilterKey } from './app-contact-advanced-filter-key.enum';
 
 interface IAdvancedFilterAttributes {

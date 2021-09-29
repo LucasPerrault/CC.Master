@@ -2,13 +2,13 @@ import { Injectable } from '@angular/core';
 import { TranslatePipe } from '@cc/aspects/translate';
 
 import { ComparisonOperator, IAdvancedFilterConfiguration, ICriterionConfiguration } from '../../common/cafe-filters/advanced-filter-form';
-import { InstanceCategory } from '../enums/instance-category.enum';
+import { EnvironmentsCategory } from '../enums/environments-category.enum';
 import { EnvironmentAdvancedFilterKey } from './environment-advanced-filter-key.enum';
 import { EnvironmentContactFormlyConfiguration } from './environment-contact-formly.configuration';
 
 @Injectable()
 export class EnvironmentAdvancedFilterConfiguration implements IAdvancedFilterConfiguration {
-  public readonly categoryId = InstanceCategory.Environments;
+  public readonly categoryId = EnvironmentsCategory.Environments;
   public readonly criterions: ICriterionConfiguration[] = [
     {
       key: EnvironmentAdvancedFilterKey.Subdomain,

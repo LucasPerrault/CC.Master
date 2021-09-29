@@ -1,4 +1,4 @@
-export enum InstanceCategory {
+export enum EnvironmentsCategory {
   Environments = 'environments',
 }
 

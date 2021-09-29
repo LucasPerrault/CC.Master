@@ -11,10 +11,10 @@ import { IEnvironment } from './models/environment.interface';
 import { EnvironmentDataService } from './services/environment-data.service';
 
 @Component({
-  selector: 'cc-cafe-instances',
-  templateUrl: './cafe-instances.component.html',
+  selector: 'cc-cafe-environments',
+  templateUrl: './cafe-environments.component.html',
 })
-export class CafeInstancesComponent implements OnInit, OnDestroy {
+export class CafeEnvironmentsComponent implements OnInit, OnDestroy {
   @Input() public set advancedFilterForm(f: IAdvancedFilterForm) { this.setAdvancedFilter(f); }
 
   public get environments$(): Observable<IEnvironment[]> {

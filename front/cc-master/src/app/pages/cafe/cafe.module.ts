@@ -7,7 +7,7 @@ import { CafeComponent } from './cafe.component';
 import { CafeConfiguration } from './cafe-configuration';
 import { CafeFiltersModule } from './common/cafe-filters/cafe-filters.module';
 import { CafeContactsModule } from './contacts/cafe-contacts.module';
-import { CafeInstancesModule } from './instance/cafe-instances.module';
+import { CafeEnvironmentsModule } from './environments/cafe-environments.module';
 
 @NgModule({
   declarations: [
@@ -17,7 +17,7 @@ import { CafeInstancesModule } from './instance/cafe-instances.module';
     CommonModule,
     TranslateModule,
     CafeFiltersModule,
-    CafeInstancesModule,
+    CafeEnvironmentsModule,
     CafeContactsModule,
     ReactiveFormsModule,
   ],
