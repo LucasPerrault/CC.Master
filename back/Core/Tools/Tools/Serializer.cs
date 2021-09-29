@@ -27,21 +27,20 @@ namespace Tools
             );
         }
 
-        public static async Task<T> DeserializeAsync<T>(Stream content)
+        public static Task<T> DeserializeAsync<T>(Stream content)
         {
-            if (content.Length == 0)
+            return DeserializeAsync<T>(content, new JsonSerializerOptions());
+        }
+
+        public static async Task<T> DeserializeAsync<T>(Stream content, JsonSerializerOptions options)
+        {
+            if (!content.CanRead)
             {
                 return default;
             }
 
-            return await JsonSerializer.DeserializeAsync<T>
-            (
-                content,
-                new JsonSerializerOptions
-                {
-                    PropertyNameCaseInsensitive = true
-                }
-            );
+            options.PropertyNameCaseInsensitive = true;
+            return await JsonSerializer.DeserializeAsync<T>(content, options);
         }
 
         public static string Serialize(object o)
@@ -125,7 +124,7 @@ namespace Tools
         }
 
         public IPolymorphicSerializerBuilder<TPolymorphic, TDiscriminator> AddMatch<T>(TDiscriminator discriminator)
-        where T: TPolymorphic
+            where T: TPolymorphic
         {
             _currentConverter.AddMatch(discriminator, typeof(T));
             return this;
@@ -146,6 +145,7 @@ namespace Tools
     public interface IPolymorphicSerializer
     {
         T Deserialize<T>(string content);
+        Task<T> DeserializeAsync<T>(Stream content);
     }
 
     internal class PolymorphicSerializer : IPolymorphicSerializer
@@ -160,6 +160,11 @@ namespace Tools
         public T Deserialize<T>(string content)
         {
             return Serializer.Deserialize<T>(content, Serializer.Options.ForDeserialization(_converters));
+        }
+
+        public Task<T> DeserializeAsync<T>(Stream content)
+        {
+            return Serializer.DeserializeAsync<T>(content, Serializer.Options.ForDeserialization(_converters));
         }
     }
 
