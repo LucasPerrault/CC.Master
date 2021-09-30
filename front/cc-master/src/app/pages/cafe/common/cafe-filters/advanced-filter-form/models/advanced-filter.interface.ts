@@ -2,8 +2,8 @@ import { ComparisonOperator } from '../enums/comparison-operator.enum';
 import { LogicalOperator } from '../enums/logical-operator.enum';
 
 export enum AdvancedFilterType {
-  Logical = 'logicalOperator',
-  Criterion = 'criterion',
+  Logical = 'LogicalOperator',
+  Criterion = 'Criterion',
 }
 
 interface IFilter {
