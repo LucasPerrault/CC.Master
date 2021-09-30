@@ -5,7 +5,9 @@ import {
   FormControl, FormGroup,
   NG_VALIDATORS,
   NG_VALUE_ACCESSOR,
-  ValidationErrors, Validator,
+  ValidationErrors,
+  Validator,
+  Validators,
 } from '@angular/forms';
 import { ReplaySubject, Subject } from 'rxjs';
 import { filter, map, takeUntil } from 'rxjs/operators';
@@ -52,14 +54,17 @@ export class ComparisonFilterCriterionFormComponent implements OnInit, OnDestroy
 
   public ngOnInit(): void {
     this.parentFormGroup = new FormGroup({
-      [ComparisonFilterCriterionFormKey.Criterion]: new FormControl(null),
-      [ComparisonFilterCriterionFormKey.Operator]: new FormControl(null),
-      [ComparisonFilterCriterionFormKey.Values]: new FormControl(null),
+      [ComparisonFilterCriterionFormKey.Criterion]: new FormControl(null, Validators.required),
+      [ComparisonFilterCriterionFormKey.Operator]: new FormControl(null, Validators.required),
+      [ComparisonFilterCriterionFormKey.Values]: new FormControl(null, Validators.required),
     });
 
     this.parentFormGroup.get(ComparisonFilterCriterionFormKey.Criterion).valueChanges
       .pipe(map(criterion => this.configurations?.find(c => c.key === criterion?.key)))
-      .subscribe(configuration => this.configuration$.next(configuration));
+      .subscribe(configuration => {
+        this.configuration$.next(configuration);
+        this.setValidators(configuration);
+      });
 
     this.configuration$
       .pipe(takeUntil(this.destroy$), filter(configuration => !!configuration?.operators))
@@ -110,5 +115,13 @@ export class ComparisonFilterCriterionFormComponent implements OnInit, OnDestroy
   private hasChildren(config: IComparisonFilterCriterionForm): boolean {
     const configuration = this.configurations.find(c => c.key === config?.criterion?.key);
     return !!configuration?.children?.length;
+  }
+
+  private setValidators(configuration: ICriterionConfiguration): void {
+    const validators = !!configuration?.fields?.length ? [Validators.required] : [];
+
+    const formControl = this.parentFormGroup.get(ComparisonFilterCriterionFormKey.Values);
+    formControl.setValidators(validators);
+    formControl.updateValueAndValidity();
   }
 }

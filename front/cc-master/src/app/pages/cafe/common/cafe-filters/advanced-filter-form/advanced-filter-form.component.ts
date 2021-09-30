@@ -39,8 +39,7 @@ export class AdvancedFilterFormComponent implements ControlValueAccessor, OnInit
   @Output() public cancel: EventEmitter<void> = new EventEmitter<void>();
 
   public get invalid(): boolean {
-    const hasLogicalOperatorInvalid = this.formArray.length > 1 && this.logicalOperator.invalid;
-    return this.formArray.invalid || hasLogicalOperatorInvalid;
+    return !this.formArray.dirty || this.formArray.invalid || this.isLogicalOperatorInvalid();
   }
 
   public logicalOperator: FormControl = new FormControl();
@@ -127,5 +126,9 @@ export class AdvancedFilterFormComponent implements ControlValueAccessor, OnInit
 
   private getCriterionForm(): FormControl {
     return new FormControl({ [CriterionFormsKey.ComparisonFilterCriterionForm]: null });
+  }
+
+  private isLogicalOperatorInvalid(): boolean {
+    return this.formArray.length > 1 ? this.logicalOperator.invalid || !this.logicalOperator.dirty : false;
   }
 }
