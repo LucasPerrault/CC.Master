@@ -33,6 +33,12 @@ export class EnvironmentAdvancedFilterConfiguration implements IAdvancedFilterCo
       operators: [ComparisonOperator.Equals, ComparisonOperator.DoesNotEqual],
       fields: [this.formlyConfiguration.applications],
     },
+    {
+      key: EnvironmentAdvancedFilterKey.Countries,
+      name: this.translatePipe.transform('cafe_filters_countries'),
+      operators: [ComparisonOperator.Equals, ComparisonOperator.DoesNotEqual],
+      fields: [this.formlyConfiguration.countries],
+    },
   ];
 
   constructor(

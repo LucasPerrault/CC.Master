@@ -3,4 +3,5 @@ export enum EnvironmentAdvancedFilterKey {
   Domain = 'domain',
   IsActive = 'isActive',
   Applications = 'applications',
+  Countries = 'countries',
 }

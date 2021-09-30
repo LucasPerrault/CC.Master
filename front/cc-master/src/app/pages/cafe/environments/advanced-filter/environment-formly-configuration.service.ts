@@ -42,5 +42,16 @@ export class EnvironmentFormlyConfiguration {
     },
   };
 
+  public readonly countries: FormlyFieldConfig = {
+    key: EnvironmentAdvancedFilterKey.Countries,
+    type: 'country',
+    templateOptions: {
+      multiple: true,
+      required: true,
+      mod: 'palette-grey mod-outlined mod-inline mod-longer',
+      placeholder: this.translatePipe.transform('cafe_filters_countries'),
+    },
+  };
+
   constructor(private translatePipe: TranslatePipe) {}
 }
