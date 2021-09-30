@@ -4,6 +4,7 @@
            (onOpen)="setEnvironmentsDisplayed()"
            [multiple]="multiple"
            [required]="required"
+           [formlyAttributes]="formlyAttributes"
            (blur)="onTouch()">
 
   <ng-container *luDisplayer="let value; multiple: multiple">

@@ -10,6 +10,7 @@ import {
 } from '@angular/forms';
 import { IEnvironment } from '@cc/domain/environments';
 import { ALuApiService } from '@lucca-front/ng/api';
+import { FormlyFieldConfig } from '@ngx-formly/core/lib/components/formly.field.config';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
@@ -41,6 +42,7 @@ export class EnvironmentApiSelectComponent implements ControlValueAccessor, Vali
   @Input() placeholder: string;
   @Input() multiple = false;
   @Input() required = false;
+  @Input() formlyAttributes: FormlyFieldConfig = {};
 
   public formControl: FormControl = new FormControl();
 

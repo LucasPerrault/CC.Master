@@ -12,25 +12,27 @@ import {
   LuOptionSearcherModule,
 } from '@lucca-front/ng/option';
 import { LuSelectInputModule } from '@lucca-front/ng/select';
+import { FormlyModule } from '@ngx-formly/core';
 
 import { EnvironmentApiSelectComponent } from './environment-api-select.component';
 
 @NgModule({
   declarations: [EnvironmentApiSelectComponent],
-    imports: [
-        FormsModule,
-        LuSelectInputModule,
-        LuOptionPickerModule,
-        LuOptionFeederModule,
-        LuOptionSearcherModule,
-        LuOptionPagerModule,
-        LuOptionModule,
-        LuInputModule,
-        LuApiModule,
-        TranslateModule,
-        CommonModule,
-        ReactiveFormsModule,
-    ],
+  imports: [
+    FormsModule,
+    LuSelectInputModule,
+    LuOptionPickerModule,
+    LuOptionFeederModule,
+    LuOptionSearcherModule,
+    LuOptionPagerModule,
+    LuOptionModule,
+    LuInputModule,
+    LuApiModule,
+    TranslateModule,
+    CommonModule,
+    ReactiveFormsModule,
+    FormlyModule,
+  ],
   exports: [EnvironmentApiSelectComponent],
 })
 export class EnvironmentApiSelectModule { }
