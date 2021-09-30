@@ -1,50 +1,41 @@
-<label class="textfield {{ textfieldClass }}" [ngClass]="{'is-required': required}">
-  <lu-select [(ngModel)]="environmentsSelected"
-             (ngModelChange)="update($event)"
-             #environmentCtrl="ngModel"
-             class="textfield-input"
-             [placeholder]="placeholder"
-             (onOpen)="setEnvironmentsDisplayed()"
-             [multiple]="multiple"
-             [required]="required">
+<lu-select [formControl]="formControl"
+           class="textfield-input"
+           [placeholder]="placeholder"
+           (onOpen)="setEnvironmentsDisplayed()"
+           [multiple]="multiple"
+           [required]="required"
+           (blur)="onTouch()">
 
-    <ng-container *luDisplayer="let value; multiple: multiple">
-      <ng-container *ngIf="multiple; else notMultiple">
-        <span *ngIf="value?.length !== 1; else: singleView">
-        <span class="label">{{ value.length }}</span>
-          {{ 'front_filterSelection_subdomain' | translate: { count: value.length } }}
-      </span>
-        <ng-template #singleView>{{ value[0].subDomain }}</ng-template>
-      </ng-container>
-
-      <ng-template #notMultiple>{{ value.subDomain }}</ng-template>
+  <ng-container *luDisplayer="let value; multiple: multiple">
+    <ng-container *ngIf="multiple; else notMultiple">
+      <span *ngIf="value?.length !== 1; else: singleView">
+      <span class="label">{{ value.length }}</span>
+        {{ 'front_filterSelection_subdomain' | translate: { count: value.length } }}
+    </span>
+      <ng-template #singleView>{{ value[0].subDomain }}</ng-template>
     </ng-container>
 
-    <lu-option-picker-advanced>
-      <header class="lu-picker-header">
-        <lu-api-paged-searcher [api]="apiUrl" [fields]="apiFields" [orderBy]="apiOrderBy" [filters]="filtersToExcludeSelection"></lu-api-paged-searcher>
-      </header>
+    <ng-template #notMultiple>{{ value.subDomain }}</ng-template>
+  </ng-container>
 
-      <lu-option-pager *ngIf="multiple"></lu-option-pager>
-      <ng-container *ngIf="multiple">
-        <lu-option *ngFor="let environmentSelected of environmentsSelectionDisplayed"
-                   [value]="environmentSelected"
-                   selected>
-          {{ environmentSelected.subDomain }}
-        </lu-option>
-      </ng-container>
+  <lu-option-picker-advanced>
+    <header class="lu-picker-header">
+      <lu-api-paged-searcher [api]="apiUrl" [fields]="apiFields" [orderBy]="apiOrderBy" [filters]="filtersToExcludeSelection"></lu-api-paged-searcher>
+    </header>
 
-      <lu-option *luForOptions="let environmentNotSelected; trackBy: trackBy" [value]="environmentNotSelected">
-          {{ environmentNotSelected.subDomain }}
+    <lu-option-pager *ngIf="multiple"></lu-option-pager>
+    <ng-container *ngIf="multiple">
+      <lu-option *ngFor="let environmentSelected of environmentsSelectionDisplayed"
+                 [value]="environmentSelected"
+                 selected>
+        {{ environmentSelected.subDomain }}
       </lu-option>
-    </lu-option-picker-advanced>
-    <lu-input-clearer></lu-input-clearer>
-  </lu-select>
-  <span class="textfield-label" *ngIf="isFormDisplayMode">{{ label }}</span>
-  <span class="textfield-messages" *ngIf="environmentCtrl.touched && environmentCtrl.hasError('required')">
-    <span class="textfield-messages-error">
-      {{ "front_select_environments_errorMessage_required" | translate }}
-    </span>
-  </span>
-</label>
+    </ng-container>
+
+    <lu-option *luForOptions="let environmentNotSelected; trackBy: trackBy" [value]="environmentNotSelected">
+        {{ environmentNotSelected.subDomain }}
+    </lu-option>
+  </lu-option-picker-advanced>
+  <lu-input-clearer></lu-input-clearer>
+</lu-select>
 

@@ -1,15 +1,25 @@
-import { ChangeDetectorRef, Component, forwardRef, Input } from '@angular/core';
-import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
-import { TranslatePipe } from '@cc/aspects/translate';
+import { ChangeDetectionStrategy, Component, forwardRef, Input, OnDestroy, OnInit } from '@angular/core';
+import {
+  AbstractControl,
+  ControlValueAccessor,
+  FormControl,
+  NG_VALIDATORS,
+  NG_VALUE_ACCESSOR,
+  ValidationErrors,
+  Validator,
+} from '@angular/forms';
 import { IEnvironment } from '@cc/domain/environments';
 import { ALuApiService } from '@lucca-front/ng/api';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
-import { SelectDisplayMode } from '../../select/select-display-mode.enum';
 import { EnvironmentApiSelectService } from './environment-api-select.service';
 
 @Component({
   selector: 'cc-environment-api-select',
   templateUrl: './environment-api-select.component.html',
+  styleUrls: ['./environment-api-select.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [
     {
       provide: ALuApiService,
@@ -20,23 +30,24 @@ import { EnvironmentApiSelectService } from './environment-api-select.service';
       useExisting: forwardRef(() => EnvironmentApiSelectComponent),
       multi: true,
     },
+    {
+      provide: NG_VALIDATORS,
+      multi: true,
+      useExisting: EnvironmentApiSelectComponent,
+    },
   ],
 })
-export class EnvironmentApiSelectComponent implements ControlValueAccessor {
-  @Input() public textfieldClass?: string;
+export class EnvironmentApiSelectComponent implements ControlValueAccessor, Validator, OnInit, OnDestroy {
+  @Input() placeholder: string;
   @Input() multiple = false;
   @Input() required = false;
-  @Input() displayMode = SelectDisplayMode.Filter;
 
-
-  public onChange: (e: IEnvironment[] | IEnvironment) => void;
-  public onTouch: () => void;
+  public formControl: FormControl = new FormControl();
 
   public apiUrl = '/api/v3/environments';
   public apiFields = 'id,subdomain';
   public apiOrderBy = 'subdomain,asc';
 
-  public environmentsSelected: IEnvironment | IEnvironment[] = [];
   public environmentsSelectionDisplayed: IEnvironment[];
 
   public get filtersToExcludeSelection(): string[] {
@@ -48,8 +59,21 @@ export class EnvironmentApiSelectComponent implements ControlValueAccessor {
     return [`id=notequal,${environmentSelectedIds.join(',')}`];
   }
 
-  constructor(private changeDetectorRef: ChangeDetectorRef, private translatePipe: TranslatePipe) {
+  private destroy$: Subject<void> = new Subject();
+
+  public ngOnInit(): void {
+    this.formControl.valueChanges
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(form => this.onChange(form));
   }
+
+  public ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+
+  public onChange: (e: IEnvironment[] | IEnvironment) => void = () => {};
+  public onTouch: () => void = () => {};
 
   public registerOnChange(fn: () => void): void {
     this.onChange = fn;
@@ -60,14 +84,15 @@ export class EnvironmentApiSelectComponent implements ControlValueAccessor {
   }
 
   public writeValue(e: IEnvironment | IEnvironment[]): void {
-    if (e !== this.environmentsSelected  && e !== null) {
-      this.environmentsSelected = e;
-      this.changeDetectorRef.detectChanges();
+    if (!!e && e !== this.formControl.value) {
+      this.formControl.patchValue(e);
     }
   }
 
-  public update(e: IEnvironment | IEnvironment[]): void {
-    this.onChange(e);
+  public validate(control: AbstractControl): ValidationErrors | null {
+    if (this.formControl.invalid) {
+      return { invalid: true };
+    }
   }
 
   public setEnvironmentsDisplayed(): void {
@@ -75,7 +100,7 @@ export class EnvironmentApiSelectComponent implements ControlValueAccessor {
       return;
     }
 
-    this.environmentsSelectionDisplayed = (this.environmentsSelected as IEnvironment[]);
+    this.environmentsSelectionDisplayed = (this.formControl.value as IEnvironment[]);
   }
 
   public trackBy(index: number, environment: IEnvironment): number {

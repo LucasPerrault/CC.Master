@@ -7,8 +7,12 @@
       <cc-environment-action-select textfieldClass="palette-grey mod-outlined mod-inline u-marginBottomSmallest" [formControlName]="filtersKey.Actions">
       </cc-environment-action-select>
 
-      <cc-environment-api-select [multiple]="true" textfieldClass="palette-grey mod-outlined mod-inline u-marginBottomSmallest" [formControlName]="filtersKey.Environments">
-      </cc-environment-api-select>
+      <label class="textfield palette-grey mod-outlined mod-inline u-marginBottomSmallest">
+        <cc-environment-api-select [placeholder]="'front_select_environments_label' | translate"
+                                   [multiple]="true"
+                                   [formControlName]="filtersKey.Environments">
+        </cc-environment-api-select>
+      </label>
 
       <cc-date-range-select datesClass="palette-grey mod-outlined mod-inline mod-short u-marginBottomSmallest"
                             [configuration]="dateRangeConfiguration"
