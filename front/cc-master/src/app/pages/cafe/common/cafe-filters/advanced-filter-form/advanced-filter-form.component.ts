@@ -132,6 +132,6 @@ export class AdvancedFilterFormComponent implements ControlValueAccessor, OnInit
   }
 
   private isLogicalOperatorInvalid(): boolean {
-    return this.formArray.length > 1 ? this.logicalOperator.invalid || !this.logicalOperator.dirty : false;
+    return this.formArray.length > 1 ? this.logicalOperator.invalid : false;
   }
 }
