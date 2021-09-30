@@ -1,7 +1,7 @@
 <form [formGroup]="formGroup" class="u-displayFlex u-flexDirectionColumn u-flexShrink0 u-flexGrow1">
   <button type="button" class="actionIcon mod-clearer"
           [luTooltip]="'cafe_filters_delete_all_button_label' | translate"
-          (click)="clear()">
+          (click)="reset()">
     <span aria-hidden="true" class="lucca-icon icon-cross"></span>
     <span class="u-mask">{{ 'cafe_filters_delete_one_button_label' | translate }}</span>
   </button>
@@ -39,7 +39,7 @@
         <button type="button" class="actionIcon"
                 [disabled]="i === 0"
                 [luTooltip]="'cafe_filters_delete_one_button_label' | translate"
-                (click)="remove(i)">
+                (click)="removeAt(i)">
           <span aria-hidden="true" class="lucca-icon icon-cross"></span>
           <span class="u-mask">{{ 'cafe_filters_delete_one_button_label' | translate }}</span>
         </button>

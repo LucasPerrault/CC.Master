@@ -3,8 +3,7 @@ import { ControlValueAccessor, FormControl, FormGroup, NG_VALUE_ACCESSOR } from 
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { map, takeUntil } from 'rxjs/operators';
 
-import { IAdvancedFilterConfiguration } from './advanced-filter-form';
-import { IAdvancedFilterForm } from './advanced-filter-form/advanced-filter-form.interface';
+import { IAdvancedFilterConfiguration, IAdvancedFilterForm } from './advanced-filter-form';
 import { ICafeFilters } from './cafe-filters.interface';
 import { ICategory } from './category-filter/category-select/category.interface';
 
@@ -58,8 +57,14 @@ export class CafeFiltersComponent implements OnInit, OnDestroy, ControlValueAcce
 
   public ngOnInit(): void {
     this.formGroup.get(CafeFilterKey.Category).valueChanges
-      .pipe(takeUntil(this.destroy$), map(category => this.getSelectedConfiguration(category)))
-      .subscribe(configuration => this.selectedConfiguration$.next(configuration));
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(category => {
+        this.showAdvancedFilters = false;
+        this.formGroup.get(CafeFilterKey.AdvancedFilterForm).reset();
+
+        const configuration = this.getSelectedConfiguration(category);
+        this.selectedConfiguration$.next(configuration);
+      });
 
     this.formGroup.valueChanges
       .pipe(takeUntil(this.destroy$))

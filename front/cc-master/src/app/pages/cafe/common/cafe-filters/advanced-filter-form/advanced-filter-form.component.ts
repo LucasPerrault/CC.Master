@@ -46,7 +46,7 @@ export class AdvancedFilterFormComponent implements ControlValueAccessor, OnInit
   public logicalOperator: FormControl = new FormControl();
 
   public formArrayKey = 'criterions';
-  public formArray: FormArray = new FormArray([]);
+  public formArray = new FormArray([]);
   public formGroup: FormGroup = new FormGroup({
     [this.formArrayKey]: this.formArray,
   });
@@ -87,23 +87,24 @@ export class AdvancedFilterFormComponent implements ControlValueAccessor, OnInit
       return;
     }
 
-    this.insertAt(0);
+    this.reset();
   }
 
-  public trackBy(index: number, control: AbstractControl): number {
-    return index;
+  public trackBy(index: number, control: AbstractControl): AbstractControl {
+    return control;
   }
 
   public insertAt(index: number): void {
-    this.formArray.insert(index, new FormControl({ [CriterionFormsKey.ComparisonFilterCriterionForm]: null }));
+    this.formArray.insert(index + 1, this.getCriterionForm());
   }
 
-  public remove(index: number) {
+  public removeAt(index: number) {
     this.formArray.removeAt(index);
   }
 
-  public clear(): void {
+  public reset(): void {
     this.logicalOperator.reset();
+
     this.formArray.clear();
     this.insertAt(0);
   }
@@ -122,5 +123,9 @@ export class AdvancedFilterFormComponent implements ControlValueAccessor, OnInit
     const advancedFilterForm: IAdvancedFilterForm = { logicalOperator, criterionForms };
 
     this.onChange(advancedFilterForm);
+  }
+
+  private getCriterionForm(): FormControl {
+    return new FormControl({ [CriterionFormsKey.ComparisonFilterCriterionForm]: null });
   }
 }
