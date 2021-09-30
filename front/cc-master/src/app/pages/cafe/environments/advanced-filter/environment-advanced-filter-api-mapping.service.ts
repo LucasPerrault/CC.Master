@@ -10,6 +10,8 @@ import {
   LogicalOperator,
 } from '../../common/cafe-filters/advanced-filter-form';
 import { EnvironmentAdvancedFilterKey } from './environment-advanced-filter-key.enum';
+import { IAppInstance } from '../models/app-instance.interface';
+import { ICountry } from '../models/legal-unit.interface';
 
 interface IAdvancedFilterAttributes {
   filterKey: string;
@@ -49,6 +51,12 @@ export class EnvironmentAdvancedFilterApiMappingService {
       case EnvironmentAdvancedFilterKey.Subdomain:
         const subdomains = attributes.value[attributes.filterKey];
         return this.getSubdomainAdvancedFilter(attributes.operator, subdomains);
+      case EnvironmentAdvancedFilterKey.Applications:
+        const applications = attributes.value[attributes.filterKey];
+        return this.getAppInstanceAdvancedFilter(attributes.operator, applications);
+      case EnvironmentAdvancedFilterKey.Countries:
+        const countries = attributes.value[attributes.filterKey];
+        return this.getCountriesAdvancedFilter(attributes.operator, countries);
     }
   }
 
@@ -80,6 +88,34 @@ export class EnvironmentAdvancedFilterApiMappingService {
 
     const criterions = comparisons.map(c => AdvancedFilterTypeMapping.toFilterCriterion({
       subdomain: c,
+    }));
+
+    return !!criterions.length && criterions.length > 1
+      ? AdvancedFilterTypeMapping.toFilterCombination(LogicalOperator.And, criterions)
+      : criterions[0];
+  }
+
+  private getAppInstanceAdvancedFilter(operator: ComparisonOperator, appInstances: IAppInstance[]): AdvancedFilter {
+    const queries = appInstances.map(a => `${ a.id }`);
+    const comparisons = queries.map(q => AdvancedFilterTypeMapping.toComparisonFilterCriterion(operator, q));
+
+    const criterions = comparisons.map(c => AdvancedFilterTypeMapping.toFilterCriterion({
+      appInstances: {
+        applicationId: c,
+      },
+    }));
+
+    return !!criterions.length && criterions.length > 1
+      ? AdvancedFilterTypeMapping.toFilterCombination(LogicalOperator.And, criterions)
+      : criterions[0];
+  }
+
+  private getCountriesAdvancedFilter(operator: ComparisonOperator, countries: ICountry[]): AdvancedFilter {
+    const queries = countries.map(a => `${ a.id }`);
+    const comparisons = queries.map(q => AdvancedFilterTypeMapping.toComparisonFilterCriterion(operator, q));
+
+    const criterions = comparisons.map(c => AdvancedFilterTypeMapping.toFilterCriterion({
+      countryId: c,
     }));
 
     return !!criterions.length && criterions.length > 1
