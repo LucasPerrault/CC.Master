@@ -1,5 +1,6 @@
 using AdvancedFilters.Domain.Billing.Interfaces;
 using AdvancedFilters.Domain.Contacts.Interfaces;
+using AdvancedFilters.Domain.Core.Collections;
 using AdvancedFilters.Domain.DataSources;
 using AdvancedFilters.Domain.Instance.Interfaces;
 using AdvancedFilters.Infra.Services.Sync;
@@ -20,6 +21,7 @@ namespace AdvancedFilters.Web
             services.ConfigureStorage();
             services.ConfigureSync();
 
+            services.ConfigureCore();
             services.ConfigureInstances();
             services.ConfigureBilling();
             services.ConfigureContacts();
@@ -35,6 +37,11 @@ namespace AdvancedFilters.Web
             services.AddSingleton<FetchAuthenticator>();
             services.AddHttpClient<IDataSourceSynchronizerBuilder, DataSourceSynchronizerBuilder>();
             services.AddScoped<HugeSyncService>();
+        }
+
+        private static void ConfigureCore(this IServiceCollection services)
+        {
+            services.AddSingleton<ICountriesCollection, CountriesCollection>();
         }
 
         private static void ConfigureInstances(this IServiceCollection services)

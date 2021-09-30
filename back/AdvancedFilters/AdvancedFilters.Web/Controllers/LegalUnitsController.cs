@@ -1,3 +1,4 @@
+using AdvancedFilters.Domain.Core.Models;
 using AdvancedFilters.Domain.Instance.Filters;
 using AdvancedFilters.Domain.Instance.Interfaces;
 using AdvancedFilters.Domain.Instance.Models;
@@ -27,6 +28,13 @@ namespace AdvancedFilters.Web.Controllers
         public Task<Page<LegalUnit>> GetAsync([FromQuery]LegalUnitsQuery query)
         {
             return _store.GetAsync(query.Page, query.ToFilter());
+        }
+
+        [HttpGet("countries")]
+        [ForbidIfMissing(Operation.ReadAllCafe)]
+        public Task<Page<Country>> GetCountriesAsync()
+        {
+            return _store.GetAllCountriesAsync();
         }
     }
 

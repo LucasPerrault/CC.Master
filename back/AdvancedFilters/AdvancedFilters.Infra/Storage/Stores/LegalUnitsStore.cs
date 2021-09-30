@@ -1,10 +1,13 @@
+using AdvancedFilters.Domain.Core.Collections;
+using AdvancedFilters.Domain.Core.Models;
 using AdvancedFilters.Domain.Instance.Filters;
 using AdvancedFilters.Domain.Instance.Interfaces;
 using AdvancedFilters.Domain.Instance.Models;
 using Lucca.Core.Api.Abstractions.Paging;
 using Lucca.Core.Api.Queryable.Paging;
-using Lucca.Core.PublicData.Domain;
+using Microsoft.EntityFrameworkCore;
 using Storage.Infra.Extensions;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -14,13 +17,13 @@ namespace AdvancedFilters.Infra.Storage.Stores
     {
         private readonly AdvancedFiltersDbContext _dbContext;
         private readonly IQueryPager _queryPager;
-        private readonly ILuccaCountriesCollection _countriesCollection;
+        private readonly ICountriesCollection _countriesCollection;
 
         public LegalUnitsStore
         (
             AdvancedFiltersDbContext dbContext,
             IQueryPager queryPager,
-            ILuccaCountriesCollection countriesCollection
+            ICountriesCollection countriesCollection
         )
         {
             _dbContext = dbContext;
@@ -33,26 +36,45 @@ namespace AdvancedFilters.Infra.Storage.Stores
             var lus = Get(filter);
             var page = await _queryPager.ToPageAsync(lus, pageToken);
 
+            var items = new List<LegalUnit>();
+            foreach (var lu in page.Items)
+            {
+                items.Add(await PopulateAsync(lu));
+            }
+
             return new Page<LegalUnit>
             {
                 Count = page.Count,
-                Items = page.Items.Select(Populate),
+                Items = items,
                 Next = page.Next,
                 Prev = page.Prev
+            };
+        }
+
+        public async Task<Page<Country>> GetAllCountriesAsync()
+        {
+            var luCountryIds = LegalUnits
+                .Select(lu => lu.CountryId)
+                .Distinct()
+                .ToList();
+            var luCountries = await _countriesCollection.GetAsync(luCountryIds);
+
+            return new Page<Country>
+            {
+                Count = luCountries.Count,
+                Items = luCountries
             };
         }
 
         private IQueryable<LegalUnit> Get(LegalUnitFilter filter)
         {
             return LegalUnits
-                .WhereMatches(filter)
-                .AsQueryable();
+                .WhereMatches(filter);
         }
 
-        private LegalUnit Populate(LegalUnit lu)
+        private async Task<LegalUnit> PopulateAsync(LegalUnit lu)
         {
-            var luccaCountry = _countriesCollection.GetById(lu.CountryId);
-            lu.Country = new Country(luccaCountry);
+            lu.Country = await _countriesCollection.GetByIdAsync(lu.CountryId);
 
             return lu;
         }

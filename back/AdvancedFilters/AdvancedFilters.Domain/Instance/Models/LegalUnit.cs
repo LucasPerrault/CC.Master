@@ -1,4 +1,4 @@
-using Lucca.Core.PublicData.Domain.Models;
+using AdvancedFilters.Domain.Core.Models;
 using System;
 using System.Collections.Generic;
 
@@ -21,17 +21,5 @@ namespace AdvancedFilters.Domain.Instance.Models
         public IReadOnlyCollection<Establishment> Establishments { get; set; }
 
         public Country Country { get; set; }
-    }
-
-    public class Country
-    {
-        public int Id { get; }
-        public string Name { get; }
-
-        public Country(LuccaCountry luccaCountry)
-        {
-            Id = luccaCountry.Id;
-            Name = luccaCountry.Name;
-        }
     }
 }
