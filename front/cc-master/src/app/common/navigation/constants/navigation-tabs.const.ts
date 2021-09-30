@@ -126,23 +126,24 @@ export const navigationTabs: INavigationTab[] = [
       ],
       mode: OperationRestrictionMode.Some,
     },
-    {
-      name: 'front_navigation_offersTab',
-      url: NavigationPath.Offers,
-      icon: 'pricetag',
-      restriction: { operations: [Operation.ReadCommercialOffers] },
-      isLegacy: true,
-    },
-    {
-      name: 'front_navigation_logsTab',
-      url: NavigationPath.Logs,
-      icon: 'list',
-      restriction: { operations: [Operation.EnvironmentLogTab] },
-    },
-    {
-      name: 'front_navigation_cafeTab',
-      url: NavigationPath.Cafe,
-      icon: 'table',
-      restriction: { operations: [Operation.ReadAllCafe] },
-    },
-  ];
+  },
+  {
+    name: 'front_navigation_offersTab',
+    url: NavigationPath.Offers,
+    icon: 'pricetag',
+    restriction: { operations: [Operation.ReadCommercialOffers] },
+    isLegacy: true,
+  },
+  {
+    name: 'front_navigation_logsTab',
+    url: NavigationPath.Logs,
+    icon: 'list',
+    restriction: { operations: [Operation.EnvironmentLogTab] },
+  },
+  {
+    name: 'front_navigation_cafeTab',
+    url: NavigationPath.Cafe,
+    icon: 'table',
+    restriction: { operations: [Operation.ReadAllCafe] },
+  },
+];
