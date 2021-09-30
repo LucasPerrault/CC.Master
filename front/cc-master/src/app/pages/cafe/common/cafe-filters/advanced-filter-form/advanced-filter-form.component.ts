@@ -99,6 +99,9 @@ export class AdvancedFilterFormComponent implements ControlValueAccessor, OnInit
 
   public removeAt(index: number) {
     this.formArray.removeAt(index);
+    if (!this.formArray.length) {
+      this.insertAt(0);
+    }
   }
 
   public reset(): void {
