@@ -4,6 +4,7 @@ import { FormControl } from '@angular/forms';
 import { CafeConfiguration } from './cafe-configuration';
 import { ICafeConfiguration } from './cafe-configuration.interface';
 import { IAdvancedFilterForm } from './common/cafe-filters/advanced-filter-form';
+import { ICategory } from './common/cafe-filters/category-filter/category-select/category.interface';
 import { ContactCategory } from './contacts/common/enums/cafe-contacts-category.enum';
 import { EnvironmentsCategory } from './environments/enums/environments-category.enum';
 
@@ -42,5 +43,11 @@ export class CafeComponent {
 
   constructor(cafeConfiguration: CafeConfiguration) {
     this.configuration = cafeConfiguration;
+
+    this.cafeFilters.patchValue({ category: this.getDefaultCategory(EnvironmentsCategory.Environments) });
+  }
+
+  private getDefaultCategory(category: EnvironmentsCategory | ContactCategory): ICategory {
+    return this.configuration.categories?.find(c => c.id === category);
   }
 }
