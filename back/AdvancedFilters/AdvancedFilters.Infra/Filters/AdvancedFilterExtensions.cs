@@ -1,5 +1,6 @@
 using AdvancedFilters.Domain.Filters.Models;
 using AdvancedFilters.Infra.Filters.Builders;
+using Lucca.Core.Shared.Domain.Exceptions;
 using System;
 using System.ComponentModel;
 using System.Linq;
@@ -28,6 +29,16 @@ namespace AdvancedFilters.Infra.Filters
             FilterCombination combination
         )
         {
+            if (combination.Values == null || !combination.Values.Any())
+            {
+                throw new BadRequestException("Filter combination must have at least one value");
+            }
+
+            if (combination.Values.Count == 1)
+            {
+                return queryable.Filter(combination.Values.Single());
+            }
+
             return combination.Operator switch
             {
                 FilterOperatorTypes.And => combination.Values.Skip(1)
