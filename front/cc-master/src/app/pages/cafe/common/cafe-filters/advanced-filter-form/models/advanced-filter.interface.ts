@@ -7,7 +7,7 @@ export enum AdvancedFilterType {
 }
 
 interface IFilter {
-  type: AdvancedFilterType;
+  filterElementType: AdvancedFilterType;
 }
 
 interface IFilterCombination {
@@ -30,11 +30,11 @@ export type AdvancedFilter = AdvancedFilterCriterion | AdvancedFilterCombination
 
 export class AdvancedFilterTypeMapping {
   public static toFilterCombination(operator: LogicalOperator, values: AdvancedFilter[]): AdvancedFilterCombination {
-    return { type: AdvancedFilterType.Logical, operator, values } as AdvancedFilterCombination;
+    return { filterElementType: AdvancedFilterType.Logical, operator, values } as AdvancedFilterCombination;
   };
 
   public static toFilterCriterion(criterion: IFilterCriterion): AdvancedFilterCriterion {
-    return { type: AdvancedFilterType.Criterion, ...criterion } as AdvancedFilterCriterion;
+    return { filterElementType: AdvancedFilterType.Criterion, ...criterion } as AdvancedFilterCriterion;
   };
 
   public static toComparisonFilterCriterion(operator: ComparisonOperator, value: string): IComparisonFilterCriterion {
