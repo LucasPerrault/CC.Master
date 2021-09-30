@@ -11,7 +11,7 @@ export class CafeEnvironmentConfiguration implements ICafeConfiguration {
   public readonly categories: ICategory[] = [
     {
       id: EnvironmentsCategory.Environments,
-      name: 'Environnements',
+      name: 'cafe_category_environments',
     },
   ];
 

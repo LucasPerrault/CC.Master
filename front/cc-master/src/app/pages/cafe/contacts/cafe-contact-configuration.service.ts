@@ -15,7 +15,7 @@ export class CafeContactConfiguration implements ICafeConfiguration {
   public readonly categories: ICategory[] = [
     {
       id: ContactCategory.Contacts,
-      name: 'Contacts',
+      name: 'cafe_category_contacts',
       children: [
         {
           id: ContactCategory.Application,
