@@ -9,10 +9,11 @@ export class AppContactFormlyConfiguration {
 
   public readonly subdomain: FormlyFieldConfig = {
     key: AppContactAdvancedFilterKey.Subdomain,
-    type: 'input',
+    type: 'environment-subdomain',
     templateOptions: {
+      multiple: true,
       required: true,
-      mod: 'palette-grey mod-outlined mod-inline mod-search mod-longer',
+      mod: 'palette-grey mod-outlined mod-inline mod-longer',
       placeholder: this.translatePipe.transform('cafe_filters_subdomain'),
     },
   };
