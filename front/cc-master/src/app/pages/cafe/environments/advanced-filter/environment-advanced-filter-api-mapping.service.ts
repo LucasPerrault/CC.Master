@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { IEnvironmentDomain } from '@cc/domain/environments';
+import { IEnvironment, IEnvironmentDomain } from '@cc/domain/environments';
 
 import {
   AdvancedFilter, AdvancedFilterTypeMapping,
@@ -47,8 +47,8 @@ export class EnvironmentAdvancedFilterApiMappingService {
       case EnvironmentAdvancedFilterKey.IsActive:
         return this.getIsActiveAdvancedFilter(attributes.operator);
       case EnvironmentAdvancedFilterKey.Subdomain:
-        const subdomain = attributes.value[attributes.filterKey];
-        return this.getSubdomainAdvancedFilter(attributes.operator, subdomain);
+        const subdomains = attributes.value[attributes.filterKey];
+        return this.getSubdomainAdvancedFilter(attributes.operator, subdomains);
     }
   }
 
@@ -72,11 +72,14 @@ export class EnvironmentAdvancedFilterApiMappingService {
     });
   }
 
-  private getSubdomainAdvancedFilter(operator: ComparisonOperator, subdomain?: string): AdvancedFilter {
-    const comparison = AdvancedFilterTypeMapping.toComparisonFilterCriterion(operator, subdomain);
+  private getSubdomainAdvancedFilter(operator: ComparisonOperator, subdomains: IEnvironment[]): AdvancedFilter {
+    const queries = subdomains.map(a => `${ a.subDomain }`);
+    const comparisons = queries.map(q => AdvancedFilterTypeMapping.toComparisonFilterCriterion(operator, q));
 
-    return AdvancedFilterTypeMapping.toFilterCriterion({
-      subdomain: comparison,
-    });
+    const criterions = comparisons.map(c => AdvancedFilterTypeMapping.toFilterCriterion({
+      subdomain: c,
+    }));
+
+    return AdvancedFilterTypeMapping.toFilterCombination(LogicalOperator.And, criterions);
   }
 }

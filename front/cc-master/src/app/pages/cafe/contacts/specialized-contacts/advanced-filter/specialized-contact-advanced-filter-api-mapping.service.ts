@@ -7,9 +7,10 @@ import {
   getComparisonBooleanValue,
   IAdvancedFilterForm,
   IComparisonFilterCriterionForm,
-  IComparisonValue,
+  IComparisonValue, LogicalOperator,
 } from '../../../common/cafe-filters/advanced-filter-form';
 import { SpeContactAdvancedFilterKey } from './specialized-contact-advanced-filter-key.enum';
+import { IEnvironment } from '@cc/domain/environments';
 
 interface IAdvancedFilterAttributes {
   filterKey: string;
@@ -44,8 +45,8 @@ export class SpecializedContactAdvancedFilterApiMappingService {
       case SpeContactAdvancedFilterKey.IsConfirmed:
         return this.getIsConfirmedAdvancedFilter(attributes.operator);
       case SpeContactAdvancedFilterKey.Subdomain:
-        const subdomain = attributes.value[attributes.filterKey];
-        return this.getSubdomainAdvancedFilter(attributes.operator, subdomain);
+        const subdomains = attributes.value[attributes.filterKey];
+        return this.getSubdomainAdvancedFilter(attributes.operator, subdomains);
     }
   }
 
@@ -58,11 +59,14 @@ export class SpecializedContactAdvancedFilterApiMappingService {
     });
   }
 
-  private getSubdomainAdvancedFilter(operator: ComparisonOperator, subdomain?: string): AdvancedFilter {
-    const comparison = AdvancedFilterTypeMapping.toComparisonFilterCriterion(operator, subdomain);
+  private getSubdomainAdvancedFilter(operator: ComparisonOperator, subdomains: IEnvironment[]): AdvancedFilter {
+    const queries = subdomains.map(a => `${ a.subDomain }`);
+    const comparisons = queries.map(q => AdvancedFilterTypeMapping.toComparisonFilterCriterion(operator, q));
 
-    return AdvancedFilterTypeMapping.toFilterCriterion({
-      subdomain: comparison,
-    });
+    const criterions = comparisons.map(c => AdvancedFilterTypeMapping.toFilterCriterion({
+      subdomain: c,
+    }));
+
+    return AdvancedFilterTypeMapping.toFilterCombination(LogicalOperator.And, criterions);
   }
 }
