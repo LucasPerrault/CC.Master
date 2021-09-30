@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { IEnvironment } from '@cc/domain/environments';
 
 import {
   AdvancedFilter,
@@ -10,7 +11,6 @@ import {
   IComparisonValue, LogicalOperator,
 } from '../../../common/cafe-filters/advanced-filter-form';
 import { SpeContactAdvancedFilterKey } from './specialized-contact-advanced-filter-key.enum';
-import { IEnvironment } from '@cc/domain/environments';
 
 interface IAdvancedFilterAttributes {
   filterKey: string;
@@ -67,6 +67,8 @@ export class SpecializedContactAdvancedFilterApiMappingService {
       subdomain: c,
     }));
 
-    return AdvancedFilterTypeMapping.toFilterCombination(LogicalOperator.And, criterions);
+    return !!criterions.length && criterions.length > 1
+      ? AdvancedFilterTypeMapping.toFilterCombination(LogicalOperator.And, criterions)
+      : criterions[0];
   }
 }

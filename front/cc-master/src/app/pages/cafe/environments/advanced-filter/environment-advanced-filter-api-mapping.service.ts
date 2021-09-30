@@ -60,7 +60,9 @@ export class EnvironmentAdvancedFilterApiMappingService {
       domain: c,
     }));
 
-    return AdvancedFilterTypeMapping.toFilterCombination(LogicalOperator.And, criterions);
+    return !!criterions.length && criterions.length > 1
+      ? AdvancedFilterTypeMapping.toFilterCombination(LogicalOperator.And, criterions)
+      : criterions[0];
   }
 
   private getIsActiveAdvancedFilter(operator: ComparisonOperator): AdvancedFilter {
@@ -80,6 +82,8 @@ export class EnvironmentAdvancedFilterApiMappingService {
       subdomain: c,
     }));
 
-    return AdvancedFilterTypeMapping.toFilterCombination(LogicalOperator.And, criterions);
+    return !!criterions.length && criterions.length > 1
+      ? AdvancedFilterTypeMapping.toFilterCombination(LogicalOperator.And, criterions)
+      : criterions[0];
   }
 }

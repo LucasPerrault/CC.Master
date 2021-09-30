@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { IEnvironment } from '@cc/domain/environments';
 
 import {
   AdvancedFilter,
@@ -12,7 +13,6 @@ import {
 } from '../../../common/cafe-filters/advanced-filter-form';
 import { IAppInstance } from '../../../environments/models/app-instance.interface';
 import { AppContactAdvancedFilterKey } from './app-contact-advanced-filter-key.enum';
-import { IEnvironment } from '@cc/domain/environments';
 
 interface IAdvancedFilterAttributes {
   filterKey: string;
@@ -83,7 +83,9 @@ export class AppContactAdvancedFilterApiMappingService {
       },
     }));
 
-    return AdvancedFilterTypeMapping.toFilterCombination(LogicalOperator.And, criterions);
+    return !!criterions.length && criterions.length > 1
+      ? AdvancedFilterTypeMapping.toFilterCombination(LogicalOperator.And, criterions)
+      : criterions[0];
   }
 
   private getIsConfirmedAdvancedFilter(operator: ComparisonOperator): AdvancedFilter {
@@ -103,6 +105,8 @@ export class AppContactAdvancedFilterApiMappingService {
       subdomain: c,
     }));
 
-    return AdvancedFilterTypeMapping.toFilterCombination(LogicalOperator.And, criterions);
+    return !!criterions.length && criterions.length > 1
+      ? AdvancedFilterTypeMapping.toFilterCombination(LogicalOperator.And, criterions)
+      : criterions[0];
   }
 }
