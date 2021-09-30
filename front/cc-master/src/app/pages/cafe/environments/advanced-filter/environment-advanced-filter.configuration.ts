@@ -27,6 +27,12 @@ export class EnvironmentAdvancedFilterConfiguration implements IAdvancedFilterCo
       name: this.translatePipe.transform('cafe_filters_isActive'),
       operators: [ComparisonOperator.TrueOnly, ComparisonOperator.FalseOnly],
     },
+    {
+      key: EnvironmentAdvancedFilterKey.Applications,
+      name: this.translatePipe.transform('cafe_filters_applications'),
+      operators: [ComparisonOperator.Equals, ComparisonOperator.DoesNotEqual],
+      fields: [this.formlyConfiguration.applications],
+    },
   ];
 
   constructor(

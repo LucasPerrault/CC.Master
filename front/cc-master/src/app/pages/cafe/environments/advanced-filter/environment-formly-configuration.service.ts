@@ -29,5 +29,18 @@ export class EnvironmentFormlyConfiguration {
     },
   };
 
+  public readonly applications: FormlyFieldConfig = {
+    key: EnvironmentAdvancedFilterKey.Applications,
+    type: 'api',
+    templateOptions: {
+      api: '/api/v3/products',
+      orderBy: 'name,asc',
+      multiple: true,
+      required: true,
+      mod: 'palette-grey mod-outlined mod-inline mod-longer',
+      placeholder: this.translatePipe.transform('cafe_filters_applications'),
+    },
+  };
+
   constructor(private translatePipe: TranslatePipe) {}
 }
