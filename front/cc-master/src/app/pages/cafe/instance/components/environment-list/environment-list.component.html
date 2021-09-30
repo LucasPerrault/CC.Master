@@ -40,9 +40,12 @@
       {{ environment.createdAt | date : 'shortDate' }}
     </td>
     <td class="table-body-row-cell mod-alignRight" [ngClass]="{ 'mod-hidden': isHidden(additionalColumn.Countries) }">
-      <button class="mod-link" (click)="openCountryListModal(environment.legalUnits)">
+      <button *ngIf="!!environment?.legalUnits?.length; else hasNoLegalUnit"
+              class="button mod-link"
+              (click)="openCountryListModal(environment.legalUnits)">
         {{ getCountriesCount(environment.legalUnits) }}
       </button>
+      <ng-template #hasNoLegalUnit>0</ng-template>
     </td>
     <td class="table-body-row-cell" [ngClass]="{ 'mod-hidden': isHidden(additionalColumn.Archived) }">
       {{ getTranslatedIsArchived(environment.isActive) }}
