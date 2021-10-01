@@ -18,7 +18,7 @@ import { ComparisonValueSelectComponent } from './comparison-value-select.compon
     CommonModule,
     LuFormlyModule,
     CCFormlyModule,
-    FormlyModule.forRoot({extras: {immutable: true}}),
+    FormlyModule.forRoot({ extras: { immutable: true } }),
     ReactiveFormsModule,
   ],
 })

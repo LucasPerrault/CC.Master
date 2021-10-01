@@ -9,9 +9,9 @@ import {
   IComparisonValue,
   LogicalOperator,
 } from '../../common/cafe-filters/advanced-filter-form';
-import { EnvironmentAdvancedFilterKey } from './environment-advanced-filter-key.enum';
 import { IAppInstance } from '../models/app-instance.interface';
 import { ICountry } from '../models/legal-unit.interface';
+import { EnvironmentAdvancedFilterKey } from './environment-advanced-filter-key.enum';
 
 interface IAdvancedFilterAttributes {
   filterKey: string;

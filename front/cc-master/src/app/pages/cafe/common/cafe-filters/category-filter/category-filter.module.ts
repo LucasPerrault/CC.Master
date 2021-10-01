@@ -1,9 +1,10 @@
-import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { NgModule } from '@angular/core';
+import { ReactiveFormsModule } from '@angular/forms';
+import { TranslateModule } from '@cc/aspects/translate';
+
 import { CategoryFilterComponent } from './category-filter.component';
 import { CategorySelectModule } from './category-select/category-select.module';
-import { TranslateModule } from '@cc/aspects/translate';
-import { ReactiveFormsModule } from '@angular/forms';
 
 
 
