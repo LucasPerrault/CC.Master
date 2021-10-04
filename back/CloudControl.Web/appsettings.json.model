@@ -129,7 +129,7 @@
         "Routes": {
             "Hosts": {
                 "CloudControl": {
-                    "Host": "{{ shared:UrlCloudControl }}",
+                    "Host": "{{ CC.Master:scheme }}://{{ CC.Master:tenant }}.{{ CC.Master:domain }}",
                     "EnvironmentsEndpoint": "/api/environments?limit=100000&isActive=true,false&purpose=contractual",
                     "ContractsEndpoint": "/api/contracts?limit=100000&isActive=true,false",
                     "ContractsSubdomainParamName": "subdomain",
