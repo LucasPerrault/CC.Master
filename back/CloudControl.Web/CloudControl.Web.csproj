@@ -15,6 +15,7 @@
       <PackageReference Include="Lucca.Logs.AspnetCore" Version="0.7.0" />
       <PackageReference Include="Microsoft.AspNetCore.SpaServices" Version="3.1.19" />
       <PackageReference Include="Microsoft.AspNetCore.SpaServices.Extensions" Version="5.0.10" />
+      <PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks.EntityFrameworkCore" Version="5.0.10" />
     </ItemGroup>
 
     <ItemGroup>
