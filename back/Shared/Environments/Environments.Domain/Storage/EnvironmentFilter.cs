@@ -25,5 +25,8 @@ namespace Environments.Domain.Storage
                 }
             }
         }
+
+        public HashSet<EnvironmentPurpose> Purposes { get; set; }
+        public HashSet<EnvironmentDomain> Domains { get; set; }
     }
 }

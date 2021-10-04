@@ -53,7 +53,11 @@ namespace Environments.Infra.Storage.Stores
                 .Apply(filter.Subdomain).To(e => e.Subdomain)
                 .Apply(filter.IsActive).To(e => e.IsActive)
                 .WhenNotNullOrEmpty(filter.Ids).ApplyWhere(e => filter.Ids.Contains(e.Id))
-                .WhenNotNullOrEmpty(filter.Search).ApplyWhere(e => e.Subdomain.Contains(filter.Search));
+                .WhenNotNullOrEmpty(filter.Search).ApplyWhere(e => e.Subdomain.Contains(filter.Search))
+                .WhenNotNullOrEmpty(filter.Purposes).ApplyWhere(e => filter.Purposes.Contains(e.Purpose))
+                .WhenNotNull(filter.Domains).ApplyWhere(e => filter.Domains.Contains(e.Domain));
+            // The case with an empty filter.Domains comes from the api user asking for non-existing domains,
+            // whereas the case with a null filter.Domains comes from the api user not asking for any domain in particular
         }
 
         public static IQueryable<Environment> ForRights

@@ -70,5 +70,18 @@ namespace Storage.Infra.Extensions
 
             public IQueryable<T> To(Expression<Func<T, string>> expression) => _query.Where(expression.Chain(s => s.StartsWith(_value)));
         }
+
+        private class CompareContainsStringQueryableBuilder<T> : ICompareStringQueryableBuilder<T>
+        {
+            private readonly IQueryable<T> _query;
+            private readonly string _value;
+            public CompareContainsStringQueryableBuilder(IQueryable<T> query, string value)
+            {
+                _query = query;
+                _value = value;
+            }
+
+            public IQueryable<T> To(Expression<Func<T, string>> expression) => _query.Where(expression.Chain(s => s.Contains(_value)));
+        }
     }
 }

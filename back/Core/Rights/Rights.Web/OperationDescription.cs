@@ -262,6 +262,16 @@ namespace Rights.Web
                 },
                 new OperationDescription
                 {
+                    Id = (int)Operation.SyncAllCafe,
+                    Name = "Synchroniser Café",
+                },
+                new OperationDescription
+                {
+                    Id = (int)Operation.ReadAllCafe,
+                    Name = "Voir Café",
+                },
+                new OperationDescription
+                {
                     Id = (int)Operation.HangfireNetcoreRequest,
                     Name = "(WS ONLY) Déclencher les routes Hangfire",
                 },
