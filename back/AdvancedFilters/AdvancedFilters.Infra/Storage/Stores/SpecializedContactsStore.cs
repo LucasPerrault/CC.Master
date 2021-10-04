@@ -3,6 +3,7 @@ using AdvancedFilters.Domain.Contacts.Interfaces;
 using AdvancedFilters.Domain.Contacts.Models;
 using Lucca.Core.Api.Abstractions.Paging;
 using Lucca.Core.Api.Queryable.Paging;
+using Microsoft.EntityFrameworkCore;
 using Storage.Infra.Extensions;
 using System;
 using System.Linq;
@@ -30,7 +31,8 @@ namespace AdvancedFilters.Infra.Storage.Stores
         private IQueryable<SpecializedContact> Get(SpecializedContactFilter filter)
         {
             return SpecializedContacts
-                .WhereMatches(filter);
+                .WhereMatches(filter)
+                .AsNoTracking();
         }
 
         private IQueryable<SpecializedContact> SpecializedContacts => _dbContext.Set<SpecializedContact>();

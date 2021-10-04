@@ -39,14 +39,16 @@ namespace AdvancedFilters.Infra.Storage.Stores
         public Task<Page<Environment>> SearchAsync(IPageToken pageToken, IAdvancedFilter filter)
         {
             var envs = Environments
-                .Filter(filter);
+                .Filter(filter)
+                .AsNoTracking();
             return _queryPager.ToPageAsync(envs, pageToken);
         }
 
         private IQueryable<Environment> Get(EnvironmentFilter filter)
         {
             return Environments
-                .WhereMatches(filter);
+                .WhereMatches(filter)
+                .AsNoTracking();
         }
 
         private IQueryable<Environment> Environments => _dbContext.Set<Environment>();

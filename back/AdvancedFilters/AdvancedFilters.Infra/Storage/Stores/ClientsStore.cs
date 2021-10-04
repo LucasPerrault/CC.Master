@@ -3,6 +3,7 @@ using AdvancedFilters.Domain.Billing.Interfaces;
 using AdvancedFilters.Domain.Billing.Models;
 using Lucca.Core.Api.Abstractions.Paging;
 using Lucca.Core.Api.Queryable.Paging;
+using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -28,7 +29,8 @@ namespace AdvancedFilters.Infra.Storage.Stores
         private IQueryable<Client> Get(ClientFilter filter)
         {
             return Clients
-                .WhereMatches(filter);
+                .WhereMatches(filter)
+                .AsNoTracking();
         }
 
         private IQueryable<Client> Clients => _dbContext.Set<Client>();

@@ -3,6 +3,7 @@ using AdvancedFilters.Domain.Instance.Interfaces;
 using AdvancedFilters.Domain.Instance.Models;
 using Lucca.Core.Api.Abstractions.Paging;
 using Lucca.Core.Api.Queryable.Paging;
+using Microsoft.EntityFrameworkCore;
 using Storage.Infra.Extensions;
 using System.Linq;
 using System.Threading.Tasks;
@@ -29,7 +30,8 @@ namespace AdvancedFilters.Infra.Storage.Stores
         private IQueryable<AppInstance> Get(AppInstanceFilter filter)
         {
             return AppInstances
-                .WhereMatches(filter);
+                .WhereMatches(filter)
+                .AsNoTracking();
         }
 
         private IQueryable<AppInstance> AppInstances => _dbContext.Set<AppInstance>();

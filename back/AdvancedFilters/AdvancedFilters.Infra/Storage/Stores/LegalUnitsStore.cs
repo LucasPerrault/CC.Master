@@ -5,6 +5,7 @@ using AdvancedFilters.Domain.Instance.Interfaces;
 using AdvancedFilters.Domain.Instance.Models;
 using Lucca.Core.Api.Abstractions.Paging;
 using Lucca.Core.Api.Queryable.Paging;
+using Microsoft.EntityFrameworkCore;
 using Storage.Infra.Extensions;
 using System.Linq;
 using System.Threading.Tasks;
@@ -38,6 +39,7 @@ namespace AdvancedFilters.Infra.Storage.Stores
         public async Task<Page<Country>> GetAllCountriesAsync()
         {
             var luCountryIds = LegalUnits
+                .AsNoTracking()
                 .Select(lu => lu.CountryId)
                 .Distinct()
                 .ToList();
@@ -53,7 +55,8 @@ namespace AdvancedFilters.Infra.Storage.Stores
         private IQueryable<LegalUnit> Get(LegalUnitFilter filter)
         {
             return LegalUnits
-                .WhereMatches(filter);
+                .WhereMatches(filter)
+                .AsNoTracking();
         }
 
         private IQueryable<LegalUnit> LegalUnits => _dbContext.Set<LegalUnit>();
