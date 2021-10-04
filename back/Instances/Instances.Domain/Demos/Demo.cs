@@ -18,6 +18,7 @@ namespace Instances.Domain.Demos
         public SimpleUser Author { get; set; }
         public int InstanceID { get; set; }
         public Instance Instance { get; set; }
+        public string Cluster { get; set; }
         public int DistributorId { get; set; }
         public Distributor Distributor { get; set; }
         public string Comment { get; set; }

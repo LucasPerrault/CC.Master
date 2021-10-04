@@ -80,10 +80,10 @@ namespace Instances.Application.Demos
                 throw new BadRequestException($"Demo {demo.Id} is protected and cannot be deleted");
             }
 
-            await _dnsService.DeleteAsync(DnsEntry.ForDemo(demo.Subdomain, demo.Instance.Cluster));
+            await _dnsService.DeleteAsync(DnsEntry.ForDemo(demo.Subdomain, demo.Cluster));
             await _instancesStore.DeleteForDemoAsync(demo.Instance);
             await _demosStore.DeleteAsync(demo);
-            await _ccDataService.DeleteInstanceAsync(demo.Subdomain, demo.Instance.Cluster, string.Empty);
+            await _ccDataService.DeleteInstanceAsync(demo.Subdomain, demo.Cluster, string.Empty);
             return demo;
         }
 

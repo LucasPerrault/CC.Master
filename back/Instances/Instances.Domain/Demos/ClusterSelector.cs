@@ -59,7 +59,7 @@ namespace Instances.Domain.Demos
 
             if (existingDemo != null)
             {
-                return existingDemo.Instance.Cluster;
+                return existingDemo.Cluster;
             }
 
             if(_configuration.UseFixedCluster)
