@@ -14,6 +14,7 @@ namespace Instances.Infra.Storage.Configurations
             builder.Property(d => d.CreatedAt).HasColumnName("createdAt");
             builder.Property(d => d.DeletionScheduledOn).HasColumnName("deletionScheduledOn");
             builder.Property(d => d.IsActive).HasColumnName("isActive");
+            builder.Property(d => d.Cluster).HasColumnName("Cluster");
 
             builder.Property(d => d.AuthorId).HasColumnName("authorId");
             builder.HasOne(d => d.Author).WithMany().HasForeignKey(d => d.AuthorId);

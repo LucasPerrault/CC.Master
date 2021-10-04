@@ -119,7 +119,7 @@ namespace Instances.Application.Demos.Deletion
 
         private async Task DeleteAllAsync(IEnumerable<DemoCleanupInfo> info)
         {
-            var clusterBatches = info.GroupBy(i => i.Demo.Instance.Cluster)
+            var clusterBatches = info.GroupBy(i => i.Demo.Cluster)
                 .ToDictionary(group => group.Key, group => group.Select(i => i.Demo.Subdomain));
 
             foreach (var batch in clusterBatches)

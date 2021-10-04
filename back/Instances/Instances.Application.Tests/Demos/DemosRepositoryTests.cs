@@ -59,7 +59,8 @@ namespace Instances.Application.Tests.Demos
             {
                 Id = 12,
                 Subdomain = "aperture-science",
-                Instance = new Instance { Id = 123456, IsProtected = false, Cluster = "c1000" }
+                Cluster = "c1000",
+                Instance = new Instance { Id = 123456, IsProtected = false }
             };
             var demos = new List<Demo> { demo };
 

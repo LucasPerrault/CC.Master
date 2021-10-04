@@ -143,8 +143,9 @@ namespace Instances.Application.Tests.Demos
                         new Demo
                         {
                             Id = 123,
+                            Cluster = "mocked-master-demo-cluster",
                             Subdomain = "mocked-master-demo",
-                            Instance = new Instance { Cluster = "mocked-master-demo-cluster" }
+                            Instance = new Instance {  }
                         }
                     );
 
