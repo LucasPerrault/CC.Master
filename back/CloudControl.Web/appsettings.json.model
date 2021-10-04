@@ -147,7 +147,7 @@
         },
         "Auth": {
             "CloudControlAuthScheme": "Cloudcontrol",
-            "CloudControlAuthParameter": "webservice={{ CC.Master:CafeToken }}",
+            "CloudControlAuthParameter": "application={{ CC.Master:CafeToken }}",
             "MonolithWebserviceToken": "{{ ilucca:CloudControlSharedToken }}",
             "OrganizationStructureWebserviceToken": "{{ CC.Master:OrganizationStructureToken }}",
             "ClientCenterWebserviceToken": "{{ Organization.ClientCenter:CafeToken }}"
