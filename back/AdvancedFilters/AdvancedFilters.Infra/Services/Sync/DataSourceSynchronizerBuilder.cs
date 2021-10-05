@@ -25,7 +25,7 @@ namespace AdvancedFilters.Infra.Services.Sync
         private readonly HttpClient _httpClient;
         private readonly BulkUpsertService _bulk;
         private readonly FetchAuthenticator _authenticator;
-        private readonly ILogger _logger;
+        private readonly ILogger<DataSourceSynchronizerBuilder> _logger;
         private readonly IEnvironmentsStore _store;
 
         public SyncFilter Filter { get; set; }
@@ -36,7 +36,7 @@ namespace AdvancedFilters.Infra.Services.Sync
             BulkUpsertService bulk,
             IEnvironmentsStore store,
             FetchAuthenticator authenticator,
-            ILogger logger
+            ILogger<DataSourceSynchronizerBuilder> logger
         )
         {
             _httpClient = httpClient;
