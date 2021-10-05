@@ -20,15 +20,46 @@ using Environment = AdvancedFilters.Domain.Instance.Models.Environment;
 
 namespace AdvancedFilters.Infra.Services.Sync
 {
+    public class DataSourceSyncCreationService : IDataSourceSyncCreationService
+    {
+
+        private readonly HttpClient _httpClient;
+        private readonly BulkUpsertService _bulk;
+        private readonly FetchAuthenticator _authenticator;
+        private readonly ILogger<IDataSourceSynchronizer> _logger;
+        private readonly IEnvironmentsStore _store;
+
+        public DataSourceSyncCreationService
+        (
+            HttpClient httpClient,
+            BulkUpsertService bulk,
+            FetchAuthenticator authenticator,
+            IEnvironmentsStore store,
+            ILogger<IDataSourceSynchronizer> logger
+        )
+        {
+            _httpClient = httpClient;
+            _bulk = bulk;
+            _authenticator = authenticator;
+            _store = store;
+            _logger = logger;
+        }
+
+        public IDataSourceSynchronizerBuilder WithFilter(SyncFilter filter)
+        {
+            return new DataSourceSynchronizerBuilder(_httpClient, _bulk, _store, _authenticator, _logger, filter);
+        }
+    }
+
     public class DataSourceSynchronizerBuilder : IDataSourceSynchronizerBuilder
     {
         private readonly HttpClient _httpClient;
         private readonly BulkUpsertService _bulk;
         private readonly FetchAuthenticator _authenticator;
-        private readonly ILogger<DataSourceSynchronizerBuilder> _logger;
+        private readonly ILogger<IDataSourceSynchronizer> _logger;
         private readonly IEnvironmentsStore _store;
+        private readonly SyncFilter _filter;
 
-        public SyncFilter Filter { get; set; }
 
         public DataSourceSynchronizerBuilder
         (
@@ -36,7 +67,8 @@ namespace AdvancedFilters.Infra.Services.Sync
             BulkUpsertService bulk,
             IEnvironmentsStore store,
             FetchAuthenticator authenticator,
-            ILogger<DataSourceSynchronizerBuilder> logger
+            ILogger<IDataSourceSynchronizer> logger,
+            SyncFilter syncFilter
         )
         {
             _httpClient = httpClient;
@@ -44,13 +76,8 @@ namespace AdvancedFilters.Infra.Services.Sync
             _store = store;
             _authenticator = authenticator;
             _logger = logger;
+            _filter = syncFilter;
         }
-
-        public IDataSourceSynchronizerBuilder WithFilter(SyncFilter filter)
-            => new DataSourceSynchronizerBuilder(_httpClient, _bulk, _store, _authenticator, _logger)
-            {
-                Filter = filter
-            };
 
         public Task<IDataSourceSynchronizer> BuildFromAsync(EnvironmentDataSource dataSource)
         {
@@ -82,7 +109,7 @@ namespace AdvancedFilters.Infra.Services.Sync
 
         public Task<IDataSourceSynchronizer> BuildFromAsync(ContractDataSource dataSource)
         {
-            var context = new SubdomainSubsetDataSourceContext<Contract>(Filter.Subdomains, dataSource.SubdomainsParamName);
+            var context = new SubdomainSubsetDataSourceContext<Contract>(_filter.Subdomains, dataSource.SubdomainsParamName);
             var bulkUpsertConfig = new BulkUpsertConfig
             {
                 IncludeSubEntities = true
@@ -133,9 +160,7 @@ namespace AdvancedFilters.Infra.Services.Sync
 
         private async Task<List<EnvironmentDataSourceContext<T>>> GetEnvironmentContextsAsync<T>(Action<Environment, T> finalizeAction)
         {
-            var envFilter = Filter != null
-                ? new EnvironmentFilter { Subdomains = Filter.Subdomains }
-                : new EnvironmentFilter();
+            var envFilter = new EnvironmentFilter { Subdomains = _filter.Subdomains };
 
             var envs = await _store.GetAsync(envFilter);
             return envs.Select(e => new EnvironmentDataSourceContext<T>(e, finalizeAction)).ToList();
