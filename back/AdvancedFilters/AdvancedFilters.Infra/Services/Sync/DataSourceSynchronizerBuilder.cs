@@ -24,7 +24,7 @@ namespace AdvancedFilters.Infra.Services.Sync
     {
 
         private readonly HttpClient _httpClient;
-        private readonly BulkUpsertService _bulk;
+        private readonly IBulkUpsertService _bulk;
         private readonly FetchAuthenticator _authenticator;
         private readonly ILogger<IDataSourceSynchronizer> _logger;
         private readonly IEnvironmentsStore _store;
@@ -32,7 +32,7 @@ namespace AdvancedFilters.Infra.Services.Sync
         public DataSourceSyncCreationService
         (
             HttpClient httpClient,
-            BulkUpsertService bulk,
+            IBulkUpsertService bulk,
             FetchAuthenticator authenticator,
             IEnvironmentsStore store,
             ILogger<IDataSourceSynchronizer> logger
@@ -54,7 +54,7 @@ namespace AdvancedFilters.Infra.Services.Sync
     public class DataSourceSynchronizerBuilder : IDataSourceSynchronizerBuilder
     {
         private readonly HttpClient _httpClient;
-        private readonly BulkUpsertService _bulk;
+        private readonly IBulkUpsertService _bulk;
         private readonly FetchAuthenticator _authenticator;
         private readonly ILogger<IDataSourceSynchronizer> _logger;
         private readonly IEnvironmentsStore _store;
@@ -64,7 +64,7 @@ namespace AdvancedFilters.Infra.Services.Sync
         public DataSourceSynchronizerBuilder
         (
             HttpClient httpClient,
-            BulkUpsertService bulk,
+            IBulkUpsertService bulk,
             IEnvironmentsStore store,
             FetchAuthenticator authenticator,
             ILogger<IDataSourceSynchronizer> logger,

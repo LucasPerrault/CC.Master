@@ -29,7 +29,7 @@ namespace AdvancedFilters.Web
 
         public static void ConfigureStorage(this IServiceCollection services)
         {
-            services.AddScoped<BulkUpsertService>();
+            services.AddScoped<IBulkUpsertService, BulkUpsertService>();
         }
 
         public static void ConfigureSync(this IServiceCollection services)

@@ -14,12 +14,12 @@ namespace AdvancedFilters.Web
             return Enum.GetValues(typeof(DataSources)).Cast<DataSources>().ToDictionary(s => s, s => Get(s, configuration));
         }
 
-        private static DataSource Get(DataSources source, AdvancedFiltersConfiguration configuration) => source switch
+        public static DataSource Get(DataSources source, AdvancedFiltersConfiguration configuration) => source switch
         {
             DataSources.Environments => configuration.Environment(),
-            DataSources.Establishments => configuration.Establishment(),
             DataSources.AppInstances => configuration.AppInstance(),
             DataSources.LegalUnits => configuration.LegalUnit(),
+            DataSources.Establishments => configuration.Establishment(),
             DataSources.Contracts => configuration.Contract(),
             DataSources.Clients => configuration.Client(),
             DataSources.AppContacts => configuration.AppContact(),

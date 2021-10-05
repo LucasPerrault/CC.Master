@@ -5,7 +5,11 @@ using System.Threading.Tasks;
 
 namespace AdvancedFilters.Infra.Storage.Services
 {
-    public class BulkUpsertService
+    public interface IBulkUpsertService
+    {
+        Task InsertOrUpdateOrDeleteAsync<T>(IReadOnlyCollection<T> entities, BulkUpsertConfig config) where T : class;
+    }
+    public class BulkUpsertService : IBulkUpsertService
     {
         private readonly AdvancedFiltersDbContext _context;
 
