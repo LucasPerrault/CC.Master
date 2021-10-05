@@ -7,4 +7,10 @@ namespace Users.Domain
     {
         Task<User> GetByTokenAsync(Guid token);
     }
+
+    public class UnknownDepartmentCodeException : ApplicationException
+    {
+        public UnknownDepartmentCodeException(string departmentCode) : base($"Unknown user department code {departmentCode}")
+        { }
+    }
 }
