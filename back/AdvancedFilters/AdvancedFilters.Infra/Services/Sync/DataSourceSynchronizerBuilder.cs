@@ -9,6 +9,7 @@ using AdvancedFilters.Domain.Instance.Interfaces;
 using AdvancedFilters.Domain.Instance.Models;
 using AdvancedFilters.Infra.Services.Sync.Dtos;
 using AdvancedFilters.Infra.Storage.Services;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,6 +25,7 @@ namespace AdvancedFilters.Infra.Services.Sync
         private readonly HttpClient _httpClient;
         private readonly BulkUpsertService _bulk;
         private readonly FetchAuthenticator _authenticator;
+        private readonly ILogger _logger;
         private readonly IEnvironmentsStore _store;
 
         public SyncFilter Filter { get; set; }
@@ -33,17 +35,19 @@ namespace AdvancedFilters.Infra.Services.Sync
             HttpClient httpClient,
             BulkUpsertService bulk,
             IEnvironmentsStore store,
-            FetchAuthenticator authenticator
+            FetchAuthenticator authenticator,
+            ILogger logger
         )
         {
             _httpClient = httpClient;
             _bulk = bulk;
             _store = store;
             _authenticator = authenticator;
+            _logger = logger;
         }
 
         public IDataSourceSynchronizerBuilder WithFilter(SyncFilter filter)
-            => new DataSourceSynchronizerBuilder(_httpClient, _bulk, _store, _authenticator)
+            => new DataSourceSynchronizerBuilder(_httpClient, _bulk, _store, _authenticator, _logger)
             {
                 Filter = filter
             };
@@ -139,7 +143,7 @@ namespace AdvancedFilters.Infra.Services.Sync
 
         private DataSourceSynchronizer<TDto, T> FromJobs<TDto, T>(List<FetchJob<T>> jobs, BulkUpsertConfig config) where TDto : IDto<T> where T : class
         {
-            return new DataSourceSynchronizer<TDto, T>(jobs, _httpClient.SendAsync, entities => _bulk.InsertOrUpdateOrDeleteAsync(entities, config));
+            return new DataSourceSynchronizer<TDto, T>(jobs, _httpClient.SendAsync, entities => _bulk.InsertOrUpdateOrDeleteAsync(entities, config), _logger);
         }
 
         private class EmptyDataSourceContext<T> : IDataSourceContext<T>

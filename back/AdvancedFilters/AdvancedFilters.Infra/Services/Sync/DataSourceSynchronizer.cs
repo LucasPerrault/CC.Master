@@ -1,5 +1,6 @@
 using AdvancedFilters.Domain.DataSources;
 using AdvancedFilters.Infra.Services.Sync.Dtos;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
@@ -45,17 +46,20 @@ namespace AdvancedFilters.Infra.Services.Sync
     {
         private readonly List<FetchJob<T>> _jobs;
         private readonly Func<List<T>, Task> _upsertAction;
+        private readonly ILogger _logger;
         private readonly Func<HttpRequestMessage, Task<HttpResponseMessage>> _fetchAction;
 
         public DataSourceSynchronizer
         (
             List<FetchJob<T>> jobs,
             Func<HttpRequestMessage, Task<HttpResponseMessage>> fetchAction,
-            Func<List<T>, Task> upsertAction
+            Func<List<T>, Task> upsertAction,
+            ILogger logger
         )
         {
             _jobs = jobs;
             _upsertAction = upsertAction;
+            _logger = logger;
             _fetchAction = fetchAction;
         }
 
@@ -94,9 +98,10 @@ namespace AdvancedFilters.Infra.Services.Sync
                 var batch = dto.ToItems();
                 return batch;
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                return new List<T>();
+                _logger.LogError(e, $"DataSource sync failed for {typeof(T).Name}");
+                throw;
             }
         }
     }
