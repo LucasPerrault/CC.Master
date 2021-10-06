@@ -27,7 +27,7 @@ namespace AdvancedFilters.Infra.Storage.Configurations
                 .IsRequired()
                 .OnDelete(DeleteBehavior.NoAction);
 
-            builder.Ignore(lu => lu.Country);
+            builder.HasOne(lu => lu.Country).WithMany().HasForeignKey(lu => lu.CountryId);
         }
     }
 }
