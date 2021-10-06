@@ -13,7 +13,7 @@ namespace AdvancedFilters.Domain.Instance.Models
         public string LegalIdentificationNumber { get; set; }
         public string ActivityCode { get; set; }
         public int CountryId { get; set; }
-        public int HeadquartersId { get; set; }
+        public int? HeadquartersId { get; set; }
         public DateTime CreatedAt { get; set; }
         public bool IsArchived { get; set; }
 

@@ -48,7 +48,7 @@ namespace AdvancedFilters.Infra.Tests
             {
                 [DataSources.Environments] = DataSourceMapper.Get(DataSources.Environments, Configuration)
             };
-            var service = new HugeSyncService(new DataSourcesRepository(confs), _creationService);
+            var service = new SyncService(new DataSourcesRepository(confs), _creationService);
 
             SetupHttpResponse("https://mocked-cc.ilucca.local/api/envs", new EnvironmentsDto
             {
@@ -75,7 +75,7 @@ namespace AdvancedFilters.Infra.Tests
             {
                 [DataSources.AppInstances] = DataSourceMapper.Get(DataSources.AppInstances, Configuration)
             };
-            var service = new HugeSyncService(new DataSourcesRepository(confs), _creationService);
+            var service = new SyncService(new DataSourcesRepository(confs), _creationService);
 
             SetupKnownEnvironments(new Environment { Id = 42, ProductionHost = "https://mocked-tenant.dev" });
             SetupHttpResponse("https://mocked-tenant.dev/api/app-instances", new AppInstancesDto
@@ -103,7 +103,7 @@ namespace AdvancedFilters.Infra.Tests
             {
                 [DataSources.LegalUnits] = DataSourceMapper.Get(DataSources.LegalUnits, Configuration)
             };
-            var service = new HugeSyncService(new DataSourcesRepository(confs), _creationService);
+            var service = new SyncService(new DataSourcesRepository(confs), _creationService);
 
             SetupKnownEnvironments(new Environment { Id = 42, ProductionHost = "https://mocked-tenant.dev" });
             SetupHttpResponse("https://mocked-tenant.dev/api/legal-units", new LegalUnitsDto
