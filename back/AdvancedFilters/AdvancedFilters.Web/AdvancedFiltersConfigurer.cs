@@ -36,7 +36,7 @@ namespace AdvancedFilters.Web
         {
             services.AddSingleton<FetchAuthenticator>();
             services.AddHttpClient<IDataSourceSyncCreationService, DataSourceSyncCreationService>();
-            services.AddScoped<HugeSyncService>();
+            services.AddScoped<SyncService>();
         }
 
         private static void ConfigureCore(this IServiceCollection services)
