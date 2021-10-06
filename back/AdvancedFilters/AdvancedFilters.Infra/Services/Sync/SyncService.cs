@@ -1,7 +1,9 @@
 using AdvancedFilters.Domain.DataSources;
-using System;
+using AdvancedFilters.Domain.Instance.Filters;
+using AdvancedFilters.Domain.Instance.Interfaces;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Environment = AdvancedFilters.Domain.Instance.Models.Environment;
 
 namespace AdvancedFilters.Infra.Services.Sync
 {
@@ -9,18 +11,27 @@ namespace AdvancedFilters.Infra.Services.Sync
     {
         private readonly DataSourcesRepository _dataSourcesRepository;
         private readonly IDataSourceSyncCreationService _creationService;
+        private readonly IEnvironmentsStore _environmentsStore;
 
-        public SyncService(DataSourcesRepository dataSourcesRepository, IDataSourceSyncCreationService creationService)
+        public SyncService(DataSourcesRepository dataSourcesRepository, IDataSourceSyncCreationService creationService, IEnvironmentsStore environmentsStore)
         {
             _dataSourcesRepository = dataSourcesRepository;
             _creationService = creationService;
+            _environmentsStore = environmentsStore;
         }
 
-        public async Task SyncAsync(SyncFilter filter)
+        public async Task SyncEverythingAsync()
         {
-            var builderWithFilter = _creationService.WithFilter(filter);
+            await SyncMultiTenantDataAsync();
+            await SyncMonoTenantDataAsync(new HashSet<string>());
+        }
 
-            var dataSources = GetDataSources(filter.SyncMode);
+        public async Task SyncMonoTenantDataAsync(HashSet<string> subdomains)
+        {
+            var environments = await _environmentsStore.GetAsync(new EnvironmentFilter { Subdomains = subdomains });
+            var builderWithFilter = _creationService.ForEnvironments(environments);
+
+            var dataSources = _dataSourcesRepository.GetMonoTenant();
             foreach (var dataSource in dataSources)
             {
                 var synchronizer = await dataSource.GetSynchronizerAsync(builderWithFilter);
@@ -28,15 +39,15 @@ namespace AdvancedFilters.Infra.Services.Sync
             }
         }
 
-        private IEnumerable<DataSource> GetDataSources(DataSourceSyncMode syncMode)
+        public async Task SyncMultiTenantDataAsync()
         {
-            return syncMode switch
+            var builderWithFilter = _creationService.ForEnvironments(new List<Environment>());
+            var dataSources = _dataSourcesRepository.GetMultiTenant();
+            foreach (var dataSource in dataSources)
             {
-                DataSourceSyncMode.Everything => _dataSourcesRepository.GetAll(),
-                DataSourceSyncMode.MonoTenant => _dataSourcesRepository.GetMonoTenant(),
-                DataSourceSyncMode.MultiTenant => _dataSourcesRepository.GetMultiTenant(),
-                _ => throw new ArgumentOutOfRangeException(nameof(syncMode), syncMode, nameof(DataSourceSyncMode))
-            };
+                var synchronizer = await dataSource.GetSynchronizerAsync(builderWithFilter);
+                await synchronizer.SyncAsync();
+            }
         }
     }
 }

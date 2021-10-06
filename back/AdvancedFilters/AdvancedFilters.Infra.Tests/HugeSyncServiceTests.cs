@@ -37,7 +37,7 @@ namespace AdvancedFilters.Infra.Tests
             var client = new HttpClient(_httpClientHandlerMock.Object);
             var localDataSourceService = new Mock<ILocalDataSourceService>().Object;
             var loggerMock = new Mock<ILogger<IDataSourceSynchronizer>>().Object;
-            _creationService = new DataSourceSyncCreationService(client, _upsertServiceMock.Object, new FetchAuthenticator(), _environmentsStoreMock.Object, loggerMock, localDataSourceService);
+            _creationService = new DataSourceSyncCreationService(client, _upsertServiceMock.Object, new FetchAuthenticator(), loggerMock, localDataSourceService);
         }
 
         [Fact]
@@ -49,14 +49,14 @@ namespace AdvancedFilters.Infra.Tests
             {
                 [DataSources.Environments] = DataSourceMapper.Get(DataSources.Environments, Configuration)
             };
-            var service = new SyncService(new DataSourcesRepository(confs), _creationService);
+            var service = new SyncService(new DataSourcesRepository(confs), _creationService, _environmentsStoreMock.Object);
 
             SetupHttpResponse("https://mocked-cc.ilucca.local/api/envs", new EnvironmentsDto
             {
                 Items = new List<Environment> { new Environment { Subdomain = "aperture-science", Id = 1} }
             });
 
-            await service.SyncAsync(new SyncFilter());
+            await service.SyncEverythingAsync();
             _upsertServiceMock.Verify
             (
                 s => s.InsertOrUpdateOrDeleteAsync
@@ -76,7 +76,7 @@ namespace AdvancedFilters.Infra.Tests
             {
                 [DataSources.AppInstances] = DataSourceMapper.Get(DataSources.AppInstances, Configuration)
             };
-            var service = new SyncService(new DataSourcesRepository(confs), _creationService);
+            var service = new SyncService(new DataSourcesRepository(confs), _creationService, _environmentsStoreMock.Object);
 
             SetupKnownEnvironments(new Environment { Id = 42, ProductionHost = "https://mocked-tenant.dev" });
             SetupHttpResponse("https://mocked-tenant.dev/api/app-instances", new AppInstancesDto
@@ -84,7 +84,7 @@ namespace AdvancedFilters.Infra.Tests
                 Data = ApiV3Response(new AppInstance { EnvironmentId = 42, ApplicationId = "glados" })
             });
 
-            await service.SyncAsync(new SyncFilter());
+            await service.SyncEverythingAsync();
             _upsertServiceMock.Verify
             (
                 s => s.InsertOrUpdateOrDeleteAsync
@@ -104,7 +104,7 @@ namespace AdvancedFilters.Infra.Tests
             {
                 [DataSources.LegalUnits] = DataSourceMapper.Get(DataSources.LegalUnits, Configuration)
             };
-            var service = new SyncService(new DataSourcesRepository(confs), _creationService);
+            var service = new SyncService(new DataSourcesRepository(confs), _creationService, _environmentsStoreMock.Object);
 
             SetupKnownEnvironments(new Environment { Id = 42, ProductionHost = "https://mocked-tenant.dev" });
             SetupHttpResponse("https://mocked-tenant.dev/api/legal-units", new LegalUnitsDto
@@ -112,7 +112,7 @@ namespace AdvancedFilters.Infra.Tests
                 Items = new List<LegalUnit> { new LegalUnit { EnvironmentId = 42, Name = "Aperture Science Colorado"} }
             });
 
-            await service.SyncAsync(new SyncFilter());
+            await service.SyncEverythingAsync();
             _upsertServiceMock.Verify
             (
                 s => s.InsertOrUpdateOrDeleteAsync
