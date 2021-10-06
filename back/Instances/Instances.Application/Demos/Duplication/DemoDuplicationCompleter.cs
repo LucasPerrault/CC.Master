@@ -109,6 +109,7 @@ namespace Instances.Application.Demos.Duplication
                 AuthorId = duplication.AuthorId,
                 IsActive = true,
                 IsTemplate = false,
+                Cluster = duplication.InstanceDuplication.TargetCluster,
                 InstanceID = instance.Id
             };
 
