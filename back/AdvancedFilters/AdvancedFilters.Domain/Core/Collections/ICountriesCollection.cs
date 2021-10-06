@@ -40,7 +40,7 @@ namespace AdvancedFilters.Domain.Core.Collections
         {
             var countries = _countriesCollection
                 .Countries
-                .Select(c => new Country(c))
+                .Select(Country.FromLuccaCountry)
                 .ToList();
 
             return Task.FromResult(countries);
@@ -49,7 +49,7 @@ namespace AdvancedFilters.Domain.Core.Collections
         private Country GetCountry(int id)
         {
             var luccaCountry = _countriesCollection.GetById(id);
-            return new Country(luccaCountry);
+            return Country.FromLuccaCountry(luccaCountry);
         }
     }
 }

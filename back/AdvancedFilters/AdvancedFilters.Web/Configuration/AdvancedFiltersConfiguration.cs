@@ -10,6 +10,7 @@ namespace AdvancedFilters.Web.Configuration
     {
         public RoutesConfiguration Routes { get; set; }
         public AuthenticationConfiguration Auth { get; set; }
+
     }
 
     internal static class AdvancedFiltersConfigurationExtensions
