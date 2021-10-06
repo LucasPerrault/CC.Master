@@ -2,6 +2,8 @@ using AdvancedFilters.Domain.Billing;
 using AdvancedFilters.Domain.Billing.Models;
 using AdvancedFilters.Domain.Contacts;
 using AdvancedFilters.Domain.Contacts.Models;
+using AdvancedFilters.Domain.Core;
+using AdvancedFilters.Domain.Core.Models;
 using AdvancedFilters.Domain.DataSources;
 using AdvancedFilters.Domain.Instance;
 using AdvancedFilters.Domain.Instance.Filters;
@@ -28,6 +30,7 @@ namespace AdvancedFilters.Infra.Services.Sync
         private readonly FetchAuthenticator _authenticator;
         private readonly ILogger<IDataSourceSynchronizer> _logger;
         private readonly IEnvironmentsStore _store;
+        private readonly ILocalDataSourceService _localDataSourceService;
 
         public DataSourceSyncCreationService
         (
@@ -35,7 +38,8 @@ namespace AdvancedFilters.Infra.Services.Sync
             IBulkUpsertService bulk,
             FetchAuthenticator authenticator,
             IEnvironmentsStore store,
-            ILogger<IDataSourceSynchronizer> logger
+            ILogger<IDataSourceSynchronizer> logger,
+            ILocalDataSourceService localDataSourceService
         )
         {
             _httpClient = httpClient;
@@ -43,11 +47,12 @@ namespace AdvancedFilters.Infra.Services.Sync
             _authenticator = authenticator;
             _store = store;
             _logger = logger;
+            _localDataSourceService = localDataSourceService;
         }
 
         public IDataSourceSynchronizerBuilder WithFilter(SyncFilter filter)
         {
-            return new DataSourceSynchronizerBuilder(_httpClient, _bulk, _store, _authenticator, _logger, filter);
+            return new DataSourceSynchronizerBuilder(_httpClient, _bulk, _store, _localDataSourceService, _authenticator, _logger, filter);
         }
     }
 
@@ -58,6 +63,7 @@ namespace AdvancedFilters.Infra.Services.Sync
         private readonly FetchAuthenticator _authenticator;
         private readonly ILogger<IDataSourceSynchronizer> _logger;
         private readonly IEnvironmentsStore _store;
+        private readonly ILocalDataSourceService _localDataSourceService;
         private readonly SyncFilter _filter;
 
 
@@ -66,6 +72,7 @@ namespace AdvancedFilters.Infra.Services.Sync
             HttpClient httpClient,
             IBulkUpsertService bulk,
             IEnvironmentsStore store,
+            ILocalDataSourceService localDataSourceService,
             FetchAuthenticator authenticator,
             ILogger<IDataSourceSynchronizer> logger,
             SyncFilter syncFilter
@@ -74,9 +81,16 @@ namespace AdvancedFilters.Infra.Services.Sync
             _httpClient = httpClient;
             _bulk = bulk;
             _store = store;
+            _localDataSourceService = localDataSourceService;
             _authenticator = authenticator;
             _logger = logger;
             _filter = syncFilter;
+        }
+
+        public Task<IDataSourceSynchronizer> BuildFromAsync(CountryDataSource dataSource)
+        {
+            Func<Task<IReadOnlyCollection<Country>>> getCountriesAsync = () => _localDataSourceService.GetAllCountriesAsync();
+            return Task.FromResult(BuildFromLocal(getCountriesAsync));
         }
 
         public Task<IDataSourceSynchronizer> BuildFromAsync(EnvironmentDataSource dataSource)
@@ -146,9 +160,22 @@ namespace AdvancedFilters.Infra.Services.Sync
             return BuildFrom<SpecializedContactsDto, SpecializedContact, EnvironmentDataSourceContext<SpecializedContact>>(dataSource, contexts);
         }
 
+        private IDataSourceSynchronizer BuildFromLocal<T>(Func<Task<IReadOnlyCollection<T>>> getItemsAction, BulkUpsertConfig config = null) where T : class
+        {
+            return new LocalDataSourceSynchronizer<T>
+            (
+                getItemsAction,
+                entities => _bulk.InsertOrUpdateOrDeleteAsync
+                (
+                    entities,
+                    config ?? new BulkUpsertConfig()
+                )
+            );
+        }
+
         private IDataSourceSynchronizer BuildFrom<TDto, T, TContext>
         (
-            DataSource dataSource,
+            RemoteDataSource dataSource,
             IReadOnlyCollection<TContext> contexts,
             BulkUpsertConfig config = null
         )
@@ -166,9 +193,9 @@ namespace AdvancedFilters.Infra.Services.Sync
             return envs.Select(e => new EnvironmentDataSourceContext<T>(e, finalizeAction)).ToList();
         }
 
-        private DataSourceSynchronizer<TDto, T> FromJobs<TDto, T>(List<FetchJob<T>> jobs, BulkUpsertConfig config) where TDto : IDto<T> where T : class
+        private RemoteDataSourceSynchronizer<TDto, T> FromJobs<TDto, T>(List<FetchJob<T>> jobs, BulkUpsertConfig config) where TDto : IDto<T> where T : class
         {
-            return new DataSourceSynchronizer<TDto, T>(jobs, _httpClient.SendAsync, entities => _bulk.InsertOrUpdateOrDeleteAsync(entities, config), _logger);
+            return new RemoteDataSourceSynchronizer<TDto, T>(jobs, _httpClient.SendAsync, entities => _bulk.InsertOrUpdateOrDeleteAsync(entities, config), _logger);
         }
 
         private class EmptyDataSourceContext<T> : IDataSourceContext<T>
@@ -244,7 +271,7 @@ namespace AdvancedFilters.Infra.Services.Sync
             }
         }
 
-        private IEnumerable<FetchJob<T>> GetJobs<T, TContext>(DataSource dataSource, IReadOnlyCollection<TContext> contexts)
+        private IEnumerable<FetchJob<T>> GetJobs<T, TContext>(RemoteDataSource dataSource, IReadOnlyCollection<TContext> contexts)
             where TContext : IDataSourceContext<T>
         {
             return contexts

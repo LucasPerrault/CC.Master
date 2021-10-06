@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 
 namespace AdvancedFilters.Domain.Contacts
 {
-    public class ClientContactDataSource : DataSource
+    public class ClientContactDataSource : RemoteDataSource
     {
         public ClientContactDataSource(IDataSourceAuthentication authentication, IDataSourceRoute dataSourceRoute)
             : base(authentication, dataSourceRoute)
