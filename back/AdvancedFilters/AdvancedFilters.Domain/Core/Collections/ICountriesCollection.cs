@@ -10,7 +10,7 @@ namespace AdvancedFilters.Domain.Core.Collections
     {
         Task<Country> GetByIdAsync(int id);
         Task<IReadOnlyCollection<Country>> GetAsync(IReadOnlyCollection<int> ids);
-        Task<List<Country>> GetAllAsync();
+        Task<IReadOnlyCollection<Country>> GetAllAsync();
     }
 
     public class CountriesCollection : ICountriesCollection
@@ -36,9 +36,9 @@ namespace AdvancedFilters.Domain.Core.Collections
             return Task.FromResult<IReadOnlyCollection<Country>>(countries);
         }
 
-        public Task<List<Country>> GetAllAsync()
+        public Task<IReadOnlyCollection<Country>> GetAllAsync()
         {
-            var countries = _countriesCollection
+            IReadOnlyCollection<Country> countries = _countriesCollection
                 .Countries
                 .Select(Country.FromLuccaCountry)
                 .ToList();

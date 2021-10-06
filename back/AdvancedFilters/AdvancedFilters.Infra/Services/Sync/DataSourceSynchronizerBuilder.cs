@@ -3,7 +3,6 @@ using AdvancedFilters.Domain.Billing.Models;
 using AdvancedFilters.Domain.Contacts;
 using AdvancedFilters.Domain.Contacts.Models;
 using AdvancedFilters.Domain.Core;
-using AdvancedFilters.Domain.Core.Collections;
 using AdvancedFilters.Domain.Core.Models;
 using AdvancedFilters.Domain.DataSources;
 using AdvancedFilters.Domain.Instance;
@@ -31,7 +30,7 @@ namespace AdvancedFilters.Infra.Services.Sync
         private readonly FetchAuthenticator _authenticator;
         private readonly ILogger<IDataSourceSynchronizer> _logger;
         private readonly IEnvironmentsStore _store;
-        private readonly ICountriesCollection _countriesCollection;
+        private readonly ILocalDataSourceService _localDataSourceService;
 
         public DataSourceSyncCreationService
         (
@@ -39,21 +38,21 @@ namespace AdvancedFilters.Infra.Services.Sync
             IBulkUpsertService bulk,
             FetchAuthenticator authenticator,
             IEnvironmentsStore store,
-            ICountriesCollection countriesCollection,
-            ILogger<IDataSourceSynchronizer> logger
+            ILogger<IDataSourceSynchronizer> logger,
+            ILocalDataSourceService localDataSourceService
         )
         {
             _httpClient = httpClient;
             _bulk = bulk;
             _authenticator = authenticator;
             _store = store;
-            _countriesCollection = countriesCollection;
             _logger = logger;
+            _localDataSourceService = localDataSourceService;
         }
 
         public IDataSourceSynchronizerBuilder WithFilter(SyncFilter filter)
         {
-            return new DataSourceSynchronizerBuilder(_httpClient, _bulk, _store, _countriesCollection, _authenticator, _logger, filter);
+            return new DataSourceSynchronizerBuilder(_httpClient, _bulk, _store, _localDataSourceService, _authenticator, _logger, filter);
         }
     }
 
@@ -64,7 +63,7 @@ namespace AdvancedFilters.Infra.Services.Sync
         private readonly FetchAuthenticator _authenticator;
         private readonly ILogger<IDataSourceSynchronizer> _logger;
         private readonly IEnvironmentsStore _store;
-        private readonly ICountriesCollection _countriesCollection;
+        private readonly ILocalDataSourceService _localDataSourceService;
         private readonly SyncFilter _filter;
 
 
@@ -73,7 +72,7 @@ namespace AdvancedFilters.Infra.Services.Sync
             HttpClient httpClient,
             IBulkUpsertService bulk,
             IEnvironmentsStore store,
-            ICountriesCollection countriesCollection,
+            ILocalDataSourceService localDataSourceService,
             FetchAuthenticator authenticator,
             ILogger<IDataSourceSynchronizer> logger,
             SyncFilter syncFilter
@@ -82,7 +81,7 @@ namespace AdvancedFilters.Infra.Services.Sync
             _httpClient = httpClient;
             _bulk = bulk;
             _store = store;
-            _countriesCollection = countriesCollection;
+            _localDataSourceService = localDataSourceService;
             _authenticator = authenticator;
             _logger = logger;
             _filter = syncFilter;
@@ -90,7 +89,7 @@ namespace AdvancedFilters.Infra.Services.Sync
 
         public Task<IDataSourceSynchronizer> BuildFromAsync(CountryDataSource dataSource)
         {
-            Func<Task<List<Country>>> getCountriesAsync = () => _countriesCollection.GetAllAsync();
+            Func<Task<List<Country>>> getCountriesAsync = () => _localDataSourceService.GetAllCountriesAsync();
             return Task.FromResult(BuildFromLocal(getCountriesAsync));
         }
 
