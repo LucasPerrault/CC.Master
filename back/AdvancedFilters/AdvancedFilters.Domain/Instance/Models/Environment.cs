@@ -17,9 +17,9 @@ namespace AdvancedFilters.Domain.Instance.Models
         public DateTime CreatedAt { get; set; }
         public string ProductionHost { get; set; }
 
-        public IReadOnlyCollection<LegalUnit> LegalUnits { get; set; }
-        public IReadOnlyCollection<AppInstance> AppInstances { get; set; }
-        public IReadOnlyCollection<Contract> Contracts { get; set; }
+        public IEnumerable<LegalUnit> LegalUnits { get; set; }
+        public IEnumerable<AppInstance> AppInstances { get; set; }
+        public IEnumerable<Contract> Contracts { get; set; }
 
         public Environment DeepCopy()
         {

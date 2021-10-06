@@ -35,7 +35,11 @@ namespace AdvancedFilters.Infra.Storage.Stores
                 .AsNoTracking();
         }
 
-        private IQueryable<AppContact> AppContacts => _dbContext.Set<AppContact>();
+        private IQueryable<AppContact> AppContacts => _dbContext
+            .Set<AppContact>()
+            .Include(c => c.Environment)
+            .Include(c => c.Establishment).ThenInclude(e => e.LegalUnit).ThenInclude(lu => lu.Country)
+            .Include(c => c.AppInstance);
     }
 
     internal static class AppContactQueryableExtensions

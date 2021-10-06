@@ -11,7 +11,7 @@ namespace AdvancedFilters.Domain.Billing.Models
         public Guid ExternalId { get; set; }
         public string Name { get; set; }
 
-        public IReadOnlyCollection<Contract> Contracts { get; set; }
+        public IEnumerable<Contract> Contracts { get; set; }
 
         public Client DeepCopy()
         {

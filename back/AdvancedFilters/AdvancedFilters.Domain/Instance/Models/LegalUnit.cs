@@ -21,7 +21,7 @@ namespace AdvancedFilters.Domain.Instance.Models
         public bool IsArchived { get; set; }
 
         public Environment Environment { get; set; }
-        public IReadOnlyCollection<Establishment> Establishments { get; set; }
+        public IEnumerable<Establishment> Establishments { get; set; }
 
         public Country Country { get; set; }
 

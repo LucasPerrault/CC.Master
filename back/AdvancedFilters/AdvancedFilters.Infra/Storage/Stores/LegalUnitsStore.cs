@@ -59,7 +59,10 @@ namespace AdvancedFilters.Infra.Storage.Stores
                 .AsNoTracking();
         }
 
-        private IQueryable<LegalUnit> LegalUnits => _dbContext.Set<LegalUnit>();
+        private IQueryable<LegalUnit> LegalUnits => _dbContext
+            .Set<LegalUnit>()
+            .Include(lu => lu.Environment).ThenInclude(e => e.AppInstances)
+            .Include(lu => lu.Establishments).ThenInclude(e => e.Environment);
     }
 
     internal static class LegalUnitQueryableExtensions

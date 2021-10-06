@@ -33,7 +33,10 @@ namespace AdvancedFilters.Infra.Storage.Stores
                 .AsNoTracking();
         }
 
-        private IQueryable<Establishment> Establishments => _dbContext.Set<Establishment>();
+        private IQueryable<Establishment> Establishments => _dbContext
+            .Set<Establishment>()
+            .Include(e => e.Environment)
+            .Include(e => e.LegalUnit);
     }
 
     internal static class EstablishmentQueryableExtensions

@@ -33,7 +33,9 @@ namespace AdvancedFilters.Infra.Storage.Stores
                 .AsNoTracking();
         }
 
-        private IQueryable<Client> Clients => _dbContext.Set<Client>();
+        private IQueryable<Client> Clients => _dbContext
+            .Set<Client>()
+            .Include(c => c.Contracts);
     }
 
     internal static class ClientQueryableExtensions

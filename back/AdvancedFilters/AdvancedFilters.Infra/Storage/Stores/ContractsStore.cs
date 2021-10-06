@@ -33,7 +33,10 @@ namespace AdvancedFilters.Infra.Storage.Stores
                 .AsNoTracking();
         }
 
-        private IQueryable<Contract> Contracts => _dbContext.Set<Contract>();
+        private IQueryable<Contract> Contracts => _dbContext
+            .Set<Contract>()
+            .Include(c => c.Client)
+            .Include(c => c.EstablishmentAttachments).ThenInclude(eas => eas.Select(ea => ea.Establishment));
     }
 
     internal static class ContractQueryableExtensions

@@ -51,7 +51,10 @@ namespace AdvancedFilters.Infra.Storage.Stores
                 .AsNoTracking();
         }
 
-        private IQueryable<Environment> Environments => _dbContext.Set<Environment>();
+        private IQueryable<Environment> Environments => _dbContext
+            .Set<Environment>()
+            .Include(e => e.LegalUnits).ThenInclude(lu => lu.Establishments)
+            .Include(e => e.AppInstances);
     }
 
     internal static class EnvironmentQueryableExtensions

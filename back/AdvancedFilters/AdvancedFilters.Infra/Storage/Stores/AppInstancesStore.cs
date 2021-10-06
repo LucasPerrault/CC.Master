@@ -34,7 +34,9 @@ namespace AdvancedFilters.Infra.Storage.Stores
                 .AsNoTracking();
         }
 
-        private IQueryable<AppInstance> AppInstances => _dbContext.Set<AppInstance>();
+        private IQueryable<AppInstance> AppInstances => _dbContext
+            .Set<AppInstance>()
+            .Include(i => i.Environment).ThenInclude(e => e.LegalUnits).ThenInclude(lu => lu.Establishments);
     }
 
     internal static class AppInstanceQueryableExtensions
