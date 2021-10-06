@@ -9,6 +9,7 @@ namespace AdvancedFilters.Domain.DataSources
 
         private static readonly IReadOnlyCollection<DataSources> MultiTenantSource = new List<DataSources>
         {
+            DataSources.Countries,
             DataSources.Environments,
             DataSources.Clients
         };
