@@ -7,10 +7,10 @@ namespace AdvancedFilters.Infra.Services.Sync
 {
     public class LocalDataSourceSynchronizer<T> : IDataSourceSynchronizer
     {
-        private readonly Func<Task<List<T>>> _getItemsAsyncAction;
-        private readonly Func<List<T>, Task> _upsertAction;
+        private readonly Func<Task<IReadOnlyCollection<T>>> _getItemsAsyncAction;
+        private readonly Func<IReadOnlyCollection<T>, Task> _upsertAction;
 
-        public LocalDataSourceSynchronizer(Func<Task<List<T>>> getItemsAsyncAction, Func<List<T>, Task> upsertAction)
+        public LocalDataSourceSynchronizer(Func<Task<IReadOnlyCollection<T>>> getItemsAsyncAction, Func<IReadOnlyCollection<T>, Task> upsertAction)
         {
             _getItemsAsyncAction = getItemsAsyncAction;
             _upsertAction = upsertAction;

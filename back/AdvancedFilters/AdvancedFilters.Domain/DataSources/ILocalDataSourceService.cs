@@ -6,6 +6,6 @@ namespace AdvancedFilters.Domain.DataSources
 {
     public interface ILocalDataSourceService
     {
-        Task<List<Country>> GetAllCountriesAsync();
+        Task<IReadOnlyCollection<Country>> GetAllCountriesAsync();
     }
 }

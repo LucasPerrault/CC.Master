@@ -89,7 +89,7 @@ namespace AdvancedFilters.Infra.Services.Sync
 
         public Task<IDataSourceSynchronizer> BuildFromAsync(CountryDataSource dataSource)
         {
-            Func<Task<List<Country>>> getCountriesAsync = () => _localDataSourceService.GetAllCountriesAsync();
+            Func<Task<IReadOnlyCollection<Country>>> getCountriesAsync = () => _localDataSourceService.GetAllCountriesAsync();
             return Task.FromResult(BuildFromLocal(getCountriesAsync));
         }
 
@@ -160,7 +160,7 @@ namespace AdvancedFilters.Infra.Services.Sync
             return BuildFrom<SpecializedContactsDto, SpecializedContact, EnvironmentDataSourceContext<SpecializedContact>>(dataSource, contexts);
         }
 
-        private IDataSourceSynchronizer BuildFromLocal<T>(Func<Task<List<T>>> getItemsAction, BulkUpsertConfig config = null) where T : class
+        private IDataSourceSynchronizer BuildFromLocal<T>(Func<Task<IReadOnlyCollection<T>>> getItemsAction, BulkUpsertConfig config = null) where T : class
         {
             return new LocalDataSourceSynchronizer<T>
             (

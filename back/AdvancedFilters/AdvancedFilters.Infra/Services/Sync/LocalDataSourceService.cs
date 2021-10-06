@@ -2,7 +2,6 @@
 using AdvancedFilters.Domain.Core.Models;
 using AdvancedFilters.Domain.DataSources;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace AdvancedFilters.Infra.Services.Sync
@@ -16,10 +15,9 @@ namespace AdvancedFilters.Infra.Services.Sync
             _countriesCollection = countriesCollection;
         }
 
-        public async Task<List<Country>> GetAllCountriesAsync()
+        public async Task<IReadOnlyCollection<Country>> GetAllCountriesAsync()
         {
-            var countries = await _countriesCollection.GetAllAsync();
-            return countries.ToList();
+            return await _countriesCollection.GetAllAsync();
         }
     }
 }
