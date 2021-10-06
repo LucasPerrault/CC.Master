@@ -29,13 +29,13 @@ namespace AdvancedFilters.Web
 
         public static void ConfigureStorage(this IServiceCollection services)
         {
-            services.AddScoped<BulkUpsertService>();
+            services.AddScoped<IBulkUpsertService, BulkUpsertService>();
         }
 
         public static void ConfigureSync(this IServiceCollection services)
         {
             services.AddSingleton<FetchAuthenticator>();
-            services.AddHttpClient<IDataSourceSynchronizerBuilder, DataSourceSynchronizerBuilder>();
+            services.AddHttpClient<IDataSourceSyncCreationService, DataSourceSyncCreationService>();
             services.AddScoped<HugeSyncService>();
         }
 

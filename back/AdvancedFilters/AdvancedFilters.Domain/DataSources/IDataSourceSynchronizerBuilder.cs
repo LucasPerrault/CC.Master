@@ -5,9 +5,13 @@ using System.Threading.Tasks;
 
 namespace AdvancedFilters.Domain.DataSources
 {
-    public interface IDataSourceSynchronizerBuilder
+    public interface IDataSourceSyncCreationService
     {
         IDataSourceSynchronizerBuilder WithFilter(SyncFilter filter);
+    }
+
+    public interface IDataSourceSynchronizerBuilder
+    {
         Task<IDataSourceSynchronizer> BuildFromAsync(EnvironmentDataSource dataSource);
         Task<IDataSourceSynchronizer> BuildFromAsync(EstablishmentDataSource dataSource);
         Task<IDataSourceSynchronizer> BuildFromAsync(AppInstanceDataSource dataSource);

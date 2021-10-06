@@ -11,7 +11,7 @@ namespace AdvancedFilters.Infra.Services.Sync.Dtos
         List<T> ToItems();
     }
 
-    internal class EnvironmentsDto : IDto<Environment>
+    public class EnvironmentsDto : IDto<Environment>
     {
         public List<Environment> Items { get; set; }
 
@@ -31,7 +31,7 @@ namespace AdvancedFilters.Infra.Services.Sync.Dtos
         }
     }
 
-    internal class AppInstancesDto : ApiV3Dto<AppInstance>, IDto<AppInstance>
+    public class AppInstancesDto : ApiV3Dto<AppInstance>, IDto<AppInstance>
     {
         public List<AppInstance> ToItems()
         {
@@ -39,7 +39,7 @@ namespace AdvancedFilters.Infra.Services.Sync.Dtos
         }
     }
 
-    internal class LegalUnitsDto : IDto<LegalUnit>
+    public class LegalUnitsDto : IDto<LegalUnit>
     {
         public List<LegalUnit> Items { get; set; }
 
