@@ -1,3 +1,5 @@
+using AdvancedFilters.Infra.Storage;
+using AdvancedFilters.Web;
 using Authentication.Web;
 using Billing.Cmrr.Infra.Storage;
 using Billing.Cmrr.Web;
@@ -86,8 +88,8 @@ namespace CloudControl.Web
             ConfigureBilling(services, configuration);
             ConfigureInstances(services, configuration);
             ConfigureEmails(services, configuration);
+            ConfigureAdvancedFilters(services, configuration);
         }
-
         private void ConfigureCulture(IServiceCollection services)
         {
             CultureInfo.DefaultThreadCurrentCulture = CultureInfo.GetCultureInfo("fr");
@@ -142,7 +144,11 @@ namespace CloudControl.Web
         {
             services
                 .AddControllers()
-                .AddJsonOptions(o => o.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));
+                .AddJsonOptions(o =>
+                {
+                    o.JsonSerializerOptions.Converters.Add(new DomainEnumJsonConverter());
+                    o.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+                });
 
             services.AddLuccaApi(luccaApiBuilder =>
             {
@@ -204,6 +210,7 @@ namespace CloudControl.Web
             services.ConfigureContext<InstancesDbContext>(_hostingEnvironment);
             services.ConfigureContext<CmrrDbContext>(_hostingEnvironment);
             services.ConfigureContext<ProductDbContext>(_hostingEnvironment);
+            services.ConfigureContext<AdvancedFiltersDbContext>(_hostingEnvironment);
         }
 
         public virtual void ConfigureSharedDomains(IServiceCollection services, AppConfiguration configuration)
@@ -239,6 +246,11 @@ namespace CloudControl.Web
         public virtual void ConfigureInstances(IServiceCollection services, AppConfiguration configuration)
         {
             InstancesConfigurer.ConfigureServices(services, configuration.Instances);
+        }
+
+        public virtual void ConfigureAdvancedFilters(IServiceCollection services, AppConfiguration configuration)
+        {
+            AdvancedFiltersConfigurer.ConfigureServices(services, configuration.AdvancedFilters);
         }
 
         public virtual void ConfigureLogs(IServiceCollection services)

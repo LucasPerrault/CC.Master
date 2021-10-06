@@ -24,7 +24,7 @@ namespace Instances.Application.Demos.Duplication
                 SourceType = InstanceType.Demo,
                 TargetType = InstanceType.Demo,
                 DistributorId = distributorId,
-                SourceCluster = sourceDemo.Instance.Cluster,
+                SourceCluster = sourceDemo.Cluster,
                 TargetCluster = targetCluster,
                 SourceSubdomain = sourceDemo.Subdomain,
                 TargetSubdomain = targetSubdomain,

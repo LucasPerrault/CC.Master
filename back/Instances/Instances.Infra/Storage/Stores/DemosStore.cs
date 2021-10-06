@@ -82,7 +82,7 @@ namespace Instances.Infra.Storage.Stores
         public Task<Dictionary<string, int>> GetNumberOfActiveDemosByCluster()
         {
             // On ne passe pas par GetActiveDemos pour bénéficier (on espère) du group by en sql
-            return Demos.Where(d => d.IsActive).GroupBy(d => d.Instance.Cluster).ToDictionaryAsync(g => g.Key, g => g.Count());
+            return Demos.Where(d => d.IsActive).GroupBy(d => d.Cluster).ToDictionaryAsync(g => g.Key, g => g.Count());
         }
 
         private IQueryable<Demo> Get(DemoFilter filter, AccessRight access)

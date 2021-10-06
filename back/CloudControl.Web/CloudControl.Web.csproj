@@ -19,6 +19,8 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\AdvancedFilters\AdvancedFilters.Infra\AdvancedFilters.Infra.csproj" />
+      <ProjectReference Include="..\AdvancedFilters\AdvancedFilters.Web\AdvancedFilters.Web.csproj" />
       <ProjectReference Include="..\Billing\Billing.Cmrr\Billing.Cmrr.Infra\Billing.Cmrr.Infra.csproj" />
       <ProjectReference Include="..\Billing\Billing.Cmrr\Billing.Cmrr.Web\Billing.Cmrr.Web.csproj" />
       <ProjectReference Include="..\Billing\Billing.Contracts\Billing.Contracts.Infra\Billing.Contracts.Infra.csproj" />

@@ -10,7 +10,6 @@ namespace Instances.Infra.Storage.Configurations
         {
             builder.ToTable("Instances");
             builder.HasKey(d => d.Id);
-            builder.Property(d => d.Cluster).HasColumnName("Cluster");
             builder.Property(d => d.Type).HasColumnName("Type");
             builder.Property(d => d.IsProtected).HasColumnName("IsProtected");
             builder.Property(d => d.IsAnonymized).HasColumnName("IsAnonymized");

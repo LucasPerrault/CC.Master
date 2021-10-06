@@ -124,5 +124,33 @@
                 "Demos": "ilucca-demo.net"
             }
         }
+    },
+    "AdvancedFilters": {
+        "Routes": {
+            "Hosts": {
+                "CloudControl": {
+                    "Host": "{{ CC.Master:scheme }}://{{ CC.Master:tenant }}.{{ CC.Master:domain }}",
+                    "EnvironmentsEndpoint": "/api/environments?limit=100000&isActive=true,false&purpose=contractual",
+                    "ContractsEndpoint": "/api/contracts?limit=100000&isActive=true,false",
+                    "ContractsSubdomainParamName": "subdomain",
+                    "ClientsEndpoint": "/api/clients?limit=10000&isActive=true,false"
+                }
+            },
+            "Tenants": {
+                "EstablishmentsEndpoint": "organization/structure/api/establishments",
+                "LegalUnitsEndpoint": "organization/structure/api/legal-units",
+                "AppInstancesEndpoint": "api/v3/appInstances?fields=id,name,applicationid,deletedat",
+                "AppContactsEndpoint": "admin/account-and-billing/api/app-contacts",
+                "ClientContactsEndpoint": "admin/account-and-billing/api/client-contacts",
+                "SpecializedContactsEndpoint": "admin/account-and-billing/api/specialized-contacts"
+            }
+        },
+        "Auth": {
+            "CloudControlAuthScheme": "Cloudcontrol",
+            "CloudControlAuthParameter": "application={{ CC.Master:CafeToken }}",
+            "MonolithWebserviceToken": "{{ ilucca:CloudControlSharedToken }}",
+            "OrganizationStructureWebserviceToken": "{{ CC.Master:OrganizationStructureToken }}",
+            "ClientCenterWebserviceToken": "{{ Organization.ClientCenter:CafeToken }}"
+        }
     }
 }

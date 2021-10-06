@@ -30,7 +30,7 @@ namespace Users.Infra
 
             if (distributor is null)
             {
-                throw new ApplicationException($"Unknown user department code {userDepartmentCode}");
+                throw new UnknownDepartmentCodeException(userDepartmentCode);
             }
             return luccaUser.Data.ToUser(distributor);
         }
