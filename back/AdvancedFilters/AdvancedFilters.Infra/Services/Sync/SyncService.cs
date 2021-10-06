@@ -1,4 +1,5 @@
 using AdvancedFilters.Domain.DataSources;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -34,6 +35,7 @@ namespace AdvancedFilters.Infra.Services.Sync
                 DataSourceSyncMode.Everything => _dataSourcesRepository.GetAll(),
                 DataSourceSyncMode.MonoTenant => _dataSourcesRepository.GetMonoTenant(),
                 DataSourceSyncMode.MultiTenant => _dataSourcesRepository.GetMultiTenant(),
+                _ => throw new ArgumentOutOfRangeException(nameof(syncMode), syncMode, nameof(DataSourceSyncMode))
             };
         }
     }
