@@ -1,6 +1,7 @@
 using AdvancedFilters.Domain.Contacts.Filters;
 using AdvancedFilters.Domain.Contacts.Interfaces;
 using AdvancedFilters.Domain.Contacts.Models;
+using AdvancedFilters.Web.Format;
 using Lucca.Core.Api.Abstractions.Paging;
 using Lucca.Core.Api.Web.ModelBinding.Sorting;
 using Microsoft.AspNetCore.Mvc;
@@ -26,9 +27,21 @@ namespace AdvancedFilters.Web.Controllers
 
         [HttpGet]
         [ForbidIfMissing(Operation.ReadAllCafe)]
-        public Task<Page<ClientContact>> GetAsync([FromQuery]ClientContactsQuery query)
+        public async Task<Page<ClientContact>> GetAsync([FromQuery]ClientContactsQuery query)
         {
-            return _store.GetAsync(query.Page, query.ToFilter());
+            var page = await _store.GetAsync(query.Page, query.ToFilter());
+            return PreparePage(page);
+        }
+
+        private Page<ClientContact> PreparePage(Page<ClientContact> src)
+        {
+            return new Page<ClientContact>
+            {
+                Count = src.Count,
+                Prev = src.Prev,
+                Next = src.Next,
+                Items = src.Items.WithoutLoop()
+            };
         }
     }
 
