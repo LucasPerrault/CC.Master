@@ -40,7 +40,7 @@ namespace AdvancedFilters.Infra.Services.Sync
         }
     }
 
-    public class DataSourceSynchronizer<TDto, T> : IDataSourceSynchronizer
+    public class RemoteDataSourceSynchronizer<TDto, T> : IDataSourceSynchronizer
         where TDto : IDto<T>
         where T : class
     {
@@ -49,7 +49,7 @@ namespace AdvancedFilters.Infra.Services.Sync
         private readonly ILogger _logger;
         private readonly Func<HttpRequestMessage, Task<HttpResponseMessage>> _fetchAction;
 
-        public DataSourceSynchronizer
+        public RemoteDataSourceSynchronizer
         (
             List<FetchJob<T>> jobs,
             Func<HttpRequestMessage, Task<HttpResponseMessage>> fetchAction,
