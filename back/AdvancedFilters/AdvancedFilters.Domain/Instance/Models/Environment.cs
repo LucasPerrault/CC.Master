@@ -4,10 +4,11 @@ using AdvancedFilters.Domain.Filters.Builders;
 using AdvancedFilters.Domain.Filters.Models;
 using System;
 using System.Collections.Generic;
+using Tools;
 
 namespace AdvancedFilters.Domain.Instance.Models
 {
-    public class Environment
+    public class Environment : IDeepCopyable<Environment>
     {
         public int Id { get; set; }
         public string Subdomain { get; set; }
@@ -19,6 +20,11 @@ namespace AdvancedFilters.Domain.Instance.Models
         public IReadOnlyCollection<LegalUnit> LegalUnits { get; set; }
         public IReadOnlyCollection<AppInstance> AppInstances { get; set; }
         public IReadOnlyCollection<Contract> Contracts { get; set; }
+
+        public Environment DeepCopy()
+        {
+            return this.DeepCopyByExpressionTree();
+        }
     }
 
     public class EnvironmentAdvancedCriterion : AdvancedCriterion<Environment>

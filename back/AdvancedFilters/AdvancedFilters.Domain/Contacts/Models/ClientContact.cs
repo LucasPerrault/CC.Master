@@ -1,6 +1,8 @@
 using AdvancedFilters.Domain.Billing.Models;
+using AdvancedFilters.Domain.Core.Models;
 using AdvancedFilters.Domain.Instance.Models;
 using System;
+using Tools;
 using Environment = AdvancedFilters.Domain.Instance.Models.Environment;
 
 namespace AdvancedFilters.Domain.Contacts.Models
@@ -19,10 +21,15 @@ namespace AdvancedFilters.Domain.Contacts.Models
         public int EstablishmentId { get; set; }
     }
 
-    public class ClientContact : ClientContactCore
+    public class ClientContact : ClientContactCore, IDeepCopyable<ClientContact>
     {
         public Client Client { get; set; }
         public Environment Environment { get; set; }
         public Establishment Establishment { get; set; }
+
+        public ClientContact DeepCopy()
+        {
+            return this.DeepCopyByExpressionTree();
+        }
     }
 }
