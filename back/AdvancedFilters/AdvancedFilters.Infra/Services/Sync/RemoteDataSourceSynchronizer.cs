@@ -3,6 +3,7 @@ using AdvancedFilters.Infra.Services.Sync.Dtos;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
+using System.Linq.Expressions;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Tools;
@@ -22,7 +23,7 @@ namespace AdvancedFilters.Infra.Services.Sync
 
         public class FetchJobHttpRequestDescription
         {
-            private Uri Uri { get; }
+            public Uri Uri { get; }
             private Action<HttpRequestMessage> Authentication { get; }
 
             public FetchJobHttpRequestDescription(Uri uri, Action<HttpRequestMessage> authentication)
@@ -100,9 +101,16 @@ namespace AdvancedFilters.Infra.Services.Sync
             }
             catch (Exception e)
             {
-                _logger.LogError(e, $"DataSource fetch failed for {typeof(T).Name}");
-                throw;
+                var exception = new FetchJobException(job, e);
+                _logger.LogError(exception, "Fetch failed");
+                throw exception;
             }
+        }
+
+        public class FetchJobException : ApplicationException
+        {
+            public FetchJobException(FetchJob<T> fetchJob, Exception e) : base($"DataSource fetch failed for {typeof(T).Name} on {fetchJob.RequestDescription.Uri}", e)
+            { }
         }
     }
 }
