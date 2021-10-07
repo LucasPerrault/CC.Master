@@ -13,7 +13,7 @@ namespace AdvancedFilters.Infra.Services.Sync.Dtos
         {
             return Items
                 .Where(dto => dto.EnvironmentId.HasValue)
-                .Select(dto => dto.ToContract())
+                .Select(dto => dto.ToContract(dto.EnvironmentId.Value))
                 .ToList();
         }
     }
@@ -26,22 +26,23 @@ namespace AdvancedFilters.Infra.Services.Sync.Dtos
         public int? EnvironmentId { get; set; }
         public IReadOnlyCollection<EstablishmentAttachmentDto> Attachments { get; set; }
 
-        public Contract ToContract()
+        public Contract ToContract(int envId)
         {
             return new Contract
             {
                 Id = Id,
                 ClientId = ClientId,
                 ExternalId = ExternalId,
-                EstablishmentAttachments = GetFromDto(Attachments)
+                EnvironmentId = envId,
+                EstablishmentAttachments = GetFromDto(Attachments, envId)
             };
         }
 
-        private IReadOnlyCollection<EstablishmentContract> GetFromDto(IReadOnlyCollection<EstablishmentAttachmentDto> establishmentAttachments)
+        private IReadOnlyCollection<EstablishmentContract> GetFromDto(IReadOnlyCollection<EstablishmentAttachmentDto> establishmentAttachments, int envId)
         {
             return establishmentAttachments
                 .Where(ea => ea.IsActive)
-                .Select(ea => ea.ToEstablishmentContract(Id, EnvironmentId.Value))
+                .Select(ea => ea.ToEstablishmentContract(Id, envId))
                 .ToList();
         }
     }

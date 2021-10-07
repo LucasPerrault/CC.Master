@@ -1,3 +1,4 @@
+using AdvancedFilters.Domain.Billing.Models;
 using System;
 using System.Collections.Generic;
 
@@ -14,5 +15,6 @@ namespace AdvancedFilters.Domain.Instance.Models
 
         public IReadOnlyCollection<LegalUnit> LegalUnits { get; set; }
         public IReadOnlyCollection<AppInstance> AppInstances { get; set; }
+        public IReadOnlyCollection<Contract> Contracts { get; set; }
     }
 }

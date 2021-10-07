@@ -13,6 +13,14 @@ namespace AdvancedFilters.Infra.Storage.Configurations
             builder.Property(c => c.Id).ValueGeneratedNever();
 
             builder.Property(c => c.ExternalId).HasColumnName("ExternalId").HasMaxLength(36).IsRequired();
+            builder.Property(c => c.EnvironmentId).HasColumnName("EnvironmentId");
+
+            builder
+                .HasOne(c => c.Environment)
+                .WithMany(e => e.Contracts)
+                .HasForeignKey(c => c.EnvironmentId)
+                .IsRequired()
+                .OnDelete(DeleteBehavior.NoAction);
 
             builder
                 .HasOne(c => c.Client)

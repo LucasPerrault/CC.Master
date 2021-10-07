@@ -13,6 +13,7 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web;
@@ -45,9 +46,9 @@ namespace AdvancedFilters.Infra.Services.Sync
             _localDataSourceService = localDataSourceService;
         }
 
-        public IDataSourceSynchronizerBuilder ForEnvironments(List<Environment> environments)
+        public IDataSourceSynchronizerBuilder ForEnvironments(List<Environment> environments, DataSyncStrategy strategy)
         {
-            return new DataSourceSynchronizerBuilder(_httpClient, _bulk, _localDataSourceService, _authenticator, _logger, environments);
+            return new DataSourceSynchronizerBuilder(_httpClient, _bulk, _localDataSourceService, _authenticator, _logger, environments, strategy);
         }
     }
 
@@ -59,6 +60,8 @@ namespace AdvancedFilters.Infra.Services.Sync
         private readonly ILogger<IDataSourceSynchronizer> _logger;
         private readonly ILocalDataSourceService _localDataSourceService;
         private readonly List<Environment> _environments;
+        private readonly DataSyncStrategy _dataSyncStrategy;
+        private readonly HashSet<int> _environmentIds;
 
         public DataSourceSynchronizerBuilder
         (
@@ -67,7 +70,8 @@ namespace AdvancedFilters.Infra.Services.Sync
             ILocalDataSourceService localDataSourceService,
             FetchAuthenticator authenticator,
             ILogger<IDataSourceSynchronizer> logger,
-            List<Environment> environments
+            List<Environment> environments,
+            DataSyncStrategy dataSyncStrategy
         )
         {
             _httpClient = httpClient;
@@ -76,18 +80,23 @@ namespace AdvancedFilters.Infra.Services.Sync
             _authenticator = authenticator;
             _logger = logger;
             _environments = environments;
+            _environmentIds = environments.Select(e => e.Id).ToHashSet();
+            _dataSyncStrategy = dataSyncStrategy;
+
         }
 
         public Task<IDataSourceSynchronizer> BuildFromAsync(CountryDataSource dataSource)
         {
             Func<Task<IReadOnlyCollection<Country>>> getCountriesAsync = () => _localDataSourceService.GetAllCountriesAsync();
-            return Task.FromResult(BuildFromLocal(getCountriesAsync));
+            var config = new BulkUpsertConfig();
+            return Task.FromResult(BuildFromLocal(getCountriesAsync, config));
         }
 
         public Task<IDataSourceSynchronizer> BuildFromAsync(EnvironmentDataSource dataSource)
         {
             var context = new EmptyDataSourceContext<Environment>();
-            var synchronizer = BuildFrom<EnvironmentsDto, Environment, EmptyDataSourceContext<Environment>>(dataSource, new List<EmptyDataSourceContext<Environment>> { context });
+            var config = new BulkUpsertConfig();
+            var synchronizer = BuildFrom<EnvironmentsDto, Environment, EmptyDataSourceContext<Environment>>(dataSource, new List<EmptyDataSourceContext<Environment>> { context }, config);
             return Task.FromResult(synchronizer);
         }
 
@@ -95,21 +104,33 @@ namespace AdvancedFilters.Infra.Services.Sync
         {
             Action<Environment, Establishment> finalizeAction = (environment, establishment) => { establishment.EnvironmentId = environment.Id; };
             var contexts = await GetEnvironmentContextsAsync(finalizeAction);
-            return BuildFrom<EstablishmentsDto, Establishment, EnvironmentDataSourceContext<Establishment>>(dataSource, contexts);
+            var config = new BulkUpsertConfig
+            {
+                Filter = GetFilter<Establishment>(c => c.EnvironmentId)
+            };
+            return BuildFrom<EstablishmentsDto, Establishment, EnvironmentDataSourceContext<Establishment>>(dataSource, contexts, config);
         }
 
         public async Task<IDataSourceSynchronizer> BuildFromAsync(AppInstanceDataSource dataSource)
         {
             Action<Environment, AppInstance> finalizeAction = (environment, appInstance) => { appInstance.EnvironmentId = environment.Id; };
             var contexts = await GetEnvironmentContextsAsync(finalizeAction);
-            return BuildFrom<AppInstancesDto, AppInstance, EnvironmentDataSourceContext<AppInstance>>(dataSource, contexts);
+            var config = new BulkUpsertConfig
+            {
+                Filter = GetFilter<AppInstance>(c => c.EnvironmentId)
+            };
+            return BuildFrom<AppInstancesDto, AppInstance, EnvironmentDataSourceContext<AppInstance>>(dataSource, contexts, config);
         }
 
         public async Task<IDataSourceSynchronizer> BuildFromAsync(LegalUnitDataSource dataSource)
         {
             Action<Environment, LegalUnit> finalizeAction = (environment, legalUnit) => { legalUnit.EnvironmentId = environment.Id; };
             var contexts = await GetEnvironmentContextsAsync(finalizeAction);
-            return BuildFrom<LegalUnitsDto, LegalUnit, EnvironmentDataSourceContext<LegalUnit>>(dataSource, contexts);
+            var config = new BulkUpsertConfig
+            {
+                Filter = GetFilter<LegalUnit>(c => c.EnvironmentId)
+            };
+            return BuildFrom<LegalUnitsDto, LegalUnit, EnvironmentDataSourceContext<LegalUnit>>(dataSource, contexts, config);
         }
 
         public Task<IDataSourceSynchronizer> BuildFromAsync(ContractDataSource dataSource)
@@ -117,7 +138,8 @@ namespace AdvancedFilters.Infra.Services.Sync
             var context = new SubdomainSubsetDataSourceContext<Contract>(_environments.Select(e => e.Subdomain).ToList(), dataSource.SubdomainsParamName);
             var bulkUpsertConfig = new BulkUpsertConfig
             {
-                IncludeSubEntities = true
+                IncludeSubEntities = true,
+                Filter = GetFilter<Contract>(c => c.EnvironmentId)
             };
             var synchronizer = BuildFrom<ContractsDto, Contract, EmptyDataSourceContext<Contract>>(dataSource, new List<EmptyDataSourceContext<Contract>> { context }, config: bulkUpsertConfig);
             return Task.FromResult(synchronizer);
@@ -126,7 +148,8 @@ namespace AdvancedFilters.Infra.Services.Sync
         public Task<IDataSourceSynchronizer> BuildFromAsync(ClientDataSource dataSource)
         {
             var context = new EmptyDataSourceContext<Client>();
-            var synchronizer = BuildFrom<ClientsDto, Client, EmptyDataSourceContext<Client>>(dataSource, new List<EmptyDataSourceContext<Client>> { context });
+            var config = new BulkUpsertConfig();
+            var synchronizer = BuildFrom<ClientsDto, Client, EmptyDataSourceContext<Client>>(dataSource, new List<EmptyDataSourceContext<Client>> { context }, config);
             return Task.FromResult(synchronizer);
         }
 
@@ -134,24 +157,46 @@ namespace AdvancedFilters.Infra.Services.Sync
         {
             Action<Environment, AppContact> finalizeAction = (environment, contact) => { contact.EnvironmentId = environment.Id; };
             var contexts = await GetEnvironmentContextsAsync(finalizeAction);
-            return BuildFrom<AppContactsDto, AppContact, EnvironmentDataSourceContext<AppContact>>(dataSource, contexts);
+            var config = new BulkUpsertConfig
+            {
+                Filter = GetFilter<AppContact>(c => c.EnvironmentId)
+            };
+            return BuildFrom<AppContactsDto, AppContact, EnvironmentDataSourceContext<AppContact>>(dataSource, contexts, config);
         }
 
         public async Task<IDataSourceSynchronizer> BuildFromAsync(ClientContactDataSource dataSource)
         {
             Action<Environment, ClientContact> finalizeAction = (environment, c) => { c.EnvironmentId = environment.Id; };
             var contexts = await GetEnvironmentContextsAsync(finalizeAction);
-            return BuildFrom<ClientContactsDto, ClientContact, EnvironmentDataSourceContext<ClientContact>>(dataSource, contexts);
+            var config = new BulkUpsertConfig
+            {
+                Filter = GetFilter<ClientContact>(c => c.EnvironmentId)
+            };
+            return BuildFrom<ClientContactsDto, ClientContact, EnvironmentDataSourceContext<ClientContact>>(dataSource, contexts, config);
         }
 
         public async Task<IDataSourceSynchronizer> BuildFromAsync(SpecializedContactDataSource dataSource)
         {
             Action<Environment, SpecializedContact> finalizeAction = (environment, c) => { c.EnvironmentId = environment.Id; };
             var contexts = await GetEnvironmentContextsAsync(finalizeAction);
-            return BuildFrom<SpecializedContactsDto, SpecializedContact, EnvironmentDataSourceContext<SpecializedContact>>(dataSource, contexts);
+            var config = new BulkUpsertConfig
+            {
+                Filter = GetFilter<SpecializedContact>(c => c.EnvironmentId)
+            };
+            return BuildFrom<SpecializedContactsDto, SpecializedContact, EnvironmentDataSourceContext<SpecializedContact>>(dataSource, contexts, config);
         }
 
-        private IDataSourceSynchronizer BuildFromLocal<T>(Func<Task<IReadOnlyCollection<T>>> getItemsAction, BulkUpsertConfig config = null) where T : class
+        private UpsertFilter GetFilter<T>(Expression<Func<T, int>> getId) where T : class
+        {
+            return _dataSyncStrategy switch
+            {
+                DataSyncStrategy.SyncEverything => UpsertFilter.Everything(),
+                DataSyncStrategy.SyncSpecificEnvironmentsOnly => UpsertFilter.ForEnvironments(_environmentIds, getId),
+                _ => throw new ApplicationException($"Unsupported data sync strategy {_dataSyncStrategy}")
+            };
+        }
+
+        private IDataSourceSynchronizer BuildFromLocal<T>(Func<Task<IReadOnlyCollection<T>>> getItemsAction, BulkUpsertConfig config) where T : class
         {
             return new LocalDataSourceSynchronizer<T>
             (
@@ -159,7 +204,7 @@ namespace AdvancedFilters.Infra.Services.Sync
                 entities => _bulk.InsertOrUpdateOrDeleteAsync
                 (
                     entities,
-                    config ?? new BulkUpsertConfig()
+                    config
                 )
             );
         }
@@ -168,12 +213,12 @@ namespace AdvancedFilters.Infra.Services.Sync
         (
             RemoteDataSource dataSource,
             IReadOnlyCollection<TContext> contexts,
-            BulkUpsertConfig config = null
+            BulkUpsertConfig config
         )
             where TDto : IDto<T> where T : class where TContext : IDataSourceContext<T>
         {
             var jobs = GetJobs<T, TContext>(dataSource, contexts).ToList();
-            return FromJobs<TDto, T>(jobs, config ?? new BulkUpsertConfig());
+            return FromJobs<TDto, T>(jobs, config);
         }
 
         private Task<List<EnvironmentDataSourceContext<T>>> GetEnvironmentContextsAsync<T>(Action<Environment, T> finalizeAction)

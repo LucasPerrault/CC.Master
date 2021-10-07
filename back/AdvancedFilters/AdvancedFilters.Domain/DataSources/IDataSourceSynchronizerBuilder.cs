@@ -8,9 +8,15 @@ using System.Threading.Tasks;
 
 namespace AdvancedFilters.Domain.DataSources
 {
+    public enum DataSyncStrategy
+    {
+        SyncEverything = 0,
+        SyncSpecificEnvironmentsOnly = 1
+    }
+
     public interface IDataSourceSyncCreationService
     {
-        IDataSourceSynchronizerBuilder ForEnvironments(List<Environment> environments);
+        IDataSourceSynchronizerBuilder ForEnvironments(List<Environment> environments, DataSyncStrategy strategy);
     }
 
     public interface IDataSourceSynchronizerBuilder
