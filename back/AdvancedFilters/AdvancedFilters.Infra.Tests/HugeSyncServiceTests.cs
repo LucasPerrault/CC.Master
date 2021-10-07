@@ -7,6 +7,7 @@ using AdvancedFilters.Infra.Services.Sync.Dtos;
 using AdvancedFilters.Infra.Storage.Services;
 using AdvancedFilters.Web;
 using AdvancedFilters.Web.Configuration;
+using Email.Domain;
 using Moq;
 using Remote.Infra.Extensions;
 using System;
@@ -14,6 +15,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
+using TeamNotification.Abstractions;
 using Testing.Infra;
 using Xunit;
 using Environment = AdvancedFilters.Domain.Instance.Models.Environment;
@@ -26,12 +28,23 @@ namespace AdvancedFilters.Infra.Tests
         private readonly Mock<IBulkUpsertService> _upsertServiceMock;
         private readonly IDataSourceSyncCreationService _creationService;
         private readonly Mock<HttpClientHandler> _httpClientHandlerMock;
+        private readonly Mock<IEmailService> _emailServiceMock;
+        private readonly Mock<ISyncEmails> _syncEmailsMock;
+        private readonly Mock<ITeamNotifier> _teamNotifierMock;
+
 
         public HugeSyncServiceTests()
         {
             _httpClientHandlerMock = new Mock<HttpClientHandler>(MockBehavior.Strict);
             _upsertServiceMock = new Mock<IBulkUpsertService>();
             _environmentsStoreMock = new Mock<IEnvironmentsStore>();
+            _emailServiceMock = new Mock<IEmailService>();
+            _syncEmailsMock = new Mock<ISyncEmails>();
+            _teamNotifierMock = new Mock<ITeamNotifier>();
+
+            _syncEmailsMock
+                .Setup(e => e.GetSyncReportEmail(It.IsAny<List<Exception>>()))
+                .Returns(new EmailContentBuilder("Mocked"));
 
             var client = new HttpClient(_httpClientHandlerMock.Object);
             var localDataSourceService = new Mock<ILocalDataSourceService>().Object;
@@ -54,7 +67,19 @@ namespace AdvancedFilters.Infra.Tests
             {
                 [DataSources.Environments] = DataSourceMapper.Get(DataSources.Environments, Configuration)
             };
-            var service = new SyncService(new DataSourcesRepository(confs), _creationService, _environmentsStoreMock.Object);
+
+            var service = new SyncService
+            (
+                new DataSourcesRepository
+                (
+                    confs
+                ),
+                _creationService,
+                _environmentsStoreMock.Object,
+                _emailServiceMock.Object,
+                _syncEmailsMock.Object,
+                _teamNotifierMock.Object
+            );
 
             SetupHttpResponse("https://mocked-cc.ilucca.local/api/envs", new EnvironmentsDto
             {
@@ -81,7 +106,19 @@ namespace AdvancedFilters.Infra.Tests
             {
                 [DataSources.AppInstances] = DataSourceMapper.Get(DataSources.AppInstances, Configuration)
             };
-            var service = new SyncService(new DataSourcesRepository(confs), _creationService, _environmentsStoreMock.Object);
+
+            var service = new SyncService
+            (
+                new DataSourcesRepository
+                (
+                    confs
+                ),
+                _creationService,
+                _environmentsStoreMock.Object,
+                _emailServiceMock.Object,
+                _syncEmailsMock.Object,
+                _teamNotifierMock.Object
+            );
 
             SetupKnownEnvironments(new Environment { Id = 42, ProductionHost = "https://mocked-tenant.dev" });
             SetupHttpResponse("https://mocked-tenant.dev/api/app-instances", new AppInstancesDto
@@ -109,7 +146,19 @@ namespace AdvancedFilters.Infra.Tests
             {
                 [DataSources.LegalUnits] = DataSourceMapper.Get(DataSources.LegalUnits, Configuration)
             };
-            var service = new SyncService(new DataSourcesRepository(confs), _creationService, _environmentsStoreMock.Object);
+
+            var service = new SyncService
+            (
+                new DataSourcesRepository
+                (
+                    confs
+                ),
+                _creationService,
+                _environmentsStoreMock.Object,
+                _emailServiceMock.Object,
+                _syncEmailsMock.Object,
+                _teamNotifierMock.Object
+            );
 
             SetupKnownEnvironments(new Environment { Id = 42, ProductionHost = "https://mocked-tenant.dev" });
             SetupHttpResponse("https://mocked-tenant.dev/api/legal-units", new LegalUnitsDto
@@ -138,7 +187,19 @@ namespace AdvancedFilters.Infra.Tests
                 [DataSources.AppInstances] = DataSourceMapper.Get(DataSources.AppInstances, Configuration),
                 [DataSources.LegalUnits] = DataSourceMapper.Get(DataSources.LegalUnits, Configuration),
             };
-            var service = new SyncService(new DataSourcesRepository(confs), _creationService, _environmentsStoreMock.Object);
+
+            var service = new SyncService
+            (
+                new DataSourcesRepository
+                (
+                    confs
+                ),
+                _creationService,
+                _environmentsStoreMock.Object,
+                _emailServiceMock.Object,
+                _syncEmailsMock.Object,
+                _teamNotifierMock.Object
+            );
 
             SetupKnownEnvironments
             (
