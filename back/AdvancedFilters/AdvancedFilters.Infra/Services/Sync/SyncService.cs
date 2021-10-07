@@ -37,10 +37,16 @@ namespace AdvancedFilters.Infra.Services.Sync
             var builderWithFilter = _creationService.ForEnvironments(environments, dataSyncStrategy);
 
             var dataSources = _dataSourcesRepository.GetMonoTenant();
+
+            var missedTargets = new HashSet<string>();
             foreach (var dataSource in dataSources)
             {
                 var synchronizer = await dataSource.GetSynchronizerAsync(builderWithFilter);
-                await synchronizer.SyncAsync();
+                var syncResult = await synchronizer.SyncAsync(missedTargets);
+                foreach (var missedTarget in syncResult.MissedTargets)
+                {
+                    missedTargets.Add(missedTarget);
+                }
             }
         }
 
@@ -48,10 +54,16 @@ namespace AdvancedFilters.Infra.Services.Sync
         {
             var builderWithFilter = _creationService.ForEnvironments(new List<Environment>(), DataSyncStrategy.SyncEverything);
             var dataSources = _dataSourcesRepository.GetMultiTenant();
+
+            var missedTargets = new HashSet<string>();
             foreach (var dataSource in dataSources)
             {
                 var synchronizer = await dataSource.GetSynchronizerAsync(builderWithFilter);
-                await synchronizer.SyncAsync();
+                var syncResult = await synchronizer.SyncAsync(missedTargets);
+                foreach (var missedTarget in syncResult.MissedTargets)
+                {
+                    missedTargets.Add(missedTarget);
+                }
             }
         }
     }

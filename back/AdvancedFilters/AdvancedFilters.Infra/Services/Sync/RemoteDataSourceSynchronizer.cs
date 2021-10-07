@@ -3,7 +3,7 @@ using AdvancedFilters.Infra.Services.Sync.Dtos;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
-using System.Linq.Expressions;
+using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Tools;
@@ -12,13 +12,15 @@ namespace AdvancedFilters.Infra.Services.Sync
 {
     public class FetchJob<T>
     {
+        public string TargetCode { get; }
         public FetchJobHttpRequestDescription RequestDescription { get; }
         public Action<T> ObjectCreationFinalization { get; }
 
-        public FetchJob(Uri uri, Action<HttpRequestMessage> authentication, Action<T> objectCreationFinalization)
+        public FetchJob(Uri uri, Action<HttpRequestMessage> authentication, Action<T> objectCreationFinalization, string targetCode)
         {
             RequestDescription = new FetchJobHttpRequestDescription(uri, authentication);
             ObjectCreationFinalization = objectCreationFinalization;
+            TargetCode = targetCode;
         }
 
         public class FetchJobHttpRequestDescription
@@ -64,29 +66,36 @@ namespace AdvancedFilters.Infra.Services.Sync
             _fetchAction = fetchAction;
         }
 
-        public async Task SyncAsync()
+        public async Task<SyncResult> SyncAsync(HashSet<string> targetsToIgnore)
         {
-            var items = await FetchAsync();
-            await _upsertAction(items);
+            var fetchResult = await FetchAsync(targetsToIgnore);
+            await _upsertAction(fetchResult.Items);
+            return new SyncResult { MissedTargets = fetchResult.Failures.Select(f => f.TargetCode).ToList() };
         }
 
-        private async Task<List<T>> FetchAsync()
+        private async Task<FetchResult> FetchAsync(HashSet<string> targetsToIgnore)
         {
-            var items = new List<T>();
-            foreach (var job in _jobs)
+            var result = new FetchResult { Items = new List<T>(), Failures = new List<FetchJob<T>>()};
+            foreach (var job in _jobs.Where(j => !targetsToIgnore.Contains(j.TargetCode)))
             {
-                var batch = await FetchOneBatchAsync(job);
-                foreach (var item in batch)
+                var batchResult = await FetchOneBatchAsync(job);
+                if (!batchResult.Success)
+                {
+                    result.Failures.Add(job);
+                    continue;
+                }
+
+                foreach (var item in batchResult.Items)
                 {
                     job.ObjectCreationFinalization(item);
                 }
-                items.AddRange(batch);
+                result.Items.AddRange(batchResult.Items);
             }
 
-            return items;
+            return result;
         }
 
-        private async Task<List<T>> FetchOneBatchAsync(FetchJob<T> job)
+        private async Task<BatchFetchResult> FetchOneBatchAsync(FetchJob<T> job)
         {
             try
             {
@@ -97,14 +106,26 @@ namespace AdvancedFilters.Infra.Services.Sync
 
                 var dto = await Serializer.DeserializeAsync<TDto>(stream);
                 var batch = dto.ToItems();
-                return batch;
+                return new BatchFetchResult { Items = batch, Success = true };
             }
             catch (Exception e)
             {
                 var exception = new FetchJobException(job, e);
                 _logger.LogError(exception, "Fetch failed");
-                throw exception;
+                return new BatchFetchResult { Items = new List<T>(), Success = false };
             }
+        }
+
+        public class FetchResult
+        {
+            public List<T> Items { get; set; }
+            public List<FetchJob<T>> Failures { get; set; }
+        }
+
+        internal class BatchFetchResult
+        {
+            public List<T> Items { get; set; }
+            public bool Success { get; set; }
         }
 
         public class FetchJobException : ApplicationException
