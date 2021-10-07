@@ -1,6 +1,5 @@
 using AdvancedFilters.Domain.DataSources;
 using AdvancedFilters.Infra.Services.Sync.Dtos;
-using Microsoft.Extensions.Logging;
 using MoreLinq.Extensions;
 using System;
 using System.Collections.Generic;
@@ -50,7 +49,6 @@ namespace AdvancedFilters.Infra.Services.Sync
     {
         private readonly List<FetchJob<T>> _jobs;
         private readonly Func<List<T>, Task> _upsertAction;
-        private readonly ILogger _logger;
         private readonly HttpConfiguration _configuration;
         private readonly Func<HttpRequestMessage, Task<HttpResponseMessage>> _fetchAction;
 
@@ -59,13 +57,11 @@ namespace AdvancedFilters.Infra.Services.Sync
             List<FetchJob<T>> jobs,
             Func<HttpRequestMessage, Task<HttpResponseMessage>> fetchAction,
             Func<List<T>, Task> upsertAction,
-            ILogger logger,
             HttpConfiguration configuration
         )
         {
             _jobs = jobs;
             _upsertAction = upsertAction;
-            _logger = logger;
             _configuration = configuration;
             _fetchAction = fetchAction;
         }
@@ -74,12 +70,16 @@ namespace AdvancedFilters.Infra.Services.Sync
         {
             var fetchResult = await FetchAsync(targetsToIgnore);
             await _upsertAction(fetchResult.Items);
-            return new SyncResult { MissedTargets = fetchResult.Failures.Select(f => f.TargetCode).ToList() };
+            return new SyncResult
+            (
+                fetchResult.Failures.Select(f => f.FetchJob.TargetCode).ToList(),
+                fetchResult.Failures.Select(f => f.Exception).ToList()
+            );
         }
 
         private async Task<FetchResult> FetchAsync(HashSet<string> targetsToIgnore)
         {
-            var result = new FetchResult { Items = new List<T>(), Failures = new List<FetchJob<T>>()};
+            var result = new FetchResult { Items = new List<T>(), Failures = new List<BatchFetchResult>()};
             var batches = _jobs
                 .Where(j => !targetsToIgnore.Contains(j.TargetCode))
                 .Batch(_configuration.MaxParallelCalls);
@@ -89,9 +89,9 @@ namespace AdvancedFilters.Infra.Services.Sync
                 var batchResults = await Task.WhenAll(jobBatch.Select(FetchOneBatchAsync));
                 foreach (var batchResult in batchResults)
                 {
-                    if (!batchResult.Success)
+                    if (batchResult.Exception != null)
                     {
-                        result.Failures.Add(batchResult.FetchJob);
+                        result.Failures.Add(batchResult);
                         continue;
                     }
 
@@ -108,7 +108,7 @@ namespace AdvancedFilters.Infra.Services.Sync
 
         private async Task<BatchFetchResult> FetchOneBatchAsync(FetchJob<T> job)
         {
-            var result = new BatchFetchResult { FetchJob = job, Success = false };
+            var result = new BatchFetchResult { FetchJob = job };
             try
             {
                 using var message = job.RequestDescription.ToRequest();
@@ -119,12 +119,10 @@ namespace AdvancedFilters.Infra.Services.Sync
                 var dto = await Serializer.DeserializeAsync<TDto>(stream);
                 var batch = dto.ToItems();
                 result.Items = batch;
-                result.Success = true;
             }
             catch (Exception e)
             {
-                var exception = new FetchJobException(job, e);
-                _logger.LogError(exception, "Fetch failed");
+                result.Exception = new FetchJobException(job, e);
             }
 
             return result;
@@ -133,14 +131,14 @@ namespace AdvancedFilters.Infra.Services.Sync
         public class FetchResult
         {
             public List<T> Items { get; set; }
-            public List<FetchJob<T>> Failures { get; set; }
+            public List<BatchFetchResult> Failures { get; set; }
         }
 
-        internal class BatchFetchResult
+        public class BatchFetchResult
         {
             public List<T> Items { get; set; }
-            public bool Success { get; set; }
             public FetchJob<T> FetchJob { get; set; }
+            public Exception Exception { get; set; }
         }
 
         public class FetchJobException : ApplicationException

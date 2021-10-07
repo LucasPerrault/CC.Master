@@ -7,7 +7,6 @@ using AdvancedFilters.Infra.Services.Sync.Dtos;
 using AdvancedFilters.Infra.Storage.Services;
 using AdvancedFilters.Web;
 using AdvancedFilters.Web.Configuration;
-using Microsoft.Extensions.Logging;
 using Moq;
 using Remote.Infra.Extensions;
 using System;
@@ -27,7 +26,6 @@ namespace AdvancedFilters.Infra.Tests
         private readonly Mock<IBulkUpsertService> _upsertServiceMock;
         private readonly IDataSourceSyncCreationService _creationService;
         private readonly Mock<HttpClientHandler> _httpClientHandlerMock;
-        private readonly Mock<ILogger<IDataSourceSynchronizer>> _loggerMock;
 
         public HugeSyncServiceTests()
         {
@@ -37,14 +35,12 @@ namespace AdvancedFilters.Infra.Tests
 
             var client = new HttpClient(_httpClientHandlerMock.Object);
             var localDataSourceService = new Mock<ILocalDataSourceService>().Object;
-            _loggerMock = new Mock<ILogger<IDataSourceSynchronizer>>();
             _creationService = new DataSourceSyncCreationService
             (
                 client,
                 _upsertServiceMock.Object,
                 new HttpConfiguration { MaxParallelCalls = 42 },
                 new FetchAuthenticator(),
-                _loggerMock.Object,
                 localDataSourceService
             );
         }

@@ -33,7 +33,6 @@ namespace AdvancedFilters.Infra.Services.Sync
         private readonly IBulkUpsertService _bulk;
         private readonly HttpConfiguration _configuration;
         private readonly FetchAuthenticator _authenticator;
-        private readonly ILogger<IDataSourceSynchronizer> _logger;
         private readonly ILocalDataSourceService _localDataSourceService;
 
         public DataSourceSyncCreationService
@@ -42,7 +41,6 @@ namespace AdvancedFilters.Infra.Services.Sync
             IBulkUpsertService bulk,
             HttpConfiguration configuration,
             FetchAuthenticator authenticator,
-            ILogger<IDataSourceSynchronizer> logger,
             ILocalDataSourceService localDataSourceService
         )
         {
@@ -50,13 +48,12 @@ namespace AdvancedFilters.Infra.Services.Sync
             _bulk = bulk;
             _configuration = configuration;
             _authenticator = authenticator;
-            _logger = logger;
             _localDataSourceService = localDataSourceService;
         }
 
         public IDataSourceSynchronizerBuilder ForEnvironments(List<Environment> environments, DataSyncStrategy strategy)
         {
-            return new DataSourceSynchronizerBuilder(_httpClient, _bulk, _configuration, _localDataSourceService, _authenticator, _logger, environments, strategy);
+            return new DataSourceSynchronizerBuilder(_httpClient, _bulk, _configuration, _localDataSourceService, _authenticator, environments, strategy);
         }
     }
 
@@ -66,7 +63,6 @@ namespace AdvancedFilters.Infra.Services.Sync
         private readonly IBulkUpsertService _bulk;
         private readonly HttpConfiguration _configuration;
         private readonly FetchAuthenticator _authenticator;
-        private readonly ILogger<IDataSourceSynchronizer> _logger;
         private readonly ILocalDataSourceService _localDataSourceService;
         private readonly List<Environment> _environments;
         private readonly DataSyncStrategy _dataSyncStrategy;
@@ -79,7 +75,6 @@ namespace AdvancedFilters.Infra.Services.Sync
             HttpConfiguration configuration,
             ILocalDataSourceService localDataSourceService,
             FetchAuthenticator authenticator,
-            ILogger<IDataSourceSynchronizer> logger,
             List<Environment> environments,
             DataSyncStrategy dataSyncStrategy
         )
@@ -89,7 +84,6 @@ namespace AdvancedFilters.Infra.Services.Sync
             _configuration = configuration;
             _localDataSourceService = localDataSourceService;
             _authenticator = authenticator;
-            _logger = logger;
             _environments = environments;
             _environmentIds = environments.Select(e => e.Id).ToHashSet();
             _dataSyncStrategy = dataSyncStrategy;
@@ -239,7 +233,7 @@ namespace AdvancedFilters.Infra.Services.Sync
 
         private RemoteDataSourceSynchronizer<TDto, T> FromJobs<TDto, T>(List<FetchJob<T>> jobs, BulkUpsertConfig config) where TDto : IDto<T> where T : class
         {
-            return new RemoteDataSourceSynchronizer<TDto, T>(jobs, _httpClient.SendAsync, entities => _bulk.InsertOrUpdateOrDeleteAsync(entities, config), _logger, _configuration);
+            return new RemoteDataSourceSynchronizer<TDto, T>(jobs, _httpClient.SendAsync, entities => _bulk.InsertOrUpdateOrDeleteAsync(entities, config), _configuration);
         }
 
         private class EmptyDataSourceContext<T> : IDataSourceContext<T>

@@ -2,6 +2,7 @@ using AdvancedFilters.Domain.DataSources;
 using AdvancedFilters.Domain.Instance.Filters;
 using AdvancedFilters.Domain.Instance.Interfaces;
 using MoreLinq;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -50,27 +51,21 @@ namespace AdvancedFilters.Infra.Services.Sync
         private async Task SyncTenantsDataAsync(List<Environment> environments, DataSyncStrategy strategy)
         {
             var builderWithFilter = _creationService.ForEnvironments(environments, strategy);
-
             var dataSources = _dataSourcesRepository.GetMonoTenant();
-
-            var missedTargets = new HashSet<string>();
-            foreach (var dataSource in dataSources)
-            {
-                var synchronizer = await dataSource.GetSynchronizerAsync(builderWithFilter);
-                var syncResult = await synchronizer.SyncAsync(missedTargets);
-                foreach (var missedTarget in syncResult.MissedTargets)
-                {
-                    missedTargets.Add(missedTarget);
-                }
-            }
+            await SyncAsync(dataSources, builderWithFilter);
         }
 
         public async Task SyncMultiTenantDataAsync()
         {
             var builderWithFilter = _creationService.ForEnvironments(new List<Environment>(), DataSyncStrategy.SyncEverything);
             var dataSources = _dataSourcesRepository.GetMultiTenant();
+            await SyncAsync(dataSources, builderWithFilter);
+        }
 
+        private async Task SyncAsync(IEnumerable<DataSource> dataSources, IDataSourceSynchronizerBuilder builderWithFilter)
+        {
             var missedTargets = new HashSet<string>();
+            var exceptions = new List<Exception>();
             foreach (var dataSource in dataSources)
             {
                 var synchronizer = await dataSource.GetSynchronizerAsync(builderWithFilter);
@@ -79,7 +74,16 @@ namespace AdvancedFilters.Infra.Services.Sync
                 {
                     missedTargets.Add(missedTarget);
                 }
+
+                exceptions.AddRange(syncResult.Exceptions);
             }
+
+            await NotifyAsync(exceptions);
+        }
+
+        private Task NotifyAsync(List<Exception> exceptions)
+        {
+            return Task.CompletedTask;
         }
     }
 }

@@ -21,7 +21,7 @@ namespace AdvancedFilters.Infra.Services.Sync
             // no target to ignore in local context
             var items = await _getItemsAsyncAction();
             await _upsertAction(items);
-            return new SyncResult { MissedTargets = new List<string>() };
+            return new SyncResult();
         }
     }
 }
