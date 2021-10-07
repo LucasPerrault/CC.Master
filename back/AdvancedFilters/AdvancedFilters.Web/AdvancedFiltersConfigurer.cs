@@ -20,7 +20,7 @@ namespace AdvancedFilters.Web
             services.AddSingleton(new DataSourcesRepository(DataSourceMapper.GetAll(configuration)));
 
             services.ConfigureStorage();
-            services.ConfigureSync();
+            services.ConfigureSync(configuration);
 
             services.ConfigureCore();
             services.ConfigureInstances();
@@ -33,8 +33,9 @@ namespace AdvancedFilters.Web
             services.AddScoped<IBulkUpsertService, BulkUpsertService>();
         }
 
-        public static void ConfigureSync(this IServiceCollection services)
+        public static void ConfigureSync(this IServiceCollection services, AdvancedFiltersConfiguration configuration)
         {
+            services.AddSingleton(new HttpConfiguration { MaxParallelCalls = configuration.MaxParallelHttpCalls });
             services.AddSingleton<FetchAuthenticator>();
             services.AddScoped<ILocalDataSourceService, LocalDataSourceService>();
             services.AddScoped<SyncService>();

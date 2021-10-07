@@ -126,6 +126,7 @@
         }
     },
     "AdvancedFilters": {
+        "MaxParallelHttpCalls": 40,
         "Routes": {
             "Hosts": {
                 "CloudControl": {

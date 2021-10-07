@@ -51,6 +51,7 @@ namespace AdvancedFilters.Infra.Services.Sync
         private readonly List<FetchJob<T>> _jobs;
         private readonly Func<List<T>, Task> _upsertAction;
         private readonly ILogger _logger;
+        private readonly HttpConfiguration _configuration;
         private readonly Func<HttpRequestMessage, Task<HttpResponseMessage>> _fetchAction;
 
         public RemoteDataSourceSynchronizer
@@ -58,12 +59,14 @@ namespace AdvancedFilters.Infra.Services.Sync
             List<FetchJob<T>> jobs,
             Func<HttpRequestMessage, Task<HttpResponseMessage>> fetchAction,
             Func<List<T>, Task> upsertAction,
-            ILogger logger
+            ILogger logger,
+            HttpConfiguration configuration
         )
         {
             _jobs = jobs;
             _upsertAction = upsertAction;
             _logger = logger;
+            _configuration = configuration;
             _fetchAction = fetchAction;
         }
 
@@ -77,7 +80,10 @@ namespace AdvancedFilters.Infra.Services.Sync
         private async Task<FetchResult> FetchAsync(HashSet<string> targetsToIgnore)
         {
             var result = new FetchResult { Items = new List<T>(), Failures = new List<FetchJob<T>>()};
-            var batches = _jobs.Where(j => !targetsToIgnore.Contains(j.TargetCode)).Batch(20);
+            var batches = _jobs
+                .Where(j => !targetsToIgnore.Contains(j.TargetCode))
+                .Batch(_configuration.MaxParallelCalls);
+
             foreach (var jobBatch in batches)
             {
                 var batchResults = await Task.WhenAll(jobBatch.Select(FetchOneBatchAsync));

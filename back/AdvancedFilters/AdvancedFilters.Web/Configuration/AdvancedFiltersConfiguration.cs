@@ -8,6 +8,7 @@ namespace AdvancedFilters.Web.Configuration
 {
     public class AdvancedFiltersConfiguration
     {
+        public int MaxParallelHttpCalls { get; set; }
         public RoutesConfiguration Routes { get; set; }
         public AuthenticationConfiguration Auth { get; set; }
     }

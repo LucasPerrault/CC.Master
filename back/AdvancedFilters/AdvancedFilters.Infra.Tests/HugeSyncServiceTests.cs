@@ -42,6 +42,7 @@ namespace AdvancedFilters.Infra.Tests
             (
                 client,
                 _upsertServiceMock.Object,
+                new HttpConfiguration { MaxParallelCalls = 42 },
                 new FetchAuthenticator(),
                 _loggerMock.Object,
                 localDataSourceService

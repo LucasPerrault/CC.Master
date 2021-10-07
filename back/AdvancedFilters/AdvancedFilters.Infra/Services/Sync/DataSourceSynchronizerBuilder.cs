@@ -21,11 +21,17 @@ using Environment = AdvancedFilters.Domain.Instance.Models.Environment;
 
 namespace AdvancedFilters.Infra.Services.Sync
 {
+    public class HttpConfiguration
+    {
+        public int MaxParallelCalls { get; set; }
+    }
+
     public class DataSourceSyncCreationService : IDataSourceSyncCreationService
     {
 
         private readonly HttpClient _httpClient;
         private readonly IBulkUpsertService _bulk;
+        private readonly HttpConfiguration _configuration;
         private readonly FetchAuthenticator _authenticator;
         private readonly ILogger<IDataSourceSynchronizer> _logger;
         private readonly ILocalDataSourceService _localDataSourceService;
@@ -34,6 +40,7 @@ namespace AdvancedFilters.Infra.Services.Sync
         (
             HttpClient httpClient,
             IBulkUpsertService bulk,
+            HttpConfiguration configuration,
             FetchAuthenticator authenticator,
             ILogger<IDataSourceSynchronizer> logger,
             ILocalDataSourceService localDataSourceService
@@ -41,6 +48,7 @@ namespace AdvancedFilters.Infra.Services.Sync
         {
             _httpClient = httpClient;
             _bulk = bulk;
+            _configuration = configuration;
             _authenticator = authenticator;
             _logger = logger;
             _localDataSourceService = localDataSourceService;
@@ -48,7 +56,7 @@ namespace AdvancedFilters.Infra.Services.Sync
 
         public IDataSourceSynchronizerBuilder ForEnvironments(List<Environment> environments, DataSyncStrategy strategy)
         {
-            return new DataSourceSynchronizerBuilder(_httpClient, _bulk, _localDataSourceService, _authenticator, _logger, environments, strategy);
+            return new DataSourceSynchronizerBuilder(_httpClient, _bulk, _configuration, _localDataSourceService, _authenticator, _logger, environments, strategy);
         }
     }
 
@@ -56,6 +64,7 @@ namespace AdvancedFilters.Infra.Services.Sync
     {
         private readonly HttpClient _httpClient;
         private readonly IBulkUpsertService _bulk;
+        private readonly HttpConfiguration _configuration;
         private readonly FetchAuthenticator _authenticator;
         private readonly ILogger<IDataSourceSynchronizer> _logger;
         private readonly ILocalDataSourceService _localDataSourceService;
@@ -67,6 +76,7 @@ namespace AdvancedFilters.Infra.Services.Sync
         (
             HttpClient httpClient,
             IBulkUpsertService bulk,
+            HttpConfiguration configuration,
             ILocalDataSourceService localDataSourceService,
             FetchAuthenticator authenticator,
             ILogger<IDataSourceSynchronizer> logger,
@@ -76,6 +86,7 @@ namespace AdvancedFilters.Infra.Services.Sync
         {
             _httpClient = httpClient;
             _bulk = bulk;
+            _configuration = configuration;
             _localDataSourceService = localDataSourceService;
             _authenticator = authenticator;
             _logger = logger;
@@ -228,7 +239,7 @@ namespace AdvancedFilters.Infra.Services.Sync
 
         private RemoteDataSourceSynchronizer<TDto, T> FromJobs<TDto, T>(List<FetchJob<T>> jobs, BulkUpsertConfig config) where TDto : IDto<T> where T : class
         {
-            return new RemoteDataSourceSynchronizer<TDto, T>(jobs, _httpClient.SendAsync, entities => _bulk.InsertOrUpdateOrDeleteAsync(entities, config), _logger);
+            return new RemoteDataSourceSynchronizer<TDto, T>(jobs, _httpClient.SendAsync, entities => _bulk.InsertOrUpdateOrDeleteAsync(entities, config), _logger, _configuration);
         }
 
         private class EmptyDataSourceContext<T> : IDataSourceContext<T>
