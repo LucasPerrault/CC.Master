@@ -27,6 +27,7 @@ namespace AdvancedFilters.Infra.Tests
         private readonly Mock<IBulkUpsertService> _upsertServiceMock;
         private readonly IDataSourceSyncCreationService _creationService;
         private readonly Mock<HttpClientHandler> _httpClientHandlerMock;
+        private readonly Mock<ILogger<IDataSourceSynchronizer>> _loggerMock;
 
         public HugeSyncServiceTests()
         {
@@ -36,8 +37,15 @@ namespace AdvancedFilters.Infra.Tests
 
             var client = new HttpClient(_httpClientHandlerMock.Object);
             var localDataSourceService = new Mock<ILocalDataSourceService>().Object;
-            var loggerMock = new Mock<ILogger<IDataSourceSynchronizer>>().Object;
-            _creationService = new DataSourceSyncCreationService(client, _upsertServiceMock.Object, new FetchAuthenticator(), loggerMock, localDataSourceService);
+            _loggerMock = new Mock<ILogger<IDataSourceSynchronizer>>();
+            _creationService = new DataSourceSyncCreationService
+            (
+                client,
+                _upsertServiceMock.Object,
+                new FetchAuthenticator(),
+                _loggerMock.Object,
+                localDataSourceService
+            );
         }
 
         [Fact]
@@ -124,16 +132,53 @@ namespace AdvancedFilters.Infra.Tests
             );
         }
 
+        [Fact]
+        public async Task ShouldSkipMissedTargets()
+        {
+
+            var confs = new Dictionary<DataSources, DataSource>
+            {
+                [DataSources.AppInstances] = DataSourceMapper.Get(DataSources.AppInstances, Configuration),
+                [DataSources.LegalUnits] = DataSourceMapper.Get(DataSources.LegalUnits, Configuration),
+            };
+            var service = new SyncService(new DataSourcesRepository(confs), _creationService, _environmentsStoreMock.Object);
+
+            SetupKnownEnvironments
+            (
+                new Environment { Id = 1, Subdomain = "toto", ProductionHost = "https://toto.dev" },
+                new Environment { Id = 2, Subdomain = "titi", ProductionHost = "https://titi.dev" }
+            );
+            SetupHttpResponse("https://toto.dev/api/legal-units", new LegalUnitsDto
+            {
+                Items = new List<LegalUnit> { new LegalUnit { EnvironmentId = 1 } }
+            });
+            SetupHttpResponse("https://toto.dev/api/app-instances", new AppInstancesDto
+            {
+                Data = ApiV3Response(new AppInstance { EnvironmentId = 1 })
+            });
+
+            await service.SyncMonoTenantDataAsync(new HashSet<string> { "toto", "titi" });
+            _httpClientHandlerMock.VerifySendAsync(MessageWithUrl(HttpMethod.Get, "https://toto.dev/api/app-instances"), Times.Once());
+            _httpClientHandlerMock.VerifySendAsync(MessageWithUrl(HttpMethod.Get, "https://titi.dev/api/app-instances"), Times.Once());
+            _httpClientHandlerMock.VerifySendAsync(MessageWithUrl(HttpMethod.Get, "https://toto.dev/api/legal-units"), Times.Once());
+            _httpClientHandlerMock.VerifySendAsync(MessageWithUrl(HttpMethod.Get, "https://titi.dev/api/legal-units"), Times.Never());
+        }
+
         private ApiV3DtoData<T> ApiV3Response<T>(params T[] elements)
         {
             var list = elements == null ? new List<T>() : elements.ToList();
             return new ApiV3DtoData<T> { Items = list };
         }
 
+        private ItIsRequestMessage MessageWithUrl(HttpMethod method, string url)
+        {
+            return ItIsRequestMessage.Matching(m => m.RequestUri.ToString() == url && m.Method == method);
+        }
+
         private void SetupHttpResponse<TDto>(string url, TDto dto)
         {
             _httpClientHandlerMock
-                .SetupSendAsync(ItIsRequestMessage.Matching(m => m.RequestUri.ToString() == url && m.Method == HttpMethod.Get))
+                .SetupSendAsync(MessageWithUrl(HttpMethod.Get, url))
                 .ReturnsAsync(new HttpResponseMessage { Content = dto.ToJsonPayload() });
         }
 

@@ -15,6 +15,10 @@ namespace Testing.Infra
         {
             return handler.Protected().Setup<Task<HttpResponseMessage>>("SendAsync", requestMessage.Expression, ItExpr.IsAny<CancellationToken>());
         }
+        public static void VerifySendAsync(this Mock<HttpClientHandler> handler, ItIsRequestMessage requestMessage, Times times)
+        {
+            handler.Protected().Verify<Task<HttpResponseMessage>>("SendAsync", times, requestMessage.Expression, ItExpr.IsAny<CancellationToken>());
+        }
     }
 
     public class ItIsRequestMessage
