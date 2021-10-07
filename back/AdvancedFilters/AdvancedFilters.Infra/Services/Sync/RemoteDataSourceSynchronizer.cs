@@ -1,6 +1,7 @@
 using AdvancedFilters.Domain.DataSources;
 using AdvancedFilters.Infra.Services.Sync.Dtos;
 using Microsoft.Extensions.Logging;
+using MoreLinq.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -76,20 +77,24 @@ namespace AdvancedFilters.Infra.Services.Sync
         private async Task<FetchResult> FetchAsync(HashSet<string> targetsToIgnore)
         {
             var result = new FetchResult { Items = new List<T>(), Failures = new List<FetchJob<T>>()};
-            foreach (var job in _jobs.Where(j => !targetsToIgnore.Contains(j.TargetCode)))
+            var batches = _jobs.Where(j => !targetsToIgnore.Contains(j.TargetCode)).Batch(20);
+            foreach (var jobBatch in batches)
             {
-                var batchResult = await FetchOneBatchAsync(job);
-                if (!batchResult.Success)
+                var batchResults = await Task.WhenAll(jobBatch.Select(FetchOneBatchAsync));
+                foreach (var batchResult in batchResults)
                 {
-                    result.Failures.Add(job);
-                    continue;
-                }
+                    if (!batchResult.Success)
+                    {
+                        result.Failures.Add(batchResult.FetchJob);
+                        continue;
+                    }
 
-                foreach (var item in batchResult.Items)
-                {
-                    job.ObjectCreationFinalization(item);
+                    foreach (var item in batchResult.Items)
+                    {
+                        batchResult.FetchJob.ObjectCreationFinalization(item);
+                    }
+                    result.Items.AddRange(batchResult.Items);
                 }
-                result.Items.AddRange(batchResult.Items);
             }
 
             return result;
@@ -97,6 +102,7 @@ namespace AdvancedFilters.Infra.Services.Sync
 
         private async Task<BatchFetchResult> FetchOneBatchAsync(FetchJob<T> job)
         {
+            var result = new BatchFetchResult { FetchJob = job, Success = false };
             try
             {
                 using var message = job.RequestDescription.ToRequest();
@@ -106,14 +112,16 @@ namespace AdvancedFilters.Infra.Services.Sync
 
                 var dto = await Serializer.DeserializeAsync<TDto>(stream);
                 var batch = dto.ToItems();
-                return new BatchFetchResult { Items = batch, Success = true };
+                result.Items = batch;
+                result.Success = true;
             }
             catch (Exception e)
             {
                 var exception = new FetchJobException(job, e);
                 _logger.LogError(exception, "Fetch failed");
-                return new BatchFetchResult { Items = new List<T>(), Success = false };
             }
+
+            return result;
         }
 
         public class FetchResult
@@ -126,6 +134,7 @@ namespace AdvancedFilters.Infra.Services.Sync
         {
             public List<T> Items { get; set; }
             public bool Success { get; set; }
+            public FetchJob<T> FetchJob { get; set; }
         }
 
         public class FetchJobException : ApplicationException

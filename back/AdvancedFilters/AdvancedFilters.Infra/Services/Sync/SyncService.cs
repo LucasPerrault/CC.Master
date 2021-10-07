@@ -1,6 +1,7 @@
 using AdvancedFilters.Domain.DataSources;
 using AdvancedFilters.Domain.Instance.Filters;
 using AdvancedFilters.Domain.Instance.Interfaces;
+using MoreLinq;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -34,7 +35,21 @@ namespace AdvancedFilters.Infra.Services.Sync
                 : DataSyncStrategy.SyncEverything;
 
             var environments = await _environmentsStore.GetAsync(new EnvironmentFilter { Subdomains = subdomains });
-            var builderWithFilter = _creationService.ForEnvironments(environments, dataSyncStrategy);
+            await SyncTenantsDataAsync(environments, dataSyncStrategy);
+        }
+
+        public async Task SyncRandomMonoTenantDataAsync(int tenantCount)
+        {
+            var environments = ( await _environmentsStore.GetAsync(new EnvironmentFilter()) )
+                .Shuffle()
+                .Take(tenantCount)
+                .ToList();
+            await SyncTenantsDataAsync(environments, DataSyncStrategy.SyncSpecificEnvironmentsOnly);
+        }
+
+        private async Task SyncTenantsDataAsync(List<Environment> environments, DataSyncStrategy strategy)
+        {
+            var builderWithFilter = _creationService.ForEnvironments(environments, strategy);
 
             var dataSources = _dataSourcesRepository.GetMonoTenant();
 

@@ -44,6 +44,17 @@ namespace AdvancedFilters.Web.Controllers
             }
             return _syncService.SyncMonoTenantDataAsync(query.Subdomain);
         }
+
+        [HttpPost("mono-tenant/random")]
+        [ForbidIfMissing(Operation.SyncAllCafe)]
+        public Task RandomMonoSyncAsync([FromQuery]int tenantCount)
+        {
+            if (tenantCount == 0)
+            {
+                throw new BadRequestException("tenantCount query param is mandatory");
+            }
+            return _syncService.SyncRandomMonoTenantDataAsync(tenantCount);
+        }
     }
 
     public class SyncQuery
