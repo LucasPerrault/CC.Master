@@ -36,6 +36,7 @@ namespace AdvancedFilters.Infra.Storage.Stores
 
         private IQueryable<AppInstance> AppInstances => _dbContext
             .Set<AppInstance>()
+            .Include(i => i.Environment).ThenInclude(e => e.LegalUnits).ThenInclude(lu => lu.Country)
             .Include(i => i.Environment).ThenInclude(e => e.LegalUnits).ThenInclude(lu => lu.Establishments);
     }
 

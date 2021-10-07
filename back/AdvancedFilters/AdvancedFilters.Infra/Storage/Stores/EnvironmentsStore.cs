@@ -53,6 +53,7 @@ namespace AdvancedFilters.Infra.Storage.Stores
 
         private IQueryable<Environment> Environments => _dbContext
             .Set<Environment>()
+            .Include(e => e.LegalUnits).ThenInclude(lu => lu.Country)
             .Include(e => e.LegalUnits).ThenInclude(lu => lu.Establishments)
             .Include(e => e.AppInstances);
     }

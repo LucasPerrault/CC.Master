@@ -38,7 +38,7 @@ namespace AdvancedFilters.Infra.Storage.Stores
         private IQueryable<SpecializedContact> SpecializedContacts => _dbContext
             .Set<SpecializedContact>()
             .Include(c => c.Environment).ThenInclude(e => e.AppInstances)
-            .Include(c => c.Establishment).ThenInclude(e => e.LegalUnit);
+            .Include(c => c.Establishment).ThenInclude(e => e.LegalUnit).ThenInclude(lu => lu.Country);
     }
 
     internal static class SpecializedContactQueryableExtensions
