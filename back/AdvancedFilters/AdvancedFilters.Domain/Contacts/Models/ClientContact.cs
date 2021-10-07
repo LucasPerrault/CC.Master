@@ -5,7 +5,7 @@ using Environment = AdvancedFilters.Domain.Instance.Models.Environment;
 
 namespace AdvancedFilters.Domain.Contacts.Models
 {
-    public class ClientContact
+    public class ClientContactCore
     {
         public int Id { get; set; }
         public int RoleId { get; set; }
@@ -17,7 +17,10 @@ namespace AdvancedFilters.Domain.Contacts.Models
         public bool IsConfirmed { get; set; }
         public int EnvironmentId { get; set; }
         public int EstablishmentId { get; set; }
+    }
 
+    public class ClientContact : ClientContactCore
+    {
         public Client Client { get; set; }
         public Environment Environment { get; set; }
         public Establishment Establishment { get; set; }

@@ -88,7 +88,7 @@ namespace AdvancedFilters.Infra.Services.Sync.Dtos
 
     internal class ClientContactsDto : IDto<ClientContact>
     {
-        public class ClientContactDto : ClientContact
+        public class ClientContactDto : ClientContactCore
         {
             public ContactDtoUser User { get; set; }
         }
@@ -98,7 +98,19 @@ namespace AdvancedFilters.Infra.Services.Sync.Dtos
         ClientContact ToClientContact(ClientContactDto i)
         {
             i.EstablishmentId = i.User.EstablishmentId;
-            return i;
+            return new ClientContact
+            {
+                Id = i.Id,
+                ClientId = i.ClientId,
+                EnvironmentId = i.EnvironmentId,
+                RoleCode = i.RoleCode,
+                CreatedAt = i.CreatedAt,
+                ExpiresAt = i.ExpiresAt,
+                EstablishmentId = i.EstablishmentId,
+                IsConfirmed = i.IsConfirmed,
+                RoleId = i.RoleId,
+                UserId = i.UserId
+            };
         }
 
         public List<ClientContact> ToItems() => Items.Select(ToClientContact).ToList();
