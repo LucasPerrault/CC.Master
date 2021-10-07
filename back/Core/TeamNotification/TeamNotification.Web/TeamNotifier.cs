@@ -28,6 +28,7 @@ namespace TeamNotification.Web
             return team switch
             {
                 Team.DemoMaintainers => _hooks.DemosMaintainers,
+                Team.CafeAdmins => _hooks.CloudControlTeam,
                 _ => _hooks.CloudControlTeam // a notification should never be lost, CC team is default team
             };
         }

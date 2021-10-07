@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using TeamNotification.Abstractions;
 using Environment = AdvancedFilters.Domain.Instance.Models.Environment;
 
 namespace AdvancedFilters.Infra.Services.Sync
@@ -18,6 +19,7 @@ namespace AdvancedFilters.Infra.Services.Sync
         private readonly IEnvironmentsStore _environmentsStore;
         private readonly IEmailService _emailService;
         private readonly ISyncEmails _syncEmails;
+        private readonly ITeamNotifier _teamNotifier;
 
         public SyncService
         (
@@ -25,7 +27,8 @@ namespace AdvancedFilters.Infra.Services.Sync
             IDataSourceSyncCreationService creationService,
             IEnvironmentsStore environmentsStore,
             IEmailService emailService,
-            ISyncEmails syncEmails
+            ISyncEmails syncEmails,
+            ITeamNotifier teamNotifier
         )
         {
             _dataSourcesRepository = dataSourcesRepository;
@@ -33,6 +36,7 @@ namespace AdvancedFilters.Infra.Services.Sync
             _environmentsStore = environmentsStore;
             _emailService = emailService;
             _syncEmails = syncEmails;
+            _teamNotifier = teamNotifier;
         }
 
         public async Task SyncEverythingAsync()
@@ -62,25 +66,25 @@ namespace AdvancedFilters.Infra.Services.Sync
 
         private async Task SyncTenantsDataAsync(List<Environment> environments, DataSyncStrategy strategy)
         {
-            var builderWithFilter = _creationService.ForEnvironments(environments, strategy);
+            var builder = _creationService.ForEnvironments(environments, strategy);
             var dataSources = _dataSourcesRepository.GetMonoTenant();
-            await SyncAsync(dataSources, builderWithFilter);
+            await SyncAsync(dataSources, builder);
         }
 
         public async Task SyncMultiTenantDataAsync()
         {
-            var builderWithFilter = _creationService.ForEnvironments(new List<Environment>(), DataSyncStrategy.SyncEverything);
+            var builder = _creationService.ForEnvironments(new List<Environment>(), DataSyncStrategy.SyncEverything);
             var dataSources = _dataSourcesRepository.GetMultiTenant();
-            await SyncAsync(dataSources, builderWithFilter);
+            await SyncAsync(dataSources, builder);
         }
 
-        private async Task SyncAsync(IEnumerable<DataSource> dataSources, IDataSourceSynchronizerBuilder builderWithFilter)
+        private async Task SyncAsync(IEnumerable<DataSource> dataSources, IDataSourceSynchronizerBuilder builder)
         {
             var missedTargets = new HashSet<string>();
             var exceptions = new List<Exception>();
             foreach (var dataSource in dataSources)
             {
-                var synchronizer = await dataSource.GetSynchronizerAsync(builderWithFilter);
+                var synchronizer = await dataSource.GetSynchronizerAsync(builder);
                 var syncResult = await synchronizer.SyncAsync(missedTargets);
                 foreach (var missedTarget in syncResult.MissedTargets)
                 {
@@ -93,14 +97,16 @@ namespace AdvancedFilters.Infra.Services.Sync
             await NotifyAsync(exceptions);
         }
 
-        private Task NotifyAsync(List<Exception> exceptions)
+        private async Task NotifyAsync(List<Exception> exceptions)
         {
             if (!exceptions.Any())
             {
-                return Task.CompletedTask;
+                return;
             }
 
-            return _emailService.SendAsync
+            await _teamNotifier.NotifyAsync(Team.DemoMaintainers, $":coffee: Cafe : sync encountered {exceptions.Count} errors");
+
+            await _emailService.SendAsync
             (
                 new SenderForm { DisplayName = "Cafe Sync - Rapport" },
                 RecipientForm.FromContact(EmailContact.CloudControl),
