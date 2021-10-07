@@ -67,6 +67,11 @@ namespace AdvancedFilters.Infra.Services.Sync.Dtos
         public int EstablishmentId { get; set; }
     }
 
+    internal class ContactDtoRole
+    {
+        public string Code { get; set; }
+    }
+
     internal class AppContactsDto : IDto<AppContact>
     {
         public class AppContactDto : AppContact
@@ -91,6 +96,7 @@ namespace AdvancedFilters.Infra.Services.Sync.Dtos
         public class ClientContactDto : ClientContactCore
         {
             public ContactDtoUser User { get; set; }
+            public ContactDtoRole Role { get; set; }
         }
 
         public List<ClientContactDto> Items { get; set; }
@@ -103,7 +109,7 @@ namespace AdvancedFilters.Infra.Services.Sync.Dtos
                 Id = i.Id,
                 ClientId = i.ClientId,
                 EnvironmentId = i.EnvironmentId,
-                RoleCode = i.RoleCode,
+                RoleCode = i.Role.Code,
                 CreatedAt = i.CreatedAt,
                 ExpiresAt = i.ExpiresAt,
                 EstablishmentId = i.EstablishmentId,
@@ -121,6 +127,7 @@ namespace AdvancedFilters.Infra.Services.Sync.Dtos
         public class SpecializedContactDto : SpecializedContact
         {
             public ContactDtoUser User { get; set; }
+            public ContactDtoRole Role { get; set; }
         }
 
         public List<SpecializedContactDto> Items { get; set; }
@@ -128,6 +135,7 @@ namespace AdvancedFilters.Infra.Services.Sync.Dtos
         SpecializedContact ToSpecializedContact(SpecializedContactDto i)
         {
             i.EstablishmentId = i.User.EstablishmentId;
+            i.RoleCode = i.Role.Code;
             return i;
         }
 
