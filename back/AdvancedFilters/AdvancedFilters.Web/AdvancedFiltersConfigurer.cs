@@ -10,6 +10,7 @@ using AdvancedFilters.Web.Configuration;
 using Lucca.Core.PublicData;
 using Microsoft.Extensions.DependencyInjection;
 using Remote.Infra.Extensions;
+using Resources.Translations;
 
 namespace AdvancedFilters.Web
 {
@@ -19,6 +20,7 @@ namespace AdvancedFilters.Web
         {
             services.AddSingleton(new DataSourcesRepository(DataSourceMapper.GetAll(configuration)));
 
+            services.AddScoped<Translations>();
             services.ConfigureStorage();
             services.ConfigureSync(configuration);
 
@@ -38,6 +40,7 @@ namespace AdvancedFilters.Web
             services.AddSingleton(new HttpConfiguration { MaxParallelCalls = configuration.MaxParallelHttpCalls });
             services.AddSingleton<FetchAuthenticator>();
             services.AddScoped<ILocalDataSourceService, LocalDataSourceService>();
+            services.AddScoped<ISyncEmails, SyncEmails>();
             services.AddScoped<SyncService>();
 
             services.AddHttpClient<IDataSourceSyncCreationService, DataSourceSyncCreationService>

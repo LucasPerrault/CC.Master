@@ -1,6 +1,7 @@
 using AdvancedFilters.Domain.DataSources;
 using AdvancedFilters.Domain.Instance.Filters;
 using AdvancedFilters.Domain.Instance.Interfaces;
+using Email.Domain;
 using MoreLinq;
 using System;
 using System.Collections.Generic;
@@ -15,12 +16,23 @@ namespace AdvancedFilters.Infra.Services.Sync
         private readonly DataSourcesRepository _dataSourcesRepository;
         private readonly IDataSourceSyncCreationService _creationService;
         private readonly IEnvironmentsStore _environmentsStore;
+        private readonly IEmailService _emailService;
+        private readonly ISyncEmails _syncEmails;
 
-        public SyncService(DataSourcesRepository dataSourcesRepository, IDataSourceSyncCreationService creationService, IEnvironmentsStore environmentsStore)
+        public SyncService
+        (
+            DataSourcesRepository dataSourcesRepository,
+            IDataSourceSyncCreationService creationService,
+            IEnvironmentsStore environmentsStore,
+            IEmailService emailService,
+            ISyncEmails syncEmails
+        )
         {
             _dataSourcesRepository = dataSourcesRepository;
             _creationService = creationService;
             _environmentsStore = environmentsStore;
+            _emailService = emailService;
+            _syncEmails = syncEmails;
         }
 
         public async Task SyncEverythingAsync()
@@ -83,7 +95,17 @@ namespace AdvancedFilters.Infra.Services.Sync
 
         private Task NotifyAsync(List<Exception> exceptions)
         {
-            return Task.CompletedTask;
+            if (!exceptions.Any())
+            {
+                return Task.CompletedTask;
+            }
+
+            return _emailService.SendAsync
+            (
+                new SenderForm { DisplayName = "Cafe Sync - Rapport" },
+                RecipientForm.FromContact(EmailContact.CloudControl),
+                _syncEmails.GetSyncReportEmail(exceptions).Content
+            );
         }
     }
 }

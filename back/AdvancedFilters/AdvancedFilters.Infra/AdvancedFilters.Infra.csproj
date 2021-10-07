@@ -12,6 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\Core\Email\Email.Domain\Email.Domain.csproj" />
     <ProjectReference Include="..\..\Core\Storage\Storage.Infra\Storage.Infra.csproj" />
     <ProjectReference Include="..\AdvancedFilters.Domain\AdvancedFilters.Domain.csproj" />
   </ItemGroup>

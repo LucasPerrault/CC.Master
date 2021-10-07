@@ -1,5 +1,6 @@
 {
     "includes": [
-      "Instances"
+      "Instances",
+      "AdvancedFilters"
     ]
   }
