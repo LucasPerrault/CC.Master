@@ -10,6 +10,7 @@ namespace AdvancedFilters.Domain.Core.Collections
     {
         Task<Country> GetByIdAsync(int id);
         Task<IReadOnlyCollection<Country>> GetAsync(IReadOnlyCollection<int> ids);
+        Task<IReadOnlyCollection<Country>> GetAllAsync();
     }
 
     public class CountriesCollection : ICountriesCollection
@@ -30,15 +31,25 @@ namespace AdvancedFilters.Domain.Core.Collections
         public Task<IReadOnlyCollection<Country>> GetAsync(IReadOnlyCollection<int> ids)
         {
             var countries = ids
-                .Select(id => GetCountry(id))
+                .Select(GetCountry)
                 .ToList();
             return Task.FromResult<IReadOnlyCollection<Country>>(countries);
+        }
+
+        public Task<IReadOnlyCollection<Country>> GetAllAsync()
+        {
+            IReadOnlyCollection<Country> countries = _countriesCollection
+                .Countries
+                .Select(Country.FromLuccaCountry)
+                .ToList();
+
+            return Task.FromResult(countries);
         }
 
         private Country GetCountry(int id)
         {
             var luccaCountry = _countriesCollection.GetById(id);
-            return new Country(luccaCountry);
+            return Country.FromLuccaCountry(luccaCountry);
         }
     }
 }

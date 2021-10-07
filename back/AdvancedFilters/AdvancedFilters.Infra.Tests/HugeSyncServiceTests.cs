@@ -35,8 +35,9 @@ namespace AdvancedFilters.Infra.Tests
             _environmentsStoreMock = new Mock<IEnvironmentsStore>();
 
             var client = new HttpClient(_httpClientHandlerMock.Object);
+            var localDataSourceService = new Mock<ILocalDataSourceService>().Object;
             var loggerMock = new Mock<ILogger<IDataSourceSynchronizer>>().Object;
-            _creationService = new DataSourceSyncCreationService(client, _upsertServiceMock.Object, new FetchAuthenticator(), _environmentsStoreMock.Object, loggerMock);
+            _creationService = new DataSourceSyncCreationService(client, _upsertServiceMock.Object, new FetchAuthenticator(), _environmentsStoreMock.Object, loggerMock, localDataSourceService);
         }
 
         [Fact]

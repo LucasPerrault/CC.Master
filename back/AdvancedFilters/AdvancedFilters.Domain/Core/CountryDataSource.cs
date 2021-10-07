@@ -1,17 +1,13 @@
 ﻿using AdvancedFilters.Domain.DataSources;
 using System.Threading.Tasks;
 
-namespace AdvancedFilters.Domain.Instance
+namespace AdvancedFilters.Domain.Core
 {
-    public class EnvironmentDataSource : RemoteDataSource
+    public class CountryDataSource : LocalDataSource
     {
         public override Task<IDataSourceSynchronizer> GetSynchronizerAsync(IDataSourceSynchronizerBuilder synchronizerBuilder)
         {
             return synchronizerBuilder.BuildFromAsync(this);
         }
-
-        public EnvironmentDataSource(IDataSourceAuthentication authentication, IDataSourceRoute dataSourceRoute)
-            : base(authentication, dataSourceRoute)
-        { }
     }
 }

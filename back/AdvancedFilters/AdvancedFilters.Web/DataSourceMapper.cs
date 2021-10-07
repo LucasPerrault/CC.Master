@@ -16,6 +16,7 @@ namespace AdvancedFilters.Web
 
         public static DataSource Get(DataSources source, AdvancedFiltersConfiguration configuration) => source switch
         {
+            DataSources.Countries => configuration.Country(),
             DataSources.Environments => configuration.Environment(),
             DataSources.AppInstances => configuration.AppInstance(),
             DataSources.LegalUnits => configuration.LegalUnit(),

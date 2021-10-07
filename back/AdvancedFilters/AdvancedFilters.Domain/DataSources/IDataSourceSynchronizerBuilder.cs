@@ -1,5 +1,6 @@
 using AdvancedFilters.Domain.Billing;
 using AdvancedFilters.Domain.Contacts;
+using AdvancedFilters.Domain.Core;
 using AdvancedFilters.Domain.Instance;
 using System.Threading.Tasks;
 
@@ -12,6 +13,7 @@ namespace AdvancedFilters.Domain.DataSources
 
     public interface IDataSourceSynchronizerBuilder
     {
+        Task<IDataSourceSynchronizer> BuildFromAsync(CountryDataSource dataSource);
         Task<IDataSourceSynchronizer> BuildFromAsync(EnvironmentDataSource dataSource);
         Task<IDataSourceSynchronizer> BuildFromAsync(EstablishmentDataSource dataSource);
         Task<IDataSourceSynchronizer> BuildFromAsync(AppInstanceDataSource dataSource);

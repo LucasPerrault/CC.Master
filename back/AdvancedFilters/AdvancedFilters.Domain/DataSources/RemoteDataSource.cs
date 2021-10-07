@@ -4,6 +4,7 @@ namespace AdvancedFilters.Domain.DataSources
 {
     public enum DataSources
     {
+        Countries,
         Environments,
         AppInstances,
         LegalUnits,
@@ -17,15 +18,21 @@ namespace AdvancedFilters.Domain.DataSources
 
     public abstract class DataSource
     {
+        public abstract Task<IDataSourceSynchronizer> GetSynchronizerAsync(IDataSourceSynchronizerBuilder synchronizerBuilder);
+    }
+
+    public abstract class LocalDataSource : DataSource
+    { }
+
+    public abstract class RemoteDataSource : DataSource
+    {
         public IDataSourceAuthentication Authentication { get; }
         public IDataSourceRoute DataSourceRoute { get; }
 
-        protected DataSource(IDataSourceAuthentication authentication, IDataSourceRoute dataSourceRoute)
+        protected RemoteDataSource(IDataSourceAuthentication authentication, IDataSourceRoute dataSourceRoute)
         {
             Authentication = authentication;
             DataSourceRoute = dataSourceRoute;
         }
-
-        public abstract Task<IDataSourceSynchronizer> GetSynchronizerAsync(IDataSourceSynchronizerBuilder synchronizerBuilder);
     }
 }

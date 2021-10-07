@@ -1,8 +1,8 @@
 using AdvancedFilters.Domain.Billing;
 using AdvancedFilters.Domain.Contacts;
+using AdvancedFilters.Domain.Core;
 using AdvancedFilters.Domain.DataSources;
 using AdvancedFilters.Domain.Instance;
-using System;
 
 namespace AdvancedFilters.Web.Configuration
 {
@@ -14,31 +14,33 @@ namespace AdvancedFilters.Web.Configuration
 
     internal static class AdvancedFiltersConfigurationExtensions
     {
-        public static DataSource Environment(this AdvancedFiltersConfiguration c) => new EnvironmentDataSource
+        public static RemoteDataSource Environment(this AdvancedFiltersConfiguration c) => new EnvironmentDataSource
         (
             new AuthorizationAuthentication(c.Auth.CloudControlAuthScheme, c.Auth.CloudControlAuthParameter),
             new HostDataSourceRoute(c.Routes.Hosts.CloudControl.Host, c.Routes.Hosts.CloudControl.EnvironmentsEndpoint)
         );
 
-        public static DataSource AppInstance(this AdvancedFiltersConfiguration c) => new AppInstanceDataSource
+        public static LocalDataSource Country(this AdvancedFiltersConfiguration c) => new CountryDataSource();
+
+        public static RemoteDataSource AppInstance(this AdvancedFiltersConfiguration c) => new AppInstanceDataSource
         (
             new LuccaAuthentication(c.Auth.MonolithWebserviceToken),
             new TenantDataSourceRoute(c.Routes.Tenants.AppInstancesEndpoint)
         );
 
-        public static DataSource Establishment(this AdvancedFiltersConfiguration c) => new EstablishmentDataSource
+        public static RemoteDataSource Establishment(this AdvancedFiltersConfiguration c) => new EstablishmentDataSource
         (
             new LuccaAuthentication(c.Auth.OrganizationStructureWebserviceToken),
             new TenantDataSourceRoute(c.Routes.Tenants.EstablishmentsEndpoint)
         );
 
-        public static DataSource LegalUnit(this AdvancedFiltersConfiguration c) => new LegalUnitDataSource
+        public static RemoteDataSource LegalUnit(this AdvancedFiltersConfiguration c) => new LegalUnitDataSource
         (
             new LuccaAuthentication(c.Auth.OrganizationStructureWebserviceToken),
             new TenantDataSourceRoute(c.Routes.Tenants.LegalUnitsEndpoint)
         );
 
-        public static DataSource Contract(this AdvancedFiltersConfiguration c) => new ContractDataSource
+        public static RemoteDataSource Contract(this AdvancedFiltersConfiguration c) => new ContractDataSource
         (
             new AuthorizationAuthentication(c.Auth.CloudControlAuthScheme, c.Auth.CloudControlAuthParameter),
             new HostDataSourceRoute(c.Routes.Hosts.CloudControl.Host, c.Routes.Hosts.CloudControl.ContractsEndpoint)
@@ -47,25 +49,25 @@ namespace AdvancedFilters.Web.Configuration
             SubdomainsParamName = c.Routes.Hosts.CloudControl.ContractsSubdomainParamName
         };
 
-        public static DataSource Client(this AdvancedFiltersConfiguration c) => new ClientDataSource
+        public static RemoteDataSource Client(this AdvancedFiltersConfiguration c) => new ClientDataSource
         (
             new AuthorizationAuthentication(c.Auth.CloudControlAuthScheme, c.Auth.CloudControlAuthParameter),
             new HostDataSourceRoute(c.Routes.Hosts.CloudControl.Host, c.Routes.Hosts.CloudControl.ClientsEndpoint)
         );
 
-        public static DataSource AppContact(this AdvancedFiltersConfiguration c) => new AppContactDataSource
+        public static RemoteDataSource AppContact(this AdvancedFiltersConfiguration c) => new AppContactDataSource
         (
             new LuccaAuthentication(c.Auth.ClientCenterWebserviceToken),
             new TenantDataSourceRoute(c.Routes.Tenants.AppContactsEndpoint)
         );
 
-        public static DataSource ClientContact(this AdvancedFiltersConfiguration c) => new ClientContactDataSource
+        public static RemoteDataSource ClientContact(this AdvancedFiltersConfiguration c) => new ClientContactDataSource
         (
             new LuccaAuthentication(c.Auth.ClientCenterWebserviceToken),
             new TenantDataSourceRoute(c.Routes.Tenants.ClientContactsEndpoint)
         );
 
-        public static DataSource SpecializedContact(this AdvancedFiltersConfiguration c) => new SpecializedContactDataSource
+        public static RemoteDataSource SpecializedContact(this AdvancedFiltersConfiguration c) => new SpecializedContactDataSource
         (
             new LuccaAuthentication(c.Auth.ClientCenterWebserviceToken),
             new TenantDataSourceRoute(c.Routes.Tenants.SpecializedContactsEndpoint)

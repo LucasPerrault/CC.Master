@@ -4,13 +4,12 @@ namespace AdvancedFilters.Domain.Core.Models
 {
     public class Country
     {
-        public int Id { get; }
-        public string Name { get; }
+        public int Id { get; set; }
+        public string Name { get; set; }
 
-        public Country(LuccaCountry luccaCountry)
+        public static Country FromLuccaCountry(LuccaCountry luccaCountry)
         {
-            Id = luccaCountry.Id;
-            Name = luccaCountry.Name;
+            return new Country { Id = luccaCountry.Id, Name = luccaCountry.Name };
         }
     }
 }
