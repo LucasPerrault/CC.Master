@@ -102,7 +102,7 @@ namespace Environments.Infra.Tests
                 {
                     ActiveAccesses = new List<EnvironmentSharedAccess>
                     {
-                        new EnvironmentSharedAccess { ConsumerId = 777 }
+                        SharedAccessForConsumer(777)
                     }
                 }
             );
@@ -130,7 +130,7 @@ namespace Environments.Infra.Tests
                 {
                     ActiveAccesses = new List<EnvironmentSharedAccess>
                     {
-                        new EnvironmentSharedAccess { ConsumerId = 777}
+                        SharedAccessForConsumer(777)
                     }
                 }
             );
@@ -160,7 +160,7 @@ namespace Environments.Infra.Tests
                     Purpose = EnvironmentPurpose.Lucca,
                     ActiveAccesses = new List<EnvironmentSharedAccess>
                     {
-                        new EnvironmentSharedAccess { ConsumerId = 777 }
+                        SharedAccessForConsumer(777)
                     }
                 }
             );
@@ -189,7 +189,7 @@ namespace Environments.Infra.Tests
                     Purpose = EnvironmentPurpose.Lucca,
                     ActiveAccesses = new List<EnvironmentSharedAccess>
                     {
-                        new EnvironmentSharedAccess { ConsumerId = 777}
+                        SharedAccessForConsumer(777)
                     }
                 }
             );
@@ -212,5 +212,8 @@ namespace Environments.Infra.Tests
             }, new EnvironmentFilter());
             Assert.Empty(envs);
         }
+
+        private static EnvironmentSharedAccess SharedAccessForConsumer(int consumerId) => new EnvironmentSharedAccess
+            { ConsumerId = consumerId, Access = new EnvironmentAccess() };
     }
 }
