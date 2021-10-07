@@ -1,4 +1,3 @@
-using AdvancedFilters.Domain.Core.Collections;
 using AdvancedFilters.Domain.Core.Models;
 using AdvancedFilters.Domain.Instance.Filters;
 using AdvancedFilters.Domain.Instance.Interfaces;
@@ -16,18 +15,15 @@ namespace AdvancedFilters.Infra.Storage.Stores
     {
         private readonly AdvancedFiltersDbContext _dbContext;
         private readonly IQueryPager _queryPager;
-        private readonly ICountriesCollection _countriesCollection;
 
         public LegalUnitsStore
         (
             AdvancedFiltersDbContext dbContext,
-            IQueryPager queryPager,
-            ICountriesCollection countriesCollection
+            IQueryPager queryPager
         )
         {
             _dbContext = dbContext;
             _queryPager = queryPager;
-            _countriesCollection = countriesCollection;
         }
 
         public Task<Page<LegalUnit>> GetAsync(IPageToken pageToken, LegalUnitFilter filter)
@@ -36,20 +32,19 @@ namespace AdvancedFilters.Infra.Storage.Stores
             return _queryPager.ToPageAsync(lus, pageToken);
         }
 
-        public async Task<Page<Country>> GetAllCountriesAsync()
+        public Task<Page<Country>> GetAllCountriesAsync()
         {
-            var luCountryIds = LegalUnits
+            var countries = LegalUnits
                 .AsNoTracking()
-                .Select(lu => lu.CountryId)
+                .Select(lu => lu.Country)
                 .Distinct()
                 .ToList();
-            var luCountries = await _countriesCollection.GetAsync(luCountryIds);
 
-            return new Page<Country>
+            return Task.FromResult(new Page<Country>
             {
-                Count = luCountries.Count,
-                Items = luCountries
-            };
+                Count = countries.Count,
+                Items = countries
+            });
         }
 
         private IQueryable<LegalUnit> Get(LegalUnitFilter filter)
