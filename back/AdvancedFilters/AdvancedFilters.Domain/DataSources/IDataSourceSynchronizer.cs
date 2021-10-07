@@ -22,5 +22,6 @@ namespace AdvancedFilters.Domain.DataSources
     public interface IDataSourceSynchronizer
     {
         Task<SyncResult> SyncAsync(HashSet<string> targetsToIgnore);
+        Task PurgeAsync();
     }
 }

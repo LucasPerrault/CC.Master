@@ -9,7 +9,6 @@ using AdvancedFilters.Domain.Instance;
 using AdvancedFilters.Domain.Instance.Models;
 using AdvancedFilters.Infra.Services.Sync.Dtos;
 using AdvancedFilters.Infra.Storage.Services;
-using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;

@@ -23,5 +23,10 @@ namespace AdvancedFilters.Infra.Services.Sync
             await _upsertAction(items);
             return new SyncResult();
         }
+
+        public Task PurgeAsync()
+        {
+            return _upsertAction(new List<T>());
+        }
     }
 }

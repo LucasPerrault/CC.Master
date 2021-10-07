@@ -78,6 +78,29 @@ namespace AdvancedFilters.Infra.Services.Sync
             await SyncAsync(dataSources, builder);
         }
 
+        public async Task PurgeEverythingAsync()
+        {
+            var builder = _creationService.ForEnvironments(new List<Environment>(), DataSyncStrategy.SyncEverything);
+            var dataSources = _dataSourcesRepository.GetAll();
+            foreach (var dataSource in dataSources.Reverse())
+            {
+                var synchronizer = await dataSource.GetSynchronizerAsync(builder);
+                await synchronizer.PurgeAsync();
+            }
+        }
+
+        public async Task PurgeTenantsAsync(HashSet<string> subdomains)
+        {
+            var environments = await _environmentsStore.GetAsync(new EnvironmentFilter { Subdomains = subdomains });
+            var builder = _creationService.ForEnvironments(environments, DataSyncStrategy.SyncSpecificEnvironmentsOnly);
+            var dataSources = _dataSourcesRepository.GetMonoTenant();
+            foreach (var dataSource in dataSources.Reverse())
+            {
+                var synchronizer = await dataSource.GetSynchronizerAsync(builder);
+                await synchronizer.PurgeAsync();
+            }
+        }
+
         private async Task SyncAsync(IEnumerable<DataSource> dataSources, IDataSourceSynchronizerBuilder builder)
         {
             var missedTargets = new HashSet<string>();

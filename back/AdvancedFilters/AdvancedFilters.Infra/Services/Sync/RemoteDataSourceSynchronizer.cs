@@ -77,6 +77,11 @@ namespace AdvancedFilters.Infra.Services.Sync
             );
         }
 
+        public Task PurgeAsync()
+        {
+            return _upsertAction(new List<T>());
+        }
+
         private async Task<FetchResult> FetchAsync(HashSet<string> targetsToIgnore)
         {
             var result = new FetchResult { Items = new List<T>(), Failures = new List<BatchFetchResult>()};
