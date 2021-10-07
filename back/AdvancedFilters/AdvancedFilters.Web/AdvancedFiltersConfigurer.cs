@@ -9,6 +9,7 @@ using AdvancedFilters.Infra.Storage.Stores;
 using AdvancedFilters.Web.Configuration;
 using Lucca.Core.PublicData;
 using Microsoft.Extensions.DependencyInjection;
+using Remote.Infra.Extensions;
 
 namespace AdvancedFilters.Web
 {
@@ -38,7 +39,10 @@ namespace AdvancedFilters.Web
             services.AddScoped<ILocalDataSourceService, LocalDataSourceService>();
             services.AddScoped<SyncService>();
 
-            services.AddHttpClient<IDataSourceSyncCreationService, DataSourceSyncCreationService>();
+            services.AddHttpClient<IDataSourceSyncCreationService, DataSourceSyncCreationService>
+            (
+                c => c.WithUserAgent("CC.Master - CAFE - DataSourceSynchronizer")
+            );
         }
 
         private static void ConfigureCore(this IServiceCollection services)
