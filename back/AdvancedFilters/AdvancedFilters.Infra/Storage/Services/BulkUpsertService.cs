@@ -36,7 +36,7 @@ namespace AdvancedFilters.Infra.Storage.Services
         {
             return configFilter switch
             {
-                UpsertEverythingFilter everythingFilter => _ => true,
+                UpsertEverythingFilter _ => null,
                 UpsertForEnvironmentsFilter<T> environmentsFilter => environmentsFilter.GetEnvId.Chain(id => environmentsFilter.EnvIds.Contains(id)),
                 _ => throw new ApplicationException($"UpsertFilter not supported : {typeof(UpsertFilter)}")
             };
