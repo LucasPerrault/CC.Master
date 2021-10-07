@@ -100,7 +100,7 @@ namespace AdvancedFilters.Infra.Services.Sync
             }
             catch (Exception e)
             {
-                _logger.LogError(e, $"DataSource sync failed for {typeof(T).Name}");
+                _logger.LogError(e, $"DataSource fetch failed for {typeof(T).Name}");
                 throw;
             }
         }
