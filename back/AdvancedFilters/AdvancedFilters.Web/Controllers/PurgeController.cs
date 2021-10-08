@@ -1,5 +1,4 @@
 using AdvancedFilters.Infra.Services.Sync;
-using Lucca.Core.Shared.Domain.Exceptions;
 using Microsoft.AspNetCore.Mvc;
 using Rights.Domain;
 using Rights.Web.Attributes;

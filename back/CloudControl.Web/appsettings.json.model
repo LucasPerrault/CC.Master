@@ -63,7 +63,7 @@
     },
     "Slack": {
         "Hooks": {
-            "CloudControl": "{{ CC.Master:SlackHookCcMonitorEnvironments }}",
+            "CloudControlTeam": "{{ CC.Master:SlackHookCcMonitorEnvironments }}",
             "DemosMaintainers": "{{ CC.Master:SlackHookCcNotifications }}"
         }
     },
