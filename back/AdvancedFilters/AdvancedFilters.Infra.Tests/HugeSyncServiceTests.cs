@@ -1,3 +1,4 @@
+using AdvancedFilters.Domain.Core.Models;
 using AdvancedFilters.Domain.DataSources;
 using AdvancedFilters.Domain.Instance.Filters;
 using AdvancedFilters.Domain.Instance.Interfaces;
@@ -47,14 +48,15 @@ namespace AdvancedFilters.Infra.Tests
                 .Returns(new EmailContentBuilder("Mocked"));
 
             var client = new HttpClient(_httpClientHandlerMock.Object);
-            var localDataSourceService = new Mock<ILocalDataSourceService>().Object;
+            var localDataSourceServiceMock = new Mock<ILocalDataSourceService>();
+            localDataSourceServiceMock.Setup(s => s.GetAllCountriesAsync()).ReturnsAsync(new List<Country>());
             _creationService = new DataSourceSyncCreationService
             (
                 client,
                 _upsertServiceMock.Object,
                 new HttpConfiguration { MaxParallelCalls = 42 },
                 new FetchAuthenticator(),
-                localDataSourceService
+                localDataSourceServiceMock.Object
             );
         }
 
