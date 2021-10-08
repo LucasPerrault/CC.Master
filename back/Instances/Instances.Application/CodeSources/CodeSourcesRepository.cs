@@ -1,5 +1,6 @@
 using Instances.Domain.CodeSources;
 using Instances.Domain.CodeSources.Filtering;
+using Instances.Domain.Github;
 using Lucca.Core.Api.Abstractions.Paging;
 using Lucca.Core.Shared.Domain.Exceptions;
 using System;
@@ -64,6 +65,17 @@ namespace Instances.Application.CodeSources
             var source = await GetSingleOrDefaultAsync(CodeSourceFilter.ById(id));
             await _codeSourcesStore.UpdateLifecycleAsync(source, codeSourceUpdate.Lifecycle);
             return source;
+        }
+
+        public async Task<List<CodeSource>> GetNonDeletedByRepositoryUrlAsync(string repositoryUrl)
+        {
+            return await _codeSourcesStore.GetAsync(
+                new CodeSourceFilter
+                {
+                    GithubRepo = repositoryUrl,
+                    ExcludedLifecycle = new HashSet<CodeSourceLifecycleStep> { CodeSourceLifecycleStep.Deleted }
+                }
+            );
         }
 
         public async Task<IEnumerable<CodeSource>> FetchFromRepoAsync(string repoUrl)

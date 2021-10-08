@@ -2,6 +2,7 @@ using FluentAssertions;
 using Instances.Application.CodeSources;
 using Instances.Domain.CodeSources;
 using Instances.Domain.CodeSources.Filtering;
+using Instances.Domain.Github;
 using Instances.Infra.Storage;
 using Instances.Infra.Storage.Models;
 using Instances.Infra.Storage.Stores;
@@ -288,5 +289,22 @@ namespace Instances.Application.Tests.CodeSources
             artifacts2.Should().HaveCount(1);
         }
         #endregion GetArtifactsAsync
+
+        #region GetNonDeletedByRepositoryUrlAsync
+        [Fact]
+        public async Task GetNonDeletedByRepositoryUrlAsync_Ok()
+        {
+            var repositoryUrl = "https://github.com/LuccaSA/myRepo";
+
+            await _instancesDbContext.AddAsync(new StoredCodeSource { Id = 10, Lifecycle = CodeSourceLifecycleStep.Preview, GithubRepo = repositoryUrl });
+            await _instancesDbContext.AddAsync(new StoredCodeSource { Id = 11, Lifecycle = CodeSourceLifecycleStep.Deleted, GithubRepo = repositoryUrl });
+            await _instancesDbContext.AddAsync(new StoredCodeSource { Id = 13, Lifecycle = CodeSourceLifecycleStep.Referenced, GithubRepo = "http://github.com/LuccaSA/BadRepo" });
+            await _instancesDbContext.SaveChangesAsync();
+
+            var result = await _codeSourcesRepository.GetNonDeletedByRepositoryUrlAsync(repositoryUrl);
+
+            result.Should().HaveCount(1);
+        }
+        #endregion
     }
 }
