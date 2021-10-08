@@ -7,7 +7,7 @@ using AdvancedFilters.Infra.Services.Sync.Dtos;
 using AdvancedFilters.Infra.Storage.Services;
 using AdvancedFilters.Web;
 using AdvancedFilters.Web.Configuration;
-using Microsoft.Extensions.Logging;
+using Email.Domain;
 using Moq;
 using Remote.Infra.Extensions;
 using System;
@@ -15,6 +15,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
+using TeamNotification.Abstractions;
 using Testing.Infra;
 using Xunit;
 using Environment = AdvancedFilters.Domain.Instance.Models.Environment;
@@ -27,17 +28,34 @@ namespace AdvancedFilters.Infra.Tests
         private readonly Mock<IBulkUpsertService> _upsertServiceMock;
         private readonly IDataSourceSyncCreationService _creationService;
         private readonly Mock<HttpClientHandler> _httpClientHandlerMock;
+        private readonly Mock<IEmailService> _emailServiceMock;
+        private readonly Mock<ISyncEmails> _syncEmailsMock;
+        private readonly Mock<ITeamNotifier> _teamNotifierMock;
+
 
         public HugeSyncServiceTests()
         {
             _httpClientHandlerMock = new Mock<HttpClientHandler>(MockBehavior.Strict);
             _upsertServiceMock = new Mock<IBulkUpsertService>();
             _environmentsStoreMock = new Mock<IEnvironmentsStore>();
+            _emailServiceMock = new Mock<IEmailService>();
+            _syncEmailsMock = new Mock<ISyncEmails>();
+            _teamNotifierMock = new Mock<ITeamNotifier>();
+
+            _syncEmailsMock
+                .Setup(e => e.GetSyncReportEmail(It.IsAny<List<Exception>>()))
+                .Returns(new EmailContentBuilder("Mocked"));
 
             var client = new HttpClient(_httpClientHandlerMock.Object);
             var localDataSourceService = new Mock<ILocalDataSourceService>().Object;
-            var loggerMock = new Mock<ILogger<IDataSourceSynchronizer>>().Object;
-            _creationService = new DataSourceSyncCreationService(client, _upsertServiceMock.Object, new FetchAuthenticator(), _environmentsStoreMock.Object, loggerMock, localDataSourceService);
+            _creationService = new DataSourceSyncCreationService
+            (
+                client,
+                _upsertServiceMock.Object,
+                new HttpConfiguration { MaxParallelCalls = 42 },
+                new FetchAuthenticator(),
+                localDataSourceService
+            );
         }
 
         [Fact]
@@ -49,14 +67,26 @@ namespace AdvancedFilters.Infra.Tests
             {
                 [DataSources.Environments] = DataSourceMapper.Get(DataSources.Environments, Configuration)
             };
-            var service = new SyncService(new DataSourcesRepository(confs), _creationService);
+
+            var service = new SyncService
+            (
+                new DataSourcesRepository
+                (
+                    confs
+                ),
+                _creationService,
+                _environmentsStoreMock.Object,
+                _emailServiceMock.Object,
+                _syncEmailsMock.Object,
+                _teamNotifierMock.Object
+            );
 
             SetupHttpResponse("https://mocked-cc.ilucca.local/api/envs", new EnvironmentsDto
             {
                 Items = new List<Environment> { new Environment { Subdomain = "aperture-science", Id = 1} }
             });
 
-            await service.SyncAsync(new SyncFilter());
+            await service.SyncEverythingAsync();
             _upsertServiceMock.Verify
             (
                 s => s.InsertOrUpdateOrDeleteAsync
@@ -76,7 +106,19 @@ namespace AdvancedFilters.Infra.Tests
             {
                 [DataSources.AppInstances] = DataSourceMapper.Get(DataSources.AppInstances, Configuration)
             };
-            var service = new SyncService(new DataSourcesRepository(confs), _creationService);
+
+            var service = new SyncService
+            (
+                new DataSourcesRepository
+                (
+                    confs
+                ),
+                _creationService,
+                _environmentsStoreMock.Object,
+                _emailServiceMock.Object,
+                _syncEmailsMock.Object,
+                _teamNotifierMock.Object
+            );
 
             SetupKnownEnvironments(new Environment { Id = 42, ProductionHost = "https://mocked-tenant.dev" });
             SetupHttpResponse("https://mocked-tenant.dev/api/app-instances", new AppInstancesDto
@@ -84,7 +126,7 @@ namespace AdvancedFilters.Infra.Tests
                 Data = ApiV3Response(new AppInstance { EnvironmentId = 42, ApplicationId = "glados" })
             });
 
-            await service.SyncAsync(new SyncFilter());
+            await service.SyncEverythingAsync();
             _upsertServiceMock.Verify
             (
                 s => s.InsertOrUpdateOrDeleteAsync
@@ -104,7 +146,19 @@ namespace AdvancedFilters.Infra.Tests
             {
                 [DataSources.LegalUnits] = DataSourceMapper.Get(DataSources.LegalUnits, Configuration)
             };
-            var service = new SyncService(new DataSourcesRepository(confs), _creationService);
+
+            var service = new SyncService
+            (
+                new DataSourcesRepository
+                (
+                    confs
+                ),
+                _creationService,
+                _environmentsStoreMock.Object,
+                _emailServiceMock.Object,
+                _syncEmailsMock.Object,
+                _teamNotifierMock.Object
+            );
 
             SetupKnownEnvironments(new Environment { Id = 42, ProductionHost = "https://mocked-tenant.dev" });
             SetupHttpResponse("https://mocked-tenant.dev/api/legal-units", new LegalUnitsDto
@@ -112,7 +166,7 @@ namespace AdvancedFilters.Infra.Tests
                 Items = new List<LegalUnit> { new LegalUnit { EnvironmentId = 42, Name = "Aperture Science Colorado"} }
             });
 
-            await service.SyncAsync(new SyncFilter());
+            await service.SyncEverythingAsync();
             _upsertServiceMock.Verify
             (
                 s => s.InsertOrUpdateOrDeleteAsync
@@ -124,16 +178,65 @@ namespace AdvancedFilters.Infra.Tests
             );
         }
 
+        [Fact]
+        public async Task ShouldSkipMissedTargets()
+        {
+
+            var confs = new Dictionary<DataSources, DataSource>
+            {
+                [DataSources.AppInstances] = DataSourceMapper.Get(DataSources.AppInstances, Configuration),
+                [DataSources.LegalUnits] = DataSourceMapper.Get(DataSources.LegalUnits, Configuration),
+            };
+
+            var service = new SyncService
+            (
+                new DataSourcesRepository
+                (
+                    confs
+                ),
+                _creationService,
+                _environmentsStoreMock.Object,
+                _emailServiceMock.Object,
+                _syncEmailsMock.Object,
+                _teamNotifierMock.Object
+            );
+
+            SetupKnownEnvironments
+            (
+                new Environment { Id = 1, Subdomain = "toto", ProductionHost = "https://toto.dev" },
+                new Environment { Id = 2, Subdomain = "titi", ProductionHost = "https://titi.dev" }
+            );
+            SetupHttpResponse("https://toto.dev/api/legal-units", new LegalUnitsDto
+            {
+                Items = new List<LegalUnit> { new LegalUnit { EnvironmentId = 1 } }
+            });
+            SetupHttpResponse("https://toto.dev/api/app-instances", new AppInstancesDto
+            {
+                Data = ApiV3Response(new AppInstance { EnvironmentId = 1 })
+            });
+
+            await service.SyncMonoTenantDataAsync(new HashSet<string> { "toto", "titi" });
+            _httpClientHandlerMock.VerifySendAsync(MessageWithUrl(HttpMethod.Get, "https://toto.dev/api/app-instances"), Times.Once());
+            _httpClientHandlerMock.VerifySendAsync(MessageWithUrl(HttpMethod.Get, "https://titi.dev/api/app-instances"), Times.Once());
+            _httpClientHandlerMock.VerifySendAsync(MessageWithUrl(HttpMethod.Get, "https://toto.dev/api/legal-units"), Times.Once());
+            _httpClientHandlerMock.VerifySendAsync(MessageWithUrl(HttpMethod.Get, "https://titi.dev/api/legal-units"), Times.Never());
+        }
+
         private ApiV3DtoData<T> ApiV3Response<T>(params T[] elements)
         {
             var list = elements == null ? new List<T>() : elements.ToList();
             return new ApiV3DtoData<T> { Items = list };
         }
 
+        private ItIsRequestMessage MessageWithUrl(HttpMethod method, string url)
+        {
+            return ItIsRequestMessage.Matching(m => m.RequestUri.ToString() == url && m.Method == method);
+        }
+
         private void SetupHttpResponse<TDto>(string url, TDto dto)
         {
             _httpClientHandlerMock
-                .SetupSendAsync(ItIsRequestMessage.Matching(m => m.RequestUri.ToString() == url && m.Method == HttpMethod.Get))
+                .SetupSendAsync(MessageWithUrl(HttpMethod.Get, url))
                 .ReturnsAsync(new HttpResponseMessage { Content = dto.ToJsonPayload() });
         }
 

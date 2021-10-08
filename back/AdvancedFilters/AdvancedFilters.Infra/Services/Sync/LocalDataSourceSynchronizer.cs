@@ -16,10 +16,17 @@ namespace AdvancedFilters.Infra.Services.Sync
             _upsertAction = upsertAction;
         }
 
-        public async Task SyncAsync()
+        public async Task<SyncResult> SyncAsync(HashSet<string> targetsToIgnore)
         {
+            // no target to ignore in local context
             var items = await _getItemsAsyncAction();
             await _upsertAction(items);
+            return new SyncResult();
+        }
+
+        public Task PurgeAsync()
+        {
+            return _upsertAction(new List<T>());
         }
     }
 }

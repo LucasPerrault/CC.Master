@@ -2,13 +2,21 @@ using AdvancedFilters.Domain.Billing;
 using AdvancedFilters.Domain.Contacts;
 using AdvancedFilters.Domain.Core;
 using AdvancedFilters.Domain.Instance;
+using AdvancedFilters.Domain.Instance.Models;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace AdvancedFilters.Domain.DataSources
 {
+    public enum DataSyncStrategy
+    {
+        SyncEverything = 0,
+        SyncSpecificEnvironmentsOnly = 1
+    }
+
     public interface IDataSourceSyncCreationService
     {
-        IDataSourceSynchronizerBuilder WithFilter(SyncFilter filter);
+        IDataSourceSynchronizerBuilder ForEnvironments(List<Environment> environments, DataSyncStrategy strategy);
     }
 
     public interface IDataSourceSynchronizerBuilder

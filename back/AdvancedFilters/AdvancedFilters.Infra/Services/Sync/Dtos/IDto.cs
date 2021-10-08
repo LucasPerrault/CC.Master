@@ -67,6 +67,11 @@ namespace AdvancedFilters.Infra.Services.Sync.Dtos
         public int EstablishmentId { get; set; }
     }
 
+    internal class ContactDtoRole
+    {
+        public string Code { get; set; }
+    }
+
     internal class AppContactsDto : IDto<AppContact>
     {
         public class AppContactDto : AppContact
@@ -88,9 +93,10 @@ namespace AdvancedFilters.Infra.Services.Sync.Dtos
 
     internal class ClientContactsDto : IDto<ClientContact>
     {
-        public class ClientContactDto : ClientContact
+        public class ClientContactDto : ClientContactCore
         {
             public ContactDtoUser User { get; set; }
+            public ContactDtoRole Role { get; set; }
         }
 
         public List<ClientContactDto> Items { get; set; }
@@ -98,7 +104,19 @@ namespace AdvancedFilters.Infra.Services.Sync.Dtos
         ClientContact ToClientContact(ClientContactDto i)
         {
             i.EstablishmentId = i.User.EstablishmentId;
-            return i;
+            return new ClientContact
+            {
+                Id = i.Id,
+                ClientId = i.ClientId,
+                EnvironmentId = i.EnvironmentId,
+                RoleCode = i.Role.Code,
+                CreatedAt = i.CreatedAt,
+                ExpiresAt = i.ExpiresAt,
+                EstablishmentId = i.EstablishmentId,
+                IsConfirmed = i.IsConfirmed,
+                RoleId = i.RoleId,
+                UserId = i.UserId
+            };
         }
 
         public List<ClientContact> ToItems() => Items.Select(ToClientContact).ToList();
@@ -109,6 +127,7 @@ namespace AdvancedFilters.Infra.Services.Sync.Dtos
         public class SpecializedContactDto : SpecializedContact
         {
             public ContactDtoUser User { get; set; }
+            public ContactDtoRole Role { get; set; }
         }
 
         public List<SpecializedContactDto> Items { get; set; }
@@ -116,6 +135,7 @@ namespace AdvancedFilters.Infra.Services.Sync.Dtos
         SpecializedContact ToSpecializedContact(SpecializedContactDto i)
         {
             i.EstablishmentId = i.User.EstablishmentId;
+            i.RoleCode = i.Role.Code;
             return i;
         }
 

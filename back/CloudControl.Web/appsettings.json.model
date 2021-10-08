@@ -126,11 +126,12 @@
         }
     },
     "AdvancedFilters": {
+        "MaxParallelHttpCalls": 40,
         "Routes": {
             "Hosts": {
                 "CloudControl": {
                     "Host": "{{ CC.Master:scheme }}://{{ CC.Master:tenant }}.{{ CC.Master:domain }}",
-                    "EnvironmentsEndpoint": "/api/environments?limit=100000&isActive=true,false&purpose=contractual",
+                    "EnvironmentsEndpoint": "/api/environments?limit=100000&isActive=true&purpose=contractual",
                     "ContractsEndpoint": "/api/contracts?limit=100000&isActive=true,false",
                     "ContractsSubdomainParamName": "subdomain",
                     "ClientsEndpoint": "/api/clients?limit=10000&isActive=true,false"

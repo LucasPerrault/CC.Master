@@ -1,8 +1,9 @@
 using AdvancedFilters.Domain.DataSources;
 using AdvancedFilters.Infra.Services.Sync.Dtos;
-using Microsoft.Extensions.Logging;
+using MoreLinq.Extensions;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Tools;
@@ -11,18 +12,20 @@ namespace AdvancedFilters.Infra.Services.Sync
 {
     public class FetchJob<T>
     {
+        public string TargetCode { get; }
         public FetchJobHttpRequestDescription RequestDescription { get; }
         public Action<T> ObjectCreationFinalization { get; }
 
-        public FetchJob(Uri uri, Action<HttpRequestMessage> authentication, Action<T> objectCreationFinalization)
+        public FetchJob(Uri uri, Action<HttpRequestMessage> authentication, Action<T> objectCreationFinalization, string targetCode)
         {
             RequestDescription = new FetchJobHttpRequestDescription(uri, authentication);
             ObjectCreationFinalization = objectCreationFinalization;
+            TargetCode = targetCode;
         }
 
         public class FetchJobHttpRequestDescription
         {
-            private Uri Uri { get; }
+            public Uri Uri { get; }
             private Action<HttpRequestMessage> Authentication { get; }
 
             public FetchJobHttpRequestDescription(Uri uri, Action<HttpRequestMessage> authentication)
@@ -46,7 +49,7 @@ namespace AdvancedFilters.Infra.Services.Sync
     {
         private readonly List<FetchJob<T>> _jobs;
         private readonly Func<List<T>, Task> _upsertAction;
-        private readonly ILogger _logger;
+        private readonly HttpConfiguration _configuration;
         private readonly Func<HttpRequestMessage, Task<HttpResponseMessage>> _fetchAction;
 
         public RemoteDataSourceSynchronizer
@@ -54,39 +57,63 @@ namespace AdvancedFilters.Infra.Services.Sync
             List<FetchJob<T>> jobs,
             Func<HttpRequestMessage, Task<HttpResponseMessage>> fetchAction,
             Func<List<T>, Task> upsertAction,
-            ILogger logger
+            HttpConfiguration configuration
         )
         {
             _jobs = jobs;
             _upsertAction = upsertAction;
-            _logger = logger;
+            _configuration = configuration;
             _fetchAction = fetchAction;
         }
 
-        public async Task SyncAsync()
+        public async Task<SyncResult> SyncAsync(HashSet<string> targetsToIgnore)
         {
-            var items = await FetchAsync();
-            await _upsertAction(items);
+            var fetchResult = await FetchAsync(targetsToIgnore);
+            await _upsertAction(fetchResult.Items);
+            return new SyncResult
+            (
+                fetchResult.Failures.Select(f => f.FetchJob.TargetCode).ToList(),
+                fetchResult.Failures.Select(f => f.Exception).ToList()
+            );
         }
 
-        private async Task<List<T>> FetchAsync()
+        public Task PurgeAsync()
         {
-            var items = new List<T>();
-            foreach (var job in _jobs)
+            return _upsertAction(new List<T>());
+        }
+
+        private async Task<FetchResult> FetchAsync(HashSet<string> targetsToIgnore)
+        {
+            var result = new FetchResult { Items = new List<T>(), Failures = new List<BatchFetchResult>()};
+            var batches = _jobs
+                .Where(j => !targetsToIgnore.Contains(j.TargetCode))
+                .Batch(_configuration.MaxParallelCalls);
+
+            foreach (var jobBatch in batches)
             {
-                var batch = await FetchOneBatchAsync(job);
-                foreach (var item in batch)
+                var batchResults = await Task.WhenAll(jobBatch.Select(FetchOneBatchAsync));
+                foreach (var batchResult in batchResults)
                 {
-                    job.ObjectCreationFinalization(item);
+                    if (batchResult.Exception != null)
+                    {
+                        result.Failures.Add(batchResult);
+                        continue;
+                    }
+
+                    foreach (var item in batchResult.Items)
+                    {
+                        batchResult.FetchJob.ObjectCreationFinalization(item);
+                    }
+                    result.Items.AddRange(batchResult.Items);
                 }
-                items.AddRange(batch);
             }
 
-            return items;
+            return result;
         }
 
-        private async Task<List<T>> FetchOneBatchAsync(FetchJob<T> job)
+        private async Task<BatchFetchResult> FetchOneBatchAsync(FetchJob<T> job)
         {
+            var result = new BatchFetchResult { FetchJob = job };
             try
             {
                 using var message = job.RequestDescription.ToRequest();
@@ -96,13 +123,33 @@ namespace AdvancedFilters.Infra.Services.Sync
 
                 var dto = await Serializer.DeserializeAsync<TDto>(stream);
                 var batch = dto.ToItems();
-                return batch;
+                result.Items = batch;
             }
             catch (Exception e)
             {
-                _logger.LogError(e, $"DataSource sync failed for {typeof(T).Name}");
-                throw;
+                result.Exception = new FetchJobException(job, e);
             }
+
+            return result;
+        }
+
+        public class FetchResult
+        {
+            public List<T> Items { get; set; }
+            public List<BatchFetchResult> Failures { get; set; }
+        }
+
+        public class BatchFetchResult
+        {
+            public List<T> Items { get; set; }
+            public FetchJob<T> FetchJob { get; set; }
+            public Exception Exception { get; set; }
+        }
+
+        public class FetchJobException : ApplicationException
+        {
+            public FetchJobException(FetchJob<T> fetchJob, Exception e) : base($"DataSource fetch failed for {typeof(T).Name} on {fetchJob.RequestDescription.Uri}", e)
+            { }
         }
     }
 }

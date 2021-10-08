@@ -12,5 +12,4 @@
     <ItemGroup>
       <ProjectReference Include="..\..\Core\Tools\Tools\Tools.csproj" />
     </ItemGroup>
-
 </Project>

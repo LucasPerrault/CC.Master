@@ -24,14 +24,14 @@ namespace AdvancedFilters.Web.Controllers
         [ForbidIfMissing(Operation.SyncAllCafe)]
         public Task HugeSyncAsync()
         {
-            return _syncService.SyncAsync(new SyncFilter { SyncMode = DataSourceSyncMode.Everything });
+            return _syncService.SyncEverythingAsync();
         }
 
         [HttpPost("multi-tenant")]
         [ForbidIfMissing(Operation.SyncAllCafe)]
         public Task MultiSyncAsync()
         {
-            return _syncService.SyncAsync(new SyncFilter { SyncMode = DataSourceSyncMode.MultiTenant });
+            return _syncService.SyncMultiTenantDataAsync();
         }
 
         [HttpPost("mono-tenant")]
@@ -42,7 +42,18 @@ namespace AdvancedFilters.Web.Controllers
             {
                 throw new BadRequestException("Subdomain query param is mandatory");
             }
-            return _syncService.SyncAsync(new SyncFilter { SyncMode = DataSourceSyncMode.MonoTenant, Subdomains = query.Subdomain });
+            return _syncService.SyncMonoTenantDataAsync(query.Subdomain);
+        }
+
+        [HttpPost("mono-tenant/random")]
+        [ForbidIfMissing(Operation.SyncAllCafe)]
+        public Task RandomMonoSyncAsync([FromQuery]int tenantCount)
+        {
+            if (tenantCount == 0)
+            {
+                throw new BadRequestException("tenantCount query param is mandatory");
+            }
+            return _syncService.SyncRandomMonoTenantDataAsync(tenantCount);
         }
     }
 
