@@ -4,11 +4,11 @@ using System.Collections.Generic;
 
 namespace AdvancedFilters.Infra.Services.Sync
 {
-    public class CountryFixup
+    public static class CountryFixup
     {
-        public static Country DefaultCountry = new Country { Id = 0, Name = "Inconnu" };
+        public static readonly Country DefaultCountry = new Country { Id = 0, Name = "Inconnu" };
 
-        public static void ApplyIfNeeded(LegalUnit legalUnit, HashSet<int> knownCountryIds)
+        public static void FixCountryIfNeeded(this LegalUnit legalUnit, HashSet<int> knownCountryIds)
         {
             if (!knownCountryIds.Contains(legalUnit.CountryId))
             {

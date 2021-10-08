@@ -141,7 +141,7 @@ namespace AdvancedFilters.Infra.Services.Sync
             Action<Environment, LegalUnit> finalizeAction = (environment, legalUnit) =>
             {
                 legalUnit.EnvironmentId = environment.Id;
-                CountryFixup.ApplyIfNeeded(legalUnit, countryIds);
+                legalUnit.FixCountryIfNeeded(countryIds);
             };
 
             var contexts = await GetEnvironmentContextsAsync(finalizeAction);
