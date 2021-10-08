@@ -88,7 +88,7 @@ namespace AdvancedFilters.Infra.Services.Sync
                 var synchronizer = await dataSource.GetSynchronizerAsync(builder);
                 await synchronizer.PurgeAsync();
             }
-            await _teamNotifier.NotifyAsync(Team.DemoMaintainers, ":coffee: Cafe : all data has been purged");
+            await _teamNotifier.NotifyAsync(Team.CafeAdmins, ":coffee: Cafe : all data has been purged");
         }
 
         public async Task PurgeTenantsAsync(HashSet<string> subdomains)
