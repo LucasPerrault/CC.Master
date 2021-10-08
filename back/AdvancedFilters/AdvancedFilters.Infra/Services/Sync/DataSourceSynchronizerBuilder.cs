@@ -91,7 +91,13 @@ namespace AdvancedFilters.Infra.Services.Sync
 
         public Task<IDataSourceSynchronizer> BuildFromAsync(CountryDataSource dataSource)
         {
-            Func<Task<IReadOnlyCollection<Country>>> getCountriesAsync = () => _localDataSourceService.GetAllCountriesAsync();
+            Func<Task<IReadOnlyCollection<Country>>> getCountriesAsync = async () =>
+            {
+                var countries = (await _localDataSourceService.GetAllCountriesAsync()).ToList();
+                countries.Add(CountryFixup.DefaultCountry);
+                return countries;
+            };
+
             var config = new BulkUpsertConfig();
             return Task.FromResult(BuildFromLocal(getCountriesAsync, config));
         }
@@ -128,7 +134,16 @@ namespace AdvancedFilters.Infra.Services.Sync
 
         public async Task<IDataSourceSynchronizer> BuildFromAsync(LegalUnitDataSource dataSource)
         {
-            Action<Environment, LegalUnit> finalizeAction = (environment, legalUnit) => { legalUnit.EnvironmentId = environment.Id; };
+            var countryIds = ( await _localDataSourceService.GetAllCountriesAsync() )
+                .Select(c => c.Id)
+                .ToHashSet();
+
+            Action<Environment, LegalUnit> finalizeAction = (environment, legalUnit) =>
+            {
+                legalUnit.EnvironmentId = environment.Id;
+                legalUnit.FixCountryIfNeeded(countryIds);
+            };
+
             var contexts = await GetEnvironmentContextsAsync(finalizeAction);
             var config = new BulkUpsertConfig
             {
