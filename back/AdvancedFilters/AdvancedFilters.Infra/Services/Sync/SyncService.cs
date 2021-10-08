@@ -80,6 +80,7 @@ namespace AdvancedFilters.Infra.Services.Sync
 
         public async Task PurgeEverythingAsync()
         {
+            await _teamNotifier.NotifyAsync(Team.CafeAdmins, ":coffee: Cafe : complete data purge has ben requested");
             var builder = _creationService.ForEnvironments(new List<Environment>(), DataSyncStrategy.SyncEverything);
             var dataSources = _dataSourcesRepository.GetAll();
             foreach (var dataSource in dataSources.Reverse())
@@ -87,11 +88,13 @@ namespace AdvancedFilters.Infra.Services.Sync
                 var synchronizer = await dataSource.GetSynchronizerAsync(builder);
                 await synchronizer.PurgeAsync();
             }
+            await _teamNotifier.NotifyAsync(Team.DemoMaintainers, ":coffee: Cafe : all data has been purged");
         }
 
         public async Task PurgeTenantsAsync(HashSet<string> subdomains)
         {
             var environments = await _environmentsStore.GetAsync(new EnvironmentFilter { Subdomains = subdomains });
+            await _teamNotifier.NotifyAsync(Team.CafeAdmins, $":coffee: Cafe : purge of {environments.Count} tenants has been requested");
             var builder = _creationService.ForEnvironments(environments, DataSyncStrategy.SyncSpecificEnvironmentsOnly);
             var dataSources = _dataSourcesRepository.GetMonoTenant();
             foreach (var dataSource in dataSources.Reverse())
@@ -99,6 +102,7 @@ namespace AdvancedFilters.Infra.Services.Sync
                 var synchronizer = await dataSource.GetSynchronizerAsync(builder);
                 await synchronizer.PurgeAsync();
             }
+            await _teamNotifier.NotifyAsync(Team.CafeAdmins, $":coffee: Cafe : {environments.Count} tenants have been purged");
         }
 
         private async Task SyncAsync(IEnumerable<DataSource> dataSources, IDataSourceSynchronizerBuilder builder)
@@ -127,7 +131,7 @@ namespace AdvancedFilters.Infra.Services.Sync
                 return;
             }
 
-            await _teamNotifier.NotifyAsync(Team.DemoMaintainers, $":coffee: Cafe : sync encountered {exceptions.Count} errors");
+            await _teamNotifier.NotifyAsync(Team.CafeAdmins, $":coffee: Cafe : sync encountered {exceptions.Count} errors");
 
             await _emailService.SendAsync
             (
