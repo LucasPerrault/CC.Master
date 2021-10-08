@@ -80,7 +80,7 @@ namespace AdvancedFilters.Infra.Services.Sync
 
         public async Task PurgeEverythingAsync()
         {
-            await _teamNotifier.NotifyAsync(Team.CafeAdmins, ":coffee: Cafe : complete data purge has ben requested");
+            await _teamNotifier.NotifyAsync(Team.CafeAdmins, ":coffee: Cafe : complete data purge has been requested");
             var builder = _creationService.ForEnvironments(new List<Environment>(), DataSyncStrategy.SyncEverything);
             var dataSources = _dataSourcesRepository.GetAll();
             foreach (var dataSource in dataSources.Reverse())
