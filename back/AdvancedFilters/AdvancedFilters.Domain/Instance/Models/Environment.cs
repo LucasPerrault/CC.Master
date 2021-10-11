@@ -15,6 +15,7 @@ namespace AdvancedFilters.Domain.Instance.Models
         public string Domain { get; set; }
         public bool IsActive { get; set; }
         public DateTime CreatedAt { get; set; }
+        public string Cluster { get; set; }
         public string ProductionHost { get; set; }
 
         public IEnumerable<LegalUnit> LegalUnits { get; set; }

@@ -4,14 +4,16 @@ using AdvancedFilters.Infra.Storage;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace AdvancedFilters.Infra.Migrations
 {
     [DbContext(typeof(AdvancedFiltersDbContext))]
-    partial class AdvancedFiltersDbContextModelSnapshot : ModelSnapshot
+    [Migration("20211011172456_UpdateEnvironmentsAddCluster")]
+    partial class UpdateEnvironmentsAddCluster
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -115,21 +117,9 @@ namespace AdvancedFilters.Infra.Migrations
                         .HasColumnType("bit")
                         .HasColumnName("IsConfirmed");
 
-                    b.Property<string>("UserFirstName")
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("UserFirstName");
-
                     b.Property<int>("UserId")
                         .HasColumnType("int")
                         .HasColumnName("UserId");
-
-                    b.Property<string>("UserLastName")
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("UserLastName");
-
-                    b.Property<string>("UserMail")
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("UserMail");
 
                     b.HasKey("EnvironmentId", "Id");
 
@@ -178,21 +168,9 @@ namespace AdvancedFilters.Infra.Migrations
                         .HasColumnType("int")
                         .HasColumnName("RoleId");
 
-                    b.Property<string>("UserFirstName")
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("UserFirstName");
-
                     b.Property<int>("UserId")
                         .HasColumnType("int")
                         .HasColumnName("UserId");
-
-                    b.Property<string>("UserLastName")
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("UserLastName");
-
-                    b.Property<string>("UserMail")
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("UserMail");
 
                     b.HasKey("EnvironmentId", "Id");
 
@@ -239,21 +217,9 @@ namespace AdvancedFilters.Infra.Migrations
                         .HasColumnType("int")
                         .HasColumnName("RoleId");
 
-                    b.Property<string>("UserFirstName")
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("UserFirstName");
-
                     b.Property<int>("UserId")
                         .HasColumnType("int")
                         .HasColumnName("UserId");
-
-                    b.Property<string>("UserLastName")
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("UserLastName");
-
-                    b.Property<string>("UserMail")
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("UserMail");
 
                     b.HasKey("EnvironmentId", "Id");
 
@@ -341,9 +307,6 @@ namespace AdvancedFilters.Infra.Migrations
                         .HasColumnName("Subdomain");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("Subdomain")
-                        .IsClustered(false);
 
                     b.ToTable("Environments");
                 });
