@@ -29,6 +29,19 @@ export class EnvironmentFormlyConfiguration {
     },
   };
 
+  public readonly cluster: FormlyFieldConfig = {
+    key: EnvironmentAdvancedFilterKey.Cluster,
+    type: 'api',
+    templateOptions: {
+      api: '/api/cafe/environments/clusters',
+      orderBy: 'name,asc',
+      multiple: true,
+      required: true,
+      mod: 'palette-grey mod-outlined mod-inline mod-longer',
+      placeholder: 'Quel beau placeholder de cluster',
+    },
+  };
+
   public readonly applications: FormlyFieldConfig = {
     key: EnvironmentAdvancedFilterKey.Applications,
     type: 'api',

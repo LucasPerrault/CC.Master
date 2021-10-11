@@ -11,6 +11,14 @@ export class EnvironmentAdvancedFilterConfiguration implements IAdvancedFilterCo
   public readonly categoryId = EnvironmentsCategory.Environments;
   public readonly criterions: ICriterionConfiguration[] = [
     {
+      key: EnvironmentAdvancedFilterKey.Cluster,
+      name: 'Le cluster',
+      operators: [
+        { id: ComparisonOperator.Equals, name: 'égal' },
+      ],
+      fields: [this.formlyConfiguration.cluster],
+    },
+    {
       key: EnvironmentAdvancedFilterKey.Subdomain,
       name: this.translatePipe.transform('cafe_filters_subdomain'),
       operators: [
