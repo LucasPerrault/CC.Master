@@ -1,5 +1,3 @@
-import { IAdvancedFilterForm } from '../advanced-filter-form.interface';
-import { IComparisonFilterCriterionForm } from '../components/comparison-filter-criterion';
 import { ComparisonOperator } from '../enums/comparison-operator.enum';
 import { LogicalOperator } from '../enums/logical-operator.enum';
 
@@ -19,7 +17,7 @@ interface IFilterCombination {
 
 export interface IComparisonFilterCriterion {
   operator: ComparisonOperator;
-  value?: string | number;
+  value?: string | number | boolean;
 }
 
 export interface IFilterCriterion {
@@ -39,7 +37,7 @@ export class AdvancedFilterTypeMapping {
     return { filterElementType: AdvancedFilterType.Criterion, ...criterion } as AdvancedFilterCriterion;
   };
 
-  public static toComparisonFilterCriterion(operator: ComparisonOperator, value: string | number): IComparisonFilterCriterion {
+  public static toComparisonFilterCriterion(operator: ComparisonOperator, value: string | number | boolean): IComparisonFilterCriterion {
     return { operator, value };
   }
 
@@ -59,7 +57,7 @@ export class AdvancedFilterTypeMapping {
 
   public static toCriterion(
       operator: ComparisonOperator,
-      value: string | number,
+      value: string | number | boolean,
       toIFilterCriterion: (c: IComparisonFilterCriterion) => IFilterCriterion,
   ): AdvancedFilterCriterion {
     const comparisonFilterCriterion = AdvancedFilterTypeMapping.toComparisonFilterCriterion(operator, value);

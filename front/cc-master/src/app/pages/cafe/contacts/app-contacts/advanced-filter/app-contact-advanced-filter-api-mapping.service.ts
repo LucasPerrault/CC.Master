@@ -40,7 +40,7 @@ export class AppContactAdvancedFilterApiMappingService {
         appInstances.map(a => a.id),
         c => ({ appInstance: { applicationId: c } }),
     );
-    return AdvancedFilterTypeMapping.combine(criterions, LogicalOperator.And);
+    return AdvancedFilterTypeMapping.combine(criterions, LogicalOperator.Or);
   }
 
 }

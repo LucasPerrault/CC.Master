@@ -17,11 +17,9 @@ export enum ComparisonOperator {
 export const getComparisonBooleanValue = (operator: ComparisonOperator) => {
   switch (operator) {
     case ComparisonOperator.TrueOnly:
-      return 'true';
+      return true;
     case ComparisonOperator.FalseOnly:
-      return 'false';
-    case ComparisonOperator.ByPass:
-      return 'true,false';
+      return false;
   }
 };
 

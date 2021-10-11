@@ -17,7 +17,7 @@ export class CommonApiMappingStrategies {
             appInstances.map(a => a.id),
             c => ({ environment: { appInstance: { applicationId: c } } }),
         );
-        return AdvancedFilterTypeMapping.toFilterCombination(LogicalOperator.And, criterions);
+        return AdvancedFilterTypeMapping.toFilterCombination(LogicalOperator.Or, criterions);
     }
 
 

@@ -11,7 +11,7 @@ import {
   IAdvancedFilterForm,
   LogicalOperator,
 } from '../../common/cafe-filters/advanced-filter-form';
-import { IAppInstance, IApplication } from '../models/app-instance.interface';
+import { IApplication } from '../models/app-instance.interface';
 import { ICountry } from '../models/legal-unit.interface';
 import { EnvironmentAdvancedFilterKey } from './environment-advanced-filter-key.enum';
 
@@ -73,7 +73,7 @@ export class EnvironmentAdvancedFilterApiMappingService {
         appInstances.map(a => a.id),
         c => ({ appInstance: { applicationId: c } }),
     );
-    return AdvancedFilterTypeMapping.combine(criterions, LogicalOperator.And);
+    return AdvancedFilterTypeMapping.combine(criterions, LogicalOperator.Or);
   }
 
   private getCountriesAdvancedFilter(operator: ComparisonOperator, countries: ICountry[]): AdvancedFilter {
