@@ -21,7 +21,10 @@ export class AppContactAdvancedFilterConfiguration implements IAdvancedFilterCon
         {
           key: AppContactAdvancedFilterKey.EnvironmentApplications,
           name: this.translatePipe.transform('cafe_filters_environmentApplications'),
-          operators: [ComparisonOperator.Equals, ComparisonOperator.DoesNotEqual],
+          operators: [
+              { id: ComparisonOperator.Equals, name: 'contiennent' },
+              { id: ComparisonOperator.DoesNotEqual, name: 'ne contiennent pas' },
+          ],
           fields: [this.formlyConfiguration.environmentApplications],
         },
       ],
@@ -29,19 +32,29 @@ export class AppContactAdvancedFilterConfiguration implements IAdvancedFilterCon
     {
       key: AppContactAdvancedFilterKey.Subdomain,
       name: this.translatePipe.transform('cafe_filters_subdomain'),
-      operators: [ComparisonOperator.Equals, ComparisonOperator.DoesNotEqual],
+      operators: [
+        { id: ComparisonOperator.Equals, name: 'égal' },
+        { id: ComparisonOperator.DoesNotEqual, name: 'n\'est pas égal ' },
+      ],
       fields: [this.formlyConfiguration.subdomain],
     },
     {
       key: AppContactAdvancedFilterKey.Applications,
       name: this.translatePipe.transform('cafe_filters_applications'),
-      operators: [ComparisonOperator.Equals, ComparisonOperator.DoesNotEqual],
+      operators: [
+        { id: ComparisonOperator.Equals, name: 'égal' },
+        { id: ComparisonOperator.DoesNotEqual, name: 'n\'est pas égal ' },
+      ],
       fields: [this.formlyConfiguration.applications],
     },
     {
       key: AppContactAdvancedFilterKey.IsConfirmed,
       name: this.translatePipe.transform('cafe_filters_isConfirmed'),
-      operators: [ComparisonOperator.TrueOnly, ComparisonOperator.FalseOnly, ComparisonOperator.ByPass],
+      operators: [
+        { id: ComparisonOperator.TrueOnly, name: 'est vrai' },
+        { id: ComparisonOperator.FalseOnly, name: 'est faux' },
+        { id: ComparisonOperator.ByPass, name: 'n\'importe pas' },
+      ],
     },
   ];
 

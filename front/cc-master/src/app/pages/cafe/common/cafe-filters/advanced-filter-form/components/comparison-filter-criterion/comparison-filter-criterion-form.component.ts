@@ -12,10 +12,9 @@ import {
 import { ReplaySubject, Subject } from 'rxjs';
 import { filter, map, takeUntil } from 'rxjs/operators';
 
-import { ComparisonOperator } from '../../enums/comparison-operator.enum';
 import { ICriterionConfiguration } from '../../models/advanced-filter-configuration.interface';
 import { IComparisonFilterCriterionForm } from './comparison-filter-criterion-form.interface';
-import { getCriterionOperator } from './comparison-operator-select/comparison-operator.interface';
+import { getCriterionOperator, IComparisonOperator } from './comparison-operator-select/comparison-operator.interface';
 
 enum ComparisonFilterCriterionFormKey {
   Criterion = 'criterion',
@@ -107,8 +106,8 @@ export class ComparisonFilterCriterionFormComponent implements OnInit, OnDestroy
     }
   }
 
-  private setDefaultOperator(operators: ComparisonOperator[]): void {
-    const defaultSelection = getCriterionOperator(operators[0]);
+  private setDefaultOperator(operators: IComparisonOperator[]): void {
+    const defaultSelection = getCriterionOperator(operators[0].id);
     this.parentFormGroup.get(ComparisonFilterCriterionFormKey.Operator).setValue(defaultSelection);
   }
 

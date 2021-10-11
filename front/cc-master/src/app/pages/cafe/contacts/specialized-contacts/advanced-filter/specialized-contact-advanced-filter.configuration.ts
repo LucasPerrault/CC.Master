@@ -17,13 +17,19 @@ export class SpecializedContactAdvancedFilterConfiguration implements IAdvancedF
     {
       key: SpeContactAdvancedFilterKey.Subdomain,
       name: this.translatePipe.transform('cafe_filters_subdomain'),
-      operators: [ComparisonOperator.Equals, ComparisonOperator.DoesNotEqual],
+      operators: [
+        { id: ComparisonOperator.Equals, name: 'égal' },
+        { id: ComparisonOperator.DoesNotEqual, name: 'n\'est pas égal ' },
+      ],
       fields: [this.formlyConfiguration.subdomain],
     },
     {
       key: SpeContactAdvancedFilterKey.IsConfirmed,
       name: this.translatePipe.transform('cafe_filters_isConfirmed'),
-      operators: [ComparisonOperator.TrueOnly, ComparisonOperator.FalseOnly, ComparisonOperator.ByPass],
+      operators: [
+        { id: ComparisonOperator.TrueOnly, name: 'est vrai' },
+        { id: ComparisonOperator.FalseOnly, name: 'est faux' },
+      ],
     },
   ];
 

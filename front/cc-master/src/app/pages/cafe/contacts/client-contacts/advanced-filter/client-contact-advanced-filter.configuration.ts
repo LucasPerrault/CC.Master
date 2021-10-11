@@ -17,19 +17,29 @@ export class ClientContactAdvancedFilterConfiguration implements IAdvancedFilter
     {
       key: ClientContactAdvancedFilterKey.Subdomain,
       name: this.translatePipe.transform('cafe_filters_subdomain'),
-      operators: [ComparisonOperator.Equals, ComparisonOperator.DoesNotEqual],
+      operators: [
+        { id: ComparisonOperator.Equals, name: 'égal' },
+        { id: ComparisonOperator.DoesNotEqual, name: 'n\'est pas égal ' },
+      ],
       fields: [this.formlyConfiguration.subdomain],
     },
     {
       key: ClientContactAdvancedFilterKey.Clients,
       name: this.translatePipe.transform('cafe_filters_client'),
-      operators: [ComparisonOperator.Equals, ComparisonOperator.DoesNotEqual],
+      operators: [
+        { id: ComparisonOperator.Equals, name: 'égal' },
+        { id: ComparisonOperator.DoesNotEqual, name: 'n\'est pas égal ' },
+      ],
       fields: [this.formlyConfiguration.clients],
     },
     {
       key: ClientContactAdvancedFilterKey.IsConfirmed,
       name: this.translatePipe.transform('cafe_filters_isConfirmed'),
-      operators: [ComparisonOperator.TrueOnly, ComparisonOperator.FalseOnly, ComparisonOperator.ByPass],
+      operators: [
+        { id: ComparisonOperator.TrueOnly, name: 'est vrai' },
+        { id: ComparisonOperator.FalseOnly, name: 'est faux' },
+        { id: ComparisonOperator.ByPass, name: 'n\'importe pas' },
+      ],
     },
   ];
 

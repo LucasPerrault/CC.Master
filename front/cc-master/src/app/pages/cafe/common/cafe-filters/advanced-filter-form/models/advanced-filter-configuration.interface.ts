@@ -1,6 +1,6 @@
 import { FormlyFieldConfig } from '@ngx-formly/core/lib/components/formly.field.config';
 
-import { ComparisonOperator } from '../enums/comparison-operator.enum';
+import { IComparisonOperator } from '../components/comparison-filter-criterion/comparison-operator-select/comparison-operator.interface';
 
 export interface IAdvancedFilterConfiguration {
   categoryId: string;
@@ -10,7 +10,7 @@ export interface IAdvancedFilterConfiguration {
 export interface ICriterionConfiguration {
   key: string;
   name: string;
-  operators?: ComparisonOperator[];
+  operators?: IComparisonOperator[];
   fields?: FormlyFieldConfig[];
   children?: ICriterionConfiguration[];
 }

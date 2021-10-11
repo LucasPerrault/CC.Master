@@ -6,7 +6,7 @@
     <ng-container *luDisplayer="let operator">{{ operator.name }}</ng-container>
 
     <lu-option-picker-advanced>
-      <lu-option-feeder [options]="comparisonOperators"></lu-option-feeder>
+      <lu-option-feeder [options]="operators"></lu-option-feeder>
       <header class="lu-picker-header">
         <lu-option-searcher [searchFn]="searchFn"></lu-option-searcher>
       </header>

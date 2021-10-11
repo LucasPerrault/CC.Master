@@ -13,30 +13,45 @@ export class EnvironmentAdvancedFilterConfiguration implements IAdvancedFilterCo
     {
       key: EnvironmentAdvancedFilterKey.Subdomain,
       name: this.translatePipe.transform('cafe_filters_subdomain'),
-      operators: [ComparisonOperator.Equals, ComparisonOperator.DoesNotEqual],
+      operators: [
+        { id: ComparisonOperator.Equals, name: 'égal' },
+        { id: ComparisonOperator.DoesNotEqual, name: 'n\'est pas égal ' },
+      ],
       fields: [this.formlyConfiguration.subdomain],
     },
     {
       key: EnvironmentAdvancedFilterKey.Domain,
       name: this.translatePipe.transform('cafe_filters_domain'),
-      operators: [ComparisonOperator.Equals, ComparisonOperator.DoesNotEqual],
+      operators: [
+        { id: ComparisonOperator.Equals, name: 'égal' },
+        { id: ComparisonOperator.DoesNotEqual, name: 'n\'est pas égal ' },
+      ],
       fields: [this.formlyConfiguration.domain],
     },
     {
       key: EnvironmentAdvancedFilterKey.IsActive,
       name: this.translatePipe.transform('cafe_filters_isActive'),
-      operators: [ComparisonOperator.TrueOnly, ComparisonOperator.FalseOnly],
+      operators: [
+        { id: ComparisonOperator.TrueOnly, name: 'est vrai' },
+        { id: ComparisonOperator.FalseOnly, name: 'est faux' },
+      ],
     },
     {
       key: EnvironmentAdvancedFilterKey.Applications,
       name: this.translatePipe.transform('cafe_filters_applications'),
-      operators: [ComparisonOperator.Equals, ComparisonOperator.DoesNotEqual],
+      operators: [
+        { id: ComparisonOperator.Equals, name: 'égal' },
+        { id: ComparisonOperator.DoesNotEqual, name: 'n\'est pas égal ' },
+      ],
       fields: [this.formlyConfiguration.applications],
     },
     {
       key: EnvironmentAdvancedFilterKey.Countries,
       name: this.translatePipe.transform('cafe_filters_countries'),
-      operators: [ComparisonOperator.Equals, ComparisonOperator.DoesNotEqual],
+      operators: [
+        { id: ComparisonOperator.Equals, name: 'égal' },
+        { id: ComparisonOperator.DoesNotEqual, name: 'n\'est pas égal ' },
+      ],
       fields: [this.formlyConfiguration.countries],
     },
   ];

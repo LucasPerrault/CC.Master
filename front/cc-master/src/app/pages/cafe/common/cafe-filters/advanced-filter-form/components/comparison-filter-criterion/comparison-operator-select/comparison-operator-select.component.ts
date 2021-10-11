@@ -8,12 +8,11 @@ import {
   ValidationErrors,
   Validator,
 } from '@angular/forms';
-import { TranslatePipe } from '@cc/aspects/translate';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
 import { ComparisonOperator } from '../../../enums/comparison-operator.enum';
-import { getCriterionOperator, IComparisonOperator } from './comparison-operator.interface';
+import { IComparisonOperator } from './comparison-operator.interface';
 
 @Component({
   selector: 'cc-comparison-operator-select',
@@ -35,18 +34,14 @@ import { getCriterionOperator, IComparisonOperator } from './comparison-operator
 export class ComparisonOperatorSelectComponent implements OnInit, OnDestroy, ControlValueAccessor, Validator {
   @Input() public required = false;
   @Input() public textfieldClass: string;
-  @Input() public operators: ComparisonOperator[];
+  @Input() public operators: IComparisonOperator[];
   @Input() public set disabled(isDisabled: boolean) { this.setDisabledState(isDisabled); }
-
-  public get comparisonOperators(): IComparisonOperator[] {
-    return this.operators.map(o => this.getTranslatedComparisonOperator(o));
-  }
 
   public formControl: FormControl = new FormControl();
 
   private destroy$: Subject<void> = new Subject();
 
-  constructor(private translatePipe: TranslatePipe) {
+  constructor() {
   }
 
   public ngOnInit(): void {
@@ -73,7 +68,7 @@ export class ComparisonOperatorSelectComponent implements OnInit, OnDestroy, Con
 
   public writeValue(operator: IComparisonOperator): void {
     if (operator !== this.formControl.value) {
-      this.formControl.setValue(this.getTranslatedComparisonOperator(operator?.id));
+      this.formControl.setValue(operator.id);
     }
   }
 
@@ -97,13 +92,5 @@ export class ComparisonOperatorSelectComponent implements OnInit, OnDestroy, Con
 
   public trackBy(index: number, criterionOperator: IComparisonOperator): ComparisonOperator {
     return criterionOperator.id;
-  }
-
-  private getTranslatedComparisonOperator(operator: ComparisonOperator): IComparisonOperator {
-    const criterionOperator = getCriterionOperator(operator);
-    if (!criterionOperator) {
-      return;
-    }
-    return { ...criterionOperator, name: this.translatePipe.transform(criterionOperator.name) };
   }
 }
