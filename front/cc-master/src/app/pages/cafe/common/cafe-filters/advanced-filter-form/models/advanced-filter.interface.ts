@@ -17,7 +17,7 @@ interface IFilterCombination {
 
 export interface IComparisonFilterCriterion {
   operator: ComparisonOperator;
-  value?: string;
+  value?: string | number;
 }
 
 export interface IFilterCriterion {
@@ -38,6 +38,10 @@ export class AdvancedFilterTypeMapping {
   };
 
   public static toComparisonFilterCriterion(operator: ComparisonOperator, value: string): IComparisonFilterCriterion {
+    return { operator, value };
+  }
+
+  public static toComparisonFilterNumberCriterion(operator: ComparisonOperator, value: number): IComparisonFilterCriterion {
     return { operator, value };
   }
 }

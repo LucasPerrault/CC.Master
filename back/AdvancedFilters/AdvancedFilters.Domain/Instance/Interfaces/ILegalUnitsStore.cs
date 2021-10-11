@@ -9,6 +9,6 @@ namespace AdvancedFilters.Domain.Instance.Interfaces
     public interface ILegalUnitsStore
     {
         Task<Page<LegalUnit>> GetAsync(IPageToken pageToken, LegalUnitFilter filter);
-        Task<Page<Country>> GetAllCountriesAsync();
+        Task<Page<Country>> GetAllCountriesAsync(string search);
     }
 }
