@@ -17,6 +17,7 @@ namespace Environments.Web
         public string Search { get; set; } = null;
         public HashSet<EnvironmentPurpose> Purpose { get; set; } = new HashSet<EnvironmentPurpose>();
         public HashSet<bool> IsActive { get; set; } = new HashSet<bool> { true };
+        public HashSet<string> Cluster { get; set; } = new HashSet<string>();
 
         public EnvironmentFilter ToFilter()
         {
@@ -31,7 +32,8 @@ namespace Environments.Web
                 IsActive = IsActive.ToCompareBoolean(),
                 Ids = Id,
                 Purposes = Purpose,
-                Domains = domains
+                Domains = domains,
+                Clusters = Cluster,
             };
         }
     }
