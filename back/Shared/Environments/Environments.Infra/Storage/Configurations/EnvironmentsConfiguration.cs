@@ -13,6 +13,7 @@ namespace Environments.Infra.Storage.Configurations
             builder.HasKey(d => d.Id);
             builder.Property(d => d.Subdomain).HasColumnName("Subdomain");
             builder.Property(d => d.Domain).HasColumnName("Domain");
+            builder.Property(d => d.Cluster).HasColumnName("Cluster");
             builder.Property(d => d.Purpose).HasColumnName("Purpose");
             builder.Property(d => d.IsActive).HasColumnName("IsActive");
             builder.Property(e => e.CreatedAt).HasColumnName("CreatedAt");
