@@ -37,11 +37,7 @@ export class AdvancedFilterTypeMapping {
     return { filterElementType: AdvancedFilterType.Criterion, ...criterion } as AdvancedFilterCriterion;
   };
 
-  public static toComparisonFilterCriterion(operator: ComparisonOperator, value: string): IComparisonFilterCriterion {
-    return { operator, value };
-  }
-
-  public static toComparisonFilterNumberCriterion(operator: ComparisonOperator, value: number): IComparisonFilterCriterion {
+  public static toComparisonFilterCriterion(operator: ComparisonOperator, value: string | number): IComparisonFilterCriterion {
     return { operator, value };
   }
 }

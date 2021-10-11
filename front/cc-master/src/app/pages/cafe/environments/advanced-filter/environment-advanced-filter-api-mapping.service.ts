@@ -112,7 +112,7 @@ export class EnvironmentAdvancedFilterApiMappingService {
 
   private getCountriesAdvancedFilter(operator: ComparisonOperator, countries: ICountry[]): AdvancedFilter {
     const queries = countries.map(a => a.id);
-    const comparisons = queries.map(q => AdvancedFilterTypeMapping.toComparisonFilterNumberCriterion(operator, q));
+    const comparisons = queries.map(q => AdvancedFilterTypeMapping.toComparisonFilterCriterion(operator, q));
 
     const criterions = comparisons.map(c => AdvancedFilterTypeMapping.toFilterCriterion({
       legalUnits: { countryId: c },
