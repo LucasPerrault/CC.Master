@@ -99,7 +99,7 @@
             "OutboundToken": "{{ CC.Master:HubspotOutboundToken }}"
         },
         "SqlScriptPicker": {
-            "JenkinsBaseUri": "http://jenkins2.lucca.local:8080/",
+            "JenkinsBaseUri": "http://jenkins3.lucca.local:8080/",
             "MonolithJobPath": "job/CI.Pipeline.Multibranch"
         },
         "DemoClusterSelection": {
