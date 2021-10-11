@@ -1,5 +1,6 @@
 <label class="textfield {{ textfieldClass }}" [ngClass]="{ 'is-required': required }">
   <lu-select [formControl]="formControl" class="textfield-input"
+             [(ngModel)]="item"
              [placeholder]="'cafe_criterion_select_label' | translate"
              [required]="required"
              (blur)="onTouch()">
