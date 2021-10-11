@@ -35,6 +35,13 @@ namespace AdvancedFilters.Web.Controllers
             return PreparePage(page);
         }
 
+        [HttpGet("clusters")]
+        [ForbidIfMissing(Operation.ReadAllCafe)]
+        public Task<List<string>> GetAsync()
+        {
+            return _store.GetClustersAsync();
+        }
+
         [HttpPost("search")]
         [ForbidIfMissing(Operation.ReadAllCafe)]
         public async Task<Page<Environment>> SearchAsync
