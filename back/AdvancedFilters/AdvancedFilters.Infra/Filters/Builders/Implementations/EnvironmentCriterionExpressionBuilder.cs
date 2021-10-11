@@ -17,6 +17,7 @@ namespace AdvancedFilters.Infra.Filters.Builders.Implementations
             yield return Apply(Criterion.Subdomain).To(e => e.Subdomain);
             yield return Apply(Criterion.LegalUnits).To(e => e.LegalUnits);
             yield return Apply(Criterion.AppInstances).To(e => e.AppInstances);
+            yield return Apply(Criterion.Cluster).To(e => e.Cluster);
         }
     }
 }

@@ -69,15 +69,4 @@ namespace AdvancedFilters.Infra.Storage.Stores
                 .Apply(filter.IsActive).To(e => e.IsActive);
         }
     }
-
-    internal class EnvironmentAdvancedCriterionApplier : IAdvancedCriterionApplier<Environment, EnvironmentAdvancedCriterion>
-    {
-        public IQueryable<Environment> Apply(IQueryable<Environment> queryable, EnvironmentAdvancedCriterion criterion)
-        {
-            return queryable
-                .Apply(criterion.Subdomain).To(e => e.Subdomain)
-                .Apply(criterion.AppInstances).To(e => e.AppInstances)
-                .Apply(criterion.LegalUnits).To(e => e.LegalUnits);
-        }
-    }
 }
