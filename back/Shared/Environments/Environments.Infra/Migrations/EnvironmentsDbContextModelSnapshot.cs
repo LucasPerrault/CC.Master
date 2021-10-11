@@ -16,8 +16,8 @@ namespace Environments.Infra.Migrations
 #pragma warning disable 612, 618
             modelBuilder
                 .HasDefaultSchema("shared")
-                .HasAnnotation("ProductVersion", "3.1.16")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
+                .HasAnnotation("ProductVersion", "5.0.10")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
             modelBuilder.Entity("Distributors.Domain.Models.Distributor", b =>
@@ -28,20 +28,20 @@ namespace Environments.Infra.Migrations
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("Code")
-                        .HasColumnName("Code")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("Code");
 
                     b.Property<int>("DepartmentId")
-                        .HasColumnName("DepartmentId")
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasColumnName("DepartmentId");
 
                     b.Property<string>("Name")
-                        .HasColumnName("Name")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("Name");
 
                     b.HasKey("Id");
 
-                    b.ToTable("Distributors","shared");
+                    b.ToTable("Distributors", "shared");
                 });
 
             modelBuilder.Entity("Environments.Domain.Environment", b =>
@@ -52,28 +52,28 @@ namespace Environments.Infra.Migrations
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnName("CreatedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("datetime2")
+                        .HasColumnName("CreatedAt");
 
                     b.Property<int>("Domain")
-                        .HasColumnName("Domain")
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasColumnName("Domain");
 
                     b.Property<bool>("IsActive")
-                        .HasColumnName("IsActive")
-                        .HasColumnType("bit");
+                        .HasColumnType("bit")
+                        .HasColumnName("IsActive");
 
                     b.Property<int>("Purpose")
-                        .HasColumnName("Purpose")
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasColumnName("Purpose");
 
                     b.Property<string>("Subdomain")
-                        .HasColumnName("Subdomain")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("Subdomain");
 
                     b.HasKey("Id");
 
-                    b.ToTable("Environments","shared");
+                    b.ToTable("Environments", "shared");
                 });
 
             modelBuilder.Entity("Environments.Domain.EnvironmentAccess", b =>
@@ -84,24 +84,24 @@ namespace Environments.Infra.Migrations
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<int>("AuthorId")
-                        .HasColumnName("AuthorId")
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasColumnName("AuthorId");
 
                     b.Property<string>("Comment")
-                        .HasColumnName("Comment")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("Comment");
 
                     b.Property<int>("DistributorId")
-                        .HasColumnName("DistributorId")
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasColumnName("DistributorId");
 
                     b.Property<DateTime?>("EndsAt")
-                        .HasColumnName("EndsAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("datetime2")
+                        .HasColumnName("EndsAt");
 
                     b.Property<int>("EnvironmentId")
-                        .HasColumnName("EnvironmentId")
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasColumnName("EnvironmentId");
 
                     b.Property<int>("Lifecycle")
                         .ValueGeneratedOnAddOrUpdate()
@@ -109,26 +109,26 @@ namespace Environments.Infra.Migrations
                         .HasComputedColumnSql("Lifecycle");
 
                     b.Property<string>("RevocationComment")
-                        .HasColumnName("RevocationComment")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("RevocationComment");
 
                     b.Property<DateTime?>("RevokedAt")
-                        .HasColumnName("RevokedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("datetime2")
+                        .HasColumnName("RevokedAt");
 
                     b.Property<DateTime>("StartsAt")
-                        .HasColumnName("StartsAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("datetime2")
+                        .HasColumnName("StartsAt");
 
                     b.Property<int>("Type")
-                        .HasColumnName("Type")
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasColumnName("Type");
 
                     b.HasKey("Id");
 
                     b.HasIndex("EnvironmentId");
 
-                    b.ToTable("EnvironmentAccesses","shared");
+                    b.ToTable("EnvironmentAccesses", "shared");
                 });
 
             modelBuilder.Entity("Environments.Domain.EnvironmentSharedAccess", b =>
@@ -137,12 +137,12 @@ namespace Environments.Infra.Migrations
                         .HasColumnType("int");
 
                     b.Property<int>("ConsumerId")
-                        .HasColumnName("ConsumerId")
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasColumnName("ConsumerId");
 
                     b.Property<int>("EnvironmentId")
-                        .HasColumnName("EnvironmentId")
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasColumnName("EnvironmentId");
 
                     b.HasKey("Id");
 
@@ -150,7 +150,7 @@ namespace Environments.Infra.Migrations
 
                     b.HasIndex("EnvironmentId");
 
-                    b.ToTable("EnvironmentSharedAccesses","shared");
+                    b.ToTable("EnvironmentSharedAccesses", "shared");
                 });
 
             modelBuilder.Entity("Environments.Domain.EnvironmentSharedAccess", b =>
@@ -172,6 +172,15 @@ namespace Environments.Infra.Migrations
                         .HasForeignKey("Id")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Access");
+
+                    b.Navigation("Consumer");
+                });
+
+            modelBuilder.Entity("Environments.Domain.Environment", b =>
+                {
+                    b.Navigation("ActiveAccesses");
                 });
 #pragma warning restore 612, 618
         }
