@@ -22,8 +22,8 @@ export class AppContactFormlyConfiguration {
     key: AppContactAdvancedFilterKey.Applications,
     type: 'api',
     templateOptions: {
-      api: '/api/v3/products',
-      orderBy: 'name,asc',
+      api: '/api/cafe/applications',
+      standard: 'v4',
       multiple: true,
       required: true,
       mod: 'palette-grey mod-outlined mod-inline mod-longer',
@@ -35,7 +35,8 @@ export class AppContactFormlyConfiguration {
     key: AppContactAdvancedFilterKey.EnvironmentApplications,
     type: 'api',
     templateOptions: {
-      api: '/api/v3/products',
+      api: '/api/cafe/applications',
+      standard: 'v4',
       orderBy: 'name,asc',
       multiple: true,
       required: true,

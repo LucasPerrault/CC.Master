@@ -35,8 +35,8 @@ export class ClientContactFormlyConfiguration {
     key: ClientContactAdvancedFilterKey.EnvironmentApplications,
     type: 'api',
     templateOptions: {
-      api: '/api/v3/products',
-      orderBy: 'name,asc',
+      api: '/api/cafe/applications',
+      standard: 'v4',
       multiple: true,
       required: true,
       mod: 'palette-grey mod-outlined mod-inline mod-longer',

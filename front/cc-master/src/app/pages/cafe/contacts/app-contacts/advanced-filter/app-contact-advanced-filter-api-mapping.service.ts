@@ -38,7 +38,7 @@ export class AppContactAdvancedFilterApiMappingService {
     const criterions = AdvancedFilterTypeMapping.toCriterions(
         operator,
         appInstances.map(a => a.id),
-        c => ({ appInstances: { applicationId: c } }),
+        c => ({ appInstance: { applicationId: c } }),
     );
     return AdvancedFilterTypeMapping.combine(criterions, LogicalOperator.And);
   }

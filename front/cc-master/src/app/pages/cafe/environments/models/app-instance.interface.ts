@@ -5,3 +5,8 @@ export interface IAppInstance {
   environmentId: number;
   deletedAt: string;
 }
+
+export interface IApplication {
+  id: string;
+  name: string;
+}

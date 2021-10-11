@@ -15,7 +15,7 @@ export class CommonApiMappingStrategies {
         const criterions = AdvancedFilterTypeMapping.toCriterions(
             operator,
             appInstances.map(a => a.id),
-            c => ({ environment: { appInstances: { applicationId: c } } }),
+            c => ({ environment: { appInstance: { applicationId: c } } }),
         );
         return AdvancedFilterTypeMapping.toFilterCombination(LogicalOperator.And, criterions);
     }

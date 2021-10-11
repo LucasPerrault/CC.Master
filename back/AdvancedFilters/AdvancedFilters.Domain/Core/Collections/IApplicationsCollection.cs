@@ -7,7 +7,7 @@ namespace AdvancedFilters.Domain.Core.Collections
 {
     public interface IApplicationsCollection
     {
-        Task<IReadOnlyCollection<Application>> GetAsync();
+        Task<IReadOnlyCollection<Application>> GetAsync(string search);
     }
 
     public class ApplicationsCollection : IApplicationsCollection
@@ -34,10 +34,11 @@ namespace AdvancedFilters.Domain.Core.Collections
             { "PAYMONITOR", "PayMonitor" },
         };
 
-        public Task<IReadOnlyCollection<Application>> GetAsync()
+        public Task<IReadOnlyCollection<Application>> GetAsync(string search)
         {
             var applications = ApplicationNamesById
                 .Select(kvp => new Application { Id = kvp.Key, Name = kvp.Value })
+                .Where(a => string.IsNullOrEmpty(search) || a.Name.ToLowerInvariant().StartsWith(search.ToLowerInvariant()))
                 .ToList();
 
             return Task.FromResult<IReadOnlyCollection<Application>>(applications);
