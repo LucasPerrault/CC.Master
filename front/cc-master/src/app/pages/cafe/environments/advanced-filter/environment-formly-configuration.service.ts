@@ -14,7 +14,7 @@ export class EnvironmentFormlyConfiguration {
       multiple: true,
       required: true,
       mod: 'palette-grey mod-outlined mod-inline mod-longer',
-      placeholder: this.translatePipe.transform('cafe_filters_subdomain'),
+      placeholder: 'Sélectionner...',
     },
   };
 
@@ -25,7 +25,7 @@ export class EnvironmentFormlyConfiguration {
       multiple: true,
       required: true,
       mod: 'palette-grey mod-outlined mod-inline mod-longer',
-      placeholder: this.translatePipe.transform('cafe_filters_domain'),
+      placeholder: 'Sélectionner...',
     },
   };
 
@@ -38,7 +38,7 @@ export class EnvironmentFormlyConfiguration {
       multiple: true,
       required: true,
       mod: 'palette-grey mod-outlined mod-inline mod-longer',
-      placeholder: 'Quel beau placeholder de cluster',
+      placeholder: 'Sélectionner...',
     },
   };
 
@@ -51,7 +51,7 @@ export class EnvironmentFormlyConfiguration {
       multiple: true,
       required: true,
       mod: 'palette-grey mod-outlined mod-inline mod-longer',
-      placeholder: this.translatePipe.transform('cafe_filters_applications'),
+      placeholder: 'Sélectionner...',
     },
   };
 
@@ -62,7 +62,7 @@ export class EnvironmentFormlyConfiguration {
       multiple: true,
       required: true,
       mod: 'palette-grey mod-outlined mod-inline mod-longer',
-      placeholder: this.translatePipe.transform('cafe_filters_countries'),
+      placeholder: 'Sélectionner...',
     },
   };
 

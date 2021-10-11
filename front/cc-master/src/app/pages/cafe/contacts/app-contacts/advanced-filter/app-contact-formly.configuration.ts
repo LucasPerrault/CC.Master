@@ -14,7 +14,7 @@ export class AppContactFormlyConfiguration {
       multiple: true,
       required: true,
       mod: 'palette-grey mod-outlined mod-inline mod-longer',
-      placeholder: this.translatePipe.transform('cafe_filters_subdomain'),
+      placeholder: 'Sélectionner...',
     },
   };
 
@@ -27,7 +27,7 @@ export class AppContactFormlyConfiguration {
       multiple: true,
       required: true,
       mod: 'palette-grey mod-outlined mod-inline mod-longer',
-      placeholder: this.translatePipe.transform('cafe_filters_applications'),
+      placeholder: 'Sélectionner...',
     },
   };
 
@@ -40,7 +40,7 @@ export class AppContactFormlyConfiguration {
       multiple: true,
       required: true,
       mod: 'palette-grey mod-outlined mod-inline mod-longer',
-      placeholder: this.translatePipe.transform('cafe_filters_environmentApplications'),
+      placeholder: 'Sélectionner...',
     },
   };
 

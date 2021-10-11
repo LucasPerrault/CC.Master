@@ -27,33 +27,32 @@ export class AppContactAdvancedFilterConfiguration implements IAdvancedFilterCon
           ],
           fields: [this.formlyConfiguration.environmentApplications],
         },
+        {
+          key: AppContactAdvancedFilterKey.Subdomain,
+          name: this.translatePipe.transform('cafe_filters_subdomain'),
+          operators: [
+            { id: ComparisonOperator.Equals, name: 'est parmi' },
+            { id: ComparisonOperator.DoesNotEqual, name: 'n\'est pas parmi' },
+          ],
+          fields: [this.formlyConfiguration.subdomain],
+        },
       ],
-    },
-    {
-      key: AppContactAdvancedFilterKey.Subdomain,
-      name: this.translatePipe.transform('cafe_filters_subdomain'),
-      operators: [
-        { id: ComparisonOperator.Equals, name: 'égal' },
-        { id: ComparisonOperator.DoesNotEqual, name: 'n\'est pas égal ' },
-      ],
-      fields: [this.formlyConfiguration.subdomain],
     },
     {
       key: AppContactAdvancedFilterKey.Applications,
-      name: this.translatePipe.transform('cafe_filters_applications'),
+      name: 'L\'application gérée',
       operators: [
-        { id: ComparisonOperator.Equals, name: 'égal' },
-        { id: ComparisonOperator.DoesNotEqual, name: 'n\'est pas égal ' },
+        { id: ComparisonOperator.Equals, name: 'est parmi' },
+        { id: ComparisonOperator.DoesNotEqual, name: 'n\'est pas parmi' },
       ],
       fields: [this.formlyConfiguration.applications],
     },
     {
       key: AppContactAdvancedFilterKey.IsConfirmed,
-      name: this.translatePipe.transform('cafe_filters_isConfirmed'),
+      name: 'Est confirmé ?',
       operators: [
-        { id: ComparisonOperator.TrueOnly, name: 'est vrai' },
-        { id: ComparisonOperator.FalseOnly, name: 'est faux' },
-        { id: ComparisonOperator.ByPass, name: 'n\'importe pas' },
+        { id: ComparisonOperator.TrueOnly, name: 'Oui' },
+        { id: ComparisonOperator.FalseOnly, name: 'Non' },
       ],
     },
   ];
@@ -61,5 +60,5 @@ export class AppContactAdvancedFilterConfiguration implements IAdvancedFilterCon
   constructor(
     private translatePipe: TranslatePipe,
     private formlyConfiguration: AppContactFormlyConfiguration,
-  ) {}
+  ) { }
 }

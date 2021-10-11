@@ -38,10 +38,10 @@ export class EnvironmentAdvancedFilterConfiguration implements IAdvancedFilterCo
     },
     {
       key: EnvironmentAdvancedFilterKey.IsActive,
-      name: this.translatePipe.transform('cafe_filters_isActive'),
+      name: 'Est actif ?',
       operators: [
-        { id: ComparisonOperator.TrueOnly, name: 'est vrai' },
-        { id: ComparisonOperator.FalseOnly, name: 'est faux' },
+        { id: ComparisonOperator.TrueOnly, name: 'Oui' },
+        { id: ComparisonOperator.FalseOnly, name: 'Non' },
       ],
     },
     {

@@ -25,10 +25,10 @@ export class SpecializedContactAdvancedFilterConfiguration implements IAdvancedF
     },
     {
       key: SpeContactAdvancedFilterKey.IsConfirmed,
-      name: this.translatePipe.transform('cafe_filters_isConfirmed'),
+      name: 'Est confirmé',
       operators: [
-        { id: ComparisonOperator.TrueOnly, name: 'est vrai' },
-        { id: ComparisonOperator.FalseOnly, name: 'est faux' },
+        { id: ComparisonOperator.TrueOnly, name: 'Oui' },
+        { id: ComparisonOperator.FalseOnly, name: 'Non' },
       ],
     },
   ];

@@ -14,7 +14,7 @@ export class ClientContactFormlyConfiguration {
       multiple: true,
       required: true,
       mod: 'palette-grey mod-outlined mod-inline mod-longer',
-      placeholder: this.translatePipe.transform('cafe_filters_subdomain'),
+      placeholder: 'Sélectionner...',
     },
   };
 
@@ -27,7 +27,20 @@ export class ClientContactFormlyConfiguration {
       multiple: true,
       required: true,
       mod: 'palette-grey mod-outlined mod-inline mod-longer',
-      placeholder: this.translatePipe.transform('cafe_filters_client'),
+      placeholder: 'Sélectionner...',
+    },
+  };
+
+  public readonly environmentApplications: FormlyFieldConfig = {
+    key: ClientContactAdvancedFilterKey.EnvironmentApplications,
+    type: 'api',
+    templateOptions: {
+      api: '/api/v3/products',
+      orderBy: 'name,asc',
+      multiple: true,
+      required: true,
+      mod: 'palette-grey mod-outlined mod-inline mod-longer',
+      placeholder: 'Sélectionner...',
     },
   };
 
