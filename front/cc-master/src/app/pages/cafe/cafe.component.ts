@@ -44,10 +44,13 @@ export class CafeComponent {
   constructor(cafeConfiguration: CafeConfiguration) {
     this.configuration = cafeConfiguration;
 
-    this.cafeFilters.patchValue({ category: this.getDefaultCategory(EnvironmentsCategory.Environments) });
+    this.cafeFilters.patchValue({ category: this.getDefaultCategory(ContactCategory.Application) });
   }
 
   private getDefaultCategory(category: EnvironmentsCategory | ContactCategory): ICategory {
-    return this.configuration.categories?.find(c => c.id === category);
+      return this.configuration.categories
+            .map(c => [c, ...(c.children || [])])
+            .reduce((flattened: ICategory[], array: ICategory[]) => [...flattened, ...array])
+            .find(c => c.id === category);
   }
 }

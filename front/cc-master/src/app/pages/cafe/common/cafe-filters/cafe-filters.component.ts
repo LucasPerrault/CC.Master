@@ -43,7 +43,7 @@ export class CafeFiltersComponent implements OnInit, OnDestroy, ControlValueAcce
 
   public selectedConfiguration$: BehaviorSubject<IAdvancedFilterConfiguration> = new BehaviorSubject(null);
 
-  public showAdvancedFilters = false;
+  public showAdvancedFilters = true;
 
   private destroy$: Subject<void> = new Subject();
 
@@ -59,7 +59,7 @@ export class CafeFiltersComponent implements OnInit, OnDestroy, ControlValueAcce
     this.formGroup.get(CafeFilterKey.Category).valueChanges
       .pipe(takeUntil(this.destroy$))
       .subscribe(category => {
-        this.showAdvancedFilters = false;
+        this.showAdvancedFilters = true;
         this.formGroup.get(CafeFilterKey.AdvancedFilterForm).reset();
 
         const configuration = this.getSelectedConfiguration(category);
