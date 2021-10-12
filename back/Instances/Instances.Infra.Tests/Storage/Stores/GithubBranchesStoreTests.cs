@@ -22,8 +22,7 @@ namespace Instances.Infra.Tests.Storage.Stores
         {
             _dbContext = InMemoryDbHelper.InitialiseDb<InstancesDbContext>("Instances", o => new InstancesDbContext(o));
 
-            //Temporary null : should be remove in the same PR
-            _githubBranchesStore = new GithubBranchesStore(new System.Net.Http.HttpClient(), _dbContext, null);
+            _githubBranchesStore = new GithubBranchesStore(_dbContext);
         }
 
         [Fact]

@@ -1,6 +1,7 @@
 using Instances.Domain.CodeSources;
 using Instances.Domain.CodeSources.Filtering;
 using Instances.Domain.Github;
+using Instances.Domain.Github.Models;
 using Lucca.Core.Api.Abstractions.Paging;
 using Lucca.Core.Shared.Domain.Exceptions;
 using System;
@@ -26,11 +27,14 @@ namespace Instances.Application.CodeSources
 
     public class CodeSourcesRepository : ICodeSourcesRepository
     {
+        const string CommonDefaultBranchName = "main";
+
         private readonly ICodeSourcesStore _codeSourcesStore;
         private readonly IGithubBranchesStore _githubBranchesStore;
         private readonly ICodeSourceFetcherService _fetcherService;
         private readonly ICodeSourceBuildUrlService _codeSourceBuildUrl;
         private readonly IArtifactsService _artifactsService;
+        private readonly IGithubService _githubService;
 
         public CodeSourcesRepository
         (
@@ -38,7 +42,8 @@ namespace Instances.Application.CodeSources
             IGithubBranchesStore githubBranchesStore,
             ICodeSourceFetcherService fetcherService,
             ICodeSourceBuildUrlService codeSourceBuildUrl,
-            IArtifactsService artifactsService
+            IArtifactsService artifactsService,
+            IGithubService githubService
         )
         {
             _codeSourcesStore = codeSourcesStore;
@@ -46,6 +51,7 @@ namespace Instances.Application.CodeSources
             _fetcherService = fetcherService;
             _codeSourceBuildUrl = codeSourceBuildUrl;
             _artifactsService = artifactsService;
+            _githubService = githubService;
         }
 
         public async Task<Page<CodeSource>> GetAsync(IPageToken pageToken, CodeSourceFilter codeSourceFilter)
@@ -55,8 +61,40 @@ namespace Instances.Application.CodeSources
 
         public async Task<CodeSource> CreateAsync(CodeSource codeSource)
         {
-            await _codeSourcesStore.CreateAsync(codeSource);
-            await _githubBranchesStore.CreateForNewSourceCodeAsync(codeSource);
+            var otherCodeSourceIds = await _codeSourcesStore.GetAsync(new CodeSourceFilter
+            {
+                GithubRepo = codeSource.GithubRepo
+            });
+
+            codeSource = await _codeSourcesStore.CreateAsync(codeSource);
+
+            if (otherCodeSourceIds.Any())
+            {
+                var branchesToUpdate = await _githubBranchesStore.GetAsync(new GithubBranchFilter
+                {
+                    CodeSourceId = otherCodeSourceIds.First().Id,
+                    IsDeleted = false
+                });
+
+                foreach (var branch in branchesToUpdate)
+                {
+                    branch.CodeSources.Add(codeSource);
+                }
+                await _githubBranchesStore.UpdateAsync(branchesToUpdate);
+                return codeSource;
+            }
+
+            var headCommitInfo = await _githubService.GetGithubBranchHeadCommitInfoAsync(codeSource.GithubRepo, CommonDefaultBranchName);
+            await _githubBranchesStore.CreateAsync(new GithubBranch
+            {
+                Name = CommonDefaultBranchName,
+                CodeSources = new() { codeSource },
+                CreatedAt = headCommitInfo.CommitedOn,
+                LastPushedAt = headCommitInfo.CommitedOn,
+                HeadCommitMessage = headCommitInfo.Message,
+                HeadCommitHash = headCommitInfo.Sha,
+            });
+
             return codeSource;
         }
 

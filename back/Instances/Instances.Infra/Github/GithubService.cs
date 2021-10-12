@@ -1,4 +1,6 @@
-﻿using Lucca.Core.Shared.Domain.Exceptions;
+using Instances.Domain.Github;
+using Instances.Domain.Github.Models;
+using Lucca.Core.Shared.Domain.Exceptions;
 using Microsoft.Extensions.Logging;
 using Octokit;
 using System;
@@ -8,11 +10,6 @@ using System.Threading.Tasks;
 
 namespace Instances.Infra.Github
 {
-    public interface IGithubService
-    {
-        Task<string> GetFileContentAsync(string repoUrl, string filepath);
-    }
-
     public class GithubService : IGithubService
     {
         private static readonly List<string> GithubAllowedOwners = new List<string> { "LuccaSA" };
@@ -51,6 +48,20 @@ namespace Instances.Infra.Github
             }
 
             return file.Content;
+        }
+
+        public async Task<GithubCommit> GetGithubBranchHeadCommitInfoAsync(string githubRepo, string branchName)
+        {
+            var (owner, repositoryName) = GetOwnerAndRepoNameFromRepoUrl(githubRepo);
+
+            var commitInfo = await _gitHubClient.Repository.Commit.Get(owner, repositoryName, branchName);
+            return new GithubCommit()
+            {
+                Sha = commitInfo.Sha,
+                Commiter = commitInfo.Commit.Author.Name,
+                CommitedOn = commitInfo.Commit.Author.Date.DateTime,
+                Message = commitInfo.Commit.Message,
+            };
         }
 
         private static (string owner, string repositoryName) GetOwnerAndRepoNameFromRepoUrl(string repoUrl)

@@ -1,32 +1,20 @@
-using Instances.Domain.CodeSources;
 using Instances.Domain.CodeSources.Filtering;
 using Instances.Domain.Github;
 using Instances.Domain.Github.Models;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
-using Remote.Infra.Exceptions;
-using Remote.Infra.Services;
 using Storage.Infra.Extensions;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace Instances.Infra.Storage.Stores
 {
     public class GithubBranchesStore : IGithubBranchesStore
     {
-        private readonly ILogger<GithubBranchesStore> _logger;
-        private readonly RestApiV3HttpClientHelper _httpClientHelper;
-
         private readonly InstancesDbContext _dbContext;
 
-        public GithubBranchesStore(
-            HttpClient httpClient, InstancesDbContext dbContext,
-            ILogger<GithubBranchesStore> logger)
+        public GithubBranchesStore(InstancesDbContext dbContext)
         {
-            _httpClientHelper = new RestApiV3HttpClientHelper(httpClient, "Legacy cloudcontrol github branches api");
-            _logger = logger;
             _dbContext = dbContext;
         }
 
@@ -39,6 +27,10 @@ namespace Instances.Infra.Storage.Stores
 
         public async Task<GithubBranch> GetFirstAsync(GithubBranchFilter githubBranchFilter)
             => await Get(githubBranchFilter).FirstOrDefaultAsync();
+
+        public async Task<List<GithubBranch>> GetAsync(GithubBranchFilter githubBranchFilter)
+            => await Get(githubBranchFilter).ToListAsync();
+
 
         private IQueryable<GithubBranch> Get(GithubBranchFilter filter)
         {
@@ -55,25 +47,13 @@ namespace Instances.Infra.Storage.Stores
             await _dbContext.SaveChangesAsync();
             return existingBranch;
         }
-
-        public async Task CreateForNewSourceCodeAsync(CodeSource codeSource)
+        public async Task UpdateAsync(IEnumerable<GithubBranch> existingBranches)
         {
-            try
-            {
-                await _httpClientHelper.PostObjectResponseAsync<object>
-                (
-                    "createDefaultBranches",
-                    new { codeSource.Id },
-                    new Dictionary<string, string>()
-                );
-            }
-            catch (RemoteServiceException e)
-            {
-                _logger.LogError(e, "Remote creation of default code source branches failed");
-                throw;
-            }
+            _dbContext
+                .Set<GithubBranch>()
+                .UpdateRange(existingBranches);
+            await _dbContext.SaveChangesAsync();
         }
-
     }
 
     internal static class GithubBranchesQueryableExtensions

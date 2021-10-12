@@ -127,6 +127,7 @@ namespace Instances.Web
             services.AddScoped<IClusterSelector, ClusterSelector>();
             services.AddScoped<ICodeSourcesStore, CodeSourcesStore>();
             services.AddScoped<IGithubPullRequestsStore, GithubPullRequestsStore>();
+            services.AddScoped<IGithubBranchesStore, GithubBranchesStore>();
 
             services.AddScoped<ISubdomainValidationTranslator, SubdomainValidationTranslator>();
             services.AddScoped<ISubdomainValidator, SubdomainValidator>();
@@ -152,13 +153,6 @@ namespace Instances.Web
                     .WithBaseAddress(configuration.InstancesStore.Host, configuration.InstancesStore.Endpoint)
                     .WithAuthScheme("CloudControl").AuthenticateAsApplication(configuration.InstancesStore.Token);
 
-            });
-
-            services.AddHttpClient<IGithubBranchesStore, GithubBranchesStore>(client =>
-            {
-                client.WithUserAgent(nameof(InstancesRemoteStore))
-                    .WithBaseAddress(configuration.PreviewConfigurationsStore.Host, configuration.PreviewConfigurationsStore.Endpoint)
-                    .WithAuthScheme("CloudControl").AuthenticateAsApplication(configuration.PreviewConfigurationsStore.Token);
             });
 
             services.AddHttpClient<IPreviewConfigurationsStore, PreviewConfigurationsStore>(client =>

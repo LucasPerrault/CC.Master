@@ -8,9 +8,10 @@ namespace Instances.Domain.Github
 {
     public interface IGithubBranchesStore
     {
-        Task CreateForNewSourceCodeAsync(CodeSource codeSource);
         Task<GithubBranch> CreateAsync(GithubBranch branch);
         Task<GithubBranch> GetFirstAsync(GithubBranchFilter githubBranchFilter);
+        Task<List<GithubBranch>> GetAsync(GithubBranchFilter githubBranchFilter);
         Task<GithubBranch> UpdateAsync(GithubBranch existingBranch);
+        Task UpdateAsync(IEnumerable<GithubBranch> existingBranches);
     }
 }

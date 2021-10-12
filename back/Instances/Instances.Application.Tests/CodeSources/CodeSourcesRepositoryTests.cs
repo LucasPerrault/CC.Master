@@ -3,6 +3,7 @@ using Instances.Application.CodeSources;
 using Instances.Domain.CodeSources;
 using Instances.Domain.CodeSources.Filtering;
 using Instances.Domain.Github;
+using Instances.Domain.Github.Models;
 using Instances.Infra.Storage;
 using Instances.Infra.Storage.Models;
 using Instances.Infra.Storage.Stores;
@@ -27,6 +28,7 @@ namespace Instances.Application.Tests.CodeSources
         private readonly Mock<IQueryPager> _queryPagerMock;
         private readonly Mock<ICodeSourceBuildUrlService> _codeSourceBuildUrlServiceMock;
         private readonly Mock<IArtifactsService> _artifactsServiceMock;
+        private readonly Mock<IGithubService> _githubServiceMock;
 
         private readonly CodeSourcesRepository _codeSourcesRepository;
 
@@ -43,13 +45,15 @@ namespace Instances.Application.Tests.CodeSources
             _instancesDbContext = InMemoryDbHelper.InitialiseDb<InstancesDbContext>("Instances", o => new InstancesDbContext(o));
             _codeSourceBuildUrlServiceMock = new Mock<ICodeSourceBuildUrlService>(MockBehavior.Strict);
             _artifactsServiceMock = new Mock<IArtifactsService>(MockBehavior.Strict);
+            _githubServiceMock = new Mock<IGithubService>(MockBehavior.Strict);
 
             _codeSourcesRepository = new CodeSourcesRepository(
                 new CodeSourcesStore(_instancesDbContext, _queryPagerMock.Object),
                 _githubBranchesStoreMock.Object,
                 _fetcherServiceMock.Object,
                 _codeSourceBuildUrlServiceMock.Object,
-                _artifactsServiceMock.Object
+                _artifactsServiceMock.Object,
+                _githubServiceMock.Object
             );
         }
 
@@ -192,16 +196,6 @@ namespace Instances.Application.Tests.CodeSources
             ex.Message.Should().Contain("Unknown code source");
         }
 
-        [Fact]
-        public async Task ShouldCreateDefaultBranchAfterSourceCreation()
-        {
-            var source = new CodeSource();
-
-            await _codeSourcesRepository.CreateAsync(source);
-
-            _githubBranchesStoreMock.Verify(s => s.CreateForNewSourceCodeAsync(source), Times.Once);
-        }
-
         #region GetBuildUrlAsync
         [Fact]
         public async Task GetBuildUrlAsync_Ok()
@@ -304,6 +298,63 @@ namespace Instances.Application.Tests.CodeSources
             var result = await _codeSourcesRepository.GetNonDeletedByRepositoryUrlAsync(repositoryUrl);
 
             result.Should().HaveCount(1);
+        }
+        #endregion
+
+        #region CreateAsync
+        [Fact]
+        public async Task Existing_CreateAsync()
+        {
+            var githubRepo = "https://github.com/LuccaSA/repo";
+            var githubBranch = new GithubBranch()
+            {
+                CodeSources = new List<CodeSource>()
+            };
+
+            await _instancesDbContext.AddAsync(new StoredCodeSource { Id = 1, Lifecycle = CodeSourceLifecycleStep.InProduction, GithubRepo = githubRepo });
+            await _instancesDbContext.SaveChangesAsync();
+
+            _githubBranchesStoreMock
+                .Setup(gb => gb.GetAsync(It.IsAny<GithubBranchFilter>()))
+                .ReturnsAsync(new List<GithubBranch> { githubBranch });
+            _githubBranchesStoreMock
+                .Setup(gb => gb.UpdateAsync(It.IsAny<List<GithubBranch>>()))
+                .Returns(Task.CompletedTask);
+
+            await _codeSourcesRepository.CreateAsync(new CodeSource
+            {
+                Id = 2,
+                GithubRepo = githubRepo
+            });
+
+            githubBranch.CodeSources.Should().NotBeEmpty();
+        }
+
+        [Fact]
+        public async Task New_CreateAsync()
+        {
+            var githubRepo = "https://github.com/LuccaSA/repo";
+            GithubBranch captured = null;
+            _githubBranchesStoreMock
+                .Setup(gb => gb.CreateAsync(It.IsAny<GithubBranch>()))
+                .Returns<GithubBranch>(gb => {
+                    captured = gb;
+                    return Task.FromResult(gb);
+                });
+            _githubServiceMock
+                .Setup(g => g.GetGithubBranchHeadCommitInfoAsync(It.IsAny<string>(), It.IsAny<string>()))
+                .ReturnsAsync(new GithubCommit());
+
+            await _codeSourcesRepository.CreateAsync(new CodeSource
+            {
+                Id = 2,
+                GithubRepo = githubRepo
+            });
+
+            captured.Should().NotBeNull();
+            captured.CodeSources.Should().NotBeNullOrEmpty();
+
+            _githubServiceMock.Verify(g => g.GetGithubBranchHeadCommitInfoAsync(githubRepo, "main"));
         }
         #endregion
     }
