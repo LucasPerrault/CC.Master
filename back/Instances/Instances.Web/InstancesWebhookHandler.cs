@@ -23,6 +23,10 @@ namespace Instances.Web
         {
             var githubEvent = GetGithubEvent(request.Headers);
             var githubWebhookService = _githubWebhookServiceProvider.GetGithubWebhookService(githubEvent);
+            if (githubWebhookService == null)
+            {
+                return;
+            }
             await githubWebhookService.HandleEventAsync(request.Body);
         }
 

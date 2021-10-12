@@ -33,6 +33,7 @@ namespace Core.Proxy.Infra.Extensions
             "/health/ready",
             "/health/live",
             "/warmup",
+            "/webhooks/github",
 
             // front
             "/cc-master",
