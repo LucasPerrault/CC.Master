@@ -1,6 +1,8 @@
+using Instances.Domain.CodeSources;
 using Instances.Domain.Github.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using System.Collections.Generic;
 
 namespace Instances.Infra.Storage.Configurations
 {
@@ -19,6 +21,15 @@ namespace Instances.Infra.Storage.Configurations
 
             builder.Property(pr => pr.OriginBranchId).HasColumnName("originBranchId");
             builder.HasOne(pr => pr.OriginBranch).WithMany().HasForeignKey(pr => pr.OriginBranchId);
+
+            builder
+                .HasMany(pr => pr.CodeSources)
+                .WithMany(c => c.GithubPullRequests)
+                .UsingEntity<Dictionary<string, object>>(
+                    "GithubPullRequestsCodeSources",
+                    b => b.HasOne<CodeSource>().WithMany().HasForeignKey("codeSourceId"),
+                    c => c.HasOne<GithubPullRequest>().WithMany().HasForeignKey("githubPullRequestId")
+                );
         }
     }
 }

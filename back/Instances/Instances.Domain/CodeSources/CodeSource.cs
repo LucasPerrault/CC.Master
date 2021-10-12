@@ -1,3 +1,4 @@
+using Instances.Domain.Github.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -43,6 +44,11 @@ namespace Instances.Domain.CodeSources
         public CodeSourceLifecycleStep Lifecycle { get; set; }
         public CodeSourceConfig Config { get; set; }
 
-        public CodeSourceProductionVersion CurrentProductionVersion { get; set; }
+        public CodeSourceProductionVersion CurrentProductionVersion => ProductionVersions.OrderByDescending(v => v.Id).FirstOrDefault();
+
+        public List<CodeSourceArtifacts> CodeSourceArtifacts { get; set; }
+        public List<CodeSourceProductionVersion> ProductionVersions { get; set; }
+        public List<GithubBranch> GithubBranches { get; set; }
+        public List<GithubPullRequest> GithubPullRequests { get; set; }
     }
 }

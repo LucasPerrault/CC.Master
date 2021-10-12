@@ -1,13 +1,12 @@
 using Instances.Domain.CodeSources;
-using Instances.Infra.Storage.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Instances.Infra.Storage.Configurations
 {
-    public class CodeSourcesConfiguration : IEntityTypeConfiguration<StoredCodeSource>
+    public class CodeSourcesConfiguration : IEntityTypeConfiguration<CodeSource>
     {
-        public void Configure(EntityTypeBuilder<StoredCodeSource> builder)
+        public void Configure(EntityTypeBuilder<CodeSource> builder)
         {
             builder.ToTable("CodeSources");
             builder.HasKey(cs => cs.Id);
@@ -21,6 +20,8 @@ namespace Instances.Infra.Storage.Configurations
             builder.HasOne(cs => cs.Config).WithOne().HasForeignKey<CodeSourceConfig>(c => c.CodeSourceId);
             builder.HasMany(cs => cs.ProductionVersions).WithOne().HasForeignKey(pv => pv.CodeSourceId);
             builder.HasMany(cs => cs.CodeSourceArtifacts).WithOne().HasForeignKey(csa => csa.CodeSourceId);
+
+            builder.Ignore(cs => cs.CurrentProductionVersion);
         }
     }
     public class CodeSourceArtifactsConfiguration : IEntityTypeConfiguration<CodeSourceArtifacts>

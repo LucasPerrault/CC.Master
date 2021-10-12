@@ -3,9 +3,9 @@ using Instances.Domain.CodeSources;
 using Instances.Domain.CodeSources.Filtering;
 using Instances.Domain.Github.Models;
 using Instances.Infra.Storage;
-using Instances.Infra.Storage.Models;
 using Instances.Infra.Storage.Stores;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Testing.Infra;
 using Xunit;
@@ -28,15 +28,18 @@ namespace Instances.Infra.Tests.Storage.Stores
         public async Task Create_Update_Get_Async()
         {
             var codeSource = new CodeSource { Id = 2 };
-            await _dbContext.AddAsync(new StoredCodeSource { Id = 1, Lifecycle = CodeSourceLifecycleStep.InProduction });
-            await _dbContext.AddAsync(new StoredCodeSource { Id = codeSource.Id, Lifecycle = CodeSourceLifecycleStep.InProduction });
+            await _dbContext.AddAsync(new CodeSource { Id = 1, Lifecycle = CodeSourceLifecycleStep.InProduction });
+            await _dbContext.AddAsync(new CodeSource { Id = codeSource.Id, Lifecycle = CodeSourceLifecycleStep.InProduction });
+            await _dbContext.SaveChangesAsync();
+
+            codeSource = await _dbContext.Set<CodeSource>().FindAsync(codeSource.Id);
 
             // CREATE
             await _githubPullRequestsStore.CreateAsync(new GithubPullRequest
             {
                 IsOpened = true,
                 Number = 42,
-                CodeSources = new System.Collections.Generic.List<CodeSource> { codeSource }
+                CodeSources = new List<CodeSource> { codeSource }
             });
 
             // GET

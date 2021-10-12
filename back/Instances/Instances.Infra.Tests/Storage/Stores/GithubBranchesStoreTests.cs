@@ -3,7 +3,6 @@ using Instances.Domain.CodeSources;
 using Instances.Domain.CodeSources.Filtering;
 using Instances.Domain.Github.Models;
 using Instances.Infra.Storage;
-using Instances.Infra.Storage.Models;
 using Instances.Infra.Storage.Stores;
 using System;
 using System.Collections.Generic;
@@ -30,9 +29,13 @@ namespace Instances.Infra.Tests.Storage.Stores
         {
             var codeSource1 = new CodeSource { Id = 1 };
             var codeSource2 = new CodeSource { Id = 2 };
-            await _dbContext.AddAsync(new StoredCodeSource { Id = codeSource1.Id, Lifecycle = CodeSourceLifecycleStep.InProduction });
-            await _dbContext.AddAsync(new StoredCodeSource { Id = codeSource2.Id, Lifecycle = CodeSourceLifecycleStep.InProduction });
-            await _dbContext.AddAsync(new StoredCodeSource { Id = 3, Lifecycle = CodeSourceLifecycleStep.InProduction });
+            await _dbContext.AddAsync(new CodeSource { Id = codeSource1.Id, Lifecycle = CodeSourceLifecycleStep.InProduction });
+            await _dbContext.AddAsync(new CodeSource { Id = codeSource2.Id, Lifecycle = CodeSourceLifecycleStep.InProduction });
+            await _dbContext.AddAsync(new CodeSource { Id = 3, Lifecycle = CodeSourceLifecycleStep.InProduction });
+            await _dbContext.SaveChangesAsync();
+
+            codeSource1 = await _dbContext.Set<CodeSource>().FindAsync(codeSource1.Id);
+            codeSource2 = await _dbContext.Set<CodeSource>().FindAsync(codeSource2.Id);
 
             var githubBranch = new GithubBranch
             {

@@ -1,6 +1,8 @@
+using Instances.Domain.CodeSources;
 using Instances.Domain.Github.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using System.Collections.Generic;
 
 namespace Instances.Infra.Storage.Configurations
 {
@@ -10,13 +12,22 @@ namespace Instances.Infra.Storage.Configurations
         {
             builder.ToTable("GithubBranches");
             builder.HasKey(b => b.Id);
-            builder.Property(p => p.Name).HasColumnName("name");
-            builder.Property(p => p.IsDeleted).HasColumnName("idDeleted");
-            builder.Property(p => p.CreatedAt).HasColumnName("createdAt");
-            builder.Property(p => p.LastPushedAt).HasColumnName("lastPushedAt");
-            builder.Property(p => p.DeletedAt).HasColumnName("deletedAt");
-            builder.Property(p => p.HeadCommitHash).HasColumnName("headCommitHash");
-            builder.Property(p => p.HeadCommitMessage).HasColumnName("headCommitMessage");
+            builder.Property(b => b.Name).HasColumnName("name");
+            builder.Property(b => b.IsDeleted).HasColumnName("isDeleted");
+            builder.Property(b => b.CreatedAt).HasColumnName("createdAt");
+            builder.Property(b => b.LastPushedAt).HasColumnName("lastPushedAt");
+            builder.Property(b => b.DeletedAt).HasColumnName("deletedAt");
+            builder.Property(b => b.HeadCommitHash).HasColumnName("headCommitHash");
+            builder.Property(b => b.HeadCommitMessage).HasColumnName("headCommitMessage");
+
+            builder
+                .HasMany(b => b.CodeSources)
+                .WithMany(c => c.GithubBranches)
+                .UsingEntity<Dictionary<string, object>>(
+                    "GithubBranchesCodeSources",
+                    b => b.HasOne<CodeSource>().WithMany().HasForeignKey("codeSourceId"),
+                    c => c.HasOne<GithubBranch>().WithMany().HasForeignKey("githubBranchId")
+                );
         }
     }
 }
