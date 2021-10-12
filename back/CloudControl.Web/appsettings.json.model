@@ -113,7 +113,8 @@
             "ClusterChoiceCacheRetentionInHours": 24
         },
         "Github": {
-            "Token": "{{ CC.Master:GithubToken }}"
+            "Token": "{{ CC.Master:GithubToken }}",
+            "GithubWebhookSecret": "{{ CC.Master:GithubWebhookSecret }}"
         },
         "Dns": {
             "Internal": {

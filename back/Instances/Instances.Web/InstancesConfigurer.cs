@@ -22,10 +22,10 @@ using Instances.Infra.Github;
 using Instances.Infra.Instances;
 using Instances.Infra.Instances.Services;
 using Instances.Infra.Shared;
-using Instances.Infra.Storage.Configurations;
 using Instances.Infra.Storage.Stores;
 using Instances.Infra.Windows;
 using Instances.Infra.WsAuth;
+using Instances.Web.Webhooks;
 using Lucca.Core.Api.Abstractions;
 using Lucca.Core.Api.Web;
 using Microsoft.Extensions.DependencyInjection;
@@ -99,6 +99,7 @@ namespace Instances.Web
             services.AddSingleton<IGithubService, GithubService>();
 
             services.AddScoped<InstancesWebhookHandler>();
+            services.AddScoped<GithubWebhookHandler>();
 
             services.AddScoped<InactiveDemosCleaner>();
             services.AddScoped<InstancesDuplicator>();

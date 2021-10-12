@@ -1,9 +1,13 @@
+using Instances.Web.Webhooks;
+using IpFilter.Domain;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 
 namespace Instances.Web.Controllers
 {
     [ApiController, Route("/webhooks/github")]
+    [AllowAnonymous, AllowAllIps]
     public class WebhookInterceptorController : ControllerBase
     {
         private readonly InstancesWebhookHandler _instancesWebhookHandler;
@@ -14,9 +18,9 @@ namespace Instances.Web.Controllers
         }
 
         [HttpPost]
-        public async Task InterceptAsync()
+        public async Task<IActionResult> InterceptAsync()
         {
-            await _instancesWebhookHandler.HandleGithubAsync(Request);
+            return await _instancesWebhookHandler.HandleGithubAsync(Request);
         }
     }
 }

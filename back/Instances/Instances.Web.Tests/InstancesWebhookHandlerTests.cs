@@ -1,6 +1,7 @@
 using CloudControl.Web.Tests.Mocks;
 using FluentAssertions;
 using Instances.Application.Webhooks.Github;
+using Instances.Infra.Github;
 using Moq;
 using System.IO;
 using System.Net;
@@ -8,6 +9,7 @@ using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using Xunit;
+using static Instances.Web.InstancesConfigurer;
 
 namespace Instances.Web.Tests.Controllers
 {
@@ -34,17 +36,25 @@ namespace Instances.Web.Tests.Controllers
 
             var webApplicationFactory = new MockedWebApplicationFactory();
             webApplicationFactory.Mocks.AddSingleton(mockGithubWebhookServiceProvider.Object);
+            webApplicationFactory.Mocks.AddSingleton(new InstancesConfiguration
+            {
+                Github = new GithubConfiguration
+                {
+                    GithubWebhookSecret = "mysecret"
+                }
+            });
 
-            var httpClient = webApplicationFactory.CreateAuthenticatedClient();
+            var httpClient = webApplicationFactory.CreateClient();
 
             if (!string.IsNullOrEmpty(inputEvent))
             {
                 httpClient.DefaultRequestHeaders.Add("X-GitHub-Event", inputEvent);
             }
+            httpClient.DefaultRequestHeaders.Add("X-Hub-Signature", "sha1=23a6849b2e0bf119f655363d6236190f2f14e7e5");
             var content = new StringContent(body, Encoding.UTF8, "application/json");
             var response = await httpClient.PostAsync("/api/webhooks/github", content);
 
-            response.StatusCode.Should().Be(HttpStatusCode.OK);
+            response.IsSuccessStatusCode.Should().BeTrue();
 
             mockGithubWebhookServiceProvider.Verify(g => g.GetGithubWebhookService(expectedEvent));
             mockGithubWebhookService.Verify(g => g.HandleEventAsync(It.IsAny<Stream>()));

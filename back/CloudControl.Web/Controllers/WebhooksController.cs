@@ -1,16 +1,13 @@
-using Instances.Application.Webhooks.Github;
-using Instances.Web;
-using Microsoft.AspNetCore.Http;
+using Instances.Web.Webhooks;
+using IpFilter.Domain;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Primitives;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace CloudControl.Web.Controllers
 {
     [ApiController, Route("/api/webhooks")]
+    [AllowAnonymous, AllowAllIps]
     public class WebhooksController : ControllerBase
     {
         private readonly InstancesWebhookHandler _instancesWebhookHandler;
@@ -21,6 +18,6 @@ namespace CloudControl.Web.Controllers
         }
 
         [HttpPost("github")]
-        public Task HandleGithubAsync() => _instancesWebhookHandler.HandleGithubAsync(Request);
+        public Task<IActionResult> HandleGithubAsync() => _instancesWebhookHandler.HandleGithubAsync(Request);
     }
 }

@@ -1,6 +1,6 @@
 using Authentication.Infra.Configurations;
 using CloudControl.Web.Configuration;
-using Instances.Web;
+using Instances.Web.Webhooks;
 using IpFilter.Domain;
 using IpFilter.Web;
 using Lucca.Core.AspNetCore.Middlewares;
@@ -150,6 +150,7 @@ namespace CloudControl.Web.Tests.Mocks
         public override void ConfigureInstances(IServiceCollection services, AppConfiguration configuration)
         {
             services.AddScoped<InstancesWebhookHandler>();
+            services.AddScoped<GithubWebhookHandler>();
         }
 
         public override void ConfigureLogs(IServiceCollection services)

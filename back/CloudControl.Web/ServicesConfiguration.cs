@@ -116,6 +116,7 @@ namespace CloudControl.Web
 
             var config = _configuration.Get<AppConfiguration>();
             services.AddSingleton(config.LegacyCloudControl);
+            services.AddSingleton(config.Instances);
 
             return config;
         }
