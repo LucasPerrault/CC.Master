@@ -17,6 +17,8 @@ namespace AdvancedFilters.Infra.Storage.Configurations
             builder.Property(e => e.IsActive).HasColumnName("IsActive").IsRequired();
             builder.Property(e => e.CreatedAt).HasColumnName("CreatedAt").IsRequired();
             builder.Property(e => e.ProductionHost).HasColumnName("ProductionHost").IsRequired();
+
+            builder.HasIndex(e => e.Subdomain).IsClustered(false);
         }
     }
 }
