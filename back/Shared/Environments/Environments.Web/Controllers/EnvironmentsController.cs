@@ -27,7 +27,6 @@ namespace Environments.Web.Controllers
             return _repository.GetAsync(query.Page, query.ToFilter());
         }
 
-        [HttpGet("distributorAccesses")] // deprecacted
         [HttpGet("distributor-accesses")]
         [ForbidIfMissing(Operation.ReadEnvironments)]
         public Task<Page<EnvironmentWithAccess>> GetAccessesAsync([FromQuery]EnvironmentQuery query)
