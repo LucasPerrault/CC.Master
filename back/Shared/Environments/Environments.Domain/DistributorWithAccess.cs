@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using Distributors.Domain.Models;
+using System.Collections.Generic;
 using System.Linq;
 using Tools;
 
@@ -24,14 +25,25 @@ namespace Environments.Domain
             }
         }
     }
+
+    public class AccessDistributor
+    {
+        public string Code { get; set; }
+        public bool IsAllowingCommercialCommunication { get; set; }
+    }
+
     public class DistributorWithAccess : ValueObject
     {
-        public string DistributorCode { get; }
+        public AccessDistributor Distributor { get; set; }
         public List<EnvironmentAccessTypeEnum> AccessTypes { get; }
 
-        public DistributorWithAccess(string distributorCode, IEnumerable<EnvironmentAccessTypeEnum> types)
+        public DistributorWithAccess(Distributor distributor, IEnumerable<EnvironmentAccessTypeEnum> types)
         {
-            DistributorCode = distributorCode;
+            Distributor = new AccessDistributor
+            {
+                Code = distributor.Code,
+                IsAllowingCommercialCommunication = distributor.IsAllowingCommercialCommunication
+            };
             AccessTypes = types.ToList();
         }
 
@@ -45,7 +57,8 @@ namespace Environments.Domain
 
         internal IEnumerable<object> GetEqualityComponents()
         {
-            yield return DistributorCode;
+            yield return Distributor.Code;
+            yield return Distributor.IsAllowingCommercialCommunication;
             foreach (var type in AccessTypes)
             {
                 yield return type;
