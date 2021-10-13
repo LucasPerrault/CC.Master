@@ -50,18 +50,26 @@ namespace Instances.Infra.Github
             return file.Content;
         }
 
-        public async Task<GithubCommit> GetGithubBranchHeadCommitInfoAsync(string githubRepo, string branchName)
+        public async Task<GithubApiCommit> GetGithubBranchHeadCommitInfoAsync(string githubRepo, string branchName)
         {
             var (owner, repositoryName) = GetOwnerAndRepoNameFromRepoUrl(githubRepo);
 
             var commitInfo = await _gitHubClient.Repository.Commit.Get(owner, repositoryName, branchName);
-            return new GithubCommit()
+            return new GithubApiCommit()
             {
                 Sha = commitInfo.Sha,
                 Commiter = commitInfo.Commit.Author.Name,
                 CommitedOn = commitInfo.Commit.Author.Date.DateTime,
                 Message = commitInfo.Commit.Message,
             };
+        }
+
+        public async Task<IEnumerable<string>> GetBranchNamesAsync(string githubRepo)
+        {
+            var (owner, repositoryName) = GetOwnerAndRepoNameFromRepoUrl(githubRepo);
+
+            var branches = await _gitHubClient.Repository.Branch.GetAll(owner, repositoryName);
+            return branches.Select(b => b.Name);
         }
 
         private static (string owner, string repositoryName) GetOwnerAndRepoNameFromRepoUrl(string repoUrl)

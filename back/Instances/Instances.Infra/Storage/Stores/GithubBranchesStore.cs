@@ -25,6 +25,13 @@ namespace Instances.Infra.Storage.Stores
             return branch;
         }
 
+        public async Task<List<GithubBranch>> CreateAsync(IEnumerable<GithubBranch> branches)
+        {
+            _dbContext.Set<GithubBranch>().AddRange(branches);
+            await _dbContext.SaveChangesAsync();
+            return branches.ToList();
+        }
+
         public async Task<GithubBranch> GetFirstAsync(GithubBranchFilter githubBranchFilter)
             => await Get(githubBranchFilter).FirstOrDefaultAsync();
 

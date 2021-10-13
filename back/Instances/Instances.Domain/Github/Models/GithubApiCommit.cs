@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Instances.Domain.Github.Models
 {
-    public class GithubCommit
+    public class GithubApiCommit
     {
         public string Sha { get; set; }
         public string Message { get; set; }

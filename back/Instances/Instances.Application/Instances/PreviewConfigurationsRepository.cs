@@ -19,10 +19,14 @@ namespace Instances.Application.Instances
         }
 
         public Task CreateByBranchAsync(GithubBranch branch)
+            => CreateByBranchAsync(new GithubBranch[] { branch });
+
+        public Task CreateByBranchAsync(IEnumerable<GithubBranch> branches)
         {
-            var previewConfigurations = branch.CodeSources.Select(
-                codeSource => CreatePreviewConfigurationObject(branch, codeSource, $"{codeSource.Name} - {branch.Name}")
-            );
+            var previewConfigurations = branches.SelectMany(branch =>
+               branch.CodeSources.Select(
+                   codeSource => CreatePreviewConfigurationObject(branch, codeSource, $"{codeSource.Name} - {branch.Name}")
+            ));
             return _previewConfigurationsStore.CreateAsync(previewConfigurations);
         }
 

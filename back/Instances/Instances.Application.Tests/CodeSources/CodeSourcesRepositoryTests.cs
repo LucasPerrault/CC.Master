@@ -339,16 +339,19 @@ namespace Instances.Application.Tests.CodeSources
             var githubRepo = "https://github.com/LuccaSA/repo";
             GithubBranch captured = null;
             _githubBranchesStoreMock
-                .Setup(gb => gb.CreateAsync(It.IsAny<GithubBranch>()))
-                .Returns<GithubBranch>(gb => {
-                    captured = gb;
-                    return Task.FromResult(gb);
+                .Setup(gb => gb.CreateAsync(It.IsAny<IEnumerable<GithubBranch>>()))
+                .Returns<IEnumerable<GithubBranch>>(gb => {
+                    captured = gb.First();
+                    return Task.FromResult(gb.ToList());
                 });
             _githubServiceMock
                 .Setup(g => g.GetGithubBranchHeadCommitInfoAsync(It.IsAny<string>(), It.IsAny<string>()))
-                .ReturnsAsync(new GithubCommit());
+                .ReturnsAsync(new GithubApiCommit());
+            _githubServiceMock
+                .Setup(g => g.GetBranchNamesAsync(It.IsAny<string>()))
+                .ReturnsAsync(new List<string> { "main" });
             _previewConfigurationsRepositoryMock
-                .Setup(p => p.CreateByBranchAsync(It.IsAny<GithubBranch>()))
+                .Setup(p => p.CreateByBranchAsync(It.IsAny<IEnumerable<GithubBranch>>()))
                 .Returns(Task.CompletedTask);
 
             await _codeSourcesRepository.CreateAsync(new CodeSource
@@ -360,8 +363,10 @@ namespace Instances.Application.Tests.CodeSources
             captured.Should().NotBeNull();
             captured.CodeSources.Should().NotBeNullOrEmpty();
 
+            _githubServiceMock.Verify(g => g.GetBranchNamesAsync(githubRepo));
             _githubServiceMock.Verify(g => g.GetGithubBranchHeadCommitInfoAsync(githubRepo, "main"));
-            _previewConfigurationsRepositoryMock.Verify(p => p.CreateByBranchAsync(captured));
+            _previewConfigurationsRepositoryMock
+                .Verify(p => p.CreateByBranchAsync(It.Is<IEnumerable<GithubBranch>>(l => l.Count() == 1)));
         }
         #endregion
     }

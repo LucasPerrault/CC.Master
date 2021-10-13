@@ -30,8 +30,6 @@ namespace Instances.Application.CodeSources
 
     public class CodeSourcesRepository : ICodeSourcesRepository
     {
-        const string CommonDefaultBranchName = "main";
-
         private readonly ICodeSourcesStore _codeSourcesStore;
         private readonly IGithubBranchesStore _githubBranchesStore;
         private readonly ICodeSourceFetcherService _fetcherService;
@@ -87,17 +85,23 @@ namespace Instances.Application.CodeSources
                 return codeSource;
             }
 
-            var headCommitInfo = await _githubService.GetGithubBranchHeadCommitInfoAsync(codeSource.GithubRepo, CommonDefaultBranchName);
-            var githubBranch = await _githubBranchesStore.CreateAsync(new GithubBranch
+            var branchNames = await _githubService.GetBranchNamesAsync(codeSource.GithubRepo);
+            var githubBranches = new List<GithubBranch>(capacity: branchNames.Count());
+            foreach (var branchName in branchNames)
             {
-                Name = CommonDefaultBranchName,
-                CodeSources = new() { codeSource },
-                CreatedAt = headCommitInfo.CommitedOn,
-                LastPushedAt = headCommitInfo.CommitedOn,
-                HeadCommitMessage = headCommitInfo.Message,
-                HeadCommitHash = headCommitInfo.Sha,
-            });
-            await _previewConfigurationsRepository.CreateByBranchAsync(githubBranch);
+                var headCommitInfo = await _githubService.GetGithubBranchHeadCommitInfoAsync(codeSource.GithubRepo, branchName);
+                githubBranches.Add(new GithubBranch
+                {
+                    Name = branchName,
+                    CodeSources = new() { codeSource },
+                    CreatedAt = headCommitInfo.CommitedOn,
+                    LastPushedAt = headCommitInfo.CommitedOn,
+                    HeadCommitMessage = headCommitInfo.Message,
+                    HeadCommitHash = headCommitInfo.Sha,
+                });
+            }
+            githubBranches = await _githubBranchesStore.CreateAsync(githubBranches);
+            await _previewConfigurationsRepository.CreateByBranchAsync(githubBranches);
 
             return codeSource;
         }
