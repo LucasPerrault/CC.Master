@@ -1,7 +1,10 @@
+using Instances.Application.Instances;
 using Instances.Domain.CodeSources;
 using Instances.Domain.CodeSources.Filtering;
 using Instances.Domain.Github;
 using Instances.Domain.Github.Models;
+using Instances.Domain.Preview;
+using Instances.Domain.Preview.Models;
 using Lucca.Core.Api.Abstractions.Paging;
 using Lucca.Core.Shared.Domain.Exceptions;
 using System;
@@ -35,15 +38,14 @@ namespace Instances.Application.CodeSources
         private readonly ICodeSourceBuildUrlService _codeSourceBuildUrl;
         private readonly IArtifactsService _artifactsService;
         private readonly IGithubService _githubService;
+        private readonly IPreviewConfigurationsRepository _previewConfigurationsRepository;
 
         public CodeSourcesRepository
         (
-            ICodeSourcesStore codeSourcesStore,
-            IGithubBranchesStore githubBranchesStore,
-            ICodeSourceFetcherService fetcherService,
-            ICodeSourceBuildUrlService codeSourceBuildUrl,
-            IArtifactsService artifactsService,
-            IGithubService githubService
+            ICodeSourcesStore codeSourcesStore, IGithubBranchesStore githubBranchesStore,
+            ICodeSourceFetcherService fetcherService, ICodeSourceBuildUrlService codeSourceBuildUrl,
+            IArtifactsService artifactsService, IGithubService githubService,
+            IPreviewConfigurationsRepository previewConfigurationsRepository
         )
         {
             _codeSourcesStore = codeSourcesStore;
@@ -52,6 +54,7 @@ namespace Instances.Application.CodeSources
             _codeSourceBuildUrl = codeSourceBuildUrl;
             _artifactsService = artifactsService;
             _githubService = githubService;
+            _previewConfigurationsRepository = previewConfigurationsRepository;
         }
 
         public async Task<Page<CodeSource>> GetAsync(IPageToken pageToken, CodeSourceFilter codeSourceFilter)
@@ -85,7 +88,7 @@ namespace Instances.Application.CodeSources
             }
 
             var headCommitInfo = await _githubService.GetGithubBranchHeadCommitInfoAsync(codeSource.GithubRepo, CommonDefaultBranchName);
-            await _githubBranchesStore.CreateAsync(new GithubBranch
+            var githubBranch = await _githubBranchesStore.CreateAsync(new GithubBranch
             {
                 Name = CommonDefaultBranchName,
                 CodeSources = new() { codeSource },
@@ -94,6 +97,7 @@ namespace Instances.Application.CodeSources
                 HeadCommitMessage = headCommitInfo.Message,
                 HeadCommitHash = headCommitInfo.Sha,
             });
+            await _previewConfigurationsRepository.CreateByBranchAsync(githubBranch);
 
             return codeSource;
         }

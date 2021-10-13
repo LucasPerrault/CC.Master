@@ -1,5 +1,6 @@
 using FluentAssertions;
 using Instances.Application.CodeSources;
+using Instances.Application.Instances;
 using Instances.Domain.CodeSources;
 using Instances.Domain.CodeSources.Filtering;
 using Instances.Domain.Github;
@@ -28,6 +29,7 @@ namespace Instances.Application.Tests.CodeSources
         private readonly Mock<ICodeSourceBuildUrlService> _codeSourceBuildUrlServiceMock;
         private readonly Mock<IArtifactsService> _artifactsServiceMock;
         private readonly Mock<IGithubService> _githubServiceMock;
+        private readonly Mock<IPreviewConfigurationsRepository> _previewConfigurationsRepositoryMock;
 
         private readonly CodeSourcesRepository _codeSourcesRepository;
 
@@ -45,6 +47,7 @@ namespace Instances.Application.Tests.CodeSources
             _codeSourceBuildUrlServiceMock = new Mock<ICodeSourceBuildUrlService>(MockBehavior.Strict);
             _artifactsServiceMock = new Mock<IArtifactsService>(MockBehavior.Strict);
             _githubServiceMock = new Mock<IGithubService>(MockBehavior.Strict);
+            _previewConfigurationsRepositoryMock = new Mock<IPreviewConfigurationsRepository>(MockBehavior.Strict);
 
             _codeSourcesRepository = new CodeSourcesRepository(
                 new CodeSourcesStore(_instancesDbContext, _queryPagerMock.Object),
@@ -52,7 +55,8 @@ namespace Instances.Application.Tests.CodeSources
                 _fetcherServiceMock.Object,
                 _codeSourceBuildUrlServiceMock.Object,
                 _artifactsServiceMock.Object,
-                _githubServiceMock.Object
+                _githubServiceMock.Object,
+                _previewConfigurationsRepositoryMock.Object
             );
         }
 
@@ -343,6 +347,9 @@ namespace Instances.Application.Tests.CodeSources
             _githubServiceMock
                 .Setup(g => g.GetGithubBranchHeadCommitInfoAsync(It.IsAny<string>(), It.IsAny<string>()))
                 .ReturnsAsync(new GithubCommit());
+            _previewConfigurationsRepositoryMock
+                .Setup(p => p.CreateByBranchAsync(It.IsAny<GithubBranch>()))
+                .Returns(Task.CompletedTask);
 
             await _codeSourcesRepository.CreateAsync(new CodeSource
             {
@@ -354,6 +361,7 @@ namespace Instances.Application.Tests.CodeSources
             captured.CodeSources.Should().NotBeNullOrEmpty();
 
             _githubServiceMock.Verify(g => g.GetGithubBranchHeadCommitInfoAsync(githubRepo, "main"));
+            _previewConfigurationsRepositoryMock.Verify(p => p.CreateByBranchAsync(captured));
         }
         #endregion
     }
