@@ -9,5 +9,8 @@ namespace AdvancedFilters.Domain.Filters.Builders
         IQueryableExpressionBuilder<Environment> Create(EnvironmentAdvancedCriterion criterion);
         IQueryableExpressionBuilder<AppInstance> Create(AppInstanceAdvancedCriterion criterion);
         IQueryableExpressionBuilder<LegalUnit> Create(LegalUnitAdvancedCriterion criterion);
+        IQueryableExpressionBuilder<AppContact> Create(AppContactAdvancedCriterion criterion);
+        IQueryableExpressionBuilder<ClientContact> Create(ClientContactAdvancedCriterion criterion);
+        IQueryableExpressionBuilder<SpecializedContact> Create(SpecializedContactAdvancedCriterion criterion);
     }
 }

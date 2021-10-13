@@ -33,5 +33,20 @@ namespace AdvancedFilters.Infra.Filters.Builders
         {
             return new LegalUnitCriterionExpressionBuilder(criterion);
         }
+
+        public IQueryableExpressionBuilder<AppContact> Create(AppContactAdvancedCriterion criterion)
+        {
+            return new AppContactCriterionExpressionBuilder(criterion);
+        }
+
+        public IQueryableExpressionBuilder<ClientContact> Create(ClientContactAdvancedCriterion criterion)
+        {
+            return new ClientContactCriterionExpressionBuilder(criterion);
+        }
+
+        public IQueryableExpressionBuilder<SpecializedContact> Create(SpecializedContactAdvancedCriterion criterion)
+        {
+            return new SpecializedContactCriterionExpressionBuilder(criterion);
+        }
     }
 }

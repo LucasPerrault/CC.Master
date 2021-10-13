@@ -1,6 +1,8 @@
 using AdvancedFilters.Domain.Contacts.Filters;
 using AdvancedFilters.Domain.Contacts.Interfaces;
 using AdvancedFilters.Domain.Contacts.Models;
+using AdvancedFilters.Domain.Filters.Models;
+using AdvancedFilters.Web.Binding;
 using AdvancedFilters.Web.Format;
 using Lucca.Core.Api.Abstractions.Paging;
 using Lucca.Core.Api.Web.ModelBinding.Sorting;
@@ -29,6 +31,19 @@ namespace AdvancedFilters.Web.Controllers
         public async Task<Page<AppContact>> GetAsync([FromQuery]AppContactsQuery query)
         {
             var page = await _store.GetAsync(query.Page, query.ToFilter());
+            return PreparePage(page);
+        }
+
+        [HttpPost("search")]
+        [ForbidIfMissing(Operation.ReadAllCafe)]
+        public async Task<Page<AppContact>> SearchAsync
+        (
+            IPageToken pageToken,
+            [FromBody, ModelBinder(BinderType = typeof(AdvancedFilterModelBinder<AppContactAdvancedCriterion>))]
+            IAdvancedFilter criterion
+        )
+        {
+            var page = await _store.SearchAsync(pageToken, criterion);
             return PreparePage(page);
         }
 

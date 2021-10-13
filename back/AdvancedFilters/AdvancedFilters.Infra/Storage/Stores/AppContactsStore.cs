@@ -1,6 +1,8 @@
 using AdvancedFilters.Domain.Contacts.Filters;
 using AdvancedFilters.Domain.Contacts.Interfaces;
 using AdvancedFilters.Domain.Contacts.Models;
+using AdvancedFilters.Domain.Filters.Models;
+using AdvancedFilters.Infra.Filters;
 using Lucca.Core.Api.Abstractions.Paging;
 using Lucca.Core.Api.Queryable.Paging;
 using Microsoft.EntityFrameworkCore;
@@ -25,6 +27,12 @@ namespace AdvancedFilters.Infra.Storage.Stores
         public Task<Page<AppContact>> GetAsync(IPageToken pageToken, AppContactFilter filter)
         {
             var contacts = Get(filter);
+            return _queryPager.ToPageAsync(contacts, pageToken);
+        }
+
+        public Task<Page<AppContact>> SearchAsync(IPageToken pageToken, IAdvancedFilter filter)
+        {
+            var contacts = AppContacts.Filter(filter);
             return _queryPager.ToPageAsync(contacts, pageToken);
         }
 

@@ -1,5 +1,7 @@
 using AdvancedFilters.Domain.Billing.Models;
 using AdvancedFilters.Domain.Core.Models;
+using AdvancedFilters.Domain.Filters.Builders;
+using AdvancedFilters.Domain.Filters.Models;
 using AdvancedFilters.Domain.Instance.Models;
 using System;
 using Tools;
@@ -31,5 +33,14 @@ namespace AdvancedFilters.Domain.Contacts.Models
         {
             return this.DeepCopyByExpressionTree();
         }
+    }
+
+    public class ClientContactAdvancedCriterion : AdvancedCriterion<ClientContact>
+    {
+        public EnvironmentAdvancedCriterion Environment { get; set; }
+        public LegalUnitAdvancedCriterion LegalUnit { get; set; }
+
+        public override IQueryableExpressionBuilder<ClientContact> GetExpressionBuilder(IQueryableExpressionBuilderFactory factory)
+            => factory.Create(this);
     }
 }
