@@ -15,8 +15,8 @@ namespace Distributors.Infra.Migrations
 #pragma warning disable 612, 618
             modelBuilder
                 .HasDefaultSchema("shared")
-                .HasAnnotation("ProductVersion", "3.1.10")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
+                .HasAnnotation("ProductVersion", "5.0.10")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
             modelBuilder.Entity("Distributors.Domain.Models.Distributor", b =>
@@ -27,20 +27,20 @@ namespace Distributors.Infra.Migrations
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("Code")
-                        .HasColumnName("Code")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("Code");
 
                     b.Property<int>("DepartmentId")
-                        .HasColumnName("DepartmentId")
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasColumnName("DepartmentId");
 
                     b.Property<string>("Name")
-                        .HasColumnName("Name")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("Name");
 
                     b.HasKey("Id");
 
-                    b.ToTable("Distributors","shared");
+                    b.ToTable("Distributors", "shared");
                 });
 
             modelBuilder.Entity("Distributors.Domain.Models.DistributorDomain", b =>
@@ -50,17 +50,17 @@ namespace Distributors.Infra.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("DistributorId")
-                        .HasColumnName("DistributorId")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("DistributorId")
+                        .HasColumnType("int")
+                        .HasColumnName("DistributorId");
 
                     b.Property<string>("Domain")
-                        .HasColumnName("Domain")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("Domain");
 
                     b.HasKey("Id");
 
-                    b.ToTable("DistributorDomains","shared");
+                    b.ToTable("DistributorDomains", "shared");
                 });
 #pragma warning restore 612, 618
         }
