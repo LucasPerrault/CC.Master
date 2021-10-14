@@ -7,7 +7,7 @@ using System.Linq;
 
 namespace AdvancedFilters.Infra.Filters
 {
-    internal static class AdvanceFilterExtensions
+    public static class AdvanceFilterExtensions
     {
         public static IQueryable<TModel> Filter<TModel>
         (
