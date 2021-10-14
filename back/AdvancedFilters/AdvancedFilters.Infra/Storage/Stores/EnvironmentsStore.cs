@@ -1,6 +1,8 @@
+using AdvancedFilters.Domain.Filters.Models;
 using AdvancedFilters.Domain.Instance.Filters;
 using AdvancedFilters.Domain.Instance.Interfaces;
 using AdvancedFilters.Domain.Instance.Models;
+using AdvancedFilters.Infra.Filters;
 using Lucca.Core.Api.Abstractions.Paging;
 using Lucca.Core.Api.Queryable.Paging;
 using Microsoft.EntityFrameworkCore;
@@ -34,13 +36,26 @@ namespace AdvancedFilters.Infra.Storage.Stores
             return envs.ToListAsync();
         }
 
+        public Task<Page<Environment>> SearchAsync(IPageToken pageToken, IAdvancedFilter filter)
+        {
+            var envs = Environments
+                .Filter(filter)
+                .AsNoTracking();
+            return _queryPager.ToPageAsync(envs, pageToken);
+        }
+
         private IQueryable<Environment> Get(EnvironmentFilter filter)
         {
             return Environments
-                .WhereMatches(filter);
+                .WhereMatches(filter)
+                .AsNoTracking();
         }
 
-        private IQueryable<Environment> Environments => _dbContext.Set<Environment>();
+        private IQueryable<Environment> Environments => _dbContext
+            .Set<Environment>()
+            .Include(e => e.LegalUnits).ThenInclude(lu => lu.Country)
+            .Include(e => e.LegalUnits).ThenInclude(lu => lu.Establishments)
+            .Include(e => e.AppInstances);
     }
 
     internal static class EnvironmentQueryableExtensions

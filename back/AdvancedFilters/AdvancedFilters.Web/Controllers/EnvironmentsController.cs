@@ -1,6 +1,9 @@
+using AdvancedFilters.Domain.Filters.Models;
 using AdvancedFilters.Domain.Instance.Filters;
 using AdvancedFilters.Domain.Instance.Interfaces;
 using AdvancedFilters.Domain.Instance.Models;
+using AdvancedFilters.Web.Binding;
+using AdvancedFilters.Web.Format;
 using Lucca.Core.Api.Abstractions.Paging;
 using Lucca.Core.Api.Web.ModelBinding.Sorting;
 using Microsoft.AspNetCore.Mvc;
@@ -9,6 +12,7 @@ using Rights.Web.Attributes;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Tools.Web;
+using Environment = AdvancedFilters.Domain.Instance.Models.Environment;
 
 namespace AdvancedFilters.Web.Controllers
 {
@@ -25,9 +29,34 @@ namespace AdvancedFilters.Web.Controllers
 
         [HttpGet]
         [ForbidIfMissing(Operation.ReadAllCafe)]
-        public Task<Page<Environment>> GetAsync([FromQuery]EnvironmentsQuery query)
+        public async Task<Page<Environment>> GetAsync([FromQuery]EnvironmentsQuery query)
         {
-            return _store.GetAsync(query.Page, query.ToFilter());
+            var page = await _store.GetAsync(query.Page, query.ToFilter());
+            return PreparePage(page);
+        }
+
+        [HttpPost("search")]
+        [ForbidIfMissing(Operation.ReadAllCafe)]
+        public async Task<Page<Environment>> SearchAsync
+        (
+            IPageToken pageToken,
+            [FromBody, ModelBinder(BinderType = typeof(AdvancedFilterModelBinder<EnvironmentAdvancedCriterion>))]
+            IAdvancedFilter criterion
+        )
+        {
+            var page = await _store.SearchAsync(pageToken, criterion);
+            return PreparePage(page);
+        }
+
+        private Page<Environment> PreparePage(Page<Environment> src)
+        {
+            return new Page<Environment>
+            {
+                Count = src.Count,
+                Prev = src.Prev,
+                Next = src.Next,
+                Items = src.Items.WithoutLoop()
+            };
         }
     }
 

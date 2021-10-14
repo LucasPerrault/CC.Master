@@ -1,8 +1,11 @@
 using AdvancedFilters.Domain.Contacts.Filters;
 using AdvancedFilters.Domain.Contacts.Interfaces;
 using AdvancedFilters.Domain.Contacts.Models;
+using AdvancedFilters.Domain.Filters.Models;
+using AdvancedFilters.Infra.Filters;
 using Lucca.Core.Api.Abstractions.Paging;
 using Lucca.Core.Api.Queryable.Paging;
+using Microsoft.EntityFrameworkCore;
 using Storage.Infra.Extensions;
 using System;
 using System.Linq;
@@ -27,13 +30,24 @@ namespace AdvancedFilters.Infra.Storage.Stores
             return _queryPager.ToPageAsync(contacts, pageToken);
         }
 
+        public Task<Page<AppContact>> SearchAsync(IPageToken pageToken, IAdvancedFilter filter)
+        {
+            var contacts = AppContacts.Filter(filter);
+            return _queryPager.ToPageAsync(contacts, pageToken);
+        }
+
         private IQueryable<AppContact> Get(AppContactFilter filter)
         {
             return AppContacts
-                .WhereMatches(filter);
+                .WhereMatches(filter)
+                .AsNoTracking();
         }
 
-        private IQueryable<AppContact> AppContacts => _dbContext.Set<AppContact>();
+        private IQueryable<AppContact> AppContacts => _dbContext
+            .Set<AppContact>()
+            .Include(c => c.Environment)
+            .Include(c => c.Establishment).ThenInclude(e => e.LegalUnit).ThenInclude(lu => lu.Country)
+            .Include(c => c.AppInstance);
     }
 
     internal static class AppContactQueryableExtensions

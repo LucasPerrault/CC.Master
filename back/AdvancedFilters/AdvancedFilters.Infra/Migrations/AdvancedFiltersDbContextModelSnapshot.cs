@@ -301,6 +301,9 @@ namespace AdvancedFilters.Infra.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("Subdomain")
+                        .IsClustered(false);
+
                     b.ToTable("Environments");
                 });
 

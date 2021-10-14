@@ -1,10 +1,14 @@
+using AdvancedFilters.Domain.Core.Models;
+using AdvancedFilters.Domain.Filters.Builders;
+using AdvancedFilters.Domain.Filters.Models;
 using AdvancedFilters.Domain.Instance.Models;
 using System;
+using Tools;
 using Environment = AdvancedFilters.Domain.Instance.Models.Environment;
 
 namespace AdvancedFilters.Domain.Contacts.Models
 {
-    public class SpecializedContact
+    public class SpecializedContact : IDeepCopyable<SpecializedContact>
     {
         public int Id { get; set; }
         public int RoleId { get; set; }
@@ -18,5 +22,19 @@ namespace AdvancedFilters.Domain.Contacts.Models
 
         public Environment Environment { get; set; }
         public Establishment Establishment { get; set; }
+
+        public SpecializedContact DeepCopy()
+        {
+            return this.DeepCopyByExpressionTree();
+        }
+    }
+
+    public class SpecializedContactAdvancedCriterion : AdvancedCriterion<SpecializedContact>
+    {
+        public EnvironmentAdvancedCriterion Environment { get; set; }
+        public LegalUnitAdvancedCriterion LegalUnit { get; set; }
+
+        public override IQueryableExpressionBuilder<SpecializedContact> GetExpressionBuilder(IQueryableExpressionBuilderFactory factory)
+            => factory.Create(this);
     }
 }

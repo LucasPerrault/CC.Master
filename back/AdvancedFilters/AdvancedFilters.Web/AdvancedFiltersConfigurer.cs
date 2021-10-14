@@ -52,6 +52,7 @@ namespace AdvancedFilters.Web
         private static void ConfigureCore(this IServiceCollection services)
         {
             services.AddSingleton<ICountriesCollection, CountriesCollection>();
+            services.AddSingleton<IApplicationsCollection, ApplicationsCollection>();
         }
 
         private static void ConfigureInstances(this IServiceCollection services)

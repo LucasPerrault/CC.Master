@@ -1,8 +1,11 @@
 using AdvancedFilters.Domain.Contacts.Filters;
 using AdvancedFilters.Domain.Contacts.Interfaces;
 using AdvancedFilters.Domain.Contacts.Models;
+using AdvancedFilters.Domain.Filters.Models;
+using AdvancedFilters.Infra.Filters;
 using Lucca.Core.Api.Abstractions.Paging;
 using Lucca.Core.Api.Queryable.Paging;
+using Microsoft.EntityFrameworkCore;
 using Storage.Infra.Extensions;
 using System;
 using System.Linq;
@@ -27,13 +30,24 @@ namespace AdvancedFilters.Infra.Storage.Stores
             return _queryPager.ToPageAsync(contacts, pageToken);
         }
 
+        public Task<Page<ClientContact>> SearchAsync(IPageToken pageToken, IAdvancedFilter filter)
+        {
+            var contacts = ClientContacts.Filter(filter);
+            return _queryPager.ToPageAsync(contacts, pageToken);
+        }
+
         private IQueryable<ClientContact> Get(ClientContactFilter filter)
         {
             return ClientContacts
-                .WhereMatches(filter);
+                .WhereMatches(filter)
+                .AsNoTracking();
         }
 
-        private IQueryable<ClientContact> ClientContacts => _dbContext.Set<ClientContact>();
+        private IQueryable<ClientContact> ClientContacts => _dbContext
+            .Set<ClientContact>()
+            .Include(c => c.Environment).ThenInclude(e => e.AppInstances)
+            .Include(c => c.Establishment).ThenInclude(e => e.LegalUnit).ThenInclude(lu => lu.Country)
+            .Include(c => c.Client).ThenInclude(e => e.Contracts).ThenInclude(c => c.EstablishmentAttachments).ThenInclude(a => a.Establishment);
     }
 
     internal static class ClientContactQueryableExtensions

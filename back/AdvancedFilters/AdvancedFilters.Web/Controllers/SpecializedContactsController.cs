@@ -1,6 +1,9 @@
 using AdvancedFilters.Domain.Contacts.Filters;
 using AdvancedFilters.Domain.Contacts.Interfaces;
 using AdvancedFilters.Domain.Contacts.Models;
+using AdvancedFilters.Domain.Filters.Models;
+using AdvancedFilters.Web.Binding;
+using AdvancedFilters.Web.Format;
 using Lucca.Core.Api.Abstractions.Paging;
 using Lucca.Core.Api.Web.ModelBinding.Sorting;
 using Microsoft.AspNetCore.Mvc;
@@ -25,9 +28,34 @@ namespace AdvancedFilters.Web.Controllers
 
         [HttpGet]
         [ForbidIfMissing(Operation.ReadAllCafe)]
-        public Task<Page<SpecializedContact>> GetAsync([FromQuery]SpecializedsContactQuery query)
+        public async Task<Page<SpecializedContact>> GetAsync([FromQuery]SpecializedsContactQuery query)
         {
-            return _store.GetAsync(query.Page, query.ToFilter());
+            var page = await _store.GetAsync(query.Page, query.ToFilter());
+            return PreparePage(page);
+        }
+
+        [HttpPost("search")]
+        [ForbidIfMissing(Operation.ReadAllCafe)]
+        public async Task<Page<SpecializedContact>> SearchAsync
+        (
+            IPageToken pageToken,
+            [FromBody, ModelBinder(BinderType = typeof(AdvancedFilterModelBinder<SpecializedContactAdvancedCriterion>))]
+            IAdvancedFilter criterion
+        )
+        {
+            var page = await _store.SearchAsync(pageToken, criterion);
+            return PreparePage(page);
+        }
+
+        private Page<SpecializedContact> PreparePage(Page<SpecializedContact> src)
+        {
+            return new Page<SpecializedContact>
+            {
+                Count = src.Count,
+                Prev = src.Prev,
+                Next = src.Next,
+                Items = src.Items.WithoutLoop()
+            };
         }
     }
 

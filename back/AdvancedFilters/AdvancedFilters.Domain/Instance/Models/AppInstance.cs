@@ -1,8 +1,12 @@
+using AdvancedFilters.Domain.Core.Models;
+using AdvancedFilters.Domain.Filters.Builders;
+using AdvancedFilters.Domain.Filters.Models;
 using System;
+using Tools;
 
 namespace AdvancedFilters.Domain.Instance.Models
 {
-    public class AppInstance
+    public class AppInstance : IDeepCopyable<AppInstance>
     {
         public int Id { get; set; }
         public string Name { get; set; }
@@ -11,5 +15,18 @@ namespace AdvancedFilters.Domain.Instance.Models
         public DateTime? DeletedAt { get; set; }
 
         public Environment Environment { get; set; }
+
+        public AppInstance DeepCopy()
+        {
+            return this.DeepCopyByExpressionTree();
+        }
+    }
+
+    public class AppInstanceAdvancedCriterion : AdvancedCriterion<AppInstance>
+    {
+        public SingleValueComparisonCriterion<string> ApplicationId { get; set; }
+
+        public override IQueryableExpressionBuilder<AppInstance> GetExpressionBuilder(IQueryableExpressionBuilderFactory factory)
+            => factory.Create(this);
     }
 }
