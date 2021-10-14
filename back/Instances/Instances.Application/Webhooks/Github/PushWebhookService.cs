@@ -1,7 +1,6 @@
 using Instances.Application.CodeSources;
 using Instances.Application.Instances;
 using Instances.Domain.Github.Models;
-using Lucca.Core.Shared.Domain.Exceptions;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
@@ -33,26 +32,19 @@ namespace Instances.Application.Webhooks.Github
             var firstCodeSource = codeSources.First();
 
             var branchName = pushEventPayload.Ref.GetBranchNameFromFullRef();
-            var existingBranch = await _githubBranchesRepository.GetNonDeletedBranchByNameAsync(firstCodeSource, branchName);
 
             if (pushEventPayload.Created)
             {
-                if (existingBranch != null)
+                await _githubBranchesRepository.CreateAsync(codeSources, branchName, new GithubApiCommit
                 {
-                    throw new BadRequestException($"Branche {existingBranch.Name} déjà existante pour le repo {firstCodeSource.GithubRepo} alors qu'on souhaite la créer");
-                }
-                var branch = new GithubBranch()
-                {
-                    CodeSources = codeSources,
-                    Name = branchName,
-                    HeadCommitHash = pushEventPayload.After,
-                    HeadCommitMessage = pushEventPayload.HeadCommit.Message,
-                    LastPushedAt = DateTime.Now
-                };
-                branch = await _githubBranchesRepository.CreateAsync(branch);
-                await _previewConfigurationsRepository.CreateByBranchAsync(branch);
+                    CommitedOn = DateTime.Now,
+                    Message = pushEventPayload.HeadCommit.Message,
+                    Sha = pushEventPayload.After
+                });
+                return;
             }
-            else if (pushEventPayload.Deleted)
+            var existingBranch = await _githubBranchesRepository.GetNonDeletedBranchByNameAsync(firstCodeSource, branchName);
+            if (pushEventPayload.Deleted)
             {
                 if (existingBranch == null)
                 {

@@ -63,47 +63,15 @@ namespace Instances.Application.Tests.Webhooks.Github
                 .Setup(c => c.GetNonDeletedByRepositoryUrlAsync(It.IsAny<string>()))
                 .ReturnsAsync(new List<CodeSource> { codeSource });
             _githubBranchesRepositoryMock
-                .Setup(g => g.GetNonDeletedBranchByNameAsync(It.IsAny<CodeSource>(), It.IsAny<string>()))
+                .Setup(g => g.CreateAsync(It.IsAny<List<CodeSource>>(), It.IsAny<string>(), It.IsAny<GithubApiCommit>()))
                 .ReturnsAsync((GithubBranch)null);
-            _githubBranchesRepositoryMock
-                .Setup(g => g.CreateAsync(It.IsAny<GithubBranch>()))
-                .Returns<GithubBranch>(gb => Task.FromResult(gb));
-            _previewConfigurationRepositoryMock
-                .Setup(p => p.CreateByBranchAsync(It.IsAny<GithubBranch>()))
-                .Returns(Task.CompletedTask);
 
             await using var stream = new MemoryStream(Encoding.UTF8.GetBytes(json));
             await _pushWebhookService.HandleEventAsync(stream);
 
             _codeSourcesRepositoryMock.Verify(c => c.GetNonDeletedByRepositoryUrlAsync(RepositoryUrl));
 
-            _githubBranchesRepositoryMock.Verify(g => g.GetNonDeletedBranchByNameAsync(codeSource, "main"));
-            _githubBranchesRepositoryMock.Verify(g => g.CreateAsync(It.Is<GithubBranch>(b => b.Name == "main")));
-            _previewConfigurationRepositoryMock.Verify(p => p.CreateByBranchAsync(It.Is<GithubBranch>(b => b.Name == "main")));
-        }
-
-        [Fact]
-        public async Task HandleEventAsync_Created_failed()
-        {
-            var json = BuildValidJson(created: true);
-            var codeSource = new CodeSource
-            {
-                GithubRepo = RepositoryUrl
-            };
-            _codeSourcesRepositoryMock
-                .Setup(c => c.GetNonDeletedByRepositoryUrlAsync(It.IsAny<string>()))
-                .ReturnsAsync(new List<CodeSource> { codeSource });
-            _githubBranchesRepositoryMock
-                .Setup(g => g.GetNonDeletedBranchByNameAsync(It.IsAny<CodeSource>(), It.IsAny<string>()))
-                .ReturnsAsync(new GithubBranch());
-
-            await using var stream = new MemoryStream(Encoding.UTF8.GetBytes(json));
-            Func<Task> act = () => _pushWebhookService.HandleEventAsync(stream);
-
-            await act.Should().ThrowAsync<BadRequestException>();
-
-            _codeSourcesRepositoryMock.Verify(c => c.GetNonDeletedByRepositoryUrlAsync(RepositoryUrl));
-            _githubBranchesRepositoryMock.Verify(g => g.GetNonDeletedBranchByNameAsync(codeSource, "main"));
+            _githubBranchesRepositoryMock.Verify(g => g.CreateAsync(It.IsAny<List<CodeSource>>(), "main", It.IsAny<GithubApiCommit>()));
         }
 
         [Fact]
