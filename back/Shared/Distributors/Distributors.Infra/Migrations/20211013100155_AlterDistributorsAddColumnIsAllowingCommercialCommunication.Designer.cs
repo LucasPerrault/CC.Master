@@ -3,14 +3,16 @@ using Distributors.Infra.Storage;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Distributors.Infra.Migrations
 {
     [DbContext(typeof(DistributorsDbContext))]
-    partial class DistributorsDbContextModelSnapshot : ModelSnapshot
+    [Migration("20211013100155_AlterDistributorsAddColumnIsAllowingCommercialCommunication")]
+    partial class AlterDistributorsAddColumnIsAllowingCommercialCommunication
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -34,8 +36,8 @@ namespace Distributors.Infra.Migrations
                         .HasColumnType("int")
                         .HasColumnName("DepartmentId");
 
-                    b.Property<bool>("IsAllowingCommercialCommunication")
-                        .HasColumnType("bit")
+                    b.Property<int>("IsAllowingCommercialCommunication")
+                        .HasColumnType("int")
                         .HasColumnName("IsAllowingCommercialCommunication");
 
                     b.Property<string>("Name")

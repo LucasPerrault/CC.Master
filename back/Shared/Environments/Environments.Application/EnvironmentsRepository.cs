@@ -50,7 +50,7 @@ namespace Environments.Application
                 Subdomain = environment.Subdomain,
                 Accesses = environment.ActiveAccesses
                     .GroupBy(a => a.Consumer.Code)
-                    .Select(group => new DistributorWithAccess(group.Key, group.Select(i => i.Access.Type).ToHashSet()))
+                    .Select(group => new DistributorWithAccess(group.Select(a => a.Consumer).First(), group.Select(i => i.Access.Type).ToHashSet()))
                     .ToHashSet()
             };
         }
