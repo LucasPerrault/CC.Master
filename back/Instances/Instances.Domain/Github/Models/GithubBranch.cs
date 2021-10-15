@@ -16,6 +16,7 @@ namespace Instances.Domain.Github.Models
         public DateTime? DeletedAt { get; set; }
         public string HeadCommitHash { get; set; }
         public string HeadCommitMessage { get; set; }
+        public string HelmChart { get; set; }
 
         public static string NormalizeName(string branchName)
             => branchName.Truncate(255);
