@@ -10,7 +10,6 @@ using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using Xunit;
-using static Instances.Web.InstancesConfigurer;
 
 namespace Instances.Web.Tests.Controllers
 {

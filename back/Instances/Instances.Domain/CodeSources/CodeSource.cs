@@ -2,6 +2,7 @@ using Instances.Domain.Github.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json.Serialization;
 
 namespace Instances.Domain.CodeSources
 {
@@ -46,7 +47,9 @@ namespace Instances.Domain.CodeSources
 
         public CodeSourceProductionVersion CurrentProductionVersion => ProductionVersions.OrderByDescending(v => v.Id).FirstOrDefault();
 
+        [JsonIgnore]
         public List<CodeSourceArtifacts> CodeSourceArtifacts { get; set; }
+        [JsonIgnore]
         public List<CodeSourceProductionVersion> ProductionVersions { get; set; }
         public List<GithubBranch> GithubBranches { get; set; }
         public List<GithubPullRequest> GithubPullRequests { get; set; }
