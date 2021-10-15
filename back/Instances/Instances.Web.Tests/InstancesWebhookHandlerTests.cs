@@ -2,9 +2,10 @@ using CloudControl.Web.Tests.Mocks;
 using FluentAssertions;
 using Instances.Application.Webhooks.Github;
 using Instances.Infra.Github;
+using Instances.Web.Webhooks;
+using Microsoft.Extensions.DependencyInjection;
 using Moq;
 using System.IO;
-using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
@@ -43,6 +44,8 @@ namespace Instances.Web.Tests.Controllers
                     GithubWebhookSecret = "mysecret"
                 }
             });
+            webApplicationFactory.Mocks.AddScoped(sp => new InstancesWebhookHandler(sp.GetRequiredService<GithubWebhookHandler>()));
+            webApplicationFactory.Mocks.AddScoped(sp => new GithubWebhookHandler(sp.GetRequiredService<IGithubWebhookServiceProvider>(), sp.GetRequiredService<InstancesConfiguration>()));
 
             var httpClient = webApplicationFactory.CreateClient();
 
