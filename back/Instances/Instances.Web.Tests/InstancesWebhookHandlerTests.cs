@@ -37,15 +37,12 @@ namespace Instances.Web.Tests.Controllers
 
             var webApplicationFactory = new MockedWebApplicationFactory();
             webApplicationFactory.Mocks.AddSingleton(mockGithubWebhookServiceProvider.Object);
-            webApplicationFactory.Mocks.AddSingleton(new InstancesConfiguration
+            webApplicationFactory.Mocks.AddSingleton(new GithubConfiguration
             {
-                Github = new GithubConfiguration
-                {
-                    GithubWebhookSecret = "mysecret"
-                }
+                GithubWebhookSecret = "mysecret"
             });
             webApplicationFactory.Mocks.AddScoped(sp => new InstancesWebhookHandler(sp.GetRequiredService<GithubWebhookHandler>()));
-            webApplicationFactory.Mocks.AddScoped(sp => new GithubWebhookHandler(sp.GetRequiredService<IGithubWebhookServiceProvider>(), sp.GetRequiredService<InstancesConfiguration>()));
+            webApplicationFactory.Mocks.AddScoped(sp => new GithubWebhookHandler(sp.GetRequiredService<IGithubWebhookServiceProvider>(), sp.GetRequiredService<GithubConfiguration>()));
 
             var httpClient = webApplicationFactory.CreateClient();
 

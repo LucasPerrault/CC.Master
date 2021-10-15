@@ -1,4 +1,5 @@
 using Instances.Application.Webhooks.Github;
+using Instances.Infra.Github;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Primitives;
@@ -8,7 +9,6 @@ using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Threading.Tasks;
-using static Instances.Web.InstancesConfigurer;
 
 namespace Instances.Web.Webhooks
 {
@@ -18,9 +18,9 @@ namespace Instances.Web.Webhooks
         public const string X_HUB_SIGNATURE = "X-Hub-Signature";
 
         private readonly IGithubWebhookServiceProvider _githubWebhookServiceProvider;
-        private readonly InstancesConfiguration _configuration;
+        private readonly GithubConfiguration _configuration;
 
-        public GithubWebhookHandler(IGithubWebhookServiceProvider githubWebhookServiceProvider, InstancesConfiguration configuration)
+        public GithubWebhookHandler(IGithubWebhookServiceProvider githubWebhookServiceProvider, GithubConfiguration configuration)
         {
             _githubWebhookServiceProvider = githubWebhookServiceProvider;
             _configuration = configuration;
@@ -74,7 +74,7 @@ namespace Instances.Web.Webhooks
         private async Task<bool> IsValidTokenAsync(string payloadToken, HttpRequest request)
         {
             //Get token stored on enviroment
-            var serverToken = _configuration.Github.GithubWebhookSecret;
+            var serverToken = _configuration.GithubWebhookSecret;
 
             //Need to get the actual content of the request - JSON payload
             //As this payload is signed/encoded with our key

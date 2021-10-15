@@ -63,6 +63,7 @@ namespace Instances.Web
 
         public static void ConfigureServices(IServiceCollection services, InstancesConfiguration configuration)
         {
+            services.AddSingleton(configuration.Github);
             services.AddSingleton(configuration.Identity);
             services.AddSingleton(configuration.CcData);
             services.AddSingleton(configuration.Hubspot);
