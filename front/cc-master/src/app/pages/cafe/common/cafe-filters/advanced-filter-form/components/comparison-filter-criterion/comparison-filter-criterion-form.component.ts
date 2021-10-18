@@ -14,7 +14,7 @@ import { filter, map, takeUntil } from 'rxjs/operators';
 
 import { ICriterionConfiguration } from '../../models/advanced-filter-configuration.interface';
 import { IComparisonFilterCriterionForm } from './comparison-filter-criterion-form.interface';
-import { getCriterionOperator, IComparisonOperator } from './comparison-operator-select/comparison-operator.interface';
+import { IComparisonOperator } from './comparison-operator-select/comparison-operator.interface';
 
 enum ComparisonFilterCriterionFormKey {
   Criterion = 'criterion',
@@ -51,23 +51,25 @@ export class ComparisonFilterCriterionFormComponent implements OnInit, OnDestroy
 
   private destroy$: Subject<void> = new Subject<void>();
 
-  public ngOnInit(): void {
+  constructor() {
     this.parentFormGroup = new FormGroup({
       [ComparisonFilterCriterionFormKey.Criterion]: new FormControl(null, Validators.required),
       [ComparisonFilterCriterionFormKey.Operator]: new FormControl(null, Validators.required),
       [ComparisonFilterCriterionFormKey.Values]: new FormControl(null, Validators.required),
     });
+  }
 
+  public ngOnInit(): void {
     this.parentFormGroup.get(ComparisonFilterCriterionFormKey.Criterion).valueChanges
       .pipe(map(criterion => this.configurations?.find(c => c.key === criterion?.key)))
-      .subscribe(configuration => {
-        this.configuration$.next(configuration);
-        this.setValidators(configuration);
-      });
+      .subscribe(configuration => this.configuration$.next(configuration));
 
     this.configuration$
       .pipe(takeUntil(this.destroy$), filter(configuration => !!configuration?.operators))
-      .subscribe(configuration => this.setDefaultOperator(configuration.operators));
+      .subscribe(configuration => {
+        this.setDefaultOperator(configuration.operators);
+        this.setValidators(configuration);
+      });
 
     this.parentFormGroup.valueChanges
       .pipe(takeUntil(this.destroy$), filter( c => !this.hasChildren(c)))
@@ -95,8 +97,14 @@ export class ComparisonFilterCriterionFormComponent implements OnInit, OnDestroy
   }
 
   public writeValue(form: IComparisonFilterCriterionForm): void {
-    if (!!form) {
-      this.parentFormGroup.patchValue(form);
+    if (!form) {
+      return;
+    }
+
+    this.parentFormGroup.patchValue(form);
+
+    if (this.hasChildren(form)) {
+      this.initCriterionChild(form.criterion);
     }
   }
 
@@ -108,6 +116,11 @@ export class ComparisonFilterCriterionFormComponent implements OnInit, OnDestroy
     if (!this.hasChildren(this.parentFormGroup.value) && this.parentFormGroup.invalid) {
       return  { invalid: true };
     }
+  }
+
+  private initCriterionChild(criterion: ICriterionConfiguration): void {
+    const defaultChildCriterion = criterion.children[0];
+    this.childFormControl.patchValue({ [ComparisonFilterCriterionFormKey.Criterion]: defaultChildCriterion });
   }
 
   private setDefaultOperator(operators: IComparisonOperator[]): void {

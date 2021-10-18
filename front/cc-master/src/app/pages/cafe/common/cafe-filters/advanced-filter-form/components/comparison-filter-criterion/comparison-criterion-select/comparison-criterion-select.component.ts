@@ -38,10 +38,8 @@ export class ComparisonCriterionSelectComponent implements OnInit, OnDestroy, Co
   @Input() public set disabled(isDisabled: boolean) { this.setDisabledState(isDisabled); }
   @Input() public set configurations(configurations: ICriterionConfiguration[]) {
     this.comparisonCriterions = this.getComparisonCriterionSelect(configurations);
-    this.item = this.comparisonCriterions[0];
   }
 
-  public item: IComparisonCriterion;
   public formControl: FormControl = new FormControl();
   public comparisonCriterions: IComparisonCriterion[] = [];
 

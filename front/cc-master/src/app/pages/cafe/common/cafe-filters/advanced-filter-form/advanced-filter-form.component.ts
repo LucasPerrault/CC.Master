@@ -13,13 +13,10 @@ import { Subject } from 'rxjs';
 import { filter, takeUntil } from 'rxjs/operators';
 
 import { IAdvancedFilterForm } from './advanced-filter-form.interface';
+import { IComparisonFilterCriterionForm } from './components/comparison-filter-criterion';
 import { getLogicalOperator } from './components/logical-operator-select/logical-operator.interface';
 import { LogicalOperator } from './enums/logical-operator.enum';
 import { IAdvancedFilterConfiguration } from './models/advanced-filter-configuration.interface';
-
-enum CriterionFormsKey {
-  ComparisonFilterCriterionForm = 'criterionForm',
-}
 
 @Component({
   selector: 'cc-advanced-filter-form',
@@ -93,8 +90,8 @@ export class AdvancedFilterFormComponent implements ControlValueAccessor, OnInit
     return control;
   }
 
-  public insertAt(index: number): void {
-    this.formArray.insert(index + 1, this.getCriterionForm());
+  public insertAt(index: number, defaultForm?: IComparisonFilterCriterionForm): void {
+    this.formArray.insert(index + 1, this.getCriterionForm(defaultForm));
   }
 
   public removeAt(index: number) {
@@ -108,7 +105,7 @@ export class AdvancedFilterFormComponent implements ControlValueAccessor, OnInit
     this.logicalOperator.reset();
 
     this.formArray.clear();
-    this.insertAt(0);
+    this.init();
   }
 
   public cancelForm(): void {
@@ -127,11 +124,18 @@ export class AdvancedFilterFormComponent implements ControlValueAccessor, OnInit
     this.onChange(advancedFilterForm);
   }
 
-  private getCriterionForm(): FormControl {
-    return new FormControl({ [CriterionFormsKey.ComparisonFilterCriterionForm]: null });
+  private getCriterionForm(defaultForm?: IComparisonFilterCriterionForm): FormControl {
+    return new FormControl(defaultForm);
   }
 
   private isLogicalOperatorInvalid(): boolean {
     return this.formArray.length > 1 ? this.logicalOperator.invalid : false;
+  }
+
+  private init(): void {
+    const defaultCriterion = this.configuration.criterions[0] ?? null;
+    const defaultForm = { criterion: defaultCriterion, operator: null, values: null };
+
+    this.insertAt(0, defaultForm);
   }
 }
