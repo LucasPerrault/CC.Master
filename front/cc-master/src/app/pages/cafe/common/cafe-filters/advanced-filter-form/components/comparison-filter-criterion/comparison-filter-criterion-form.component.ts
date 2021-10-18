@@ -61,7 +61,7 @@ export class ComparisonFilterCriterionFormComponent implements OnInit, OnDestroy
 
   public ngOnInit(): void {
     this.parentFormGroup.get(ComparisonFilterCriterionFormKey.Criterion).valueChanges
-      .pipe(map(criterion => this.configurations?.find(c => c.key === criterion?.key)))
+      .pipe(takeUntil(this.destroy$), map(criterion => this.configurations?.find(c => c.key === criterion?.key)))
       .subscribe(configuration => this.configuration$.next(configuration));
 
     this.configuration$
