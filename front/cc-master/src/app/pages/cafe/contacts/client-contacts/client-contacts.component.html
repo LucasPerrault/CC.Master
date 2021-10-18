@@ -1,0 +1,18 @@
+<div class="loading mod-fullPage" *ngIf="isLoading$ | async; else isNotLoading"></div>
+
+<ng-template #isNotLoading>
+  <h4 class="page-content page-resultsCount u-displayFlex u-alignItemsCenter u-justifyContentSpaceBetween">
+    {{ 'cafe_contacts_count' | translate : { count: contactsCount$ | async } }}
+    <cc-contact-additional-column-select textfieldClass="palette-grey mod-outlined mod-long"
+                                         [additionalColumns]="additionalColumns"
+                                         [formControl]="selectedColumns">
+    </cc-contact-additional-column-select>
+  </h4>
+
+  <cc-client-contact-list ccInfiniteScroll
+                    (bottomReached)="nextPage()"
+                    [contacts]="contacts$ | async"
+                    [selectedColumns]="selectedColumns.value">
+  </cc-client-contact-list>
+</ng-template>
+

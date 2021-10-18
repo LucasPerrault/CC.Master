@@ -1,0 +1,12 @@
+<ng-container [ngSwitch]="category">
+
+  <cc-generic-contacts *ngSwitchCase="contactCategory.All"></cc-generic-contacts>
+
+  <cc-app-contacts *ngSwitchCase="contactCategory.Application"></cc-app-contacts>
+
+  <cc-client-contacts *ngSwitchCase="contactCategory.Client"></cc-client-contacts>
+
+  <cc-specialized-contacts *ngSwitchCase="contactCategory.Specialized"></cc-specialized-contacts>
+
+</ng-container>
+
