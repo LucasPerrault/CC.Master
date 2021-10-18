@@ -101,7 +101,11 @@ export class ComparisonFilterCriterionFormComponent implements OnInit, OnDestroy
   }
 
   public validate(control: AbstractControl): ValidationErrors | null {
-    if (this.parentFormGroup.invalid) {
+    if (this.hasChildren(this.parentFormGroup.value) && this.childFormControl.invalid) {
+      return  { invalid: true };
+    }
+
+    if (!this.hasChildren(this.parentFormGroup.value) && this.parentFormGroup.invalid) {
       return  { invalid: true };
     }
   }
