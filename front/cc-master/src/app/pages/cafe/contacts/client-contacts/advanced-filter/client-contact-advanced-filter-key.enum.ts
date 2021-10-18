@@ -1,6 +1,5 @@
 export enum ClientContactAdvancedFilterKey {
-  Subdomain = 'subdomain',
+  Environment = 'environment',
   Clients = 'clients',
   IsConfirmed = 'isConfirmed',
-  EnvironmentApplications = 'environmentApplications',
 }

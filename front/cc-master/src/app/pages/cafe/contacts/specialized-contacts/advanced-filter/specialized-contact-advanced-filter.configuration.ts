@@ -6,22 +6,18 @@ import {
   IAdvancedFilterConfiguration,
   ICriterionConfiguration,
 } from '../../../common/cafe-filters/advanced-filter-form';
+import { EnvironmentAdvancedFilterConfiguration } from '../../../environments/advanced-filter';
 import { ContactCategory } from '../../common/enums/cafe-contacts-category.enum';
 import { SpeContactAdvancedFilterKey } from './specialized-contact-advanced-filter-key.enum';
-import { SpecializedContactFormlyConfiguration } from './specialized-contact-formly-configuration.service';
 
 @Injectable()
 export class SpecializedContactAdvancedFilterConfiguration implements IAdvancedFilterConfiguration {
   public readonly categoryId = ContactCategory.Specialized;
   public readonly criterions: ICriterionConfiguration[] = [
     {
-      key: SpeContactAdvancedFilterKey.Subdomain,
-      name: this.translatePipe.transform('cafe_filters_subdomain'),
-      operators: [
-        { id: ComparisonOperator.Equals, name: 'égal' },
-        { id: ComparisonOperator.DoesNotEqual, name: 'n\'est pas égal ' },
-      ],
-      fields: [this.formlyConfiguration.subdomain],
+      key: SpeContactAdvancedFilterKey.Environment,
+      name: 'Environnement',
+      children: this.environmentAdvancedFilterConfiguration.criterions,
     },
     {
       key: SpeContactAdvancedFilterKey.IsConfirmed,
@@ -35,6 +31,6 @@ export class SpecializedContactAdvancedFilterConfiguration implements IAdvancedF
 
   constructor(
     private translatePipe: TranslatePipe,
-    private formlyConfiguration: SpecializedContactFormlyConfiguration,
+    private environmentAdvancedFilterConfiguration: EnvironmentAdvancedFilterConfiguration,
   ) {}
 }

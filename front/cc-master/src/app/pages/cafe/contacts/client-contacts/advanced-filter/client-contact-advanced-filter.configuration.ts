@@ -6,7 +6,7 @@ import {
   IAdvancedFilterConfiguration,
   ICriterionConfiguration,
 } from '../../../common/cafe-filters/advanced-filter-form';
-import { AppContactAdvancedFilterKey } from '../../app-contacts/advanced-filter/app-contact-advanced-filter-key.enum';
+import { EnvironmentAdvancedFilterConfiguration } from '../../../environments/advanced-filter';
 import { ContactCategory } from '../../common/enums/cafe-contacts-category.enum';
 import { ClientContactAdvancedFilterKey } from './client-contact-advanced-filter-key.enum';
 import { ClientContactFormlyConfiguration } from './client-contact-formly-configuration.service';
@@ -16,28 +16,9 @@ export class ClientContactAdvancedFilterConfiguration implements IAdvancedFilter
   public readonly categoryId = ContactCategory.Client;
   public readonly criterions: ICriterionConfiguration[] = [
     {
-      key: AppContactAdvancedFilterKey.Environment,
+      key: ClientContactAdvancedFilterKey.Environment,
       name: 'Dans l\'environnement',
-      children: [
-        {
-          key: AppContactAdvancedFilterKey.EnvironmentApplications,
-          name: 'Les applications',
-          operators: [
-            { id: ComparisonOperator.Equals, name: 'contiennent' },
-            { id: ComparisonOperator.DoesNotEqual, name: 'ne contiennent pas' },
-          ],
-          fields: [this.formlyConfiguration.environmentApplications],
-        },
-        {
-          key: AppContactAdvancedFilterKey.Subdomain,
-          name: 'les sous-domaine',
-          operators: [
-            { id: ComparisonOperator.Equals, name: 'est parmi' },
-            { id: ComparisonOperator.DoesNotEqual, name: 'n\'est pas parmi' },
-          ],
-          fields: [this.formlyConfiguration.subdomain],
-        },
-      ],
+      children: this.environmentAdvancedFilterConfiguration.criterions,
     },
     {
       key: ClientContactAdvancedFilterKey.Clients,
@@ -61,5 +42,6 @@ export class ClientContactAdvancedFilterConfiguration implements IAdvancedFilter
   constructor(
     private translatePipe: TranslatePipe,
     private formlyConfiguration: ClientContactFormlyConfiguration,
+    private environmentAdvancedFilterConfiguration: EnvironmentAdvancedFilterConfiguration,
   ) {}
 }

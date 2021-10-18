@@ -21,7 +21,7 @@ export class EnvironmentAdvancedFilterApiMappingService {
     return AdvancedFilterFormMapping.toAdvancedFilter(advancedFilterForm, a => this.getAdvancedFilter(a));
   }
 
-  private getAdvancedFilter(attributes: IAdvancedFilterAttributes): AdvancedFilter {
+  public getAdvancedFilter(attributes: IAdvancedFilterAttributes): AdvancedFilter {
     switch (attributes.filterKey) {
       case EnvironmentAdvancedFilterKey.Domain:
         const domains = attributes.value[attributes.filterKey];

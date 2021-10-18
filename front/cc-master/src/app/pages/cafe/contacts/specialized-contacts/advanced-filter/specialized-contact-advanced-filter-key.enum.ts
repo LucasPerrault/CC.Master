@@ -1,4 +1,4 @@
 export enum SpeContactAdvancedFilterKey {
-  Subdomain = 'subdomain',
+  Environment = 'environment',
   IsConfirmed = 'isConfirmed',
 }

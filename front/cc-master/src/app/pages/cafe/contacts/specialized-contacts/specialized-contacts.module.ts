@@ -12,7 +12,6 @@ import { SpecializedContactAdvancedFilterConfiguration } from './advanced-filter
 import {
   SpecializedContactAdvancedFilterApiMappingService,
 } from './advanced-filter/specialized-contact-advanced-filter-api-mapping.service';
-import { SpecializedContactFormlyConfiguration } from './advanced-filter/specialized-contact-formly-configuration.service';
 import { SpecializedContactListComponent } from './specialized-contact-list/specialized-contact-list.component';
 import { SpecializedContactsComponent } from './specialized-contacts.component';
 import { SpecializedContactsDataService } from './specialized-contacts-data.service';
@@ -32,7 +31,6 @@ import { SpecializedContactsDataService } from './specialized-contacts-data.serv
   ],
   providers: [
     SpecializedContactsDataService,
-    SpecializedContactFormlyConfiguration,
     SpecializedContactAdvancedFilterConfiguration,
     SpecializedContactAdvancedFilterApiMappingService,
   ],

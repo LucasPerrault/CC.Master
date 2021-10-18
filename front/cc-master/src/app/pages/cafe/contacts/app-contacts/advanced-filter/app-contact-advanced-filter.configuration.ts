@@ -6,6 +6,7 @@ import {
   IAdvancedFilterConfiguration,
   ICriterionConfiguration,
 } from '../../../common/cafe-filters/advanced-filter-form';
+import { EnvironmentAdvancedFilterConfiguration } from '../../../environments/advanced-filter';
 import { ContactCategory } from '../../common/enums/cafe-contacts-category.enum';
 import { AppContactAdvancedFilterKey } from './app-contact-advanced-filter-key.enum';
 import { AppContactFormlyConfiguration } from './app-contact-formly.configuration';
@@ -17,26 +18,7 @@ export class AppContactAdvancedFilterConfiguration implements IAdvancedFilterCon
     {
       key: AppContactAdvancedFilterKey.Environment,
       name: this.translatePipe.transform('cafe_filters_environment'),
-      children: [
-        {
-          key: AppContactAdvancedFilterKey.EnvironmentApplications,
-          name: this.translatePipe.transform('cafe_filters_environmentApplications'),
-          operators: [
-              { id: ComparisonOperator.Equals, name: 'contiennent' },
-              { id: ComparisonOperator.DoesNotEqual, name: 'ne contiennent pas' },
-          ],
-          fields: [this.formlyConfiguration.environmentApplications],
-        },
-        {
-          key: AppContactAdvancedFilterKey.Subdomain,
-          name: this.translatePipe.transform('cafe_filters_subdomain'),
-          operators: [
-            { id: ComparisonOperator.Equals, name: 'est parmi' },
-            { id: ComparisonOperator.DoesNotEqual, name: 'n\'est pas parmi' },
-          ],
-          fields: [this.formlyConfiguration.subdomain],
-        },
-      ],
+      children: this.environmentAdvancedFilterConfiguration.criterions,
     },
     {
       key: AppContactAdvancedFilterKey.Applications,
@@ -60,5 +42,6 @@ export class AppContactAdvancedFilterConfiguration implements IAdvancedFilterCon
   constructor(
     private translatePipe: TranslatePipe,
     private formlyConfiguration: AppContactFormlyConfiguration,
+    private environmentAdvancedFilterConfiguration: EnvironmentAdvancedFilterConfiguration,
   ) { }
 }

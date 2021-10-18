@@ -8,11 +8,15 @@ import {
   IAdvancedFilterForm,
   LogicalOperator,
 } from '../../../common/cafe-filters/advanced-filter-form';
+import { EnvironmentAdvancedFilterApiMappingService } from '../../../environments/advanced-filter';
 import { CommonApiMappingStrategies } from '../../common/advanced-filter/common-api-mapping-strategies';
 import { ClientContactAdvancedFilterKey } from './client-contact-advanced-filter-key.enum';
 
 @Injectable()
 export class ClientContactAdvancedFilterApiMappingService {
+  constructor(private environmentApiMapping: EnvironmentAdvancedFilterApiMappingService) {
+  }
+
   public toAdvancedFilter(advancedFilterForm: IAdvancedFilterForm): AdvancedFilter {
     return AdvancedFilterFormMapping.toAdvancedFilter(advancedFilterForm, a => this.getAdvancedFilter(a));
   }
@@ -24,9 +28,8 @@ export class ClientContactAdvancedFilterApiMappingService {
         return this.getClientsAdvancedFilter(attributes.operator, clients);
       case ClientContactAdvancedFilterKey.IsConfirmed:
         return CommonApiMappingStrategies.getIsConfirmedAdvancedFilter(attributes.operator);
-      case ClientContactAdvancedFilterKey.Subdomain:
-        const environments = attributes.value[attributes.filterKey];
-        return CommonApiMappingStrategies.getSubdomainAdvancedFilter(attributes.operator, environments);
+      default:
+        return this.environmentApiMapping.getAdvancedFilter(attributes);
     }
   }
 

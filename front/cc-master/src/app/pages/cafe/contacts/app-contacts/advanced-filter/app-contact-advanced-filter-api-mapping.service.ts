@@ -8,29 +8,29 @@ import {
   IAdvancedFilterForm,
   LogicalOperator,
 } from '../../../common/cafe-filters/advanced-filter-form';
+import { EnvironmentAdvancedFilterApiMappingService } from '../../../environments/advanced-filter';
 import { IAppInstance } from '../../../environments/models/app-instance.interface';
 import { CommonApiMappingStrategies } from '../../common/advanced-filter/common-api-mapping-strategies';
 import { AppContactAdvancedFilterKey } from './app-contact-advanced-filter-key.enum';
 
 @Injectable()
 export class AppContactAdvancedFilterApiMappingService {
+  constructor(private environmentApiMapping: EnvironmentAdvancedFilterApiMappingService) {
+  }
+
   public toAdvancedFilter(advancedFilterForm: IAdvancedFilterForm): AdvancedFilter {
     return AdvancedFilterFormMapping.toAdvancedFilter(advancedFilterForm, a => this.getAdvancedFilter(a));
   }
 
   private getAdvancedFilter(attributes: IAdvancedFilterAttributes): AdvancedFilter {
     switch (attributes.filterKey) {
-      case AppContactAdvancedFilterKey.EnvironmentApplications:
-        const envAppInstances = attributes.value[attributes.filterKey];
-        return CommonApiMappingStrategies.getEnvironmentAppInstancesAdvancedFilter(attributes.operator, envAppInstances);
       case AppContactAdvancedFilterKey.Applications:
         const appInstances = attributes.value[attributes.filterKey];
         return this.getAppInstanceAdvancedFilter(attributes.operator, appInstances);
       case AppContactAdvancedFilterKey.IsConfirmed:
         return CommonApiMappingStrategies.getIsConfirmedAdvancedFilter(attributes.operator);
-      case AppContactAdvancedFilterKey.Subdomain:
-        const environments = attributes.value[attributes.filterKey];
-        return CommonApiMappingStrategies.getSubdomainAdvancedFilter(attributes.operator, environments);
+      default:
+        return this.environmentApiMapping.getAdvancedFilter(attributes);
     }
   }
 
