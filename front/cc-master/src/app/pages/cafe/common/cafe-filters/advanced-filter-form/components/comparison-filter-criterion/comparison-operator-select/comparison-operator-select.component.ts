@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, forwardRef, Input, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
+import { ChangeDetectionStrategy, Component, forwardRef, Input, OnDestroy, OnInit } from '@angular/core';
 import {
   AbstractControl,
   ControlValueAccessor,
@@ -31,7 +31,7 @@ import { IComparisonOperator } from './comparison-operator.interface';
     },
   ],
 })
-export class ComparisonOperatorSelectComponent implements OnInit, OnChanges, OnDestroy, ControlValueAccessor, Validator {
+export class ComparisonOperatorSelectComponent implements OnInit, OnDestroy, ControlValueAccessor, Validator {
   @Input() public required = false;
   @Input() public textfieldClass: string;
   @Input() public operators: IComparisonOperator[];
@@ -41,18 +41,11 @@ export class ComparisonOperatorSelectComponent implements OnInit, OnChanges, OnD
     this.setDisabledState(isDisabled);
   }
 
-  public item: IComparisonOperator;
   public formControl: FormControl = new FormControl();
 
   private destroy$: Subject<void> = new Subject();
 
   constructor() {
-  }
-
-  ngOnChanges(changes: SimpleChanges): void {
-    if (!!changes?.operators?.currentValue?.length) {
-      this.item = changes.operators.currentValue[0];
-    }
   }
 
   public ngOnInit(): void {
@@ -79,7 +72,7 @@ export class ComparisonOperatorSelectComponent implements OnInit, OnChanges, OnD
 
   public writeValue(operator: IComparisonOperator): void {
     if (operator !== this.formControl.value) {
-      this.formControl.setValue(operator.id);
+      this.formControl.setValue(operator);
     }
   }
 

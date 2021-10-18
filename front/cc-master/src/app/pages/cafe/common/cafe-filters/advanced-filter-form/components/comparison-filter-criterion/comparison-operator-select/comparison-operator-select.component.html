@@ -2,7 +2,6 @@
   <lu-select [formControl]="formControl" class="textfield-input"
              [placeholder]="'cafe_criterionOperator_select_label' | translate"
              [required]="required"
-             [(ngModel)]="item"
              (blur)="onTouch()">
     <ng-container *luDisplayer="let operator">{{ operator.name }}</ng-container>
 

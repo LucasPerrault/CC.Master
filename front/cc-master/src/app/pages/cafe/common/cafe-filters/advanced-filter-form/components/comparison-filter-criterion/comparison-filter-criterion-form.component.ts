@@ -111,8 +111,7 @@ export class ComparisonFilterCriterionFormComponent implements OnInit, OnDestroy
   }
 
   private setDefaultOperator(operators: IComparisonOperator[]): void {
-    const defaultSelection = getCriterionOperator(operators[0].id);
-    this.parentFormGroup.get(ComparisonFilterCriterionFormKey.Operator).setValue(defaultSelection);
+    this.parentFormGroup.get(ComparisonFilterCriterionFormKey.Operator).setValue(operators[0]);
   }
 
   private hasChildren(config: IComparisonFilterCriterionForm): boolean {
