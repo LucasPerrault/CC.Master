@@ -9,6 +9,7 @@ import {
   Validator,
   Validators,
 } from '@angular/forms';
+import { FormlyFieldConfig } from '@ngx-formly/core/lib/components/formly.field.config';
 import { ReplaySubject, Subject } from 'rxjs';
 import { filter, map, takeUntil } from 'rxjs/operators';
 
@@ -65,10 +66,10 @@ export class ComparisonFilterCriterionFormComponent implements OnInit, OnDestroy
       .subscribe(configuration => this.configuration$.next(configuration));
 
     this.configuration$
-      .pipe(takeUntil(this.destroy$), filter(configuration => !!configuration?.operators))
+      .pipe(takeUntil(this.destroy$))
       .subscribe(configuration => {
-        this.setDefaultOperator(configuration.operators);
-        this.setValidators(configuration);
+        this.setDefaultOperator(configuration?.operators);
+        this.setDefaultValues(configuration?.fields);
       });
 
     this.parentFormGroup.valueChanges
@@ -124,19 +125,23 @@ export class ComparisonFilterCriterionFormComponent implements OnInit, OnDestroy
   }
 
   private setDefaultOperator(operators: IComparisonOperator[]): void {
+    if (!operators?.length) {
+      return;
+    }
     this.parentFormGroup.get(ComparisonFilterCriterionFormKey.Operator).setValue(operators[0]);
+  }
+
+  private setDefaultValues(fields: FormlyFieldConfig[]): void {
+    const validators = !!fields?.length ? [Validators.required] : [];
+
+    const formControl = this.parentFormGroup.get(ComparisonFilterCriterionFormKey.Values);
+    formControl.setValue(null);
+    formControl.setValidators(validators);
+    formControl.updateValueAndValidity();
   }
 
   private hasChildren(config: IComparisonFilterCriterionForm): boolean {
     const configuration = this.configurations.find(c => c.key === config?.criterion?.key);
     return !!configuration?.children?.length;
-  }
-
-  private setValidators(configuration: ICriterionConfiguration): void {
-    const validators = !!configuration?.fields?.length ? [Validators.required] : [];
-
-    const formControl = this.parentFormGroup.get(ComparisonFilterCriterionFormKey.Values);
-    formControl.setValidators(validators);
-    formControl.updateValueAndValidity();
   }
 }
