@@ -118,6 +118,7 @@ namespace Instances.Web
             services.AddScoped<IGithubBranchesRepository, GithubBranchesRepository>();
             services.AddScoped<IGithubPullRequestsRepository, GithubPullRequestsRepository>();
             services.AddScoped<IPreviewConfigurationsRepository, PreviewConfigurationsRepository>();
+            services.AddScoped<IHelmRepository, HelmRepository>();
 
             services.AddScoped<IDemosStore, DemosStore>();
             services.AddScoped<IInstanceDuplicationsStore, InstanceDuplicationsStore>();
