@@ -60,10 +60,14 @@ export class CafeFiltersComponent implements OnInit, OnDestroy, ControlValueAcce
       .pipe(takeUntil(this.destroy$))
       .subscribe(category => {
         this.showAdvancedFilters = true;
-        this.formGroup.get(CafeFilterKey.AdvancedFilterForm).reset();
 
         const configuration = this.getSelectedConfiguration(category);
         this.selectedConfiguration$.next(configuration);
+
+        const defaultCriterion = configuration.criterions[0];
+        this.formGroup.get(CafeFilterKey.AdvancedFilterForm).reset({
+          criterionForms: [{ criterion: defaultCriterion }],
+        });
       });
 
     this.formGroup.valueChanges

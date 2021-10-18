@@ -79,11 +79,10 @@ export class AdvancedFilterFormComponent implements ControlValueAccessor, OnInit
 
     const criterionForms = form?.criterionForms;
     if (!!criterionForms?.length) {
-      this.formArray.setValue(form.criterionForms);
+      this.formArray.clear();
+      this.addRange(criterionForms);
       return;
     }
-
-    this.reset();
   }
 
   public trackBy(index: number, control: AbstractControl): AbstractControl {
@@ -107,13 +106,6 @@ export class AdvancedFilterFormComponent implements ControlValueAccessor, OnInit
     this.insertAt(0);
   }
 
-  public reset(): void {
-    this.logicalOperator.reset();
-
-    this.formArray.clear();
-    this.init();
-  }
-
   public cancelForm(): void {
     this.cancel.emit();
   }
@@ -130,18 +122,15 @@ export class AdvancedFilterFormComponent implements ControlValueAccessor, OnInit
     this.onChange(advancedFilterForm);
   }
 
+  private addRange(criterionForms: IComparisonFilterCriterionForm[]): void {
+    criterionForms.forEach((f, index) => this.insertAt(index, f));
+  }
+
   private getCriterionForm(defaultForm?: IComparisonFilterCriterionForm): FormControl {
     return new FormControl(defaultForm);
   }
 
   private isLogicalOperatorInvalid(): boolean {
     return this.formArray.length > 1 ? this.logicalOperator.invalid : false;
-  }
-
-  private init(): void {
-    const defaultCriterion = this.configuration.criterions[0] ?? null;
-    const defaultForm = { criterion: defaultCriterion, operator: null, values: null };
-
-    this.insertAt(0, defaultForm);
   }
 }
