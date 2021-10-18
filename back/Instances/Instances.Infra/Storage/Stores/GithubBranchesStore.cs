@@ -69,6 +69,7 @@ namespace Instances.Infra.Storage.Stores
         {
             return githubBranches
                 .WhenNotNullOrEmpty(filter.Name).ApplyWhere(gb => gb.Name == filter.Name)
+                .WhenNotNullOrEmpty(filter.HelmChart).ApplyWhere(gb => gb.HelmChart == filter.HelmChart)
                 .WhenHasValue(filter.CodeSourceId).ApplyWhere(cs => cs.CodeSources.Any(c => c.Id == filter.CodeSourceId))
                 .WhenHasValue(filter.IsDeleted).ApplyWhere(cs => cs.IsDeleted == filter.IsDeleted);
         }

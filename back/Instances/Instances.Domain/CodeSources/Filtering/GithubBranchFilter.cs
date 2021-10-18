@@ -5,5 +5,6 @@ namespace Instances.Domain.CodeSources.Filtering
         public int? CodeSourceId { get; set; }
         public string Name { get; set; }
         public bool? IsDeleted { get; set; }
+        public string HelmChart { get; set; }
     }
 }

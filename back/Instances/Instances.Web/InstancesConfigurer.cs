@@ -5,6 +5,7 @@ using Instances.Application.Demos.Duplication;
 using Instances.Application.Demos.Emails;
 using Instances.Application.Instances;
 using Instances.Application.Webhooks.Github;
+using Instances.Application.Webhooks.Harbor;
 using Instances.Domain.CodeSources;
 using Instances.Domain.Demos;
 using Instances.Domain.Demos.Cleanup;
@@ -101,6 +102,7 @@ namespace Instances.Web
 
             services.AddScoped<InstancesWebhookHandler>();
             services.AddScoped<GithubWebhookHandler>();
+            services.AddScoped<HarborWebhookHandler>();
 
             services.AddScoped<InactiveDemosCleaner>();
             services.AddScoped<InstancesDuplicator>();
@@ -199,6 +201,8 @@ namespace Instances.Web
             services.AddScoped<IGithubWebhookServiceProvider, GithubWebhookServiceProvider>();
             services.AddScoped<PushWebhookService>();
             services.AddScoped<PullRequestWebhookService>();
+
+            services.AddScoped<IHarborWebhookService, HarborWebhookService>();
         }
 
         public static LuccaApiBuilder ConfigureLuccaApiForInstances(this LuccaApiBuilder luccaApiBuilder)

@@ -1,3 +1,4 @@
+using Instances.Application.Webhooks.Harbor.Models;
 using Instances.Web.Webhooks;
 using IpFilter.Domain;
 using Microsoft.AspNetCore.Authorization;
@@ -19,5 +20,8 @@ namespace CloudControl.Web.Controllers
 
         [HttpPost("github")]
         public Task<IActionResult> HandleGithubAsync() => _instancesWebhookHandler.HandleGithubAsync(Request);
+
+        [HttpPost("harbor")]
+        public Task<IActionResult> HandleHarborAsync([FromBody] HarborWebhookPayload payload) => _instancesWebhookHandler.HandleHarborAsync(payload);
     }
 }

@@ -1,6 +1,5 @@
 using Lucca.Core.Shared.Domain.Exceptions;
 using System.IO;
-using System.Text.Json;
 using System.Threading.Tasks;
 using Tools;
 

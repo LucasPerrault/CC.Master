@@ -1,6 +1,8 @@
 using CloudControl.Web.Tests.Mocks;
 using FluentAssertions;
 using Instances.Application.Webhooks.Github;
+using Instances.Application.Webhooks.Harbor;
+using Instances.Application.Webhooks.Harbor.Models;
 using Instances.Infra.Github;
 using Instances.Web.Webhooks;
 using Microsoft.Extensions.DependencyInjection;
@@ -40,7 +42,7 @@ namespace Instances.Web.Tests.Controllers
             {
                 GithubWebhookSecret = "mysecret"
             });
-            webApplicationFactory.Mocks.AddScoped(sp => new InstancesWebhookHandler(sp.GetRequiredService<GithubWebhookHandler>()));
+            webApplicationFactory.Mocks.AddScoped(sp => new InstancesWebhookHandler(sp.GetRequiredService<GithubWebhookHandler>(), null));
             webApplicationFactory.Mocks.AddScoped(sp => new GithubWebhookHandler(sp.GetRequiredService<IGithubWebhookServiceProvider>(), sp.GetRequiredService<GithubConfiguration>()));
 
             var httpClient = webApplicationFactory.CreateClient();
@@ -57,6 +59,34 @@ namespace Instances.Web.Tests.Controllers
 
             mockGithubWebhookServiceProvider.Verify(g => g.GetGithubWebhookService(expectedEvent));
             mockGithubWebhookService.Verify(g => g.HandleEventAsync(It.IsAny<Stream>()));
+        }
+
+        #endregion
+
+        #region HandleGithubAsync
+        [Fact]
+        public async Task HandleHarborAsync_Ok()
+        {
+            var body = @"{""Type"": ""DELETE_ARTIFACT""}";
+            var harborWebhookServiceMock = new Mock<IHarborWebhookService>(MockBehavior.Strict);
+
+            harborWebhookServiceMock
+                .Setup(h => h.HandleWebhookAsync(It.IsAny<HarborWebhookPayload>()))
+                .Returns(Task.CompletedTask);
+
+            var webApplicationFactory = new MockedWebApplicationFactory();
+            webApplicationFactory.Mocks.AddSingleton(harborWebhookServiceMock.Object);
+            webApplicationFactory.Mocks.AddScoped(sp => new InstancesWebhookHandler(null, sp.GetRequiredService<HarborWebhookHandler>()));
+            webApplicationFactory.Mocks.AddScoped(sp => new HarborWebhookHandler(sp.GetRequiredService<IHarborWebhookService>()));
+
+            var httpClient = webApplicationFactory.CreateClient();
+
+            var content = new StringContent(body, Encoding.UTF8, "application/json");
+            var response = await httpClient.PostAsync("/api/webhooks/harbor", content);
+
+            response.IsSuccessStatusCode.Should().BeTrue();
+
+            harborWebhookServiceMock.Verify(h => h.HandleWebhookAsync(It.IsAny<HarborWebhookPayload>()));
         }
 
         #endregion
