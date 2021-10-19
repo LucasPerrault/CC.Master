@@ -29,7 +29,7 @@ namespace AdvancedFilters.Domain.Instance.Models
 
     public class EnvironmentAdvancedCriterion : AdvancedCriterion<Environment>
     {
-        public SingleValueComparisonCriterion<string> Subdomain { get; set; }
+        public SingleStringComparisonCriterion Subdomain { get; set; }
         public LegalUnitAdvancedCriterion LegalUnits { get; set; }
         public AppInstanceAdvancedCriterion AppInstances { get; set; }
 

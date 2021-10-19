@@ -24,7 +24,7 @@ namespace AdvancedFilters.Domain.Instance.Models
 
     public class AppInstanceAdvancedCriterion : AdvancedCriterion<AppInstance>
     {
-        public SingleValueComparisonCriterion<string> ApplicationId { get; set; }
+        public SingleStringComparisonCriterion ApplicationId { get; set; }
 
         public override IQueryableExpressionBuilder<AppInstance> GetExpressionBuilder(IQueryableExpressionBuilderFactory factory)
             => factory.Create(this);

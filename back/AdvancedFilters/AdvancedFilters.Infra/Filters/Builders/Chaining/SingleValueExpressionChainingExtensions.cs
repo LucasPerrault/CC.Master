@@ -48,12 +48,9 @@ namespace AdvancedFilters.Infra.Filters.Builders.Chaining
                 return _ => true;
             }
 
-            return criterion.Operator switch
-            {
-                ComparisonOperators.Equals => items => items.Contains(criterion.Value),
-                ComparisonOperators.NotEquals => items => !items.Contains(criterion.Value),
-                _ => throw new InvalidEnumArgumentException(nameof(criterion.Operator), (int)criterion.Operator, typeof(ComparisonOperators)),
-            };
+            return criterion.Operator.ShouldApplyToAll()
+                ? items => items.AsQueryable().All(criterion.Expression)
+                : items => items.AsQueryable().Any(criterion.Expression);
         }
 
         private static Expression<Func<TProperty, bool>> ApplyToItem<TProperty>(SingleValueComparisonCriterion<TProperty> criterion)
@@ -64,12 +61,12 @@ namespace AdvancedFilters.Infra.Filters.Builders.Chaining
                 return _ => true;
             }
 
-            return criterion.Operator switch
-            {
-                ComparisonOperators.Equals => item => Equals(item, criterion.Value),
-                ComparisonOperators.NotEquals => item => !Equals(item, criterion.Value),
-                _ => throw new InvalidEnumArgumentException(nameof(criterion.Operator), (int)criterion.Operator, typeof(ComparisonOperators)),
-            };
+            return criterion.Expression;
+        }
+
+        private static bool ShouldApplyToAll(this ComparisonOperators comparisonOperator)
+        {
+            return comparisonOperator == ComparisonOperators.NotEquals;
         }
     }
 }

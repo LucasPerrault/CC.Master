@@ -33,7 +33,7 @@ namespace AdvancedFilters.Domain.Instance.Models
 
     public class LegalUnitAdvancedCriterion : AdvancedCriterion<LegalUnit>
     {
-        public SingleValueComparisonCriterion<int> CountryId { get; set; }
+        public SingleIntComparisonCriterion CountryId { get; set; }
 
         public override IQueryableExpressionBuilder<LegalUnit> GetExpressionBuilder(IQueryableExpressionBuilderFactory factory)
             => factory.Create(this);

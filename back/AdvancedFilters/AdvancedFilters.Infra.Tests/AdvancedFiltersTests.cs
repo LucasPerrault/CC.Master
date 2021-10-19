@@ -410,7 +410,7 @@ namespace AdvancedFilters.Infra.Tests
 
         public static EnvironmentAdvancedCriterion WithSubdomain(this EnvironmentAdvancedCriterion criterion, ComparisonOperators op, string subdomain)
         {
-            criterion.Subdomain = new SingleValueComparisonCriterion<string>
+            criterion.Subdomain = new SingleStringComparisonCriterion
             {
                 Operator = op,
                 Value = subdomain
@@ -421,7 +421,7 @@ namespace AdvancedFilters.Infra.Tests
         {
             criterion.LegalUnits = new LegalUnitAdvancedCriterion
             {
-                CountryId = new SingleValueComparisonCriterion<int>
+                CountryId = new SingleIntComparisonCriterion
                 {
                     Operator = op,
                     Value = countryId
@@ -433,7 +433,7 @@ namespace AdvancedFilters.Infra.Tests
         {
             criterion.AppInstances = new AppInstanceAdvancedCriterion
             {
-                ApplicationId = new SingleValueComparisonCriterion<string>
+                ApplicationId = new SingleStringComparisonCriterion
                 {
                     Operator = op,
                     Value = applicationId
@@ -444,21 +444,15 @@ namespace AdvancedFilters.Infra.Tests
 
         public static AppContactAdvancedCriterion WithSubdomain(this AppContactAdvancedCriterion criterion, ComparisonOperators op, string subdomain)
         {
-            criterion.Environment = new EnvironmentAdvancedCriterion
-            {
-                Subdomain = new SingleValueComparisonCriterion<string>
-                {
-                    Operator = op,
-                    Value = subdomain
-                }
-            };
+            criterion.Environment = new EnvironmentAdvancedCriterion().WithSubdomain(op, subdomain);
+
             return criterion;
         }
         public static AppContactAdvancedCriterion WithCountryId(this AppContactAdvancedCriterion criterion, ComparisonOperators op, int countryId)
         {
             criterion.LegalUnit = new LegalUnitAdvancedCriterion
             {
-                CountryId = new SingleValueComparisonCriterion<int>
+                CountryId = new SingleIntComparisonCriterion
                 {
                     Operator = op,
                     Value = countryId
@@ -470,7 +464,7 @@ namespace AdvancedFilters.Infra.Tests
         {
             criterion.AppInstance = new AppInstanceAdvancedCriterion
             {
-                ApplicationId = new SingleValueComparisonCriterion<string>
+                ApplicationId = new SingleStringComparisonCriterion
                 {
                     Operator = op,
                     Value = applicationId
@@ -481,21 +475,15 @@ namespace AdvancedFilters.Infra.Tests
 
         public static ClientContactAdvancedCriterion WithSubdomain(this ClientContactAdvancedCriterion criterion, ComparisonOperators op, string subdomain)
         {
-            criterion.Environment = new EnvironmentAdvancedCriterion
-            {
-                Subdomain = new SingleValueComparisonCriterion<string>
-                {
-                    Operator = op,
-                    Value = subdomain
-                }
-            };
+            criterion.Environment = new EnvironmentAdvancedCriterion().WithSubdomain(op, subdomain);
+
             return criterion;
         }
         public static ClientContactAdvancedCriterion WithCountryId(this ClientContactAdvancedCriterion criterion, ComparisonOperators op, int countryId)
         {
             criterion.LegalUnit = new LegalUnitAdvancedCriterion
             {
-                CountryId = new SingleValueComparisonCriterion<int>
+                CountryId = new SingleIntComparisonCriterion
                 {
                     Operator = op,
                     Value = countryId
@@ -506,21 +494,15 @@ namespace AdvancedFilters.Infra.Tests
 
         public static SpecializedContactAdvancedCriterion WithSubdomain(this SpecializedContactAdvancedCriterion criterion, ComparisonOperators op, string subdomain)
         {
-            criterion.Environment = new EnvironmentAdvancedCriterion
-            {
-                Subdomain = new SingleValueComparisonCriterion<string>
-                {
-                    Operator = op,
-                    Value = subdomain
-                }
-            };
+            criterion.Environment = new EnvironmentAdvancedCriterion().WithSubdomain(op, subdomain);
+
             return criterion;
         }
         public static SpecializedContactAdvancedCriterion WithCountryId(this SpecializedContactAdvancedCriterion criterion, ComparisonOperators op, int countryId)
         {
             criterion.LegalUnit = new LegalUnitAdvancedCriterion
             {
-                CountryId = new SingleValueComparisonCriterion<int>
+                CountryId = new SingleIntComparisonCriterion
                 {
                     Operator = op,
                     Value = countryId
