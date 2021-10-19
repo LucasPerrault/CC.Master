@@ -11,7 +11,7 @@ export class GenericContactsDataService {
   }
 
   public getContacts$(params: HttpParams): Observable<IHttpApiV4CollectionCountResponse<IGenericContact>> {
-    params = params.set('field.root', 'count');
+    params = params.set('fields.root', 'count');
 
     const query = params.toString();
     const route = '/api/cafe/contacts/search';

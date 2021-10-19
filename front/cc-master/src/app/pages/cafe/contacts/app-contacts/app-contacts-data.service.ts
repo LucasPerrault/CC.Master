@@ -12,7 +12,7 @@ export class AppContactsDataService {
   }
 
   public getAppContacts$(params: HttpParams, advancedFilter: AdvancedFilter): Observable<IHttpApiV4CollectionCountResponse<IAppContact>> {
-    params = params.set('field.root', 'count');
+    params = params.set('fields.root', 'count');
 
     const query = params.toString();
     const route = '/api/cafe/app-contacts/search';

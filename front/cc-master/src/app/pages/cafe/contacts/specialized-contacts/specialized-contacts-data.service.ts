@@ -15,7 +15,7 @@ export class SpecializedContactsDataService {
     params: HttpParams,
     advancedFilter: AdvancedFilter,
   ): Observable<IHttpApiV4CollectionCountResponse<ISpecializedContact>> {
-    params = params.set('field.root', 'count');
+    params = params.set('fields.root', 'count');
 
     const query = params.toString();
     const route = '/api/cafe/specialized-contacts/search';

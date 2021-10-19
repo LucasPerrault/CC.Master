@@ -12,7 +12,7 @@ export class EnvironmentDataService {
   }
 
   public getEnvironments$(params: HttpParams, advancedFilter: AdvancedFilter): Observable<IHttpApiV4CollectionCountResponse<IEnvironment>> {
-    params = params.set('field.root', 'count');
+    params = params.set('fields.root', 'count');
 
     const query = params.toString();
     const route = '/api/cafe/environments/search';

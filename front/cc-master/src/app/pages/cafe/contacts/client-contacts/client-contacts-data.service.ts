@@ -15,7 +15,7 @@ export class ClientContactsDataService {
     params: HttpParams,
     advancedFilter: AdvancedFilter,
   ): Observable<IHttpApiV4CollectionCountResponse<IClientContact>> {
-    params = params.set('field.root', 'count');
+    params = params.set('fields.root', 'count');
 
     const query = params.toString();
     const route = '/api/cafe/client-contacts/search';
