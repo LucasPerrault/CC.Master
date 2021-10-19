@@ -64,7 +64,8 @@ namespace Instances.Application.CodeSources
         {
             var otherCodeSourceIds = await _codeSourcesStore.GetAsync(new CodeSourceFilter
             {
-                GithubRepo = codeSource.GithubRepo
+                GithubRepo = codeSource.GithubRepo,
+                ExcludedLifecycle = new HashSet<CodeSourceLifecycleStep> { CodeSourceLifecycleStep.Deleted }
             });
 
             codeSource = await _codeSourcesStore.CreateAsync(codeSource);
