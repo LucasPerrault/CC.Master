@@ -37,7 +37,9 @@ export class EnvironmentListComponent {
 
   public getCountryNames(legalUnits: ILegalUnit[]): string {
     const countries = legalUnits.map(l => l.country.name) ?? [];
-    return countries.join(', ');
+    const distinctCountries = countries.filter((value, index, self) => self.indexOf(value) === index);
+    const sortedCountries = distinctCountries.sort((a, b) => a.localeCompare(b));
+    return sortedCountries.join(', ');
   }
 
   public getDistributorNames(environment: IEnvironment): string {
