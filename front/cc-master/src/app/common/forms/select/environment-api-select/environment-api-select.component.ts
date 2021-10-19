@@ -83,11 +83,10 @@ export class EnvironmentApiSelectComponent implements ControlValueAccessor {
   }
 
   public get label(): string {
-    const pluralCaseCount = 2;
-    const singleCaseCount = 1;
-    return this.translatePipe.transform('front_select_environments_label', {
-      count: this.multiple ? pluralCaseCount : singleCaseCount,
-    });
+    const translationKey = this.multiple
+        ? 'front_select_environments_label'
+        : 'front_select_environment_label';
+    return this.translatePipe.transform(translationKey);
   }
 
   public get isFormDisplayMode(): boolean {
