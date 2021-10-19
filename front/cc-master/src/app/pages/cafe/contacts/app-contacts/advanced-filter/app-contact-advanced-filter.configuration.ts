@@ -21,7 +21,7 @@ export class AppContactAdvancedFilterConfiguration implements IAdvancedFilterCon
       children: this.environmentAdvancedFilterConfiguration.criterions,
     },
     {
-      key: AppContactAdvancedFilterKey.Applications,
+      key: AppContactAdvancedFilterKey.AppInstance,
       name: this.translatePipe.transform('cafe_filters_contact_applications'),
       operators: [
         { id: ComparisonOperator.Equals, name: this.translatePipe.transform('cafe_filters_operator_isAmong') },

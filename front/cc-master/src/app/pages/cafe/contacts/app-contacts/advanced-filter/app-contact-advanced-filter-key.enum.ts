@@ -1,5 +1,5 @@
 export enum AppContactAdvancedFilterKey {
   Environment = 'environment',
-  Applications = 'applications',
+  AppInstance = 'appInstance',
   IsConfirmed = 'isConfirmed',
 }

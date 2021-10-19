@@ -32,7 +32,7 @@ export class EnvironmentAdvancedFilterApiMappingService {
       case EnvironmentAdvancedFilterKey.Subdomain:
         const subdomains = attributes.value[attributes.filterKey];
         return this.getSubdomainAdvancedFilter(attributes.operator, subdomains);
-      case EnvironmentAdvancedFilterKey.Applications:
+      case EnvironmentAdvancedFilterKey.AppInstances:
         const applications = attributes.value[attributes.filterKey];
         return this.getAppInstanceAdvancedFilter(attributes.operator, applications);
       case EnvironmentAdvancedFilterKey.Countries:

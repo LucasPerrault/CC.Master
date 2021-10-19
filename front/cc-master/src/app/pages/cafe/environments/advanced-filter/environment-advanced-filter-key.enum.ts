@@ -2,7 +2,7 @@ export enum EnvironmentAdvancedFilterKey {
   Subdomain = 'subdomain',
   Domain = 'domain',
   IsActive = 'isActive',
-  Applications = 'applications',
+  AppInstances = 'appInstances',
   Countries = 'countries',
   Cluster = 'cluster',
   CreatedAt = 'createdAt',

@@ -43,7 +43,7 @@ export class EnvironmentFormlyConfiguration {
   };
 
   public readonly applications: FormlyFieldConfig = {
-    key: EnvironmentAdvancedFilterKey.Applications,
+    key: EnvironmentAdvancedFilterKey.AppInstances,
     type: 'api',
     templateOptions: {
       api: '/api/cafe/applications',

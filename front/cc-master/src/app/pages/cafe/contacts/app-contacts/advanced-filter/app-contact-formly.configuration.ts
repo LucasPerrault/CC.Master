@@ -8,7 +8,7 @@ import { AppContactAdvancedFilterKey } from './app-contact-advanced-filter-key.e
 export class AppContactFormlyConfiguration {
 
   public readonly applications: FormlyFieldConfig = {
-    key: AppContactAdvancedFilterKey.Applications,
+    key: AppContactAdvancedFilterKey.AppInstance,
     type: 'api',
     templateOptions: {
       api: '/api/cafe/applications',

@@ -11,7 +11,7 @@ export class EnvironmentAdvancedFilterConfiguration implements IAdvancedFilterCo
   public readonly categoryId = EnvironmentsCategory.Environments;
   public readonly criterions: ICriterionConfiguration[] = [
     {
-      key: EnvironmentAdvancedFilterKey.Applications,
+      key: EnvironmentAdvancedFilterKey.AppInstances,
       name: this.translatePipe.transform('cafe_filters_environment_applications'),
       operators: [
         { id: ComparisonOperator.Equals, name: this.translatePipe.transform('cafe_filters_operator_areAmong') },

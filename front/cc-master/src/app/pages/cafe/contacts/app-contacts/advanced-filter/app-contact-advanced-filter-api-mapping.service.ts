@@ -24,7 +24,7 @@ export class AppContactAdvancedFilterApiMappingService {
 
   private getAdvancedFilter(attributes: IAdvancedFilterAttributes): AdvancedFilter {
     switch (attributes.filterKey) {
-      case AppContactAdvancedFilterKey.Applications:
+      case AppContactAdvancedFilterKey.AppInstance:
         const appInstances = attributes.value[attributes.filterKey];
         return this.getAppInstanceAdvancedFilter(attributes.operator, appInstances);
       case AppContactAdvancedFilterKey.IsConfirmed:
