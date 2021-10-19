@@ -4,5 +4,6 @@ export enum EnvironmentAdvancedFilterKey {
   IsActive = 'isActive',
   Applications = 'applications',
   Countries = 'countries',
-  Cluster = 'cluster'
+  Cluster = 'cluster',
+  CreatedAt = 'createdAt',
 }

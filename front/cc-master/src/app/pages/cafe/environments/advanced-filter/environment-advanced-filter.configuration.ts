@@ -62,6 +62,16 @@ export class EnvironmentAdvancedFilterConfiguration implements IAdvancedFilterCo
       ],
       fields: [this.formlyConfiguration.countries],
     },
+    {
+      key: EnvironmentAdvancedFilterKey.CreatedAt,
+      name: this.translatePipe.transform('cafe_filters_environment_createdAt'),
+      operators: [
+        { id: ComparisonOperator.Since, name: 'après le' },
+        { id: ComparisonOperator.Until, name: 'avant le' },
+      ],
+      fields: [this.formlyConfiguration.createdAt],
+    },
+
   ];
 
   constructor(

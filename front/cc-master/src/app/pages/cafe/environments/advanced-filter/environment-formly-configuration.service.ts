@@ -66,5 +66,15 @@ export class EnvironmentFormlyConfiguration {
     },
   };
 
+  public readonly createdAt: FormlyFieldConfig = {
+    key: EnvironmentAdvancedFilterKey.CreatedAt,
+    type: 'date',
+    templateOptions: {
+      required: true,
+      mod: 'palette-grey mod-outlined mod-inline mod-longer',
+      placeholder: 'Sélectionner...',
+    },
+  };
+
   constructor(private translatePipe: TranslatePipe) {}
 }

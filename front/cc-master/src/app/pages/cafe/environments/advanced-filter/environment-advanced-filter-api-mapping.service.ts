@@ -37,6 +37,9 @@ export class EnvironmentAdvancedFilterApiMappingService {
       case EnvironmentAdvancedFilterKey.Countries:
         const countries = attributes.value[attributes.filterKey];
         return this.getCountriesAdvancedFilter(attributes.operator, countries);
+      case EnvironmentAdvancedFilterKey.CreatedAt:
+        const createdAt = attributes.value[attributes.filterKey];
+        return this.getCreatedAtAdvancedFilter(attributes.operator, createdAt);
     }
   }
 
@@ -85,5 +88,13 @@ export class EnvironmentAdvancedFilterApiMappingService {
     );
     return AdvancedFilterTypeMapping.combine(criterions, LogicalOperator.And);
 
+  }
+
+  private getCreatedAtAdvancedFilter(operator: ComparisonOperator, createdAt: string): AdvancedFilter {
+    const comparison = AdvancedFilterTypeMapping.toComparisonFilterCriterion(operator, createdAt);
+
+    return AdvancedFilterTypeMapping.toFilterCriterion({
+      createdAt: comparison,
+    });
   }
 }
