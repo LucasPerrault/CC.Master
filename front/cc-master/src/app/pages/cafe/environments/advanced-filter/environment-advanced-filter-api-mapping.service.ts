@@ -78,7 +78,7 @@ export class EnvironmentAdvancedFilterApiMappingService {
     const criterions = AdvancedFilterTypeMapping.toCriterions(
         operator,
         appInstances.map(a => a.id),
-        c => ({ appInstance: { applicationId: c } }),
+        c => ({ appInstances: { applicationId: c } }),
     );
     return AdvancedFilterTypeMapping.combine(criterions, LogicalOperator.Or);
   }
