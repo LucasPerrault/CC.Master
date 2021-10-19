@@ -12,6 +12,7 @@ namespace AdvancedFilters.Infra.Filters.Builders.Implementations
 
         protected override IEnumerable<IPropertyExpressionBuilder<AppContact>> GetCriteria()
         {
+            yield return Apply(Criterion.IsConfirmed).To(c => c.IsConfirmed);
             yield return Apply(Criterion.AppInstance).To(c => c.AppInstance);
             yield return Apply(Criterion.Environment).To(c => c.Environment);
             yield return Apply(Criterion.LegalUnit).To(c => c.Establishment.LegalUnit);

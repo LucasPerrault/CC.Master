@@ -12,8 +12,9 @@ namespace AdvancedFilters.Infra.Filters.Builders.Implementations
 
         protected override IEnumerable<IPropertyExpressionBuilder<SpecializedContact>> GetCriteria()
         {
-            yield return Apply(Criterion.Environment).To(i => i.Environment);
-            yield return Apply(Criterion.LegalUnit).To(i => i.Establishment.LegalUnit);
+            yield return Apply(Criterion.IsConfirmed).To(c => c.IsConfirmed);
+            yield return Apply(Criterion.Environment).To(c => c.Environment);
+            yield return Apply(Criterion.LegalUnit).To(c => c.Establishment.LegalUnit);
         }
     }
 }
