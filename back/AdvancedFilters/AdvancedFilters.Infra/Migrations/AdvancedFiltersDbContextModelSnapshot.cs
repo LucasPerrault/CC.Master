@@ -16,8 +16,8 @@ namespace AdvancedFilters.Infra.Migrations
 #pragma warning disable 612, 618
             modelBuilder
                 .HasDefaultSchema("cafe")
-                .HasAnnotation("ProductVersion", "3.1.16")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
+                .HasAnnotation("ProductVersion", "5.0.10")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
             modelBuilder.Entity("AdvancedFilters.Domain.Billing.Models.Client", b =>
@@ -26,14 +26,14 @@ namespace AdvancedFilters.Infra.Migrations
                         .HasColumnType("int");
 
                     b.Property<Guid>("ExternalId")
-                        .HasColumnName("ExternalId")
+                        .HasMaxLength(36)
                         .HasColumnType("uniqueidentifier")
-                        .HasMaxLength(36);
+                        .HasColumnName("ExternalId");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnName("Name")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("Name");
 
                     b.HasKey("Id");
 
@@ -51,14 +51,20 @@ namespace AdvancedFilters.Infra.Migrations
                     b.Property<int>("ClientId")
                         .HasColumnType("int");
 
+                    b.Property<int>("EnvironmentId")
+                        .HasColumnType("int")
+                        .HasColumnName("EnvironmentId");
+
                     b.Property<Guid>("ExternalId")
-                        .HasColumnName("ExternalId")
+                        .HasMaxLength(36)
                         .HasColumnType("uniqueidentifier")
-                        .HasMaxLength(36);
+                        .HasColumnName("ExternalId");
 
                     b.HasKey("Id");
 
                     b.HasIndex("ClientId");
+
+                    b.HasIndex("EnvironmentId");
 
                     b.ToTable("Contracts");
                 });
@@ -90,28 +96,28 @@ namespace AdvancedFilters.Infra.Migrations
                         .HasColumnType("int");
 
                     b.Property<int>("AppInstanceId")
-                        .HasColumnName("AppInstanceId")
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasColumnName("AppInstanceId");
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnName("CreatedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("datetime2")
+                        .HasColumnName("CreatedAt");
 
                     b.Property<int>("EstablishmentId")
-                        .HasColumnName("EstablishmentId")
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasColumnName("EstablishmentId");
 
                     b.Property<DateTime?>("ExpiresAt")
-                        .HasColumnName("ExpiresAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("datetime2")
+                        .HasColumnName("ExpiresAt");
 
                     b.Property<bool>("IsConfirmed")
-                        .HasColumnName("IsConfirmed")
-                        .HasColumnType("bit");
+                        .HasColumnType("bit")
+                        .HasColumnName("IsConfirmed");
 
                     b.Property<int>("UserId")
-                        .HasColumnName("UserId")
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasColumnName("UserId");
 
                     b.HasKey("EnvironmentId", "Id");
 
@@ -131,38 +137,38 @@ namespace AdvancedFilters.Infra.Migrations
                         .HasColumnType("int");
 
                     b.Property<Guid>("ClientId")
-                        .HasColumnName("ClientId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uniqueidentifier")
+                        .HasColumnName("ClientId");
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnName("CreatedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("datetime2")
+                        .HasColumnName("CreatedAt");
 
                     b.Property<int>("EstablishmentId")
-                        .HasColumnName("EstablishmentId")
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasColumnName("EstablishmentId");
 
                     b.Property<DateTime?>("ExpiresAt")
-                        .HasColumnName("ExpiresAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("datetime2")
+                        .HasColumnName("ExpiresAt");
 
                     b.Property<bool>("IsConfirmed")
-                        .HasColumnName("IsConfirmed")
-                        .HasColumnType("bit");
+                        .HasColumnType("bit")
+                        .HasColumnName("IsConfirmed");
 
                     b.Property<string>("RoleCode")
                         .IsRequired()
-                        .HasColumnName("RoleCode")
+                        .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)")
-                        .HasMaxLength(50);
+                        .HasColumnName("RoleCode");
 
                     b.Property<int>("RoleId")
-                        .HasColumnName("RoleId")
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasColumnName("RoleId");
 
                     b.Property<int>("UserId")
-                        .HasColumnName("UserId")
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasColumnName("UserId");
 
                     b.HasKey("EnvironmentId", "Id");
 
@@ -184,34 +190,34 @@ namespace AdvancedFilters.Infra.Migrations
                         .HasColumnType("int");
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnName("CreatedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("datetime2")
+                        .HasColumnName("CreatedAt");
 
                     b.Property<int>("EstablishmentId")
-                        .HasColumnName("EstablishmentId")
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasColumnName("EstablishmentId");
 
                     b.Property<DateTime?>("ExpiresAt")
-                        .HasColumnName("ExpiresAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("datetime2")
+                        .HasColumnName("ExpiresAt");
 
                     b.Property<bool>("IsConfirmed")
-                        .HasColumnName("IsConfirmed")
-                        .HasColumnType("bit");
+                        .HasColumnType("bit")
+                        .HasColumnName("IsConfirmed");
 
                     b.Property<string>("RoleCode")
                         .IsRequired()
-                        .HasColumnName("RoleCode")
+                        .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)")
-                        .HasMaxLength(50);
+                        .HasColumnName("RoleCode");
 
                     b.Property<int>("RoleId")
-                        .HasColumnName("RoleId")
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasColumnName("RoleId");
 
                     b.Property<int>("UserId")
-                        .HasColumnName("UserId")
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasColumnName("UserId");
 
                     b.HasKey("EnvironmentId", "Id");
 
@@ -220,6 +226,21 @@ namespace AdvancedFilters.Infra.Migrations
                     b.HasIndex("EnvironmentId", "EstablishmentId");
 
                     b.ToTable("SpecializedContacts");
+                });
+
+            modelBuilder.Entity("AdvancedFilters.Domain.Core.Models.Country", b =>
+                {
+                    b.Property<int>("Id")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("Name");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Countries");
                 });
 
             modelBuilder.Entity("AdvancedFilters.Domain.Instance.Models.AppInstance", b =>
@@ -232,17 +253,17 @@ namespace AdvancedFilters.Infra.Migrations
 
                     b.Property<string>("ApplicationId")
                         .IsRequired()
-                        .HasColumnName("ApplicationId")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("ApplicationId");
 
                     b.Property<DateTime?>("DeletedAt")
-                        .HasColumnName("DeletedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("datetime2")
+                        .HasColumnName("DeletedAt");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnName("Name")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("Name");
 
                     b.HasKey("EnvironmentId", "Id");
 
@@ -255,30 +276,33 @@ namespace AdvancedFilters.Infra.Migrations
                         .HasColumnType("int");
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnName("CreatedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("datetime2")
+                        .HasColumnName("CreatedAt");
 
                     b.Property<string>("Domain")
                         .IsRequired()
-                        .HasColumnName("Domain")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("Domain");
 
                     b.Property<bool>("IsActive")
-                        .HasColumnName("IsActive")
-                        .HasColumnType("bit");
+                        .HasColumnType("bit")
+                        .HasColumnName("IsActive");
 
                     b.Property<string>("ProductionHost")
                         .IsRequired()
-                        .HasColumnName("ProductionHost")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("ProductionHost");
 
                     b.Property<string>("Subdomain")
                         .IsRequired()
-                        .HasColumnName("Subdomain")
+                        .HasMaxLength(63)
                         .HasColumnType("nvarchar(63)")
-                        .HasMaxLength(63);
+                        .HasColumnName("Subdomain");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("Subdomain")
+                        .IsClustered(false);
 
                     b.ToTable("Environments");
                 });
@@ -292,42 +316,42 @@ namespace AdvancedFilters.Infra.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("ActivityCode")
-                        .HasColumnName("ActivityCode")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("ActivityCode");
 
                     b.Property<string>("Code")
-                        .HasColumnName("Code")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("Code");
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnName("CreatedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("datetime2")
+                        .HasColumnName("CreatedAt");
 
                     b.Property<bool>("IsArchived")
-                        .HasColumnName("IsArchived")
-                        .HasColumnType("bit");
+                        .HasColumnType("bit")
+                        .HasColumnName("IsArchived");
 
                     b.Property<string>("LegalIdentificationNumber")
-                        .HasColumnName("LegalIdentificationNumber")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("LegalIdentificationNumber");
 
                     b.Property<int>("LegalUnitId")
-                        .HasColumnName("LegalUnitId")
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasColumnName("LegalUnitId");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnName("Name")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("Name");
 
                     b.Property<string>("TimeZoneId")
                         .IsRequired()
-                        .HasColumnName("TimeZoneId")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("TimeZoneId");
 
                     b.Property<int>("UsersCount")
-                        .HasColumnName("UsersCount")
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasColumnName("UsersCount");
 
                     b.HasKey("EnvironmentId", "Id");
 
@@ -345,38 +369,40 @@ namespace AdvancedFilters.Infra.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("ActivityCode")
-                        .HasColumnName("ActivityCode")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("ActivityCode");
 
                     b.Property<string>("Code")
-                        .HasColumnName("Code")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("Code");
 
                     b.Property<int>("CountryId")
-                        .HasColumnName("CountryId")
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasColumnName("CountryId");
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnName("CreatedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("datetime2")
+                        .HasColumnName("CreatedAt");
 
-                    b.Property<int>("HeadquartersId")
-                        .HasColumnName("HeadquartersId")
-                        .HasColumnType("int");
+                    b.Property<int?>("HeadquartersId")
+                        .HasColumnType("int")
+                        .HasColumnName("HeadquartersId");
 
                     b.Property<bool>("IsArchived")
-                        .HasColumnName("IsArchived")
-                        .HasColumnType("bit");
+                        .HasColumnType("bit")
+                        .HasColumnName("IsArchived");
 
                     b.Property<string>("LegalIdentificationNumber")
-                        .HasColumnName("LegalIdentificationNumber")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("LegalIdentificationNumber");
 
                     b.Property<string>("Name")
-                        .HasColumnName("Name")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("Name");
 
                     b.HasKey("EnvironmentId", "Id");
+
+                    b.HasIndex("CountryId");
 
                     b.ToTable("LegalUnits");
                 });
@@ -388,6 +414,16 @@ namespace AdvancedFilters.Infra.Migrations
                         .HasForeignKey("ClientId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
+
+                    b.HasOne("AdvancedFilters.Domain.Instance.Models.Environment", "Environment")
+                        .WithMany("Contracts")
+                        .HasForeignKey("EnvironmentId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("Client");
+
+                    b.Navigation("Environment");
                 });
 
             modelBuilder.Entity("AdvancedFilters.Domain.Billing.Models.EstablishmentContract", b =>
@@ -403,6 +439,10 @@ namespace AdvancedFilters.Infra.Migrations
                         .HasForeignKey("EnvironmentId", "EstablishmentId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
+
+                    b.Navigation("Contract");
+
+                    b.Navigation("Establishment");
                 });
 
             modelBuilder.Entity("AdvancedFilters.Domain.Contacts.Models.AppContact", b =>
@@ -424,6 +464,12 @@ namespace AdvancedFilters.Infra.Migrations
                         .HasForeignKey("EnvironmentId", "EstablishmentId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
+
+                    b.Navigation("AppInstance");
+
+                    b.Navigation("Environment");
+
+                    b.Navigation("Establishment");
                 });
 
             modelBuilder.Entity("AdvancedFilters.Domain.Contacts.Models.ClientContact", b =>
@@ -446,6 +492,12 @@ namespace AdvancedFilters.Infra.Migrations
                         .HasForeignKey("EnvironmentId", "EstablishmentId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
+
+                    b.Navigation("Client");
+
+                    b.Navigation("Environment");
+
+                    b.Navigation("Establishment");
                 });
 
             modelBuilder.Entity("AdvancedFilters.Domain.Contacts.Models.SpecializedContact", b =>
@@ -461,6 +513,10 @@ namespace AdvancedFilters.Infra.Migrations
                         .HasForeignKey("EnvironmentId", "EstablishmentId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
+
+                    b.Navigation("Environment");
+
+                    b.Navigation("Establishment");
                 });
 
             modelBuilder.Entity("AdvancedFilters.Domain.Instance.Models.AppInstance", b =>
@@ -470,6 +526,8 @@ namespace AdvancedFilters.Infra.Migrations
                         .HasForeignKey("EnvironmentId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
+
+                    b.Navigation("Environment");
                 });
 
             modelBuilder.Entity("AdvancedFilters.Domain.Instance.Models.Establishment", b =>
@@ -485,15 +543,53 @@ namespace AdvancedFilters.Infra.Migrations
                         .HasForeignKey("EnvironmentId", "LegalUnitId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
+
+                    b.Navigation("Environment");
+
+                    b.Navigation("LegalUnit");
                 });
 
             modelBuilder.Entity("AdvancedFilters.Domain.Instance.Models.LegalUnit", b =>
                 {
+                    b.HasOne("AdvancedFilters.Domain.Core.Models.Country", "Country")
+                        .WithMany()
+                        .HasForeignKey("CountryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("AdvancedFilters.Domain.Instance.Models.Environment", "Environment")
                         .WithMany("LegalUnits")
                         .HasForeignKey("EnvironmentId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
+
+                    b.Navigation("Country");
+
+                    b.Navigation("Environment");
+                });
+
+            modelBuilder.Entity("AdvancedFilters.Domain.Billing.Models.Client", b =>
+                {
+                    b.Navigation("Contracts");
+                });
+
+            modelBuilder.Entity("AdvancedFilters.Domain.Billing.Models.Contract", b =>
+                {
+                    b.Navigation("EstablishmentAttachments");
+                });
+
+            modelBuilder.Entity("AdvancedFilters.Domain.Instance.Models.Environment", b =>
+                {
+                    b.Navigation("AppInstances");
+
+                    b.Navigation("Contracts");
+
+                    b.Navigation("LegalUnits");
+                });
+
+            modelBuilder.Entity("AdvancedFilters.Domain.Instance.Models.LegalUnit", b =>
+                {
+                    b.Navigation("Establishments");
                 });
 #pragma warning restore 612, 618
         }

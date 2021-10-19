@@ -12,6 +12,7 @@ namespace Environments.Domain
         public string Subdomain { get; set; }
         public EnvironmentDomain Domain { get; set; }
         public EnvironmentPurpose Purpose { get; set; }
+        public string Cluster { get; set; }
         public bool IsActive { get; set; }
         public DateTime CreatedAt { get; set; }
 

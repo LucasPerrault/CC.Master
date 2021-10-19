@@ -170,7 +170,7 @@ namespace Tools
 
     internal class PolymorphicConverter<T, TKey> : JsonConverter<T> where TKey : Enum
     {
-        private readonly Dictionary<string, Type> _typesByName = new Dictionary<string, Type>();
+        private readonly Dictionary<string, Type> _typesByName = new Dictionary<string, Type>(StringComparer.OrdinalIgnoreCase);
         private readonly Dictionary<int, Type> _typesByIntValue = new Dictionary<int, Type>();
         private readonly string _discriminatorPropertyName;
 

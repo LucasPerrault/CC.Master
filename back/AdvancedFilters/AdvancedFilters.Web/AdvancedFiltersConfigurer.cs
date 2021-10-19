@@ -9,6 +9,8 @@ using AdvancedFilters.Infra.Storage.Stores;
 using AdvancedFilters.Web.Configuration;
 using Lucca.Core.PublicData;
 using Microsoft.Extensions.DependencyInjection;
+using Remote.Infra.Extensions;
+using Resources.Translations;
 
 namespace AdvancedFilters.Web
 {
@@ -18,8 +20,9 @@ namespace AdvancedFilters.Web
         {
             services.AddSingleton(new DataSourcesRepository(DataSourceMapper.GetAll(configuration)));
 
+            services.AddScoped<Translations>();
             services.ConfigureStorage();
-            services.ConfigureSync();
+            services.ConfigureSync(configuration);
 
             services.ConfigureCore();
             services.ConfigureInstances();
@@ -29,19 +32,27 @@ namespace AdvancedFilters.Web
 
         public static void ConfigureStorage(this IServiceCollection services)
         {
-            services.AddScoped<BulkUpsertService>();
+            services.AddScoped<IBulkUpsertService, BulkUpsertService>();
         }
 
-        public static void ConfigureSync(this IServiceCollection services)
+        public static void ConfigureSync(this IServiceCollection services, AdvancedFiltersConfiguration configuration)
         {
+            services.AddSingleton(new HttpConfiguration { MaxParallelCalls = configuration.MaxParallelHttpCalls });
             services.AddSingleton<FetchAuthenticator>();
-            services.AddHttpClient<IDataSourceSynchronizerBuilder, DataSourceSynchronizerBuilder>();
-            services.AddScoped<HugeSyncService>();
+            services.AddScoped<ILocalDataSourceService, LocalDataSourceService>();
+            services.AddScoped<ISyncEmails, SyncEmails>();
+            services.AddScoped<SyncService>();
+
+            services.AddHttpClient<IDataSourceSyncCreationService, DataSourceSyncCreationService>
+            (
+                c => c.WithUserAgent("CC.Master - CAFE - DataSourceSynchronizer")
+            );
         }
 
         private static void ConfigureCore(this IServiceCollection services)
         {
             services.AddSingleton<ICountriesCollection, CountriesCollection>();
+            services.AddSingleton<IApplicationsCollection, ApplicationsCollection>();
         }
 
         private static void ConfigureInstances(this IServiceCollection services)

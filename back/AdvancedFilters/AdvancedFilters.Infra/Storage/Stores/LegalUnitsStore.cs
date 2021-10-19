@@ -1,4 +1,3 @@
-using AdvancedFilters.Domain.Core.Collections;
 using AdvancedFilters.Domain.Core.Models;
 using AdvancedFilters.Domain.Instance.Filters;
 using AdvancedFilters.Domain.Instance.Interfaces;
@@ -7,7 +6,6 @@ using Lucca.Core.Api.Abstractions.Paging;
 using Lucca.Core.Api.Queryable.Paging;
 using Microsoft.EntityFrameworkCore;
 using Storage.Infra.Extensions;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -17,69 +15,50 @@ namespace AdvancedFilters.Infra.Storage.Stores
     {
         private readonly AdvancedFiltersDbContext _dbContext;
         private readonly IQueryPager _queryPager;
-        private readonly ICountriesCollection _countriesCollection;
 
         public LegalUnitsStore
         (
             AdvancedFiltersDbContext dbContext,
-            IQueryPager queryPager,
-            ICountriesCollection countriesCollection
+            IQueryPager queryPager
         )
         {
             _dbContext = dbContext;
             _queryPager = queryPager;
-            _countriesCollection = countriesCollection;
         }
 
-        public async Task<Page<LegalUnit>> GetAsync(IPageToken pageToken, LegalUnitFilter filter)
+        public Task<Page<LegalUnit>> GetAsync(IPageToken pageToken, LegalUnitFilter filter)
         {
             var lus = Get(filter);
-            var page = await _queryPager.ToPageAsync(lus, pageToken);
-
-            var items = new List<LegalUnit>();
-            foreach (var lu in page.Items)
-            {
-                items.Add(await PopulateAsync(lu));
-            }
-
-            return new Page<LegalUnit>
-            {
-                Count = page.Count,
-                Items = items,
-                Next = page.Next,
-                Prev = page.Prev
-            };
+            return _queryPager.ToPageAsync(lus, pageToken);
         }
 
-        public async Task<Page<Country>> GetAllCountriesAsync()
+        public Task<Page<Country>> GetAllCountriesAsync()
         {
-            var luCountryIds = LegalUnits
-                .Select(lu => lu.CountryId)
+            var countries = LegalUnits
+                .AsNoTracking()
+                .Select(lu => lu.Country)
                 .Distinct()
                 .ToList();
-            var luCountries = await _countriesCollection.GetAsync(luCountryIds);
 
-            return new Page<Country>
+            return Task.FromResult(new Page<Country>
             {
-                Count = luCountries.Count,
-                Items = luCountries
-            };
+                Count = countries.Count,
+                Items = countries
+            });
         }
 
         private IQueryable<LegalUnit> Get(LegalUnitFilter filter)
         {
             return LegalUnits
-                .WhereMatches(filter);
+                .WhereMatches(filter)
+                .AsNoTracking();
         }
 
-        private async Task<LegalUnit> PopulateAsync(LegalUnit lu)
-        {
-            lu.Country = await _countriesCollection.GetByIdAsync(lu.CountryId);
-
-            return lu;
-        }
-
-        private IQueryable<LegalUnit> LegalUnits => _dbContext.Set<LegalUnit>();
+        private IQueryable<LegalUnit> LegalUnits => _dbContext
+            .Set<LegalUnit>()
+            .Include(lu => lu.Country)
+            .Include(lu => lu.Environment).ThenInclude(e => e.AppInstances)
+            .Include(lu => lu.Establishments).ThenInclude(e => e.Environment);
     }
 
     internal static class LegalUnitQueryableExtensions

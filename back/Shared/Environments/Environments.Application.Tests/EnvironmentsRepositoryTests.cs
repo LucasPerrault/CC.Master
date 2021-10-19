@@ -60,6 +60,7 @@ namespace Environments.Application.Tests
         [Fact]
         public async Task ShouldReturnSimpleAccess()
         {
+            var distributor = new Distributor { Code = "APERTURE" };
             var environment = new Environment
             {
                 Id = 42,
@@ -68,7 +69,7 @@ namespace Environments.Application.Tests
                 {
                     new EnvironmentSharedAccess
                     {
-                        Consumer = new Distributor { Code = "APERTURE" },
+                        Consumer = distributor,
                         Access = new EnvironmentAccess {Type = EnvironmentAccessTypeEnum.Contract }
                     }
                 }
@@ -87,7 +88,7 @@ namespace Environments.Application.Tests
                 Subdomain = "aperture-science",
                 Accesses = new HashSet<DistributorWithAccess>
                 {
-                    new DistributorWithAccess("APERTURE", new List<EnvironmentAccessTypeEnum> { EnvironmentAccessTypeEnum.Contract })
+                    new DistributorWithAccess(distributor, new List<EnvironmentAccessTypeEnum> { EnvironmentAccessTypeEnum.Contract })
                 }
             };
 
@@ -97,6 +98,8 @@ namespace Environments.Application.Tests
         [Fact]
         public async Task ShouldReturnAccessWithTwoTypes()
         {
+            var distributor = new Distributor { Code = "APERTURE" };
+
             var environment = new Environment
             {
                 Id = 42,
@@ -105,12 +108,12 @@ namespace Environments.Application.Tests
                 {
                     new EnvironmentSharedAccess
                     {
-                        Consumer = new Distributor { Code = "APERTURE" },
+                        Consumer = distributor,
                         Access = new EnvironmentAccess {Type = EnvironmentAccessTypeEnum.Contract }
                     },
                     new EnvironmentSharedAccess
                     {
-                        Consumer = new Distributor { Code = "APERTURE" },
+                        Consumer = distributor,
                         Access = new EnvironmentAccess {Type = EnvironmentAccessTypeEnum.Manual }
                     },
                 }
@@ -129,7 +132,7 @@ namespace Environments.Application.Tests
                 Subdomain = "aperture-science",
                 Accesses = new HashSet<DistributorWithAccess>
                 {
-                    new DistributorWithAccess("APERTURE", new List<EnvironmentAccessTypeEnum> { EnvironmentAccessTypeEnum.Contract, EnvironmentAccessTypeEnum.Manual })
+                    new DistributorWithAccess(distributor, new List<EnvironmentAccessTypeEnum> { EnvironmentAccessTypeEnum.Contract, EnvironmentAccessTypeEnum.Manual })
                 }
             };
 
@@ -139,6 +142,8 @@ namespace Environments.Application.Tests
         [Fact]
         public async Task ShouldReturnTwoAccesses()
         {
+            var mesa = new Distributor { Code = "MESA" };
+            var aperture = new Distributor { Code = "APERTURE" };
             var environment = new Environment
             {
                 Id = 42,
@@ -147,12 +152,12 @@ namespace Environments.Application.Tests
                 {
                     new EnvironmentSharedAccess
                     {
-                        Consumer = new Distributor { Code = "APERTURE" },
+                        Consumer = aperture,
                         Access = new EnvironmentAccess {Type = EnvironmentAccessTypeEnum.Contract }
                     },
                     new EnvironmentSharedAccess
                     {
-                        Consumer = new Distributor { Code = "MESA" },
+                        Consumer = mesa,
                         Access = new EnvironmentAccess {Type = EnvironmentAccessTypeEnum.Contract }
                     },
                 }
@@ -171,8 +176,8 @@ namespace Environments.Application.Tests
                 Subdomain = "aperture-science",
                 Accesses = new HashSet<DistributorWithAccess>
                 {
-                    new DistributorWithAccess("APERTURE", new List<EnvironmentAccessTypeEnum> { EnvironmentAccessTypeEnum.Contract }),
-                    new DistributorWithAccess("MESA", new List<EnvironmentAccessTypeEnum> { EnvironmentAccessTypeEnum.Contract }),
+                    new DistributorWithAccess(aperture, new List<EnvironmentAccessTypeEnum> { EnvironmentAccessTypeEnum.Contract }),
+                    new DistributorWithAccess(mesa, new List<EnvironmentAccessTypeEnum> { EnvironmentAccessTypeEnum.Contract }),
                 }
             };
 

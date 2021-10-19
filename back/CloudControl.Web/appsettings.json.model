@@ -63,7 +63,7 @@
     },
     "Slack": {
         "Hooks": {
-            "CloudControl": "{{ CC.Master:SlackHookCcMonitorEnvironments }}",
+            "CloudControlTeam": "{{ CC.Master:SlackHookCcNotifications }}",
             "DemosMaintainers": "{{ CC.Master:SlackHookCcNotifications }}"
         }
     },
@@ -99,8 +99,8 @@
             "OutboundToken": "{{ CC.Master:HubspotOutboundToken }}"
         },
         "SqlScriptPicker": {
-            "JenkinsBaseUri": "http://jenkins2.lucca.local:8080/",
-            "MonolithJobPath": "job/CI.Pipeline.Multibranch"
+            "JenkinsBaseUri": "http://jenkins3.lucca.local:8080/",
+            "MonolithJobPath": "job/Monolith"
         },
         "DemoClusterSelection": {
             "UseFixedCluster": "{{ CC.Master:UseFixedClusterForDemos }}",
@@ -126,11 +126,12 @@
         }
     },
     "AdvancedFilters": {
+        "MaxParallelHttpCalls": 40,
         "Routes": {
             "Hosts": {
                 "CloudControl": {
-                    "Host": "{{ shared:UrlCloudControl }}",
-                    "EnvironmentsEndpoint": "/api/environments?limit=100000&isActive=true,false&purpose=contractual",
+                    "Host": "{{ CC.Master:scheme }}://{{ CC.Master:tenant }}.{{ CC.Master:domain }}",
+                    "EnvironmentsEndpoint": "/api/environments?limit=100000&isActive=true&purpose=contractual",
                     "ContractsEndpoint": "/api/contracts?limit=100000&isActive=true,false",
                     "ContractsSubdomainParamName": "subdomain",
                     "ClientsEndpoint": "/api/clients?limit=10000&isActive=true,false"
@@ -147,7 +148,7 @@
         },
         "Auth": {
             "CloudControlAuthScheme": "Cloudcontrol",
-            "CloudControlAuthParameter": "webservice={{ CC.Master:CafeToken }}",
+            "CloudControlAuthParameter": "application={{ CC.Master:CafeToken }}",
             "MonolithWebserviceToken": "{{ ilucca:CloudControlSharedToken }}",
             "OrganizationStructureWebserviceToken": "{{ CC.Master:OrganizationStructureToken }}",
             "ClientCenterWebserviceToken": "{{ Organization.ClientCenter:CafeToken }}"

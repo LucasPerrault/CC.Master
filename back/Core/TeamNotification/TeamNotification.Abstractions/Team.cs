@@ -2,6 +2,7 @@
 {
     public enum Team
     {
-        DemoMaintainers
+        DemoMaintainers,
+        CafeAdmins
     }
 }

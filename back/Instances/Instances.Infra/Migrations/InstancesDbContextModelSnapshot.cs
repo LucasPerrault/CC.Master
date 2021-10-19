@@ -147,6 +147,10 @@ namespace Instances.Infra.Migrations
                         .HasColumnName("authorId")
                         .HasColumnType("int");
 
+                    b.Property<string>("Cluster")
+                        .HasColumnName("Cluster")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Comment")
                         .HasColumnName("comment")
                         .HasColumnType("nvarchar(max)");
@@ -299,10 +303,6 @@ namespace Instances.Infra.Migrations
                         .HasColumnName("AllUsersImposedPassword")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Cluster")
-                        .HasColumnName("Cluster")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<int?>("EnvironmentId")
                         .HasColumnName("EnvironmentId")
                         .HasColumnType("int");
@@ -376,6 +376,10 @@ namespace Instances.Infra.Migrations
 
                     b.Property<int>("DepartmentId")
                         .HasColumnName("DepartmentId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("DistributorId")
+                        .HasColumnName("DistributorId")
                         .HasColumnType("int");
 
                     b.Property<string>("FirstName")

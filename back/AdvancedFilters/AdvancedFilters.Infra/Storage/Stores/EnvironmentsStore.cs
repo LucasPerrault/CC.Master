@@ -38,17 +38,24 @@ namespace AdvancedFilters.Infra.Storage.Stores
 
         public Task<Page<Environment>> SearchAsync(IPageToken pageToken, IAdvancedFilter filter)
         {
-            var envs = Environments.Filter(filter, new EnvironmentAdvancedCriterionApplier());
+            var envs = Environments
+                .Filter(filter)
+                .AsNoTracking();
             return _queryPager.ToPageAsync(envs, pageToken);
         }
 
         private IQueryable<Environment> Get(EnvironmentFilter filter)
         {
             return Environments
-                .WhereMatches(filter);
+                .WhereMatches(filter)
+                .AsNoTracking();
         }
 
-        private IQueryable<Environment> Environments => _dbContext.Set<Environment>();
+        private IQueryable<Environment> Environments => _dbContext
+            .Set<Environment>()
+            .Include(e => e.LegalUnits).ThenInclude(lu => lu.Country)
+            .Include(e => e.LegalUnits).ThenInclude(lu => lu.Establishments)
+            .Include(e => e.AppInstances);
     }
 
     internal static class EnvironmentQueryableExtensions

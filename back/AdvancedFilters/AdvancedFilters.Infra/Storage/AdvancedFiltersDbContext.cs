@@ -13,6 +13,7 @@ namespace AdvancedFilters.Infra.Storage
 
         protected override void ApplyConfiguration(ModelBuilder modelBuilder)
         {
+            modelBuilder.ApplyConfiguration(new CountriesConfiguration());
             modelBuilder.ApplyConfiguration(new EnvironmentsConfiguration());
             modelBuilder.ApplyConfiguration(new AppInstancesConfiguration());
 

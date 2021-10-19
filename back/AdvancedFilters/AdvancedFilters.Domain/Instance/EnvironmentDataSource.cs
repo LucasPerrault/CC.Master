@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 
 namespace AdvancedFilters.Domain.Instance
 {
-    public class EnvironmentDataSource : DataSource
+    public class EnvironmentDataSource : RemoteDataSource
     {
         public override Task<IDataSourceSynchronizer> GetSynchronizerAsync(IDataSourceSynchronizerBuilder synchronizerBuilder)
         {

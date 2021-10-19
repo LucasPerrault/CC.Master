@@ -2,6 +2,7 @@ using AdvancedFilters.Domain.Billing.Models;
 using AdvancedFilters.Domain.Contacts.Models;
 using AdvancedFilters.Domain.Instance.Models;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace AdvancedFilters.Infra.Services.Sync.Dtos
 {
@@ -11,7 +12,7 @@ namespace AdvancedFilters.Infra.Services.Sync.Dtos
         List<T> ToItems();
     }
 
-    internal class EnvironmentsDto : IDto<Environment>
+    public class EnvironmentsDto : IDto<Environment>
     {
         public List<Environment> Items { get; set; }
 
@@ -31,7 +32,7 @@ namespace AdvancedFilters.Infra.Services.Sync.Dtos
         }
     }
 
-    internal class AppInstancesDto : ApiV3Dto<AppInstance>, IDto<AppInstance>
+    public class AppInstancesDto : ApiV3Dto<AppInstance>, IDto<AppInstance>
     {
         public List<AppInstance> ToItems()
         {
@@ -39,7 +40,7 @@ namespace AdvancedFilters.Infra.Services.Sync.Dtos
         }
     }
 
-    internal class LegalUnitsDto : IDto<LegalUnit>
+    public class LegalUnitsDto : IDto<LegalUnit>
     {
         public List<LegalUnit> Items { get; set; }
 
@@ -59,33 +60,85 @@ namespace AdvancedFilters.Infra.Services.Sync.Dtos
         }
     }
 
+
+
+    internal class ContactDtoUser
+    {
+        public int EstablishmentId { get; set; }
+    }
+
+    internal class ContactDtoRole
+    {
+        public string Code { get; set; }
+    }
+
     internal class AppContactsDto : IDto<AppContact>
     {
-        public List<AppContact> Items { get; set; }
-
-        public List<AppContact> ToItems()
+        public class AppContactDto : AppContact
         {
-            return Items;
+            public ContactDtoUser User { get; set; }
         }
+
+        public List<AppContactDto> Items { get; set; }
+
+        AppContact ToAppContact(AppContactDto i)
+        {
+            i.EstablishmentId = i.User.EstablishmentId;
+            return i;
+        }
+
+        public List<AppContact> ToItems() => Items.Select(ToAppContact).ToList();
+
     }
 
     internal class ClientContactsDto : IDto<ClientContact>
     {
-        public List<ClientContact> Items { get; set; }
-
-        public List<ClientContact> ToItems()
+        public class ClientContactDto : ClientContactCore
         {
-            return Items;
+            public ContactDtoUser User { get; set; }
+            public ContactDtoRole Role { get; set; }
         }
+
+        public List<ClientContactDto> Items { get; set; }
+
+        ClientContact ToClientContact(ClientContactDto i)
+        {
+            i.EstablishmentId = i.User.EstablishmentId;
+            return new ClientContact
+            {
+                Id = i.Id,
+                ClientId = i.ClientId,
+                EnvironmentId = i.EnvironmentId,
+                RoleCode = i.Role.Code,
+                CreatedAt = i.CreatedAt,
+                ExpiresAt = i.ExpiresAt,
+                EstablishmentId = i.EstablishmentId,
+                IsConfirmed = i.IsConfirmed,
+                RoleId = i.RoleId,
+                UserId = i.UserId
+            };
+        }
+
+        public List<ClientContact> ToItems() => Items.Select(ToClientContact).ToList();
     }
 
     internal class SpecializedContactsDto : IDto<SpecializedContact>
     {
-        public List<SpecializedContact> Items { get; set; }
-
-        public List<SpecializedContact> ToItems()
+        public class SpecializedContactDto : SpecializedContact
         {
-            return Items;
+            public ContactDtoUser User { get; set; }
+            public ContactDtoRole Role { get; set; }
         }
+
+        public List<SpecializedContactDto> Items { get; set; }
+
+        SpecializedContact ToSpecializedContact(SpecializedContactDto i)
+        {
+            i.EstablishmentId = i.User.EstablishmentId;
+            i.RoleCode = i.Role.Code;
+            return i;
+        }
+
+        public List<SpecializedContact> ToItems() => Items.Select(ToSpecializedContact).ToList();
     }
 }

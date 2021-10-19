@@ -6,6 +6,7 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using Users.Domain;
 
 namespace Authentication.Infra.Storage
 {
@@ -45,6 +46,10 @@ namespace Authentication.Infra.Storage
             }
             catch (Exception e)
             {
+                if (e is UnknownDepartmentCodeException)
+                {
+                    return null;
+                }
                 _logger.LogError(e, "Could not resolve principal for incoming request");
                 return null;
             }

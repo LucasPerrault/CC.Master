@@ -1,4 +1,5 @@
 using AdvancedFilters.Domain.Filters.Models;
+using AdvancedFilters.Infra.Filters.Builders;
 using Lucca.Core.Shared.Domain.Exceptions;
 using System;
 using System.ComponentModel;
@@ -6,36 +7,27 @@ using System.Linq;
 
 namespace AdvancedFilters.Infra.Filters
 {
-    internal interface IAdvancedCriterionApplier<T, TAdvancedCriterion>
+    public static class AdvanceFilterExtensions
     {
-        IQueryable<T> Apply(IQueryable<T> queryable, TAdvancedCriterion criterion);
-    }
-
-    internal static class AdvanceFilterExtensions
-    {
-        public static IQueryable<TModel> Filter<TModel, TAdvancedCriterion>
+        public static IQueryable<TModel> Filter<TModel>
         (
             this IQueryable<TModel> queryable,
-            IAdvancedFilter filter,
-            IAdvancedCriterionApplier<TModel, TAdvancedCriterion> applier
+            IAdvancedFilter filter
         )
-            where TAdvancedCriterion : AdvancedCriterion
         {
             return filter switch
             {
-                FilterCombination combination => queryable.Combine(combination, applier),
-                TAdvancedCriterion criterion => applier.Apply(queryable, criterion),
+                FilterCombination combination => queryable.Combine(combination),
+                AdvancedCriterion<TModel> criterion => queryable.Apply(criterion),
                 _ => throw new InvalidOperationException($"Unhandled {nameof(filter)} type {filter.GetType()}")
             };
         }
 
-        private static IQueryable<TModel> Combine<TModel, TAdvancedCriterion>
+        private static IQueryable<TModel> Combine<TModel>
         (
             this IQueryable<TModel> queryable,
-            FilterCombination combination,
-            IAdvancedCriterionApplier<TModel, TAdvancedCriterion> applier
+            FilterCombination combination
         )
-            where TAdvancedCriterion : AdvancedCriterion
         {
             if (combination.Values == null || !combination.Values.Any())
             {
@@ -44,23 +36,33 @@ namespace AdvancedFilters.Infra.Filters
 
             if (combination.Values.Count == 1)
             {
-                return queryable;
+                return queryable.Filter(combination.Values.Single());
             }
 
             return combination.Operator switch
             {
                 FilterOperatorTypes.And => combination.Values.Skip(1)
                     .Aggregate(
-                        queryable.Filter(combination.Values.First(), applier),
-                        (q, f) => q.Intersect(queryable.Filter(f, applier))
+                        queryable.Filter(combination.Values.First()),
+                        (q, f) => q.Intersect(queryable.Filter(f))
                     ),
                 FilterOperatorTypes.Or => combination.Values.Skip(1)
                     .Aggregate(
-                        queryable.Filter(combination.Values.First(), applier),
-                        (q, f) => q.Union(queryable.Filter(f, applier))
+                        queryable.Filter(combination.Values.First()),
+                        (q, f) => q.Union(queryable.Filter(f))
                     ),
                 _ => throw new InvalidEnumArgumentException(nameof(combination.Operator), (int)combination.Operator, typeof(FilterOperatorTypes))
             };
+        }
+
+        private static IQueryable<TModel> Apply<TModel>
+        (
+            this IQueryable<TModel> queryable,
+            AdvancedCriterion<TModel> criterion
+        )
+        {
+            var builder = criterion.GetExpressionBuilder();
+            return queryable.Where(builder.MatchOrBypass);
         }
     }
 }
