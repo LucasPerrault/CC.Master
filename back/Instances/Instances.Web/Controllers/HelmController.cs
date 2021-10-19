@@ -1,6 +1,12 @@
 using Instances.Application.Instances;
+using Instances.Application.Instances.Dtos;
 using Instances.Web.Controllers.Dtos;
+using Instances.Web.Controllers.Query;
+using Lucca.Core.Shared.Domain.Exceptions;
 using Microsoft.AspNetCore.Mvc;
+using Rights.Domain;
+using Rights.Web.Attributes;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Instances.Web.Controllers
@@ -23,5 +29,16 @@ namespace Instances.Web.Controllers
                 helmCreationDto.HelmChart
             );
 
+        [HttpGet("releases")]
+        [ForbidIfMissing(Operation.ReadCodeSources)]
+        public Task<List<HelmRelease>> GetAsync([FromQuery] HelmReleaseQuery query)
+        {
+            if (query.LastStable && !string.IsNullOrEmpty(query.GitRef))
+            {
+                throw new BadRequestException($"{nameof(query.LastStable)} and {nameof(query.GitRef)} could not be defined at the same time");
+            }
+
+            return _helmRepository.GetAllReleasesAsync(query.ReleaseName, query.GitRef, query.LastStable);
+        }
     }
 }

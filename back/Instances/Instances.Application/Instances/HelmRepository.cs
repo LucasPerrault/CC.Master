@@ -1,8 +1,11 @@
+using Instances.Application.Instances.Dtos;
 using Instances.Domain.CodeSources;
 using Instances.Domain.CodeSources.Filtering;
 using Instances.Domain.Github;
+using Instances.Domain.Github.Models;
 using Lucca.Core.Shared.Domain.Exceptions;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -10,6 +13,8 @@ namespace Instances.Application.Instances
 {
     public class HelmRepository : IHelmRepository
     {
+        private const string GithubOrganisationUrl = "https://github.com/LuccaSA/";
+
         private readonly ICodeSourcesStore _codeSourcesStore;
         private readonly IGithubBranchesStore _githubBranchesStore;
 
@@ -44,5 +49,67 @@ namespace Instances.Application.Instances
             }
             await _githubBranchesStore.UpdateAsync(branches);
         }
+
+        public async Task<List<HelmRelease>> GetAllReleasesAsync(string releaseName, string gitRef, bool stable)
+        {
+            List<CodeSource> codeSources = null;
+
+            if (!string.IsNullOrEmpty(releaseName))
+            {
+                codeSources = await _codeSourcesStore.GetAsync(new CodeSourceFilter
+                {
+                    GithubRepo = releaseName != null ? $"{GithubOrganisationUrl}{releaseName}" : null,
+                    ExcludedLifecycle = new HashSet<CodeSourceLifecycleStep> { CodeSourceLifecycleStep.Deleted }
+                });
+                if (!codeSources.Any())
+                {
+                    throw new BadRequestException($"Source code not found for repo {releaseName}");
+                }
+            }
+
+            IEnumerable<GithubBranch> branches = null;
+            if (stable)
+            {
+                branches = (await _githubBranchesStore
+                    .GetProductionBranchesAsync(codeSources))
+                    .Select(d =>
+                    {
+                        d.Value.CodeSources = new List<CodeSource>
+                        {
+                            d.Key
+                        };
+                        return d.Value;
+                    })
+                    .Where(b => b.HelmChart != null);
+            }
+            else
+            {
+                branches = await _githubBranchesStore.GetAsync(new GithubBranchFilter
+                {
+                    IsDeleted = false,
+                    CodeSourceIds = codeSources?.Select(c => c.Id)?.ToList(),
+                    HasHelmChart = true,
+                    Name = gitRef
+                });
+            }
+            return branches
+                .GroupBy(h => h.CodeSources.First().GithubRepo)
+                .Select(kvp => kvp.OrderByDescending(v => v.Id).First())
+                .Select(b => new HelmRelease
+                {
+                    GitRef = b.Name,
+                    HelmChart = b.HelmChart,
+                    ReleaseName = b.CodeSources.First().GithubRepo.Substring(GithubOrganisationUrl.Length)
+                }).ToList();
+        }
+    }
+
+    public class CodeSourceRepoComparer : IEqualityComparer<CodeSource>
+    {
+        public bool Equals(CodeSource x, CodeSource y)
+            => x.GithubRepo == y.GithubRepo;
+
+        public int GetHashCode([DisallowNull] CodeSource obj)
+            => obj.GithubRepo.GetHashCode();
     }
 }

@@ -6,8 +6,10 @@ using Instances.Domain.Github;
 using Instances.Domain.Github.Models;
 using Lucca.Core.Shared.Domain.Exceptions;
 using Moq;
+using Moq.Protected;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -93,6 +95,114 @@ namespace Instances.Application.Tests.Instances
             githubBranchFilterCaught.IsDeleted.Should().BeFalse();
         }
 
+        #endregion
+
+        #region GetAllReleasesAsync
+        [Fact]
+        public async Task StableWithoutCodeSource_GetAllReleaseAsync()
+        {
+            var codeSourceEmailApi = new CodeSource { Code = "EmailApi", GithubRepo = "https://github.com/LuccaSA/Lucca.Emails" };
+            var codeSourceEmailWorker = new CodeSource { Code = "EmailWorker", GithubRepo = "https://github.com/LuccaSA/Lucca.Emails" };
+            var codeSourceFiggo = new CodeSource { Code = "Figgo", GithubRepo = "https://github.com/LuccaSA/Figgo" };
+            var githubBranchEmailApi = new GithubBranch { Id = 1, HelmChart = "http://myHelmEmail", Name = "myProductionBranch" };
+            var githubBranchEmailWorker = new GithubBranch { Id = 2, HelmChart = "http://myHelmEmail", Name = "myProductionBranch2" };
+            var githubBranchFiggo = new GithubBranch { Id = 3, HelmChart = "http://myFiggo", Name = "figgoTempBranch" };
+
+            _githubBranchesStoreMock
+                .Setup(g => g.GetProductionBranchesAsync(It.IsAny<IEnumerable<CodeSource>>()))
+                .ReturnsAsync(new Dictionary<CodeSource, GithubBranch>
+                {
+                    { codeSourceEmailApi, githubBranchEmailApi },
+                    { codeSourceEmailWorker, githubBranchEmailWorker },
+                    { codeSourceFiggo, githubBranchFiggo },
+                });
+
+            var result = await _helmRepository.GetAllReleasesAsync(null, null, true);
+
+            result.Should().HaveCount(2);
+
+            result.First().GitRef.Should().Be(githubBranchEmailWorker.Name);
+
+            _githubBranchesStoreMock.Verify(
+                g => g.GetProductionBranchesAsync(It.Is<IEnumerable<CodeSource>>(c => c == null))
+            );
+        }
+
+        [Fact]
+        public async Task StableWithCodeSource_GetAllReleaseAsync()
+        {
+            var codeSourceEmailApi = new CodeSource { Code = "EmailApi", GithubRepo = "https://github.com/LuccaSA/Lucca.Emails" };
+            var codeSourceEmailWorker = new CodeSource { Code = "EmailWorker", GithubRepo = "https://github.com/LuccaSA/Lucca.Emails" };
+            var githubBranchEmailApi = new GithubBranch { Id = 1, HelmChart = "http://myHelmEmail", Name = "myProductionBranch" };
+            var githubBranchEmailWorker = new GithubBranch { Id = 2, HelmChart = "http://myHelmEmail", Name = "myProductionBranch2" };
+
+            CodeSourceFilter codeSourceFilterCaptured = null;
+            _codeSourceStoreMock
+                .Setup(g => g.GetAsync(It.IsAny<CodeSourceFilter>()))
+                .Returns<CodeSourceFilter>(c =>
+                {
+                    codeSourceFilterCaptured = c;
+                    return Task.FromResult(new List<CodeSource>
+                    {
+                        codeSourceEmailApi,
+                        codeSourceEmailWorker
+                    });
+                });
+
+            _githubBranchesStoreMock
+                .Setup(g => g.GetProductionBranchesAsync(It.IsAny<IEnumerable<CodeSource>>()))
+                .ReturnsAsync(new Dictionary<CodeSource, GithubBranch>
+                {
+                    { codeSourceEmailApi, githubBranchEmailApi },
+                    { codeSourceEmailWorker, githubBranchEmailWorker }
+                });
+
+            var result = await _helmRepository.GetAllReleasesAsync("Lucca.Emails", null, true);
+
+            result.Should().HaveCount(1);
+            result.First().GitRef.Should().Be(githubBranchEmailWorker.Name);
+            codeSourceFilterCaptured.Should().NotBeNull();
+            codeSourceFilterCaptured.GithubRepo.Should().Be("https://github.com/LuccaSA/Lucca.Emails");
+
+            _githubBranchesStoreMock.Verify(
+                g => g.GetProductionBranchesAsync(It.Is<IEnumerable<CodeSource>>(c => c.Contains(codeSourceEmailApi) && c.Contains(codeSourceEmailWorker)))
+            );
+        }
+
+        [Fact]
+        public async Task GitRef_GetAllReleaseAsync()
+        {
+            var codeSourceEmailApi = new CodeSource { Code = "EmailApi", GithubRepo = "https://github.com/LuccaSA/Lucca.Emails" };
+            var codeSourceEmailWorker = new CodeSource { Code = "EmailWorker", GithubRepo = "https://github.com/LuccaSA/Lucca.Emails" };
+            var githubBranchEmailApi = new GithubBranch { Id = 1, HelmChart = "http://myHelmEmail", Name = "myProductionBranch" };
+            var githubBranchEmailWorker = new GithubBranch { Id = 2, HelmChart = "http://myHelmEmail", Name = "myProductionBranch2" };
+
+            GithubBranchFilter githubBranchFilterCaptured = null;
+            _githubBranchesStoreMock
+                .Setup(g => g.GetAsync(It.IsAny<GithubBranchFilter>()))
+                .Returns<GithubBranchFilter>(b =>
+                {
+                    githubBranchFilterCaptured = b;
+                    return Task.FromResult(new List<GithubBranch>
+                    {
+                        new GithubBranch
+                        {
+                            CodeSources = new List<CodeSource>
+                            {
+                                codeSourceEmailApi
+                            }
+                        }
+                    });
+                });
+
+            var result = await _helmRepository.GetAllReleasesAsync(null, "myBranch", false);
+
+            result.Should().HaveCount(1);
+
+            githubBranchFilterCaptured.Should().NotBeNull();
+            githubBranchFilterCaptured.HasHelmChart.Should().BeTrue();
+            githubBranchFilterCaptured.Name.Should().Be("myBranch");
+        }
         #endregion
     }
 }
