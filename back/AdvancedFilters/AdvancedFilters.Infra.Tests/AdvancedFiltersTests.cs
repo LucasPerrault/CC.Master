@@ -139,6 +139,16 @@ namespace AdvancedFilters.Infra.Tests
         {
             yield return new object[] { new AdvancedFilterTestEntry<AppContact>
             {
+                Filter = new AppContactAdvancedCriterion().WithIsConfirmed(ComparisonOperators.Equals, true),
+                Check = c => c.IsConfirmed
+            }};
+            yield return new object[] { new AdvancedFilterTestEntry<AppContact>
+            {
+                Filter = new AppContactAdvancedCriterion().WithIsConfirmed(ComparisonOperators.NotEquals, true),
+                Check = c => !c.IsConfirmed
+            }};
+            yield return new object[] { new AdvancedFilterTestEntry<AppContact>
+            {
                 Filter = new AppContactAdvancedCriterion().WithSubdomain(ComparisonOperators.Equals, "miaou"),
                 Check = c => c.Environment.Subdomain == "miaou"
             }};
@@ -208,6 +218,7 @@ namespace AdvancedFilters.Infra.Tests
                 new AppContact
                 {
                     Id = 1,
+                    IsConfirmed = true,
                     Environment = new Environment { Subdomain = "miaou" },
                     Establishment = new Establishment { LegalUnit = new LegalUnit { CountryId = 250 } },
                     AppInstance = new AppInstance { ApplicationId = "wpagga" }
@@ -215,6 +226,7 @@ namespace AdvancedFilters.Infra.Tests
                 new AppContact
                 {
                     Id = 2,
+                    IsConfirmed = true,
                     Environment = new Environment { Subdomain = "ouaf" },
                     Establishment = new Establishment { LegalUnit = new LegalUnit { CountryId = 9001 } },
                     AppInstance = new AppInstance { ApplicationId = "wexpenses" }
@@ -222,9 +234,18 @@ namespace AdvancedFilters.Infra.Tests
                 new AppContact
                 {
                     Id = 3,
+                    IsConfirmed = true,
                     Environment = new Environment { Subdomain = "wau" },
                     Establishment = new Establishment { LegalUnit = new LegalUnit { CountryId = 276 } },
                     AppInstance = new AppInstance { ApplicationId = "wpoplee" }
+                },
+                new AppContact
+                {
+                    Id = 4,
+                    IsConfirmed = false,
+                    Environment = new Environment { Subdomain = "miaou" },
+                    Establishment = new Establishment { LegalUnit = new LegalUnit { CountryId = 250 } },
+                    AppInstance = new AppInstance { ApplicationId = "wpagga" }
                 }
             }.AsQueryable();
         }
@@ -233,6 +254,16 @@ namespace AdvancedFilters.Infra.Tests
         #region ClientContacts
         public static IEnumerable<object[]> GetClientContactTestData()
         {
+            yield return new object[] { new AdvancedFilterTestEntry<ClientContact>
+            {
+                Filter = new ClientContactAdvancedCriterion().WithIsConfirmed(ComparisonOperators.Equals, true),
+                Check = c => c.IsConfirmed
+            }};
+            yield return new object[] { new AdvancedFilterTestEntry<ClientContact>
+            {
+                Filter = new ClientContactAdvancedCriterion().WithIsConfirmed(ComparisonOperators.NotEquals, true),
+                Check = c => !c.IsConfirmed
+            }};
             yield return new object[] { new AdvancedFilterTestEntry<ClientContact>
             {
                 Filter = new ClientContactAdvancedCriterion().WithSubdomain(ComparisonOperators.Equals, "miaou"),
@@ -290,20 +321,30 @@ namespace AdvancedFilters.Infra.Tests
                 new ClientContact
                 {
                     Id = 1,
+                    IsConfirmed = true,
                     Environment = new Environment { Subdomain = "miaou" },
                     Establishment = new Establishment { LegalUnit = new LegalUnit { CountryId = 250 } },
                 },
                 new ClientContact
                 {
                     Id = 2,
+                    IsConfirmed = true,
                     Environment = new Environment { Subdomain = "ouaf" },
                     Establishment = new Establishment { LegalUnit = new LegalUnit { CountryId = 9001 } },
                 },
                 new ClientContact
                 {
                     Id = 3,
+                    IsConfirmed = true,
                     Environment = new Environment { Subdomain = "wau" },
                     Establishment = new Establishment { LegalUnit = new LegalUnit { CountryId = 276 } },
+                },
+                new ClientContact
+                {
+                    Id = 4,
+                    IsConfirmed = false,
+                    Environment = new Environment { Subdomain = "miaou" },
+                    Establishment = new Establishment { LegalUnit = new LegalUnit { CountryId = 250 } },
                 }
             }.AsQueryable();
         }
@@ -312,6 +353,16 @@ namespace AdvancedFilters.Infra.Tests
         #region SpecializedContacts
         public static IEnumerable<object[]> GetSpecializedContactTestData()
         {
+            yield return new object[] { new AdvancedFilterTestEntry<SpecializedContact>
+            {
+                Filter = new SpecializedContactAdvancedCriterion().WithIsConfirmed(ComparisonOperators.Equals, true),
+                Check = c => c.IsConfirmed
+            }};
+            yield return new object[] { new AdvancedFilterTestEntry<SpecializedContact>
+            {
+                Filter = new SpecializedContactAdvancedCriterion().WithIsConfirmed(ComparisonOperators.NotEquals, true),
+                Check = c => !c.IsConfirmed
+            }};
             yield return new object[] { new AdvancedFilterTestEntry<SpecializedContact>
             {
                 Filter = new SpecializedContactAdvancedCriterion().WithSubdomain(ComparisonOperators.Equals, "miaou"),
@@ -369,20 +420,30 @@ namespace AdvancedFilters.Infra.Tests
                 new SpecializedContact
                 {
                     Id = 1,
+                    IsConfirmed = true,
                     Environment = new Environment { Subdomain = "miaou" },
                     Establishment = new Establishment { LegalUnit = new LegalUnit { CountryId = 250 } },
                 },
                 new SpecializedContact
                 {
                     Id = 2,
+                    IsConfirmed = true,
                     Environment = new Environment { Subdomain = "ouaf" },
                     Establishment = new Establishment { LegalUnit = new LegalUnit { CountryId = 9001 } },
                 },
                 new SpecializedContact
                 {
                     Id = 3,
+                    IsConfirmed = true,
                     Environment = new Environment { Subdomain = "wau" },
                     Establishment = new Establishment { LegalUnit = new LegalUnit { CountryId = 276 } },
+                },
+                new SpecializedContact
+                {
+                    Id = 4,
+                    IsConfirmed = false,
+                    Environment = new Environment { Subdomain = "miaou" },
+                    Establishment = new Establishment { LegalUnit = new LegalUnit { CountryId = 250 } },
                 }
             }.AsQueryable();
         }
@@ -442,6 +503,15 @@ namespace AdvancedFilters.Infra.Tests
             return criterion;
         }
 
+        public static AppContactAdvancedCriterion WithIsConfirmed(this AppContactAdvancedCriterion criterion, ComparisonOperators op, bool isConfirmed)
+        {
+            criterion.IsConfirmed = new SingleBooleanComparisonCriterion
+            {
+                Operator = op,
+                Value = isConfirmed
+            };
+            return criterion;
+        }
         public static AppContactAdvancedCriterion WithSubdomain(this AppContactAdvancedCriterion criterion, ComparisonOperators op, string subdomain)
         {
             criterion.Environment = new EnvironmentAdvancedCriterion().WithSubdomain(op, subdomain);
@@ -473,6 +543,15 @@ namespace AdvancedFilters.Infra.Tests
             return criterion;
         }
 
+        public static ClientContactAdvancedCriterion WithIsConfirmed(this ClientContactAdvancedCriterion criterion, ComparisonOperators op, bool isConfirmed)
+        {
+            criterion.IsConfirmed = new SingleBooleanComparisonCriterion
+            {
+                Operator = op,
+                Value = isConfirmed
+            };
+            return criterion;
+        }
         public static ClientContactAdvancedCriterion WithSubdomain(this ClientContactAdvancedCriterion criterion, ComparisonOperators op, string subdomain)
         {
             criterion.Environment = new EnvironmentAdvancedCriterion().WithSubdomain(op, subdomain);
@@ -492,6 +571,15 @@ namespace AdvancedFilters.Infra.Tests
             return criterion;
         }
 
+        public static SpecializedContactAdvancedCriterion WithIsConfirmed(this SpecializedContactAdvancedCriterion criterion, ComparisonOperators op, bool isConfirmed)
+        {
+            criterion.IsConfirmed = new SingleBooleanComparisonCriterion
+            {
+                Operator = op,
+                Value = isConfirmed
+            };
+            return criterion;
+        }
         public static SpecializedContactAdvancedCriterion WithSubdomain(this SpecializedContactAdvancedCriterion criterion, ComparisonOperators op, string subdomain)
         {
             criterion.Environment = new EnvironmentAdvancedCriterion().WithSubdomain(op, subdomain);
