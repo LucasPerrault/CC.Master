@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, convertToParamMap, ParamMap, Router } from '@angular/router';
 
+import { getLegacyParams, getUrlWithoutParams, hasLegacyParams } from '../constants/legacy-params.functions';
 import { IContractsRoutingParams } from '../models/contracts-routing-params.interface';
 
 enum ContractsRoutingKey {
@@ -27,8 +28,7 @@ export class ContractsRoutingService {
   }
 
   public getContractsRoutingParams(): IContractsRoutingParams {
-    const params = this.activatedRoute.snapshot.queryParamMap;
-
+    const params: ParamMap = this.getParamMap();
     return {
       ids: params.get(ContractsRoutingKey.Ids),
       name: params.get(ContractsRoutingKey.Name),
@@ -82,4 +82,11 @@ export class ContractsRoutingService {
     return Promise.resolve();
   }
 
+  public getParamMap(): ParamMap {
+    if (hasLegacyParams(this.router.url)) {
+      const params = getLegacyParams(this.router.url);
+      return convertToParamMap(params);
+    }
+    return this.activatedRoute.snapshot.queryParamMap;
+  }
 }
