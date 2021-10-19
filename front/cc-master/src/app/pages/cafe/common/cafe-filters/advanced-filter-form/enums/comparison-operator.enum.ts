@@ -10,8 +10,8 @@ export enum ComparisonOperator {
   ByPass = 'ByPass',
   Until = 'Until',
   Since = 'Since',
-  GreaterThan = 'GreaterThan',
-  SmallerThan = 'SmallerThan',
+  StrictlyGreaterThan = 'StrictlyGreaterThan',
+  StrictlyLessThan = 'StrictlyLessThan',
 }
 
 export const getComparisonBooleanValue = (operator: ComparisonOperator) => {

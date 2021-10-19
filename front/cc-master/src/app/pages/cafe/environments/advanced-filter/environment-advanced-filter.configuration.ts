@@ -23,8 +23,8 @@ export class EnvironmentAdvancedFilterConfiguration implements IAdvancedFilterCo
       key: EnvironmentAdvancedFilterKey.CreatedAt,
       name: this.translatePipe.transform('cafe_filters_environment_createdAt'),
       operators: [
-        { id: ComparisonOperator.Since, name: this.translatePipe.transform('cafe_filters_operator_since') },
-        { id: ComparisonOperator.Until, name: this.translatePipe.transform('cafe_filters_operator_until') },
+        { id: ComparisonOperator.StrictlyGreaterThan, name: this.translatePipe.transform('cafe_filters_operator_since') },
+        { id: ComparisonOperator.StrictlyLessThan, name: this.translatePipe.transform('cafe_filters_operator_until') },
       ],
       fields: [this.formlyConfiguration.createdAt],
     },
