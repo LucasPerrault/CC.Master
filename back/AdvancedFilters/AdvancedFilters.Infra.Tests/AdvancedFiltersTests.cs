@@ -29,12 +29,12 @@ namespace AdvancedFilters.Infra.Tests
             }};
             yield return new object[] { new AdvancedFilterTestEntry<Environment>
             {
-                Filter = new EnvironmentAdvancedCriterion().WithCreatedAt(ComparisonOperators.GreaterThanStrictly, new DateTime(2020, 01, 01)),
+                Filter = new EnvironmentAdvancedCriterion().WithCreatedAt(ComparisonOperators.StrictlyGreaterThan, new DateTime(2020, 01, 01)),
                 Check = e => e.CreatedAt > new DateTime(2020, 01, 01)
             }};
             yield return new object[] { new AdvancedFilterTestEntry<Environment>
             {
-                Filter = new EnvironmentAdvancedCriterion().WithCreatedAt(ComparisonOperators.LessThanStrictly, new DateTime(2020, 01, 01)),
+                Filter = new EnvironmentAdvancedCriterion().WithCreatedAt(ComparisonOperators.StrictlyLessThan, new DateTime(2020, 01, 01)),
                 Check = e => e.CreatedAt < new DateTime(2020, 01, 01)
             }};
             yield return new object[] { new AdvancedFilterTestEntry<Environment>

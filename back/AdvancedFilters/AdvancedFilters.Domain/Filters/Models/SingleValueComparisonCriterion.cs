@@ -11,8 +11,8 @@ namespace AdvancedFilters.Domain.Filters.Models
     {
         public override Expression<Func<DateTime, bool>> Expression => Operator switch
         {
-            ComparisonOperators.GreaterThanStrictly => item => item > Value,
-            ComparisonOperators.LessThanStrictly => item => item < Value,
+            ComparisonOperators.StrictlyGreaterThan => item => item > Value,
+            ComparisonOperators.StrictlyLessThan => item => item < Value,
             _ => base.Expression
         };
     }

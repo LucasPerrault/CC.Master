@@ -9,7 +9,7 @@ namespace AdvancedFilters.Domain.Filters.Models
     {
         Equals,
         NotEquals,
-        GreaterThanStrictly,
-        LessThanStrictly
+        StrictlyGreaterThan,
+        StrictlyLessThan
     }
 }
