@@ -54,6 +54,15 @@ export class EnvironmentAdvancedFilterConfiguration implements IAdvancedFilterCo
       fields: [this.formlyConfiguration.applications],
     },
     {
+      key: EnvironmentAdvancedFilterKey.Distributors,
+      name: this.translatePipe.transform('cafe_filters_environment_distributors'),
+      operators: [
+        { id: ComparisonOperator.Equals, name: 'égal' },
+        { id: ComparisonOperator.DoesNotEqual, name: 'n\'est pas égal ' },
+      ],
+      fields: [this.formlyConfiguration.distributors],
+    },
+    {
       key: EnvironmentAdvancedFilterKey.Countries,
       name: this.translatePipe.transform('cafe_filters_countries'),
       operators: [

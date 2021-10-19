@@ -76,5 +76,17 @@ export class EnvironmentFormlyConfiguration {
     },
   };
 
+  public readonly distributors: FormlyFieldConfig = {
+    key: EnvironmentAdvancedFilterKey.Distributors,
+    type: 'api',
+    templateOptions: {
+      api: '/api/v3/distributors',
+      multiple: true,
+      required: true,
+      mod: 'palette-grey mod-outlined mod-inline mod-longer',
+      placeholder: 'Sélectionner...',
+    },
+  };
+
   constructor(private translatePipe: TranslatePipe) {}
 }

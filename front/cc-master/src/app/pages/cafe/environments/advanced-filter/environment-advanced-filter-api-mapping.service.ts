@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { IDistributor } from '@cc/domain/billing/distributors';
 import { IEnvironment, IEnvironmentDomain } from '@cc/domain/environments';
 
 import {
@@ -40,6 +41,9 @@ export class EnvironmentAdvancedFilterApiMappingService {
       case EnvironmentAdvancedFilterKey.CreatedAt:
         const createdAt = attributes.value[attributes.filterKey];
         return this.getCreatedAtAdvancedFilter(attributes.operator, createdAt);
+      case EnvironmentAdvancedFilterKey.Distributors:
+        const distributors = attributes.value[attributes.filterKey];
+        return this.getDistributorsAdvancedFilter(attributes.operator, distributors);
     }
   }
 
@@ -96,5 +100,14 @@ export class EnvironmentAdvancedFilterApiMappingService {
     return AdvancedFilterTypeMapping.toFilterCriterion({
       createdAt: comparison,
     });
+  }
+
+  private getDistributorsAdvancedFilter(operator: ComparisonOperator, distributors: IDistributor[]): AdvancedFilter {
+    const criterions = AdvancedFilterTypeMapping.toCriterions(
+      operator,
+      distributors.map(a => a.id),
+      c => ({ distributorId: c }),
+    );
+    return AdvancedFilterTypeMapping.combine(criterions, LogicalOperator.Or);
   }
 }
