@@ -66,6 +66,9 @@ export class ContractsManageComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
+
+    this.contractsRoutingService.redirectToStandardParamsIfNecessary();
+
     combineLatest([this.sortParams$, this.filters.valueChanges])
       .pipe(
         takeUntil(this.destroy$),

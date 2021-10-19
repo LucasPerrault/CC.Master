@@ -73,4 +73,13 @@ export class ContractsRoutingService {
       relativeTo: this.activatedRoute,
     });
   }
+
+  public async redirectToStandardParamsIfNecessary(): Promise<void> {
+    if (hasLegacyParams(this.router.url)) {
+      const queryParams = getLegacyParams(this.router.url);
+      await this.router.navigate([getUrlWithoutParams(this.router.url)], { queryParams });
+    }
+    return Promise.resolve();
+  }
+
 }
