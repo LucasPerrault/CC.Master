@@ -18,6 +18,7 @@ import { SpecializedContactsDataService } from './specialized-contacts-data.serv
   selector: 'cc-specialized-contacts',
   templateUrl: './specialized-contacts.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
+  styleUrls: ['./specialized-contacts.component.scss'],
 })
 export class SpecializedContactsComponent implements OnInit, OnDestroy {
   @Input() public set advancedFilterForm(f: IAdvancedFilterForm) { this.setAdvancedFilter(f); }

@@ -19,6 +19,7 @@ import { AppContactsDataService } from './app-contacts-data.service';
   selector: 'cc-app-contacts',
   templateUrl: './app-contacts.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
+  styleUrls: ['./app-contacts.component.scss'],
 })
 export class AppContactsComponent implements OnInit, OnDestroy {
   @Input() public set advancedFilterForm(f: IAdvancedFilterForm) { this.setAdvancedFilter(f); }

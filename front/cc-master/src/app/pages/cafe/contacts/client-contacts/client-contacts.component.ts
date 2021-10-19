@@ -15,6 +15,7 @@ import { ClientContactsDataService } from './client-contacts-data.service';
   selector: 'cc-client-contacts',
   templateUrl: './client-contacts.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
+  styleUrls: ['./client-contacts.component.scss'],
 })
 export class ClientContactsComponent implements OnInit, OnDestroy {
   @Input() public set advancedFilterForm(f: IAdvancedFilterForm) { this.setAdvancedFilter(f); }

@@ -7,6 +7,7 @@ import { ContactCategory } from './common/enums/cafe-contacts-category.enum';
   selector: 'cc-cafe-contacts',
   templateUrl: './cafe-contacts.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
+  styleUrls: ['./cafe-contacts.component.scss'],
 })
 export class CafeContactsComponent {
   @Input() public advancedFilterForm: IAdvancedFilterForm;

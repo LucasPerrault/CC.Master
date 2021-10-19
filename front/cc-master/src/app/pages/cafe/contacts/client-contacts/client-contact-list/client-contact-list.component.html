@@ -2,18 +2,18 @@
   <thead class="table-head">
     <tr class="table-head-row">
       <th class="table-head-row-cell">
-        {{ 'cafe_contacts_list_subdomain' | translate }}
+        {{ 'cafe_contacts_list_environment' | translate }}
       </th>
       <th class="table-head-row-cell">
-        {{ 'cafe_contacts_list_name' | translate }}
+        {{ 'cafe_contacts_list_lastname' | translate }}
       </th>
       <th class="table-head-row-cell">
-        {{ 'cafe_contacts_list_role' | translate }}
+        {{ 'cafe_contacts_list_firstname' | translate }}
       </th>
       <th class="table-head-row-cell">
         {{ 'cafe_contacts_list_mail' | translate }}
       </th>
-      <th class="table-head-row-cell" [ngClass]="{ 'mod-hidden': isHidden(additionalColumn.Client) }">
+      <th class="table-head-row-cell">
         {{ 'cafe_contacts_list_client' | translate }}
       </th>
       <th class="table-head-row-cell">
@@ -25,24 +25,23 @@
       <th class="table-head-row-cell" [ngClass]="{ 'mod-hidden': isHidden(additionalColumn.ExpiresAt) }">
         {{ 'cafe_contacts_list_expiredAt' | translate }}
       </th>
-      <th class="table-head-row-cell mod-actions"></th>
     </tr>
   </thead>
   <tbody class="table-body">
     <tr class="table-body-row" *ngFor="let contact of contacts; trackBy: trackBy">
       <td class="table-body-row-cell">
-        {{ contact.environment?.subdomain }}
+        {{ getEnvironmentName(contact?.environment?.subdomain, contact?.environment?.domain) }}
       </td>
       <td class="table-body-row-cell">
-        {{ contact.user?.lastName }} {{ contact.user?.firstName }}
+        {{ contact.user?.lastName }}
       </td>
       <td class="table-body-row-cell">
-        {{ getRole(contact.roleCode) }}
+        {{ contact.user?.firstName }}
       </td>
       <td class="table-body-row-cell">
         {{ contact.user?.mail }}
       </td>
-      <td class="table-body-row-cell" [ngClass]="{ 'mod-hidden': isHidden(additionalColumn.Client) }">
+      <td class="table-body-row-cell">
         {{ contact.client?.name }}
       </td>
       <td class="table-body-row-cell">
@@ -53,13 +52,6 @@
       </td>
       <td class="table-body-row-cell" [ngClass]="{ 'mod-hidden': isHidden(additionalColumn.ExpiresAt) }">
         {{ contact.expiresAt | date: 'shortDate' }}
-      </td>
-      <td class="table-body-row-cell mod-actions">
-        <button class="actionIcon"
-                (click)="redirectToContracts(contact.environmentId)"
-                [luTooltip]="'cafe_contacts_list_contractsRedirection' | translate">
-          <span aria-hidden="true" class="lucca-icon icon-outside"></span>
-        </button>
       </td>
     </tr>
   </tbody>
