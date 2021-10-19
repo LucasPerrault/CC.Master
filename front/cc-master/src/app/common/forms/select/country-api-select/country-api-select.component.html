@@ -11,7 +11,7 @@
 
       <ng-container *ngIf="value?.length !== 1; else: singleView">
         <span class="label">{{ value.length }}</span>
-        {{ 'select_countries_label' | translate: { count: value.length } }}
+        {{ 'select_countries_label' | translate }}
       </ng-container>
 
       <ng-template #singleView>{{ value[0].name }}</ng-template>
