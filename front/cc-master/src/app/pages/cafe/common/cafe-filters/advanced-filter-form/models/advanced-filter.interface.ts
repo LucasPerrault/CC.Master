@@ -1,5 +1,6 @@
 import { ComparisonOperator } from '../enums/comparison-operator.enum';
 import { LogicalOperator } from '../enums/logical-operator.enum';
+import { IComparisonFilterCriterionEncapsulation } from './advanced-filter-mapping.interface';
 
 export enum AdvancedFilterType {
   Logical = 'LogicalOperator',
@@ -50,7 +51,7 @@ export class AdvancedFilterTypeMapping {
   public static toCriterions(
       operator: ComparisonOperator,
       values: string[] | number[],
-      toIFilterCriterion: (c: IComparisonFilterCriterion) => IFilterCriterion,
+      toIFilterCriterion: IComparisonFilterCriterionEncapsulation,
   ): AdvancedFilterCriterion[] {
     return values.map(v => this.toCriterion(operator, v, toIFilterCriterion));
   }
@@ -58,7 +59,7 @@ export class AdvancedFilterTypeMapping {
   public static toCriterion(
       operator: ComparisonOperator,
       value: string | number | boolean,
-      toIFilterCriterion: (c: IComparisonFilterCriterion) => IFilterCriterion,
+      toIFilterCriterion: IComparisonFilterCriterionEncapsulation,
   ): AdvancedFilterCriterion {
     const comparisonFilterCriterion = AdvancedFilterTypeMapping.toComparisonFilterCriterion(operator, value);
     const filterCriterion = toIFilterCriterion(comparisonFilterCriterion);

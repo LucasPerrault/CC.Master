@@ -30,7 +30,7 @@ export class AppContactAdvancedFilterApiMappingService {
       case AppContactAdvancedFilterKey.IsConfirmed:
         return CommonApiMappingStrategies.getIsConfirmedAdvancedFilter(attributes.operator);
       default:
-        return this.environmentApiMapping.getAdvancedFilter(attributes);
+        return this.environmentApiMapping.getAdvancedFilter(attributes, criterion => ({ environment: criterion }));
     }
   }
 
