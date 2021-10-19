@@ -17,24 +17,24 @@ export class ClientContactAdvancedFilterConfiguration implements IAdvancedFilter
   public readonly criterions: ICriterionConfiguration[] = [
     {
       key: ClientContactAdvancedFilterKey.Environment,
-      name: 'Dans l\'environnement',
+      name: this.translatePipe.transform('cafe_filters_contact_environment'),
       children: this.environmentAdvancedFilterConfiguration.criterions,
     },
     {
       key: ClientContactAdvancedFilterKey.Clients,
-      name: 'le client',
+      name: this.translatePipe.transform('cafe_filters_contact_client'),
       operators: [
-        { id: ComparisonOperator.Equals, name: 'est parmi' },
-        { id: ComparisonOperator.DoesNotEqual, name: 'n\'est pas parmi' },
+        { id: ComparisonOperator.Equals, name: this.translatePipe.transform('cafe_filters_operator_isAmong') },
+        { id: ComparisonOperator.DoesNotEqual, name: this.translatePipe.transform('cafe_filters_operator_isNotAmong') },
       ],
       fields: [this.formlyConfiguration.clients],
     },
     {
       key: ClientContactAdvancedFilterKey.IsConfirmed,
-      name: 'Est confirmé ?',
+      name: this.translatePipe.transform('cafe_filters_contact_isConfirmed'),
       operators: [
-        { id: ComparisonOperator.TrueOnly, name: 'Oui' },
-        { id: ComparisonOperator.FalseOnly, name: 'Non' },
+        { id: ComparisonOperator.TrueOnly, name: this.translatePipe.transform('cafe_filters_operator_true') },
+        { id: ComparisonOperator.FalseOnly, name: this.translatePipe.transform('cafe_filters_operator_false') },
       ],
     },
   ];

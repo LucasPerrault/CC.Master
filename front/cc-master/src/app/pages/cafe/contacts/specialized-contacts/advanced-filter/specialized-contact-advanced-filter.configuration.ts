@@ -16,15 +16,15 @@ export class SpecializedContactAdvancedFilterConfiguration implements IAdvancedF
   public readonly criterions: ICriterionConfiguration[] = [
     {
       key: SpeContactAdvancedFilterKey.Environment,
-      name: 'Environnement',
+      name: this.translatePipe.transform('cafe_filters_contact_environment'),
       children: this.environmentAdvancedFilterConfiguration.criterions,
     },
     {
       key: SpeContactAdvancedFilterKey.IsConfirmed,
-      name: 'Est confirmé',
+      name: this.translatePipe.transform('cafe_filters_contact_isConfirmed'),
       operators: [
-        { id: ComparisonOperator.TrueOnly, name: 'Oui' },
-        { id: ComparisonOperator.FalseOnly, name: 'Non' },
+        { id: ComparisonOperator.TrueOnly, name: this.translatePipe.transform('cafe_filters_operator_true') },
+        { id: ComparisonOperator.FalseOnly, name: this.translatePipe.transform('cafe_filters_operator_false') },
       ],
     },
   ];
