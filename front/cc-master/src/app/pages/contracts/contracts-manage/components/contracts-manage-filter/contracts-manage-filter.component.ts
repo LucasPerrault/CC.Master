@@ -1,7 +1,7 @@
 import { Component, forwardRef, OnDestroy, OnInit } from '@angular/core';
 import { ControlValueAccessor, FormControl, FormGroup, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { SelectDisplayMode } from '@cc/common/forms';
-import { IDateRangeConfiguration } from '@cc/common/forms/select/date-range-select';
+import { IDateRangeConfiguration, EndDateGranularityPolicy } from '@cc/common/forms/select/date-range-select';
 import { ELuDateGranularity } from '@lucca-front/ng/core';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
@@ -52,8 +52,10 @@ export class ContractsManageFilterComponent implements ControlValueAccessor, OnI
   public showAdditionalFilters = false;
 
   public dateRangeConfiguration: IDateRangeConfiguration = {
-    startDateConfiguration: { granularity: ELuDateGranularity.month, class: 'palette-grey mod-outlined mod-inline mod-long' },
-    endDateConfiguration: { granularity: ELuDateGranularity.month, class: 'palette-grey mod-outlined mod-inline mod-long' },
+    granularity: ELuDateGranularity.month,
+    periodCoverStrategy: EndDateGranularityPolicy.End,
+    startDateConfiguration: { class: 'palette-grey mod-outlined mod-inline mod-long' },
+    endDateConfiguration: { class: 'palette-grey mod-outlined mod-inline mod-long' },
   };
 
   private readonly additionalFilters = [

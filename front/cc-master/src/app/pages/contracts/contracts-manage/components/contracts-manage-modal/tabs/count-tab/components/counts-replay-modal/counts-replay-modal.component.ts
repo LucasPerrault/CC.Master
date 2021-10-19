@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, Inject, OnDestroy, OnInit } from '@
 import { FormControl } from '@angular/forms';
 import { TranslatePipe } from '@cc/aspects/translate';
 import { IDateRange } from '@cc/common/date';
-import { IDateRangeConfiguration } from '@cc/common/forms/select/date-range-select';
+import { IDateRangeConfiguration, EndDateGranularityPolicy } from '@cc/common/forms/select/date-range-select';
 import { ELuDateGranularity } from '@lucca-front/ng/core';
 import { ILuModalContent, LU_MODAL_DATA } from '@lucca-front/ng/modal';
 import { endOfMonth, isAfter, isBefore, isEqual, startOfMonth } from 'date-fns';
@@ -26,14 +26,14 @@ export class CountsReplayModalComponent implements OnInit, OnDestroy, ILuModalCo
   submitDisabled = true;
 
   public dateRangeConfiguration: IDateRangeConfiguration = {
+    granularity: ELuDateGranularity.month,
+    periodCoverStrategy: EndDateGranularityPolicy.End,
     startDateConfiguration: {
-      granularity: ELuDateGranularity.month,
       class: 'mod-inline mod-long palette-grey',
       min: this.modalData.min,
       max: this.modalData.max,
     },
     endDateConfiguration: {
-      granularity: ELuDateGranularity.month,
       class: 'mod-inline mod-long palette-grey',
       min: this.modalData.min,
       max: this.modalData.max,

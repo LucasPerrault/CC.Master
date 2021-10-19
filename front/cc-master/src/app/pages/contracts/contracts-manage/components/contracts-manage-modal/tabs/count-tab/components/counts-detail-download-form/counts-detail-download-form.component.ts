@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { IDateRange } from '@cc/common/date';
-import { IDateRangeConfiguration } from '@cc/common/forms/select/date-range-select';
+import { IDateRangeConfiguration, EndDateGranularityPolicy } from '@cc/common/forms/select/date-range-select';
 import { ELuDateGranularity } from '@lucca-front/ng/core';
 import { endOfMonth, startOfMonth, subMonths } from 'date-fns';
 import { combineLatest, Observable, ReplaySubject } from 'rxjs';
@@ -71,14 +71,14 @@ export class CountsDetailDownloadFormComponent implements OnInit {
 
   private getDateRangeConfig(countPeriod?: Date, closeOn?: Date): IDateRangeConfiguration {
     return {
+      granularity: ELuDateGranularity.month,
+      periodCoverStrategy: EndDateGranularityPolicy.Beginning,
       startDateConfiguration: {
-        granularity: ELuDateGranularity.month,
         min: countPeriod,
         max: closeOn ?? endOfMonth(subMonths(new Date(), 1)),
         class: 'palette-grey mod-outlined mod-inline mod-short',
       },
       endDateConfiguration: {
-        granularity: ELuDateGranularity.month,
         min: countPeriod,
         max: closeOn ?? endOfMonth(subMonths(new Date(), 1)),
         class: 'palette-grey mod-outlined mod-inline mod-short',
