@@ -25,7 +25,7 @@ export class AppContactAdvancedFilterConfiguration implements IAdvancedFilterCon
       name: this.translatePipe.transform('cafe_filters_contact_applications'),
       operators: [
         { id: ComparisonOperator.Equals, name: this.translatePipe.transform('cafe_filters_operator_isAmong') },
-        { id: ComparisonOperator.DoesNotEqual, name: this.translatePipe.transform('cafe_filters_operator_isNotAmong') },
+        { id: ComparisonOperator.NotEquals, name: this.translatePipe.transform('cafe_filters_operator_isNotAmong') },
       ],
       fields: [this.formlyConfiguration.applications],
     },

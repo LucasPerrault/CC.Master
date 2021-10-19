@@ -1,15 +1,8 @@
 export enum ComparisonOperator {
   Equals = 'Equals',
-  DoesNotEqual = 'DoesNotEqual',
-  Contains = 'Contains',
-  DoesNotContain = 'DoesNotContain',
-  Between = 'Between',
-  StartsWith = 'StartsWith',
+  NotEquals = 'NotEquals',
   TrueOnly = 'TrueOnly',
   FalseOnly = 'FalseOnly',
-  ByPass = 'ByPass',
-  Until = 'Until',
-  Since = 'Since',
   StrictlyGreaterThan = 'StrictlyGreaterThan',
   StrictlyLessThan = 'StrictlyLessThan',
 }
