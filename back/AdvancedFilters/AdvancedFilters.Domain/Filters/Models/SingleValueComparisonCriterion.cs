@@ -9,6 +9,12 @@ namespace AdvancedFilters.Domain.Filters.Models
     public class SingleBooleanComparisonCriterion : SingleValueComparisonCriterion<bool> { }
     public class SingleDateTimeComparisonCriterion : SingleValueComparisonCriterion<DateTime>
     {
+        public override Expression<Func<DateTime, bool>> Expression => Operator switch
+        {
+            ComparisonOperators.GreaterThanStrictly => item => item > Value,
+            ComparisonOperators.LessThanStrictly => item => item < Value,
+            _ => base.Expression
+        };
     }
 
     public abstract class SingleValueComparisonCriterion<TValue> : IComparisonCriterion
