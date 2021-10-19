@@ -167,7 +167,7 @@ export class ContractsApiMappingService {
   }
 
   private setEstablishmentState(params: HttpParams, etsHealth: IContractEstablishmentHealth, environments: IEnvironment[]): HttpParams {
-    const areEnvironmentsFiltered = !!environments.length;
+    const areEnvironmentsFiltered = !!environments?.length;
 
     if (!etsHealth) {
       params = params
