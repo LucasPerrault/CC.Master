@@ -11,76 +11,76 @@ export class EnvironmentAdvancedFilterConfiguration implements IAdvancedFilterCo
   public readonly categoryId = EnvironmentsCategory.Environments;
   public readonly criterions: ICriterionConfiguration[] = [
     {
-      key: EnvironmentAdvancedFilterKey.Cluster,
-      name: 'Le cluster',
-      operators: [
-        { id: ComparisonOperator.Equals, name: 'égal' },
-      ],
-      fields: [this.formlyConfiguration.cluster],
-    },
-    {
-      key: EnvironmentAdvancedFilterKey.Subdomain,
-      name: this.translatePipe.transform('cafe_filters_subdomain'),
-      operators: [
-        { id: ComparisonOperator.Equals, name: 'égal' },
-        { id: ComparisonOperator.DoesNotEqual, name: 'n\'est pas égal ' },
-      ],
-      fields: [this.formlyConfiguration.subdomain],
-    },
-    {
-      key: EnvironmentAdvancedFilterKey.Domain,
-      name: this.translatePipe.transform('cafe_filters_domain'),
-      operators: [
-        { id: ComparisonOperator.Equals, name: 'égal' },
-        { id: ComparisonOperator.DoesNotEqual, name: 'n\'est pas égal ' },
-      ],
-      fields: [this.formlyConfiguration.domain],
-    },
-    {
-      key: EnvironmentAdvancedFilterKey.IsActive,
-      name: 'Est actif ?',
-      operators: [
-        { id: ComparisonOperator.TrueOnly, name: 'Oui' },
-        { id: ComparisonOperator.FalseOnly, name: 'Non' },
-      ],
-    },
-    {
       key: EnvironmentAdvancedFilterKey.Applications,
-      name: this.translatePipe.transform('cafe_filters_applications'),
+      name: this.translatePipe.transform('cafe_filters_environment_applications'),
       operators: [
-        { id: ComparisonOperator.Equals, name: 'égal' },
-        { id: ComparisonOperator.DoesNotEqual, name: 'n\'est pas égal ' },
+        { id: ComparisonOperator.Equals, name: this.translatePipe.transform('cafe_filters_operator_areAmong') },
+        { id: ComparisonOperator.DoesNotEqual, name: this.translatePipe.transform('cafe_filters_operator_areNotAmong') },
       ],
       fields: [this.formlyConfiguration.applications],
-    },
-    {
-      key: EnvironmentAdvancedFilterKey.Distributors,
-      name: this.translatePipe.transform('cafe_filters_environment_distributors'),
-      operators: [
-        { id: ComparisonOperator.Equals, name: 'égal' },
-        { id: ComparisonOperator.DoesNotEqual, name: 'n\'est pas égal ' },
-      ],
-      fields: [this.formlyConfiguration.distributors],
-    },
-    {
-      key: EnvironmentAdvancedFilterKey.Countries,
-      name: this.translatePipe.transform('cafe_filters_countries'),
-      operators: [
-        { id: ComparisonOperator.Equals, name: 'égal' },
-        { id: ComparisonOperator.DoesNotEqual, name: 'n\'est pas égal ' },
-      ],
-      fields: [this.formlyConfiguration.countries],
     },
     {
       key: EnvironmentAdvancedFilterKey.CreatedAt,
       name: this.translatePipe.transform('cafe_filters_environment_createdAt'),
       operators: [
-        { id: ComparisonOperator.Since, name: 'après le' },
-        { id: ComparisonOperator.Until, name: 'avant le' },
+        { id: ComparisonOperator.Since, name: this.translatePipe.transform('cafe_filters_operator_since') },
+        { id: ComparisonOperator.Until, name: this.translatePipe.transform('cafe_filters_operator_until') },
       ],
       fields: [this.formlyConfiguration.createdAt],
     },
-
+    {
+      key: EnvironmentAdvancedFilterKey.Countries,
+      name: this.translatePipe.transform('cafe_filters_environment_countries'),
+      operators: [
+        { id: ComparisonOperator.Equals, name: this.translatePipe.transform('cafe_filters_operator_areAmong') },
+        { id: ComparisonOperator.DoesNotEqual, name: this.translatePipe.transform('cafe_filters_operator_areNotAmong') },
+      ],
+      fields: [this.formlyConfiguration.countries],
+    },
+    {
+      key: EnvironmentAdvancedFilterKey.Distributors,
+      name: this.translatePipe.transform('cafe_filters_environment_distributors'),
+      operators: [
+        { id: ComparisonOperator.Equals, name: this.translatePipe.transform('cafe_filters_operator_areAmong') },
+        { id: ComparisonOperator.DoesNotEqual, name: this.translatePipe.transform('cafe_filters_operator_areNotAmong') },
+      ],
+      fields: [this.formlyConfiguration.distributors],
+    },
+    {
+      key: EnvironmentAdvancedFilterKey.Subdomain,
+      name: this.translatePipe.transform('cafe_filters_environment_subdomain'),
+      operators: [
+        { id: ComparisonOperator.Equals, name: this.translatePipe.transform('cafe_filters_operator_equals') },
+        { id: ComparisonOperator.DoesNotEqual, name: this.translatePipe.transform('cafe_filters_operator_notEqual') },
+      ],
+      fields: [this.formlyConfiguration.subdomain],
+    },
+    {
+      key: EnvironmentAdvancedFilterKey.Domain,
+      name: this.translatePipe.transform('cafe_filters_environment_domain'),
+      operators: [
+        { id: ComparisonOperator.Equals, name: this.translatePipe.transform('cafe_filters_operator_equals') },
+        { id: ComparisonOperator.DoesNotEqual, name: this.translatePipe.transform('cafe_filters_operator_notEqual') },
+      ],
+      fields: [this.formlyConfiguration.domain],
+    },
+    {
+      key: EnvironmentAdvancedFilterKey.Cluster,
+      name: this.translatePipe.transform('cafe_filters_environment_cluster'),
+      operators: [
+        { id: ComparisonOperator.Equals, name: this.translatePipe.transform('cafe_filters_operator_isAmong') },
+        { id: ComparisonOperator.DoesNotEqual, name: this.translatePipe.transform('cafe_filters_operator_isNotAmong') },
+      ],
+      fields: [this.formlyConfiguration.cluster],
+    },
+    {
+      key: EnvironmentAdvancedFilterKey.IsActive,
+      name: this.translatePipe.transform('cafe_filters_environment_isActive'),
+      operators: [
+        { id: ComparisonOperator.TrueOnly, name: this.translatePipe.transform('cafe_filters_operator_true') },
+        { id: ComparisonOperator.FalseOnly, name: this.translatePipe.transform('cafe_filters_operator_false') },
+      ],
+    },
   ];
 
   constructor(
