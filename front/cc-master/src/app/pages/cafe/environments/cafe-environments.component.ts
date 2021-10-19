@@ -6,13 +6,14 @@ import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { filter, map, takeUntil } from 'rxjs/operators';
 
 import { AdvancedFilter, IAdvancedFilterForm } from '../common/cafe-filters/advanced-filter-form';
-import { EnvironmentAdvancedFilterApiMappingService } from './advanced-filter/environment-advanced-filter-api-mapping.service';
+import { EnvironmentAdvancedFilterApiMappingService } from './advanced-filter';
 import { IEnvironment } from './models/environment.interface';
 import { EnvironmentDataService } from './services/environment-data.service';
 
 @Component({
   selector: 'cc-cafe-environments',
   templateUrl: './cafe-environments.component.html',
+  styleUrls: ['./cafe-environments.component.scss'],
 })
 export class CafeEnvironmentsComponent implements OnInit, OnDestroy {
   @Input() public set advancedFilterForm(f: IAdvancedFilterForm) { this.setAdvancedFilter(f); }

@@ -2,7 +2,7 @@
   <thead class="table-head">
   <tr class="table-head-row">
     <th class="table-head-row-cell">
-      {{ 'cafe_environments_list_subdomain' | translate }}
+      {{ 'cafe_environments_list_environment' | translate }}
     </th>
     <th class="table-head-row-cell">
       {{ 'cafe_environments_list_applications' | translate }}
@@ -10,25 +10,21 @@
     <th class="table-head-row-cell">
       {{ 'cafe_environments_list_distributors' | translate }}
     </th>
+    <th class="table-head-row-cell" [ngClass]="{ 'mod-hidden': isHidden(additionalColumn.Countries) }">
+      {{ 'cafe_environments_list_countries' | translate }}
+    </th>
+    <th class="table-head-row-cell" [ngClass]="{ 'mod-hidden': isHidden(additionalColumn.Cluster) }">
+      {{ 'cafe_environments_list_cluster' | translate }}
+    </th>
     <th class="table-head-row-cell" [ngClass]="{ 'mod-hidden': isHidden(additionalColumn.CreatedAt) }">
       {{ 'cafe_environments_list_createdAt' | translate }}
     </th>
-    <th class="table-head-row-cell mod-alignRight" [ngClass]="{ 'mod-hidden': isHidden(additionalColumn.Countries) }">
-      {{ 'cafe_environments_list_countries' | translate }}
-    </th>
-    <th class="table-head-row-cell" [ngClass]="{ 'mod-hidden': isHidden(additionalColumn.Archived) }">
-      {{ 'cafe_environments_list_isArchived' | translate }}
-    </th>
-    <th class="table-head-row-cell" [ngClass]="{ 'mod-hidden': isHidden(additionalColumn.Domain) }">
-      {{ 'cafe_environments_list_domain' | translate }}
-    </th>
-    <th class="table-head-row-cell mod-actions"></th>
   </tr>
   </thead>
   <tbody class="table-body">
   <tr class="table-body-row" *ngFor="let environment of environments; trackBy: trackBy">
     <td class="table-body-row-cell">
-      {{ environment.subdomain }}
+      {{ getEnvironmentName(environment.subdomain, environment.domain) }}
     </td>
     <td class="table-body-row-cell">
       {{ getAppInstanceNames(environment?.appInstances) }}
@@ -36,22 +32,14 @@
     <td class="table-body-row-cell">
       {{ getDistributorNames(environment) }}
     </td>
+    <td class="table-body-row-cell" [ngClass]="{ 'mod-hidden': isHidden(additionalColumn.Countries) }">
+      {{ getCountryNames(environment.legalUnits) }}
+    </td>
+    <td class="table-body-row-cell" [ngClass]="{ 'mod-hidden': isHidden(additionalColumn.Cluster) }">
+      {{ environment.cluster }}
+    </td>
     <td class="table-body-row-cell" [ngClass]="{ 'mod-hidden': isHidden(additionalColumn.CreatedAt) }">
       {{ environment.createdAt | date : 'shortDate' }}
-    </td>
-    <td class="table-body-row-cell mod-alignRight" [ngClass]="{ 'mod-hidden': isHidden(additionalColumn.Countries) }">
-      <button *ngIf="!!environment?.legalUnits?.length; else hasNoLegalUnit"
-              class="button mod-link"
-              (click)="openCountryListModal(environment.legalUnits)">
-        {{ getCountriesCount(environment.legalUnits) }}
-      </button>
-      <ng-template #hasNoLegalUnit>0</ng-template>
-    </td>
-    <td class="table-body-row-cell" [ngClass]="{ 'mod-hidden': isHidden(additionalColumn.Archived) }">
-      {{ getTranslatedIsArchived(environment.isActive) }}
-    </td>
-    <td class="table-body-row-cell" [ngClass]="{ 'mod-hidden': isHidden(additionalColumn.Domain) }">
-      {{ environment.domain }}
     </td>
   </tr>
   </tbody>

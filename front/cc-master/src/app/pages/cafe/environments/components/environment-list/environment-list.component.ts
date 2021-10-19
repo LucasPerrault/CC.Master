@@ -1,11 +1,8 @@
 import { Component, Input } from '@angular/core';
-import { TranslatePipe } from '@cc/aspects/translate';
-import { LuModal } from '@lucca-front/ng/modal';
 
 import { IAppInstance } from '../../models/app-instance.interface';
 import { IEnvironment } from '../../models/environment.interface';
 import { ILegalUnit } from '../../models/legal-unit.interface';
-import { CountryListModalComponent } from '../country-list-modal/country-list-modal.component';
 import {
   EnvironmentAdditionalColumn,
   IEnvironmentAdditionalColumn,
@@ -22,10 +19,12 @@ export class EnvironmentListComponent {
 
   public additionalColumn = EnvironmentAdditionalColumn;
 
-  constructor(private translatePipe: TranslatePipe, private luModal: LuModal) { }
-
   public trackBy(index: number, environment: IEnvironment): number {
     return environment.id;
+  }
+
+  public getEnvironmentName(subdomain: string, domain: string): string {
+    return `${ subdomain }.${ domain }`;
   }
 
   public getAppInstanceNames(appInstances: IAppInstance[]): string {
@@ -36,22 +35,17 @@ export class EnvironmentListComponent {
     return legalUnits.map(l => l.country).length;
   }
 
-  public openCountryListModal(legalUnits: ILegalUnit[]): void {
-    const countries = legalUnits.map(l => l.country);
-    this.luModal.open(CountryListModalComponent, countries);
+  public getCountryNames(legalUnits: ILegalUnit[]): string {
+    const countries = legalUnits.map(l => l.country.name) ?? [];
+    return countries.join(', ');
   }
 
-  public getTranslatedIsArchived(isActive: boolean): string {
-    return isActive
-      ? this.translatePipe.transform('cafe_list_isArchived_false')
-      : this.translatePipe.transform('cafe_list_isArchived_true');
+  public getDistributorNames(environment: IEnvironment): string {
+    const distributors = environment.contracts?.map(c => c.distributor.name) ?? [];
+    return distributors.join(', ');
   }
 
   public isHidden(column: EnvironmentAdditionalColumn): boolean {
     return !this.selectedColumns.find(c => c.id === column);
-  }
-
-  public getDistributorNames(environment: IEnvironment): string {
-    return '';
   }
 }

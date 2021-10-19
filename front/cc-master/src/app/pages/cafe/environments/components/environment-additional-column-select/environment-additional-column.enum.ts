@@ -1,8 +1,7 @@
 export enum EnvironmentAdditionalColumn {
   CreatedAt = 'createdAt',
   Countries = 'countries',
-  Archived = 'archived',
-  Domain = 'domain',
+  Cluster = 'cluster',
 }
 
 export interface IEnvironmentAdditionalColumn {
@@ -20,11 +19,7 @@ export const environmentAdditionalColumns: IEnvironmentAdditionalColumn[] = [
     name: 'cafe_environments_list_countries',
   },
   {
-    id: EnvironmentAdditionalColumn.Archived,
-    name: 'cafe_environments_list_isArchived',
-  },
-  {
-    id: EnvironmentAdditionalColumn.Domain,
-    name: 'cafe_environments_list_domain',
+    id: EnvironmentAdditionalColumn.Cluster,
+    name: 'cafe_environments_list_cluster',
   },
 ];

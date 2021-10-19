@@ -9,7 +9,6 @@ import { EnvironmentAdvancedFilterApiMappingService } from './advanced-filter/en
 import { EnvironmentFormlyConfiguration } from './advanced-filter/environment-formly-configuration.service';
 import { CafeEnvironmentsComponent } from './cafe-environments.component';
 import { CafeEnvironmentConfiguration } from './cafe-environments.configuration';
-import { CountryListModalModule } from './components/country-list-modal/country-list-modal.module';
 import {
   EnvironmentAdditionalColumnSelectModule,
 } from './components/environment-additional-column-select/environment-additional-column-select.module';
@@ -25,7 +24,6 @@ import { EnvironmentDataService } from './services/environment-data.service';
     CommonModule,
     TranslateModule,
     PagingModule,
-    CountryListModalModule,
     EnvironmentAdditionalColumnSelectModule,
     ReactiveFormsModule,
   ],
