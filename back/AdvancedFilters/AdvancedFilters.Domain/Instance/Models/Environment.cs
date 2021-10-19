@@ -29,6 +29,7 @@ namespace AdvancedFilters.Domain.Instance.Models
 
     public class EnvironmentAdvancedCriterion : AdvancedCriterion<Environment>
     {
+        public SingleDateTimeComparisonCriterion CreatedAt { get; set; }
         public SingleStringComparisonCriterion Subdomain { get; set; }
         public LegalUnitAdvancedCriterion LegalUnits { get; set; }
         public AppInstanceAdvancedCriterion AppInstances { get; set; }
