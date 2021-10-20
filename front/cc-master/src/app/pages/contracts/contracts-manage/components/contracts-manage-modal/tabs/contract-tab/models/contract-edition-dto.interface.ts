@@ -8,5 +8,6 @@ export interface IContractEditionDto {
   endClientRebateOn: Date;
   nbMonthTheorical: number;
   theoricalStartOn: Date;
+  minimalBillingPercentage: number;
   comment: string;
 }

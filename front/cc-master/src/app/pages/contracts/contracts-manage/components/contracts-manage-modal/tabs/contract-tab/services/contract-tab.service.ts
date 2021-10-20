@@ -42,6 +42,7 @@ export class ContractTabService {
       endClientRebateOn: contractForm.clientRebate.endAt,
       nbMonthTheorical: contractForm.theoreticalMonthRebate,
       theoricalStartOn: contractForm.theoreticalStartOn,
+      minimalBillingPercentage: contractForm.minimalBillingPercentage,
       comment: contractForm.comment,
     };
   }
