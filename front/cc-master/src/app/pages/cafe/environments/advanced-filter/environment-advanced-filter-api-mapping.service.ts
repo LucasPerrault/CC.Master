@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { IDistributor } from '@cc/domain/billing/distributors';
-import { IEnvironment, IEnvironmentDomain } from '@cc/domain/environments';
+import { IEnvironment } from '@cc/domain/environments';
 
 import {
   AdvancedFilter,
@@ -8,7 +8,6 @@ import {
   AdvancedFilterTypeMapping,
   ComparisonOperator,
   defaultEncapsulation,
-  getComparisonBooleanValue,
   IAdvancedFilterAttributes,
   IAdvancedFilterForm,
   IComparisonFilterCriterionEncapsulation,
@@ -29,10 +28,6 @@ export class EnvironmentAdvancedFilterApiMappingService {
     encapsulate: IFilterCriterionEncapsulation = defaultEncapsulation,
   ): AdvancedFilter {
     switch (attributes.filterKey) {
-      case EnvironmentAdvancedFilterKey.Domain:
-        return this.getDomainAdvancedFilter(attributes, c => (encapsulate({ domain: c })));
-      case EnvironmentAdvancedFilterKey.IsActive:
-        return this.getIsActiveAdvancedFilter(attributes.operator, c => (encapsulate({ isActive: c })));
       case EnvironmentAdvancedFilterKey.Subdomain:
         return this.getSubdomainAdvancedFilter(attributes, c => (encapsulate({ subdomain: c })));
       case EnvironmentAdvancedFilterKey.AppInstances:
@@ -44,22 +39,6 @@ export class EnvironmentAdvancedFilterApiMappingService {
       case EnvironmentAdvancedFilterKey.Distributors:
         return this.getDistributorsAdvancedFilter(attributes, c => (encapsulate({ distributorId: c })));
     }
-  }
-
-  private getDomainAdvancedFilter(
-    attributes: IAdvancedFilterAttributes,
-    toIFilterCriterion: IComparisonFilterCriterionEncapsulation,
-  ): AdvancedFilter {
-    const domainIds = attributes.value[attributes.filterKey]?.map((d: IEnvironmentDomain) => d.id);
-    return AdvancedFilterTypeMapping.toAdvancedFilter(domainIds, attributes.operator, toIFilterCriterion);
-  }
-
-  private getIsActiveAdvancedFilter(
-    operator: ComparisonOperator,
-    toIFilterCriterion: IComparisonFilterCriterionEncapsulation,
-  ): AdvancedFilter {
-    const isActive = getComparisonBooleanValue(operator);
-    return AdvancedFilterTypeMapping.toAdvancedFilter([isActive], operator, toIFilterCriterion);
   }
 
   private getSubdomainAdvancedFilter(

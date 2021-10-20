@@ -58,32 +58,6 @@ export class EnvironmentAdvancedFilterConfiguration implements IAdvancedFilterCo
       ],
       fields: [this.formlyConfiguration.subdomain],
     },
-    {
-      key: EnvironmentAdvancedFilterKey.Domain,
-      name: this.translatePipe.transform('cafe_filters_environment_domain'),
-      operators: [
-        { id: ComparisonOperator.Equals, name: this.translatePipe.transform('cafe_filters_operator_equals') },
-        { id: ComparisonOperator.NotEquals, name: this.translatePipe.transform('cafe_filters_operator_notEqual') },
-      ],
-      fields: [this.formlyConfiguration.domain],
-    },
-    {
-      key: EnvironmentAdvancedFilterKey.Cluster,
-      name: this.translatePipe.transform('cafe_filters_environment_cluster'),
-      operators: [
-        { id: ComparisonOperator.Equals, name: this.translatePipe.transform('cafe_filters_operator_isAmong') },
-        { id: ComparisonOperator.NotEquals, name: this.translatePipe.transform('cafe_filters_operator_isNotAmong') },
-      ],
-      fields: [this.formlyConfiguration.cluster],
-    },
-    {
-      key: EnvironmentAdvancedFilterKey.IsActive,
-      name: this.translatePipe.transform('cafe_filters_environment_isActive'),
-      operators: [
-        { id: ComparisonOperator.TrueOnly, name: this.translatePipe.transform('cafe_filters_operator_true') },
-        { id: ComparisonOperator.FalseOnly, name: this.translatePipe.transform('cafe_filters_operator_false') },
-      ],
-    },
   ];
 
   constructor(

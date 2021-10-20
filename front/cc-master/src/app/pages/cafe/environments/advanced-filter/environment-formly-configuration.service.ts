@@ -14,31 +14,7 @@ export class EnvironmentFormlyConfiguration {
       multiple: true,
       required: true,
       mod: 'palette-grey mod-outlined mod-inline mod-longer',
-      placeholder: 'Sélectionner...',
-    },
-  };
-
-  public readonly domain: FormlyFieldConfig = {
-    key: EnvironmentAdvancedFilterKey.Domain,
-    type: 'environment-domain',
-    templateOptions: {
-      multiple: true,
-      required: true,
-      mod: 'palette-grey mod-outlined mod-inline mod-longer',
-      placeholder: 'Sélectionner...',
-    },
-  };
-
-  public readonly cluster: FormlyFieldConfig = {
-    key: EnvironmentAdvancedFilterKey.Cluster,
-    type: 'api',
-    templateOptions: {
-      api: '/api/cafe/environments/clusters',
-      orderBy: 'name,asc',
-      multiple: true,
-      required: true,
-      mod: 'palette-grey mod-outlined mod-inline mod-longer',
-      placeholder: 'Sélectionner...',
+      placeholder: this.translatePipe.transform('cafe_filters_environment_subdomain_placeholder'),
     },
   };
 
@@ -51,7 +27,7 @@ export class EnvironmentFormlyConfiguration {
       multiple: true,
       required: true,
       mod: 'palette-grey mod-outlined mod-inline mod-longer',
-      placeholder: 'Sélectionner...',
+      placeholder: this.translatePipe.transform('cafe_filters_environment_apps_placeholder'),
     },
   };
 
@@ -62,7 +38,7 @@ export class EnvironmentFormlyConfiguration {
       multiple: true,
       required: true,
       mod: 'palette-grey mod-outlined mod-inline mod-longer',
-      placeholder: 'Sélectionner...',
+      placeholder: this.translatePipe.transform('cafe_filters_environment_countries_placeholder'),
     },
   };
 
@@ -72,7 +48,7 @@ export class EnvironmentFormlyConfiguration {
     templateOptions: {
       required: true,
       mod: 'palette-grey mod-outlined mod-inline mod-longer',
-      placeholder: 'Sélectionner...',
+      placeholder: this.translatePipe.transform('cafe_filters_environment_createdAt_placeholder'),
     },
   };
 
@@ -84,7 +60,7 @@ export class EnvironmentFormlyConfiguration {
       multiple: true,
       required: true,
       mod: 'palette-grey mod-outlined mod-inline mod-longer',
-      placeholder: 'Sélectionner...',
+      placeholder: this.translatePipe.transform('cafe_filters_environment_distributors_placeholder'),
     },
   };
 
