@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { IDateRange } from '@cc/common/date';
-import { IDateRangeConfiguration, EndDateGranularityPolicy } from '@cc/common/forms/select/date-range-select';
+import { EndDateGranularityPolicy, IDateRangeConfiguration } from '@cc/common/forms/select/date-range-select';
 import { ELuDateGranularity } from '@lucca-front/ng/core';
 import { endOfMonth, startOfMonth, subMonths } from 'date-fns';
 import { combineLatest, Observable, ReplaySubject } from 'rxjs';

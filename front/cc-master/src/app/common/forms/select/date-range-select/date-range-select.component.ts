@@ -17,8 +17,8 @@ import { debounceTime, takeUntil } from 'rxjs/operators';
 
 import {
   defaultDateRangeConfiguration,
-  IDateRangeConfiguration,
   EndDateGranularityPolicy,
+  IDateRangeConfiguration,
 } from './date-range-configuration.interface';
 
 @Component({
