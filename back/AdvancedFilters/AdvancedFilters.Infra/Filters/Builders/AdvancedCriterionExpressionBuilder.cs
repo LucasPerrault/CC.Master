@@ -26,7 +26,7 @@ namespace AdvancedFilters.Infra.Filters.Builders
 
         protected abstract IEnumerable<IPropertyExpressionBuilder<TValue>> GetCriteria();
 
-        protected IPropertyExpressionBuilderSelector<TValue, TProperty> Apply<TProperty>(SingleValueComparisonCriterion<TProperty> criterion) where TProperty : IConvertible
+        protected IPropertyExpressionBuilderSelector<TValue, TProperty> Apply<TProperty>(SingleValueComparisonCriterion<TProperty> criterion)
             => new SingleValueExpressionBuilderSelector<TValue, TProperty>(criterion);
         protected IPropertyExpressionBuilderSelector<TValue, TProperty> Apply<TProperty>(AdvancedCriterion<TProperty> criterion)
             => new AdvancedExpressionBuilderSelector<TValue, TProperty>(criterion);

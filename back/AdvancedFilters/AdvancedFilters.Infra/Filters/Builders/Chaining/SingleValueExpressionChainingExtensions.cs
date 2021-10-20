@@ -15,7 +15,6 @@ namespace AdvancedFilters.Infra.Filters.Builders.Chaining
             this SingleValueComparisonCriterion<TProperty> criterion,
             Expression<Func<IEnumerable<TItem>, IEnumerable<TProperty>>> expression
         )
-            where TProperty : IConvertible
         {
             return expression.Chain(ApplyToList(criterion));
         }
@@ -25,7 +24,6 @@ namespace AdvancedFilters.Infra.Filters.Builders.Chaining
             this SingleValueComparisonCriterion<TProperty> criterion,
             Expression<Func<TItem, IEnumerable<TProperty>>> expression
         )
-            where TProperty : IConvertible
         {
             return expression.Chain(ApplyToList(criterion));
         }
@@ -35,13 +33,11 @@ namespace AdvancedFilters.Infra.Filters.Builders.Chaining
             this SingleValueComparisonCriterion<TProperty> criterion,
             Expression<Func<TItem, TProperty>> expression
         )
-            where TProperty : IConvertible
         {
             return expression.Chain(ApplyToItem(criterion));
         }
 
         private static Expression<Func<IEnumerable<TProperty>, bool>> ApplyToList<TProperty>(SingleValueComparisonCriterion<TProperty> criterion)
-            where TProperty : IConvertible
         {
             if (criterion == null)
             {
@@ -54,7 +50,6 @@ namespace AdvancedFilters.Infra.Filters.Builders.Chaining
         }
 
         private static Expression<Func<TProperty, bool>> ApplyToItem<TProperty>(SingleValueComparisonCriterion<TProperty> criterion)
-            where TProperty : IConvertible
         {
             if (criterion == null)
             {
