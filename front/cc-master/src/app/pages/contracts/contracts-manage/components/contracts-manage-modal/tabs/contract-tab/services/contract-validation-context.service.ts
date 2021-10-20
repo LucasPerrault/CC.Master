@@ -1,11 +1,11 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { IHttpApiV3CountResponse } from '@cc/common/queries';
+import { IHttpApiV3CollectionResponse, IHttpApiV3CountResponse } from '@cc/common/queries';
 import { CountCode } from '@cc/domain/billing/counts';
 import { combineLatest, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
-import { IContractValidationContext } from '../models/contract-validation-context.interface';
+import { IContractEntry, IContractValidationContext } from '../models/contract-validation-context.interface';
 
 @Injectable()
 export class ContractValidationContextService {
@@ -19,11 +19,10 @@ export class ContractValidationContextService {
     return combineLatest([
       this.getActiveEstablishmentsNumber$(contractId),
       this.getRealCountNumber$(contractId),
-      this.getUnletteredContractEntriesNumber$(contractId),
-      this.getLetteredContractEntriesNumber$(contractId),
+      this.getContractEntries$(contractId),
     ]).pipe(
-      map(([activeEstablishmentsNumber, realCountNumber, unletteredContractEntriesNumber, letteredContractEntriesNumber]) => ({
-        activeEstablishmentsNumber, realCountNumber, unletteredContractEntriesNumber, letteredContractEntriesNumber,
+      map(([activeEstablishmentsNumber, realCountNumber, contractEntries]) => ({
+        activeEstablishmentsNumber, realCountNumber, contractEntries,
       })),
     );
   }
@@ -48,23 +47,12 @@ export class ContractValidationContextService {
       .pipe(map(response => response.data.count));
   }
 
-  private getUnletteredContractEntriesNumber$(contractId: number): Observable<number> {
+  private getContractEntries$(contractId: number): Observable<IContractEntry[]> {
     const params = new HttpParams()
-      .set('fields', 'collection.count')
-      .set('contractId', String(contractId))
-      .set('letter', String(null));
+      .set('fields', 'id,letter')
+      .set('contractId', String(contractId));
 
-    return this.httpClient.get<IHttpApiV3CountResponse>(this.contractEntriesEndpoint, { params })
-      .pipe(map(response => response.data.count));
-  }
-
-  private getLetteredContractEntriesNumber$(contractId: number): Observable<number> {
-    const params = new HttpParams()
-      .set('fields', 'collection.count')
-      .set('contractId', String(contractId))
-      .set('letter', `notequal,null`);
-
-    return this.httpClient.get<IHttpApiV3CountResponse>(this.contractEntriesEndpoint, { params })
-      .pipe(map(response => response.data.count));
+    return this.httpClient.get<IHttpApiV3CollectionResponse<IContractEntry>>(this.contractEntriesEndpoint, { params })
+      .pipe(map(response => response.data.items));
   }
 }
