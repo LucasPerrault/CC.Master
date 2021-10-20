@@ -30,6 +30,22 @@ namespace AdvancedFilters.Infra.Storage.Stores
             return _queryPager.ToPageAsync(contacts, pageToken);
         }
 
+        public Task<Page<string>> GetAllRoleCodesAsync()
+        {
+            var roleCodes = _dbContext
+                .Set<SpecializedContact>()
+                .AsNoTracking()
+                .Select(c => c.RoleCode)
+                .Distinct()
+                .ToList();
+
+            return Task.FromResult(new Page<string>
+            {
+                Count = roleCodes.Count,
+                Items = roleCodes
+            });
+        }
+
         public Task<Page<SpecializedContact>> SearchAsync(IPageToken pageToken, IAdvancedFilter filter)
         {
             var contacts = SpecializedContacts.Filter(filter);

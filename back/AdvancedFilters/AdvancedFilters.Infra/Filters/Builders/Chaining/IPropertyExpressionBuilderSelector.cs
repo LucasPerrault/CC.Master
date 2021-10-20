@@ -18,7 +18,6 @@ namespace AdvancedFilters.Infra.Filters.Builders.Chaining
     }
 
     internal class SingleValueExpressionBuilderSelector<TValue, TProperty> : IPropertyExpressionBuilderSelector<TValue, TProperty>
-        where TProperty : IConvertible
     {
         private readonly SingleValueComparisonCriterion<TProperty> _criterion;
 

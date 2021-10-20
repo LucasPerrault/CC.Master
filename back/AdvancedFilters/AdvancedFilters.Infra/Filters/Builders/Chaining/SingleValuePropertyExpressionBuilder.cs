@@ -7,7 +7,6 @@ using System.Linq.Expressions;
 namespace AdvancedFilters.Infra.Filters.Builders.Chaining
 {
     internal class SingleValuePropertyExpressionBuilder<TValue, TProperty> : IPropertyExpressionBuilder<TValue>
-        where TProperty : IConvertible
     {
         private readonly SingleValueComparisonCriterion<TProperty> _criterion;
         private readonly Expression<Func<TValue, TProperty>> _getPropertyExpression;
@@ -30,7 +29,6 @@ namespace AdvancedFilters.Infra.Filters.Builders.Chaining
     }
 
     internal class SingleValuePropertyListExpressionBuilder<TValue, TProperty> : IPropertyExpressionBuilder<TValue>
-        where TProperty : IConvertible
     {
         private readonly SingleValueComparisonCriterion<TProperty> _criterion;
         private readonly Expression<Func<TValue, IEnumerable<TProperty>>> _getPropertyListExpression;

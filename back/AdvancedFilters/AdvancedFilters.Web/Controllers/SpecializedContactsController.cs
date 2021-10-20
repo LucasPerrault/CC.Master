@@ -34,6 +34,13 @@ namespace AdvancedFilters.Web.Controllers
             return PreparePage(page);
         }
 
+        [HttpGet("roles")]
+        [ForbidIfMissing(Operation.ReadAllCafe)]
+        public Task<Page<string>> GetAllRoleCodesAsync()
+        {
+            return _store.GetAllRoleCodesAsync();
+        }
+
         [HttpPost("search")]
         [ForbidIfMissing(Operation.ReadAllCafe)]
         public async Task<Page<SpecializedContact>> SearchAsync

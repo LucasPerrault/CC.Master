@@ -10,5 +10,6 @@ namespace AdvancedFilters.Domain.Contacts.Interfaces
     {
         Task<Page<SpecializedContact>> GetAsync(IPageToken pageToken, SpecializedContactFilter filter);
         Task<Page<SpecializedContact>> SearchAsync(IPageToken page, IAdvancedFilter criterion);
+        Task<Page<string>> GetAllRoleCodesAsync();
     }
 }
