@@ -279,6 +279,16 @@ namespace AdvancedFilters.Infra.Tests
             }};
             yield return new object[] { new AdvancedFilterTestEntry<ClientContact>
             {
+                Filter = new ClientContactAdvancedCriterion().WithClientId(ComparisonOperators.Equals, new Guid("6FBBA9BF-546A-4F46-B3C2-E18D73172A88")),
+                Check = c => c.ClientId == new Guid("6FBBA9BF-546A-4F46-B3C2-E18D73172A88")
+            }};
+            yield return new object[] { new AdvancedFilterTestEntry<ClientContact>
+            {
+                Filter = new ClientContactAdvancedCriterion().WithClientId(ComparisonOperators.NotEquals, new Guid("6FBBA9BF-546A-4F46-B3C2-E18D73172A88")),
+                Check = c => c.ClientId != new Guid("6FBBA9BF-546A-4F46-B3C2-E18D73172A88")
+            }};
+            yield return new object[] { new AdvancedFilterTestEntry<ClientContact>
+            {
                 Filter = new ClientContactAdvancedCriterion().WithSubdomain(ComparisonOperators.Equals, "miaou"),
                 Check = c => c.Environment.Subdomain == "miaou"
             }};
@@ -335,6 +345,7 @@ namespace AdvancedFilters.Infra.Tests
                 {
                     Id = 1,
                     IsConfirmed = true,
+                    ClientId = new Guid("6FBBA9BF-546A-4F46-B3C2-E18D73172A88"),
                     Environment = new Environment { Subdomain = "miaou" },
                     Establishment = new Establishment { LegalUnit = new LegalUnit { CountryId = 250 } },
                 },
@@ -342,6 +353,7 @@ namespace AdvancedFilters.Infra.Tests
                 {
                     Id = 2,
                     IsConfirmed = true,
+                    ClientId = new Guid("DEADBEEF-546A-4F46-B3C2-E18D73172A88"),
                     Environment = new Environment { Subdomain = "ouaf" },
                     Establishment = new Establishment { LegalUnit = new LegalUnit { CountryId = 9001 } },
                 },
@@ -349,6 +361,7 @@ namespace AdvancedFilters.Infra.Tests
                 {
                     Id = 3,
                     IsConfirmed = true,
+                    ClientId = new Guid("6FBBA9BF-546A-4F46-B3C2-E18D73172A88"),
                     Environment = new Environment { Subdomain = "wau" },
                     Establishment = new Establishment { LegalUnit = new LegalUnit { CountryId = 276 } },
                 },
@@ -356,6 +369,7 @@ namespace AdvancedFilters.Infra.Tests
                 {
                     Id = 4,
                     IsConfirmed = false,
+                    ClientId = new Guid("DEADBEEF-546A-4F46-B3C2-E18D73172A88"),
                     Environment = new Environment { Subdomain = "miaou" },
                     Establishment = new Establishment { LegalUnit = new LegalUnit { CountryId = 250 } },
                 }
@@ -571,6 +585,15 @@ namespace AdvancedFilters.Infra.Tests
             {
                 Operator = op,
                 Value = isConfirmed
+            };
+            return criterion;
+        }
+        public static ClientContactAdvancedCriterion WithClientId(this ClientContactAdvancedCriterion criterion, ComparisonOperators op, Guid clientId)
+        {
+            criterion.ClientId = new SingleGuidComparisonCriterion
+            {
+                Operator = op,
+                Value = clientId
             };
             return criterion;
         }

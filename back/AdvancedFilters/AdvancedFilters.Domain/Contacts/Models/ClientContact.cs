@@ -38,6 +38,7 @@ namespace AdvancedFilters.Domain.Contacts.Models
     public class ClientContactAdvancedCriterion : AdvancedCriterion<ClientContact>
     {
         public SingleBooleanComparisonCriterion IsConfirmed { get; set; }
+        public SingleGuidComparisonCriterion ClientId { get; set; }
         public EnvironmentAdvancedCriterion Environment { get; set; }
         public LegalUnitAdvancedCriterion LegalUnit { get; set; }
 
