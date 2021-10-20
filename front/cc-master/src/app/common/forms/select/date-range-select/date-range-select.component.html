@@ -3,7 +3,7 @@
          [ngClass]="{ 'is-required': required, 'is-error': isError }">
     <lu-date-select class="textfield-input"
                     formControlName="startDate"
-                    [granularity]="configuration.startDateConfiguration.granularity"
+                    [granularity]="configuration.granularity"
                     [required]="required"
                     [min]="configuration.startDateConfiguration.min"
                     [max]="endDate || configuration.startDateConfiguration.max"
@@ -15,7 +15,7 @@
          [ngClass]="{ 'is-required': required, 'is-error': isError }">
     <lu-date-select class="textfield-input"
                     formControlName="endDate"
-                    [granularity]="configuration.startDateConfiguration.granularity"
+                    [granularity]="configuration.granularity"
                     [required]="required"
                     [min]="startDate || configuration.endDateConfiguration.min"
                     [max]="configuration.endDateConfiguration.max"

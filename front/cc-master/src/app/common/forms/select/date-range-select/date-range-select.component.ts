@@ -3,16 +3,23 @@ import {
   AbstractControl,
   ControlValueAccessor,
   FormControl,
-  FormGroup, NG_VALIDATORS,
+  FormGroup,
+  NG_VALIDATORS,
   NG_VALUE_ACCESSOR,
   ValidationErrors,
   Validator,
 } from '@angular/forms';
 import { IDateRange } from '@cc/common/date';
+import { ELuDateGranularity } from '@lucca-front/ng/core';
+import { endOfDecade, endOfMonth, endOfYear } from 'date-fns';
 import { Subject } from 'rxjs';
 import { debounceTime, takeUntil } from 'rxjs/operators';
 
-import { defaultDateRangeConfiguration, IDateRangeConfiguration } from './date-range-configuration.interface';
+import {
+  defaultDateRangeConfiguration,
+  EndDateGranularityPolicy,
+  IDateRangeConfiguration,
+} from './date-range-configuration.interface';
 
 @Component({
   selector: 'cc-date-range-select',
@@ -53,7 +60,10 @@ export class DateRangeSelectComponent implements ControlValueAccessor, Validator
   public ngOnInit(): void {
     this.dateRangeSelected.valueChanges
       .pipe(debounceTime(300), takeUntil(this.destroySubscription$))
-      .subscribe((dateRange: IDateRange) => this.onChange(dateRange));
+      .subscribe((dateRange: IDateRange) => {
+        this.ensureCoveredPeriod(dateRange, this.configuration.periodCoverStrategy);
+        this.onChange(dateRange);
+      });
   }
 
   public ngOnDestroy(): void {
@@ -87,5 +97,27 @@ export class DateRangeSelectComponent implements ControlValueAccessor, Validator
 
   public get endDate(): Date {
     return this.dateRangeSelected.get('endDate').value;
+  }
+
+  private ensureCoveredPeriod(dateRange: IDateRange, periodCoverStrategy: EndDateGranularityPolicy): void {
+    if (periodCoverStrategy === EndDateGranularityPolicy.Beginning) {
+      return;
+    }
+    if (periodCoverStrategy === EndDateGranularityPolicy.End) {
+      switch (this.configuration.granularity) {
+        case ELuDateGranularity.day:
+          return;
+        case ELuDateGranularity.month:
+          dateRange.endDate = endOfMonth(dateRange.endDate);
+          return;
+        case ELuDateGranularity.year:
+          dateRange.endDate = endOfYear(dateRange.endDate);
+          return;
+        case ELuDateGranularity.decade:
+          dateRange.endDate = endOfDecade(dateRange.endDate);
+          return;
+      }
+    }
+    return;
   }
 }
