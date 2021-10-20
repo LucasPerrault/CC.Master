@@ -14,6 +14,20 @@ export class ContractActionRestrictionsService {
       && !this.hasUnletteredContractEntries(context);
   }
 
+  public canEditDistributor(context: IContractValidationContext): boolean {
+    return this.canEditContract()
+      && !this.hasRealCounts(context)
+      && !this.hasActiveEstablishments(context)
+      && !this.hasUnletteredContractEntries(context);
+  }
+
+  public canEditClient(context: IContractValidationContext): boolean {
+    return this.canEditContract()
+      && !this.hasRealCounts(context)
+      && !this.hasActiveEstablishments(context)
+      && !this.hasUnletteredContractEntries(context);
+  }
+
   public canEditTheoreticalStartOn(context: IContractValidationContext): boolean {
     return this.canEditContract()
       && !this.hasRealCounts(context)

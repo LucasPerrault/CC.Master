@@ -7,6 +7,8 @@ import { map } from 'rxjs/operators';
 
 import { contractDetailedFields, IContractDetailed } from '../models/contract-detailed.interface';
 import { IContractEditionDto } from '../models/contract-edition-dto.interface';
+import { IDistributor } from '@cc/domain/billing/distributors';
+import { IClient } from '@cc/domain/billing/clients';
 
 @Injectable()
 export class ContractTabService {
@@ -36,6 +38,8 @@ export class ContractTabService {
   private getContractEditBody(contractForm: IContractForm): IContractEditionDto {
     return {
       billingMonth: contractForm.billingMonth,
+      distributorId: contractForm.distributor.id,
+      clientId: contractForm.client.id,
       offerId: contractForm.offer?.id,
       unityNumberTheorical: contractForm.theoreticalDraftCount,
       clientRebate: contractForm.clientRebate.count,
