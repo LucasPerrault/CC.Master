@@ -2,7 +2,7 @@ import { ContractBillingMonth } from '../enums/contract-billing-month.enum';
 
 export interface IContractCreationDto {
   billingMonth: ContractBillingMonth;
-  distributorId: string;
+  distributorId: number;
   clientId: number;
   offerId: number;
   unityNumberTheorical: number;

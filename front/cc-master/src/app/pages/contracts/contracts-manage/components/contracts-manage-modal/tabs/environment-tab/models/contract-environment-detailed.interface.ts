@@ -16,6 +16,6 @@ export interface IContractEnvironmentDetailed extends IContract {
   environment?: IEnvironmentDetailed;
   clientId: number;
   theoricalStartOn: string;
-  distributorId: string;
+  distributorId: number;
   product: IProductSolution;
 }

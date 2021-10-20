@@ -81,7 +81,7 @@ export class DistributorApiSelectComponent implements ControlValueAccessor {
     this.distributorsSelected = (this.model as IDistributor[]);
   }
 
-  public trackBy(index: number, distributor: IDistributor): string {
+  public trackBy(index: number, distributor: IDistributor): number {
     return distributor.id;
   }
 

@@ -6,6 +6,6 @@ export const previousContractEnvironmentFields = `${ contractFields },endOn,dist
 
 export interface IPreviousContractEnvironment extends IContract {
   endOn: string;
-  distributorId: string;
+  distributorId: number;
   product: IProductSolution;
 }

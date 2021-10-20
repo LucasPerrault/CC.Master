@@ -1,7 +1,7 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { IHttpApiV3Response } from '@cc/common/queries';
-import { sfLuccaDistributorId } from '@cc/domain/billing/distributors';
+import { luccaDistributorId } from '@cc/domain/billing/distributors';
 import {
   IProductMinimalBillingEligibility,
   productMinimalBillingEligibilityFields,
@@ -32,7 +32,7 @@ export class MinimalBillingService {
   }
 
   private isDirectSales(contract: IContractMinimalBillable): boolean {
-    return !!contract.distributorId && contract.distributorId === sfLuccaDistributorId;
+    return !!contract.distributorId && contract.distributorId === luccaDistributorId;
   }
 
   private isProductEligible$(contract: IContractMinimalBillable): Observable<boolean> {

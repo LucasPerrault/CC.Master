@@ -2,7 +2,7 @@ import { ContractBillingMonth } from '@cc/domain/billing/contracts';
 
 export interface IContractEditionDto {
   billingMonth: ContractBillingMonth;
-  distributorId: string;
+  distributorId: number;
   clientId: number;
   offerId: number;
   unityNumberTheorical: number;
