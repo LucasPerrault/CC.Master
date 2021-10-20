@@ -7,8 +7,6 @@ import { map } from 'rxjs/operators';
 
 import { contractDetailedFields, IContractDetailed } from '../models/contract-detailed.interface';
 import { IContractEditionDto } from '../models/contract-edition-dto.interface';
-import { IDistributor } from '@cc/domain/billing/distributors';
-import { IClient } from '@cc/domain/billing/clients';
 
 @Injectable()
 export class ContractTabService {
