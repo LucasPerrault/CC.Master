@@ -36,12 +36,15 @@ export class ContractTabService {
   private getContractEditBody(contractForm: IContractForm): IContractEditionDto {
     return {
       billingMonth: contractForm.billingMonth,
+      distributorId: contractForm.distributor.id,
+      clientId: contractForm.client.id,
       offerId: contractForm.offer?.id,
       unityNumberTheorical: contractForm.theoreticalDraftCount,
       clientRebate: contractForm.clientRebate.count,
       endClientRebateOn: contractForm.clientRebate.endAt,
       nbMonthTheorical: contractForm.theoreticalMonthRebate,
       theoricalStartOn: contractForm.theoreticalStartOn,
+      minimalBillingPercentage: contractForm.minimalBillingPercentage,
       comment: contractForm.comment,
     };
   }
