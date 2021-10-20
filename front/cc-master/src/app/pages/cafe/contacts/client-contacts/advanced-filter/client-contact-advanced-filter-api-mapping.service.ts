@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { IClient } from '@cc/domain/billing/clients';
 
+import { IClient } from '../../../billing/models/client.interface';
 import {
   AdvancedFilter,
   AdvancedFilterFormMapping,
@@ -24,8 +24,8 @@ export class ClientContactAdvancedFilterApiMappingService {
 
   private getAdvancedFilter(attributes: IAdvancedFilterAttributes): AdvancedFilter {
     switch (attributes.filterKey) {
-      case ClientContactAdvancedFilterKey.Clients:
-        return this.getClientsAdvancedFilter(attributes, c => ({ client: c }));
+      case ClientContactAdvancedFilterKey.Client:
+        return this.getClientsAdvancedFilter(attributes, c => ({ clientId: c }));
       case ClientContactAdvancedFilterKey.IsConfirmed:
         return CommonApiMappingStrategies.getIsConfirmedAdvancedFilter(attributes.operator);
       default:
@@ -37,7 +37,7 @@ export class ClientContactAdvancedFilterApiMappingService {
     attributes: IAdvancedFilterAttributes,
     toIFilterCriterion: IComparisonFilterCriterionEncapsulation,
   ): AdvancedFilter {
-    const clientIds = attributes.value[attributes.filterKey]?.map((c: IClient) => c.id);
+    const clientIds = attributes.value[attributes.filterKey]?.map((c: IClient) => c.externalId);
     return AdvancedFilterTypeMapping.toAdvancedFilter(clientIds, attributes.operator, toIFilterCriterion);
   }
 }

@@ -1,5 +1,5 @@
 export enum ClientContactAdvancedFilterKey {
   Environment = 'environment',
-  Clients = 'clients',
+  Client = 'client',
   IsConfirmed = 'isConfirmed',
 }

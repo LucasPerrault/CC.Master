@@ -8,10 +8,10 @@ import { ClientContactAdvancedFilterKey } from './client-contact-advanced-filter
 export class ClientContactFormlyConfiguration {
 
   public readonly clients: FormlyFieldConfig = {
-    key: ClientContactAdvancedFilterKey.Clients,
+    key: ClientContactAdvancedFilterKey.Client,
     type: 'api',
     templateOptions: {
-      api: '/api/v3/clients',
+      api: '/api/cafe/clients',
       orderBy: 'name,asc',
       multiple: true,
       required: true,

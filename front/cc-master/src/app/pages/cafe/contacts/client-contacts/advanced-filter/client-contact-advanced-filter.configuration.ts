@@ -21,7 +21,7 @@ export class ClientContactAdvancedFilterConfiguration implements IAdvancedFilter
       children: this.environmentAdvancedFilterConfiguration.criterions,
     },
     {
-      key: ClientContactAdvancedFilterKey.Clients,
+      key: ClientContactAdvancedFilterKey.Client,
       name: this.translatePipe.transform('cafe_filters_contact_client'),
       operators: [
         { id: ComparisonOperator.Equals, name: this.translatePipe.transform('cafe_filters_operator_isAmong') },
