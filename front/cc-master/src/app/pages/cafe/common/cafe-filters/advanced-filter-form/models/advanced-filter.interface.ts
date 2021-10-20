@@ -34,9 +34,17 @@ export class AdvancedFilterTypeMapping {
     values: string[] | number[] | boolean[],
     operator: ComparisonOperator,
     toIFilterCriterion: IComparisonFilterCriterionEncapsulation,
+    logicalOperator: LogicalOperator = LogicalOperator.Or,
   ): AdvancedFilter {
     const criterions = values.map(v => this.toCriterion(operator, v, toIFilterCriterion));
-    return AdvancedFilterTypeMapping.combine(criterions, LogicalOperator.Or);
+    return AdvancedFilterTypeMapping.combine(criterions, logicalOperator);
+  }
+
+  public static toAdvancedFilterWithContainsOperator(
+    values: string[] | number[] | boolean[],
+    toIFilterCriterion: IComparisonFilterCriterionEncapsulation,
+  ): AdvancedFilter {
+    return AdvancedFilterTypeMapping.toAdvancedFilter(values, ComparisonOperator.Equals, toIFilterCriterion, LogicalOperator.And);
   }
 
   public static toFilterCombination(operator: LogicalOperator, values: AdvancedFilter[]): AdvancedFilterCombination {

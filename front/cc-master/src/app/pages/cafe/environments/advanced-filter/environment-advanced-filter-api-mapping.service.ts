@@ -75,6 +75,10 @@ export class EnvironmentAdvancedFilterApiMappingService {
     toIFilterCriterion: IComparisonFilterCriterionEncapsulation,
   ): AdvancedFilter {
     const applicationIds = attributes.value[attributes.filterKey].map((a: IApplication) => a.id);
+    if (attributes.operator === ComparisonOperator.Contains) {
+      return AdvancedFilterTypeMapping.toAdvancedFilterWithContainsOperator(applicationIds, toIFilterCriterion);
+    }
+
     return AdvancedFilterTypeMapping.toAdvancedFilter(applicationIds, attributes.operator, toIFilterCriterion);
   }
 
@@ -83,6 +87,10 @@ export class EnvironmentAdvancedFilterApiMappingService {
     toIFilterCriterion: IComparisonFilterCriterionEncapsulation,
   ): AdvancedFilter {
     const countryIds = attributes.value[attributes.filterKey].map((c: ICountry) => c.id);
+    if (attributes.operator === ComparisonOperator.Contains) {
+      return AdvancedFilterTypeMapping.toAdvancedFilterWithContainsOperator(countryIds, toIFilterCriterion);
+    }
+
     return AdvancedFilterTypeMapping.toAdvancedFilter(countryIds, attributes.operator, toIFilterCriterion);
   }
 
@@ -99,6 +107,10 @@ export class EnvironmentAdvancedFilterApiMappingService {
     toIFilterCriterion: IComparisonFilterCriterionEncapsulation,
   ): AdvancedFilter {
     const distributorIds = attributes.value[attributes.filterKey]?.map((d: IDistributor) => d.id);
+    if (attributes.operator === ComparisonOperator.Contains) {
+      return AdvancedFilterTypeMapping.toAdvancedFilterWithContainsOperator(distributorIds, toIFilterCriterion);
+    }
+
     return AdvancedFilterTypeMapping.toAdvancedFilter(distributorIds, attributes.operator, toIFilterCriterion);
   }
 }

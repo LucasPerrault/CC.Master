@@ -1,4 +1,5 @@
 export enum ComparisonOperator {
+  Contains = 'Contains',
   Equals = 'Equals',
   NotEquals = 'NotEquals',
   TrueOnly = 'TrueOnly',
