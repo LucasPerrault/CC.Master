@@ -51,9 +51,14 @@ namespace Billing.Contracts.Web
 
         [HttpGet("health")]
         [ForbidIfMissing(Operation.ReadContracts)]
-        public Task<List<ContractHealth>> GetHealthAsync([FromQuery]ContractFilter filter)
+        public async Task<Page<ContractHealth>> GetHealthAsync([FromQuery]ContractListQuery query)
         {
-            return _healthHelper.GetHealthAsync(filter);
+            var healths = await _healthHelper.GetHealthAsync(query.ToFilter());
+            return new Page<ContractHealth>
+            {
+                Items = healths,
+                Count = healths.Count
+            };
         }
 
         [HttpGet("{id:int}")]

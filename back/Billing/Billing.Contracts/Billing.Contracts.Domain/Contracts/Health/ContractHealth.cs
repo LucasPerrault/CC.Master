@@ -7,12 +7,12 @@ namespace Billing.Contracts.Domain.Contracts.Health
     {
         public int ContractId { get; set; }
         public int EnvironmentId { get; set; }
-        public List<EstablishmentHealth> EstablishmentHealths { get; set; }
+        public List<EstablishmentHealth> Establishments { get; set; }
     }
 
     public class EstablishmentHealth
     {
-        public int EstablishmentId { get; set; }
+        public int Id { get; set; }
         public List<ContractAttachmentError> AttachmentErrors { get; set; }
     }
 
