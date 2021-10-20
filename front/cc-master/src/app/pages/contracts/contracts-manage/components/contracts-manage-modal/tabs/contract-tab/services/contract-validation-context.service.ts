@@ -20,9 +20,10 @@ export class ContractValidationContextService {
       this.getActiveEstablishmentsNumber$(contractId),
       this.getRealCountNumber$(contractId),
       this.getUnletteredContractEntriesNumber$(contractId),
+      this.getLetteredContractEntriesNumber$(contractId),
     ]).pipe(
-      map(([activeEstablishmentsNumber, realCountNumber, unletteredContractEntriesNumber]) => ({
-        activeEstablishmentsNumber, realCountNumber, unletteredContractEntriesNumber,
+      map(([activeEstablishmentsNumber, realCountNumber, unletteredContractEntriesNumber, letteredContractEntriesNumber]) => ({
+        activeEstablishmentsNumber, realCountNumber, unletteredContractEntriesNumber, letteredContractEntriesNumber,
       })),
     );
   }
@@ -52,6 +53,16 @@ export class ContractValidationContextService {
       .set('fields', 'collection.count')
       .set('contractId', String(contractId))
       .set('letter', String(null));
+
+    return this.httpClient.get<IHttpApiV3CountResponse>(this.contractEntriesEndpoint, { params })
+      .pipe(map(response => response.data.count));
+  }
+
+  private getLetteredContractEntriesNumber$(contractId: number): Observable<number> {
+    const params = new HttpParams()
+      .set('fields', 'collection.count')
+      .set('contractId', String(contractId))
+      .set('letter', `notequal,null`);
 
     return this.httpClient.get<IHttpApiV3CountResponse>(this.contractEntriesEndpoint, { params })
       .pipe(map(response => response.data.count));

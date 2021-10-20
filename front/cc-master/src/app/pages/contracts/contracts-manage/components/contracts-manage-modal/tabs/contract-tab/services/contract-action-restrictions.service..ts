@@ -18,14 +18,16 @@ export class ContractActionRestrictionsService {
     return this.canEditContract()
       && !this.hasRealCounts(context)
       && !this.hasActiveEstablishments(context)
-      && !this.hasUnletteredContractEntries(context);
+      && !this.hasUnletteredContractEntries(context)
+      && !this.hasLetteredContractEntries(context);
   }
 
   public canEditClient(context: IContractValidationContext): boolean {
     return this.canEditContract()
       && !this.hasRealCounts(context)
       && !this.hasActiveEstablishments(context)
-      && !this.hasUnletteredContractEntries(context);
+      && !this.hasUnletteredContractEntries(context)
+      && !this.hasLetteredContractEntries(context);
   }
 
   public canEditTheoreticalStartOn(context: IContractValidationContext): boolean {
@@ -68,6 +70,10 @@ export class ContractActionRestrictionsService {
 
   public hasUnletteredContractEntries(context: IContractValidationContext): boolean {
     return !!context?.unletteredContractEntriesNumber;
+  }
+
+  public hasLetteredContractEntries(context: IContractValidationContext): boolean {
+    return !!context.letteredContractEntriesNumber;
   }
 
   public canEditContract(): boolean {
