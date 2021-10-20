@@ -53,8 +53,8 @@ export class EnvironmentAdvancedFilterConfiguration implements IAdvancedFilterCo
       key: EnvironmentAdvancedFilterKey.Subdomain,
       name: this.translatePipe.transform('cafe_filters_environment_subdomain'),
       operators: [
-        { id: ComparisonOperator.Equals, name: this.translatePipe.transform('cafe_filters_operator_equals') },
-        { id: ComparisonOperator.NotEquals, name: this.translatePipe.transform('cafe_filters_operator_notEqual') },
+        { id: ComparisonOperator.Equals, name: this.translatePipe.transform('cafe_filters_operator_isAmong') },
+        { id: ComparisonOperator.NotEquals, name: this.translatePipe.transform('cafe_filters_operator_isNotAmong') },
       ],
       fields: [this.formlyConfiguration.subdomain],
     },
