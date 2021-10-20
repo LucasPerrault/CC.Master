@@ -2,6 +2,7 @@
 
 <ng-template #isNotLoading>
   <cc-account-overview [account]="luccaAccount"
+                       [isExpanded]="true"
                        [balance]="luccaBalance$ | async"
                        (updateFilters)="updateLuccaEntriesFilters($event)">
       <cc-accounting-entry-list ccInfiniteScroll

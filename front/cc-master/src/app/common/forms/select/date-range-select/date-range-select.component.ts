@@ -104,6 +104,9 @@ export class DateRangeSelectComponent implements ControlValueAccessor, Validator
       return;
     }
     if (periodCoverStrategy === EndDateGranularityPolicy.End) {
+      if (!dateRange?.endDate) {
+        return;
+      }
       switch (this.configuration.granularity) {
         case ELuDateGranularity.day:
           return;
