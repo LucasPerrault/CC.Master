@@ -30,6 +30,15 @@ export type AdvancedFilterCombination = IFilter & IFilterCombination;
 export type AdvancedFilter = AdvancedFilterCriterion | AdvancedFilterCombination;
 
 export class AdvancedFilterTypeMapping {
+  public static toAdvancedFilter(
+    values: string[] | number[] | boolean[],
+    operator: ComparisonOperator,
+    toIFilterCriterion: IComparisonFilterCriterionEncapsulation,
+  ): AdvancedFilter {
+    const criterions = values.map(v => this.toCriterion(operator, v, toIFilterCriterion));
+    return AdvancedFilterTypeMapping.combine(criterions, LogicalOperator.Or);
+  }
+
   public static toFilterCombination(operator: LogicalOperator, values: AdvancedFilter[]): AdvancedFilterCombination {
     return { filterElementType: AdvancedFilterType.Logical, operator, values } as AdvancedFilterCombination;
   };
@@ -48,18 +57,10 @@ export class AdvancedFilterTypeMapping {
         : criterions[0];
   }
 
-  public static toCriterions(
-      operator: ComparisonOperator,
-      values: string[] | number[],
-      toIFilterCriterion: IComparisonFilterCriterionEncapsulation,
-  ): AdvancedFilterCriterion[] {
-    return values.map(v => this.toCriterion(operator, v, toIFilterCriterion));
-  }
-
   public static toCriterion(
-      operator: ComparisonOperator,
-      value: string | number | boolean,
-      toIFilterCriterion: IComparisonFilterCriterionEncapsulation,
+    operator: ComparisonOperator,
+    value: string | number | boolean,
+    toIFilterCriterion: IComparisonFilterCriterionEncapsulation,
   ): AdvancedFilterCriterion {
     const comparisonFilterCriterion = AdvancedFilterTypeMapping.toComparisonFilterCriterion(operator, value);
     const filterCriterion = toIFilterCriterion(comparisonFilterCriterion);

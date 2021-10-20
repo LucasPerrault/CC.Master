@@ -1,12 +1,12 @@
 import { Injectable } from '@angular/core';
 
 import {
-  AdvancedFilter, AdvancedFilterFormMapping,
+  AdvancedFilter,
+  AdvancedFilterFormMapping,
   AdvancedFilterTypeMapping,
-  ComparisonOperator,
   IAdvancedFilterAttributes,
   IAdvancedFilterForm,
-  LogicalOperator,
+  IComparisonFilterCriterionEncapsulation,
 } from '../../../common/cafe-filters/advanced-filter-form';
 import { EnvironmentAdvancedFilterApiMappingService } from '../../../environments/advanced-filter';
 import { IAppInstance } from '../../../environments/models/app-instance.interface';
@@ -25,8 +25,7 @@ export class AppContactAdvancedFilterApiMappingService {
   private getAdvancedFilter(attributes: IAdvancedFilterAttributes): AdvancedFilter {
     switch (attributes.filterKey) {
       case AppContactAdvancedFilterKey.AppInstance:
-        const appInstances = attributes.value[attributes.filterKey];
-        return this.getAppInstanceAdvancedFilter(attributes.operator, appInstances);
+        return this.getAppInstanceAdvancedFilter(attributes, c => ({ appInstance: { applicationId: c } }));
       case AppContactAdvancedFilterKey.IsConfirmed:
         return CommonApiMappingStrategies.getIsConfirmedAdvancedFilter(attributes.operator);
       default:
@@ -34,13 +33,11 @@ export class AppContactAdvancedFilterApiMappingService {
     }
   }
 
-  private getAppInstanceAdvancedFilter(operator: ComparisonOperator, appInstances: IAppInstance[]): AdvancedFilter {
-    const criterions = AdvancedFilterTypeMapping.toCriterions(
-        operator,
-        appInstances.map(a => a.id),
-        c => ({ appInstance: { applicationId: c } }),
-    );
-    return AdvancedFilterTypeMapping.combine(criterions, LogicalOperator.Or);
+  private getAppInstanceAdvancedFilter(
+    attributes: IAdvancedFilterAttributes,
+    toIFilterCriterion: IComparisonFilterCriterionEncapsulation,
+  ): AdvancedFilter {
+    const appInstanceIds = attributes.value[attributes.filterKey]?.map((a: IAppInstance) => a.id);
+    return AdvancedFilterTypeMapping.toAdvancedFilter(appInstanceIds, attributes.operator, toIFilterCriterion);
   }
-
 }

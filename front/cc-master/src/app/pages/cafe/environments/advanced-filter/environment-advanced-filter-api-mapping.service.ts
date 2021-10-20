@@ -13,7 +13,6 @@ import {
   IAdvancedFilterForm,
   IComparisonFilterCriterionEncapsulation,
   IFilterCriterionEncapsulation,
-  LogicalOperator,
 } from '../../common/cafe-filters/advanced-filter-form';
 import { IApplication } from '../models/app-instance.interface';
 import { ICountry } from '../models/legal-unit.interface';
@@ -52,17 +51,15 @@ export class EnvironmentAdvancedFilterApiMappingService {
     toIFilterCriterion: IComparisonFilterCriterionEncapsulation,
   ): AdvancedFilter {
     const domainIds = attributes.value[attributes.filterKey]?.map((d: IEnvironmentDomain) => d.id);
-    const criterions = AdvancedFilterTypeMapping.toCriterions(attributes.operator, domainIds, toIFilterCriterion);
-    return AdvancedFilterTypeMapping.combine(criterions, LogicalOperator.And);
+    return AdvancedFilterTypeMapping.toAdvancedFilter(domainIds, attributes.operator, toIFilterCriterion);
   }
 
   private getIsActiveAdvancedFilter(
     operator: ComparisonOperator,
     toIFilterCriterion: IComparisonFilterCriterionEncapsulation,
   ): AdvancedFilter {
-    const query = getComparisonBooleanValue(operator);
-    const comparison = AdvancedFilterTypeMapping.toComparisonFilterCriterion(operator, query);
-    return AdvancedFilterTypeMapping.toFilterCriterion(toIFilterCriterion(comparison));
+    const isActive = getComparisonBooleanValue(operator);
+    return AdvancedFilterTypeMapping.toAdvancedFilter([isActive], operator, toIFilterCriterion);
   }
 
   private getSubdomainAdvancedFilter(
@@ -70,8 +67,7 @@ export class EnvironmentAdvancedFilterApiMappingService {
     toIFilterCriterion: IComparisonFilterCriterionEncapsulation,
   ): AdvancedFilter {
     const subdomains = attributes.value[attributes.filterKey].map((e: IEnvironment) => e.subDomain);
-    const criterions = AdvancedFilterTypeMapping.toCriterions(attributes.operator, subdomains, toIFilterCriterion);
-    return AdvancedFilterTypeMapping.combine(criterions, LogicalOperator.Or);
+    return AdvancedFilterTypeMapping.toAdvancedFilter(subdomains, attributes.operator, toIFilterCriterion);
   }
 
   private getAppInstanceAdvancedFilter(
@@ -79,8 +75,7 @@ export class EnvironmentAdvancedFilterApiMappingService {
     toIFilterCriterion: IComparisonFilterCriterionEncapsulation,
   ): AdvancedFilter {
     const applicationIds = attributes.value[attributes.filterKey].map((a: IApplication) => a.id);
-    const criterions = AdvancedFilterTypeMapping.toCriterions(attributes.operator, applicationIds, toIFilterCriterion);
-    return AdvancedFilterTypeMapping.combine(criterions, LogicalOperator.Or);
+    return AdvancedFilterTypeMapping.toAdvancedFilter(applicationIds, attributes.operator, toIFilterCriterion);
   }
 
   private getCountriesAdvancedFilter(
@@ -88,8 +83,7 @@ export class EnvironmentAdvancedFilterApiMappingService {
     toIFilterCriterion: IComparisonFilterCriterionEncapsulation,
   ): AdvancedFilter {
     const countryIds = attributes.value[attributes.filterKey].map((c: ICountry) => c.id);
-    const criterions = AdvancedFilterTypeMapping.toCriterions(attributes.operator, countryIds, toIFilterCriterion);
-    return AdvancedFilterTypeMapping.combine(criterions, LogicalOperator.Or);
+    return AdvancedFilterTypeMapping.toAdvancedFilter(countryIds, attributes.operator, toIFilterCriterion);
   }
 
   private getCreatedAtAdvancedFilter(
@@ -97,8 +91,7 @@ export class EnvironmentAdvancedFilterApiMappingService {
     toIFilterCriterion: IComparisonFilterCriterionEncapsulation,
   ): AdvancedFilter {
     const createdAt = attributes.value[attributes.filterKey];
-    const comparison = AdvancedFilterTypeMapping.toComparisonFilterCriterion(attributes.operator, createdAt);
-    return AdvancedFilterTypeMapping.toFilterCriterion(toIFilterCriterion(comparison));
+    return AdvancedFilterTypeMapping.toAdvancedFilter([createdAt], attributes.operator, toIFilterCriterion);
   }
 
   private getDistributorsAdvancedFilter(
@@ -106,7 +99,6 @@ export class EnvironmentAdvancedFilterApiMappingService {
     toIFilterCriterion: IComparisonFilterCriterionEncapsulation,
   ): AdvancedFilter {
     const distributorIds = attributes.value[attributes.filterKey]?.map((d: IDistributor) => d.id);
-    const criterions = AdvancedFilterTypeMapping.toCriterions(attributes.operator, distributorIds, toIFilterCriterion);
-    return AdvancedFilterTypeMapping.combine(criterions, LogicalOperator.Or);
+    return AdvancedFilterTypeMapping.toAdvancedFilter(distributorIds, attributes.operator, toIFilterCriterion);
   }
 }

@@ -2,11 +2,12 @@ import { Injectable } from '@angular/core';
 import { IClient } from '@cc/domain/billing/clients';
 
 import {
-  AdvancedFilter, AdvancedFilterFormMapping,
+  AdvancedFilter,
+  AdvancedFilterFormMapping,
   AdvancedFilterTypeMapping,
-  ComparisonOperator, IAdvancedFilterAttributes,
+  IAdvancedFilterAttributes,
   IAdvancedFilterForm,
-  LogicalOperator,
+  IComparisonFilterCriterionEncapsulation,
 } from '../../../common/cafe-filters/advanced-filter-form';
 import { EnvironmentAdvancedFilterApiMappingService } from '../../../environments/advanced-filter';
 import { CommonApiMappingStrategies } from '../../common/advanced-filter/common-api-mapping-strategies';
@@ -24,8 +25,7 @@ export class ClientContactAdvancedFilterApiMappingService {
   private getAdvancedFilter(attributes: IAdvancedFilterAttributes): AdvancedFilter {
     switch (attributes.filterKey) {
       case ClientContactAdvancedFilterKey.Clients:
-        const clients = attributes.value[attributes.filterKey];
-        return this.getClientsAdvancedFilter(attributes.operator, clients);
+        return this.getClientsAdvancedFilter(attributes, c => ({ client: c }));
       case ClientContactAdvancedFilterKey.IsConfirmed:
         return CommonApiMappingStrategies.getIsConfirmedAdvancedFilter(attributes.operator);
       default:
@@ -33,14 +33,11 @@ export class ClientContactAdvancedFilterApiMappingService {
     }
   }
 
-  private getClientsAdvancedFilter(operator: ComparisonOperator, clients: IClient[]): AdvancedFilter {
-    const criterions = AdvancedFilterTypeMapping.toCriterions(
-        operator,
-        clients.map(c => c.id),
-        c => ({ client: c }),
-    );
-
-    return AdvancedFilterTypeMapping.combine(criterions, LogicalOperator.And);
+  private getClientsAdvancedFilter(
+    attributes: IAdvancedFilterAttributes,
+    toIFilterCriterion: IComparisonFilterCriterionEncapsulation,
+  ): AdvancedFilter {
+    const clientIds = attributes.value[attributes.filterKey]?.map((c: IClient) => c.id);
+    return AdvancedFilterTypeMapping.toAdvancedFilter(clientIds, attributes.operator, toIFilterCriterion);
   }
-
 }

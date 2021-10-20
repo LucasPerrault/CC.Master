@@ -8,11 +8,7 @@ import {
 export class CommonApiMappingStrategies {
 
     public static getIsConfirmedAdvancedFilter(operator: ComparisonOperator): AdvancedFilter {
-        const criterion = AdvancedFilterTypeMapping.toCriterion(
-            ComparisonOperator.Equals,
-            getComparisonBooleanValue(operator),
-            c => ({ isConfirmed: c }),
-        );
-        return AdvancedFilterTypeMapping.toFilterCriterion(criterion);
+      const isConfirmed = getComparisonBooleanValue(operator);
+      return AdvancedFilterTypeMapping.toAdvancedFilter([isConfirmed], ComparisonOperator.Equals, c => ({ isConfirmed: c }));
     }
 }
