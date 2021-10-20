@@ -7,6 +7,7 @@ using Billing.Contracts.Domain.Environments;
 using Billing.Products.Domain;
 using Distributors.Domain.Models;
 using Lucca.Core.Api.Abstractions.Paging;
+using Lucca.Core.Api.Web.ModelBinding.Paging;
 using Lucca.Core.Api.Web.ModelBinding.Sorting;
 using Lucca.Core.Shared.Domain.Exceptions;
 using Microsoft.AspNetCore.Mvc;
@@ -22,6 +23,7 @@ namespace Billing.Contracts.Web
 {
     [ApiController, Route("/api/contracts")]
     [ApiSort(nameof(Contract.Id))]
+    [DefaultLimit(25)]
     public class ContractsController
     {
         private readonly ContractsRepository _contractsRepository;
