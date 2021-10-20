@@ -13,6 +13,9 @@ namespace AdvancedFilters.Domain.Contacts.Models
         public int Id { get; set; }
         public int AppInstanceId { get; set; }
         public int UserId { get; set; }
+        public string UserFirstName { get; set; }
+        public string UserLastName { get; set; }
+        public string UserMail { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime? ExpiresAt { get; set; }
         public bool IsConfirmed { get; set; }

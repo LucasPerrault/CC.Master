@@ -15,6 +15,9 @@ namespace AdvancedFilters.Infra.Storage.Configurations
             builder.Property(c => c.RoleId).HasColumnName("RoleId").IsRequired();
             builder.Property(c => c.RoleCode).HasColumnName("RoleCode").IsRequired().HasMaxLength(50);
             builder.Property(c => c.UserId).HasColumnName("UserId").IsRequired();
+            builder.Property(c => c.UserFirstName).HasColumnName("UserFirstName");
+            builder.Property(c => c.UserLastName).HasColumnName("UserLastName");
+            builder.Property(c => c.UserMail).HasColumnName("UserMail");
             builder.Property(c => c.CreatedAt).HasColumnName("CreatedAt").IsRequired();
             builder.Property(c => c.ExpiresAt).HasColumnName("ExpiresAt");
             builder.Property(c => c.IsConfirmed).HasColumnName("IsConfirmed").IsRequired();

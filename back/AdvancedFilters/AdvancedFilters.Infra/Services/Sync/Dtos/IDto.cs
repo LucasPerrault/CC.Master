@@ -64,6 +64,9 @@ namespace AdvancedFilters.Infra.Services.Sync.Dtos
 
     internal class ContactDtoUser
     {
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+        public string Mail { get; set; }
         public int EstablishmentId { get; set; }
     }
 
@@ -81,10 +84,13 @@ namespace AdvancedFilters.Infra.Services.Sync.Dtos
 
         public List<AppContactDto> Items { get; set; }
 
-        AppContact ToAppContact(AppContactDto i)
+        AppContact ToAppContact(AppContactDto c)
         {
-            i.EstablishmentId = i.User.EstablishmentId;
-            return i;
+            c.UserFirstName = c.User.FirstName;
+            c.UserLastName = c.User.LastName;
+            c.UserMail = c.User.Mail;
+            c.EstablishmentId = c.User.EstablishmentId;
+            return c;
         }
 
         public List<AppContact> ToItems() => Items.Select(ToAppContact).ToList();
@@ -101,21 +107,24 @@ namespace AdvancedFilters.Infra.Services.Sync.Dtos
 
         public List<ClientContactDto> Items { get; set; }
 
-        ClientContact ToClientContact(ClientContactDto i)
+        ClientContact ToClientContact(ClientContactDto c)
         {
-            i.EstablishmentId = i.User.EstablishmentId;
+            c.UserFirstName = c.User.FirstName;
+            c.UserLastName = c.User.LastName;
+            c.UserMail = c.User.Mail;
+            c.EstablishmentId = c.User.EstablishmentId;
             return new ClientContact
             {
-                Id = i.Id,
-                ClientId = i.ClientId,
-                EnvironmentId = i.EnvironmentId,
-                RoleCode = i.Role.Code,
-                CreatedAt = i.CreatedAt,
-                ExpiresAt = i.ExpiresAt,
-                EstablishmentId = i.EstablishmentId,
-                IsConfirmed = i.IsConfirmed,
-                RoleId = i.RoleId,
-                UserId = i.UserId
+                Id = c.Id,
+                ClientId = c.ClientId,
+                EnvironmentId = c.EnvironmentId,
+                RoleCode = c.Role.Code,
+                CreatedAt = c.CreatedAt,
+                ExpiresAt = c.ExpiresAt,
+                EstablishmentId = c.EstablishmentId,
+                IsConfirmed = c.IsConfirmed,
+                RoleId = c.RoleId,
+                UserId = c.UserId
             };
         }
 
@@ -132,11 +141,14 @@ namespace AdvancedFilters.Infra.Services.Sync.Dtos
 
         public List<SpecializedContactDto> Items { get; set; }
 
-        SpecializedContact ToSpecializedContact(SpecializedContactDto i)
+        SpecializedContact ToSpecializedContact(SpecializedContactDto c)
         {
-            i.EstablishmentId = i.User.EstablishmentId;
-            i.RoleCode = i.Role.Code;
-            return i;
+            c.UserFirstName = c.User.FirstName;
+            c.UserLastName = c.User.LastName;
+            c.UserMail = c.User.Mail;
+            c.EstablishmentId = c.User.EstablishmentId;
+            c.RoleCode = c.Role.Code;
+            return c;
         }
 
         public List<SpecializedContact> ToItems() => Items.Select(ToSpecializedContact).ToList();
