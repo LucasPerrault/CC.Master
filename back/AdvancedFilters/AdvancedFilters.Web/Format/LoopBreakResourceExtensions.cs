@@ -136,6 +136,8 @@ namespace AdvancedFilters.Web.Format
             src.Establishment = src.Establishment.WithoutLoop(getBreaker());
         }
 
+        public static IEnumerable<Client> WithoutLoop(this IEnumerable<Client> list)
+            => list.WithoutLoop(new RootLoopBreaker());
         private static Client WithoutLoop(this Client item, LoopBreaker breaker)
         {
             return breaker.GetWithoutLoop(item, Resources.Client, (e, b) => e.BreakLoop(b));
