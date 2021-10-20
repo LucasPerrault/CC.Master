@@ -67,7 +67,7 @@ export class ContractActionRestrictionsService {
   }
 
   public hasContractEntries(context: IContractValidationContext): boolean {
-    return this.hasLetteredContractEntries(context) && this.hasUnletteredContractEntries(context);
+    return !!context?.contractEntries?.length;
   }
 
   public hasUnletteredContractEntries(context: IContractValidationContext): boolean {
