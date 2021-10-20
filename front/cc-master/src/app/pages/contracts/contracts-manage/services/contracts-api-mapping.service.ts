@@ -91,7 +91,7 @@ export class ContractsApiMappingService {
       return params.delete(ContractQueryParamKey.Name);
     }
 
-    return params.set(ContractQueryParamKey.Name, `like,${ encodeURIComponent(name) }`);
+    return params.set(ContractQueryParamKey.Name, `like,${ name }`);
   }
 
   private setClients(params: HttpParams, clients: IClient[]): HttpParams {
