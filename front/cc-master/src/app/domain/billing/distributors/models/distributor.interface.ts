@@ -1,5 +1,6 @@
-export const distributorFields = 'id,name';
+export const distributorFields = 'id,name,salesforceId';
 export interface IDistributor {
-  id: string;
+  id: number;
+  salesforceId: string;
   name: string;
 }

@@ -9,8 +9,8 @@
   </thead>
   <tbody class="table-body">
   <tr class="table-body-row" *ngFor="let priceList of offerPriceList.priceLists">
-    <td class="table-body-row-cell mod-alignRight">{{ priceList.lowerBound | currency : offerPriceList.currency.name }}</td>
-    <td class="table-body-row-cell mod-alignRight">{{ priceList.upperBound | currency: offerPriceList.currency.name }}</td>
+    <td class="table-body-row-cell mod-alignRight">{{ priceList.lowerBound }}</td>
+    <td class="table-body-row-cell mod-alignRight">{{ priceList.upperBound }}</td>
     <td class="table-body-row-cell mod-alignRight">{{ priceList.unitPrice | currency : offerPriceList.currency.name }}</td>
     <td class="table-body-row-cell mod-alignRight">{{ priceList.fixedPrice | currency : offerPriceList.currency.name }}</td>
   </tr>

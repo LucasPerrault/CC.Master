@@ -30,8 +30,7 @@
                                textfieldClass="palette-grey mod-longest u-marginTopStandard">
     </cc-distributor-api-select>
     <div class="textfield-messages">
-      <a *ngIf="!!draftFormInformation?.externalDistributorUrl"
-         class="textfield-messages-helper u-textSmaller" (click)="redirectToExternalDistributorUrl()">
+      <a *ngIf="!!distributor" class="textfield-messages-helper u-textSmaller" (click)="redirectToExternalDistributorUrl()">
         {{ "front_draftForm_externalDistributorUrl_link" | translate }}
       </a>
       <span *ngIf="distributorRebate$ | async" class="textfield-messages-helper u-textSmaller u-right" >

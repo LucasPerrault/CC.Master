@@ -11,7 +11,7 @@ import {
 } from '@angular/forms';
 import { SelectDisplayMode } from '@cc/common/forms';
 import { IContractForm, IContractMinimalBillable, MinimalBillingService } from '@cc/domain/billing/contracts';
-import { DistributorsService } from '@cc/domain/billing/distributors';
+import { DistributorsService, IDistributor } from '@cc/domain/billing/distributors';
 import { LuModal } from '@lucca-front/ng/modal';
 import { BehaviorSubject, merge, Subject } from 'rxjs';
 import { filter, map, take, takeUntil } from 'rxjs/operators';
@@ -59,6 +59,10 @@ export class ContractsDraftFormComponent implements ControlValueAccessor, Valida
 
   public selectDisplayMode = SelectDisplayMode;
   public distributorRebate$: BehaviorSubject<number> = new BehaviorSubject<number>(0);
+
+  public get distributor(): IDistributor {
+    return this.formGroup.get(DraftFormKey.Distributor).value;
+  }
 
   public get offerApiFilters(): string[] {
     const product = this.formGroup.get(DraftFormKey.Product).value;
@@ -143,7 +147,12 @@ export class ContractsDraftFormComponent implements ControlValueAccessor, Valida
   }
 
   public redirectToExternalDistributorUrl(): void {
-    window.open(this.draftFormInformation.externalDistributorUrl);
+    if (!this.distributor) {
+      return;
+    }
+
+    const salesforceUrl = 'https://eu4.salesforce.com';
+    window.open(`${ salesforceUrl }/${ this.distributor.salesforceId }`);
   }
 
   public validate(control: AbstractControl): ValidationErrors | null {
