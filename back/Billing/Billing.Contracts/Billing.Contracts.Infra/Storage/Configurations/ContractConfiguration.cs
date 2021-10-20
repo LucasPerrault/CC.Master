@@ -13,9 +13,7 @@ namespace Billing.Contracts.Infra.Storage.Configurations
             builder.Property(d => d.ExternalId).HasColumnName("ExternalId");
             builder.Property(d => d.ClientId).HasColumnName("ClientId");
             builder.Property(d => d.ClientExternalId).HasColumnName("ClientExternalId");
-            builder.Property(d => d.EnvironmentId).HasColumnName("EnvironmentId");
             builder.Property(d => d.DistributorId).HasColumnName("DistributorId");
-            builder.Property(d => d.EnvironmentSubdomain).HasColumnName("EnvironmentSubdomain");
             builder.Property(d => d.CreatedAt).HasColumnName("CreatedAt");
 
             builder.Property(d => d.TheoreticalStartOn).HasColumnName("TheoreticalStartOn");
@@ -28,6 +26,9 @@ namespace Billing.Contracts.Infra.Storage.Configurations
             builder.HasOne(d => d.Distributor).WithMany().HasForeignKey(d => d.DistributorId);
             builder.HasOne(d => d.Client).WithMany(c => c.Contracts).HasForeignKey(d => d.ClientId);
             builder.HasOne(d => d.CommercialOffer).WithMany().HasForeignKey(d => d.CommercialOfferId);
+
+            builder.Property(d => d.EnvironmentId).HasColumnName("EnvironmentId");
+            builder.HasOne(d => d.Environment).WithMany().HasForeignKey(d => d.EnvironmentId);
 
 
             builder.Property(d => d.CountEstimation).HasColumnName("CountEstimation");

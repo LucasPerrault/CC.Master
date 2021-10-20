@@ -14,8 +14,7 @@ namespace Billing.Contracts.Domain.Contracts
         public int Id { get; set; }
         public Guid ExternalId { get; set; }
         public Guid ClientExternalId { get; set; }
-        public int? EnvironmentId { get; set; }
-        public string EnvironmentSubdomain { get; set; }
+
         public DateTime CreatedAt { get; set; }
 
         public DateTime TheoreticalStartOn { get; set; }
@@ -30,6 +29,8 @@ namespace Billing.Contracts.Domain.Contracts
         public int ClientId { get; set; }
         public Client Client { get; set; }
 
+        public int? EnvironmentId { get; set; }
+        public ContractEnvironment Environment { get; set; }
 
         public int CommercialOfferId { get; set; }
         public CommercialOffer CommercialOffer { get; set; }

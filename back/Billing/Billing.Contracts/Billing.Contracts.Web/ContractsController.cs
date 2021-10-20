@@ -82,8 +82,7 @@ namespace Billing.Contracts.Web
             public Guid ExternalId { get; set; }
             public Guid ClientExternalId { get; set; }
             public int? EnvironmentId { get; set; }
-            public string EnvironmentSubdomain { get; set; }
-
+            public ContractEnvironment Environment { get; set; }
             public DateTime CreatedAt { get; set; }
 
             public DateTime TheoreticalStartOn { get; set; }
@@ -117,7 +116,7 @@ namespace Billing.Contracts.Web
                 ExternalId = contract.ExternalId;
                 ClientExternalId = contract.ClientExternalId;
                 EnvironmentId = contract.EnvironmentId;
-                EnvironmentSubdomain = contract.EnvironmentSubdomain;
+                Environment = contract.Environment;
                 TheoreticalStartOn = contract.TheoreticalStartOn;
                 TheoreticalEndOn = contract.TheoreticalEndOn;
                 CreatedAt = contract.CreatedAt;
@@ -161,7 +160,6 @@ namespace Billing.Contracts.Web
     {
         public static CompareNullableDateTime NotArchived() => CompareDateTime.IsStrictlyAfter(DateTime.Now).OrNull();
         public HashSet<string> Search { get; set; } = new HashSet<string>();
-        public HashSet<string> Subdomain { get; set; } = new HashSet<string>();
         public HashSet<int> EnvironmentId { get; set; } = new HashSet<int>();
         public DateTime? WasStartedOn { get; set; } = null;
         public DateTime? WasNotEndedOn { get; set; } = null;
@@ -170,7 +168,6 @@ namespace Billing.Contracts.Web
         public ContractFilter ToFilter() => new ContractFilter
         {
             Search = Search,
-            Subdomains = Subdomain,
             EnvironmentIds = EnvironmentId,
             Id = Id,
             ArchivedAt = NotArchived(),

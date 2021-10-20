@@ -78,7 +78,7 @@ namespace Billing.Contracts.Infra.Storage.Stores
             {
                 NoAccessRight _ => _ => false,
                 DistributorAccessRight r => c => c.Contracts.Any(contract => contract.DistributorId == r.DistributorId),
-                EnvironmentAccessRight r => c => c.Contracts.Any(contract => contract.EnvironmentSubdomain == r.Subdomain),
+                EnvironmentAccessRight r => c => c.Contracts.Any(contract => contract.Environment.Subdomain == r.Subdomain),
                 AllAccessRight _ => _ => true,
                 _ => throw new ApplicationException($"Unknown type of contract filter right {accessRight}")
             };

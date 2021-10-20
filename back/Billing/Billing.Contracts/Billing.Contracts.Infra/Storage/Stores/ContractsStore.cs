@@ -1,4 +1,4 @@
-using Billing.Contracts.Domain.Contracts;
+﻿using Billing.Contracts.Domain.Contracts;
 using Billing.Contracts.Domain.Contracts.Interfaces;
 using Lucca.Core.Api.Abstractions.Paging;
 using Lucca.Core.Api.Queryable.Paging;
@@ -50,6 +50,7 @@ namespace Billing.Contracts.Infra.Storage.Stores
                 .Include(c => c.Attachments)
                 .Include(c => c.Client)
                 .Include(c => c.Distributor)
+                .Include(c => c.Environment)
                 .Include(c => c.CommercialOffer).ThenInclude(o => o.Product)
                 .WhereHasRight(accessRight)
                 .WhereMatches(filter);
@@ -61,7 +62,6 @@ namespace Billing.Contracts.Infra.Storage.Stores
         public static IQueryable<Contract> WhereMatches(this IQueryable<Contract> contracts, ContractFilter filter)
         {
             return contracts.Search(filter.Search)
-                .WhenNotNullOrEmpty(filter.Subdomains).ApplyWhere(c => filter.Subdomains.Contains(c.EnvironmentSubdomain))
                 .Apply(filter.ArchivedAt).To(c => c.ArchivedAt)
                 .Apply(filter.StartsOn).To(ContractExpressions.StartsOn)
                 .Apply(filter.EndsOn).To(ContractExpressions.EndsOn)
@@ -84,7 +84,7 @@ namespace Billing.Contracts.Infra.Storage.Stores
 
             var startWith = usableWords.Select<string, Expression<Func<Contract, bool>>>
             (
-                w => c => c.EnvironmentSubdomain.StartsWith(w) || c.CommercialOffer.Name.StartsWith(w) || c.Id.ToString() == w
+                w => c => c.Environment.Subdomain.StartsWith(w) || c.CommercialOffer.Name.StartsWith(w) || c.Id.ToString() == w
             ).ToArray().CombineSafelyAnd();
 
             return contracts.Where(fulltext.SmartOrElse(startWith));

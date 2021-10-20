@@ -3,6 +3,7 @@ using Billing.Contracts.Application.Clients;
 using Billing.Contracts.Domain.Clients;
 using Billing.Contracts.Domain.Clients.Interfaces;
 using Billing.Contracts.Domain.Contracts;
+using Billing.Contracts.Domain.Environments;
 using Billing.Contracts.Domain.Exceptions;
 using Billing.Contracts.Infra.Storage;
 using Billing.Contracts.Infra.Storage.Stores;
@@ -240,7 +241,7 @@ namespace Billing.Contracts.Application.Tests
                 Id = id,
                 Distributor = distributor,
                 DistributorId = distributor.Id,
-                EnvironmentSubdomain = subdomain
+                Environment = new ContractEnvironment { Subdomain = subdomain }
             };
         }
 
