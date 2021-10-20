@@ -10,9 +10,10 @@ import { IAccount } from '../../enums/account-type.enum';
 export class AccountOverviewComponent {
   @Input() account: IAccount;
   @Input() balance: number;
+  @Input() isExpanded = false;
+
   @Output() updateFilters: EventEmitter<boolean> = new EventEmitter<boolean>();
 
-  public isExpanded = false;
   public showLetteredEntriesDisplay = false;
 
   constructor() { }
