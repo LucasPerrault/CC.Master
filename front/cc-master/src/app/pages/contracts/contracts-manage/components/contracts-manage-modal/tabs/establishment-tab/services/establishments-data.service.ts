@@ -33,7 +33,7 @@ export class EstablishmentsDataService {
   public createAttachment$(contractId: number, establishmentId: number, start: Date, nbMonthFree: number): Observable<void> {
     return this.httpClient.post<void>(this.attachmentsEndpoint, {
       contractId,
-      start,
+      start: this.apiV3DateService.toApiV3DateFormat(start),
       nbMonthFree,
       legalEntityId: establishmentId,
     });
