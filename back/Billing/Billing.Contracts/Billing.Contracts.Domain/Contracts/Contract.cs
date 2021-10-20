@@ -1,4 +1,5 @@
 ﻿using Billing.Contracts.Domain.Clients;
+using Billing.Contracts.Domain.Environments;
 using Billing.Products.Domain;
 using Distributors.Domain.Models;
 using System;
@@ -82,16 +83,5 @@ namespace Billing.Contracts.Domain.Contracts
         AnnualNovember = 11,
         AnnualDecember = 12,
         Quarterly = 13,
-    }
-
-    public class EstablishmentAttachment
-    {
-        public int Id { get; set; }
-        public int ContractId { get; set; }
-        public int EstablishmentId { get; set; }
-        public int EstablishmentRemoteId { get; set; }
-        public string EstablishmentName { get; set; }
-        public DateTime StartsOn { get; set; }
-        public DateTime? EndsOn { get; set; }
     }
 }

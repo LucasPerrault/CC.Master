@@ -1,6 +1,9 @@
-﻿using Billing.Contracts.Application.Clients;
+using Billing.Contracts.Application;
+using Billing.Contracts.Application.Clients;
 using Billing.Contracts.Domain.Clients;
 using Billing.Contracts.Domain.Contracts;
+using Billing.Contracts.Domain.Contracts.Health;
+using Billing.Contracts.Domain.Environments;
 using Billing.Products.Domain;
 using Distributors.Domain.Models;
 using Lucca.Core.Api.Abstractions.Paging;
@@ -22,10 +25,12 @@ namespace Billing.Contracts.Web
     public class ContractsController
     {
         private readonly ContractsRepository _contractsRepository;
+        private readonly ContractHealthHelper _healthHelper;
 
-        public ContractsController(ContractsRepository contractsRepository)
+        public ContractsController(ContractsRepository contractsRepository, ContractHealthHelper healthHelper)
         {
             _contractsRepository = contractsRepository;
+            _healthHelper = healthHelper;
         }
 
         [HttpGet]
@@ -40,6 +45,18 @@ namespace Billing.Contracts.Web
                 Prev = page.Prev,
                 Items = page.Items.Select(p => new ContractDto(p))
             };
+        }
+
+        [HttpGet("health")]
+        [ForbidIfMissing(Operation.ReadContracts)]
+        public Task<List<ContractHealth>> GetHealthAsync([FromQuery]HashSet<int> environmentId)
+        {
+            if (environmentId == null || !environmentId.Any())
+            {
+                throw new BadRequestException("Query parameter environmentId is mandatory");
+            }
+
+            return _healthHelper.GetHealthAsync(environmentId);
         }
 
         [HttpGet("{id:int}")]
@@ -148,6 +165,7 @@ namespace Billing.Contracts.Web
         public static CompareNullableDateTime NotArchived() => CompareDateTime.IsStrictlyAfter(DateTime.Now).OrNull();
         public HashSet<string> Search { get; set; } = new HashSet<string>();
         public HashSet<string> Subdomain { get; set; } = new HashSet<string>();
+        public HashSet<int> EnvironmentId { get; set; } = new HashSet<int>();
         public DateTime? WasStartedOn { get; set; } = null;
         public DateTime? WasNotEndedOn { get; set; } = null;
         public int? Id { get; set; }
@@ -156,6 +174,7 @@ namespace Billing.Contracts.Web
         {
             Search = Search,
             Subdomains = Subdomain,
+            EnvironmentIds = EnvironmentId,
             Id = Id,
             ArchivedAt = NotArchived(),
             StartsOn = WasStartedOn.HasValue ? CompareDateTime.IsBeforeOrEqual(WasStartedOn.Value) : CompareDateTime.Bypass(),

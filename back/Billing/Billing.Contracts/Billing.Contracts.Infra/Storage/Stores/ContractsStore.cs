@@ -1,4 +1,4 @@
-﻿using Billing.Contracts.Domain.Contracts;
+using Billing.Contracts.Domain.Contracts;
 using Billing.Contracts.Domain.Contracts.Interfaces;
 using Lucca.Core.Api.Abstractions.Paging;
 using Lucca.Core.Api.Queryable.Paging;
@@ -66,6 +66,7 @@ namespace Billing.Contracts.Infra.Storage.Stores
                 .Apply(filter.StartsOn).To(ContractExpressions.StartsOn)
                 .Apply(filter.EndsOn).To(ContractExpressions.EndsOn)
                 .WhenHasValue(filter.Id).ApplyWhere(c => c.Id == filter.Id.Value)
+                .WhenNotNullOrEmpty(filter.EnvironmentIds).ApplyWhere(c => c.EnvironmentId.HasValue &&  filter.EnvironmentIds.Contains(c.EnvironmentId.Value))
                 .When(filter.ClientExternalId.HasValue).ApplyWhere(c => c.ClientExternalId == filter.ClientExternalId.Value);
         }
 
