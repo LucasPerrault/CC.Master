@@ -27,9 +27,9 @@ namespace Instances.Application.Instances
 
         public async Task<GithubBranch> CreateAsync(GithubBranch branch)
         {
-            branch = await _githubBranchesStore.CreateAsync(branch);
-            await _previewConfigurationsRepository.CreateByBranchAsync(branch);
-            return branch;
+            var createdBranch = await _githubBranchesStore.CreateAsync(branch);
+            await _previewConfigurationsRepository.CreateByBranchAsync(createdBranch);
+            return createdBranch;
         }
 
         public async Task<GithubBranch> CreateAsync(List<CodeSource> codeSources, string branchName, GithubApiCommit commit)
