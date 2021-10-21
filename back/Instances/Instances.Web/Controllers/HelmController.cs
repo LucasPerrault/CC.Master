@@ -36,7 +36,7 @@ namespace Instances.Web.Controllers
         {
             if (query.LastStable && !string.IsNullOrEmpty(query.GitRef))
             {
-                throw new BadRequestException($"{nameof(query.LastStable)} and {nameof(query.GitRef)} could not be defined at the same time");
+                throw new BadRequestException($"{nameof(query.LastStable)} and {nameof(query.GitRef)} cannot not be defined at the same time");
             }
 
             return _helmRepository.GetAllReleasesAsync(query.ReleaseName, query.GitRef, query.LastStable);

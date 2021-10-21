@@ -58,7 +58,7 @@ namespace Instances.Application.Instances
             {
                 codeSources = await _codeSourcesStore.GetAsync(new CodeSourceFilter
                 {
-                    GithubRepo = releaseName != null ? $"{GithubOrganisationUrl}{releaseName}" : null,
+                    GithubRepo = $"{GithubOrganisationUrl}{releaseName}",
                     ExcludedLifecycle = new HashSet<CodeSourceLifecycleStep> { CodeSourceLifecycleStep.Deleted }
                 });
                 if (!codeSources.Any())
