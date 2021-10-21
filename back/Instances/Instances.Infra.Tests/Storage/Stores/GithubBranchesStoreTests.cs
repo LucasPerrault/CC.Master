@@ -6,6 +6,7 @@ using Instances.Infra.Storage;
 using Instances.Infra.Storage.Stores;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Testing.Infra;
 using Xunit;
@@ -90,6 +91,43 @@ namespace Instances.Infra.Tests.Storage.Stores
 
             fourth.Should().NotBeNull();
             fourth.HeadCommitMessage.Should().Be(second.HeadCommitMessage);
+        }
+
+        [Fact]
+        public async Task GetProductionBranchesAsync()
+        {
+            var codeSource1 = new CodeSource { Id = 1, Lifecycle = CodeSourceLifecycleStep.InProduction };
+            var codeSource2 = new CodeSource { Id = 2, Lifecycle = CodeSourceLifecycleStep.InProduction };
+            await _dbContext.AddRangeAsync(new[]
+            {
+                codeSource1,
+                codeSource2
+            });
+            await _dbContext.AddRangeAsync(new[]
+            {
+                new CodeSourceProductionVersion { Id = 1, BranchName = "v0.1.0", CodeSourceId = codeSource1.Id },
+                new CodeSourceProductionVersion { Id = 2, BranchName = "v0.2.0", CodeSourceId = codeSource1.Id },
+                new CodeSourceProductionVersion { Id = 3, BranchName = "v1.0.0", CodeSourceId = codeSource2.Id },
+                new CodeSourceProductionVersion { Id = 4, BranchName = "v0.3.0", CodeSourceId = codeSource1.Id }
+            });
+            await _dbContext.AddRangeAsync(new[]
+            {
+                new GithubBranch { Id= 1, Name = "branch1", HelmChart = "helm1", CodeSources = new List<CodeSource> { codeSource1 } },
+                new GithubBranch { Id= 2, Name = "v0.1.0", HelmChart = "helm2", CodeSources = new List<CodeSource> { codeSource1 } },
+                new GithubBranch { Id= 3, Name = "v0.2.0", HelmChart = "helm3", CodeSources = new List<CodeSource> { codeSource1 } },
+                new GithubBranch { Id= 4, Name = "v1.0.0", HelmChart = "helm4", CodeSources = new List<CodeSource> { codeSource2 } },
+                new GithubBranch { Id= 5, Name = "v0.3.0", HelmChart = "helm5", CodeSources = new List<CodeSource> { codeSource1 } },
+
+            }) ;
+
+            await _dbContext.SaveChangesAsync();
+
+            codeSource1 = await _dbContext.Set<CodeSource>().FindAsync(codeSource1.Id);
+
+            var result = await _githubBranchesStore.GetProductionBranchesAsync(new List<CodeSource> { codeSource1 });
+
+            result.Should().HaveCount(1);
+            result.First().Value.HelmChart.Should().Be("helm5");
         }
     }
 }

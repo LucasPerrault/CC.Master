@@ -19,6 +19,7 @@ namespace Instances.Infra.Storage.Configurations
             builder.Property(b => b.DeletedAt).HasColumnName("deletedAt");
             builder.Property(b => b.HeadCommitHash).HasColumnName("headCommitHash");
             builder.Property(b => b.HeadCommitMessage).HasColumnName("headCommitMessage");
+            builder.Property(b => b.HelmChart).HasColumnName("helmChart");
 
             builder
                 .HasMany(b => b.CodeSources)

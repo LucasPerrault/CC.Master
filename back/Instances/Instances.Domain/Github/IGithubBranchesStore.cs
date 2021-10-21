@@ -1,3 +1,4 @@
+using Instances.Domain.CodeSources;
 using Instances.Domain.CodeSources.Filtering;
 using Instances.Domain.Github.Models;
 using System.Collections.Generic;
@@ -11,6 +12,7 @@ namespace Instances.Domain.Github
         Task<List<GithubBranch>> CreateAsync(IEnumerable<GithubBranch> branch);
         Task<GithubBranch> GetFirstAsync(GithubBranchFilter githubBranchFilter);
         Task<List<GithubBranch>> GetAsync(GithubBranchFilter githubBranchFilter);
+        Task<Dictionary<CodeSource, GithubBranch>> GetProductionBranchesAsync(IEnumerable<CodeSource> codeSources);
         Task<GithubBranch> UpdateAsync(GithubBranch existingBranch);
         Task UpdateAsync(IEnumerable<GithubBranch> existingBranches);
     }
