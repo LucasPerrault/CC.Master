@@ -17,6 +17,7 @@ namespace Instances.Web.Webhooks
         }
 
         public Task<IActionResult> HandleGithubAsync(HttpRequest request) => _githubHandler.HandleGithubAsync(request);
+
         public Task<IActionResult> HandleHarborAsync(HarborWebhookPayload payload) => _harborWebhookHandler.HandleHarborAsync(payload);
     }
 }

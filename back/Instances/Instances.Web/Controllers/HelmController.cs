@@ -22,6 +22,7 @@ namespace Instances.Web.Controllers
         }
 
         [HttpPost]
+        [ForbidIfMissing(Operation.EditGitHubBranchesAndPR)]
         public Task CreateHelmAsync([FromBody] HelmCreationDto helmCreationDto)
             => _helmRepository.CreateHelmAsync(
                 helmCreationDto.ReleaseName,

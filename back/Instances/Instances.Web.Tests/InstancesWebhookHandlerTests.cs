@@ -79,7 +79,7 @@ namespace Instances.Web.Tests.Controllers
             webApplicationFactory.Mocks.AddScoped(sp => new InstancesWebhookHandler(null, sp.GetRequiredService<HarborWebhookHandler>()));
             webApplicationFactory.Mocks.AddScoped(sp => new HarborWebhookHandler(sp.GetRequiredService<IHarborWebhookService>()));
 
-            var httpClient = webApplicationFactory.CreateClient();
+            var httpClient = webApplicationFactory.CreateAuthenticatedClient();
 
             var content = new StringContent(body, Encoding.UTF8, "application/json");
             var response = await httpClient.PostAsync("/api/webhooks/harbor", content);
