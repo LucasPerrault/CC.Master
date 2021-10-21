@@ -12,6 +12,7 @@ namespace Instances.Application.CodeSources
         Task<CodeSource> CreateAsync(CodeSource codeSource);
         Task<CodeSource> UpdateAsync(int id, CodeSourceUpdate codeSourceUpdate);
 
+        Task<List<CodeSource>> GetNonDeletedByRepositoryUrlAsync(string repositoryUrl);
         Task<IEnumerable<CodeSource>> FetchFromRepoAsync(string repoUrl);
         Task<CodeSource> GetByIdAsync(int id);
         Task UpdateProductionVersionAsync(CodeSourceProductionVersionDto dto);

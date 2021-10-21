@@ -1,4 +1,4 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 
@@ -17,9 +17,9 @@ namespace CloudControl.Web.Tests.Mocks
                 services.AddSingleton(type, singleton);
             }
 
-            foreach (var (type, scoped) in Scoped)
+            foreach (var (type, service) in Scoped)
             {
-                services.AddScoped(type, scoped);
+                services.AddScoped(type, service);
             }
 
             foreach (var (type, service) in Transients)
@@ -38,9 +38,9 @@ namespace CloudControl.Web.Tests.Mocks
             AddSingleton(sp => singleton);
         }
 
-        public void AddScoped<T>(Func<IServiceProvider, T> func) where T : class
+        public void AddScoped<T>(Func<IServiceProvider, T> serviceFunc) where T : class
         {
-            Scoped.Add((typeof(T), func));
+            Scoped.Add((typeof(T), serviceFunc));
         }
 
         public void AddScoped<T>(T scoped) where T : class

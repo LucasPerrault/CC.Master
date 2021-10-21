@@ -1,7 +1,7 @@
 using FluentAssertions;
 using Instances.Domain.CodeSources;
+using Instances.Domain.Github;
 using Instances.Infra.CodeSources;
-using Instances.Infra.Github;
 using Microsoft.Extensions.Logging;
 using Moq;
 using Moq.Protected;

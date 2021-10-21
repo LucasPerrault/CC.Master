@@ -1,6 +1,8 @@
+using Instances.Domain.Github.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json.Serialization;
 
 namespace Instances.Domain.CodeSources
 {
@@ -43,6 +45,15 @@ namespace Instances.Domain.CodeSources
         public CodeSourceLifecycleStep Lifecycle { get; set; }
         public CodeSourceConfig Config { get; set; }
 
-        public CodeSourceProductionVersion CurrentProductionVersion { get; set; }
+        public CodeSourceProductionVersion CurrentProductionVersion => ProductionVersions?.OrderByDescending(v => v.Id)?.FirstOrDefault();
+
+        [JsonIgnore]
+        public List<CodeSourceArtifacts> CodeSourceArtifacts { get; set; }
+        [JsonIgnore]
+        public List<CodeSourceProductionVersion> ProductionVersions { get; set; }
+        [JsonIgnore]
+        public List<GithubBranch> GithubBranches { get; set; }
+        [JsonIgnore]
+        public List<GithubPullRequest> GithubPullRequests { get; set; }
     }
 }
