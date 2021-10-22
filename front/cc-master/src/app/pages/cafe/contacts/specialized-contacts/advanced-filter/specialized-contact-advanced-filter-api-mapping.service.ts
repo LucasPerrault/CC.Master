@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 
 import {
-  AdvancedFilter, AdvancedFilterFormMapping,
+  AdvancedFilter, AdvancedFilterFormMapping, AdvancedFilterTypeMapping,
   IAdvancedFilterAttributes,
-  IAdvancedFilterForm,
+  IAdvancedFilterForm, IComparisonFilterCriterionEncapsulation,
 } from '../../../common/cafe-filters/advanced-filter-form';
 import { EnvironmentAdvancedFilterApiMappingService } from '../../../environments/advanced-filter';
 import { CommonApiMappingStrategies } from '../../common/advanced-filter/common-api-mapping-strategies';
@@ -22,9 +22,19 @@ export class SpecializedContactAdvancedFilterApiMappingService {
     switch (attributes.filterKey) {
       case SpeContactAdvancedFilterKey.IsConfirmed:
         return CommonApiMappingStrategies.getIsConfirmedAdvancedFilter(attributes.operator);
+      case SpeContactAdvancedFilterKey.Role:
+        return this.getRoleAdvancedFilter(attributes, c => ({ roleCode: c }));
       default:
         return this.environmentApiMapping.getAdvancedFilter(attributes, criterion => ({ environment: criterion }));
     }
+  }
+
+  private getRoleAdvancedFilter(
+    attributes: IAdvancedFilterAttributes,
+    toIFilterCriterion: IComparisonFilterCriterionEncapsulation,
+  ): AdvancedFilter {
+    const roleCodes = attributes.value[attributes.filterKey];
+    return AdvancedFilterTypeMapping.toAdvancedFilter(roleCodes, attributes.operator, toIFilterCriterion);
   }
 
 }
