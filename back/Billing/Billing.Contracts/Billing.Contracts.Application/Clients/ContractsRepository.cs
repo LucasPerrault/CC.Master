@@ -1,5 +1,6 @@
 ﻿using Billing.Contracts.Domain.Contracts;
 using Billing.Contracts.Domain.Contracts.Interfaces;
+using Billing.Contracts.Domain.Environments;
 using Lucca.Core.Api.Abstractions.Paging;
 using Lucca.Core.Shared.Domain.Exceptions;
 using System.Collections.Generic;
@@ -38,6 +39,13 @@ namespace Billing.Contracts.Application.Clients
             var accessRight = await _rightsFilter.GetReadAccessAsync(_principal);
             var comment = await _contractsStore.GetCommentAsync(accessRight, contractId);
             return comment ?? throw new NotFoundException();
+        }
+
+        public async Task<ContractEnvironment> GetEnvironmentAsync(int id)
+        {
+            var accessRight = await _rightsFilter.GetReadAccessAsync(_principal);
+            var contract = await _contractsStore.GetSingleAsync(accessRight, new ContractFilter { Ids = new HashSet<int> { id }});
+            return contract?.Environment ?? throw new NotFoundException();
         }
     }
 }

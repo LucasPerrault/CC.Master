@@ -3,6 +3,7 @@ using Billing.Contracts.Application.Clients;
 using Billing.Contracts.Domain.Clients;
 using Billing.Contracts.Domain.Contracts;
 using Billing.Contracts.Domain.Contracts.Health;
+using Billing.Contracts.Domain.Environments;
 using Lucca.Core.Api.Abstractions.Paging;
 using Lucca.Core.Api.Web.ModelBinding.Paging;
 using Lucca.Core.Api.Web.ModelBinding.Sorting;
@@ -49,6 +50,13 @@ namespace Billing.Contracts.Web
                 Items = healths,
                 Count = healths.Count
             };
+        }
+
+        [HttpGet("{id:int}/environment")]
+        [ForbidIfMissing(Operation.ReadContracts)]
+        public Task<ContractEnvironment> GetEnvironmentAsync([FromRoute]int id)
+        {
+            return _contractsRepository.GetEnvironmentAsync(id);
         }
 
         [HttpGet("{id:int}")]
