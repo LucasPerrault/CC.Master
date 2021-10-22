@@ -4,32 +4,30 @@ using Environments.Infra.Storage;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-
-#nullable disable
 
 namespace Environments.Infra.Migrations
 {
     [DbContext(typeof(EnvironmentsDbContext))]
-    partial class EnvironmentsDbContextModelSnapshot : ModelSnapshot
+    [Migration("20211022112147_EnvironmentLogs")]
+    partial class EnvironmentLogs
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
                 .HasDefaultSchema("shared")
-                .HasAnnotation("ProductVersion", "6.0.1")
-                .HasAnnotation("Relational:MaxIdentifierLength", 128);
-
-            SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
+                .HasAnnotation("Relational:MaxIdentifierLength", 128)
+                .HasAnnotation("ProductVersion", "5.0.10")
+                .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
             modelBuilder.Entity("Distributors.Domain.Models.Distributor", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("Code")
                         .HasColumnType("nvarchar(max)")
@@ -38,10 +36,6 @@ namespace Environments.Infra.Migrations
                     b.Property<int>("DepartmentId")
                         .HasColumnType("int")
                         .HasColumnName("DepartmentId");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("bit")
-                        .HasColumnName("IsActive");
 
                     b.Property<bool>("IsAllowingCommercialCommunication")
                         .HasColumnType("bit")
@@ -60,9 +54,8 @@ namespace Environments.Infra.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("Cluster")
                         .HasColumnType("nvarchar(max)")
@@ -97,9 +90,8 @@ namespace Environments.Infra.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<int>("AuthorId")
                         .HasColumnType("int")
@@ -219,76 +211,6 @@ namespace Environments.Infra.Migrations
                     b.ToTable("EnvironmentLogMessages", "shared");
                 });
 
-            modelBuilder.Entity("Environments.Domain.EnvironmentRenaming", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<string>("ApiKeyStorageId")
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("apiKeyStorageId");
-
-
-
-
-                    b.Property<int>("EnvironmentId")
-                        .HasColumnType("int")
-                        .HasColumnName("environmentId");
-
-                    b.Property<string>("ErrorMessage")
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("errorMessage");
-
-                    b.Property<string>("NewName")
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("newName");
-
-                    b.Property<string>("OldName")
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("oldName");
-
-                    b.Property<DateTime>("RenamedOn")
-                        .HasColumnType("datetime2")
-                        .HasColumnName("renamedOn");
-
-                    b.Property<int>("Status")
-                        .HasColumnType("int")
-                        .HasColumnName("status");
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-                    b.Property<int?>("UserId")
-                        .HasColumnType("int")
-                        .HasColumnName("userId");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("EnvironmentId");
-
-                    b.ToTable("EnvironmentRenaming", "shared");
-                });
-
             modelBuilder.Entity("Environments.Domain.EnvironmentSharedAccess", b =>
                 {
                     b.Property<int>("Id")
@@ -319,18 +241,7 @@ namespace Environments.Infra.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
-                
-            modelBuilder.Entity("Environments.Domain.EnvironmentRenaming", b =>
-                {
-                    b.HasOne("Environments.Domain.Environment", "Environment")
-                        .WithMany()
-                        .HasForeignKey("EnvironmentId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
 
-                    b.Navigation("Environment");
-                });
-                
             modelBuilder.Entity("Environments.Domain.EnvironmentSharedAccess", b =>
                 {
                     b.HasOne("Distributors.Domain.Models.Distributor", "Consumer")

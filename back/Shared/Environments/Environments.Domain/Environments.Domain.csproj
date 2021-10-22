@@ -11,4 +11,9 @@
       <ProjectReference Include="..\..\Distributors\Distributors.Domain\Distributors.Domain.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleToAttribute">
+        <_Parameter1>Environments.Infra</_Parameter1>
+      </AssemblyAttribute>
+    </ItemGroup>
 </Project>
