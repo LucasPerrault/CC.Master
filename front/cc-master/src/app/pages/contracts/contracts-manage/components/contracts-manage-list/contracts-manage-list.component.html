@@ -39,8 +39,12 @@
       <th class="table-head-row-cell size-big" [ngClass]="isHidden(contractHiddenColumn.Status)">
         {{ getHiddenColumnName(contractHiddenColumn.Status) }}
       </th>
-      <th class="table-head-row-cell size-small" [ngClass]="isHidden(contractHiddenColumn.StartAt)">
-        {{ getHiddenColumnName(contractHiddenColumn.StartAt) }}
+      <th class="table-head-row-cell size-small"
+          [ngClass]="isHidden(contractHiddenColumn.StartAt)"
+          [attr.aria-sort]="getSortOrderClass(sortParamKey.StartAt)">
+        <button class="table-head-row-cell-sortableButton" (click)="sortBy(sortParamKey.StartAt)">
+          {{ getHiddenColumnName(contractHiddenColumn.StartAt) }}
+        </button>
       </th>
       <th class="table-head-row-cell size-small"
           [ngClass]="isHidden(contractHiddenColumn.CloseOn)"
