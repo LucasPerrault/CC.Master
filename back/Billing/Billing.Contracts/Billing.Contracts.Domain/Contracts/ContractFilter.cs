@@ -13,6 +13,7 @@ namespace Billing.Contracts.Domain.Contracts
         public HashSet<int> EnvironmentIds { get; set; } = new HashSet<int>();
         public HashSet<int> ClientIds { get; set; } = new HashSet<int>();
         public HashSet<int> DistributorIds { get; set; } = new HashSet<int>();
+        public HashSet<int> ExcludedDistributorIds { get; set; } = new HashSet<int>();
         public HashSet<int> ProductIds { get; set; } = new HashSet<int>();
         public HashSet<int> CommercialOfferIds { get; set; } = new HashSet<int>();
         public CompareDateTime StartsOn { get; set; } = CompareDateTime.Bypass();

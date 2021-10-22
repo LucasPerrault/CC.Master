@@ -69,6 +69,7 @@ namespace Billing.Contracts.Infra.Storage.Stores
                 .WhenNotNullOrEmpty(filter.ClientIds).ApplyWhere(c => filter.ClientIds.Contains(c.ClientId))
                 .WhenNotNullOrEmpty(filter.ProductIds).ApplyWhere(c => filter.ProductIds.Contains(c.CommercialOffer.ProductId))
                 .WhenNotNullOrEmpty(filter.DistributorIds).ApplyWhere(c => filter.DistributorIds.Contains(c.DistributorId))
+                .WhenNotNullOrEmpty(filter.ExcludedDistributorIds).ApplyWhere(c => !filter.ExcludedDistributorIds.Contains(c.DistributorId))
                 .WhenNotNullOrEmpty(filter.CommercialOfferIds).ApplyWhere(c => filter.CommercialOfferIds.Contains(c.CommercialOfferId))
                 .WhenNotNullOrEmpty(filter.EnvironmentIds).ApplyWhere(c => c.EnvironmentId.HasValue &&  filter.EnvironmentIds.Contains(c.EnvironmentId.Value))
                 .When(filter.ClientExternalId.HasValue).ApplyWhere(c => c.ClientExternalId == filter.ClientExternalId.Value);

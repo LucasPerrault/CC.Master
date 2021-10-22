@@ -179,6 +179,7 @@ namespace Billing.Contracts.Web
             ClientIds = ClientId,
             DistributorIds = DistributorId,
             CommercialOfferIds = CommercialOfferId,
+            ExcludedDistributorIds = ExcludedDistributorId,
             ProductIds = ProductId,
             ArchivedAt = NotArchived(),
             StartsOn = WasStartedOn.HasValue ? CompareDateTime.IsBeforeOrEqual(WasStartedOn.Value) : CompareDateTime.Bypass(),
@@ -187,6 +188,7 @@ namespace Billing.Contracts.Web
 
         public HashSet<int> ClientId { get; set; } = new HashSet<int>();
         public HashSet<int> DistributorId { get; set; } = new HashSet<int>();
+        public HashSet<int> ExcludedDistributorId { get; set; } = new HashSet<int>();
         public HashSet<int> ProductId { get; set; } = new HashSet<int>();
         public HashSet<int> CommercialOfferId { get; set; } = new HashSet<int>();
     }
