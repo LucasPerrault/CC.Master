@@ -29,7 +29,7 @@ namespace Billing.Contracts.Infra.Storage.Stores
         public Task<Contract> GetSingleAsync(AccessRight accessRight, ContractFilter filter)
         {
             return Set(accessRight, filter)
-                .Include(c => c.Environment).ThenInclude(c => c.Establishments).ThenInclude(c => c.Attachments)
+                .Include(c => c.Environment).ThenInclude(c => c.Establishments).ThenInclude(c => c.Attachments).ThenInclude(c => c.Contract.CommercialOffer)
                 .Include(c => c.Environment).ThenInclude(c => c.Establishments).ThenInclude(c => c.Exclusions)
                 .SingleOrDefaultAsync();
         }

@@ -1,5 +1,7 @@
-﻿using System;
+﻿using Billing.Contracts.Domain.Contracts;
+using System;
 using System.Collections.Generic;
+using System.Text.Json.Serialization;
 
 namespace Billing.Contracts.Domain.Environments
 {
@@ -36,11 +38,14 @@ namespace Billing.Contracts.Domain.Environments
     public class EstablishmentAttachment
     {
         public int Id { get; set; }
-        public int ContractId { get; set; }
         public int EstablishmentId { get; set; }
         public int EstablishmentRemoteId { get; set; }
         public string EstablishmentName { get; set; }
         public DateTime StartsOn { get; set; }
         public DateTime? EndsOn { get; set; }
+
+        public int ContractId { get; set; }
+        [JsonIgnore] public Contract Contract { get; set; }
+        public int? ProductId => Contract?.CommercialOffer?.ProductId;
     }
 }

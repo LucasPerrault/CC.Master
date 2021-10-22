@@ -38,7 +38,7 @@ namespace Billing.Contracts.Infra.Storage.Configurations
             builder.Property(d => d.MinimalBillingPercentage).HasColumnName("MinimalBillingPercentage");
             builder.Property(d => d.BillingPeriodicity).HasColumnName("BillingPeriodicity");
 
-            builder.HasMany(d => d.Attachments).WithOne().HasForeignKey(a => a.ContractId);
+            builder.HasMany(d => d.Attachments).WithOne(d => d.Contract).HasForeignKey(a => a.ContractId);
         }
     }
 }
