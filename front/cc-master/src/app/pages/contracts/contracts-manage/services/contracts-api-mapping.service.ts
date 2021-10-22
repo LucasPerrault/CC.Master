@@ -91,7 +91,7 @@ export class ContractsApiMappingService {
       return params.delete(ContractQueryParamKey.Name);
     }
 
-    return params.set(ContractQueryParamKey.Name, `like,${ encodeURIComponent(name) }`);
+    return params.set(ContractQueryParamKey.Name, `like,${ name }`);
   }
 
   private setClients(params: HttpParams, clients: IClient[]): HttpParams {
@@ -167,7 +167,7 @@ export class ContractsApiMappingService {
   }
 
   private setEstablishmentState(params: HttpParams, etsHealth: IContractEstablishmentHealth, environments: IEnvironment[]): HttpParams {
-    const areEnvironmentsFiltered = !!environments.length;
+    const areEnvironmentsFiltered = !!environments?.length;
 
     if (!etsHealth) {
       params = params

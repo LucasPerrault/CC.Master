@@ -115,9 +115,21 @@ namespace AdvancedFilters.Infra.Migrations
                         .HasColumnType("bit")
                         .HasColumnName("IsConfirmed");
 
+                    b.Property<string>("UserFirstName")
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("UserFirstName");
+
                     b.Property<int>("UserId")
                         .HasColumnType("int")
                         .HasColumnName("UserId");
+
+                    b.Property<string>("UserLastName")
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("UserLastName");
+
+                    b.Property<string>("UserMail")
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("UserMail");
 
                     b.HasKey("EnvironmentId", "Id");
 
@@ -166,9 +178,21 @@ namespace AdvancedFilters.Infra.Migrations
                         .HasColumnType("int")
                         .HasColumnName("RoleId");
 
+                    b.Property<string>("UserFirstName")
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("UserFirstName");
+
                     b.Property<int>("UserId")
                         .HasColumnType("int")
                         .HasColumnName("UserId");
+
+                    b.Property<string>("UserLastName")
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("UserLastName");
+
+                    b.Property<string>("UserMail")
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("UserMail");
 
                     b.HasKey("EnvironmentId", "Id");
 
@@ -215,9 +239,21 @@ namespace AdvancedFilters.Infra.Migrations
                         .HasColumnType("int")
                         .HasColumnName("RoleId");
 
+                    b.Property<string>("UserFirstName")
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("UserFirstName");
+
                     b.Property<int>("UserId")
                         .HasColumnType("int")
                         .HasColumnName("UserId");
+
+                    b.Property<string>("UserLastName")
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("UserLastName");
+
+                    b.Property<string>("UserMail")
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("UserMail");
 
                     b.HasKey("EnvironmentId", "Id");
 

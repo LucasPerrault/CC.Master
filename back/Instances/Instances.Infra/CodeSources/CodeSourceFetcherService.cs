@@ -1,6 +1,6 @@
 using Instances.Domain.CodeSources;
+using Instances.Domain.Github;
 using Instances.Infra.CodeSources.Models;
-using Instances.Infra.Github;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;

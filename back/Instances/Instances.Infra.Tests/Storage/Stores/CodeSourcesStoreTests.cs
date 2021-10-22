@@ -1,7 +1,6 @@
 using FluentAssertions;
 using Instances.Domain.CodeSources;
 using Instances.Infra.Storage;
-using Instances.Infra.Storage.Models;
 using Instances.Infra.Storage.Stores;
 using Lucca.Core.Api.Abstractions.Paging;
 using Lucca.Core.Api.Queryable.Paging;
@@ -25,9 +24,9 @@ namespace Instances.Infra.Tests.Storage.Stores
             _instancesDbContext = InMemoryDbHelper.InitialiseDb<InstancesDbContext>("Instances", o => new InstancesDbContext(o));
             _queryPagerMock = new Mock<IQueryPager>();
             _queryPagerMock
-                .Setup(p => p.ToPageAsync(It.IsAny<IQueryable<StoredCodeSource>>(), It.IsAny<IPageToken>()))
-                .Returns<IQueryable<StoredCodeSource>, IPageToken>(
-                    (queryable, pageToken) => Task.FromResult(new Page<StoredCodeSource> { Items = queryable.ToList() })
+                .Setup(p => p.ToPageAsync(It.IsAny<IQueryable<CodeSource>>(), It.IsAny<IPageToken>()))
+                .Returns<IQueryable<CodeSource>, IPageToken>(
+                    (queryable, pageToken) => Task.FromResult(new Page<CodeSource> { Items = queryable.ToList() })
                 );
 
             _codeSourcesStore = new CodeSourcesStore(_instancesDbContext, _queryPagerMock.Object);
@@ -38,8 +37,8 @@ namespace Instances.Infra.Tests.Storage.Stores
         public async Task ReplaceProductionArtifactsAsync_NewEntries()
         {
             var codeSource = new CodeSource { Id = 2 };
-            await _instancesDbContext.AddAsync(new StoredCodeSource { Id = 1, Lifecycle = CodeSourceLifecycleStep.InProduction });
-            await _instancesDbContext.AddAsync(new StoredCodeSource { Id = codeSource.Id, Lifecycle = CodeSourceLifecycleStep.InProduction });
+            await _instancesDbContext.AddAsync(new CodeSource { Id = 1, Lifecycle = CodeSourceLifecycleStep.InProduction });
+            await _instancesDbContext.AddAsync(new CodeSource { Id = codeSource.Id, Lifecycle = CodeSourceLifecycleStep.InProduction });
             await _instancesDbContext.AddAsync(new CodeSourceArtifacts { ArtifactType = CodeSourceArtifactType.BackZip, ArtifactUrl = "http://blbl.local", CodeSourceId = 1 });
             await _instancesDbContext.SaveChangesAsync();
 
@@ -57,8 +56,8 @@ namespace Instances.Infra.Tests.Storage.Stores
         public async Task ReplaceProductionArtifactsAsync_ReplaceAll()
         {
             var codeSource = new CodeSource { Id = 2 };
-            await _instancesDbContext.AddAsync(new StoredCodeSource { Id = 1, Lifecycle = CodeSourceLifecycleStep.InProduction });
-            await _instancesDbContext.AddAsync(new StoredCodeSource { Id = codeSource.Id, Lifecycle = CodeSourceLifecycleStep.InProduction });
+            await _instancesDbContext.AddAsync(new CodeSource { Id = 1, Lifecycle = CodeSourceLifecycleStep.InProduction });
+            await _instancesDbContext.AddAsync(new CodeSource { Id = codeSource.Id, Lifecycle = CodeSourceLifecycleStep.InProduction });
             await _instancesDbContext.AddAsync(new CodeSourceArtifacts { ArtifactType = CodeSourceArtifactType.BackZip, ArtifactUrl = "http://blbl.local", CodeSourceId = 1 });
             await _instancesDbContext.AddAsync(new CodeSourceArtifacts { ArtifactType = CodeSourceArtifactType.BackZip, ArtifactUrl = "http://old.local", CodeSourceId = codeSource.Id });
             await _instancesDbContext.SaveChangesAsync();

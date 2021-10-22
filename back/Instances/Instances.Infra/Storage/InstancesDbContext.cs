@@ -26,6 +26,9 @@ namespace Instances.Infra.Storage
             modelBuilder.ApplyConfiguration(new CodeSourceProductionVersionsConfiguration());
             modelBuilder.ApplyConfiguration(new CodeSourceArtifactsConfiguration());
 
+            modelBuilder.ApplyConfiguration(new GithubBranchesConfiguration());
+            modelBuilder.ApplyConfiguration(new GithubPullRequestsConfiguration());
+
             // shared
             modelBuilder.ApplyConfiguration(new DistributorsConfiguration());
             modelBuilder.ApplyConfiguration(new SimpleUsersConfiguration());

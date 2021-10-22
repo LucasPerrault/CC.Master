@@ -16,8 +16,8 @@ namespace Instances.Infra.Migrations
 #pragma warning disable 612, 618
             modelBuilder
                 .HasDefaultSchema("instances")
-                .HasAnnotation("ProductVersion", "3.1.16")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
+                .HasAnnotation("ProductVersion", "5.0.10")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
             modelBuilder.Entity("Distributors.Domain.Models.Distributor", b =>
@@ -28,20 +28,90 @@ namespace Instances.Infra.Migrations
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("Code")
-                        .HasColumnName("Code")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("Code");
 
                     b.Property<int>("DepartmentId")
-                        .HasColumnName("DepartmentId")
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasColumnName("DepartmentId");
 
                     b.Property<string>("Name")
-                        .HasColumnName("Name")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("Name");
 
                     b.HasKey("Id");
 
-                    b.ToTable("Distributors","shared");
+                    b.ToTable("Distributors", "shared");
+                });
+
+            modelBuilder.Entity("GithubBranchesCodeSources", b =>
+                {
+                    b.Property<int>("codeSourceId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("githubBranchId")
+                        .HasColumnType("int");
+
+                    b.HasKey("codeSourceId", "githubBranchId");
+
+                    b.HasIndex("githubBranchId");
+
+                    b.ToTable("GithubBranchesCodeSources");
+                });
+
+            modelBuilder.Entity("GithubPullRequestsCodeSources", b =>
+                {
+                    b.Property<int>("codeSourceId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("githubPullRequestId")
+                        .HasColumnType("int");
+
+                    b.HasKey("codeSourceId", "githubPullRequestId");
+
+                    b.HasIndex("githubPullRequestId");
+
+                    b.ToTable("GithubPullRequestsCodeSources");
+                });
+
+            modelBuilder.Entity("Instances.Domain.CodeSources.CodeSource", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Code")
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("Code");
+
+                    b.Property<string>("GithubRepo")
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("GithubRepo");
+
+                    b.Property<string>("JenkinsProjectName")
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("JenkinsProjectName");
+
+                    b.Property<string>("JenkinsProjectUrl")
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("JenkinsProjectUrl");
+
+                    b.Property<int>("Lifecycle")
+                        .HasColumnType("int")
+                        .HasColumnName("Lifecycle");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("Name");
+
+                    b.Property<int>("Type")
+                        .HasColumnType("int")
+                        .HasColumnName("Type");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("CodeSources");
                 });
 
             modelBuilder.Entity("Instances.Domain.CodeSources.CodeSourceArtifacts", b =>
@@ -52,22 +122,22 @@ namespace Instances.Infra.Migrations
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<int>("ArtifactType")
-                        .HasColumnName("ArtifactType")
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasColumnName("ArtifactType");
 
                     b.Property<string>("ArtifactUrl")
-                        .HasColumnName("ArtifactUrl")
+                        .HasMaxLength(255)
                         .HasColumnType("nvarchar(255)")
-                        .HasMaxLength(255);
+                        .HasColumnName("ArtifactUrl");
 
                     b.Property<int>("CodeSourceId")
-                        .HasColumnName("CodeSourceId")
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasColumnName("CodeSourceId");
 
                     b.Property<string>("FileName")
-                        .HasColumnName("FileName")
+                        .HasMaxLength(255)
                         .HasColumnType("nvarchar(255)")
-                        .HasMaxLength(255);
+                        .HasColumnName("FileName");
 
                     b.HasKey("Id");
 
@@ -82,20 +152,20 @@ namespace Instances.Infra.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("AppPath")
-                        .HasColumnName("AppPath")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("AppPath");
 
                     b.Property<string>("IisServerPath")
-                        .HasColumnName("IisServerPath")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("IisServerPath");
 
                     b.Property<bool>("IsPrivate")
-                        .HasColumnName("IsPrivate")
-                        .HasColumnType("bit");
+                        .HasColumnType("bit")
+                        .HasColumnName("IsPrivate");
 
                     b.Property<string>("Subdomain")
-                        .HasColumnName("Subdomain")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("Subdomain");
 
                     b.HasKey("CodeSourceId");
 
@@ -110,24 +180,24 @@ namespace Instances.Infra.Migrations
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("BranchName")
-                        .HasColumnName("BranchName")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("BranchName");
 
                     b.Property<int>("CodeSourceId")
-                        .HasColumnName("CodeSourceId")
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasColumnName("CodeSourceId");
 
                     b.Property<string>("CommitHash")
-                        .HasColumnName("CommitHash")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("CommitHash");
 
                     b.Property<DateTime>("Date")
-                        .HasColumnName("Date")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("datetime2")
+                        .HasColumnName("Date");
 
                     b.Property<int>("JenkinsBuildNumber")
-                        .HasColumnName("JenkinsBuildNumber")
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasColumnName("JenkinsBuildNumber");
 
                     b.HasKey("Id");
 
@@ -144,43 +214,43 @@ namespace Instances.Infra.Migrations
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<int>("AuthorId")
-                        .HasColumnName("authorId")
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasColumnName("authorId");
 
                     b.Property<string>("Cluster")
-                        .HasColumnName("Cluster")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("Cluster");
 
                     b.Property<string>("Comment")
-                        .HasColumnName("comment")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("comment");
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnName("createdAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("datetime2")
+                        .HasColumnName("createdAt");
 
                     b.Property<DateTime>("DeletionScheduledOn")
-                        .HasColumnName("deletionScheduledOn")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("datetime2")
+                        .HasColumnName("deletionScheduledOn");
 
                     b.Property<int>("DistributorId")
-                        .HasColumnName("distributorID")
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasColumnName("distributorID");
 
                     b.Property<int>("InstanceID")
-                        .HasColumnName("instanceId")
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasColumnName("instanceId");
 
                     b.Property<bool>("IsActive")
-                        .HasColumnName("isActive")
-                        .HasColumnType("bit");
+                        .HasColumnType("bit")
+                        .HasColumnName("isActive");
 
                     b.Property<bool>("IsTemplate")
                         .HasColumnType("bit");
 
                     b.Property<string>("Subdomain")
-                        .HasColumnName("subdomain")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("subdomain");
 
                     b.HasKey("Id");
 
@@ -202,35 +272,121 @@ namespace Instances.Infra.Migrations
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<int>("AuthorId")
-                        .HasColumnName("authorId")
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasColumnName("authorId");
 
                     b.Property<string>("Comment")
-                        .HasColumnName("comment")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("comment");
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnName("createdAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("datetime2")
+                        .HasColumnName("createdAt");
 
                     b.Property<Guid>("InstanceDuplicationId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Password")
                         .IsRequired()
-                        .HasColumnName("password")
+                        .HasMaxLength(255)
                         .HasColumnType("nvarchar(255)")
-                        .HasMaxLength(255);
+                        .HasColumnName("password");
 
                     b.Property<int>("SourceDemoId")
-                        .HasColumnName("sourceDemoId")
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasColumnName("sourceDemoId");
 
                     b.HasKey("Id");
 
                     b.HasIndex("InstanceDuplicationId");
 
                     b.ToTable("DemoDuplications");
+                });
+
+            modelBuilder.Entity("Instances.Domain.Github.Models.GithubBranch", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("createdAt");
+
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("deletedAt");
+
+                    b.Property<string>("HeadCommitHash")
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("headCommitHash");
+
+                    b.Property<string>("HeadCommitMessage")
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("headCommitMessage");
+
+                    b.Property<string>("HelmChart")
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("helmChart");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit")
+                        .HasColumnName("isDeleted");
+
+                    b.Property<DateTime?>("LastPushedAt")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("lastPushedAt");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("name");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("GithubBranches");
+                });
+
+            modelBuilder.Entity("Instances.Domain.Github.Models.GithubPullRequest", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<DateTime?>("ClosedAt")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("closedAt");
+
+                    b.Property<bool>("IsOpened")
+                        .HasColumnType("bit")
+                        .HasColumnName("isOpened");
+
+                    b.Property<DateTime?>("MergedAt")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("mergedAt");
+
+                    b.Property<int>("Number")
+                        .HasColumnType("int")
+                        .HasColumnName("number");
+
+                    b.Property<DateTime>("OpenedAt")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("openedAt");
+
+                    b.Property<int>("OriginBranchId")
+                        .HasColumnType("int")
+                        .HasColumnName("originBranchId");
+
+                    b.Property<string>("Title")
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("title");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("OriginBranchId");
+
+                    b.ToTable("GithubPullRequests");
                 });
 
             modelBuilder.Entity("Instances.Domain.Instances.InstanceDuplication", b =>
@@ -240,50 +396,50 @@ namespace Instances.Infra.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<int>("DistributorId")
-                        .HasColumnName("distributorId")
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasColumnName("distributorId");
 
                     b.Property<DateTime?>("EndedAt")
-                        .HasColumnName("endedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("datetime2")
+                        .HasColumnName("endedAt");
 
                     b.Property<int>("Progress")
-                        .HasColumnName("progress")
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasColumnName("progress");
 
                     b.Property<string>("SourceCluster")
                         .IsRequired()
-                        .HasColumnName("sourceCluster")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("sourceCluster");
 
                     b.Property<string>("SourceSubdomain")
                         .IsRequired()
-                        .HasColumnName("sourceSubdomain")
+                        .HasMaxLength(200)
                         .HasColumnType("nvarchar(200)")
-                        .HasMaxLength(200);
+                        .HasColumnName("sourceSubdomain");
 
                     b.Property<int>("SourceType")
-                        .HasColumnName("sourceType")
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasColumnName("sourceType");
 
                     b.Property<DateTime>("StartedAt")
-                        .HasColumnName("startedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("datetime2")
+                        .HasColumnName("startedAt");
 
                     b.Property<string>("TargetCluster")
                         .IsRequired()
-                        .HasColumnName("targetCluster")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("targetCluster");
 
                     b.Property<string>("TargetSubdomain")
                         .IsRequired()
-                        .HasColumnName("targetSubdomain")
+                        .HasMaxLength(200)
                         .HasColumnType("nvarchar(200)")
-                        .HasMaxLength(200);
+                        .HasColumnName("targetSubdomain");
 
                     b.Property<int>("TargetType")
-                        .HasColumnName("targetType")
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasColumnName("targetType");
 
                     b.HasKey("Id");
 
@@ -300,113 +456,103 @@ namespace Instances.Infra.Migrations
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("AllUsersImposedPassword")
-                        .HasColumnName("AllUsersImposedPassword")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("AllUsersImposedPassword");
 
                     b.Property<int?>("EnvironmentId")
-                        .HasColumnName("EnvironmentId")
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasColumnName("EnvironmentId");
 
                     b.Property<bool>("IsActive")
-                        .HasColumnName("IsActive")
-                        .HasColumnType("bit");
+                        .HasColumnType("bit")
+                        .HasColumnName("IsActive");
 
                     b.Property<bool>("IsAnonymized")
-                        .HasColumnName("IsAnonymized")
-                        .HasColumnType("bit");
+                        .HasColumnType("bit")
+                        .HasColumnName("IsAnonymized");
 
                     b.Property<bool>("IsProtected")
-                        .HasColumnName("IsProtected")
-                        .HasColumnType("bit");
+                        .HasColumnType("bit")
+                        .HasColumnName("IsProtected");
 
                     b.Property<int>("Type")
-                        .HasColumnName("Type")
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasColumnName("Type");
 
                     b.HasKey("Id");
 
                     b.ToTable("Instances");
                 });
 
-            modelBuilder.Entity("Instances.Infra.Storage.Models.StoredCodeSource", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("Code")
-                        .HasColumnName("Code")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("GithubRepo")
-                        .HasColumnName("GithubRepo")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("JenkinsProjectName")
-                        .HasColumnName("JenkinsProjectName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("JenkinsProjectUrl")
-                        .HasColumnName("JenkinsProjectUrl")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("Lifecycle")
-                        .HasColumnName("Lifecycle")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Name")
-                        .HasColumnName("Name")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("Type")
-                        .HasColumnName("Type")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("CodeSources");
-                });
-
             modelBuilder.Entity("Users.Domain.SimpleUser", b =>
                 {
                     b.Property<int>("Id")
-                        .HasColumnName("PartenairesId")
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasColumnName("PartenairesId");
 
                     b.Property<int>("DepartmentId")
-                        .HasColumnName("DepartmentId")
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasColumnName("DepartmentId");
 
                     b.Property<int>("DistributorId")
-                        .HasColumnName("DistributorId")
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasColumnName("DistributorId");
 
                     b.Property<string>("FirstName")
-                        .HasColumnName("FirstName")
+                        .HasMaxLength(300)
                         .HasColumnType("nvarchar(300)")
-                        .HasMaxLength(300);
+                        .HasColumnName("FirstName");
 
                     b.Property<bool>("IsActive")
-                        .HasColumnName("IsActive")
-                        .HasColumnType("bit");
+                        .HasColumnType("bit")
+                        .HasColumnName("IsActive");
 
                     b.Property<string>("LastName")
-                        .HasColumnName("LastName")
+                        .HasMaxLength(300)
                         .HasColumnType("nvarchar(300)")
-                        .HasMaxLength(300);
+                        .HasColumnName("LastName");
 
                     b.HasKey("Id");
 
                     b.HasIndex("Id")
                         .IsUnique();
 
-                    b.ToTable("Users","shared");
+                    b.ToTable("Users", "shared");
+                });
+
+            modelBuilder.Entity("GithubBranchesCodeSources", b =>
+                {
+                    b.HasOne("Instances.Domain.CodeSources.CodeSource", null)
+                        .WithMany()
+                        .HasForeignKey("codeSourceId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Instances.Domain.Github.Models.GithubBranch", null)
+                        .WithMany()
+                        .HasForeignKey("githubBranchId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("GithubPullRequestsCodeSources", b =>
+                {
+                    b.HasOne("Instances.Domain.CodeSources.CodeSource", null)
+                        .WithMany()
+                        .HasForeignKey("codeSourceId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Instances.Domain.Github.Models.GithubPullRequest", null)
+                        .WithMany()
+                        .HasForeignKey("githubPullRequestId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Instances.Domain.CodeSources.CodeSourceArtifacts", b =>
                 {
-                    b.HasOne("Instances.Infra.Storage.Models.StoredCodeSource", null)
+                    b.HasOne("Instances.Domain.CodeSources.CodeSource", null)
                         .WithMany("CodeSourceArtifacts")
                         .HasForeignKey("CodeSourceId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -415,7 +561,7 @@ namespace Instances.Infra.Migrations
 
             modelBuilder.Entity("Instances.Domain.CodeSources.CodeSourceConfig", b =>
                 {
-                    b.HasOne("Instances.Infra.Storage.Models.StoredCodeSource", null)
+                    b.HasOne("Instances.Domain.CodeSources.CodeSource", null)
                         .WithOne("Config")
                         .HasForeignKey("Instances.Domain.CodeSources.CodeSourceConfig", "CodeSourceId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -424,7 +570,7 @@ namespace Instances.Infra.Migrations
 
             modelBuilder.Entity("Instances.Domain.CodeSources.CodeSourceProductionVersion", b =>
                 {
-                    b.HasOne("Instances.Infra.Storage.Models.StoredCodeSource", null)
+                    b.HasOne("Instances.Domain.CodeSources.CodeSource", null)
                         .WithMany("ProductionVersions")
                         .HasForeignKey("CodeSourceId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -450,6 +596,12 @@ namespace Instances.Infra.Migrations
                         .HasForeignKey("Instances.Domain.Demos.Demo", "InstanceID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Author");
+
+                    b.Navigation("Distributor");
+
+                    b.Navigation("Instance");
                 });
 
             modelBuilder.Entity("Instances.Domain.Demos.DemoDuplication", b =>
@@ -459,6 +611,19 @@ namespace Instances.Infra.Migrations
                         .HasForeignKey("InstanceDuplicationId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("InstanceDuplication");
+                });
+
+            modelBuilder.Entity("Instances.Domain.Github.Models.GithubPullRequest", b =>
+                {
+                    b.HasOne("Instances.Domain.Github.Models.GithubBranch", "OriginBranch")
+                        .WithMany()
+                        .HasForeignKey("OriginBranchId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("OriginBranch");
                 });
 
             modelBuilder.Entity("Instances.Domain.Instances.InstanceDuplication", b =>
@@ -468,6 +633,17 @@ namespace Instances.Infra.Migrations
                         .HasForeignKey("DistributorId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Distributor");
+                });
+
+            modelBuilder.Entity("Instances.Domain.CodeSources.CodeSource", b =>
+                {
+                    b.Navigation("CodeSourceArtifacts");
+
+                    b.Navigation("Config");
+
+                    b.Navigation("ProductionVersions");
                 });
 #pragma warning restore 612, 618
         }
