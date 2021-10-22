@@ -108,23 +108,4 @@ export class EnvironmentApiSelectComponent implements ControlValueAccessor, Vali
   public trackBy(index: number, environment: IEnvironment): number {
     return environment.id;
   }
-
-  public get label(): string {
-    const translationKey = this.multiple
-        ? 'front_select_environments_label'
-        : 'front_select_environment_label';
-    return this.translatePipe.transform(translationKey);
-  }
-
-  public get isFormDisplayMode(): boolean {
-    return this.displayMode === SelectDisplayMode.Form;
-  }
-
-  public get placeholder(): string {
-    if (this.isFormDisplayMode) {
-      return;
-    }
-
-    return this.label;
-  }
 }
