@@ -47,5 +47,7 @@ namespace Billing.Contracts.Domain.Environments
         public int ContractId { get; set; }
         [JsonIgnore] public Contract Contract { get; set; }
         public int? ProductId => Contract?.CommercialOffer?.ProductId;
+
+        public string EndReason { get; set; }
     }
 }

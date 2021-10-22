@@ -45,6 +45,8 @@ namespace Billing.Contracts.Infra.Storage.Configurations
 
             builder.Property(d => d.ContractId).HasColumnName("ContractId").IsRequired();
             builder.Ignore(d => d.ProductId);
+
+            builder.Property(d => d.EndReason).HasColumnName("EndReason");
         }
     }
 
