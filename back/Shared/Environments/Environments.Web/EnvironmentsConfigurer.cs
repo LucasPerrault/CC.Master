@@ -29,6 +29,7 @@ namespace Environments.Web
             services.AddScoped<IEnvironmentsStore, EnvironmentsStore>();
             services.AddScoped<EnvironmentsRepository>();
             services.AddScoped<EnvironmentRightsFilter>();
+            services.AddScoped<IEnvironmentLogsStore, EnvironmentLogsStore>();
 
             services.AddSingleton(configuration.Renaming);
             services.AddScoped<IEnvironmentRenamingService, EnvironmentRenamingService>();
