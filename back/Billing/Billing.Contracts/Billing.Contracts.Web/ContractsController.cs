@@ -3,10 +3,6 @@ using Billing.Contracts.Application.Clients;
 using Billing.Contracts.Domain.Clients;
 using Billing.Contracts.Domain.Contracts;
 using Billing.Contracts.Domain.Contracts.Health;
-using Billing.Contracts.Domain.Environments;
-using Billing.Products.Domain;
-using Distributors.Domain.Models;
-using IdentityModel.Client;
 using Lucca.Core.Api.Abstractions.Paging;
 using Lucca.Core.Api.Web.ModelBinding.Paging;
 using Lucca.Core.Api.Web.ModelBinding.Sorting;
@@ -38,16 +34,9 @@ namespace Billing.Contracts.Web
 
         [HttpGet]
         [ForbidIfMissing(Operation.ReadContracts)]
-        public async Task<Page<ContractDto>> GetAsync(IPageToken pageToken, [FromQuery]ContractListQuery query)
+        public Task<Page<Contract>> GetAsync(IPageToken pageToken, [FromQuery]ContractListQuery query)
         {
-            var page = await _contractsRepository.GetPageAsync(pageToken, query.ToFilter());
-            return new Page<ContractDto>
-            {
-                Count = page.Count,
-                Next = page.Next,
-                Prev = page.Prev,
-                Items = page.Items.Select(p => new ContractDto(p))
-            };
+            return _contractsRepository.GetPageAsync(pageToken, query.ToFilter());
         }
 
         [HttpGet("health")]
@@ -64,7 +53,7 @@ namespace Billing.Contracts.Web
 
         [HttpGet("{id:int}")]
         [ForbidIfMissing(Operation.ReadContracts)]
-        public async Task<ContractDto> GetAsync([FromRoute]int id)
+        public async Task<Contract> GetAsync([FromRoute]int id)
         {
             var contracts = await _contractsRepository.GetAsync(new ContractFilter { Ids = new HashSet<int>{ id }, ArchivedAt = ContractListQuery.NotArchived()});
             if (!contracts.Any())
@@ -72,7 +61,7 @@ namespace Billing.Contracts.Web
                 throw new NotFoundException();
             }
 
-            return new ContractDto(contracts.Single());
+            return contracts.Single();
         }
 
         [HttpGet("{id:int}/comment")]
@@ -82,66 +71,6 @@ namespace Billing.Contracts.Web
             return _contractsRepository.GetCommentAsync(id);
         }
 
-        public class ContractDto
-        {
-            public int Id { get; set; }
-            public Guid ExternalId { get; set; }
-            public Guid ClientExternalId { get; set; }
-            public int? EnvironmentId { get; set; }
-            public ContractEnvironment Environment { get; set; }
-            public DateTime CreatedAt { get; set; }
-
-            public DateTime TheoreticalStartOn { get; set; }
-            public DateTime? TheoreticalEndOn { get; set; }
-            public ContractEndReason EndReason { get; set; }
-
-            public DateTime? ArchivedAt { get; set; }
-
-            public int DistributorId { get; set; }
-            public Distributor Distributor { get; set; }
-
-            public int ClientId { get; set; }
-            public ContractDtoClient Client { get; set; }
-
-
-            public int CommercialOfferId { get; set; }
-            public CommercialOffer CommercialOffer { get; set; }
-
-            public List<EstablishmentAttachment> Attachments { get; set; }
-
-            public decimal CountEstimation { get; set; }
-            public int TheoreticalFreeMonths { get; set; }
-            public double? RebatePercentage { get; set; }
-            public DateTime? RebateEndsOn { get; set; }
-            public double MinimalBillingPercentage { get; set; }
-            public BillingPeriodicity BillingPeriodicity { get; set; }
-
-            public ContractDto(Contract contract)
-            {
-                Id = contract.Id;
-                ExternalId = contract.ExternalId;
-                ClientExternalId = contract.ClientExternalId;
-                EnvironmentId = contract.EnvironmentId;
-                Environment = contract.Environment;
-                TheoreticalStartOn = contract.TheoreticalStartOn;
-                TheoreticalEndOn = contract.TheoreticalEndOn;
-                CreatedAt = contract.CreatedAt;
-                ArchivedAt = contract.ArchivedAt;
-                DistributorId = contract.DistributorId;
-                Distributor = contract.Distributor;
-                ClientId = contract.ClientId;
-                Client = new ContractDtoClient(contract.Client);
-                CommercialOfferId = contract.CommercialOfferId;
-                CommercialOffer = contract.CommercialOffer;
-                Attachments = contract.Attachments;
-                CountEstimation = contract.CountEstimation;
-                TheoreticalFreeMonths = contract.TheoreticalFreeMonths;
-                RebatePercentage = contract.RebatePercentage;
-                BillingPeriodicity = contract.BillingPeriodicity;
-                RebateEndsOn = contract.RebateEndsOn;
-                MinimalBillingPercentage = contract.MinimalBillingPercentage;
-            }
-        }
 
         public class ContractDtoClient
         {

@@ -1,6 +1,7 @@
 using Billing.Contracts.Domain.Contracts;
 using System;
 using System.Collections.Generic;
+using System.Text.Json.Serialization;
 
 namespace Billing.Contracts.Domain.Clients
 {
@@ -18,6 +19,8 @@ namespace Billing.Contracts.Domain.Clients
         public string BillingCountry { get; set; }
         public string BillingMail { get; set; }
         public string Phone { get; set; }
+
+        [JsonIgnore]
         public List<Contract> Contracts { get; set; }
     }
 }
