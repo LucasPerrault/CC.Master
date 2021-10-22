@@ -47,6 +47,7 @@ namespace Billing.Contracts.Infra.Storage.Configurations
             builder.Ignore(d => d.ProductId);
 
             builder.Property(d => d.EndReason).HasColumnName("EndReason");
+            builder.Property(d => d.NumberOfFreeMonths).HasColumnName("NumberOfFreeMonths");
         }
     }
 

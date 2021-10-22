@@ -19,7 +19,8 @@ namespace Billing.Contracts.Infra.Migrations
                         ce.[start] startsOn,
                         ce.[end] endsOn,
                         ce.[isActive] isActive,
-                        ce.[endReason] endReason
+                        ce.[endReason] endReason,
+                        ce.[nbMonthFree] numberOfFreeMonths
                 FROM [dbo].[ContractEntities] ce
                     LEFT JOIN [dbo].[LegalEntities] le ON le.Id = ce.legalEntityID
             "

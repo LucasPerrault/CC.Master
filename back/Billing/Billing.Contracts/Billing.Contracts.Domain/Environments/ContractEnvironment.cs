@@ -49,5 +49,6 @@ namespace Billing.Contracts.Domain.Environments
         public int? ProductId => Contract?.CommercialOffer?.ProductId;
 
         public string EndReason { get; set; }
+        public int NumberOfFreeMonths { get; set; }
     }
 }
