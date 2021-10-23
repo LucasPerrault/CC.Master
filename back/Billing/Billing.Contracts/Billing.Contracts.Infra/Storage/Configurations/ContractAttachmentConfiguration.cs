@@ -16,7 +16,6 @@ namespace Billing.Contracts.Infra.Storage.Configurations
             builder.Property(d => d.EstablishmentRemoteId).HasColumnName("EstablishmentRemoteId").IsRequired();
             builder.Property(d => d.StartsOn).HasColumnName("StartsOn").IsRequired();
             builder.Property(d => d.EndsOn).HasColumnName("EndsOn");
-            builder.Property(d => d.IsActive).HasColumnName("IsActive").IsRequired();
         }
     }
 }
