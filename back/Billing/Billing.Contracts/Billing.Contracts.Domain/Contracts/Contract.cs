@@ -65,6 +65,13 @@ namespace Billing.Contracts.Domain.Contracts
                 .Min()
             : null;
         public static readonly Func<Contract, DateTime?> EndsOnCompiled = EndsOn.Compile();
+
+        public static Expression<Func<Contract, bool>> IsAttachedToAnyEstablishment(HashSet<int> establishmentIds, DateTime period) => c =>
+        c.Attachments.Any(a =>
+            establishmentIds.Contains(a.EstablishmentId)
+            && a.StartsOn < period
+            && ( a.EndsOn == null || a.EndsOn > period )
+        );
     }
 
     public enum ContractEndReason

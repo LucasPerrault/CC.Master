@@ -117,12 +117,14 @@ namespace Billing.Contracts.Web
             DistributorIds = DistributorId,
             CommercialOfferIds = CommercialOfferId,
             ExcludedDistributorIds = ExcludedDistributorId,
+            CurrentlyAttachedEstablishmentIds = CurrentlyAttachedEstablishmentId,
             ProductIds = ProductId,
             ArchivedAt = NotArchived(),
             StartsOn = WasStartedOn.HasValue ? CompareDateTime.IsBeforeOrEqual(WasStartedOn.Value) : CompareDateTime.Bypass(),
             EndsOn = WasNotEndedOn.HasValue ? CompareDateTime.IsAfterOrEqual(WasNotEndedOn.Value).OrNull() : CompareNullableDateTime.Bypass()
         };
 
+        public HashSet<int> CurrentlyAttachedEstablishmentId { get; set; } = new HashSet<int>();
         public HashSet<int> ClientId { get; set; } = new HashSet<int>();
         public HashSet<int> DistributorId { get; set; } = new HashSet<int>();
         public HashSet<int> ExcludedDistributorId { get; set; } = new HashSet<int>();
