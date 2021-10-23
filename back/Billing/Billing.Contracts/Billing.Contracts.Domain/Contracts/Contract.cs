@@ -21,6 +21,9 @@ namespace Billing.Contracts.Domain.Contracts
         public DateTime? TheoreticalEndOn { get; set; }
         public ContractEndReason EndReason { get; set; }
 
+        public DateTime StartsOn => ContractExpressions.StartsOnCompiled(this);
+        public DateTime? EndsOn => ContractExpressions.EndsOnCompiled(this);
+
         public DateTime? ArchivedAt { get; set; }
 
         public int DistributorId { get; set; }
@@ -50,14 +53,18 @@ namespace Billing.Contracts.Domain.Contracts
         public static readonly Expression<Func<Contract, DateTime>> StartsOn = c => c.Attachments.Any()
             ? c.Attachments
                 .Select(a => a.StartsOn)
+                .DefaultIfEmpty()
                 .Min()
             : c.TheoreticalStartOn;
+        public static readonly Func<Contract, DateTime> StartsOnCompiled = StartsOn.Compile();
 
         public static readonly Expression<Func<Contract, DateTime?>> EndsOn = c => c.Attachments.Any()
             ? c.Attachments
                 .Select(a => a.EndsOn)
+                .DefaultIfEmpty()
                 .Min()
             : null;
+        public static readonly Func<Contract, DateTime?> EndsOnCompiled = EndsOn.Compile();
     }
 
     public enum ContractEndReason
