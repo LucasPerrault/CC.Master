@@ -5,4 +5,5 @@ export enum ContractSortParamKey {
   Offer = 'offer.name',
   CreatedOn = 'createdOn',
   CloseOn = 'closeOn',
+  StartAt = 'theoricalStartOn',
 }
