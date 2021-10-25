@@ -15,24 +15,18 @@ export class CountContractsListService {
       const startOfThisMonth = startOfMonth(new Date());
       const endPeriod = lastCountPeriod.getTime() >= startOfThisMonth.getTime() ? lastCountPeriod : previousMonth;
 
-      const entries = this.getCountListEntries([], startPeriod, endPeriod, counts);
+      const entries = this.getCountListEntries(startPeriod, endPeriod, counts);
       return entries.sort((a, b) => b.month.getTime() - a.month.getTime());
   }
 
-  private getCountListEntries(
-    entries: ICountListEntry[],
-    period: Date,
-    maxPeriod: Date,
-    counts: IDetailedCount[],
-  ): ICountListEntry[] {
-    if (period.getMonth() > maxPeriod.getMonth() && period.getFullYear() === maxPeriod.getFullYear()) {
-      return entries;
+  private getCountListEntries(startPeriod: Date, endPeriod: Date, counts: IDetailedCount[]): ICountListEntry[] {
+    let entries = [];
+
+    for (let p = startPeriod; p <= endPeriod; p = addMonths(p, 1)) {
+      entries = [...entries, this.getCountListEntry(p, counts)];
     }
 
-    entries = [...entries, this.getCountListEntry(period, counts)];
-
-    const nextPeriod = addMonths(period, 1);
-    return this.getCountListEntries(entries, nextPeriod, maxPeriod, counts);
+    return entries;
   }
 
   private getCountListEntry(countPeriod: Date, counts: IDetailedCount[]): ICountListEntry {
