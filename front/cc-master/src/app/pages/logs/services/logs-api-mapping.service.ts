@@ -56,7 +56,7 @@ export class LogsApiMappingService {
   }
 
   private setEnvironments(params: HttpParams, environments: IEnvironment[]): HttpParams {
-    if (!environments.length) {
+    if (!environments?.length) {
       return params.delete(EnvironmentLogQueryParamKey.EnvironmentId);
     }
 

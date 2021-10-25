@@ -42,7 +42,7 @@ export class LogsFilterRoutingService {
 
   public toLogsRoutingParams(filters: ILogsFilter): ILogsRoutingParams {
     return {
-      environmentIds: this.getSafeRoutingParams(filters.environments.map(u => u.id).join(',')),
+      environmentIds: this.getSafeRoutingParams(filters.environments?.map(u => u.id)?.join(',')),
       domainIds: this.getSafeRoutingParams(filters.domains.map(d => d.id).join(',')),
       userIds: this.getSafeRoutingParams(filters.users.map(u => u.id).join(',')),
       actionIds: this.getSafeRoutingParams(filters.actions.map(a => a.id).join(',')),
