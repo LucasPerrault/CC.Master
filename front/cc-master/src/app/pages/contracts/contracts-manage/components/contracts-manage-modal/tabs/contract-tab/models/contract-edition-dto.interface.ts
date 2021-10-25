@@ -7,9 +7,9 @@ export interface IContractEditionDto {
   offerId: number;
   unityNumberTheorical: number;
   clientRebate: number;
-  endClientRebateOn: Date;
+  endClientRebateOn: string;
   nbMonthTheorical: number;
-  theoricalStartOn: Date;
+  theoricalStartOn: string;
   minimalBillingPercentage: number;
   comment: string;
 }
