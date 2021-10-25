@@ -6,6 +6,7 @@ using Billing.Contracts.Domain.Contracts.Health;
 using Billing.Contracts.Domain.Environments;
 using Billing.Products.Domain;
 using Distributors.Domain.Models;
+using IdentityModel.Client;
 using Lucca.Core.Api.Abstractions.Paging;
 using Lucca.Core.Api.Web.ModelBinding.Paging;
 using Lucca.Core.Api.Web.ModelBinding.Sorting;
@@ -65,7 +66,7 @@ namespace Billing.Contracts.Web
         [ForbidIfMissing(Operation.ReadContracts)]
         public async Task<ContractDto> GetAsync([FromRoute]int id)
         {
-            var contracts = await _contractsRepository.GetAsync(new ContractFilter { Id = id, ArchivedAt = ContractListQuery.NotArchived()});
+            var contracts = await _contractsRepository.GetAsync(new ContractFilter { Ids = new HashSet<int>{ id }, ArchivedAt = ContractListQuery.NotArchived()});
             if (!contracts.Any())
             {
                 throw new NotFoundException();
@@ -164,20 +165,29 @@ namespace Billing.Contracts.Web
     public class ContractListQuery
     {
         public static CompareNullableDateTime NotArchived() => CompareDateTime.IsStrictlyAfter(DateTime.Now).OrNull();
+        public HashSet<int> Id { get; set; } = new HashSet<int>();
         public HashSet<string> Search { get; set; } = new HashSet<string>();
         public HashSet<int> EnvironmentId { get; set; } = new HashSet<int>();
         public DateTime? WasStartedOn { get; set; } = null;
         public DateTime? WasNotEndedOn { get; set; } = null;
-        public int? Id { get; set; }
 
         public ContractFilter ToFilter() => new ContractFilter
         {
             Search = Search,
             EnvironmentIds = EnvironmentId,
-            Id = Id,
+            Ids = Id,
+            ClientIds = ClientId,
+            DistributorIds = DistributorId,
+            CommercialOfferIds = CommercialOfferId,
+            ProductIds = ProductId,
             ArchivedAt = NotArchived(),
             StartsOn = WasStartedOn.HasValue ? CompareDateTime.IsBeforeOrEqual(WasStartedOn.Value) : CompareDateTime.Bypass(),
             EndsOn = WasNotEndedOn.HasValue ? CompareDateTime.IsAfterOrEqual(WasNotEndedOn.Value).OrNull() : CompareNullableDateTime.Bypass()
         };
+
+        public HashSet<int> ClientId { get; set; } = new HashSet<int>();
+        public HashSet<int> DistributorId { get; set; } = new HashSet<int>();
+        public HashSet<int> ProductId { get; set; } = new HashSet<int>();
+        public HashSet<int> CommercialOfferId { get; set; } = new HashSet<int>();
     }
 }
