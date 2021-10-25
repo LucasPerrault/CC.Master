@@ -20,6 +20,7 @@
     <ItemGroup>
       <PackageReference Include="Lucca.Core.Api.Web" Version="0.3.4" />
       <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="5.0.0" />
+      <PackageReference Include="NExtends" Version="2.3.2" />
     </ItemGroup>
 
 </Project>

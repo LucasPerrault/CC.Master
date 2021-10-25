@@ -8,6 +8,7 @@ using Lucca.Core.Api.Web.ModelBinding.Paging;
 using Lucca.Core.Api.Web.ModelBinding.Sorting;
 using Lucca.Core.Shared.Domain.Exceptions;
 using Microsoft.AspNetCore.Mvc;
+using NExtends.Primitives.DateTimes;
 using Rights.Domain;
 using Rights.Web.Attributes;
 using System;
@@ -87,6 +88,7 @@ namespace Billing.Contracts.Web
         public HashSet<int> EnvironmentId { get; set; } = new HashSet<int>();
         public DateTime? WasStartedOn { get; set; } = null;
         public DateTime? WasNotEndedOn { get; set; } = null;
+        public DateTime? CreationMonth { get; set; } = null;
 
         public ContractFilter ToFilter() => new ContractFilter
         {
@@ -100,6 +102,7 @@ namespace Billing.Contracts.Web
             CurrentlyAttachedEstablishmentIds = CurrentlyAttachedEstablishmentId,
             ProductIds = ProductId,
             ArchivedAt = NotArchived(),
+            CreatedAt = CreationMonth.HasValue ? CompareDateTime.IsBetweenOrEqual(CreationMonth.Value.FirstOfMonth(), CreationMonth.Value.AddMonths(1).FirstOfMonth()) : CompareDateTime.Bypass(),
             StartsOn = WasStartedOn.HasValue ? CompareDateTime.IsBeforeOrEqual(WasStartedOn.Value) : CompareDateTime.Bypass(),
             EndsOn = WasNotEndedOn.HasValue ? CompareDateTime.IsAfterOrEqual(WasNotEndedOn.Value).OrNull() : CompareNullableDateTime.Bypass()
         };
