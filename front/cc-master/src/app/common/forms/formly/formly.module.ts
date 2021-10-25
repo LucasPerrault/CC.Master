@@ -9,12 +9,15 @@ import { FormlyFieldCountry } from './country/country.component';
 import { FormlyFieldEnvironmentDomain } from './environment-domain/environment-domain.component';
 import { FormlyFieldEnvironmentSubdomain } from './environment-subdomain/environment-subdomain.component';
 import { luFormlyConfig } from './formly.config';
+import { FormlyFieldSpecializedContactRole } from './specialized-contact-role/specialized-contact-role.component';
+import { SpecializedContactRoleApiSelectModule } from '@cc/common/forms/select/specialized-contact-role-api-select/specialized-contact-role-api-select.module';
 
 @NgModule({
   declarations: [
     FormlyFieldEnvironmentDomain,
     FormlyFieldEnvironmentSubdomain,
     FormlyFieldCountry,
+    FormlyFieldSpecializedContactRole,
   ],
   imports: [
     CommonModule,
@@ -23,6 +26,7 @@ import { luFormlyConfig } from './formly.config';
     ReactiveFormsModule,
     FormlyModule.forChild(luFormlyConfig),
     CountryApiSelectModule,
+    SpecializedContactRoleApiSelectModule,
   ],
 })
 export class CCFormlyModule {}

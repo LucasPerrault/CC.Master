@@ -1,4 +1,5 @@
 import { FormlyFieldCountry } from '@cc/common/forms/formly/country/country.component';
+import { FormlyFieldSpecializedContactRole } from '@cc/common/forms/formly/specialized-contact-role/specialized-contact-role.component';
 import { ConfigOption } from '@ngx-formly/core';
 
 import { FormlyFieldEnvironmentDomain } from './environment-domain/environment-domain.component';
@@ -17,6 +18,10 @@ export const luFormlyConfig: ConfigOption = {
     {
       name: 'country',
       component: FormlyFieldCountry,
+    },
+    {
+      name: 'specialized-contact-role',
+      component: FormlyFieldSpecializedContactRole,
     },
   ],
 };

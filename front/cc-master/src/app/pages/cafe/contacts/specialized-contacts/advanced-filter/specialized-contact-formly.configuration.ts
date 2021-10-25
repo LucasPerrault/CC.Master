@@ -9,10 +9,8 @@ export class SpecializedContactFormlyConfiguration {
 
   public readonly roles: FormlyFieldConfig = {
     key: SpeContactAdvancedFilterKey.Role,
-    type: 'api',
+    type: 'specialized-contact-role',
     templateOptions: {
-      api: '/api/cafe/specialized-contacts/roles',
-      standard: 'v4',
       multiple: true,
       required: true,
       mod: 'palette-grey mod-outlined mod-inline mod-longer',
