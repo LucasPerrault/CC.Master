@@ -12,7 +12,7 @@ export class ClientContactFormlyConfiguration {
     type: 'api',
     templateOptions: {
       api: '/api/cafe/clients',
-      orderBy: 'name,asc',
+      standard: 'v4',
       multiple: true,
       required: true,
       mod: 'palette-grey mod-outlined mod-inline mod-longer',
