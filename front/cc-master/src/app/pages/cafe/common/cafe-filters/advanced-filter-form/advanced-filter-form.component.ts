@@ -80,6 +80,7 @@ export class AdvancedFilterFormComponent implements ControlValueAccessor, OnInit
     const criterionForms = form?.criterionForms;
     if (!!criterionForms?.length) {
       this.formArray.clear();
+      this.formArray.reset();
       this.addRange(criterionForms);
       return;
     }
