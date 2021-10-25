@@ -1,3 +1,4 @@
+using Storage.Infra.Extensions;
 using System;
 using System.ComponentModel;
 using System.Linq.Expressions;
@@ -11,6 +12,7 @@ namespace AdvancedFilters.Domain.Filters.Models
     {
         public override Expression<Func<DateTime, bool>> Expression => Operator switch
         {
+            ComparisonOperators.Equals => item => item.Year == Value.Year && item.Month == Value.Month && item.Day == Value.Day,
             ComparisonOperators.StrictlyGreaterThan => item => item > Value,
             ComparisonOperators.StrictlyLessThan => item => item < Value,
             _ => base.Expression
@@ -23,11 +25,13 @@ namespace AdvancedFilters.Domain.Filters.Models
         public ComparisonOperators Operator { get; set; }
         public TValue Value { get; set; }
 
-        public virtual Expression<Func<TValue, bool>> Expression => Operator switch
+        public virtual Expression<Func<TValue, bool>> Expression => GetExpression(Operator);
+
+        protected Expression<Func<TValue, bool>> GetExpression(ComparisonOperators op) => op switch
         {
             ComparisonOperators.Equals => item => Equals(item, Value),
-            ComparisonOperators.NotEquals => item => !Equals(item, Value),
-            _ => throw new InvalidEnumArgumentException(nameof(Operator), (int)Operator, typeof(ComparisonOperators)),
+            ComparisonOperators.NotEquals => GetExpression(ComparisonOperators.Equals).Inverse(),
+            _ => throw new InvalidEnumArgumentException(nameof(Operator), (int) Operator, typeof(ComparisonOperators)),
         };
-    }
+}
 }
