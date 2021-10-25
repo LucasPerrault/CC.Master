@@ -38,9 +38,6 @@ export class ClientRebateComponent implements ControlValueAccessor, Validator, O
     this.setDisabledState(isDisabled);
   }
 
-  public onChange: (clientRebate: IClientRebate) => void;
-  public onTouch: () => void;
-
   public get range(): IRange {
     return { min: 0, max: 100 };
   }
@@ -79,6 +76,9 @@ export class ClientRebateComponent implements ControlValueAccessor, Validator, O
     this.destroy$.complete();
   }
 
+  public onChange: (clientRebate: IClientRebate) => void = () => {};
+  public onTouch: () => void = () => {};
+
   public registerOnChange(fn: () => void): void {
     this.onChange = fn;
   }
@@ -93,11 +93,11 @@ export class ClientRebateComponent implements ControlValueAccessor, Validator, O
     }
 
     if (clientRebate.endAt !== this.endClientRebateAt.value) {
-      this.endClientRebateAt.setValue(clientRebate.endAt, { emitEvent: false });
+      this.endClientRebateAt.setValue(clientRebate.endAt);
     }
 
     if (clientRebate.count !== this.clientRebateCount.value) {
-      this.clientRebateCount.setValue(clientRebate.count, { emitEvent: false });
+      this.clientRebateCount.setValue(clientRebate.count);
     }
   }
 
