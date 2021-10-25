@@ -47,14 +47,12 @@ namespace Billing.Contracts.Domain.Contracts
     {
         public static readonly Expression<Func<Contract, DateTime>> StartsOn = c => c.Attachments.Any()
             ? c.Attachments
-                .Where(a => a.IsActive)
                 .Select(a => a.StartsOn)
                 .Min()
             : c.TheoreticalStartOn;
 
         public static readonly Expression<Func<Contract, DateTime?>> EndsOn = c => c.Attachments.Any()
             ? c.Attachments
-                .Where(a => a.IsActive)
                 .Select(a => a.EndsOn)
                 .Min()
             : null;
@@ -95,6 +93,5 @@ namespace Billing.Contracts.Domain.Contracts
         public string EstablishmentName { get; set; }
         public DateTime StartsOn { get; set; }
         public DateTime? EndsOn { get; set; }
-        public bool IsActive { get; set; }
     }
 }

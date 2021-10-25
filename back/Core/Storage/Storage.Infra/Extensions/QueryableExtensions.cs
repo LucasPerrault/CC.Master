@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
@@ -8,14 +8,9 @@ namespace Storage.Infra.Extensions
 {
     public static class QueryableExtensions
     {
-        internal static Expression<Func<T, bool>> Inverse<T>(this Expression<Func<T, bool>> e)
-        {
-            return Expression.Lambda<Func<T, bool>>(Expression.Not(e.Body), e.Parameters[0]);
-        }
-
         public static IConditionalQueryableBuilder<T> When<T>(this IQueryable<T> query, bool condition) =>
             condition
-                ? (IConditionalQueryableBuilder<T>)new CompareQueryableBuilder<T>(query)
+                ? new CompareQueryableBuilder<T>(query)
                 : new BypassApplyQueryableBuilder<T>(query);
 
         public static ICompareBoolQueryableBuilder<T> Apply<T>(this IQueryable<T> query, CompareBoolean compareBoolean) =>

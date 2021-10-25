@@ -135,7 +135,7 @@ export class ContractTabFormComponent implements OnInit, OnDestroy, ControlValue
 
     this.formGroup.valueChanges
       .pipe(takeUntil(this.destroy$))
-      .subscribe(form => this.onChange(form));
+      .subscribe(() => this.onChange(this.formGroup.getRawValue()));
 
     this.formGroup.get(ContractFormKey.Product).valueChanges
       .pipe(takeUntil(this.destroy$))

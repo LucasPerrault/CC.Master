@@ -83,7 +83,9 @@ export class PaginatedList<T> {
 
     this.fetchMore(paramsWithPaging).subscribe(
       res => {
-        this.items.next([...this.items.value, ...res.items]);
+        const previousValues = !!this.paging.page ? this.items.value : [];
+        this.items.next([...previousValues, ...res.items]);
+
         this.totalCount.next(res.totalCount);
         this.state.next(PaginatedListState.Idle);
       },
