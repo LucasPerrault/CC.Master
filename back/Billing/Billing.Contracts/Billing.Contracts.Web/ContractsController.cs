@@ -16,6 +16,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Tools;
+using Tools.Web;
 
 namespace Billing.Contracts.Web
 {
@@ -86,6 +87,7 @@ namespace Billing.Contracts.Web
         public HashSet<int> Id { get; set; } = new HashSet<int>();
         public HashSet<string> Search { get; set; } = new HashSet<string>();
         public HashSet<int> EnvironmentId { get; set; } = new HashSet<int>();
+        public HashSet<bool> HasEnvironment { get; set; } = new HashSet<bool>();
         public DateTime? WasStartedOn { get; set; } = null;
         public DateTime? TheoreticalStartOn { get; set; } = null;
         public DateTime? WasNotEndedOn { get; set; } = null;
@@ -96,6 +98,7 @@ namespace Billing.Contracts.Web
         {
             Search = Search,
             EnvironmentIds = EnvironmentId,
+            HasEnvironment = HasEnvironment.ToCompareBoolean(),
             Ids = Id,
             ClientIds = ClientId,
             DistributorIds = DistributorId,

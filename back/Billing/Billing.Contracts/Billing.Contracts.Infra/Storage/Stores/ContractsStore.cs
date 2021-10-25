@@ -77,6 +77,7 @@ namespace Billing.Contracts.Infra.Storage.Stores
                 .Apply(filter.StartsOn).To(ContractExpressions.StartsOn)
                 .Apply(filter.EndsOn).To(ContractExpressions.EndsOn)
                 .Apply(filter.CreatedAt).To(c => c.CreatedAt)
+                .Apply(filter.HasEnvironment).To(c => c.EnvironmentId.HasValue)
                 .WhenNotNullOrEmpty(filter.CurrentlyAttachedEstablishmentIds).ApplyWhere(ContractExpressions.IsAttachedToAnyEstablishment(filter.CurrentlyAttachedEstablishmentIds, DateTime.Now))
                 .WhenNotNullOrEmpty(filter.Ids).ApplyWhere(c => filter.Ids.Contains(c.Id))
                 .WhenNotNullOrEmpty(filter.ClientIds).ApplyWhere(c => filter.ClientIds.Contains(c.ClientId))
