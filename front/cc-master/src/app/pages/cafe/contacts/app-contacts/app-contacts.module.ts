@@ -8,6 +8,9 @@ import { LuTooltipTriggerModule } from '@lucca-front/ng/tooltip';
 import {
   ContactAdditionalColumnSelectModule,
 } from '../common/components/contact-additional-column-select/contract-additional-column-select.module';
+import { AppContactAdvancedFilterConfiguration } from './advanced-filter/app-contact-advanced-filter.configuration';
+import { AppContactAdvancedFilterApiMappingService } from './advanced-filter/app-contact-advanced-filter-api-mapping.service';
+import { AppContactFormlyConfiguration } from './advanced-filter/app-contact-formly.configuration';
 import { AppContactListComponent } from './app-contact-list/app-contact-list.component';
 import { AppContactsComponent } from './app-contacts.component';
 import { AppContactsDataService } from './app-contacts-data.service';
@@ -25,7 +28,12 @@ import { AppContactsDataService } from './app-contacts-data.service';
     LuTooltipTriggerModule,
     PagingModule,
   ],
-  providers: [AppContactsDataService],
+  providers: [
+    AppContactsDataService,
+    AppContactFormlyConfiguration,
+    AppContactAdvancedFilterConfiguration,
+    AppContactAdvancedFilterApiMappingService,
+  ],
   exports: [AppContactsComponent],
 })
 export class AppContactsModule { }

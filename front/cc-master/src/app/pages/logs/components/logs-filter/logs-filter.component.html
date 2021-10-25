@@ -7,8 +7,12 @@
       <cc-environment-action-select textfieldClass="palette-grey mod-outlined mod-inline u-marginBottomSmallest" [formControlName]="filtersKey.Actions">
       </cc-environment-action-select>
 
-      <cc-environment-api-select [multiple]="true" textfieldClass="palette-grey mod-outlined mod-inline u-marginBottomSmallest" [formControlName]="filtersKey.Environments">
-      </cc-environment-api-select>
+      <label class="textfield palette-grey mod-outlined mod-inline u-marginBottomSmallest">
+        <cc-environment-api-select [placeholder]="'front_select_environments_label' | translate"
+                                   [multiple]="true"
+                                   [formControlName]="filtersKey.Environments">
+        </cc-environment-api-select>
+      </label>
 
       <cc-date-range-select datesClass="palette-grey mod-outlined mod-inline mod-short u-marginBottomSmallest"
                             [configuration]="dateRangeConfiguration"
@@ -26,8 +30,11 @@
   </div>
 
   <div class="u-displayFlex u-flexWrapWrap u-alignItemsFlexStart u-animatedFadeIn u-marginTopSmallest" *ngIf="showMoreFilters">
-    <cc-environment-domain-select textfieldClass="palette-grey mod-outlined mod-inline " [formControlName]="filtersKey.Domains">
-    </cc-environment-domain-select>
+    <label class="textfield palette-grey mod-outlined mod-inline">
+      <cc-environment-domain-select [placeholder]="'front_filterLabel_domainName' | translate"
+                                    [formControlName]="filtersKey.Domains" [multiple]="true">
+      </cc-environment-domain-select>
+    </label>
 
     <cc-anonymization-button-group class="u-marginRightSmallest" [formControlName]="filtersKey.IsAnonymized">
     </cc-anonymization-button-group>

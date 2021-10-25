@@ -3,7 +3,6 @@ import { IContactAdditionalColumn } from '../common/components/contact-additiona
 export enum ClientContactAdditionalColumn {
   CreatedAt = 'createdAt',
   ExpiresAt = 'expiresAt',
-  Client = 'client',
 }
 
 export const clientContactAdditionalColumns: IContactAdditionalColumn[] = [
@@ -14,9 +13,5 @@ export const clientContactAdditionalColumns: IContactAdditionalColumn[] = [
   {
     id: ClientContactAdditionalColumn.ExpiresAt,
     name: 'cafe_contacts_list_expiredAt',
-  },
-  {
-    id: ClientContactAdditionalColumn.Client,
-    name: 'cafe_contacts_list_client',
   },
 ];

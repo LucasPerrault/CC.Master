@@ -311,6 +311,11 @@ namespace AdvancedFilters.Infra.Migrations
                     b.Property<int>("Id")
                         .HasColumnType("int");
 
+                    b.Property<string>("Cluster")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("Cluster");
+
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2")
                         .HasColumnName("CreatedAt");

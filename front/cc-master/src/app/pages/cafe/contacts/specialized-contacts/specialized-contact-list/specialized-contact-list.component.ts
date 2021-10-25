@@ -1,12 +1,9 @@
 import { Component, Input } from '@angular/core';
 import { TranslatePipe } from '@cc/aspects/translate';
-import { NavigationPath } from '@cc/common/navigation';
 
-import { ContractsRoutingKey } from '../../../../contracts/contracts-manage/services/contracts-routing.service';
 import {
   IContactAdditionalColumn,
 } from '../../common/components/contact-additional-column-select/contact-additional-column.interface';
-import { ContactRolesService } from '../../common/services/contact-roles.service';
 import { ISpecializedContact } from '../specialized-contact.interface';
 import { SpecializedContactAdditionalColumn } from '../specialized-contact-additional-column.enum';
 
@@ -21,17 +18,18 @@ export class SpecializedContactListComponent {
 
   public additionalColumn = SpecializedContactAdditionalColumn;
 
-  constructor(
-    private rolesService: ContactRolesService,
-    private translatePipe: TranslatePipe,
-  ) { }
+  constructor(private translatePipe: TranslatePipe) { }
 
   public trackBy(index: number, contact: ISpecializedContact): number {
     return contact.id;
   }
 
+  public getEnvironmentName(subdomain: string, domain: string): string {
+    return `${ subdomain }.${ domain }`;
+  }
+
   public getRole(code: string): string {
-    return this.rolesService.getSpeContactRole(code);
+    return this.translatePipe.transform(`cafe_role_spe_${ code }`);
   }
 
   public getIsConfirmedTranslation(isConfirmed: boolean): string {
@@ -42,13 +40,5 @@ export class SpecializedContactListComponent {
 
   public isHidden(column: SpecializedContactAdditionalColumn): boolean {
     return !this.selectedColumns.find(c => c.id === column);
-  }
-
-  public redirectToContracts(environmentId: number): void {
-    const query = `${ ContractsRoutingKey.EnvironmentIds }=${ environmentId }`;
-    const route = `${ NavigationPath.Contracts }/${ NavigationPath.ContractsManage }`;
-    const url = [route, query].join('?');
-
-    window.open(url);
   }
 }

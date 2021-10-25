@@ -1,0 +1,36 @@
+<lu-select [formControl]="formControl"
+           class="textfield-input"
+           [placeholder]="placeholder"
+           [multiple]="multiple"
+           [required]="required"
+           [formlyAttributes]="formlyAttributes"
+           (blur)="onTouch()">
+
+  <ng-container *luDisplayer="let value; multiple: multiple">
+    <ng-container *ngIf="multiple; else notMultiple">
+
+      <ng-container *ngIf="value?.length !== 1; else: singleView">
+        <span class="label">{{ value.length }}</span>
+        {{ 'select_countries_label' | translate }}
+      </ng-container>
+
+      <ng-template #singleView>{{ value[0].name }}</ng-template>
+    </ng-container>
+
+    <ng-template #notMultiple>{{ value.name }}</ng-template>
+  </ng-container>
+
+  <lu-option-picker-advanced>
+    <header class="lu-picker-header">
+      <lu-api-paged-searcher [api]="apiUrl" standard="v4"></lu-api-paged-searcher>
+    </header>
+
+    <lu-option *luForOptions="let country; trackBy: trackBy" [value]="country">
+        {{ country.name }}
+    </lu-option>
+
+  </lu-option-picker-advanced>
+
+  <lu-input-clearer></lu-input-clearer>
+</lu-select>
+

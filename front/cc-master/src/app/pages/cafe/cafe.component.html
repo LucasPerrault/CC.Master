@@ -3,5 +3,15 @@
     <h1>{{ "cafe_title" | translate }}</h1>
   </header>
 
-  <div class="header blockWithFixedSizeInFlex"></div>
+  <div class="header blockWithFixedSizeInFlex">
+    <cc-cafe-filters class="u-displayFlex u-flexDirectionColumn u-flexWrapWrap u-flexShrink0 u-flexGrow1"
+                     [categories]="configuration.categories"
+                     [configurations]="configuration.advancedFilters"
+                     [formControl]="cafeFilters">
+    </cc-cafe-filters>
+  </div>
+
+  <cc-cafe-contacts *ngIf="isContactCategory" [category]="category" [advancedFilterForm]="advancedFilterForm"></cc-cafe-contacts>
+
+  <cc-cafe-environments *ngIf="isEnvironmentCategory" [advancedFilterForm]="advancedFilterForm"></cc-cafe-environments>
 </div>

@@ -20,11 +20,11 @@ namespace AdvancedFilters.Web.Controllers
             _collection = collection;
         }
 
-        [HttpGet()]
+        [HttpGet]
         [ForbidIfMissing(Operation.ReadAllCafe)]
-        public async Task<Page<Application>> GetCountriesAsync()
+        public async Task<Page<Application>> GetApplicationsAsync(string search)
         {
-            var apps = await _collection.GetAsync();
+            var apps = await _collection.GetAsync(search);
             return new Page<Application>
             {
                 Count = apps.Count,

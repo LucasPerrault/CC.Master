@@ -1,5 +1,5 @@
 export enum ContactCategory {
-  All = 'all',
+  Contacts = 'contacts',
   Specialized = 'specialized',
   Client = 'client',
   Application = 'application',
