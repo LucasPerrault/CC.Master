@@ -160,5 +160,8 @@ namespace CloudControl.Web.Tests.Mocks
 
         public override void ConfigureSalesforce(IServiceCollection services, AppConfiguration configuration)
         { }
+
+        public override void ConfigureAdvancedFilters(IServiceCollection services, AppConfiguration configuration)
+        { }
     }
 }

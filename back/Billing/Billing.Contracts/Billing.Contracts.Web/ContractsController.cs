@@ -148,6 +148,8 @@ namespace Billing.Contracts.Web
         public static CompareNullableDateTime NotArchived() => CompareDateTime.IsStrictlyAfter(DateTime.Now).OrNull();
         public HashSet<string> Search { get; set; } = new HashSet<string>();
         public HashSet<string> Subdomain { get; set; } = new HashSet<string>();
+        public DateTime? WasStartedOn { get; set; } = null;
+        public DateTime? WasNotEndedOn { get; set; } = null;
         public HashSet<int> ExcludedId { get; set; } = new HashSet<int>();
         public int? Id { get; set; }
 
@@ -157,7 +159,9 @@ namespace Billing.Contracts.Web
             Subdomains = Subdomain,
             ExcludedIds = ExcludedId,
             Id = Id,
-            ArchivedAt = NotArchived()
+            ArchivedAt = NotArchived(),
+            StartsOn = WasStartedOn.HasValue ? CompareDateTime.IsBeforeOrEqual(WasStartedOn.Value) : CompareDateTime.Bypass(),
+            EndsOn = WasNotEndedOn.HasValue ? CompareDateTime.IsAfterOrEqual(WasNotEndedOn.Value).OrNull() : CompareNullableDateTime.Bypass()
         };
     }
 }

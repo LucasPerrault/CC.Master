@@ -1,4 +1,4 @@
-@Library('Lucca@v0.28.7') _
+@Library('Lucca@v0.37.1') _
 
 import hudson.Util;
 import fr.lucca.CI;
@@ -112,7 +112,7 @@ node(label: CI.getSelectedNode(script: this)) {
 					if (!isPr) {
 						// back
 						def webProjFile = findFiles(glob: "**/CloudControl.Web.csproj").first().path
-						publishBack(startupProjFilepath: webProjFile, framework: "netcoreapp3.1")
+						publishBack(startupProjFilepath: webProjFile, framework: "net5.0")
 					}
 				},
 				failFast: true

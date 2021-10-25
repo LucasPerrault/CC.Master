@@ -12,5 +12,7 @@ namespace Billing.Contracts.Domain.Contracts
         public HashSet<string> Search { get; set; } = new HashSet<string>();
         public HashSet<string> Subdomains { get; set; } = new HashSet<string>();
         public CompareNullableDateTime ArchivedAt { get; set; } = CompareNullableDateTime.Bypass();
+        public CompareDateTime StartsOn { get; set; } = CompareDateTime.Bypass();
+        public CompareNullableDateTime EndsOn { get; set; } = CompareNullableDateTime.Bypass();
     }
 }

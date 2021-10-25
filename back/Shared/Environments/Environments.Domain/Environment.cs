@@ -1,6 +1,8 @@
-﻿using System.Collections.Generic;
+using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Text.Json.Serialization;
+using Tools;
 
 namespace Environments.Domain
 {
@@ -10,29 +12,25 @@ namespace Environments.Domain
         public string Subdomain { get; set; }
         public EnvironmentDomain Domain { get; set; }
         public EnvironmentPurpose Purpose { get; set; }
+        public string Cluster { get; set; }
         public bool IsActive { get; set; }
+        public DateTime CreatedAt { get; set; }
 
-        public string ProductionHost => $"https://{Subdomain}.{GetDomainAsString(Domain)}";
+        public string ProductionHost => $"https://{Subdomain}.{Domain.GetDescription()}";
 
         [JsonIgnore]
         public ICollection<EnvironmentSharedAccess> ActiveAccesses { get; set; }
-
-        private static string GetDomainAsString(EnvironmentDomain domain)
-        {
-            return domain switch
-            {
-                EnvironmentDomain.ILuccaDotNet => "ilucca.net",
-                EnvironmentDomain.ILuccaDotCh => "ilucca.ch",
-                EnvironmentDomain.DauphineDotFr => "dauphine.fr",
-                _ => throw new InvalidEnumArgumentException(nameof(domain), (int) domain, typeof(EnvironmentDomain))
-            };
-        }
     }
 
     public enum EnvironmentDomain
     {
+        [Description("ilucca.net")]
         ILuccaDotNet = 0,
+
+        [Description("ilucca.ch")]
         ILuccaDotCh = 2,
+
+        [Description("dauphine.fr")]
         DauphineDotFr = 5
     }
 

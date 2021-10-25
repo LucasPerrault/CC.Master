@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>netcoreapp3.1</TargetFramework>
+        <TargetFramework>net5.0</TargetFramework>
         <RootNamespace>Core.Proxy.Infra</RootNamespace>
     </PropertyGroup>
 
@@ -12,6 +12,7 @@
     <ItemGroup>
       <ProjectReference Include="..\..\..\Shared\Remote\Remote.Infra\Remote.Infra.csproj" />
       <ProjectReference Include="..\..\Authentication\Authentication.Domain\Authentication.Domain.csproj" />
+      <ProjectReference Include="..\..\Rights\Rights.Web\Rights.Web.csproj" />
     </ItemGroup>
 
     <ItemGroup>

@@ -82,7 +82,7 @@ namespace Instances.Infra.Storage.Stores
         public Task<Dictionary<string, int>> GetNumberOfActiveDemosByCluster()
         {
             // On ne passe pas par GetActiveDemos pour bénéficier (on espère) du group by en sql
-            return Demos.Where(d => d.IsActive).GroupBy(d => d.Instance.Cluster).ToDictionaryAsync(g => g.Key, g => g.Count());
+            return Demos.Where(d => d.IsActive).GroupBy(d => d.Cluster).ToDictionaryAsync(g => g.Key, g => g.Count());
         }
 
         private IQueryable<Demo> Get(DemoFilter filter, AccessRight access)
@@ -118,6 +118,7 @@ namespace Instances.Infra.Storage.Stores
                 .Apply(filter.IsProtected).To(d => d.Instance.IsProtected)
                 .Apply(filter.IsTemplate).To(d => d.IsTemplate)
                 .Apply(filter.Subdomain).To(d => d.Subdomain)
+                .WhenNotNullOrEmpty(filter.Clusters).ApplyWhere(d => filter.Clusters.Contains(d.Cluster))
                 .WhenNotNullOrEmpty(filter.Search).ApplyWhere(d => d.Subdomain.Contains(filter.Search))
                 .WhenHasValue(filter.DistributorId).ApplyWhere(d => d.DistributorId == filter.DistributorId.Value)
                 .WhenHasValue(filter.AuthorId).ApplyWhere(d => d.AuthorId == filter.AuthorId.Value);

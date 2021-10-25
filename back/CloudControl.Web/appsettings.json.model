@@ -63,7 +63,7 @@
     },
     "Slack": {
         "Hooks": {
-            "CloudControl": "{{ CC.Master:SlackHookCcMonitorEnvironments }}",
+            "CloudControlTeam": "{{ CC.Master:SlackHookCcNotifications }}",
             "DemosMaintainers": "{{ CC.Master:SlackHookCcNotifications }}"
         }
     },
@@ -76,6 +76,11 @@
         "CodeSourcesStore": {
             "Host": "http://{{ CC.Master:LegacyCloudControlHost }}",
             "Endpoint": "/api/v3/codeSources",
+            "Token": "{{ CC.Master:LegacyCommunicationToken }}"
+        },
+        "PreviewConfigurationsStore": {
+            "Host": "http://{{ CC.Master:LegacyCloudControlHost }}",
+            "Endpoint": "/api/v3/previewConfigurations",
             "Token": "{{ CC.Master:LegacyCommunicationToken }}"
         },
         "Identity": {
@@ -99,8 +104,8 @@
             "OutboundToken": "{{ CC.Master:HubspotOutboundToken }}"
         },
         "SqlScriptPicker": {
-            "JenkinsBaseUri": "http://jenkins2.lucca.local:8080/",
-            "MonolithJobPath": "job/CI.Pipeline.Multibranch"
+            "JenkinsBaseUri": "http://jenkins3.lucca.local:8080/",
+            "MonolithJobPath": "job/Monolith"
         },
         "DemoClusterSelection": {
             "UseFixedCluster": "{{ CC.Master:UseFixedClusterForDemos }}",
@@ -108,7 +113,8 @@
             "ClusterChoiceCacheRetentionInHours": 24
         },
         "Github": {
-            "Token": "{{ CC.Master:GithubToken }}"
+            "Token": "{{ CC.Master:GithubToken }}",
+            "GithubWebhookSecret": "{{ CC.Master:GithubWebhookSecret }}"
         },
         "Dns": {
             "Internal": {
@@ -123,6 +129,35 @@
             "Zones": {
                 "Demos": "ilucca-demo.net"
             }
+        }
+    },
+    "AdvancedFilters": {
+        "MaxParallelHttpCalls": 40,
+        "Routes": {
+            "Hosts": {
+                "CloudControl": {
+                    "Host": "{{ CC.Master:scheme }}://{{ CC.Master:tenant }}.{{ CC.Master:domain }}",
+                    "EnvironmentsEndpoint": "/api/environments?limit=100000&isActive=true&purpose=contractual",
+                    "ContractsEndpoint": "/api/contracts?limit=100000&isActive=true,false",
+                    "ContractsSubdomainParamName": "subdomain",
+                    "ClientsEndpoint": "/api/clients?limit=10000&isActive=true,false"
+                }
+            },
+            "Tenants": {
+                "EstablishmentsEndpoint": "organization/structure/api/establishments",
+                "LegalUnitsEndpoint": "organization/structure/api/legal-units",
+                "AppInstancesEndpoint": "api/v3/appInstances?fields=id,name,applicationid,deletedat",
+                "AppContactsEndpoint": "admin/account-and-billing/api/app-contacts",
+                "ClientContactsEndpoint": "admin/account-and-billing/api/client-contacts",
+                "SpecializedContactsEndpoint": "admin/account-and-billing/api/specialized-contacts"
+            }
+        },
+        "Auth": {
+            "CloudControlAuthScheme": "Cloudcontrol",
+            "CloudControlAuthParameter": "application={{ CC.Master:CafeToken }}",
+            "MonolithWebserviceToken": "{{ ilucca:CloudControlSharedToken }}",
+            "OrganizationStructureWebserviceToken": "{{ CC.Master:OrganizationStructureToken }}",
+            "ClientCenterWebserviceToken": "{{ Organization.ClientCenter:CafeToken }}"
         }
     }
 }

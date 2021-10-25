@@ -1,11 +1,18 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>netcoreapp3.1</TargetFramework>
+        <TargetFramework>net5.0</TargetFramework>
     </PropertyGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\..\..\Core\Rights\Rights.Domain\Rights.Domain.csproj" />
+      <ProjectReference Include="..\..\..\Core\Rights\Rights.Web\Rights.Web.csproj" />
+      <ProjectReference Include="..\Distributors.Application\Distributors.Application.csproj" />
       <ProjectReference Include="..\Distributors.Infra\Distributors.Infra.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="Lucca.Core.Api.Web" Version="0.3.4" />
     </ItemGroup>
 
 </Project>

@@ -15,11 +15,11 @@ export class EnvironmentLinkedInformationComponent {
   constructor() { }
 
   public getEnvironmentName(environment: IEnvironment): string {
-    return `${ environment.subDomain }${ environment.domainName }`;
+    return `${ environment.subDomain }.${ environment.domainName }`;
   }
 
   public redirectToEnvironment(environment: IEnvironment): void {
-    const routerParams = `main-id=${environment.id}&&ccselect-tags=(id~${environment.id})`;
+    const routerParams = `main-id=${environment.id}&ccselect-tags=(id~${environment.id})`;
     const redirectionUrl = `${ NavigationPath.Environments }#!?${ routerParams }`;
     window.open(redirectionUrl);
   }

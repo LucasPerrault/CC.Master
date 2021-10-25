@@ -1,9 +1,11 @@
 using FluentAssertions;
 using Instances.Application.CodeSources;
+using Instances.Application.Instances;
 using Instances.Domain.CodeSources;
 using Instances.Domain.CodeSources.Filtering;
+using Instances.Domain.Github;
+using Instances.Domain.Github.Models;
 using Instances.Infra.Storage;
-using Instances.Infra.Storage.Models;
 using Instances.Infra.Storage.Stores;
 using Lucca.Core.Api.Abstractions.Paging;
 using Lucca.Core.Api.Queryable.Paging;
@@ -26,6 +28,8 @@ namespace Instances.Application.Tests.CodeSources
         private readonly Mock<IQueryPager> _queryPagerMock;
         private readonly Mock<ICodeSourceBuildUrlService> _codeSourceBuildUrlServiceMock;
         private readonly Mock<IArtifactsService> _artifactsServiceMock;
+        private readonly Mock<IGithubService> _githubServiceMock;
+        private readonly Mock<IPreviewConfigurationsRepository> _previewConfigurationsRepositoryMock;
 
         private readonly CodeSourcesRepository _codeSourcesRepository;
 
@@ -34,29 +38,33 @@ namespace Instances.Application.Tests.CodeSources
             _githubBranchesStoreMock = new Mock<IGithubBranchesStore>();
             _queryPagerMock = new Mock<IQueryPager>();
             _queryPagerMock
-                .Setup(p => p.ToPageAsync(It.IsAny<IQueryable<StoredCodeSource>>(), It.IsAny<IPageToken>()))
-                .Returns<IQueryable<StoredCodeSource>, IPageToken>(
-                    (queryable, pageToken) => Task.FromResult(new Page<StoredCodeSource> { Items = queryable.ToList() })
+                .Setup(p => p.ToPageAsync(It.IsAny<IQueryable<CodeSource>>(), It.IsAny<IPageToken>()))
+                .Returns<IQueryable<CodeSource>, IPageToken>(
+                    (queryable, pageToken) => Task.FromResult(new Page<CodeSource> { Items = queryable.ToList() })
                 );
             _fetcherServiceMock = new Mock<ICodeSourceFetcherService>();
             _instancesDbContext = InMemoryDbHelper.InitialiseDb<InstancesDbContext>("Instances", o => new InstancesDbContext(o));
             _codeSourceBuildUrlServiceMock = new Mock<ICodeSourceBuildUrlService>(MockBehavior.Strict);
             _artifactsServiceMock = new Mock<IArtifactsService>(MockBehavior.Strict);
+            _githubServiceMock = new Mock<IGithubService>(MockBehavior.Strict);
+            _previewConfigurationsRepositoryMock = new Mock<IPreviewConfigurationsRepository>(MockBehavior.Strict);
 
             _codeSourcesRepository = new CodeSourcesRepository(
                 new CodeSourcesStore(_instancesDbContext, _queryPagerMock.Object),
                 _githubBranchesStoreMock.Object,
                 _fetcherServiceMock.Object,
                 _codeSourceBuildUrlServiceMock.Object,
-                _artifactsServiceMock.Object
+                _artifactsServiceMock.Object,
+                _githubServiceMock.Object,
+                _previewConfigurationsRepositoryMock.Object
             );
         }
 
         [Fact]
         public async Task ShouldFilterOnLifeCycle()
         {
-            await _instancesDbContext.AddAsync(new StoredCodeSource { Id = 1, Lifecycle = CodeSourceLifecycleStep.Preview });
-            await _instancesDbContext.AddAsync(new StoredCodeSource { Id = 2, Lifecycle = CodeSourceLifecycleStep.Referenced });
+            await _instancesDbContext.AddAsync(new CodeSource { Id = 1, Lifecycle = CodeSourceLifecycleStep.Preview });
+            await _instancesDbContext.AddAsync(new CodeSource { Id = 2, Lifecycle = CodeSourceLifecycleStep.Referenced });
             await _instancesDbContext.SaveChangesAsync();
             var filter = new CodeSourceFilter { Lifecycle = new HashSet<CodeSourceLifecycleStep> { CodeSourceLifecycleStep.Referenced } };
 
@@ -68,15 +76,15 @@ namespace Instances.Application.Tests.CodeSources
         [Fact]
         public async Task ShouldFilterOutDeletedLifeCycleByDefault()
         {
-            await _instancesDbContext.AddAsync(new StoredCodeSource { Id = 1, Lifecycle = CodeSourceLifecycleStep.Deleted });
-            await _instancesDbContext.AddAsync(new StoredCodeSource { Id = 2, Lifecycle = CodeSourceLifecycleStep.ToDelete });
+            await _instancesDbContext.AddAsync(new CodeSource { Id = 1, Lifecycle = CodeSourceLifecycleStep.Deleted });
+            await _instancesDbContext.AddAsync(new CodeSource { Id = 2, Lifecycle = CodeSourceLifecycleStep.ToDelete });
 
-            var activeSources = new List<StoredCodeSource>
+            var activeSources = new List<CodeSource>
             {
-                new StoredCodeSource { Id = 3, Lifecycle = CodeSourceLifecycleStep.ReadyForDeploy },
-                new StoredCodeSource { Id = 4, Lifecycle = CodeSourceLifecycleStep.Preview },
-                new StoredCodeSource { Id = 5, Lifecycle = CodeSourceLifecycleStep.Referenced },
-                new StoredCodeSource { Id = 6, Lifecycle = CodeSourceLifecycleStep.InProduction },
+                new CodeSource { Id = 3, Lifecycle = CodeSourceLifecycleStep.ReadyForDeploy },
+                new CodeSource { Id = 4, Lifecycle = CodeSourceLifecycleStep.Preview },
+                new CodeSource { Id = 5, Lifecycle = CodeSourceLifecycleStep.Referenced },
+                new CodeSource { Id = 6, Lifecycle = CodeSourceLifecycleStep.InProduction },
             };
             await _instancesDbContext.AddRangeAsync(activeSources);
             await _instancesDbContext.SaveChangesAsync();
@@ -110,12 +118,12 @@ namespace Instances.Application.Tests.CodeSources
         [Fact]
         public async Task ShouldUpdateExisting()
         {
-            await _instancesDbContext.AddAsync(new StoredCodeSource { Id = 1, Lifecycle = CodeSourceLifecycleStep.Referenced });
+            await _instancesDbContext.AddAsync(new CodeSource { Id = 1, Lifecycle = CodeSourceLifecycleStep.Referenced });
             await _instancesDbContext.SaveChangesAsync();
 
             await _codeSourcesRepository.UpdateAsync(1, new CodeSourceUpdate { Lifecycle = CodeSourceLifecycleStep.InProduction });
 
-            _instancesDbContext.Set<StoredCodeSource>().Single().Lifecycle.Should().Be(CodeSourceLifecycleStep.InProduction);
+            _instancesDbContext.Set<CodeSource>().Single().Lifecycle.Should().Be(CodeSourceLifecycleStep.InProduction);
         }
 
         [Fact]
@@ -125,7 +133,7 @@ namespace Instances.Application.Tests.CodeSources
             {
                 new CodeSourceArtifacts { Id = 1 }
             };
-            await _instancesDbContext.AddAsync(new StoredCodeSource { Id = 1, Code = "source-code" });
+            await _instancesDbContext.AddAsync(new CodeSource { Id = 1, Code = "source-code" });
             await _instancesDbContext.SaveChangesAsync();
             _artifactsServiceMock
                 .Setup(a => a.GetArtifactsAsync(It.IsAny<CodeSource>(), It.IsAny<string>(), It.IsAny<int>()))
@@ -160,7 +168,7 @@ namespace Instances.Application.Tests.CodeSources
                 .Setup(a => a.GetArtifactsAsync(It.IsAny<CodeSource>(), It.IsAny<string>(), It.IsAny<int>()))
                 .ReturnsAsync(listArtifacts);
 
-            await _instancesDbContext.AddAsync(new StoredCodeSource { Id = 1, Code = "source-code" });
+            await _instancesDbContext.AddAsync(new CodeSource { Id = 1, Code = "source-code" });
             await _instancesDbContext.SaveChangesAsync();
 
             await _codeSourcesRepository.UpdateProductionVersionAsync(new CodeSourceProductionVersionDto
@@ -191,16 +199,6 @@ namespace Instances.Application.Tests.CodeSources
             ex.Message.Should().Contain("Unknown code source");
         }
 
-        [Fact]
-        public async Task ShouldCreateDefaultBranchAfterSourceCreation()
-        {
-            var source = new CodeSource();
-
-            await _codeSourcesRepository.CreateAsync(source);
-
-            _githubBranchesStoreMock.Verify(s => s.CreateForNewSourceCodeAsync(source), Times.Once);
-        }
-
         #region GetBuildUrlAsync
         [Fact]
         public async Task GetBuildUrlAsync_Ok()
@@ -209,7 +207,7 @@ namespace Instances.Application.Tests.CodeSources
             var buildNumber = "1234";
             var code = "testSoft";
             var expectedResult = "http://test.test.com";
-            await _instancesDbContext.AddAsync(new StoredCodeSource { Id = 1, Code = code, JenkinsProjectUrl = "http://google.fr", Lifecycle = CodeSourceLifecycleStep.Referenced });
+            await _instancesDbContext.AddAsync(new CodeSource { Id = 1, Code = code, JenkinsProjectUrl = "http://google.fr", Lifecycle = CodeSourceLifecycleStep.Referenced });
             await _instancesDbContext.SaveChangesAsync();
 
             _codeSourceBuildUrlServiceMock
@@ -249,7 +247,7 @@ namespace Instances.Application.Tests.CodeSources
             var branchName = "branchName";
             var buildNumber = "1234";
             var code = "testSoft";
-            await _instancesDbContext.AddAsync(new StoredCodeSource { Id = 1, Code = code, Lifecycle = CodeSourceLifecycleStep.Referenced });
+            await _instancesDbContext.AddAsync(new CodeSource { Id = 1, Code = code, Lifecycle = CodeSourceLifecycleStep.Referenced });
             await _instancesDbContext.SaveChangesAsync();
 
             _codeSourceBuildUrlServiceMock
@@ -269,8 +267,8 @@ namespace Instances.Application.Tests.CodeSources
         public async Task GetArtifactsAsync_Ok()
         {
             await _instancesDbContext.AddRangeAsync(
-                new StoredCodeSource { Id = 1, Code = "source-code-1" },
-                new StoredCodeSource { Id = 2, Code = "source-code-2" }
+                new CodeSource { Id = 1, Code = "source-code-1" },
+                new CodeSource { Id = 2, Code = "source-code-2" }
             );
             await _instancesDbContext.AddRangeAsync(
                 new CodeSourceArtifacts { CodeSourceId = 1, ArtifactType = CodeSourceArtifactType.AnonymizationScript, FileName = "abc.txt", ArtifactUrl = "http://test.com/abc" },
@@ -288,5 +286,88 @@ namespace Instances.Application.Tests.CodeSources
             artifacts2.Should().HaveCount(1);
         }
         #endregion GetArtifactsAsync
+
+        #region GetNonDeletedByRepositoryUrlAsync
+        [Fact]
+        public async Task GetNonDeletedByRepositoryUrlAsync_Ok()
+        {
+            var repositoryUrl = "https://github.com/LuccaSA/myRepo";
+
+            await _instancesDbContext.AddAsync(new CodeSource { Id = 10, Lifecycle = CodeSourceLifecycleStep.Preview, GithubRepo = repositoryUrl });
+            await _instancesDbContext.AddAsync(new CodeSource { Id = 11, Lifecycle = CodeSourceLifecycleStep.Deleted, GithubRepo = repositoryUrl });
+            await _instancesDbContext.AddAsync(new CodeSource { Id = 13, Lifecycle = CodeSourceLifecycleStep.Referenced, GithubRepo = "http://github.com/LuccaSA/BadRepo" });
+            await _instancesDbContext.SaveChangesAsync();
+
+            var result = await _codeSourcesRepository.GetNonDeletedByRepositoryUrlAsync(repositoryUrl);
+
+            result.Should().HaveCount(1);
+        }
+        #endregion
+
+        #region CreateAsync
+        [Fact]
+        public async Task Existing_CreateAsync()
+        {
+            var githubRepo = "https://github.com/LuccaSA/repo";
+            var githubBranch = new GithubBranch()
+            {
+                CodeSources = new List<CodeSource>()
+            };
+
+            await _instancesDbContext.AddAsync(new CodeSource { Id = 1, Lifecycle = CodeSourceLifecycleStep.InProduction, GithubRepo = githubRepo });
+            await _instancesDbContext.SaveChangesAsync();
+
+            _githubBranchesStoreMock
+                .Setup(gb => gb.GetAsync(It.IsAny<GithubBranchFilter>()))
+                .ReturnsAsync(new List<GithubBranch> { githubBranch });
+            _githubBranchesStoreMock
+                .Setup(gb => gb.UpdateAsync(It.IsAny<List<GithubBranch>>()))
+                .Returns(Task.CompletedTask);
+
+            await _codeSourcesRepository.CreateAsync(new CodeSource
+            {
+                Id = 2,
+                GithubRepo = githubRepo
+            });
+
+            githubBranch.CodeSources.Should().NotBeEmpty();
+        }
+
+        [Fact]
+        public async Task New_CreateAsync()
+        {
+            var githubRepo = "https://github.com/LuccaSA/repo";
+            GithubBranch captured = null;
+            _githubBranchesStoreMock
+                .Setup(gb => gb.CreateAsync(It.IsAny<IEnumerable<GithubBranch>>()))
+                .Returns<IEnumerable<GithubBranch>>(gb => {
+                    captured = gb.First();
+                    return Task.FromResult(gb.ToList());
+                });
+            _githubServiceMock
+                .Setup(g => g.GetGithubBranchHeadCommitInfoAsync(It.IsAny<string>(), It.IsAny<string>()))
+                .ReturnsAsync(new GithubApiCommit());
+            _githubServiceMock
+                .Setup(g => g.GetBranchNamesAsync(It.IsAny<string>()))
+                .ReturnsAsync(new List<string> { "main" });
+            _previewConfigurationsRepositoryMock
+                .Setup(p => p.CreateByBranchAsync(It.IsAny<IEnumerable<GithubBranch>>()))
+                .Returns(Task.CompletedTask);
+
+            await _codeSourcesRepository.CreateAsync(new CodeSource
+            {
+                Id = 2,
+                GithubRepo = githubRepo
+            });
+
+            captured.Should().NotBeNull();
+            captured.CodeSources.Should().NotBeNullOrEmpty();
+
+            _githubServiceMock.Verify(g => g.GetBranchNamesAsync(githubRepo));
+            _githubServiceMock.Verify(g => g.GetGithubBranchHeadCommitInfoAsync(githubRepo, "main"));
+            _previewConfigurationsRepositoryMock
+                .Verify(p => p.CreateByBranchAsync(It.Is<IEnumerable<GithubBranch>>(l => l.Count() == 1)));
+        }
+        #endregion
     }
 }

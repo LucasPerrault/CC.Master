@@ -1,6 +1,6 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { IHttpApiV3Response } from '@cc/common/queries';
+import { ApiV3DateService, IHttpApiV3Response } from '@cc/common/queries';
 import { IContractForm } from '@cc/domain/billing/contracts';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
@@ -12,7 +12,7 @@ import { IContractEditionDto } from '../models/contract-edition-dto.interface';
 export class ContractTabService {
   private readonly contractsEndpoint = '/api/v3/contracts';
 
-  constructor(private httpClient: HttpClient) {}
+  constructor(private httpClient: HttpClient, private apiV3DateService: ApiV3DateService) {}
 
   public getContractDetailed$(id: number): Observable<IContractDetailed> {
     const urlById = `${ this.contractsEndpoint }/${ id }`;
@@ -36,12 +36,15 @@ export class ContractTabService {
   private getContractEditBody(contractForm: IContractForm): IContractEditionDto {
     return {
       billingMonth: contractForm.billingMonth,
+      distributorId: contractForm.distributor.id,
+      clientId: contractForm.client.id,
       offerId: contractForm.offer?.id,
       unityNumberTheorical: contractForm.theoreticalDraftCount,
       clientRebate: contractForm.clientRebate.count,
-      endClientRebateOn: contractForm.clientRebate.endAt,
+      endClientRebateOn: this.apiV3DateService.toApiV3DateFormat(new Date(contractForm.clientRebate.endAt)),
       nbMonthTheorical: contractForm.theoreticalMonthRebate,
-      theoricalStartOn: contractForm.theoreticalStartOn,
+      theoricalStartOn: this.apiV3DateService.toApiV3DateFormat(new Date(contractForm.theoreticalStartOn)),
+      minimalBillingPercentage: contractForm.minimalBillingPercentage,
       comment: contractForm.comment,
     };
   }

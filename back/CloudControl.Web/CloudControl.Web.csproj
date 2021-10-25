@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
 
     <PropertyGroup>
-        <TargetFramework>netcoreapp3.1</TargetFramework>
+        <TargetFramework>net5.0</TargetFramework>
         <AspNetCoreHostingModel>OutOfProcess</AspNetCoreHostingModel>
 
         <PreserveCompilationReferences>true</PreserveCompilationReferences>
@@ -13,11 +13,14 @@
       <PackageReference Include="Lucca.Core.AspNetCore.Healthz" Version="3.2.6" />
       <PackageReference Include="Lucca.Core.Shared.Domain" Version="2.0.13" />
       <PackageReference Include="Lucca.Logs.AspnetCore" Version="0.7.0" />
-      <PackageReference Include="Microsoft.AspNetCore.SpaServices" Version="3.1.16" />
-      <PackageReference Include="Microsoft.AspNetCore.SpaServices.Extensions" Version="3.1.16" />
+      <PackageReference Include="Microsoft.AspNetCore.SpaServices" Version="3.1.19" />
+      <PackageReference Include="Microsoft.AspNetCore.SpaServices.Extensions" Version="5.0.10" />
+      <PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks.EntityFrameworkCore" Version="5.0.10" />
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\AdvancedFilters\AdvancedFilters.Infra\AdvancedFilters.Infra.csproj" />
+      <ProjectReference Include="..\AdvancedFilters\AdvancedFilters.Web\AdvancedFilters.Web.csproj" />
       <ProjectReference Include="..\Billing\Billing.Cmrr\Billing.Cmrr.Infra\Billing.Cmrr.Infra.csproj" />
       <ProjectReference Include="..\Billing\Billing.Cmrr\Billing.Cmrr.Web\Billing.Cmrr.Web.csproj" />
       <ProjectReference Include="..\Billing\Billing.Contracts\Billing.Contracts.Infra\Billing.Contracts.Infra.csproj" />

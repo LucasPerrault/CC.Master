@@ -87,18 +87,18 @@ const routes: Routes = [
         ],
       },
       {
-        path: 'draft',
+        path: NavigationPath.ContractsDraft,
         component: ContractsDraftComponent,
         children: [
           {
-            path: 'create',
+            path: 'form',
             component: ContractsDraftEntryModalComponent,
             canActivate: [OperationsGuard],
             data: { operations: [Operation.CreateContracts] },
 
           },
           {
-            path: ':id/create',
+            path: ':id/form',
             component: ContractsDraftEntryModalComponent,
             canActivate: [OperationsGuard],
             data: { operations: [Operation.CreateContracts] },

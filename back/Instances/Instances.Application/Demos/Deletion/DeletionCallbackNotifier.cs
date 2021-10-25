@@ -26,13 +26,13 @@ namespace Instances.Application.Demos.Deletion
             await _teamNotifier.NotifyAsync
             (
                 Team.DemoMaintainers,
-                $"Suppression de démos : {clusterName} annonce {report.SucceededInstances.Count} réussites."
+                $":broom: Suppression de démos : {clusterName} annonce {report.SucceededInstances.Count} réussites."
             );
 
             if (report.FailedInstances.Any())
             {
                 var builder = new StringBuilder();
-                builder.AppendLine($"Suppression de démos : {clusterName} annonce {report.FailedInstances.Count} échecs :");
+                builder.AppendLine($":broom: Suppression de démos : {clusterName} annonce {report.FailedInstances.Count} échecs :");
                 foreach (var failedInstance in report.FailedInstances)
                 {
                     builder.AppendLine($"- {failedInstance}");

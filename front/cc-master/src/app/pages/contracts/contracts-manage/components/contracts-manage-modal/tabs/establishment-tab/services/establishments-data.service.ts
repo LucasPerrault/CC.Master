@@ -16,12 +16,12 @@ export class EstablishmentsDataService {
   constructor(private httpClient: HttpClient, private apiV3DateService: ApiV3DateService) {}
 
   public getEstablishments$(environmentId: number): Observable<IContractEstablishment[]> {
-    const urlById = `${ this.establishmentsEndpoint }`;
     const params = new HttpParams()
       .set('fields', contractEstablishmentFields)
+      .set('isActive', `${ true }`)
       .set('environmentId', `${ environmentId }`);
 
-    return this.httpClient.get<IHttpApiV3CollectionResponse<IContractEstablishment>>(urlById, { params })
+    return this.httpClient.get<IHttpApiV3CollectionResponse<IContractEstablishment>>(this.establishmentsEndpoint, { params })
       .pipe(map(response => response.data.items));
   }
 
@@ -33,7 +33,7 @@ export class EstablishmentsDataService {
   public createAttachment$(contractId: number, establishmentId: number, start: Date, nbMonthFree: number): Observable<void> {
     return this.httpClient.post<void>(this.attachmentsEndpoint, {
       contractId,
-      start,
+      start: this.apiV3DateService.toApiV3DateFormat(start),
       nbMonthFree,
       legalEntityId: establishmentId,
     });

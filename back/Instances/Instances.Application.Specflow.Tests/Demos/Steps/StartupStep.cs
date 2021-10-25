@@ -59,11 +59,11 @@ namespace Instances.Application.Specflow.Tests.Demos.Steps
                 DistributorId = luccaDistributor.Id,
                 Distributor = luccaDistributor,
                 IsTemplate = true,
+                Cluster = "demo",
                 Instance = new Instance()
                 {
                     Id = 1,
                     IsActive = true,
-                    Cluster = "demo",
                     EnvironmentId = null,
                     Type = InstanceType.Demo
                 },
@@ -79,11 +79,11 @@ namespace Instances.Application.Specflow.Tests.Demos.Steps
                 DistributorId = luccaDistributor.Id,
                 Distributor = luccaDistributor,
                 IsTemplate = false,
+                Cluster = "demo",
                 Instance = new Instance()
                 {
                     Id = 2,
                     IsActive = true,
-                    Cluster = "demo",
                     EnvironmentId = null,
                     Type = InstanceType.Demo
                 },
@@ -99,11 +99,11 @@ namespace Instances.Application.Specflow.Tests.Demos.Steps
                 DistributorId = otherDistributor.Id,
                 Distributor = otherDistributor,
                 IsTemplate = false,
+                Cluster = "demo",
                 Instance = new Instance()
                 {
                     Id = 3,
                     IsActive = true,
-                    Cluster = "demo",
                     EnvironmentId = null,
                     Type = InstanceType.Demo
                 },

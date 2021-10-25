@@ -63,6 +63,8 @@ namespace Billing.Contracts.Infra.Storage.Stores
             return contracts.Search(filter.Search)
                 .WhenNotNullOrEmpty(filter.Subdomains).ApplyWhere(c => filter.Subdomains.Contains(c.EnvironmentSubdomain))
                 .Apply(filter.ArchivedAt).To(c => c.ArchivedAt)
+                .Apply(filter.StartsOn).To(ContractExpressions.StartsOn)
+                .Apply(filter.EndsOn).To(ContractExpressions.EndsOn)
                 .WhenHasValue(filter.Id).ApplyWhere(c => c.Id == filter.Id.Value)
                 .WhenNotNullOrEmpty(filter.ExcludedIds).ApplyWhere(c => !filter.ExcludedIds.Contains(c.Id))
                 .When(filter.ClientExternalId.HasValue).ApplyWhere(c => c.ClientExternalId == filter.ClientExternalId.Value);
@@ -70,16 +72,17 @@ namespace Billing.Contracts.Infra.Storage.Stores
 
         private static IQueryable<Contract> Search(this IQueryable<Contract> contracts, HashSet<string> words)
         {
-            if (words == null || !words.Any())
+            var usableWords = words.Sanitize();
+            if (!usableWords.Any())
             {
                 return contracts;
             }
 
             Expression<Func<Contract, bool>> fulltext = c =>
-                EF.Functions.Contains(c.Client.Name, words.ToFullTextContainsPredicate())
-                || EF.Functions.Contains(c.Client.SocialReason, words.ToFullTextContainsPredicate());
+                EF.Functions.Contains(c.Client.Name, usableWords.ToFullTextContainsPredicate())
+                || EF.Functions.Contains(c.Client.SocialReason, usableWords.ToFullTextContainsPredicate());
 
-            var startWith = words.Select<string, Expression<Func<Contract, bool>>>
+            var startWith = usableWords.Select<string, Expression<Func<Contract, bool>>>
             (
                 w => c => c.EnvironmentSubdomain.StartsWith(w) || c.CommercialOffer.Name.StartsWith(w) || c.Id.ToString() == w
             ).ToArray().CombineSafelyAnd();

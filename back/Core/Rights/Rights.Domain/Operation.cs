@@ -69,7 +69,11 @@ namespace Rights.Domain
         WriteTenantDataRequest = 50001,
         ReadTenantDataRequestStatus = 50002,
         CloudControlInternalRequest = 51000,
+        AccessBetaFeatures = 51001,
 
+        // CAFE
+        SyncAllCafe = 65000,
+        ReadAllCafe = 65001,
     }
 
     public static class OperationHelper

@@ -86,6 +86,14 @@ export class ContractTabFormComponent implements OnInit, OnDestroy, ControlValue
     return this.formValidationService.canEditTheoreticalStartOn(this.validationContext);
   }
 
+  private get canEditDistributor(): boolean {
+    return this.formValidationService.canEditDistributor(this.validationContext);
+  }
+
+  private get canEditClient(): boolean {
+    return this.formValidationService.canEditClient(this.validationContext);
+  }
+
   private get canEditOffer(): boolean {
     return this.formValidationService.canEditOffer(this.validationContext);
   }
@@ -110,8 +118,8 @@ export class ContractTabFormComponent implements OnInit, OnDestroy, ControlValue
   public ngOnInit(): void {
     this.formGroup = new FormGroup({
       [ContractFormKey.BillingMonth]: new FormControl({ value: null }),
-      [ContractFormKey.Distributor]: new FormControl({ value: null, disabled: true }),
-      [ContractFormKey.Client]: new FormControl({ value: null, disabled: true }),
+      [ContractFormKey.Distributor]: new FormControl({ value: null, disabled: !this.canEditDistributor }),
+      [ContractFormKey.Client]: new FormControl({ value: null, disabled: !this.canEditClient }),
       [ContractFormKey.Offer]: new FormControl({ value: null, disabled: !this.canEditOffer }),
       [ContractFormKey.Product]: new FormControl({ value: null, disabled: !this.canEditProduct }),
       [ContractFormKey.TheoreticalDraftCount]: new FormControl({ value: 0, disabled: !this.canEditContract }),
@@ -127,7 +135,7 @@ export class ContractTabFormComponent implements OnInit, OnDestroy, ControlValue
 
     this.formGroup.valueChanges
       .pipe(takeUntil(this.destroy$))
-      .subscribe(form => this.onChange(form));
+      .subscribe(() => this.onChange(this.formGroup.getRawValue()));
 
     this.formGroup.get(ContractFormKey.Product).valueChanges
       .pipe(takeUntil(this.destroy$))

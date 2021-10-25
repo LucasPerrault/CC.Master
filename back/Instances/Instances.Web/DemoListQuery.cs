@@ -15,6 +15,7 @@ namespace Instances.Web
         public int? DistributorId { get; set; } = null;
         public string Subdomain { get; set; } = null;
         public HashSet<bool> IsTemplate { get; set; } = new HashSet<bool>();
+        public HashSet<string> Cluster { get; set; } = new HashSet<string>();
         public DemoListInstance Instance { get; set; } = new DemoListInstance();
 
         public DemoFilter ToDemoFilter()
@@ -28,6 +29,7 @@ namespace Instances.Web
                 AuthorId = AuthorId,
                 Subdomain = string.IsNullOrEmpty(Subdomain)  ? CompareString.Bypass : CompareString.Equals(Subdomain),
                 IsProtected = Instance?.IsProtected?.ToCompareBoolean() ?? CompareBoolean.Bypass,
+                Clusters = Cluster,
             };
         }
     }

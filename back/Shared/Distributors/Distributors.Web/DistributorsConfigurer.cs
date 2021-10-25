@@ -1,3 +1,4 @@
+using Distributors.Application;
 using Distributors.Domain;
 using Distributors.Infra.Storage.Stores;
 using Microsoft.Extensions.DependencyInjection;
@@ -10,6 +11,7 @@ namespace Distributors.Web
         {
             services.AddSingleton<DistributorsCache>();
             services.AddScoped<IDistributorsStore, DistributorsStore>();
+            services.AddScoped<DistributorsRepository>();
             services.AddScoped<DistributorDomainsStore>();
         }
     }

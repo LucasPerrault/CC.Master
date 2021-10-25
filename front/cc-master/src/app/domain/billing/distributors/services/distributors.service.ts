@@ -15,12 +15,12 @@ export class DistributorsService {
 
   constructor(private httpClient: HttpClient) { }
 
-  public getActiveRebates$(distributorId: string): Observable<IRebate[]> {
+  public getActiveRebates$(distributorId: number): Observable<IRebate[]> {
     return this.getDistributor$<IDistributorActiveRebate>(distributorId, distributorActiveRebateFields)
       .pipe(map(d => d.activeRebates));
   }
 
-  public getDistributor$<T extends IDistributor>(id: string, fields: string): Observable<T> {
+  public getDistributor$<T extends IDistributor>(id: number, fields: string): Observable<T> {
     const urlById = `${this.distributorsEndPoint}/${id}`;
     const params = new HttpParams().set('fields', fields);
 

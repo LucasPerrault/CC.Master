@@ -1,6 +1,5 @@
 using Instances.Domain.CodeSources;
 using Instances.Domain.CodeSources.Filtering;
-using Instances.Infra.Storage.Models;
 using Lucca.Core.Api.Abstractions.Paging;
 using Lucca.Core.Api.Queryable.Paging;
 using Microsoft.EntityFrameworkCore;
@@ -28,7 +27,7 @@ namespace Instances.Infra.Storage.Stores
             return new Page<CodeSource>
             {
                 Count = page.Count,
-                Items = page.Items.Select(s => s.ToCodeSource()),
+                Items = page.Items,
                 Next = page.Next,
                 Prev = page.Prev
             };
@@ -37,22 +36,19 @@ namespace Instances.Infra.Storage.Stores
         public Task<List<CodeSource>> GetAsync(CodeSourceFilter filter)
         {
             return Get(filter)
-                .Select(s => s.ToCodeSource())
                 .ToListAsync();
         }
 
         public async Task<CodeSource> CreateAsync(CodeSource codeSource)
         {
-            var storedCodeSource = StoredCodeSource.FromCodeSource(codeSource);
-            _dbContext.Add(storedCodeSource);
+            _dbContext.Add(codeSource);
             await _dbContext.SaveChangesAsync();
-            codeSource.Id = storedCodeSource.Id;
             return codeSource;
         }
 
         public async Task UpdateLifecycleAsync(CodeSource codeSource, CodeSourceLifecycleStep lifecycleStep)
         {
-            var stored = await _dbContext.Set<StoredCodeSource>().SingleAsync(s => s.Id == codeSource.Id);
+            var stored = await _dbContext.Set<CodeSource>().SingleAsync(s => s.Id == codeSource.Id);
             stored.Lifecycle = lifecycleStep;
             await _dbContext.SaveChangesAsync();
 
@@ -83,10 +79,10 @@ namespace Instances.Infra.Storage.Stores
             return _dbContext.SaveChangesAsync();
         }
 
-        private IQueryable<StoredCodeSource> Get(CodeSourceFilter filter)
+        private IQueryable<CodeSource> Get(CodeSourceFilter filter)
         {
             return _dbContext
-                .Set<StoredCodeSource>()
+                .Set<CodeSource>()
                 .Include(cs => cs.ProductionVersions)
                 .Include(cs => cs.Config)
                 .WhereMatches(filter);
@@ -103,12 +99,14 @@ namespace Instances.Infra.Storage.Stores
 
     internal static class CodeSourceQueryableExtensions
     {
-        public static IQueryable<StoredCodeSource> WhereMatches(this IQueryable<StoredCodeSource> codeSources, CodeSourceFilter filter)
+        public static IQueryable<CodeSource> WhereMatches(this IQueryable<CodeSource> codeSources, CodeSourceFilter filter)
         {
             return codeSources
                 .WhenNotNullOrEmpty(filter.Search).ApplyWhere(cs => cs.Name.Contains(filter.Search))
                 .WhenNotNullOrEmpty(filter.Code).ApplyWhere(cs => cs.Code == filter.Code)
+                .WhenNotNullOrEmpty(filter.GithubRepo).ApplyWhere(cs => cs.GithubRepo == filter.GithubRepo)
                 .WhenNotNullOrEmpty(filter.Lifecycle).ApplyWhere(cs => filter.Lifecycle.Contains(cs.Lifecycle))
+                .WhenNotNullOrEmpty(filter.ExcludedLifecycle).ApplyWhere(cs => !filter.ExcludedLifecycle.Contains(cs.Lifecycle))
                 .WhenNotNullOrEmpty(filter.Type).ApplyWhere(cs => filter.Type.Contains(cs.Type))
                 .WhenNotNullOrEmpty(filter.Id).ApplyWhere(cs => filter.Id.Contains(cs.Id));
         }

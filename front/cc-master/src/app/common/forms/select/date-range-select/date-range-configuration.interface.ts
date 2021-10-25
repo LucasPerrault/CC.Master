@@ -4,19 +4,23 @@ interface IDateConfiguration {
   min?: Date;
   max?: Date;
   class?: string;
-  granularity: ELuDateGranularity;
+}
+
+export enum EndDateGranularityPolicy {
+  Beginning,
+  End,
 }
 
 export interface IDateRangeConfiguration {
   startDateConfiguration: IDateConfiguration;
   endDateConfiguration: IDateConfiguration;
+  granularity: ELuDateGranularity;
+  periodCoverStrategy: EndDateGranularityPolicy;
 }
 
-export const defaultDateConfiguration: IDateConfiguration = {
-  granularity: ELuDateGranularity.day,
-};
-
 export const defaultDateRangeConfiguration: IDateRangeConfiguration = {
-  startDateConfiguration: defaultDateConfiguration,
-  endDateConfiguration: defaultDateConfiguration,
+  startDateConfiguration:  { },
+  endDateConfiguration:  { },
+  periodCoverStrategy: EndDateGranularityPolicy.Beginning,
+  granularity: ELuDateGranularity.day,
 };

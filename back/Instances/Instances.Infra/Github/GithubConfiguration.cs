@@ -1,8 +1,9 @@
-﻿namespace Instances.Infra.Github
+namespace Instances.Infra.Github
 {
     public class GithubConfiguration
     {
         public string ProductHeaderValue => "cloudcontrol";
         public string Token { get; set; }
+        public string GithubWebhookSecret { get; set; }
     }
 }
