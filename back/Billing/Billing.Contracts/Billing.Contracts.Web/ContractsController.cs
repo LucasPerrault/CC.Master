@@ -1,6 +1,5 @@
 using Billing.Contracts.Application;
 using Billing.Contracts.Application.Clients;
-using Billing.Contracts.Domain.Clients;
 using Billing.Contracts.Domain.Contracts;
 using Billing.Contracts.Domain.Contracts.Health;
 using Billing.Contracts.Domain.Environments;
@@ -77,25 +76,6 @@ namespace Billing.Contracts.Web
         public Task<ContractComment> GetCommentAsync([FromRoute] int id)
         {
             return _contractsRepository.GetCommentAsync(id);
-        }
-
-
-        public class ContractDtoClient
-        {
-            public int Id { get; set; }
-            public Guid ExternalId { get; set; }
-            public string Name { get; set; }
-            public string SocialReason { get; set; }
-            public string SalesforceId { get; set; }
-
-            public ContractDtoClient(Client contractClient)
-            {
-                Id = contractClient.Id;
-                ExternalId = contractClient.ExternalId;
-                Name = contractClient.Name;
-                SocialReason = contractClient.SocialReason;
-                SalesforceId = contractClient.SalesforceId;
-            }
         }
     }
 
