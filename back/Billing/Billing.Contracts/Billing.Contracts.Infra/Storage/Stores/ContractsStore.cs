@@ -12,6 +12,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
+using Tools;
 
 namespace Billing.Contracts.Infra.Storage.Stores
 {
@@ -69,7 +70,9 @@ namespace Billing.Contracts.Infra.Storage.Stores
     {
         public static IQueryable<Contract> WhereMatches(this IQueryable<Contract> contracts, ContractFilter filter)
         {
-            return contracts.Search(filter.Search)
+            return contracts
+                .Search(filter.Search)
+                .FilterByStatuses(filter.ContractStatuses)
                 .Apply(filter.ArchivedAt).To(c => c.ArchivedAt)
                 .Apply(filter.StartsOn).To(ContractExpressions.StartsOn)
                 .Apply(filter.EndsOn).To(ContractExpressions.EndsOn)
@@ -135,6 +138,37 @@ namespace Billing.Contracts.Infra.Storage.Stores
                 AllAccessRight _ => _ => true,
                 _ => throw new ApplicationException($"Unknown type of contract filter right {accessRight}")
             };
+        }
+
+        private static IQueryable<Contract> FilterByStatuses(this IQueryable<Contract> contracts, HashSet<ContractStatus> statuses)
+        {
+            if (!statuses.Any())
+            {
+                return contracts;
+            }
+
+            if (statuses.ContainsAllEnumValues())
+            {
+                return contracts;
+            }
+
+            var expressions = new List<Expression<Func<Contract, bool>>>();
+            if (statuses.Contains(ContractStatus.NotStarted))
+            {
+                expressions.Add(ContractExpressions.IsNotStarted);
+            }
+
+            if (statuses.Contains(ContractStatus.Ended))
+            {
+                expressions.Add(ContractExpressions.IsEnded);
+            }
+
+            if (statuses.Contains(ContractStatus.InProgress))
+            {
+                expressions.Add(ContractExpressions.IsInProgress);
+            }
+
+            return contracts.Where(expressions.ToArray().CombineSafelyOr());
         }
     }
 }

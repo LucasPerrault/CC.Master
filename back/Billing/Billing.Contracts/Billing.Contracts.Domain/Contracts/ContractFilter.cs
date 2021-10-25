@@ -20,5 +20,6 @@ namespace Billing.Contracts.Domain.Contracts
         public CompareDateTime StartsOn { get; set; } = CompareDateTime.Bypass();
         public CompareNullableDateTime EndsOn { get; set; } = CompareNullableDateTime.Bypass();
         public HashSet<int> CurrentlyAttachedEstablishmentIds { get; set; } = new HashSet<int>();
+        public HashSet<ContractStatus> ContractStatuses { get; set; } = new HashSet<ContractStatus>();
     }
 }

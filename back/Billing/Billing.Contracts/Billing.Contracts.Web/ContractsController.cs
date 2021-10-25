@@ -103,6 +103,7 @@ namespace Billing.Contracts.Web
             ExcludedDistributorIds = ExcludedDistributorId,
             CurrentlyAttachedEstablishmentIds = CurrentlyAttachedEstablishmentId,
             ProductIds = ProductId,
+            ContractStatuses = Status,
             ArchivedAt = NotArchived(),
             CreatedAt = GetCreatedAt(),
             StartsOn = GetStartsOn(),
@@ -158,6 +159,7 @@ namespace Billing.Contracts.Web
             return CompareNullableDateTime.MatchesNone();
         }
 
+        public HashSet<ContractStatus> Status { get; set; } = new HashSet<ContractStatus>();
         public HashSet<int> CurrentlyAttachedEstablishmentId { get; set; } = new HashSet<int>();
         public HashSet<int> ClientId { get; set; } = new HashSet<int>();
         public HashSet<int> DistributorId { get; set; } = new HashSet<int>();

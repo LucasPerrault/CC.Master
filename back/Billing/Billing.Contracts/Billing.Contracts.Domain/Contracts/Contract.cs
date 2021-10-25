@@ -2,10 +2,12 @@
 using Billing.Contracts.Domain.Environments;
 using Billing.Products.Domain;
 using Distributors.Domain.Models;
+using Lucca.Core.Shared.Domain.Expressions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using Tools;
 
 namespace Billing.Contracts.Domain.Contracts
 {
@@ -46,6 +48,12 @@ namespace Billing.Contracts.Domain.Contracts
         public DateTime? RebateEndsOn { get; set; }
         public double MinimalBillingPercentage { get; set; }
         public BillingPeriodicity BillingPeriodicity { get; set; }
+
+        public ContractStatus Status => ContractExpressions.IsNotStartedCompiled(this)
+            ? ContractStatus.InProgress
+            : ContractExpressions.IsEndedCompiled(this)
+                ? ContractStatus.Ended
+                : ContractStatus.InProgress;
     }
 
     public static class ContractExpressions
@@ -72,6 +80,17 @@ namespace Billing.Contracts.Domain.Contracts
             && a.StartsOn < period
             && ( a.EndsOn == null || a.EndsOn > period )
         );
+
+        public static Expression<Func<Contract, bool>> IsNotStarted => c => c.TheoreticalStartOn > DateTime.Today;
+        public static Func<Contract, bool> IsNotStartedCompiled => IsNotStarted.Compile();
+
+        public static Expression<Func<Contract, bool>> IsEnded => c => c.TheoreticalEndOn < DateTime.Today;
+        public static Func<Contract, bool> IsEndedCompiled => IsEnded.Compile();
+
+        public static Expression<Func<Contract, bool>> IsInProgress =>
+            IsNotStarted.Inverse().SmartAndAlso(
+                IsEnded.Inverse().SmartOrElse(c => !c.TheoreticalEndOn.HasValue)
+            );
     }
 
     public enum ContractEndReason
