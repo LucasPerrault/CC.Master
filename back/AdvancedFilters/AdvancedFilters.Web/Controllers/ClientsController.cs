@@ -46,9 +46,14 @@ namespace AdvancedFilters.Web.Controllers
     {
         public IPageToken Page { get; set; } = null;
 
+        public string Search { get; set; }
+
         public ClientFilter ToFilter()
         {
-            return new ClientFilter { };
+            return new ClientFilter
+            {
+                Search = Search,
+            };
         }
     }
 }
