@@ -16,7 +16,7 @@ export class AppContactFormlyConfiguration {
       multiple: true,
       required: true,
       mod: 'palette-grey mod-outlined mod-inline mod-longer',
-      placeholder: 'Sélectionner...',
+      placeholder: this.translatePipe.transform('cafe_filters_contact_appInstances_placeholder'),
     },
   };
 

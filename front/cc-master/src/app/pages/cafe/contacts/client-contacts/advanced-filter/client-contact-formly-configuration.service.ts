@@ -16,7 +16,7 @@ export class ClientContactFormlyConfiguration {
       multiple: true,
       required: true,
       mod: 'palette-grey mod-outlined mod-inline mod-longer',
-      placeholder: 'Sélectionner...',
+      placeholder: this.translatePipe.transform('cafe_filters_contact_clients_placeholder'),
     },
   };
 
