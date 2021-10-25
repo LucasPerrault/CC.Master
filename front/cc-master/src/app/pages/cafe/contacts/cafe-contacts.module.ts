@@ -5,8 +5,6 @@ import { AppContactsModule } from './app-contacts/app-contacts.module';
 import { CafeContactConfiguration } from './cafe-contact-configuration.service';
 import { CafeContactsComponent } from './cafe-contacts.component';
 import { ClientContactsModule } from './client-contacts/client-contacts.module';
-import { ContactRolesService } from './common/services/contact-roles.service';
-import { GenericContactsModule } from './generic-contact/generic-contacts.module';
 import { SpecializedContactsModule } from './specialized-contacts/specialized-contacts.module';
 
 @NgModule({
@@ -15,10 +13,9 @@ import { SpecializedContactsModule } from './specialized-contacts/specialized-co
     CommonModule,
     AppContactsModule,
     ClientContactsModule,
-    GenericContactsModule,
     SpecializedContactsModule,
   ],
-  providers: [ContactRolesService, CafeContactConfiguration],
+  providers: [CafeContactConfiguration],
   exports: [CafeContactsComponent],
 })
 export class CafeContactsModule { }

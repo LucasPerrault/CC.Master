@@ -38,7 +38,6 @@ export class CafeComponent {
     ContactCategory.Client,
     ContactCategory.Specialized,
     ContactCategory.Application,
-    ContactCategory.All,
   ];
 
   constructor(cafeConfiguration: CafeConfiguration) {

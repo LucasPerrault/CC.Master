@@ -4,7 +4,6 @@ import { TranslatePipe } from '@cc/aspects/translate';
 import {
   IContactAdditionalColumn,
 } from '../../common/components/contact-additional-column-select/contact-additional-column.interface';
-import { ContactRolesService } from '../../common/services/contact-roles.service';
 import { ISpecializedContact } from '../specialized-contact.interface';
 import { SpecializedContactAdditionalColumn } from '../specialized-contact-additional-column.enum';
 
@@ -19,10 +18,7 @@ export class SpecializedContactListComponent {
 
   public additionalColumn = SpecializedContactAdditionalColumn;
 
-  constructor(
-    private rolesService: ContactRolesService,
-    private translatePipe: TranslatePipe,
-  ) { }
+  constructor(private translatePipe: TranslatePipe) { }
 
   public trackBy(index: number, contact: ISpecializedContact): number {
     return contact.id;
