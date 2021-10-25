@@ -14,6 +14,7 @@ namespace Storage.Infra.Extensions
             return comparison switch
             {
                 BypassCompareDateTime _ => _ => true,
+                NoMatchCompareDateTime _ => _ => false,
                 IsAfterCompareDateTime { IsStrict: true } isAfter => d => d > isAfter.Value,
                 IsAfterCompareDateTime { IsStrict: false } isAfter => d => d >= isAfter.Value,
                 IsBeforeCompareDateTime { IsStrict: true } isBefore => d => d < isBefore.Value,

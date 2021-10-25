@@ -87,7 +87,9 @@ namespace Billing.Contracts.Web
         public HashSet<string> Search { get; set; } = new HashSet<string>();
         public HashSet<int> EnvironmentId { get; set; } = new HashSet<int>();
         public DateTime? WasStartedOn { get; set; } = null;
+        public DateTime? TheoreticalStartOn { get; set; } = null;
         public DateTime? WasNotEndedOn { get; set; } = null;
+        public DateTime? TheoreticalEndOn { get; set; } = null;
         public DateTime? CreationMonth { get; set; } = null;
 
         public ContractFilter ToFilter() => new ContractFilter
@@ -102,10 +104,59 @@ namespace Billing.Contracts.Web
             CurrentlyAttachedEstablishmentIds = CurrentlyAttachedEstablishmentId,
             ProductIds = ProductId,
             ArchivedAt = NotArchived(),
-            CreatedAt = CreationMonth.HasValue ? CompareDateTime.IsBetweenOrEqual(CreationMonth.Value.FirstOfMonth(), CreationMonth.Value.AddMonths(1).FirstOfMonth()) : CompareDateTime.Bypass(),
-            StartsOn = WasStartedOn.HasValue ? CompareDateTime.IsBeforeOrEqual(WasStartedOn.Value) : CompareDateTime.Bypass(),
-            EndsOn = WasNotEndedOn.HasValue ? CompareDateTime.IsAfterOrEqual(WasNotEndedOn.Value).OrNull() : CompareNullableDateTime.Bypass()
+            CreatedAt = GetCreatedAt(),
+            StartsOn = GetStartsOn(),
+            EndsOn = GetEndsOn()
         };
+
+        private CompareDateTime GetCreatedAt()
+        {
+            return CreationMonth.HasValue
+                ? CompareDateTime.IsBetweenOrEqual(CreationMonth.Value.FirstOfMonth(), CreationMonth.Value.AddMonths(1).FirstOfMonth())
+                : CompareDateTime.Bypass();
+        }
+
+        private CompareDateTime GetStartsOn()
+        {
+            if (!TheoreticalStartOn.HasValue && !WasStartedOn.HasValue)
+            {
+                return CompareDateTime.Bypass();
+            }
+            if (!WasStartedOn.HasValue)
+            {
+                return CompareDateTime.IsEqual(TheoreticalStartOn.Value);
+            }
+            if (!TheoreticalStartOn.HasValue)
+            {
+                return CompareDateTime.IsBeforeOrEqual(WasStartedOn.Value);
+            }
+            if (WasStartedOn >= TheoreticalStartOn)
+            {
+                return CompareDateTime.IsBeforeOrEqual(WasStartedOn.Value);
+            }
+            return CompareDateTime.MatchesNone();
+        }
+
+        private CompareNullableDateTime GetEndsOn()
+        {
+            if (!TheoreticalEndOn.HasValue && !WasNotEndedOn.HasValue)
+            {
+                return CompareNullableDateTime.Bypass();
+            }
+            if (!WasNotEndedOn.HasValue)
+            {
+                return CompareDateTime.IsEqual(TheoreticalEndOn.Value).AndNotNull();
+            }
+            if (!TheoreticalEndOn.HasValue)
+            {
+                return CompareDateTime.IsBeforeOrEqual(WasNotEndedOn.Value).OrNull();
+            }
+            if (WasNotEndedOn <= TheoreticalEndOn)
+            {
+                return CompareDateTime.IsEqual(TheoreticalEndOn.Value).AndNotNull();
+            }
+            return CompareNullableDateTime.MatchesNone();
+        }
 
         public HashSet<int> CurrentlyAttachedEstablishmentId { get; set; } = new HashSet<int>();
         public HashSet<int> ClientId { get; set; } = new HashSet<int>();

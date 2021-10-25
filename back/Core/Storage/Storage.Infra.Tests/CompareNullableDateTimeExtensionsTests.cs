@@ -33,6 +33,11 @@ namespace Storage.Infra.Tests
                 .AndRejects(new DateTime(2021, 01, 01));
 
             yield return TestElement<CompareNullableDateTime, DateTime?>
+                .ForComparer(CompareNullableDateTime.MatchesNone())
+                .Accepts()
+                .AndRejects(new DateTime(2021, 01, 02), null);
+
+            yield return TestElement<CompareNullableDateTime, DateTime?>
                 .ForComparer(CompareDateTime.IsStrictlyBefore(new DateTime(2021, 01, 02)).OrNull())
                 .Accepts(new DateTime(2021, 01, 01), null)
                 .AndRejects(new DateTime(2021, 01, 02));

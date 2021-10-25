@@ -33,6 +33,11 @@ namespace Storage.Infra.Tests
                 .AndRejects(new DateTime(2020, 12, 31));
 
             yield return TestElement<CompareDateTime, DateTime>
+                .ForComparer(CompareDateTime.MatchesNone())
+                .Accepts()
+                .AndRejects(new DateTime(2020, 12, 31), new DateTime(2021, 01, 02), new DateTime(2021, 01, 01));
+
+            yield return TestElement<CompareDateTime, DateTime>
                 .ForComparer(CompareDateTime.IsBetweenOrEqual(new DateTime(2021, 01, 01), new DateTime(2021, 01, 02)))
                 .Accepts(new DateTime(2021, 01, 02), new DateTime(2021, 01, 01))
                 .AndRejects(new DateTime(2020, 12, 31), new DateTime(2021, 01, 03));
