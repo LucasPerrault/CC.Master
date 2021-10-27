@@ -14,7 +14,7 @@ import { OffersDataService } from './services/offers-data.service';
 
 // It is defined in the offer model in the back project.
 // It is used for the default selection.
-const offerPrincipalTag = 'Catalogues';
+const offerPrincipalTag = 'catalogues';
 
 @Component({
   selector: 'cc-offers',

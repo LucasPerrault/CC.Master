@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { TranslateModule } from '@cc/aspects/translate';
-import { LuApiSearcherModule } from '@lucca-front/ng/api';
+import { LuApiFeederModule, LuApiSearcherModule } from '@lucca-front/ng/api';
 import { LuInputClearerModule, LuInputDisplayerModule } from '@lucca-front/ng/input';
 import {
   LuForOptionsModule,
@@ -13,11 +13,11 @@ import {
 } from '@lucca-front/ng/option';
 import { LuSelectInputModule } from '@lucca-front/ng/select';
 
-import { OfferTagApiSelectComponent } from './offer-tag-api-select.component';
+import { OfferTagAutocompleteSelectComponent } from './offer-tag-autocomplete-select.component';
 
 @NgModule({
   declarations: [
-    OfferTagApiSelectComponent,
+    OfferTagAutocompleteSelectComponent,
   ],
   imports: [
     CommonModule,
@@ -32,7 +32,8 @@ import { OfferTagApiSelectComponent } from './offer-tag-api-select.component';
     LuApiSearcherModule,
     LuOptionPagerModule,
     LuInputClearerModule,
+    LuApiFeederModule,
   ],
-  exports: [OfferTagApiSelectComponent],
+  exports: [OfferTagAutocompleteSelectComponent],
 })
-export class OfferTagApiSelectModule { }
+export class OfferTagAutocompleteSelectModule { }

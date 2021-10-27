@@ -4,24 +4,26 @@ import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
 @Component({
-  selector: 'cc-offer-tag-api-select',
-  templateUrl: './offer-tag-api-select.component.html',
-  styleUrls: ['offer-tag-api-select.component.scss'],
+  selector: 'cc-offer-tag-autocomplete-select',
+  templateUrl: './offer-tag-autocomplete-select.component.html',
+  styleUrls: ['offer-tag-autocomplete-select.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,
-      useExisting: forwardRef(() => OfferTagApiSelectComponent),
+      useExisting: forwardRef(() => OfferTagAutocompleteSelectComponent),
       multi: true,
     },
   ],
 })
-export class OfferTagApiSelectComponent implements OnInit, OnDestroy, ControlValueAccessor {
+export class OfferTagAutocompleteSelectComponent implements OnInit, OnDestroy, ControlValueAccessor {
   @Input() public required = false;
   @Input() public placeholder: string;
   @Input() public multiple: string;
 
   public api = '/api/v3/offers/tags';
+
+  public autocomplete: FormControl = new FormControl();
 
   public formControl: FormControl = new FormControl();
   private destroy$: Subject<void> = new Subject<void>();
@@ -32,6 +34,10 @@ export class OfferTagApiSelectComponent implements OnInit, OnDestroy, ControlVal
     this.formControl.valueChanges
       .pipe(takeUntil(this.destroy$))
       .subscribe(tag => this.onChange(tag));
+
+    this.autocomplete.valueChanges
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(autocomplete => this.formControl.setValue(autocomplete));
   }
 
   public ngOnDestroy(): void {

@@ -4,7 +4,7 @@
 
   <lu-option-picker-advanced>
     <header class="lu-picker-header">
-      <lu-api-searcher></lu-api-searcher>
+      <lu-api-searcher [api]="api"></lu-api-searcher>
     </header>
 
     <lu-option *luForOptions="let tag; trackBy: trackBy" [value]="tag">{{ tag }}</lu-option>
