@@ -2,7 +2,9 @@ using AdvancedFilters.Domain.Contacts.Models;
 using AdvancedFilters.Domain.Filters.Models;
 using AdvancedFilters.Domain.Instance.Models;
 using AdvancedFilters.Infra.Filters;
+using AdvancedFilters.Infra.Filters.Builders.Exceptions;
 using FluentAssertions;
+using Moq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -39,30 +41,30 @@ namespace AdvancedFilters.Infra.Tests
             }};
             yield return new object[] { new AdvancedFilterTestEntry<Environment>
             {
-                Filter = new EnvironmentAdvancedCriterion().WithCountryId(ComparisonOperators.Equals, 250),
+                Filter = new EnvironmentAdvancedCriterion().WithCountryId(ComparisonOperators.Equals, 250, ItemsMatching.Any),
                 Check = e => e.LegalUnits.Any(lu => lu.CountryId == 250)
             }};
             yield return new object[] { new AdvancedFilterTestEntry<Environment>
             {
-                Filter = new EnvironmentAdvancedCriterion().WithCountryId(ComparisonOperators.NotEquals, 250),
+                Filter = new EnvironmentAdvancedCriterion().WithCountryId(ComparisonOperators.NotEquals, 250, ItemsMatching.Any),
                 Check = e => e.LegalUnits.Any(lu => lu.CountryId != 250)
             }};
             yield return new object[] { new AdvancedFilterTestEntry<Environment>
             {
-                Filter = new EnvironmentAdvancedCriterion().WithApplicationId(ComparisonOperators.Equals, "wpagga"),
+                Filter = new EnvironmentAdvancedCriterion().WithApplicationId(ComparisonOperators.Equals, "wpagga", ItemsMatching.Any),
                 Check = e => e.AppInstances.Any(ai => ai.ApplicationId == "wpagga")
             }};
             yield return new object[] { new AdvancedFilterTestEntry<Environment>
             {
-                Filter = new EnvironmentAdvancedCriterion().WithApplicationId(ComparisonOperators.NotEquals, "wpagga"),
+                Filter = new EnvironmentAdvancedCriterion().WithApplicationId(ComparisonOperators.NotEquals, "wpagga", ItemsMatching.Any),
                 Check = e => e.AppInstances.Any(ai => ai.ApplicationId != "wpagga")
             }};
             yield return new object[] { new AdvancedFilterTestEntry<Environment>
             {
                 Filter = new EnvironmentAdvancedCriterion()
                     .WithSubdomain(ComparisonOperators.Equals, "miaou")
-                    .WithCountryId(ComparisonOperators.NotEquals, 250)
-                    .WithApplicationId(ComparisonOperators.Equals, "wpagga"),
+                    .WithCountryId(ComparisonOperators.NotEquals, 250, ItemsMatching.Any)
+                    .WithApplicationId(ComparisonOperators.Equals, "wpagga", ItemsMatching.Any),
                 Check = e =>
                     e.Subdomain == "miaou"
                     && e.LegalUnits.Any(lu => lu.CountryId != 250)
@@ -72,8 +74,8 @@ namespace AdvancedFilters.Infra.Tests
             {
                 Filter = new EnvironmentAdvancedCriterion()
                     .WithSubdomain(ComparisonOperators.NotEquals, "miaou")
-                    .WithCountryId(ComparisonOperators.Equals, 250)
-                    .WithApplicationId(ComparisonOperators.NotEquals, "wpagga"),
+                    .WithCountryId(ComparisonOperators.Equals, 250, ItemsMatching.Any)
+                    .WithApplicationId(ComparisonOperators.NotEquals, "wpagga", ItemsMatching.Any),
                 Check = e =>
                     e.Subdomain != "miaou"
                     && e.LegalUnits.Any(lu => lu.CountryId == 250)
@@ -81,7 +83,7 @@ namespace AdvancedFilters.Infra.Tests
             }};
             yield return new object[] { new AdvancedFilterTestEntry<Environment>
             {
-                Filter = new EnvironmentAdvancedCriterion().WithApplicationId(ComparisonOperators.Equals, "wfiggo")
+                Filter = new EnvironmentAdvancedCriterion().WithApplicationId(ComparisonOperators.Equals, "wfiggo", ItemsMatching.Any)
                     .And(new EnvironmentAdvancedCriterion().WithSubdomain(ComparisonOperators.NotEquals, "miaou")),
                 Check = e =>
                     e.AppInstances.Any(ai => ai.ApplicationId == "wfiggo")
@@ -89,11 +91,23 @@ namespace AdvancedFilters.Infra.Tests
             }};
             yield return new object[] { new AdvancedFilterTestEntry<Environment>
             {
-                Filter = new EnvironmentAdvancedCriterion().WithApplicationId(ComparisonOperators.Equals, "wfiggo")
+                Filter = new EnvironmentAdvancedCriterion().WithApplicationId(ComparisonOperators.Equals, "wfiggo", ItemsMatching.Any)
                     .Or(new EnvironmentAdvancedCriterion().WithSubdomain(ComparisonOperators.NotEquals, "miaou")),
                 Check = e =>
                     e.AppInstances.Any(ai => ai.ApplicationId == "wfiggo")
                     || e.Subdomain != "miaou"
+            }};
+            yield return new object[] { new AdvancedFilterTestEntry<Environment>
+            {
+                Filter = new EnvironmentAdvancedCriterion().WithApplicationId(ComparisonOperators.Equals, "wfiggo", ItemsMatching.All),
+                Check = e =>
+                    e.AppInstances.All(ai => ai.ApplicationId == "wfiggo")
+            }};
+            yield return new object[] { new AdvancedFilterTestEntry<Environment>
+            {
+                Filter = new EnvironmentAdvancedCriterion().WithApplicationId(ComparisonOperators.NotEquals, "wfiggo", ItemsMatching.All),
+                Check = e =>
+                    e.AppInstances.All(ai => ai.ApplicationId != "wfiggo")
             }};
         }
 
@@ -105,6 +119,22 @@ namespace AdvancedFilters.Infra.Tests
 
             searchResult.Should().NotBeEmpty();
             searchResult.Should().OnlyContain(testEntry.Check);
+        }
+
+        [Fact]
+        public void Environments_Search_ShouldFail_WhenItemsMatchedNotSpecified()
+        {
+            var appCriterion = new EnvironmentAdvancedCriterion()
+                .WithApplicationId(It.IsAny<ComparisonOperators>(), It.IsAny<string>(), null);
+            Func<IQueryable<Environment>> appFilterFn = () => GetEnvironments().Filter(appCriterion);
+
+            appFilterFn.Should().ThrowExactly<MissingItemsMatchedFieldException<AppInstance>>();
+
+            var luCriterion = new EnvironmentAdvancedCriterion()
+                .WithApplicationId(It.IsAny<ComparisonOperators>(), It.IsAny<string>(), null);
+            Func<IQueryable<Environment>> luFilterFn = () => GetEnvironments().Filter(luCriterion);
+
+            luFilterFn.Should().ThrowExactly<MissingItemsMatchedFieldException<AppInstance>>();
         }
 
         private IQueryable<Environment> GetEnvironments()
@@ -212,6 +242,14 @@ namespace AdvancedFilters.Infra.Tests
                     && c.Establishment.LegalUnit.CountryId == 276
                     && c.AppInstance.ApplicationId != "wpagga"
             }};
+            yield return new object[] { new AdvancedFilterTestEntry<AppContact>
+            {
+                Filter = new AppContactAdvancedCriterion
+                {
+                    Environment = new EnvironmentAdvancedCriterion().WithApplicationId(ComparisonOperators.NotEquals, "wpagga", ItemsMatching.All)
+                },
+                Check = c => c.Environment.AppInstances.All(i => i.ApplicationId != "wpagga")
+            }};
         }
 
         [Theory]
@@ -232,7 +270,7 @@ namespace AdvancedFilters.Infra.Tests
                 {
                     Id = 1,
                     IsConfirmed = true,
-                    Environment = new Environment { Subdomain = "miaou" },
+                    Environment = new Environment { Subdomain = "miaou", AppInstances = new List<AppInstance> { new AppInstance { ApplicationId = "wpagga" } } },
                     Establishment = new Establishment { LegalUnit = new LegalUnit { CountryId = 250 } },
                     AppInstance = new AppInstance { ApplicationId = "wpagga" }
                 },
@@ -240,7 +278,7 @@ namespace AdvancedFilters.Infra.Tests
                 {
                     Id = 2,
                     IsConfirmed = true,
-                    Environment = new Environment { Subdomain = "ouaf" },
+                    Environment = new Environment { Subdomain = "ouaf", AppInstances = new List<AppInstance> { new AppInstance { ApplicationId = "wexpenses" }, new AppInstance { ApplicationId = "wtimmi" } } },
                     Establishment = new Establishment { LegalUnit = new LegalUnit { CountryId = 9001 } },
                     AppInstance = new AppInstance { ApplicationId = "wexpenses" }
                 },
@@ -248,7 +286,7 @@ namespace AdvancedFilters.Infra.Tests
                 {
                     Id = 3,
                     IsConfirmed = true,
-                    Environment = new Environment { Subdomain = "wau" },
+                    Environment = new Environment { Subdomain = "wau", AppInstances = new List<AppInstance> { new AppInstance { ApplicationId = "wexpenses" }, new AppInstance { ApplicationId = "wtimmi" } } },
                     Establishment = new Establishment { LegalUnit = new LegalUnit { CountryId = 276 } },
                     AppInstance = new AppInstance { ApplicationId = "wpoplee" }
                 },
@@ -256,9 +294,17 @@ namespace AdvancedFilters.Infra.Tests
                 {
                     Id = 4,
                     IsConfirmed = false,
-                    Environment = new Environment { Subdomain = "miaou" },
+                    Environment = new Environment { Subdomain = "miaou", AppInstances = new List<AppInstance> { new AppInstance { ApplicationId = "wpagga" } } },
                     Establishment = new Establishment { LegalUnit = new LegalUnit { CountryId = 250 } },
                     AppInstance = new AppInstance { ApplicationId = "wpagga" }
+                },
+                new AppContact
+                {
+                    Id = 5,
+                    IsConfirmed = true,
+                    Environment = new Environment { Subdomain = "miaou", AppInstances = new List<AppInstance> { new AppInstance { ApplicationId = "wpagga" } } },
+                    Establishment = new Establishment { LegalUnit = new LegalUnit { CountryId = 250 } },
+                    AppInstance = new AppInstance { ApplicationId = "wpagga" },
                 }
             }.AsQueryable();
         }
@@ -528,28 +574,36 @@ namespace AdvancedFilters.Infra.Tests
             };
             return criterion;
         }
-        public static EnvironmentAdvancedCriterion WithCountryId(this EnvironmentAdvancedCriterion criterion, ComparisonOperators op, int countryId)
+        public static EnvironmentAdvancedCriterion WithCountryId(this EnvironmentAdvancedCriterion criterion, ComparisonOperators op, int countryId, ItemsMatching? matching)
         {
-            criterion.LegalUnits = new LegalUnitAdvancedCriterion
+            criterion.LegalUnits = new LegalUnitsAdvancedCriterion
             {
                 CountryId = new SingleIntComparisonCriterion
                 {
                     Operator = op,
                     Value = countryId
-                }
+                },
             };
+            if (matching.HasValue)
+            {
+                criterion.LegalUnits.ItemsMatched = matching.Value;
+            }
             return criterion;
         }
-        public static EnvironmentAdvancedCriterion WithApplicationId(this EnvironmentAdvancedCriterion criterion, ComparisonOperators op, string applicationId)
+        public static EnvironmentAdvancedCriterion WithApplicationId(this EnvironmentAdvancedCriterion criterion, ComparisonOperators op, string applicationId, ItemsMatching? matching)
         {
-            criterion.AppInstances = new AppInstanceAdvancedCriterion
+            criterion.AppInstances = new AppInstancesAdvancedCriterion
             {
                 ApplicationId = new SingleStringComparisonCriterion
                 {
                     Operator = op,
                     Value = applicationId
-                }
+                },
             };
+            if (matching.HasValue)
+            {
+                criterion.AppInstances.ItemsMatched = matching.Value;
+            }
             return criterion;
         }
 
