@@ -52,12 +52,16 @@
   </cc-product-api-select>
 
   <div class="u-marginTopStandard mod-widthFitContent">
-    <cc-offer-api-select [formControlName]="formGroupKey.Offer"
-                         [displayMode]="selectDisplayMode.Form"
-                         [required]="true"
-                         [filters]="offerApiFilters"
-                         textfieldClass="palette-grey mod-longest">
-    </cc-offer-api-select>
+    <label class="textfield is-required palette-grey mod-longest">
+      <cc-offer-api-select [formControlName]="formGroupKey.Offer" [required]="true" [filters]="offerApiFilters">
+      </cc-offer-api-select>
+      <span class="textfield-label">{{ 'offer_select_label' | translate }}</span>
+      <span class="textfield-messages" *ngIf="hasRequiredOfferError">
+        <span class="textfield-messages-error">
+          {{ "front_select_offers_errorMessage_required" | translate }}
+        </span>
+      </span>
+    </label>
     <div class="textfield-messages u-displayFlex u-flexWrapWrap u-justifyContentSpaceBetween">
       <a class="textfield-messages-helper u-marginRightStandard u-textDefault" *ngIf="!!formGroup.value.offer" (click)="openPriceGridModal()">
         {{ "front_priceGrid_openModal_link" | translate }}

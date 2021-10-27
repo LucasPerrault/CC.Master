@@ -3,11 +3,10 @@ import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { TranslatePipe } from '@cc/aspects/translate';
 import { IOffer } from '@cc/domain/billing/offers';
 
-import { SelectDisplayMode } from '../select-display-mode.enum';
-
 @Component({
   selector: 'cc-offer-api-select',
   templateUrl: './offer-api-select.component.html',
+  styleUrls: ['./offer-api-select.component.scss'],
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,
@@ -18,9 +17,8 @@ import { SelectDisplayMode } from '../select-display-mode.enum';
 })
 export class OfferApiSelectComponent implements ControlValueAccessor {
   @Input() required = false;
-  @Input() displayMode = SelectDisplayMode.Filter;
-  @Input() textfieldClass?: string;
   @Input() multiple = false;
+  @Input() placeholder: string;
 
   @Input()
   get filters(): string[] { return this.apiFilters; }
@@ -94,25 +92,5 @@ export class OfferApiSelectComponent implements ControlValueAccessor {
 
   public trackBy(index: number, offer: IOffer): number {
     return offer.id;
-  }
-
-  public get label(): string {
-    const pluralCaseCount = 2;
-    const singleCaseCount = 1;
-    return this.translatePipe.transform('front_select_offers_label', {
-      count: this.multiple ? pluralCaseCount : singleCaseCount,
-    });
-  }
-
-  public get placeholder(): string {
-    if (this.isFormDisplayMode) {
-      return;
-    }
-
-    return this.label;
-  }
-
-  public get isFormDisplayMode(): boolean {
-    return this.displayMode === SelectDisplayMode.Form;
   }
 }

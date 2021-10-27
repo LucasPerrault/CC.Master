@@ -64,6 +64,11 @@ export class ContractsDraftFormComponent implements ControlValueAccessor, Valida
     return this.formGroup.get(DraftFormKey.Distributor).value;
   }
 
+  public get hasRequiredOfferError(): boolean {
+    const offerCtrl = this.formGroup.get(DraftFormKey.Offer);
+    return offerCtrl.touched && offerCtrl.hasError('required');
+  }
+
   public get offerApiFilters(): string[] {
     const product = this.formGroup.get(DraftFormKey.Product).value;
     if (!product) {

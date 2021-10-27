@@ -39,13 +39,18 @@
                            textfieldClass="mod-longest u-marginTopStandard palette-grey">
     </cc-product-api-select>
 
-    <cc-offer-api-select [formControlName]="formGroupKey.Offer"
-                         [displayMode]="selectDisplayMode.Form"
-                         [required]="true"
-                         [filters]="offerApiFilters"
-                         textfieldClass="mod-longest u-marginTopStandard palette-grey">
-    </cc-offer-api-select>
+    <label class="textfield mod-longest u-marginTopStandard palette-grey is-required">
+      <cc-offer-api-select [formControlName]="formGroupKey.Offer" [required]="true" [filters]="offerApiFilters">
+      </cc-offer-api-select>
+      <span class="textfield-label">{{ "offer_select_label" | translate }}</span>
+      <span class="textfield-messages" *ngIf="hasRequiredOfferError">
+      <span class="textfield-messages-error">
+        {{ "front_select_offers_errorMessage_required" | translate }}
+      </span>
+    </span>
+    </label>
   </div>
+
   <div class="u-marginTopStandard">
     <cc-billing-frequency-select textfieldClass="palette-grey"
                                  [formControlName]="formGroupKey.BillingMonth" [required]="true"
