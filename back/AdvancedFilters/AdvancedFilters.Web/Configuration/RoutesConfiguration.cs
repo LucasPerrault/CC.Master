@@ -30,5 +30,6 @@ namespace AdvancedFilters.Web.Configuration
         public string ContractsEndpoint { get; set; }
         public string ContractsSubdomainParamName { get; set; }
         public string ClientsEndpoint { get; set; }
+        public string DistributorsEndpoint { get; set; }
     }
 }

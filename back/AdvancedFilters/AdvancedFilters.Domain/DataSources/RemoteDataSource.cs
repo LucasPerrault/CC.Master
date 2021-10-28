@@ -10,6 +10,7 @@ namespace AdvancedFilters.Domain.DataSources
         LegalUnits,
         Establishments,
         Clients,
+        Distributors,
         AppContacts,
         ClientContacts,
         SpecializedContacts

@@ -21,6 +21,7 @@ namespace AdvancedFilters.Web.Format
             ClientContact,
             SpecializedContact,
             Client,
+            Distributor,
             Contract,
             EstablishmentContract,
         }
@@ -150,6 +151,19 @@ namespace AdvancedFilters.Web.Format
         {
             src.Contracts = src.Contracts.WithoutLoop(getBreaker());
         }
+
+        public static IEnumerable<Distributor> WithoutLoop(this IEnumerable<Distributor> list)
+            => list.WithoutLoop(new RootLoopBreaker());
+        private static Distributor WithoutLoop(this Distributor item, LoopBreaker breaker)
+        {
+            return breaker.GetWithoutLoop(item, Resources.Distributor, (e, b) => e.BreakLoop(b));
+        }
+        private static IEnumerable<Distributor> WithoutLoop(this IEnumerable<Distributor> list, LoopBreaker breaker)
+        {
+            return breaker.GetWithoutLoop(list, Resources.Distributor, (e, b) => e.BreakLoop(b));
+        }
+        private static void BreakLoop(this Distributor src, Func<LoopBreaker> getBreaker)
+        { }
 
         private static Contract WithoutLoop(this Contract item, LoopBreaker breaker)
         {

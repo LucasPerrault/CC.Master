@@ -66,6 +66,7 @@ namespace AdvancedFilters.Web
             services.AddPublicData();
 
             services.AddScoped<IClientsStore, ClientsStore>();
+            services.AddScoped<IDistributorsStore, DistributorsStore>();
             services.AddScoped<IContractsStore, ContractsStore>();
             services.AddScoped<ILegalUnitsStore, LegalUnitsStore>();
             services.AddScoped<IEstablishmentsStore, EstablishmentsStore>();
