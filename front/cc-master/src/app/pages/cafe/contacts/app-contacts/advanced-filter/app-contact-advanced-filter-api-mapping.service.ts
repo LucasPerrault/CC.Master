@@ -7,6 +7,7 @@ import {
   IAdvancedFilterAttributes,
   IAdvancedFilterForm,
 } from '../../../common/cafe-filters/advanced-filter-form';
+import { AdvancedFilterOperatorMapping } from '../../../common/cafe-filters/advanced-filter-form';
 import { EnvironmentAdvancedFilterApiMappingService } from '../../../environments/advanced-filter';
 import { IAppInstance } from '../../../environments/models/app-instance.interface';
 import { CommonApiMappingStrategies } from '../../common/advanced-filter/common-api-mapping-strategies';
@@ -34,10 +35,14 @@ export class AppContactAdvancedFilterApiMappingService {
 
   private getAppInstanceAdvancedFilter(attributes: IAdvancedFilterAttributes): AdvancedFilter {
     const appInstanceIds = attributes.value[attributes.filterKey]?.map((a: IAppInstance) => a.id);
-    return AdvancedFilterTypeMapping.toAdvancedFilter(appInstanceIds, attributes.operator, c => ({ appInstance: { applicationId: c } }));
+    const operator = AdvancedFilterOperatorMapping.getComparisonOperatorDto(attributes.operator);
+    const toFilterCriterion = c => ({ appInstance: { applicationId: c } });
+
+    return AdvancedFilterTypeMapping.toAdvancedFilter(appInstanceIds, operator, toFilterCriterion);
   }
 
   private getEnvironmentAdvancedFilter(attributes: IAdvancedFilterAttributes): AdvancedFilter {
-    return this.environmentApiMapping.getAdvancedFilter(attributes, criterion => ({ environment: criterion }));
+    const toFilterCriterion = criterion => ({ environment: criterion });
+    return this.environmentApiMapping.getAdvancedFilter(attributes, toFilterCriterion);
   }
 }

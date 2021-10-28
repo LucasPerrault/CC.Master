@@ -1,7 +1,11 @@
 import { Injectable } from '@angular/core';
 import { TranslatePipe } from '@cc/aspects/translate';
 
-import { ComparisonOperator, IAdvancedFilterConfiguration, ICriterionConfiguration } from '../../common/cafe-filters/advanced-filter-form';
+import {
+  ComparisonOperator,
+  IAdvancedFilterConfiguration,
+  ICriterionConfiguration,
+} from '../../common/cafe-filters/advanced-filter-form';
 import { EnvironmentsCategory } from '../enums/environments-category.enum';
 import { EnvironmentAdvancedFilterKey } from './environment-advanced-filter-key.enum';
 import { EnvironmentFormlyConfiguration } from './environment-formly-configuration.service';
@@ -14,9 +18,10 @@ export class EnvironmentAdvancedFilterConfiguration implements IAdvancedFilterCo
       key: EnvironmentAdvancedFilterKey.AppInstances,
       name: this.translatePipe.transform('cafe_filters_environment_applications'),
       operators: [
-        { id: ComparisonOperator.Contains, name: this.translatePipe.transform('cafe_filters_operator_contains') },
-        { id: ComparisonOperator.Equals, name: this.translatePipe.transform('cafe_filters_operator_areAmong') },
-        { id: ComparisonOperator.NotEquals, name: this.translatePipe.transform('cafe_filters_operator_areNotAmong') },
+        { id: ComparisonOperator.ListAreAmong, name: this.translatePipe.transform('cafe_filters_operator_areAmong') },
+        { id: ComparisonOperator.ListNotContains, name: this.translatePipe.transform('cafe_filters_operator_areNotAmong') },
+        { id: ComparisonOperator.ListContainsOnly, name: this.translatePipe.transform('cafe_filters_operator_containsOnly') },
+        { id: ComparisonOperator.ListContains, name: this.translatePipe.transform('cafe_filters_operator_contains') },
       ],
       fields: [this.formlyConfiguration.applications],
     },
@@ -33,7 +38,7 @@ export class EnvironmentAdvancedFilterConfiguration implements IAdvancedFilterCo
       key: EnvironmentAdvancedFilterKey.Countries,
       name: this.translatePipe.transform('cafe_filters_environment_countries'),
       operators: [
-        { id: ComparisonOperator.Contains, name: this.translatePipe.transform('cafe_filters_operator_contains') },
+        { id: ComparisonOperator.ListContains, name: this.translatePipe.transform('cafe_filters_operator_contains') },
         { id: ComparisonOperator.Equals, name: this.translatePipe.transform('cafe_filters_operator_areAmong') },
         { id: ComparisonOperator.NotEquals, name: this.translatePipe.transform('cafe_filters_operator_areNotAmong') },
       ],
@@ -43,7 +48,7 @@ export class EnvironmentAdvancedFilterConfiguration implements IAdvancedFilterCo
       key: EnvironmentAdvancedFilterKey.Distributors,
       name: this.translatePipe.transform('cafe_filters_environment_distributors'),
       operators: [
-        { id: ComparisonOperator.Contains, name: this.translatePipe.transform('cafe_filters_operator_contains') },
+        { id: ComparisonOperator.ListContains, name: this.translatePipe.transform('cafe_filters_operator_contains') },
         { id: ComparisonOperator.Equals, name: this.translatePipe.transform('cafe_filters_operator_areAmong') },
         { id: ComparisonOperator.NotEquals, name: this.translatePipe.transform('cafe_filters_operator_areNotAmong') },
       ],

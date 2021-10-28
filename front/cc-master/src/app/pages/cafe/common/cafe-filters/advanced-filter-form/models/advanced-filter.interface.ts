@@ -1,10 +1,23 @@
-import { ComparisonOperator } from '../enums/comparison-operator.enum';
 import { LogicalOperator } from '../enums/logical-operator.enum';
 import { IComparisonFilterCriterionEncapsulation } from './advanced-filter-mapping.interface';
 
 export enum AdvancedFilterType {
   Logical = 'LogicalOperator',
   Criterion = 'Criterion',
+}
+
+export enum ComparisonOperatorDto {
+  Equals = 'Equals',
+  NotEquals = 'NotEquals',
+  TrueOnly = 'TrueOnly',
+  FalseOnly = 'FalseOnly',
+  StrictlyGreaterThan = 'StrictlyGreaterThan',
+  StrictlyLessThan = 'StrictlyLessThan',
+}
+
+export enum ItemsMatchedDto {
+  All = 'All',
+  Any = 'Any',
 }
 
 interface IFilter {
@@ -17,12 +30,17 @@ interface IFilterCombination {
 }
 
 export interface IComparisonFilterCriterion {
-  operator: ComparisonOperator;
+  operator: ComparisonOperatorDto;
   value?: string | number | boolean;
 }
 
 export interface IFilterCriterion {
-  [key: string]: IComparisonFilterCriterion | IFilterCriterion;
+  [key: string]: IComparisonFilterCriterion | IFilterCriterion | IListFilterCriterion;
+}
+
+export interface IListFilterCriterion {
+  [key: string]: IComparisonFilterCriterion | IFilterCriterion | IListFilterCriterion | ItemsMatchedDto;
+  itemsMatched: ItemsMatchedDto;
 }
 
 export type AdvancedFilterCriterion = IFilter & IFilterCriterion;
@@ -32,30 +50,23 @@ export type AdvancedFilter = AdvancedFilterCriterion | AdvancedFilterCombination
 export class AdvancedFilterTypeMapping {
   public static toAdvancedFilter(
     values: string[] | number[] | boolean[],
-    operator: ComparisonOperator,
+    operator: ComparisonOperatorDto,
     toIFilterCriterion: IComparisonFilterCriterionEncapsulation,
     logicalOperator: LogicalOperator = LogicalOperator.Or,
   ): AdvancedFilter {
-    const criterions = values.map(v => this.toCriterion(operator, v, toIFilterCriterion));
+    const criterions = values.map(v => AdvancedFilterTypeMapping.toCriterion(operator, v, toIFilterCriterion));
     return AdvancedFilterTypeMapping.combine(criterions, logicalOperator);
-  }
-
-  public static toAdvancedFilterWithContainsOperator(
-    values: string[] | number[] | boolean[],
-    toIFilterCriterion: IComparisonFilterCriterionEncapsulation,
-  ): AdvancedFilter {
-    return AdvancedFilterTypeMapping.toAdvancedFilter(values, ComparisonOperator.Equals, toIFilterCriterion, LogicalOperator.And);
   }
 
   public static toFilterCombination(operator: LogicalOperator, values: AdvancedFilter[]): AdvancedFilterCombination {
     return { filterElementType: AdvancedFilterType.Logical, operator, values } as AdvancedFilterCombination;
   };
 
-  public static toFilterCriterion(criterion: IFilterCriterion): AdvancedFilterCriterion {
+  public static toFilterCriterion(criterion: IFilterCriterion | IListFilterCriterion): AdvancedFilterCriterion {
     return { filterElementType: AdvancedFilterType.Criterion, ...criterion } as AdvancedFilterCriterion;
   };
 
-  public static toComparisonFilterCriterion(operator: ComparisonOperator, value: string | number | boolean): IComparisonFilterCriterion {
+  public static toComparisonFilterCriterion(operator: ComparisonOperatorDto, value: string | number | boolean): IComparisonFilterCriterion {
     return { operator, value };
   }
 
@@ -65,8 +76,8 @@ export class AdvancedFilterTypeMapping {
         : criterions[0];
   }
 
-  public static toCriterion(
-    operator: ComparisonOperator,
+  private static toCriterion(
+    operator: ComparisonOperatorDto,
     value: string | number | boolean,
     toIFilterCriterion: IComparisonFilterCriterionEncapsulation,
   ): AdvancedFilterCriterion {
@@ -74,5 +85,4 @@ export class AdvancedFilterTypeMapping {
     const filterCriterion = toIFilterCriterion(comparisonFilterCriterion);
     return AdvancedFilterTypeMapping.toFilterCriterion(filterCriterion);
   }
-
 }
