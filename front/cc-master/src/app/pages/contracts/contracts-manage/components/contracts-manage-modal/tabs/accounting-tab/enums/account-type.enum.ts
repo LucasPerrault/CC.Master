@@ -1,6 +1,7 @@
 export enum AccountType {
   Lucca = 401,
   Client = 411,
+  DeliveryAccount = 706,
 }
 
 export interface IAccount {
