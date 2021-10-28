@@ -109,22 +109,21 @@ namespace AdvancedFilters.Infra.Services.Sync.Dtos
 
         ClientContact ToClientContact(ClientContactDto c)
         {
-            c.UserFirstName = c.User.FirstName;
-            c.UserLastName = c.User.LastName;
-            c.UserMail = c.User.Mail;
-            c.EstablishmentId = c.User.EstablishmentId;
             return new ClientContact
             {
                 Id = c.Id,
                 ClientId = c.ClientId,
                 EnvironmentId = c.EnvironmentId,
-                RoleCode = c.Role.Code,
                 CreatedAt = c.CreatedAt,
                 ExpiresAt = c.ExpiresAt,
-                EstablishmentId = c.EstablishmentId,
                 IsConfirmed = c.IsConfirmed,
                 RoleId = c.RoleId,
-                UserId = c.UserId
+                RoleCode = c.Role.Code,
+                UserId = c.UserId,
+                UserFirstName = c.User.FirstName,
+                UserLastName = c.User.LastName,
+                UserMail = c.User.Mail,
+                EstablishmentId = c.User.EstablishmentId,
             };
         }
 
