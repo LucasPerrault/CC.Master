@@ -36,6 +36,7 @@ namespace AdvancedFilters.Domain.Instance.Models
         public SingleStringComparisonCriterion Cluster { get; set; }
         public LegalUnitsAdvancedCriterion LegalUnits { get; set; }
         public AppInstancesAdvancedCriterion AppInstances { get; set; }
+        public DistributorsAdvancedCriterion Distributors { get; set; }
 
         public override IQueryableExpressionBuilder<Environment> GetExpressionBuilder(IQueryableExpressionBuilderFactory factory)
             => factory.Create(this);

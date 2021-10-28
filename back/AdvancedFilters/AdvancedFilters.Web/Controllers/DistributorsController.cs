@@ -46,11 +46,13 @@ namespace AdvancedFilters.Web.Controllers
     {
         public IPageToken Page { get; set; } = null;
 
+        public string Search { get; set; }
+
         public DistributorFilter ToFilter()
         {
             return new DistributorFilter
             {
-
+                Search = Search,
             };
         }
     }

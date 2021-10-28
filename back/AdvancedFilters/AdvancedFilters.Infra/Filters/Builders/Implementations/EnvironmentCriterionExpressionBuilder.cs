@@ -1,6 +1,7 @@
 using AdvancedFilters.Domain.Instance.Models;
 using AdvancedFilters.Infra.Filters.Builders.Chaining;
 using System.Collections.Generic;
+using System.Linq;
 using Environment = AdvancedFilters.Domain.Instance.Models.Environment;
 
 namespace AdvancedFilters.Infra.Filters.Builders.Implementations
@@ -18,6 +19,7 @@ namespace AdvancedFilters.Infra.Filters.Builders.Implementations
             yield return Apply(Criterion.Cluster).To(e => e.Cluster);
             yield return ApplyMany(Criterion.LegalUnits).To(e => e.LegalUnits);
             yield return ApplyMany(Criterion.AppInstances).To(e => e.AppInstances);
+            yield return ApplyMany(Criterion.Distributors).To(e => e.Accesses.Select(a => a.Distributor).Distinct());
         }
     }
 }

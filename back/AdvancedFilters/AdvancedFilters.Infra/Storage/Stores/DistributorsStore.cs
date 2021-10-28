@@ -4,6 +4,7 @@ using AdvancedFilters.Domain.Billing.Models;
 using Lucca.Core.Api.Abstractions.Paging;
 using Lucca.Core.Api.Queryable.Paging;
 using Microsoft.EntityFrameworkCore;
+using Storage.Infra.Extensions;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -41,7 +42,8 @@ namespace AdvancedFilters.Infra.Storage.Stores
     {
         public static IQueryable<Distributor> WhereMatches(this IQueryable<Distributor> distributors, DistributorFilter filter)
         {
-            return distributors;
+            return distributors
+                .WhenNotNullOrEmpty(filter.Search).ApplyWhere(c => c.Name.Contains(filter.Search));
         }
     }
 }
