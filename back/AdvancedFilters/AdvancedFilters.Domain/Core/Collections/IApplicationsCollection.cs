@@ -43,5 +43,15 @@ namespace AdvancedFilters.Domain.Core.Collections
 
             return Task.FromResult<IReadOnlyCollection<Application>>(applications);
         }
+
+        public static string GetName(string applicationId)
+        {
+            if (!ApplicationNamesById.TryGetValue(applicationId, out var name))
+            {
+                return null;
+            }
+
+            return name;
+        }
     }
 }
