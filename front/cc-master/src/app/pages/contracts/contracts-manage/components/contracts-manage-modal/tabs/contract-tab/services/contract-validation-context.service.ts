@@ -5,6 +5,7 @@ import { CountCode } from '@cc/domain/billing/counts';
 import { combineLatest, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
+import { AccountType } from '../../accounting-tab/enums/account-type.enum';
 import { IContractEntry, IContractValidationContext } from '../models/contract-validation-context.interface';
 
 @Injectable()
@@ -48,8 +49,11 @@ export class ContractValidationContextService {
   }
 
   private getContractEntries$(contractId: number): Observable<IContractEntry[]> {
+    const accounts = [AccountType.Client, AccountType.Lucca, AccountType.DeliveryAccount];
+
     const params = new HttpParams()
       .set('fields', 'id,letter')
+      .set('accountNumber', `like,${ accounts.join(',') }`)
       .set('contractId', String(contractId));
 
     return this.httpClient.get<IHttpApiV3CollectionResponse<IContractEntry>>(this.contractEntriesEndpoint, { params })

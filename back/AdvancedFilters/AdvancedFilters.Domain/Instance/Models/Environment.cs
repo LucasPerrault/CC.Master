@@ -32,8 +32,8 @@ namespace AdvancedFilters.Domain.Instance.Models
     {
         public SingleDateTimeComparisonCriterion CreatedAt { get; set; }
         public SingleStringComparisonCriterion Subdomain { get; set; }
-        public LegalUnitAdvancedCriterion LegalUnits { get; set; }
-        public AppInstanceAdvancedCriterion AppInstances { get; set; }
+        public LegalUnitsAdvancedCriterion LegalUnits { get; set; }
+        public AppInstancesAdvancedCriterion AppInstances { get; set; }
 
         public override IQueryableExpressionBuilder<Environment> GetExpressionBuilder(IQueryableExpressionBuilderFactory factory)
             => factory.Create(this);

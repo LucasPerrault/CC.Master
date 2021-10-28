@@ -140,6 +140,10 @@ export class ContractTabFormComponent implements OnInit, OnDestroy, ControlValue
     this.formGroup.get(ContractFormKey.Product).valueChanges
       .pipe(takeUntil(this.destroy$))
       .subscribe(() => this.formGroup.get(ContractFormKey.Offer).reset(null));
+
+    this.formGroup.get(ContractFormKey.TheoreticalStartOn).valueChanges
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(startOn => this.updateBillingFrequency(startOn));
   }
 
   public ngOnDestroy(): void {
@@ -181,5 +185,16 @@ export class ContractTabFormComponent implements OnInit, OnDestroy, ControlValue
     }
 
     billingFrequencyAndMonth.disable({ emitEvent: false });
+  }
+
+  private updateBillingFrequency(startOn: string) {
+    const billingFrequency = this.formGroup.get(ContractFormKey.BillingMonth).value;
+    if (billingFrequency === ContractBillingMonth.Quarterly) {
+      return;
+    }
+
+    const startDate = new Date(startOn);
+    const billingMonth = startDate.getMonth() + 1;
+    this.formGroup.get(ContractFormKey.BillingMonth).setValue(billingMonth);
   }
 }

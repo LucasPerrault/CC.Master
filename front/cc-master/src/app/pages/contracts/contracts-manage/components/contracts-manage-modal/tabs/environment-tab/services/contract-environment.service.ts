@@ -33,6 +33,7 @@ export class ContractEnvironmentService {
   public getAttachmentsNumber$(contractId: number): Observable<number> {
     const params = new HttpParams()
       .set('fields', 'collection.count')
+      .set('isActive', `${ true }`)
       .set('contractId', String(contractId));
 
     return this.httpClient.get<IHttpApiV3CountResponse>(this.attachmentsEndpoint, { params })
