@@ -19,5 +19,16 @@ export class AppContactsDataService {
     const url = [route, query].join('?');
 
     return this.httpClient.post<IHttpApiV4CollectionCountResponse<IAppContact>>(url, advancedFilter);
+	}
+	
+	public exportAppContacts$(params: HttpParams, advancedFilter: AdvancedFilter): Observable<IHttpApiV4CollectionCountResponse<IAppContact>> {
+    const query = params.toString();
+		const route = '/api/cafe/app-contacts/export';
+		
+		const url = !!query
+			? [route, query].join('?')
+			: route;
+
+    return this.httpClient.post<IHttpApiV4CollectionCountResponse<IAppContact>>(url, advancedFilter);
   }
 }

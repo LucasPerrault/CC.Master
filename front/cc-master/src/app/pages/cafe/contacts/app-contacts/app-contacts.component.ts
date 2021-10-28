@@ -3,7 +3,7 @@ import { ChangeDetectionStrategy, Component, Input, OnDestroy, OnInit } from '@a
 import { FormControl } from '@angular/forms';
 import { defaultPagingParams, IPaginatedResult, PaginatedList, PaginatedListState, PagingService } from '@cc/common/paging';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
-import { filter, map, takeUntil } from 'rxjs/operators';
+import { filter, map, takeUntil, switchMap } from 'rxjs/operators';
 
 import { AdvancedFilter, IAdvancedFilterForm, } from '../../common/cafe-filters/advanced-filter-form';
 import { AppContactAdvancedFilterConfiguration } from './advanced-filter/app-contact-advanced-filter.configuration';
@@ -11,6 +11,7 @@ import { AppContactAdvancedFilterApiMappingService } from './advanced-filter/app
 import { IAppContact } from './app-contact.interface';
 import { AppContactAdditionalColumn, appContactAdditionalColumns, getAdditionalColumnByIds } from './app-contact-additional-column.enum';
 import { AppContactsDataService } from './app-contacts-data.service';
+import { CafeExportService } from '../../cafe-export.service';
 
 @Component({
   selector: 'cc-app-contacts',
@@ -51,7 +52,8 @@ export class AppContactsComponent implements OnInit, OnDestroy {
     private configuration: AppContactAdvancedFilterConfiguration,
     private apiMappingService: AppContactAdvancedFilterApiMappingService,
     private pagingService: PagingService,
-    private contactsService: AppContactsDataService,
+		private contactsService: AppContactsDataService,
+		private exportService: CafeExportService,
   ) {
     this.paginatedContacts = this.getPaginatedAppContacts$();
   }
@@ -59,7 +61,12 @@ export class AppContactsComponent implements OnInit, OnDestroy {
   public ngOnInit(): void {
     this.advancedFilter$
       .pipe(takeUntil(this.destroy$), filter(f => !!f))
-      .subscribe(() => this.refresh());
+			.subscribe(() => this.refresh());
+		this.exportService.exports
+			.pipe(
+				takeUntil(this.destroy$),
+				switchMap(_ => this.contactsService.exportAppContacts$(new HttpParams(), this.advancedFilter$.value)))
+			.subscribe();
   }
 
   public ngOnDestroy(): void {
