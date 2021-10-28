@@ -31,6 +31,16 @@ namespace AdvancedFilters.Infra.Tests
             }};
             yield return new object[] { new AdvancedFilterTestEntry<Environment>
             {
+                Filter = new EnvironmentAdvancedCriterion().WithCluster(ComparisonOperators.Equals, "c1"),
+                Check = e => e.Cluster == "c1"
+            }};
+            yield return new object[] { new AdvancedFilterTestEntry<Environment>
+            {
+                Filter = new EnvironmentAdvancedCriterion().WithCluster(ComparisonOperators.NotEquals, "c1"),
+                Check = e => e.Cluster != "c1"
+            }};
+            yield return new object[] { new AdvancedFilterTestEntry<Environment>
+            {
                 Filter = new EnvironmentAdvancedCriterion().WithCreatedAt(ComparisonOperators.StrictlyGreaterThan, new DateTime(2020, 01, 01)),
                 Check = e => e.CreatedAt > new DateTime(2020, 01, 01)
             }};
@@ -146,6 +156,7 @@ namespace AdvancedFilters.Infra.Tests
                     Id = 1,
                     CreatedAt = new DateTime(2021, 03, 01),
                     Subdomain = "miaou",
+                    Cluster = "c2",
                     LegalUnits = GetLegalUnits(250, 42),
                     AppInstances = GetAppInstances("wfiggo", "wpagga")
                 },
@@ -154,6 +165,7 @@ namespace AdvancedFilters.Infra.Tests
                     Id = 2,
                     CreatedAt = new DateTime(2002, 03, 01),
                     Subdomain = "ouaf",
+                    Cluster = "c1",
                     LegalUnits = GetLegalUnits(250, 276),
                     AppInstances = GetAppInstances("wexpenses", "wpoplee")
                 },
@@ -162,6 +174,7 @@ namespace AdvancedFilters.Infra.Tests
                     Id = 3,
                     CreatedAt = new DateTime(2002, 03, 01),
                     Subdomain = "wau",
+                    Cluster = "c2",
                     LegalUnits = GetLegalUnits(276, 9001),
                     AppInstances = GetAppInstances("wfiggo")
                 }
@@ -562,6 +575,15 @@ namespace AdvancedFilters.Infra.Tests
             {
                 Operator = op,
                 Value = subdomain
+            };
+            return criterion;
+        }
+        public static EnvironmentAdvancedCriterion WithCluster(this EnvironmentAdvancedCriterion criterion, ComparisonOperators op, string cluster)
+        {
+            criterion.Cluster = new SingleStringComparisonCriterion
+            {
+                Operator = op,
+                Value = cluster
             };
             return criterion;
         }

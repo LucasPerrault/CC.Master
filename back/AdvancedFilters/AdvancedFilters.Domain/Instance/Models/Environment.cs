@@ -13,6 +13,7 @@ namespace AdvancedFilters.Domain.Instance.Models
         public int Id { get; set; }
         public string Subdomain { get; set; }
         public string Domain { get; set; }
+        public string Cluster { get; set; }
         public bool IsActive { get; set; }
         public DateTime CreatedAt { get; set; }
         public string ProductionHost { get; set; }
@@ -31,6 +32,7 @@ namespace AdvancedFilters.Domain.Instance.Models
     {
         public SingleDateTimeComparisonCriterion CreatedAt { get; set; }
         public SingleStringComparisonCriterion Subdomain { get; set; }
+        public SingleStringComparisonCriterion Cluster { get; set; }
         public LegalUnitsAdvancedCriterion LegalUnits { get; set; }
         public AppInstancesAdvancedCriterion AppInstances { get; set; }
 

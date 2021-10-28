@@ -15,6 +15,7 @@ namespace AdvancedFilters.Infra.Filters.Builders.Implementations
         {
             yield return Apply(Criterion.CreatedAt).To(e => e.CreatedAt);
             yield return Apply(Criterion.Subdomain).To(e => e.Subdomain);
+            yield return Apply(Criterion.Cluster).To(e => e.Cluster);
             yield return ApplyMany(Criterion.LegalUnits).To(e => e.LegalUnits);
             yield return ApplyMany(Criterion.AppInstances).To(e => e.AppInstances);
         }
