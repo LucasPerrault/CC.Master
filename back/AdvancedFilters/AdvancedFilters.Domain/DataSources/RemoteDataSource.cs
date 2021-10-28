@@ -11,6 +11,7 @@ namespace AdvancedFilters.Domain.DataSources
         Establishments,
         Clients,
         Distributors,
+        EnvironmentAccesses,
         AppContacts,
         ClientContacts,
         SpecializedContacts

@@ -13,6 +13,7 @@ namespace AdvancedFilters.Domain.DataSources
             DataSources.Environments,
             DataSources.Clients,
             DataSources.Distributors,
+            DataSources.EnvironmentAccesses,
         };
 
         public DataSourcesRepository(Dictionary<DataSources, DataSource> dataSources)

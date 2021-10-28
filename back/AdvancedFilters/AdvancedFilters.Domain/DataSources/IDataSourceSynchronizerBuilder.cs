@@ -32,5 +32,6 @@ namespace AdvancedFilters.Domain.DataSources
         Task<IDataSourceSynchronizer> BuildFromAsync(ClientContactDataSource dataSource);
         Task<IDataSourceSynchronizer> BuildFromAsync(DistributorDataSource distributorDataSource);
         Task<IDataSourceSynchronizer> BuildFromAsync(SpecializedContactDataSource dataSource);
+        Task<IDataSourceSynchronizer> BuildFromAsync(EnvironmentAccessDataSource environmentAccessDataSource);
     }
 }

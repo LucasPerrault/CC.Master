@@ -95,6 +95,13 @@ namespace AdvancedFilters.Infra.Services.Sync.Dtos
         public bool IsAllowingCommercialCommunication { get; set; }
     }
 
+    internal class EnvironmentAccessesDto : ApiV3Dto<EnvironmentAccess>, IDto<EnvironmentAccess>
+    {
+        public List<EnvironmentAccess> ToItems()
+        {
+            return Data.Items;
+        }
+    }
 
     internal class ContactDtoUser
     {

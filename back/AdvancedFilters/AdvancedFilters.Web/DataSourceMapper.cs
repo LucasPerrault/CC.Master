@@ -23,6 +23,7 @@ namespace AdvancedFilters.Web
             DataSources.Establishments => configuration.Establishment(),
             DataSources.Clients => configuration.Client(),
             DataSources.Distributors => configuration.Distributor(),
+            DataSources.EnvironmentAccesses => configuration.EnvironmentAccess(),
             DataSources.AppContacts => configuration.AppContact(),
             DataSources.ClientContacts => configuration.ClientContact(),
             DataSources.SpecializedContacts => configuration.SpecializedContact(),

@@ -16,6 +16,7 @@ namespace AdvancedFilters.Infra.Storage
             modelBuilder.ApplyConfiguration(new CountriesConfiguration());
             modelBuilder.ApplyConfiguration(new EnvironmentsConfiguration());
             modelBuilder.ApplyConfiguration(new AppInstancesConfiguration());
+            modelBuilder.ApplyConfiguration(new EnvironmentAccessesConfiguration());
 
             modelBuilder.ApplyConfiguration(new ClientsConfiguration());
             modelBuilder.ApplyConfiguration(new DistributorsConfiguration());

@@ -14,6 +14,7 @@ namespace AdvancedFilters.Web.Format
         private enum Resources
         {
             Environment,
+            EnvironmentAccess,
             LegalUnit,
             Establishment,
             AppInstance,
@@ -40,6 +41,23 @@ namespace AdvancedFilters.Web.Format
         {
             src.LegalUnits = src.LegalUnits.WithoutLoop(getBreaker());
             src.AppInstances = src.AppInstances.WithoutLoop(getBreaker());
+            src.Accesses = src.Accesses.WithoutLoop(getBreaker());
+        }
+
+        public static IEnumerable<EnvironmentAccess> WithoutLoop(this IEnumerable<EnvironmentAccess> list)
+            => list.WithoutLoop(new RootLoopBreaker());
+        private static EnvironmentAccess WithoutLoop(this EnvironmentAccess item, LoopBreaker breaker)
+        {
+            return breaker.GetWithoutLoop(item, Resources.EnvironmentAccess, (e, b) => e.BreakLoop(b));
+        }
+        private static IEnumerable<EnvironmentAccess> WithoutLoop(this IEnumerable<EnvironmentAccess> list, LoopBreaker breaker)
+        {
+            return breaker.GetWithoutLoop(list, Resources.EnvironmentAccess, (e, b) => e.BreakLoop(b));
+        }
+        private static void BreakLoop(this EnvironmentAccess src, Func<LoopBreaker> getBreaker)
+        {
+            src.Environment = src.Environment.WithoutLoop(getBreaker());
+            src.Distributor = src.Distributor.WithoutLoop(getBreaker());
         }
 
         public static IEnumerable<LegalUnit> WithoutLoop(this IEnumerable<LegalUnit> list)
@@ -163,7 +181,9 @@ namespace AdvancedFilters.Web.Format
             return breaker.GetWithoutLoop(list, Resources.Distributor, (e, b) => e.BreakLoop(b));
         }
         private static void BreakLoop(this Distributor src, Func<LoopBreaker> getBreaker)
-        { }
+        {
+            src.EnvironmentAccesses = src.EnvironmentAccesses.WithoutLoop(getBreaker());
+        }
 
         private static Contract WithoutLoop(this Contract item, LoopBreaker breaker)
         {

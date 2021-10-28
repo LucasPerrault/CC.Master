@@ -1,4 +1,6 @@
 using AdvancedFilters.Domain.Core.Models;
+using AdvancedFilters.Domain.Instance.Models;
+using System.Collections.Generic;
 using Tools;
 
 namespace AdvancedFilters.Domain.Billing.Models
@@ -10,7 +12,7 @@ namespace AdvancedFilters.Domain.Billing.Models
         public int DepartmentId { get; set; }
         public bool IsAllowingCommercialCommunication { get; set; }
 
-        // TODO Handle loop breaking once distributors have EnvironmentAccesses
+        public IEnumerable<EnvironmentAccess> EnvironmentAccesses { get; set; }
 
         public Distributor DeepCopy()
         {
