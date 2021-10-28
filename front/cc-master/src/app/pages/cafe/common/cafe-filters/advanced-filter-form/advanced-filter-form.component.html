@@ -1,10 +1,4 @@
-<form [formGroup]="formGroup" class="u-displayFlex u-flexDirectionColumn u-flexShrink0 u-flexGrow1">
-  <button type="button" class="actionIcon mod-clearer"
-          [luTooltip]="'cafe_filters_delete_all_button_label' | translate"
-          (click)="removeAll()">
-    <span aria-hidden="true" class="lucca-icon icon-cross"></span>
-    <span class="u-mask">{{ 'cafe_filters_delete_one_button_label' | translate }}</span>
-  </button>
+<form [formGroup]="formGroup" class="u-marginTopSmall">
 
   <div [formArrayName]="formArrayKey">
 
@@ -12,7 +6,7 @@
          class="u-displayFlex u-flexWrapWrap u-alignItemsCenter u-flexGrow0 u-flexShrink1 u-marginTopSmallest">
 
       <ng-container [ngSwitch]="i">
-        <div *ngSwitchCase="0" class="textfield mod-inline mod-shorter"></div>
+        <div *ngSwitchCase="0" class="textfield mod-inline mod-shorter">{{ 'cafe_filters_which' | translate }}</div>
         <div *ngSwitchCase="1">
           <cc-logical-operator-select textfieldClass="palette-grey mod-outlined mod-inline mod-shorter"
                                       [formControl]="logicalOperator"
@@ -48,12 +42,17 @@
   </div>
 </form>
 
-<div class="u-displayFlex u-right u-marginTopStandard">
-  <button class="button palette-grey" (click)="submitAdvancedFilter()" [disabled]="invalid">
-    {{ 'cafe_filters_submit_button_label' | translate }}
+<div class="u-displayFlex u-justifyContentSpaceBetween u-paddingSmaller">
+  <button type="button" class="link" (click)="removeAll()">
+    {{ 'cafe_filters_delete_all_button_label' | translate }}
   </button>
+  <div>
+    <button class="button palette-grey" (click)="submitAdvancedFilter()" [disabled]="invalid">
+      {{ 'cafe_filters_submit_button_label' | translate }}
+    </button>
 
-  <button class="button mod-link" (click)="cancelForm()">
-    {{ 'cafe_filters_cancel_button_label' | translate }}
-  </button>
+    <button class="button mod-link" (click)="cancelForm()">
+      {{ 'cafe_filters_cancel_button_label' | translate }}
+    </button>
+  </div>
 </div>

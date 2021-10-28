@@ -25,6 +25,7 @@ enum ComparisonFilterCriterionFormKey {
 
 @Component({
   selector: 'cc-comparison-filter-criterion-form',
+  styles: [':host {display: block; flex: 1}'],
   templateUrl: './comparison-filter-criterion-form.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [
