@@ -2,6 +2,7 @@ using AdvancedFilters.Domain.Contacts.Filters;
 using AdvancedFilters.Domain.Contacts.Interfaces;
 using AdvancedFilters.Domain.Contacts.Models;
 using AdvancedFilters.Domain.Filters.Models;
+using AdvancedFilters.Infra.Services;
 using AdvancedFilters.Web.Binding;
 using AdvancedFilters.Web.Format;
 using Lucca.Core.Api.Abstractions.Paging;
@@ -10,6 +11,7 @@ using Microsoft.AspNetCore.Mvc;
 using Rights.Domain;
 using Rights.Web.Attributes;
 using System.Collections.Generic;
+using System.IO;
 using System.Threading.Tasks;
 using Tools.Web;
 
@@ -20,10 +22,12 @@ namespace AdvancedFilters.Web.Controllers
     public class AppContactsController
     {
         private readonly IAppContactsStore _store;
+        private readonly IExportService _exportService;
 
-        public AppContactsController(IAppContactsStore store)
+        public AppContactsController(IAppContactsStore store, IExportService exportService)
         {
             _store = store;
+            _exportService = exportService;
         }
 
         [HttpGet]
@@ -45,6 +49,18 @@ namespace AdvancedFilters.Web.Controllers
         {
             var page = await _store.SearchAsync(pageToken, criterion);
             return PreparePage(page);
+        }
+
+        [HttpPost("export")]
+        [ForbidIfMissing(Operation.ReadAllCafe)]
+        public async Task<Stream> ExportAsync
+        (
+            [FromBody, ModelBinder(BinderType = typeof(AdvancedFilterModelBinder<AppContactAdvancedCriterion>))]
+            IAdvancedFilter criterion
+        )
+        {
+            var contacts = await _store.SearchAsync(criterion);
+            return _exportService.ExportAsync(contacts);
         }
 
         private Page<AppContact> PreparePage(Page<AppContact> src)

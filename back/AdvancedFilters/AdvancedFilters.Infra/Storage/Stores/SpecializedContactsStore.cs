@@ -8,6 +8,7 @@ using Lucca.Core.Api.Queryable.Paging;
 using Microsoft.EntityFrameworkCore;
 using Storage.Infra.Extensions;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -48,8 +49,14 @@ namespace AdvancedFilters.Infra.Storage.Stores
 
         public Task<Page<SpecializedContact>> SearchAsync(IPageToken pageToken, IAdvancedFilter filter)
         {
-            var contacts = SpecializedContacts.Filter(filter);
+            var contacts = SpecializedContacts.Filter(filter).AsNoTracking();
             return _queryPager.ToPageAsync(contacts, pageToken);
+        }
+
+        public Task<List<SpecializedContact>> SearchAsync(IAdvancedFilter filter)
+        {
+            var contacts = SpecializedContacts.Filter(filter).AsNoTracking();
+            return contacts.ToListAsync();
         }
 
         private IQueryable<SpecializedContact> Get(SpecializedContactFilter filter)
