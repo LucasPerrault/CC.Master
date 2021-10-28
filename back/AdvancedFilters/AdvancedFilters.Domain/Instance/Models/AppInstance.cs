@@ -29,4 +29,9 @@ namespace AdvancedFilters.Domain.Instance.Models
         public override IQueryableExpressionBuilder<AppInstance> GetExpressionBuilder(IQueryableExpressionBuilderFactory factory)
             => factory.Create(this);
     }
+
+    public class AppInstancesAdvancedCriterion : AppInstanceAdvancedCriterion, IListCriterion
+    {
+        public ItemsMatching ItemsMatched { get; set; }
+    }
 }

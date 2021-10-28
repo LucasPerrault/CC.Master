@@ -38,4 +38,9 @@ namespace AdvancedFilters.Domain.Instance.Models
         public override IQueryableExpressionBuilder<LegalUnit> GetExpressionBuilder(IQueryableExpressionBuilderFactory factory)
             => factory.Create(this);
     }
+
+    public class LegalUnitsAdvancedCriterion : LegalUnitAdvancedCriterion, IListCriterion
+    {
+        public ItemsMatching ItemsMatched { get; set; }
+    }
 }
