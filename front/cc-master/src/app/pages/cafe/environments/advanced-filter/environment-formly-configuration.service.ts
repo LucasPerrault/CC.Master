@@ -101,10 +101,8 @@ export class EnvironmentFormlyConfiguration {
 
   public readonly cluster: FormlyFieldConfig = {
     key: EnvironmentAdvancedFilterKey.Cluster,
-    type: 'api',
+    type: 'cluster',
     templateOptions: {
-      api: '/api/cafe/environments/clusters',
-      standard: 'v4',
       multiple: true,
       required: true,
       mod: 'palette-grey mod-outlined mod-inline mod-longer',

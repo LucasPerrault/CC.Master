@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import {
+  ClusterApiSelectModule,
   CountryApiSelectModule,
   EnvironmentApiSelectModule,
   EnvironmentDomainSelectModule,
@@ -9,6 +10,7 @@ import {
 } from '@cc/common/forms';
 import { FormlyModule } from '@ngx-formly/core';
 
+import { FormlyFieldCluster } from './cluster/cluster.component';
 import { FormlyFieldCountry } from './country/country.component';
 import { FormlyFieldEnvironmentDomain } from './environment-domain/environment-domain.component';
 import { FormlyFieldEnvironmentSubdomain } from './environment-subdomain/environment-subdomain.component';
@@ -21,6 +23,7 @@ import { FormlyFieldSpecializedContactRole } from './specialized-contact-role/sp
     FormlyFieldEnvironmentSubdomain,
     FormlyFieldCountry,
     FormlyFieldSpecializedContactRole,
+    FormlyFieldCluster,
   ],
   imports: [
     CommonModule,
@@ -30,6 +33,7 @@ import { FormlyFieldSpecializedContactRole } from './specialized-contact-role/sp
     FormlyModule.forChild(luFormlyConfig),
     CountryApiSelectModule,
     SpecializedContactRoleApiSelectModule,
+    ClusterApiSelectModule,
   ],
 })
 export class CCFormlyModule {}

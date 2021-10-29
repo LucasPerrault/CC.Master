@@ -1,4 +1,5 @@
 export { ClientApiSelectModule } from './select/client-api-select/client-api-select.module';
+export { ClusterApiSelectModule } from './select/cluster-api-select/cluster-api-select.module';
 export { CountryApiSelectModule } from './select/country-api-select/country-api-select.module';
 export { DateRangeSelectModule } from './select/date-range-select';
 export { DistributorApiSelectModule } from './select/distributor-api-select/distributor-api-select.module';
