@@ -58,7 +58,7 @@ export class CafeComponent {
   }
 
   public canExport(): boolean {
-    return !!this.advancedFilterForm && !this.isExporting;
+    return !!this.advancedFilterForm?.criterionForms?.length && !this.isExporting;
   }
 
   public export(): void {
