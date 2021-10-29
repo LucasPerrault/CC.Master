@@ -8,8 +8,8 @@ import {
 } from '../../common/cafe-filters/advanced-filter-form';
 import { EnvironmentsCategory } from '../enums/environments-category.enum';
 import { EnvironmentAdvancedFilterKey } from './environment-advanced-filter-key.enum';
-import { EnvironmentFormlyConfiguration } from './environment-formly-configuration.service';
 import { EnvironmentCriterionKey } from './environment-criterion-key.enum';
+import { EnvironmentFormlyConfiguration } from './environment-formly-configuration.service';
 
 @Injectable()
 export class EnvironmentAdvancedFilterConfiguration implements IAdvancedFilterConfiguration {
@@ -102,7 +102,7 @@ export class EnvironmentAdvancedFilterConfiguration implements IAdvancedFilterCo
         },
         {
           key: EnvironmentAdvancedFilterKey.Distributor,
-          components: [this.formlyConfiguration.application],
+          components: [this.formlyConfiguration.distributor],
           matchingOperators: [ComparisonOperator.ListContainsOnly],
         },
       ],
