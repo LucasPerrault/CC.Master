@@ -11,7 +11,6 @@ using Microsoft.AspNetCore.Mvc;
 using Rights.Domain;
 using Rights.Web.Attributes;
 using System.Collections.Generic;
-using System.IO;
 using System.Threading.Tasks;
 using Tools.Web;
 using Environment = AdvancedFilters.Domain.Instance.Models.Environment;
@@ -61,14 +60,17 @@ namespace AdvancedFilters.Web.Controllers
 
         [HttpPost("export")]
         [ForbidIfMissing(Operation.ReadAllCafe)]
-        public async Task<Stream> ExportAsync
+        public async Task<FileStreamResult> ExportAsync
         (
             [FromBody, ModelBinder(BinderType = typeof(AdvancedFilterModelBinder<EnvironmentAdvancedCriterion>))]
             IAdvancedFilter criterion
         )
         {
             var environments = await _store.SearchAsync(criterion);
-            return _exportService.ExportAsync(environments);
+
+            var filename = $"export-{System.DateTime.Now:yyyyMMdd-HHmmss}";
+            return _exportService.Export(environments, filename);
+
         }
 
         private Page<Environment> PreparePage(Page<Environment> src)

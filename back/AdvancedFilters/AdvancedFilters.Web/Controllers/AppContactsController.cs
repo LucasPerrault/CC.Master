@@ -11,7 +11,6 @@ using Microsoft.AspNetCore.Mvc;
 using Rights.Domain;
 using Rights.Web.Attributes;
 using System.Collections.Generic;
-using System.IO;
 using System.Threading.Tasks;
 using Tools.Web;
 
@@ -53,14 +52,15 @@ namespace AdvancedFilters.Web.Controllers
 
         [HttpPost("export")]
         [ForbidIfMissing(Operation.ReadAllCafe)]
-        public async Task<Stream> ExportAsync
+        public async Task<FileStreamResult> ExportAsync
         (
             [FromBody, ModelBinder(BinderType = typeof(AdvancedFilterModelBinder<AppContactAdvancedCriterion>))]
             IAdvancedFilter criterion
         )
         {
             var contacts = await _store.SearchAsync(criterion);
-            return _exportService.ExportAsync(contacts);
+            var filename = $"export-{System.DateTime.Now:yyyyMMdd-HHmmss}";
+            return _exportService.Export(contacts, filename);
         }
 
         private Page<AppContact> PreparePage(Page<AppContact> src)

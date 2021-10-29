@@ -2,6 +2,7 @@ using AdvancedFilters.Domain.Contacts.Models;
 using AdvancedFilters.Domain.Instance.Models;
 using CsvHelper;
 using CsvHelper.Configuration;
+using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -10,44 +11,43 @@ namespace AdvancedFilters.Infra.Services
 {
     public interface IExportService
     {
-        Stream ExportAsync(List<Environment> environments);
-        Stream ExportAsync(List<AppContact> contacts);
-        Stream ExportAsync(List<ClientContact> contacts);
-        Stream ExportAsync(List<SpecializedContact> contacts);
-
+        FileStreamResult Export(List<Environment> environments, string filename);
+        FileStreamResult Export(List<AppContact> contacts, string filename);
+        FileStreamResult Export(List<ClientContact> contacts, string filename);
+        FileStreamResult Export(List<SpecializedContact> contacts, string filename);
     }
 
     public class ExportCsvService : IExportService
     {
-        public Stream ExportAsync(List<Environment> environments)
+        public FileStreamResult Export(List<Environment> environments, string filename)
         {
             var csvEnvironments = environments.Select(e => new CsvEnvironment(e));
 
-            return ExportAsync(csvEnvironments);
+            return ExportAsync(csvEnvironments, filename);
         }
 
-        public Stream ExportAsync(List<AppContact> contacts)
+        public FileStreamResult Export(List<AppContact> contacts, string filename)
         {
             var csvContacts = contacts.Select(e => new CsvAppContact(e));
 
-            return ExportAsync(csvContacts);
+            return ExportAsync(csvContacts, filename);
         }
 
-        public Stream ExportAsync(List<ClientContact> contacts)
+        public FileStreamResult Export(List<ClientContact> contacts, string filename)
         {
-            var csvEnvironments = contacts.Select(e => new CsvClientContact(e));
+            var csvClientContacts = contacts.Select(e => new CsvClientContact(e));
 
-            return ExportAsync(csvEnvironments);
+            return ExportAsync(csvClientContacts, filename);
         }
 
-        public Stream ExportAsync(List<SpecializedContact> contacts)
+        public FileStreamResult Export(List<SpecializedContact> contacts, string filename)
         {
-            var csvEnvironments = contacts.Select(e => new CsvSpecializedContact(e));
+            var csvSpecializedContacts = contacts.Select(e => new CsvSpecializedContact(e));
 
-            return ExportAsync(csvEnvironments);
+            return ExportAsync(csvSpecializedContacts, filename);
         }
 
-        private Stream ExportAsync<T>(IEnumerable<T> csvData)
+        private FileStreamResult ExportAsync<T>(IEnumerable<T> csvData, string filename)
         {
             var configuration = new CsvConfiguration(System.Globalization.CultureInfo.CurrentCulture)
             {
@@ -55,17 +55,20 @@ namespace AdvancedFilters.Infra.Services
                 HasHeaderRecord = true,
             };
 
-            var mem = new MemoryStream();
-            using (var writer = new StreamWriter(mem, leaveOpen: true))
+            var stream = new MemoryStream();
+            using (var writer = new StreamWriter(stream, leaveOpen: true))
             using (var csvWriter = new CsvWriter(writer, configuration))
             {
                 csvWriter.WriteRecords(csvData);
 
                 writer.Flush();
-                mem.Position = 0;
+                stream.Position = 0;
             }
 
-            return mem;
+            return new FileStreamResult(stream, "text/csv")
+            {
+                FileDownloadName = filename
+            };
         }
 
         private class CsvEnvironment
