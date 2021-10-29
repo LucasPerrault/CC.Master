@@ -43,7 +43,7 @@ export class CafeComponent {
   constructor(cafeConfiguration: CafeConfiguration) {
     this.configuration = cafeConfiguration;
 
-    this.cafeFilters.patchValue({ category: this.getDefaultCategory(ContactCategory.Application) });
+    this.cafeFilters.patchValue({ category: this.getDefaultCategory(EnvironmentsCategory.Environments) });
   }
 
   private getDefaultCategory(category: EnvironmentsCategory | ContactCategory): ICategory {
