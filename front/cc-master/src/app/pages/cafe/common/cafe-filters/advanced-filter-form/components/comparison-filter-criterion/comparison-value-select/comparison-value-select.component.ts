@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, forwardRef, Input, OnDestroy,OnInit } from '@angular/core';
+import { Component, forwardRef, Input, OnDestroy,OnInit } from '@angular/core';
 import {
   AbstractControl,
   ControlValueAccessor,
@@ -17,7 +17,6 @@ import { IComparisonValue, IFormlyFieldValue } from './comparison-value.interfac
 @Component({
   selector: 'cc-comparison-value-select',
   templateUrl: './comparison-value-select.component.html',
-  changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,
