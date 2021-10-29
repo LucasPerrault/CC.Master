@@ -1,22 +1,22 @@
 <table class="table">
   <thead class="table-head">
     <tr class="table-head-row">
-      <th class="table-head-row-cell">
+      <th class="table-head-row-cell" [ngClass]="{ 'mod-hidden': isHidden(additionalColumn.Environment) }">
         {{ 'cafe_contacts_list_environment' | translate }}
       </th>
-      <th class="table-head-row-cell">
+      <th class="table-head-row-cell" [ngClass]="{ 'mod-hidden': isHidden(additionalColumn.LastName) }">
         {{ 'cafe_contacts_list_lastname' | translate }}
       </th>
-      <th class="table-head-row-cell">
+      <th class="table-head-row-cell" [ngClass]="{ 'mod-hidden': isHidden(additionalColumn.FirstName) }">
         {{ 'cafe_contacts_list_firstname' | translate }}
       </th>
-      <th class="table-head-row-cell">
+      <th class="table-head-row-cell" [ngClass]="{ 'mod-hidden': isHidden(additionalColumn.Mail) }">
         {{ 'cafe_contacts_list_mail' | translate }}
       </th>
-      <th class="table-head-row-cell">
+      <th class="table-head-row-cell" [ngClass]="{ 'mod-hidden': isHidden(additionalColumn.Role) }">
         {{ 'cafe_contacts_list_role' | translate }}
       </th>
-      <th class="table-head-row-cell">
+      <th class="table-head-row-cell" [ngClass]="{ 'mod-hidden': isHidden(additionalColumn.IsConfirmed) }">
         {{ 'cafe_contacts_list_isConfirmed' | translate }}
       </th>
       <th class="table-head-row-cell" [ngClass]="{ 'mod-hidden': isHidden(additionalColumn.CreatedAt) }">
@@ -29,22 +29,22 @@
   </thead>
   <tbody class="table-body">
     <tr class="table-body-row" *ngFor="let contact of contacts; trackBy: trackBy">
-      <td class="table-body-row-cell">
+      <td class="table-body-row-cell" [ngClass]="{ 'mod-hidden': isHidden(additionalColumn.Environment) }">
         {{ getEnvironmentName(contact.environment?.subdomain, contact.environment?.domain) }}
       </td>
-      <td class="table-body-row-cell">
+      <td class="table-body-row-cell" [ngClass]="{ 'mod-hidden': isHidden(additionalColumn.LastName) }">
         {{ contact.userLastName }}
       </td>
-      <td class="table-body-row-cell">
+      <td class="table-body-row-cell" [ngClass]="{ 'mod-hidden': isHidden(additionalColumn.FirstName) }">
         {{ contact.userFirstName }}
       </td>
-      <td class="table-body-row-cell">
+      <td class="table-body-row-cell" [ngClass]="{ 'mod-hidden': isHidden(additionalColumn.Mail) }">
         {{ contact.userMail }}
       </td>
-      <td class="table-body-row-cell">
+      <td class="table-body-row-cell" [ngClass]="{ 'mod-hidden': isHidden(additionalColumn.Role) }">
         {{ getRole(contact.roleCode) }}
       </td>
-      <td class="table-body-row-cell">
+      <td class="table-body-row-cell" [ngClass]="{ 'mod-hidden': isHidden(additionalColumn.IsConfirmed) }">
         {{ getIsConfirmedTranslation(contact.isConfirmed) }}
       </td>
       <td class="table-body-row-cell" [ngClass]="{ 'mod-hidden': isHidden(additionalColumn.CreatedAt) }">

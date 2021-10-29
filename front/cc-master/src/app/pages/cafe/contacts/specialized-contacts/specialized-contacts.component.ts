@@ -6,11 +6,13 @@ import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { filter, map, takeUntil } from 'rxjs/operators';
 
 import { AdvancedFilter, IAdvancedFilterForm } from '../../common/cafe-filters/advanced-filter-form';
-import {
-  SpecializedContactAdvancedFilterApiMappingService,
-} from './advanced-filter/specialized-contact-advanced-filter-api-mapping.service';
+import { SpecializedContactAdvancedFilterApiMappingService, } from './advanced-filter/specialized-contact-advanced-filter-api-mapping.service';
 import { ISpecializedContact } from './specialized-contact.interface';
-import { specializedContactAdditionalColumns } from './specialized-contact-additional-column.enum';
+import {
+  getAdditionalColumnByIds,
+  SpecializedContactAdditionalColumn,
+  specializedContactAdditionalColumns
+} from './specialized-contact-additional-column.enum';
 import { SpecializedContactsDataService } from './specialized-contacts-data.service';
 
 
@@ -37,7 +39,15 @@ export class SpecializedContactsComponent implements OnInit, OnDestroy {
 
   public advancedFilter$: BehaviorSubject<AdvancedFilter> = new BehaviorSubject<AdvancedFilter>(null);
 
-  public selectedColumns: FormControl = new FormControl([]);
+  public selectedColumns: FormControl = new FormControl(getAdditionalColumnByIds([
+    SpecializedContactAdditionalColumn.Environment,
+    SpecializedContactAdditionalColumn.LastName,
+    SpecializedContactAdditionalColumn.FirstName,
+    SpecializedContactAdditionalColumn.Mail,
+    SpecializedContactAdditionalColumn.Role,
+    SpecializedContactAdditionalColumn.IsConfirmed,
+  ]));
+
   public additionalColumns = specializedContactAdditionalColumns;
   private paginatedContacts: PaginatedList<ISpecializedContact>;
 
