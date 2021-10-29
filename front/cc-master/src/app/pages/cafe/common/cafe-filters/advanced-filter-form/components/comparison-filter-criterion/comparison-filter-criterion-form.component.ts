@@ -75,7 +75,10 @@ export class ComparisonFilterCriterionFormComponent implements OnInit, OnDestroy
 
     this.configuration$
       .pipe(takeUntil(this.destroy$))
-      .subscribe(configuration => this.setDefaultOperator(configuration?.operators));
+      .subscribe(configuration => {
+        this.updateValuesValidator(configuration);
+        this.setDefaultOperator(configuration?.operators);
+      });
 
     this.parentFormGroup.valueChanges
       .pipe(takeUntil(this.destroy$), filter( c => !this.hasChildren(c)))
@@ -144,6 +147,11 @@ export class ComparisonFilterCriterionFormComponent implements OnInit, OnDestroy
     this.childFormControl.patchValue({ [ComparisonFilterCriterionFormKey.Criterion]: defaultChildCriterion });
   }
 
+  private hasChildren(config: IComparisonFilterCriterionForm): boolean {
+    const configuration = this.configurations.find(c => c.key === config?.criterion?.key);
+    return !!configuration?.children?.length;
+  }
+
   private setDefaultOperator(operators: IComparisonOperator[]): void {
     if (!operators?.length) {
       return;
@@ -151,8 +159,8 @@ export class ComparisonFilterCriterionFormComponent implements OnInit, OnDestroy
     this.parentFormGroup.get(ComparisonFilterCriterionFormKey.Operator).setValue(operators[0]);
   }
 
-  private hasChildren(config: IComparisonFilterCriterionForm): boolean {
-    const configuration = this.configurations.find(c => c.key === config?.criterion?.key);
-    return !!configuration?.children?.length;
+  private updateValuesValidator(configuration: ICriterionConfiguration): void {
+    const validators = !!configuration?.componentConfigs?.length ? [Validators.required] : [];
+    this.parentFormGroup.get(ComparisonFilterCriterionFormKey.Values).setValidators(validators);
   }
 }
