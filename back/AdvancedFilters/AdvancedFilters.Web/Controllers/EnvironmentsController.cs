@@ -40,9 +40,14 @@ namespace AdvancedFilters.Web.Controllers
 
         [HttpGet("clusters")]
         [ForbidIfMissing(Operation.ReadAllCafe)]
-        public Task<List<string>> GetAsync()
+        public async Task<Page<string>> GetAsync()
         {
-            return _store.GetClustersAsync();
+            var clusters = await _store.GetClustersAsync();
+            return new Page<string>
+            {
+                Items = clusters,
+                Count = clusters.Count
+            };
         }
 
         [HttpPost("search")]
