@@ -39,7 +39,6 @@ export const environmentAdditionalColumns: IEnvironmentAdditionalColumn[] = [
   },
 ];
 
-export const getAdditionalColumnByIds = (ids: EnvironmentAdditionalColumn[]): IEnvironmentAdditionalColumn[] => {
-  return environmentAdditionalColumns.filter(c => ids.includes(c.id));
-};
+export const getAdditionalColumnByIds = (ids: EnvironmentAdditionalColumn[]): IEnvironmentAdditionalColumn[] =>
+    environmentAdditionalColumns.filter(c => ids.includes(c.id));
 

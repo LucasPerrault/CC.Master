@@ -1,6 +1,7 @@
 import { HttpParams } from '@angular/common/http';
 import { ChangeDetectionStrategy, Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
+import { toSubmissionState } from '@cc/common/forms';
 import { defaultPagingParams, IPaginatedResult, PaginatedList, PaginatedListState, PagingService } from '@cc/common/paging';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { filter, map, switchMap, take, takeUntil } from 'rxjs/operators';
@@ -12,10 +13,9 @@ import { IClientContact } from './client-contact.interface';
 import {
   ClientContactAdditionalColumn,
   clientContactAdditionalColumns,
-  getAdditionalColumnByIds
+  getAdditionalColumnByIds,
 } from './client-contact-additional-column.enum';
 import { ClientContactsDataService } from './client-contacts-data.service';
-import { toSubmissionState } from '@cc/common/forms';
 
 @Component({
   selector: 'cc-client-contacts',

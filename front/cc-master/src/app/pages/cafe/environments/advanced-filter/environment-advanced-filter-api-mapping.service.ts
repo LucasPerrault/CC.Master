@@ -100,7 +100,11 @@ export class EnvironmentAdvancedFilterApiMappingService {
     return AdvancedFilterTypeMapping.toAdvancedFilter([createdAt], operator, toFilterCriterion);
   }
 
-  private getDistributorsAdvancedFilter(distributorIds: number[], op: ComparisonOperator, encapsulate: IFilterCriterionEncapsulation): AdvancedFilter {
+  private getDistributorsAdvancedFilter(
+    distributorIds: number[],
+    op: ComparisonOperator,
+    encapsulate: IFilterCriterionEncapsulation,
+  ): AdvancedFilter {
     const { operator, itemsMatched, logicalOperator } = AdvancedFilterOperatorMapping.getListComparisonOperatorDto(op);
     const toFilterCriterion = c => (encapsulate({
       distributors: { id: c, itemsMatched },

@@ -46,7 +46,5 @@ export const specializedContactAdditionalColumns: IContactAdditionalColumn[] = [
   },
 ];
 
-export const getAdditionalColumnByIds = (ids: SpecializedContactAdditionalColumn[]): IContactAdditionalColumn[] => {
-  return specializedContactAdditionalColumns.filter(c => ids.includes(c.id as SpecializedContactAdditionalColumn));
-};
-
+export const getAdditionalColumnByIds = (ids: SpecializedContactAdditionalColumn[]): IContactAdditionalColumn[] =>
+    specializedContactAdditionalColumns.filter(c => ids.includes(c.id as SpecializedContactAdditionalColumn));

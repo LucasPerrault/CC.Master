@@ -46,6 +46,5 @@ export const appContactAdditionalColumns: IContactAdditionalColumn[] = [
   },
 ];
 
-export const getAdditionalColumnByIds = (ids: AppContactAdditionalColumn[]): IContactAdditionalColumn[] => {
-  return appContactAdditionalColumns.filter(c => ids.includes(c.id as AppContactAdditionalColumn));
-};
+export const getAdditionalColumnByIds = (ids: AppContactAdditionalColumn[]): IContactAdditionalColumn[] =>
+    appContactAdditionalColumns.filter(c => ids.includes(c.id as AppContactAdditionalColumn));

@@ -5,10 +5,10 @@ import { TranslateModule } from '@ngx-translate/core';
 
 import { CafeComponent } from './cafe.component';
 import { CafeConfiguration } from './cafe-configuration';
+import { CafeExportService } from './cafe-export.service';
 import { CafeFiltersModule } from './common/cafe-filters/cafe-filters.module';
 import { CafeContactsModule } from './contacts/cafe-contacts.module';
 import { CafeEnvironmentsModule } from './environments/cafe-environments.module';
-import { CafeExportService } from './cafe-export.service';
 
 @NgModule({
   declarations: [
