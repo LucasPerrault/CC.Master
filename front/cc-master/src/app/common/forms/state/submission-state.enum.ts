@@ -9,12 +9,12 @@ export enum SubmissionState {
 }
 
 export const toSubmissionState = (): UnaryFunction<Observable<any>, Observable<SubmissionState>> =>
-  pipe(
-    map(() => SubmissionState.Success),
-    catchError(() => of(SubmissionState.Error)),
-    switchMap(state => idleAfter$(1000, state)),
-    startWith(SubmissionState.Load),
-  );
+    pipe(
+        map(() => SubmissionState.Success),
+        catchError(() => of(SubmissionState.Error)),
+        switchMap(state => idleAfter$(1000, state)),
+        startWith(SubmissionState.Load),
+    );
 
 const idleAfter$ = (dueTime: number, state: SubmissionState): Observable<SubmissionState> =>
   timer(dueTime).pipe(

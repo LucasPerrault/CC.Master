@@ -3,8 +3,9 @@ import { ChangeDetectionStrategy, Component, Input, OnDestroy, OnInit } from '@a
 import { FormControl } from '@angular/forms';
 import { defaultPagingParams, IPaginatedResult, PaginatedList, PaginatedListState, PagingService } from '@cc/common/paging';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
-import { filter, map, takeUntil } from 'rxjs/operators';
+import { filter, map, switchMap, takeUntil } from 'rxjs/operators';
 
+import { CafeExportService } from '../../cafe-export.service';
 import { AdvancedFilter, IAdvancedFilterForm } from '../../common/cafe-filters/advanced-filter-form';
 import { ClientContactAdvancedFilterApiMappingService } from './advanced-filter/client-contact-advanced-filter-api-mapping.service';
 import { IClientContact } from './client-contact.interface';
@@ -55,6 +56,7 @@ export class ClientContactsComponent implements OnInit, OnDestroy {
     private pagingService: PagingService,
     private apiMappingService: ClientContactAdvancedFilterApiMappingService,
     private contactsService: ClientContactsDataService,
+    private exportService: CafeExportService,
   ) {
     this.paginatedContacts = this.getPaginatedClientContacts$();
   }
@@ -63,6 +65,13 @@ export class ClientContactsComponent implements OnInit, OnDestroy {
     this.advancedFilter$
       .pipe(takeUntil(this.destroy$), filter(f => !!f))
       .subscribe(() => this.refresh());
+
+    this.exportService.exportRequests$
+        .pipe(
+            takeUntil(this.destroy$),
+            filter(() => !!this.advancedFilter$.value),
+            switchMap(() => this.contactsService.exportClientContacts$(this.advancedFilter$.value)))
+        .subscribe();
   }
 
   public ngOnDestroy(): void {

@@ -12,6 +12,7 @@ namespace AdvancedFilters.Domain.Instance.Interfaces
         Task<Page<Environment>> GetAsync(IPageToken pageToken, EnvironmentFilter filter);
         Task<List<Environment>> GetAsync(EnvironmentFilter filter);
         Task<Page<Environment>> SearchAsync(IPageToken pageToken, IAdvancedFilter filter);
+        Task<List<Environment>> SearchAsync(IAdvancedFilter filter);
         Task<List<string>> GetClustersAsync();
     }
 }

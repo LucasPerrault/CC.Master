@@ -44,6 +44,14 @@ namespace AdvancedFilters.Infra.Storage.Stores
             return _queryPager.ToPageAsync(envs, pageToken);
         }
 
+        public Task<List<Environment>> SearchAsync(IAdvancedFilter filter)
+        {
+            return Environments
+                .Filter(filter)
+                .AsNoTracking()
+                .ToListAsync();
+        }
+
         public Task<List<string>> GetClustersAsync()
         {
             return Environments.Select(e => e.Cluster).Distinct().OrderBy(e => e).ToListAsync();

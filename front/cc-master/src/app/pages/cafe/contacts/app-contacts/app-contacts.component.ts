@@ -1,11 +1,16 @@
 import { HttpParams } from '@angular/common/http';
 import { ChangeDetectionStrategy, Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
+import { toSubmissionState } from '@cc/common/forms';
 import { defaultPagingParams, IPaginatedResult, PaginatedList, PaginatedListState, PagingService } from '@cc/common/paging';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
-import { filter, map, takeUntil } from 'rxjs/operators';
+import { filter, map, switchMap, take, takeUntil } from 'rxjs/operators';
 
-import { AdvancedFilter, IAdvancedFilterForm, } from '../../common/cafe-filters/advanced-filter-form';
+import { CafeExportService } from '../../cafe-export.service';
+import {
+  AdvancedFilter,
+  IAdvancedFilterForm,
+} from '../../common/cafe-filters/advanced-filter-form';
 import { AppContactAdvancedFilterConfiguration } from './advanced-filter/app-contact-advanced-filter.configuration';
 import { AppContactAdvancedFilterApiMappingService } from './advanced-filter/app-contact-advanced-filter-api-mapping.service';
 import { IAppContact } from './app-contact.interface';
@@ -51,7 +56,8 @@ export class AppContactsComponent implements OnInit, OnDestroy {
     private configuration: AppContactAdvancedFilterConfiguration,
     private apiMappingService: AppContactAdvancedFilterApiMappingService,
     private pagingService: PagingService,
-    private contactsService: AppContactsDataService,
+		private contactsService: AppContactsDataService,
+		private exportService: CafeExportService,
   ) {
     this.paginatedContacts = this.getPaginatedAppContacts$();
   }
@@ -59,7 +65,14 @@ export class AppContactsComponent implements OnInit, OnDestroy {
   public ngOnInit(): void {
     this.advancedFilter$
       .pipe(takeUntil(this.destroy$), filter(f => !!f))
-      .subscribe(() => this.refresh());
+			.subscribe(() => this.refresh());
+		this.exportService.exportRequests$
+			.pipe(
+				takeUntil(this.destroy$),
+                filter(() => !!this.advancedFilter$.value),
+                map(() => this.advancedFilter$.value),
+                switchMap(f => this.contactsService.exportAppContacts$(f).pipe(take(1), toSubmissionState())),
+            ).subscribe(s => this.exportService.notifyExport(s));
   }
 
   public ngOnDestroy(): void {

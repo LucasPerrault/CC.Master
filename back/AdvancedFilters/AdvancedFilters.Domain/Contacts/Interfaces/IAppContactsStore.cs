@@ -2,6 +2,7 @@ using AdvancedFilters.Domain.Contacts.Filters;
 using AdvancedFilters.Domain.Contacts.Models;
 using AdvancedFilters.Domain.Filters.Models;
 using Lucca.Core.Api.Abstractions.Paging;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace AdvancedFilters.Domain.Contacts.Interfaces
@@ -10,5 +11,6 @@ namespace AdvancedFilters.Domain.Contacts.Interfaces
     {
         Task<Page<AppContact>> GetAsync(IPageToken pageToken, AppContactFilter filter);
         Task<Page<AppContact>> SearchAsync(IPageToken page, IAdvancedFilter criterion);
+        Task<List<AppContact>> SearchAsync(IAdvancedFilter criterion);
     }
 }

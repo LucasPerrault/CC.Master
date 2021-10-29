@@ -23,4 +23,8 @@ export class ClientContactsDataService {
 
     return this.httpClient.post<IHttpApiV4CollectionCountResponse<IClientContact>>(url, advancedFilter);
   }
+
+    exportClientContacts$(value: AdvancedFilter) {
+        return undefined;
+    }
 }

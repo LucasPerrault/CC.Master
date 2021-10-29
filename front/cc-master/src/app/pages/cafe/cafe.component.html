@@ -1,6 +1,12 @@
 <div class="page mod-fullWidth mod-withFullwidthTable">
   <header class="page-header blockWithFixedSizeInFlex">
-    <h1>{{ "cafe_title" | translate }}</h1>
+		<h1>{{ "cafe_title" | translate }}</h1>
+		<button class="button primary u-marginBottomStandard" type="button"
+                [class]="buttonState$ | async"
+                [disabled]="!canExport()"
+                (click)="export()">
+			Exporter
+		</button>
   </header>
 
   <div class="header blockWithFixedSizeInFlex">

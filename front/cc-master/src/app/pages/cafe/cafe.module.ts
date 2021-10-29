@@ -8,6 +8,7 @@ import { CafeConfiguration } from './cafe-configuration';
 import { CafeFiltersModule } from './common/cafe-filters/cafe-filters.module';
 import { CafeContactsModule } from './contacts/cafe-contacts.module';
 import { CafeEnvironmentsModule } from './environments/cafe-environments.module';
+import { CafeExportService } from './cafe-export.service';
 
 @NgModule({
   declarations: [
@@ -21,6 +22,6 @@ import { CafeEnvironmentsModule } from './environments/cafe-environments.module'
     CafeContactsModule,
     ReactiveFormsModule,
   ],
-  providers: [CafeConfiguration],
+  providers: [CafeConfiguration, CafeExportService],
 })
 export class CafeModule { }

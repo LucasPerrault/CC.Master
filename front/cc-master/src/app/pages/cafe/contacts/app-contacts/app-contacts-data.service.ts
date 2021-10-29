@@ -1,5 +1,6 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { DownloadService } from '@cc/common/download';
 import { IHttpApiV4CollectionCountResponse } from '@cc/common/queries';
 import { Observable } from 'rxjs';
 
@@ -8,7 +9,7 @@ import { IAppContact } from './app-contact.interface';
 
 @Injectable()
 export class AppContactsDataService {
-  constructor(private httpClient: HttpClient) {
+  constructor(private httpClient: HttpClient, private downloadService: DownloadService) {
   }
 
   public getAppContacts$(params: HttpParams, advancedFilter: AdvancedFilter): Observable<IHttpApiV4CollectionCountResponse<IAppContact>> {
@@ -19,5 +20,10 @@ export class AppContactsDataService {
     const url = [route, query].join('?');
 
     return this.httpClient.post<IHttpApiV4CollectionCountResponse<IAppContact>>(url, advancedFilter);
+	}
+
+	public exportAppContacts$(advancedFilter: AdvancedFilter): Observable<void> {
+		const route = '/api/cafe/app-contacts/export';
+        return this.downloadService.download$(route, advancedFilter);
   }
 }
