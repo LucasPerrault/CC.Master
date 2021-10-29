@@ -46,7 +46,7 @@ namespace AdvancedFilters.Domain.Core.Collections
 
         public static string GetName(string applicationId)
         {
-            if (!ApplicationNamesById.TryGetValue(applicationId, out var name))
+            if (applicationId is null || !ApplicationNamesById.TryGetValue(applicationId, out var name))
             {
                 return null;
             }
