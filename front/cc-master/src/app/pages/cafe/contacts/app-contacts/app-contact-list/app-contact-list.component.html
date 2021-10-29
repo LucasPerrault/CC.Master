@@ -42,7 +42,7 @@
         {{ contact.userMail }}
       </td>
       <td class="table-body-row-cell" [ngClass]="{ 'mod-hidden': isHidden(additionalColumn.AppInstance) }">
-        {{ contact.appInstance?.name }}
+        {{ contact.appInstance?.applicationName }}
       </td>
       <td class="table-body-row-cell" [ngClass]="{ 'mod-hidden': isHidden(additionalColumn.IsConfirmed) }">
         {{ getIsConfirmedTranslation(contact.isConfirmed) }}
