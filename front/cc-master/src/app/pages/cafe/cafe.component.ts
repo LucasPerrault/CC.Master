@@ -22,8 +22,6 @@ export class CafeComponent {
   public cafeFilters: FormControl = new FormControl();
   public configuration: ICafeConfiguration;
 
-  public isExporting = false;
-
   public get category(): ContactCategory | EnvironmentsCategory {
     return this.cafeFilters.value?.category?.id;
   }
@@ -40,6 +38,9 @@ export class CafeComponent {
     return this.cafeExportService.exportState$.pipe(map(state => getButtonState(state)));
   }
 
+  public get canExport(): boolean {
+    return !!this.advancedFilterForm?.criterionForms?.length;
+  }
 
   public get isContactCategory(): boolean {
     return !!this.contactCategories.find(c => c === this.category);
@@ -55,10 +56,6 @@ export class CafeComponent {
     this.configuration = cafeConfiguration;
 
     this.cafeFilters.patchValue({ category: this.getDefaultCategory(EnvironmentsCategory.Environments) });
-  }
-
-  public canExport(): boolean {
-    return !!this.advancedFilterForm?.criterionForms?.length && !this.isExporting;
   }
 
   public export(): void {
