@@ -1,0 +1,51 @@
+<table class="table">
+  <thead class="table-head">
+  <tr class="table-head-row">
+    <th class="table-head-row-cell">
+      {{ 'cafe_environments_list_environment' | translate }}
+    </th>
+    <th class="table-head-row-cell">
+      {{ 'cafe_environments_list_applications' | translate }}
+    </th>
+    <th class="table-head-row-cell">
+      {{ 'cafe_environments_list_distributors' | translate }}
+    </th>
+    <th class="table-head-row-cell" [ngClass]="{ 'mod-hidden': isHidden(additionalColumn.Countries) }">
+      {{ 'cafe_environments_list_countries' | translate }}
+    </th>
+    <th class="table-head-row-cell" [ngClass]="{ 'mod-hidden': isHidden(additionalColumn.Cluster) }">
+      {{ 'cafe_environments_list_cluster' | translate }}
+    </th>
+    <th class="table-head-row-cell" [ngClass]="{ 'mod-hidden': isHidden(additionalColumn.CreatedAt) }">
+      {{ 'cafe_environments_list_createdAt' | translate }}
+    </th>
+  </tr>
+  </thead>
+  <tbody class="table-body">
+  <tr class="table-body-row" *ngFor="let environment of environments; trackBy: trackBy">
+    <td class="table-body-row-cell">
+      {{ getEnvironmentName(environment.subdomain, environment.domain) }}
+    </td>
+    <td class="table-body-row-cell">
+      {{ getAppInstanceNames(environment?.appInstances) }}
+    </td>
+    <td class="table-body-row-cell">
+      {{ getDistributorNames(environment) }}
+    </td>
+    <td class="table-body-row-cell" [ngClass]="{ 'mod-hidden': isHidden(additionalColumn.Countries) }">
+      {{ getCountryNames(environment.legalUnits) }}
+    </td>
+    <td class="table-body-row-cell" [ngClass]="{ 'mod-hidden': isHidden(additionalColumn.Cluster) }">
+      {{ environment.cluster }}
+    </td>
+    <td class="table-body-row-cell" [ngClass]="{ 'mod-hidden': isHidden(additionalColumn.CreatedAt) }">
+      {{ environment.createdAt | date : 'shortDate' }}
+    </td>
+  </tr>
+  </tbody>
+</table>
+
+<section class="emptyState" *ngIf="!environments.length">
+  <h3 class="emptyState-title">{{ 'cafe_environments_list_emptyState_title' | translate }}</h3>
+  <p class="emptyState-description">{{ 'cafe_environments_list_emptyState_description' | translate }}</p>
+</section>

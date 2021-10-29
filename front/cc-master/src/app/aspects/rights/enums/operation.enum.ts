@@ -52,4 +52,5 @@ export enum Operation {
   ReadTenantDataRequestStatus = 50002,
 
   AccessBetaFeatures = 51001,
+  ReadAllCafe = 65001,
 }

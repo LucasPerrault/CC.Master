@@ -1,0 +1,63 @@
+<table class="table">
+  <thead class="table-head">
+    <tr class="table-head-row">
+      <th class="table-head-row-cell">
+        {{ 'cafe_contacts_list_environment' | translate }}
+      </th>
+      <th class="table-head-row-cell">
+        {{ 'cafe_contacts_list_lastname' | translate }}
+      </th>
+      <th class="table-head-row-cell">
+        {{ 'cafe_contacts_list_firstname' | translate }}
+      </th>
+      <th class="table-head-row-cell">
+        {{ 'cafe_contacts_list_mail' | translate }}
+      </th>
+      <th class="table-head-row-cell">
+        {{ 'cafe_contacts_list_role' | translate }}
+      </th>
+      <th class="table-head-row-cell">
+        {{ 'cafe_contacts_list_isConfirmed' | translate }}
+      </th>
+      <th class="table-head-row-cell" [ngClass]="{ 'mod-hidden': isHidden(additionalColumn.CreatedAt) }">
+        {{ 'cafe_contacts_list_createdAt' | translate }}
+      </th>
+      <th class="table-head-row-cell" [ngClass]="{ 'mod-hidden': isHidden(additionalColumn.ExpiresAt) }">
+        {{ 'cafe_contacts_list_expiredAt' | translate }}
+      </th>
+    </tr>
+  </thead>
+  <tbody class="table-body">
+    <tr class="table-body-row" *ngFor="let contact of contacts; trackBy: trackBy">
+      <td class="table-body-row-cell">
+        {{ getEnvironmentName(contact.environment?.subdomain, contact.environment?.domain) }}
+      </td>
+      <td class="table-body-row-cell">
+        {{ contact.userLastName }}
+      </td>
+      <td class="table-body-row-cell">
+        {{ contact.userFirstName }}
+      </td>
+      <td class="table-body-row-cell">
+        {{ contact.userMail }}
+      </td>
+      <td class="table-body-row-cell">
+        {{ getRole(contact.roleCode) }}
+      </td>
+      <td class="table-body-row-cell">
+        {{ getIsConfirmedTranslation(contact.isConfirmed) }}
+      </td>
+      <td class="table-body-row-cell" [ngClass]="{ 'mod-hidden': isHidden(additionalColumn.CreatedAt) }">
+        {{ contact.createdAt | date: 'shortDate' }}
+      </td>
+      <td class="table-body-row-cell" [ngClass]="{ 'mod-hidden': isHidden(additionalColumn.ExpiresAt) }">
+        {{ contact.expiresAt | date: 'shortDate' }}
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<section class="emptyState" *ngIf="!contacts.length">
+  <h3 class="emptyState-title">{{ 'cafe_contacts_list_emptyState_title' | translate }}</h3>
+  <p class="emptyState-description">{{ 'cafe_contacts_list_emptyState_description' | translate }}</p>
+</section>

@@ -32,11 +32,12 @@ namespace AdvancedFilters.Infra.Storage.Stores
             return _queryPager.ToPageAsync(lus, pageToken);
         }
 
-        public Task<Page<Country>> GetAllCountriesAsync()
+        public Task<Page<Country>> GetAllCountriesAsync(string search)
         {
             var countries = LegalUnits
                 .AsNoTracking()
                 .Select(lu => lu.Country)
+                .WhenNotNullOrEmpty(search).ApplyWhere(c => c.Name.StartsWith(search))
                 .Distinct()
                 .ToList();
 
