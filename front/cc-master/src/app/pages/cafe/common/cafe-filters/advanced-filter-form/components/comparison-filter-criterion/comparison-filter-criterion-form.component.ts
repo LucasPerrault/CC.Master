@@ -71,7 +71,7 @@ export class ComparisonFilterCriterionFormComponent implements OnInit, OnDestroy
 
     this.parentFormGroup.get(ComparisonFilterCriterionFormKey.Operator).valueChanges
       .pipe(takeUntil(this.destroy$))
-      .subscribe(() => this.parentFormGroup.get(ComparisonFilterCriterionFormKey.Values).reset(null));
+      .subscribe(operator => this.resetComparisonValues(operator));
 
     this.configuration$
       .pipe(takeUntil(this.destroy$))
@@ -162,5 +162,16 @@ export class ComparisonFilterCriterionFormComponent implements OnInit, OnDestroy
   private updateValuesValidator(configuration: ICriterionConfiguration): void {
     const validators = !!configuration?.componentConfigs?.length ? [Validators.required] : [];
     this.parentFormGroup.get(ComparisonFilterCriterionFormKey.Values).setValidators(validators);
+  }
+
+  private resetComparisonValues(operator: IComparisonOperator) {
+    const currentKey = this.parentFormGroup.get(ComparisonFilterCriterionFormKey.Values)?.value?.key;
+    const nextKey = this.getComponentConfiguration(this.configuration$.value, operator)?.key;
+
+    if (nextKey === currentKey) {
+      return;
+    }
+
+    this.parentFormGroup.get(ComparisonFilterCriterionFormKey.Values).reset();
   }
 }
