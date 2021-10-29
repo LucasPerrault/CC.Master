@@ -3,7 +3,7 @@ import { ChangeDetectionStrategy, Component, Input, OnDestroy, OnInit } from '@a
 import { FormControl } from '@angular/forms';
 import { defaultPagingParams, IPaginatedResult, PaginatedList, PaginatedListState, PagingService } from '@cc/common/paging';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
-import { filter, map, switchMap,takeUntil } from 'rxjs/operators';
+import { filter, map, switchMap, takeUntil, tap } from 'rxjs/operators';
 
 import { CafeExportService } from '../../cafe-export.service';
 import {
@@ -65,12 +65,14 @@ export class AppContactsComponent implements OnInit, OnDestroy {
     this.advancedFilter$
       .pipe(takeUntil(this.destroy$), filter(f => !!f))
 			.subscribe(() => this.refresh());
-		this.exportService.exports
+		this.exportService.exportRequests$
 			.pipe(
 				takeUntil(this.destroy$),
                 filter(() => !!this.advancedFilter$.value),
-				switchMap(() => this.contactsService.exportAppContacts$(new HttpParams(), this.advancedFilter$.value)))
-			.subscribe();
+                tap(() => this.exportService.notifyExport(true)),
+                switchMap(() => this.contactsService.exportAppContacts$(new HttpParams(), this.advancedFilter$.value)),
+                tap(() => this.exportService.notifyExport(false)),
+            ).subscribe();
   }
 
   public ngOnDestroy(): void {

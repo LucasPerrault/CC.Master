@@ -3,16 +3,25 @@ import { Observable, Subject } from 'rxjs';
 
 @Injectable()
 export class CafeExportService {
-    public get exports(): Observable<void> {
-        return this.exports$.asObservable();
+    public get exportRequests$(): Observable<void> {
+        return this.exportRequestsSubject$.asObservable();
     }
 
-    private exports$: Subject<void> = new Subject<void>();
+    public get isExporting$(): Observable<boolean> {
+        return this.isExporting$Subject$.asObservable();
+    }
+
+    private exportRequestsSubject$: Subject<void> = new Subject<void>();
+    private isExporting$Subject$: Subject<boolean> = new Subject<boolean>();
 
     constructor() {
     }
 
-    public export(): void {
-        this.exports$.next();
+    public requestExport(): void {
+        this.exportRequestsSubject$.next();
+    }
+
+    public notifyExport(isExporting: boolean): void {
+        this.isExporting$Subject$.next(isExporting);
     }
 }

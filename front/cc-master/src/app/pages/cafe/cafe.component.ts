@@ -1,5 +1,7 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 import { CafeConfiguration } from './cafe-configuration';
 import { ICafeConfiguration } from './cafe-configuration.interface';
@@ -14,9 +16,12 @@ import { EnvironmentsCategory } from './environments/enums/environments-category
   templateUrl: './cafe.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class CafeComponent {
+export class CafeComponent implements OnInit, OnDestroy {
+
   public cafeFilters: FormControl = new FormControl();
   public configuration: ICafeConfiguration;
+
+  public isExporting = false;
 
   public get category(): ContactCategory | EnvironmentsCategory {
     return this.cafeFilters.value?.category?.id;
@@ -41,18 +46,31 @@ export class CafeComponent {
     ContactCategory.Application,
   ];
 
+  private destroy$: Subject<void> = new Subject();
+
   constructor(cafeConfiguration: CafeConfiguration, private cafeExportService: CafeExportService) {
     this.configuration = cafeConfiguration;
 
     this.cafeFilters.patchValue({ category: this.getDefaultCategory(EnvironmentsCategory.Environments) });
   }
 
+  public ngOnInit(): void {
+    this.cafeExportService.isExporting$
+        .pipe(takeUntil(this.destroy$))
+        .subscribe(isExporting => this.isExporting = isExporting);
+  }
+
+  ngOnDestroy(): void {
+  this.destroy$.next();
+  this.destroy$.complete();
+  }
+
   public canExport(): boolean {
-    return !!this.advancedFilterForm;
+    return !!this.advancedFilterForm && !this.isExporting;
   }
 
   public export(): void {
-    this.cafeExportService.export();
+    this.cafeExportService.requestExport();
   }
 
   private getDefaultCategory(category: EnvironmentsCategory | ContactCategory): ICategory {
