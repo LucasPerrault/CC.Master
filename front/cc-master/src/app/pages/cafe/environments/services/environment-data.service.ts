@@ -23,7 +23,7 @@ export class EnvironmentDataService {
   }
 
   public exportEnvironments$(advancedFilter: AdvancedFilter): Observable<void> {
-    const route = '/api/cafe/client-contacts/export';
+    const route = '/api/cafe/environments/export';
     return this.downloadService.download$(route, advancedFilter);
   }
 }
