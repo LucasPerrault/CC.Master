@@ -14,7 +14,7 @@ namespace Distributors.Infra.Migrations
                     d.distributorCode code,
                     d.partenairesDepartmentId departmentId,
                     d.isAllowingCommercialCommunication IsAllowingCommercialCommunication,
-                    (CASE d.isActive WHEN 1 THEN 1 ELSE 0 END AS BIT) IsActive
+                    CAST(CASE d.isActive WHEN 1 THEN 1 ELSE 0 END AS BIT) IsActive
                 FROM [dbo].[Distributors] d
             ");
         }
