@@ -28,7 +28,7 @@ export class SpecializedContactAdvancedFilterApiMappingService {
       case SpeContactAdvancedFilterKey.Role:
         return this.getRoleAdvancedFilter(attributes);
       default:
-        this.getEnvironmentAdvancedFilter(attributes);
+        return this.getEnvironmentAdvancedFilter(attributes);
     }
   }
 
