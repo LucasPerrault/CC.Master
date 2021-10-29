@@ -6,6 +6,7 @@ import { combineLatest, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 import { AccountType } from '../../accounting-tab/enums/account-type.enum';
+import { AccountingEntryJournalCodes } from '../../accounting-tab/enums/accounting-entry-journal-code.enum';
 import { IContractEntry, IContractValidationContext } from '../models/contract-validation-context.interface';
 
 @Injectable()
@@ -54,6 +55,7 @@ export class ContractValidationContextService {
     const params = new HttpParams()
       .set('fields', 'id,letter')
       .set('accountNumber', `like,${ accounts.join(',') }`)
+      .set('journalCode', `notequal,${ AccountingEntryJournalCodes.Draft }`)
       .set('contractId', String(contractId));
 
     return this.httpClient.get<IHttpApiV3CollectionResponse<IContractEntry>>(this.contractEntriesEndpoint, { params })
