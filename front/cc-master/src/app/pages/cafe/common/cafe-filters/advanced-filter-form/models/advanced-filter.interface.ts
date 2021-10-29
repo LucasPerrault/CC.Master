@@ -50,7 +50,7 @@ export class AdvancedFilterTypeMapping {
     values: string[] | number[] | boolean[],
     operator: ComparisonOperatorDto,
     toIFilterCriterion: IComparisonFilterCriterionEncapsulation,
-    logicalOperator: LogicalOperator = LogicalOperator.Or,
+    logicalOperator: LogicalOperator,
   ): AdvancedFilter {
     const criterions = values.map(v => AdvancedFilterTypeMapping.toCriterion(operator, v, toIFilterCriterion));
     return AdvancedFilterTypeMapping.combine(criterions, logicalOperator);

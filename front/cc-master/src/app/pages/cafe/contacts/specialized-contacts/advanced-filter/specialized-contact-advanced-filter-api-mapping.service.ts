@@ -34,10 +34,10 @@ export class SpecializedContactAdvancedFilterApiMappingService {
 
   private getRoleAdvancedFilter(attributes: IAdvancedFilterAttributes): AdvancedFilter {
     const roleCodes = attributes.value.fieldValues[attributes.filterKey];
-    const operator = AdvancedFilterOperatorMapping.getComparisonOperatorDto(attributes.operator);
+    const { operator, logicalOperator } = AdvancedFilterOperatorMapping.getComparisonOperatorDto(attributes.operator);
     const toFilterCriterion = c => ({ roleCode: c });
 
-    return AdvancedFilterTypeMapping.toAdvancedFilter(roleCodes, operator, toFilterCriterion);
+    return AdvancedFilterTypeMapping.toAdvancedFilter(roleCodes, operator, toFilterCriterion, logicalOperator );
   }
 
   private getEnvironmentAdvancedFilter(attributes: IAdvancedFilterAttributes): AdvancedFilter {

@@ -10,9 +10,9 @@ export class CommonApiMappingStrategies {
 
     public static getIsConfirmedAdvancedFilter(comparisonOperator: ComparisonOperator): AdvancedFilter {
       const isConfirmed = getComparisonBooleanValue(comparisonOperator);
-      const operator = AdvancedFilterOperatorMapping.getComparisonOperatorDto(comparisonOperator);
+      const { operator, logicalOperator } = AdvancedFilterOperatorMapping.getComparisonOperatorDto(comparisonOperator);
       const toFilterCriterion = c => ({ isConfirmed: c });
 
-      return AdvancedFilterTypeMapping.toAdvancedFilter([isConfirmed], operator, toFilterCriterion);
+      return AdvancedFilterTypeMapping.toAdvancedFilter([isConfirmed], operator, toFilterCriterion, logicalOperator);
     }
 }

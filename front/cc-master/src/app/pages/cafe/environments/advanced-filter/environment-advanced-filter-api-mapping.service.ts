@@ -56,10 +56,10 @@ export class EnvironmentAdvancedFilterApiMappingService {
     encapsulate: IFilterCriterionEncapsulation,
   ): AdvancedFilter {
     const subdomains = attributes.value.fieldValues[attributes.filterKey].map((e: IEnvironment) => e.subDomain);
-    const operator = AdvancedFilterOperatorMapping.getComparisonOperatorDto(attributes.operator);
+    const { operator, logicalOperator } = AdvancedFilterOperatorMapping.getComparisonOperatorDto(attributes.operator);
     const toFilterCriterion = c => (encapsulate({ subdomain: c }));
 
-    return AdvancedFilterTypeMapping.toAdvancedFilter(subdomains, operator, toFilterCriterion);
+    return AdvancedFilterTypeMapping.toAdvancedFilter(subdomains, operator, toFilterCriterion, logicalOperator);
   }
 
   private getAppInstancesAdvancedFilter(
@@ -93,10 +93,10 @@ export class EnvironmentAdvancedFilterApiMappingService {
     encapsulate: IFilterCriterionEncapsulation,
   ): AdvancedFilter {
     const createdAt = attributes.value.fieldValues[attributes.filterKey];
-    const operator = AdvancedFilterOperatorMapping.getComparisonOperatorDto(attributes.operator);
+    const { operator, logicalOperator } = AdvancedFilterOperatorMapping.getComparisonOperatorDto(attributes.operator);
     const toFilterCriterion = c => (encapsulate({ createdAt: c }));
 
-    return AdvancedFilterTypeMapping.toAdvancedFilter([createdAt], operator, toFilterCriterion);
+    return AdvancedFilterTypeMapping.toAdvancedFilter([createdAt], operator, toFilterCriterion, logicalOperator);
   }
 
   private getDistributorsAdvancedFilter(
@@ -114,11 +114,11 @@ export class EnvironmentAdvancedFilterApiMappingService {
 
   private getClusterAdvancedFilter(attributes: IAdvancedFilterAttributes, encapsulate: IFilterCriterionEncapsulation): AdvancedFilter {
     const clusterIds = attributes.value.fieldValues[attributes.filterKey];
-    const operator = AdvancedFilterOperatorMapping.getComparisonOperatorDto(attributes.operator);
+    const { operator, logicalOperator } = AdvancedFilterOperatorMapping.getComparisonOperatorDto(attributes.operator);
     const toFilterCriterion = c => (encapsulate({
       cluster: c,
     }));
 
-    return AdvancedFilterTypeMapping.toAdvancedFilter(clusterIds, operator, toFilterCriterion);
+    return AdvancedFilterTypeMapping.toAdvancedFilter(clusterIds, operator, toFilterCriterion, logicalOperator);
   }
 }

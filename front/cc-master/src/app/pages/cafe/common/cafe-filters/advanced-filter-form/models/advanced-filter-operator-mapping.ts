@@ -7,23 +7,27 @@ interface IListComparisonOperator {
   itemsMatched: ItemsMatchedDto;
   logicalOperator: LogicalOperator;
 }
+interface IElementOperator {
+  operator: ComparisonOperatorDto;
+  logicalOperator: LogicalOperator;
+}
 
 export class AdvancedFilterOperatorMapping {
 
-  public static getComparisonOperatorDto(operator: ComparisonOperator): ComparisonOperatorDto {
+  public static getComparisonOperatorDto(operator: ComparisonOperator): IElementOperator {
     switch (operator) {
       case ComparisonOperator.Equals :
-        return ComparisonOperatorDto.Equals;
+        return { operator: ComparisonOperatorDto.Equals, logicalOperator: LogicalOperator.Or };
       case ComparisonOperator.NotEquals :
-        return ComparisonOperatorDto.NotEquals;
+        return { operator: ComparisonOperatorDto.NotEquals, logicalOperator: LogicalOperator.And };
       case ComparisonOperator.TrueOnly :
-        return ComparisonOperatorDto.Equals;
+        return { operator: ComparisonOperatorDto.Equals, logicalOperator: LogicalOperator.Or };
       case ComparisonOperator.FalseOnly :
-        return ComparisonOperatorDto.Equals;
+        return { operator: ComparisonOperatorDto.Equals, logicalOperator: LogicalOperator.Or };
       case ComparisonOperator.StrictlyLessThan :
-        return ComparisonOperatorDto.StrictlyLessThan;
+        return { operator: ComparisonOperatorDto.StrictlyLessThan, logicalOperator: LogicalOperator.And };
       case ComparisonOperator.StrictlyGreaterThan:
-        return ComparisonOperatorDto.StrictlyGreaterThan;
+        return { operator: ComparisonOperatorDto.StrictlyGreaterThan, logicalOperator: LogicalOperator.And };
     }
   }
 
