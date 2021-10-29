@@ -34,7 +34,7 @@ export class ClientContactAdvancedFilterApiMappingService {
   }
 
   private getClientsAdvancedFilter(attributes: IAdvancedFilterAttributes): AdvancedFilter {
-    const clientIds = attributes.value[attributes.filterKey]?.map((c: IClient) => c.externalId);
+    const clientIds = attributes.value.fieldValues[attributes.filterKey]?.map((c: IClient) => c.externalId);
     const operator = AdvancedFilterOperatorMapping.getComparisonOperatorDto(attributes.operator);
     const toFilterCriterion = c => ({ clientId: c });
 

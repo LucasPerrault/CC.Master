@@ -33,7 +33,7 @@ export class SpecializedContactAdvancedFilterApiMappingService {
   }
 
   private getRoleAdvancedFilter(attributes: IAdvancedFilterAttributes): AdvancedFilter {
-    const roleCodes = attributes.value[attributes.filterKey];
+    const roleCodes = attributes.value.fieldValues[attributes.filterKey];
     const operator = AdvancedFilterOperatorMapping.getComparisonOperatorDto(attributes.operator);
     const toFilterCriterion = c => ({ roleCode: c });
 
