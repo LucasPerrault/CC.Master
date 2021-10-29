@@ -9,6 +9,10 @@ import { AdvancedFilter, IAdvancedFilterForm } from '../common/cafe-filters/adva
 import { EnvironmentAdvancedFilterApiMappingService } from './advanced-filter';
 import { IEnvironment } from './models/environment.interface';
 import { EnvironmentDataService } from './services/environment-data.service';
+import {
+  EnvironmentAdditionalColumn,
+  getAdditionalColumnByIds
+} from './components/environment-additional-column-select/environment-additional-column.enum';
 
 @Component({
   selector: 'cc-cafe-environments',
@@ -33,7 +37,11 @@ export class CafeEnvironmentsComponent implements OnInit, OnDestroy {
 
   public advancedFilter$: BehaviorSubject<AdvancedFilter> = new BehaviorSubject<AdvancedFilter>(null);
 
-  public selectedColumns: FormControl = new FormControl([]);
+  public selectedColumns: FormControl = new FormControl(getAdditionalColumnByIds([
+    EnvironmentAdditionalColumn.Environment,
+    EnvironmentAdditionalColumn.AppInstances,
+    EnvironmentAdditionalColumn.Distributors,
+  ]));
 
   private paginatedEnvironments: PaginatedList<IEnvironment>;
   private destroy$: Subject<void> = new Subject<void>();

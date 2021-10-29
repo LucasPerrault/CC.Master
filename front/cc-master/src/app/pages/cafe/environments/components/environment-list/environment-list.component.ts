@@ -28,7 +28,7 @@ export class EnvironmentListComponent {
   }
 
   public getAppInstanceNames(appInstances: IAppInstance[]): string {
-    return appInstances.map(app => app.name).join(', ');
+    return appInstances.map(app => app.applicationName).join(', ');
   }
 
   public getCountriesCount(legalUnits: ILegalUnit[]): number {

@@ -1,11 +1,14 @@
 export enum ComparisonOperator {
-  Contains = 'Contains',
   Equals = 'Equals',
   NotEquals = 'NotEquals',
   TrueOnly = 'TrueOnly',
   FalseOnly = 'FalseOnly',
   StrictlyGreaterThan = 'StrictlyGreaterThan',
   StrictlyLessThan = 'StrictlyLessThan',
+  ListContains = 'Contains',
+  ListAreAmong = 'AreAmong',
+  ListNotContains = 'NotContains',
+  ListContainsOnly = 'ContainsOnly',
 }
 
 export const getComparisonBooleanValue = (operator: ComparisonOperator) => {

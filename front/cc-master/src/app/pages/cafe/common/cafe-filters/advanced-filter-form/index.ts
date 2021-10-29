@@ -6,3 +6,4 @@ export * from './enums/logical-operator.enum';
 export * from './models/advanced-filter.interface';
 export * from './models/advanced-filter-configuration.interface';
 export * from './models/advanced-filter-mapping.interface';
+export * from './models/advanced-filter-operator-mapping';

@@ -5,14 +5,11 @@ import { defaultPagingParams, IPaginatedResult, PaginatedList, PaginatedListStat
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { filter, map, takeUntil } from 'rxjs/operators';
 
-import {
-  AdvancedFilter,
-  IAdvancedFilterForm,
-} from '../../common/cafe-filters/advanced-filter-form';
+import { AdvancedFilter, IAdvancedFilterForm, } from '../../common/cafe-filters/advanced-filter-form';
 import { AppContactAdvancedFilterConfiguration } from './advanced-filter/app-contact-advanced-filter.configuration';
 import { AppContactAdvancedFilterApiMappingService } from './advanced-filter/app-contact-advanced-filter-api-mapping.service';
 import { IAppContact } from './app-contact.interface';
-import { appContactAdditionalColumns } from './app-contact-additional-column.enum';
+import { AppContactAdditionalColumn, appContactAdditionalColumns, getAdditionalColumnByIds } from './app-contact-additional-column.enum';
 import { AppContactsDataService } from './app-contacts-data.service';
 
 @Component({
@@ -37,7 +34,14 @@ export class AppContactsComponent implements OnInit, OnDestroy {
 
   public advancedFilter$: BehaviorSubject<AdvancedFilter> = new BehaviorSubject<AdvancedFilter>(null);
 
-  public selectedColumns: FormControl = new FormControl([]);
+  public selectedColumns: FormControl = new FormControl(getAdditionalColumnByIds([
+    AppContactAdditionalColumn.Environment,
+    AppContactAdditionalColumn.LastName,
+    AppContactAdditionalColumn.FirstName,
+    AppContactAdditionalColumn.AppInstance,
+    AppContactAdditionalColumn.Mail,
+    AppContactAdditionalColumn.IsConfirmed,
+  ]));
   public additionalColumns = appContactAdditionalColumns;
   private paginatedContacts: PaginatedList<IAppContact>;
 

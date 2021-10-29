@@ -1,13 +1,13 @@
 <table class="table">
   <thead class="table-head">
   <tr class="table-head-row">
-    <th class="table-head-row-cell">
+    <th class="table-head-row-cell" [ngClass]="{ 'mod-hidden': isHidden(additionalColumn.Environment) }">
       {{ 'cafe_environments_list_environment' | translate }}
     </th>
-    <th class="table-head-row-cell">
+    <th class="table-head-row-cell" [ngClass]="{ 'mod-hidden': isHidden(additionalColumn.AppInstances) }">
       {{ 'cafe_environments_list_applications' | translate }}
     </th>
-    <th class="table-head-row-cell">
+    <th class="table-head-row-cell" [ngClass]="{ 'mod-hidden': isHidden(additionalColumn.Distributors) }">
       {{ 'cafe_environments_list_distributors' | translate }}
     </th>
     <th class="table-head-row-cell" [ngClass]="{ 'mod-hidden': isHidden(additionalColumn.Countries) }">
@@ -23,13 +23,13 @@
   </thead>
   <tbody class="table-body">
   <tr class="table-body-row" *ngFor="let environment of environments; trackBy: trackBy">
-    <td class="table-body-row-cell">
+    <td class="table-body-row-cell" [ngClass]="{ 'mod-hidden': isHidden(additionalColumn.Environment) }">
       {{ getEnvironmentName(environment.subdomain, environment.domain) }}
     </td>
-    <td class="table-body-row-cell">
+    <td class="table-body-row-cell" [ngClass]="{ 'mod-hidden': isHidden(additionalColumn.AppInstances) }">
       {{ getAppInstanceNames(environment?.appInstances) }}
     </td>
-    <td class="table-body-row-cell">
+    <td class="table-body-row-cell" [ngClass]="{ 'mod-hidden': isHidden(additionalColumn.Distributors) }">
       {{ getDistributorNames(environment) }}
     </td>
     <td class="table-body-row-cell" [ngClass]="{ 'mod-hidden': isHidden(additionalColumn.Countries) }">

@@ -31,6 +31,18 @@ export class EnvironmentFormlyConfiguration {
     },
   };
 
+  public readonly application: FormlyFieldConfig = {
+    key: EnvironmentAdvancedFilterKey.AppInstance,
+    type: 'api',
+    templateOptions: {
+      api: '/api/cafe/applications',
+      standard: 'v4',
+      required: true,
+      mod: 'palette-grey mod-outlined mod-inline mod-longer',
+      placeholder: this.translatePipe.transform('cafe_filters_environment_app_placeholder'),
+    },
+  };
+
   public readonly countries: FormlyFieldConfig = {
     key: EnvironmentAdvancedFilterKey.Countries,
     type: 'country',
@@ -39,6 +51,16 @@ export class EnvironmentFormlyConfiguration {
       required: true,
       mod: 'palette-grey mod-outlined mod-inline mod-longer',
       placeholder: this.translatePipe.transform('cafe_filters_environment_countries_placeholder'),
+    },
+  };
+
+  public readonly country: FormlyFieldConfig = {
+    key: EnvironmentAdvancedFilterKey.Country,
+    type: 'country',
+    templateOptions: {
+      required: true,
+      mod: 'palette-grey mod-outlined mod-inline mod-longer',
+      placeholder: this.translatePipe.transform('cafe_filters_environment_country_placeholder'),
     },
   };
 
@@ -56,11 +78,22 @@ export class EnvironmentFormlyConfiguration {
     key: EnvironmentAdvancedFilterKey.Distributors,
     type: 'api',
     templateOptions: {
-      api: '/api/v3/distributors',
+      api: '/api/cafe/distributors',
       multiple: true,
       required: true,
       mod: 'palette-grey mod-outlined mod-inline mod-longer',
       placeholder: this.translatePipe.transform('cafe_filters_environment_distributors_placeholder'),
+    },
+  };
+
+  public readonly distributor: FormlyFieldConfig = {
+    key: EnvironmentAdvancedFilterKey.Distributor,
+    type: 'api',
+    templateOptions: {
+      api: '/api/cafe/distributors',
+      required: true,
+      mod: 'palette-grey mod-outlined mod-inline mod-longer',
+      placeholder: this.translatePipe.transform('cafe_filters_environment_distributor_placeholder'),
     },
   };
 

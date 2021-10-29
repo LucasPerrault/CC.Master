@@ -84,6 +84,8 @@ export class AdvancedFilterFormComponent implements ControlValueAccessor, OnInit
       this.addRange(criterionForms);
       return;
     }
+
+    this.reset();
   }
 
   public trackBy(index: number, control: AbstractControl): AbstractControl {
@@ -101,7 +103,7 @@ export class AdvancedFilterFormComponent implements ControlValueAccessor, OnInit
     }
   }
 
-  public removeAll(): void {
+  public reset(): void {
     this.logicalOperator.reset();
     this.formArray.clear();
     this.insertAt(0);

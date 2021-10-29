@@ -8,7 +8,11 @@ import { filter, map, takeUntil } from 'rxjs/operators';
 import { AdvancedFilter, IAdvancedFilterForm } from '../../common/cafe-filters/advanced-filter-form';
 import { ClientContactAdvancedFilterApiMappingService } from './advanced-filter/client-contact-advanced-filter-api-mapping.service';
 import { IClientContact } from './client-contact.interface';
-import { clientContactAdditionalColumns } from './client-contact-additional-column.enum';
+import {
+  ClientContactAdditionalColumn,
+  clientContactAdditionalColumns,
+  getAdditionalColumnByIds
+} from './client-contact-additional-column.enum';
 import { ClientContactsDataService } from './client-contacts-data.service';
 
 @Component({
@@ -34,7 +38,14 @@ export class ClientContactsComponent implements OnInit, OnDestroy {
 
   public advancedFilter$: BehaviorSubject<AdvancedFilter> = new BehaviorSubject<AdvancedFilter>(null);
 
-  public selectedColumns: FormControl = new FormControl([]);
+  public selectedColumns: FormControl = new FormControl(getAdditionalColumnByIds([
+    ClientContactAdditionalColumn.Environment,
+    ClientContactAdditionalColumn.LastName,
+    ClientContactAdditionalColumn.FirstName,
+    ClientContactAdditionalColumn.Mail,
+    ClientContactAdditionalColumn.IsConfirmed,
+    ClientContactAdditionalColumn.Client,
+  ]));
   public additionalColumns = clientContactAdditionalColumns;
   private paginatedContacts: PaginatedList<IClientContact>;
 

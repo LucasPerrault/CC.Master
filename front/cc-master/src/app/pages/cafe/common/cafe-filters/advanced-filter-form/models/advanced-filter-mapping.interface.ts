@@ -1,6 +1,6 @@
-import { IComparisonFilterCriterion, IFilterCriterion } from './advanced-filter.interface';
+import { IComparisonFilterCriterion, IFilterCriterion, IListFilterCriterion } from './advanced-filter.interface';
 
-export const defaultEncapsulation = (criterion: IFilterCriterion) => criterion;
-export type IFilterCriterionEncapsulation = (criterion: IFilterCriterion) => IFilterCriterion;
+export const defaultEncapsulation = (criterion: IFilterCriterion | IListFilterCriterion) => criterion;
+export type IFilterCriterionEncapsulation = (criterion: IFilterCriterion | IListFilterCriterion) => IFilterCriterion | IListFilterCriterion;
 
-export type IComparisonFilterCriterionEncapsulation = (comparison: IComparisonFilterCriterion) => IFilterCriterion;
+export type IComparisonFilterCriterionEncapsulation = (comparison: IComparisonFilterCriterion) => IFilterCriterion | IListFilterCriterion;
