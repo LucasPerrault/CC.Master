@@ -66,13 +66,15 @@ export class AppContactsComponent implements OnInit, OnDestroy {
     this.advancedFilter$
       .pipe(takeUntil(this.destroy$), filter(f => !!f))
 			.subscribe(() => this.refresh());
+
 		this.exportService.exportRequests$
 			.pipe(
 				takeUntil(this.destroy$),
-                filter(() => !!this.advancedFilter$.value),
-                map(() => this.advancedFilter$.value),
-                switchMap(f => this.contactsService.exportAppContacts$(f).pipe(take(1), toSubmissionState())),
-            ).subscribe(s => this.exportService.notifyExport(s));
+        filter(() => !!this.advancedFilter$.value),
+        map(() => this.advancedFilter$.value),
+        switchMap(f => this.contactsService.exportAppContacts$(f).pipe(take(1), toSubmissionState())),
+      )
+      .subscribe(s => this.exportService.notifyExport(s));
   }
 
   public ngOnDestroy(): void {

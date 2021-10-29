@@ -23,7 +23,7 @@ export class AppContactsDataService {
 	}
 
 	public exportAppContacts$(advancedFilter: AdvancedFilter): Observable<void> {
-		const route = '/api/cafe/app-contacts/export';
-        return this.downloadService.download$(route, advancedFilter);
+    const route = '/api/cafe/app-contacts/export';
+    return this.downloadService.download$(route, advancedFilter);
   }
 }

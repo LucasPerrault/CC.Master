@@ -3,7 +3,7 @@ import { ChangeDetectionStrategy, Component, Input, OnDestroy, OnInit } from '@a
 import { FormControl } from '@angular/forms';
 import { defaultPagingParams, IPaginatedResult, PaginatedList, PaginatedListState, PagingService } from '@cc/common/paging';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
-import { filter, map, takeUntil } from 'rxjs/operators';
+import { filter, map, switchMap, take, takeUntil } from 'rxjs/operators';
 
 import { AdvancedFilter, IAdvancedFilterForm } from '../../common/cafe-filters/advanced-filter-form';
 import { SpecializedContactAdvancedFilterApiMappingService, } from './advanced-filter/specialized-contact-advanced-filter-api-mapping.service';
@@ -14,6 +14,8 @@ import {
   specializedContactAdditionalColumns
 } from './specialized-contact-additional-column.enum';
 import { SpecializedContactsDataService } from './specialized-contacts-data.service';
+import { toSubmissionState } from '@cc/common/forms';
+import { CafeExportService } from '../../cafe-export.service';
 
 
 @Component({
@@ -57,6 +59,7 @@ export class SpecializedContactsComponent implements OnInit, OnDestroy {
     private pagingService: PagingService,
     private apiMappingService: SpecializedContactAdvancedFilterApiMappingService,
     private contactsService: SpecializedContactsDataService,
+    private exportService: CafeExportService,
   ) {
     this.paginatedContacts = this.getPaginatedSpeContacts$();
   }
@@ -65,6 +68,15 @@ export class SpecializedContactsComponent implements OnInit, OnDestroy {
     this.advancedFilter$
       .pipe(takeUntil(this.destroy$), filter(f => !!f))
       .subscribe(() => this.refresh());
+
+    this.exportService.exportRequests$
+      .pipe(
+        takeUntil(this.destroy$),
+        filter(() => !!this.advancedFilter$.value),
+        map(() => this.advancedFilter$.value),
+        switchMap(f => this.contactsService.exportSpeContacts$(f).pipe(take(1), toSubmissionState())),
+      )
+      .subscribe(s => this.exportService.notifyExport(s));
   }
 
   public ngOnDestroy(): void {

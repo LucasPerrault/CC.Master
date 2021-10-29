@@ -3,7 +3,7 @@ import { ChangeDetectionStrategy, Component, Input, OnDestroy, OnInit } from '@a
 import { FormControl } from '@angular/forms';
 import { defaultPagingParams, IPaginatedResult, PaginatedList, PaginatedListState, PagingService } from '@cc/common/paging';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
-import { filter, map, switchMap, takeUntil } from 'rxjs/operators';
+import { filter, map, switchMap, take, takeUntil } from 'rxjs/operators';
 
 import { CafeExportService } from '../../cafe-export.service';
 import { AdvancedFilter, IAdvancedFilterForm } from '../../common/cafe-filters/advanced-filter-form';
@@ -15,6 +15,7 @@ import {
   getAdditionalColumnByIds
 } from './client-contact-additional-column.enum';
 import { ClientContactsDataService } from './client-contacts-data.service';
+import { toSubmissionState } from '@cc/common/forms';
 
 @Component({
   selector: 'cc-client-contacts',
@@ -67,11 +68,13 @@ export class ClientContactsComponent implements OnInit, OnDestroy {
       .subscribe(() => this.refresh());
 
     this.exportService.exportRequests$
-        .pipe(
-            takeUntil(this.destroy$),
-            filter(() => !!this.advancedFilter$.value),
-            switchMap(() => this.contactsService.exportClientContacts$(this.advancedFilter$.value)))
-        .subscribe();
+      .pipe(
+        takeUntil(this.destroy$),
+        filter(() => !!this.advancedFilter$.value),
+        map(() => this.advancedFilter$.value),
+        switchMap(f => this.contactsService.exportClientContacts$(f).pipe(take(1), toSubmissionState())),
+      )
+      .subscribe(s => this.exportService.notifyExport(s));
   }
 
   public ngOnDestroy(): void {

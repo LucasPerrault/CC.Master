@@ -1,18 +1,20 @@
 import { HttpParams } from '@angular/common/http';
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
+import { toSubmissionState } from '@cc/common/forms';
 import { defaultPagingParams, IPaginatedResult, PaginatedList, PaginatedListState, PagingService } from '@cc/common/paging';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
-import { filter, map, takeUntil } from 'rxjs/operators';
+import { filter, map, switchMap, take, takeUntil } from 'rxjs/operators';
 
+import { CafeExportService } from '../cafe-export.service';
 import { AdvancedFilter, IAdvancedFilterForm } from '../common/cafe-filters/advanced-filter-form';
 import { EnvironmentAdvancedFilterApiMappingService } from './advanced-filter';
-import { IEnvironment } from './models/environment.interface';
-import { EnvironmentDataService } from './services/environment-data.service';
 import {
   EnvironmentAdditionalColumn,
   getAdditionalColumnByIds
 } from './components/environment-additional-column-select/environment-additional-column.enum';
+import { IEnvironment } from './models/environment.interface';
+import { EnvironmentDataService } from './services/environment-data.service';
 
 @Component({
   selector: 'cc-cafe-environments',
@@ -50,6 +52,7 @@ export class CafeEnvironmentsComponent implements OnInit, OnDestroy {
     private pagingService: PagingService,
     private apiMappingService: EnvironmentAdvancedFilterApiMappingService,
     private environmentsDataService: EnvironmentDataService,
+    private exportService: CafeExportService,
   ) {
     this.paginatedEnvironments = this.getPaginatedEnvironments$();
   }
@@ -58,6 +61,15 @@ export class CafeEnvironmentsComponent implements OnInit, OnDestroy {
     this.advancedFilter$
       .pipe(takeUntil(this.destroy$), filter(f => !!f))
       .subscribe(() => this.refresh());
+
+    this.exportService.exportRequests$
+      .pipe(
+        takeUntil(this.destroy$),
+        filter(() => !!this.advancedFilter$.value),
+        map(() => this.advancedFilter$.value),
+        switchMap(f => this.environmentsDataService.exportEnvironments$(f).pipe(take(1), toSubmissionState())),
+      )
+      .subscribe(s => this.exportService.notifyExport(s));
   }
 
   public ngOnDestroy(): void {
