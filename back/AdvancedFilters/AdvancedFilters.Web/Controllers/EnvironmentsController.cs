@@ -68,7 +68,7 @@ namespace AdvancedFilters.Web.Controllers
         {
             var environments = await _store.SearchAsync(criterion);
 
-            var filename = $"export-{System.DateTime.Now:yyyyMMdd-HHmmss}";
+            var filename = $"export-{System.DateTime.Now:yyyyMMdd-HHmmss}.csv";
             return _exportService.Export(environments, filename);
 
         }

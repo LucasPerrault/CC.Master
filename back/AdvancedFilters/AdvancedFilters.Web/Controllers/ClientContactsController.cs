@@ -61,7 +61,7 @@ namespace AdvancedFilters.Web.Controllers
         )
         {
             var contacts = await _store.SearchAsync(criterion);
-            var filename = $"export-{DateTime.Now:yyyyMMdd-HHmmss}";
+            var filename = $"export-{DateTime.Now:yyyyMMdd-HHmmss}.csv";
             return _exportService.Export(contacts, filename);
         }
         private Page<ClientContact> PreparePage(Page<ClientContact> src)
