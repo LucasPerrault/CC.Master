@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
-import { Observable, Subject } from 'rxjs';
+import { SubmissionState } from '@cc/common/forms';
+import { BehaviorSubject, Observable, Subject } from 'rxjs';
 
 @Injectable()
 export class CafeExportService {
@@ -7,12 +8,12 @@ export class CafeExportService {
         return this.exportRequestsSubject$.asObservable();
     }
 
-    public get isExporting$(): Observable<boolean> {
-        return this.isExporting$Subject$.asObservable();
+    public get exportState$(): Observable<SubmissionState> {
+        return this.exportStateSubject$.asObservable();
     }
 
     private exportRequestsSubject$: Subject<void> = new Subject<void>();
-    private isExporting$Subject$: Subject<boolean> = new Subject<boolean>();
+    private exportStateSubject$: BehaviorSubject<SubmissionState> = new BehaviorSubject<SubmissionState>(SubmissionState.Idle);
 
     constructor() {
     }
@@ -21,7 +22,7 @@ export class CafeExportService {
         this.exportRequestsSubject$.next();
     }
 
-    public notifyExport(isExporting: boolean): void {
-        this.isExporting$Subject$.next(isExporting);
+    public notifyExport(submissionState: SubmissionState): void {
+        this.exportStateSubject$.next(submissionState);
     }
 }

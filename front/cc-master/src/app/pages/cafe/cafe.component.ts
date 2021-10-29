@@ -1,7 +1,8 @@
-import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { getButtonState } from '@cc/common/forms';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 import { CafeConfiguration } from './cafe-configuration';
 import { ICafeConfiguration } from './cafe-configuration.interface';
@@ -16,7 +17,7 @@ import { EnvironmentsCategory } from './environments/enums/environments-category
   templateUrl: './cafe.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class CafeComponent implements OnInit, OnDestroy {
+export class CafeComponent {
 
   public cafeFilters: FormControl = new FormControl();
   public configuration: ICafeConfiguration;
@@ -35,6 +36,10 @@ export class CafeComponent implements OnInit, OnDestroy {
     return this.category === EnvironmentsCategory.Environments;
   }
 
+  public get buttonState$(): Observable<string> {
+    return this.cafeExportService.exportState$.pipe(map(state => getButtonState(state)));
+  }
+
 
   public get isContactCategory(): boolean {
     return !!this.contactCategories.find(c => c === this.category);
@@ -46,23 +51,10 @@ export class CafeComponent implements OnInit, OnDestroy {
     ContactCategory.Application,
   ];
 
-  private destroy$: Subject<void> = new Subject();
-
   constructor(cafeConfiguration: CafeConfiguration, private cafeExportService: CafeExportService) {
     this.configuration = cafeConfiguration;
 
     this.cafeFilters.patchValue({ category: this.getDefaultCategory(EnvironmentsCategory.Environments) });
-  }
-
-  public ngOnInit(): void {
-    this.cafeExportService.isExporting$
-        .pipe(takeUntil(this.destroy$))
-        .subscribe(isExporting => this.isExporting = isExporting);
-  }
-
-  ngOnDestroy(): void {
-  this.destroy$.next();
-  this.destroy$.complete();
   }
 
   public canExport(): boolean {

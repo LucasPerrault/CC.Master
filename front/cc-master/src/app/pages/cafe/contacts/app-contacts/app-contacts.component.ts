@@ -1,9 +1,10 @@
 import { HttpParams } from '@angular/common/http';
 import { ChangeDetectionStrategy, Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
+import { toSubmissionState } from '@cc/common/forms';
 import { defaultPagingParams, IPaginatedResult, PaginatedList, PaginatedListState, PagingService } from '@cc/common/paging';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
-import { filter, finalize, map, takeUntil } from 'rxjs/operators';
+import { filter, map, switchMap, take, takeUntil } from 'rxjs/operators';
 
 import { CafeExportService } from '../../cafe-export.service';
 import {
@@ -69,7 +70,9 @@ export class AppContactsComponent implements OnInit, OnDestroy {
 			.pipe(
 				takeUntil(this.destroy$),
                 filter(() => !!this.advancedFilter$.value),
-            ).subscribe(() => this.export$());
+                map(() => this.advancedFilter$.value),
+                switchMap(f => this.contactsService.exportAppContacts$(f).pipe(take(1), toSubmissionState())),
+            ).subscribe(s => this.exportService.notifyExport(s));
   }
 
   public ngOnDestroy(): void {
@@ -80,13 +83,6 @@ export class AppContactsComponent implements OnInit, OnDestroy {
   public nextPage(): void {
     this.paginatedContacts.nextPage();
   }
-
-  private export$(): void {
-    this.exportService.notifyExport(true);
-    this.contactsService.exportAppContacts$(this.advancedFilter$.value)
-        .pipe(finalize(() => this.exportService.notifyExport(false)))
-        .subscribe();
-}
 
   private refresh(): void {
     this.paginatedContacts.updateHttpParams(new HttpParams());
