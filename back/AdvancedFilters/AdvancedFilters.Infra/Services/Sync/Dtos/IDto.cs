@@ -60,7 +60,48 @@ namespace AdvancedFilters.Infra.Services.Sync.Dtos
         }
     }
 
+    internal class DistributorsDto : IDto<Distributor>
+    {
+        public List<DistributorDto> Items { get; set; }
 
+        public List<Distributor> ToItems()
+        {
+            return Items.Select(ToDistributor).ToList();
+        }
+
+        private Distributor ToDistributor(DistributorDto dto)
+        {
+            return new Distributor
+            {
+                Id = dto.Id,
+                Name = GetDistributorName(dto),
+                IsAllowingCommercialCommunication = dto.IsAllowingCommercialCommunication,
+                DepartmentId = dto.DepartmentId
+            };
+        }
+
+        private string GetDistributorName(DistributorDto dto)
+        {
+            var lengthToRemove = $"{dto.Code} - ".Length;
+            return dto.Name.Substring(lengthToRemove);
+        }
+    }
+    internal class DistributorDto
+    {
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public string Code { get; set; }
+        public int DepartmentId { get; set; }
+        public bool IsAllowingCommercialCommunication { get; set; }
+    }
+
+    internal class EnvironmentAccessesDto : ApiV3Dto<EnvironmentAccess>, IDto<EnvironmentAccess>
+    {
+        public List<EnvironmentAccess> ToItems()
+        {
+            return Data.Items;
+        }
+    }
 
     internal class ContactDtoUser
     {
