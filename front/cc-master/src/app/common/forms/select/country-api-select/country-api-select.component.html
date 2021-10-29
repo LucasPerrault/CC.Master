@@ -22,7 +22,7 @@
 
   <lu-option-picker-advanced>
     <header class="lu-picker-header">
-      <lu-api-paged-searcher [api]="apiUrl" standard="v4"></lu-api-paged-searcher>
+      <lu-api-searcher [api]="apiUrl" standard="v4"></lu-api-searcher>
     </header>
 
     <lu-option *luForOptions="let country; trackBy: trackBy" [value]="country">

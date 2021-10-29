@@ -22,7 +22,7 @@
 
   <lu-option-picker-advanced>
     <header class="lu-picker-header">
-      <lu-api-paged-searcher [api]="apiUrl" standard="v4"></lu-api-paged-searcher>
+      <lu-api-feeder [api]="apiUrl" standard="v4"></lu-api-feeder>
     </header>
 
     <lu-option *luForOptions="let roleCode; trackBy: trackBy" [value]="roleCode">
