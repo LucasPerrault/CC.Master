@@ -1,4 +1,5 @@
 import { Component, Input } from '@angular/core';
+import { luccaDistributorId } from '@cc/domain/billing/distributors';
 
 import { IAppInstance } from '../../models/app-instance.interface';
 import { IEnvironment } from '../../models/environment.interface';
@@ -43,8 +44,16 @@ export class EnvironmentListComponent {
   }
 
   public getDistributorNames(environment: IEnvironment): string {
-    const distributors = environment.accesses?.map(a => a.distributor.name) ?? [];
-    return distributors.join(', ');
+    const distributors = environment.accesses?.map(a => a.distributor) ?? [];
+    const distributorsWithoutLucca = distributors?.filter(d => d.id !== luccaDistributorId);
+    const luccaDistributor = distributors?.find(d => d.id === luccaDistributorId);
+
+    const names = distributorsWithoutLucca?.map(a => a.name);
+    const distinct = names.filter((value, index, self) => self.indexOf(value) === index);
+    const sorted = distinct.sort((a, b) => a.localeCompare(b));
+
+    const distributorNames = !!luccaDistributor ? [luccaDistributor?.name, ...sorted] : sorted;
+    return distributorNames.join(', ');
   }
 
   public isHidden(column: EnvironmentAdditionalColumn): boolean {
