@@ -24,6 +24,7 @@ export class DownloadService {
   }
 
   private getFilename(headers: HttpHeaders): string {
+    return 'dummy.csv';
     const content = headers.get('content-disposition');
     const filenamePart = content.split(';')[1];
     return filenamePart.replace('filename=', '').trim();
