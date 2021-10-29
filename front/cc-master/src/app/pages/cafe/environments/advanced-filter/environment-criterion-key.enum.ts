@@ -4,4 +4,5 @@ export enum EnvironmentCriterionKey {
   Countries = 'countries',
   CreatedAt = 'createdAt',
   Distributors = 'distributors',
+  Cluster = 'cluster',
 }

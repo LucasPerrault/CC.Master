@@ -97,5 +97,18 @@ export class EnvironmentFormlyConfiguration {
     },
   };
 
+  public readonly cluster: FormlyFieldConfig = {
+    key: EnvironmentAdvancedFilterKey.Cluster,
+    type: 'api',
+    templateOptions: {
+      api: '/api/cafe/environments/clusters',
+      standard: 'v4',
+      multiple: true,
+      required: true,
+      mod: 'palette-grey mod-outlined mod-inline mod-longer',
+      placeholder: this.translatePipe.transform('cafe_filters_environment_clusters_placeholder'),
+    },
+  };
+
   constructor(private translatePipe: TranslatePipe) {}
 }

@@ -7,4 +7,5 @@ export enum EnvironmentAdvancedFilterKey {
   CreatedAt = 'createdAt',
   Distributors = 'distributors',
   Distributor = 'distributor',
+  Cluster = 'cluster',
 }
