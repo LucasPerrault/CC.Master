@@ -34,9 +34,7 @@ namespace AdvancedFilters.Infra.Storage.Stores
                 .AsNoTracking();
         }
 
-        private IQueryable<Distributor> Distributors => _dbContext
-            .Set<Distributor>()
-            .Include(d => d.EnvironmentAccesses).ThenInclude(a => a.Environment);
+        private IQueryable<Distributor> Distributors => _dbContext.Set<Distributor>();
     }
 
     internal static class DistributorQueryableExtensions
