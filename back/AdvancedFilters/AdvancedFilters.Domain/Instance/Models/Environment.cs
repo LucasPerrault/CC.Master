@@ -13,7 +13,6 @@ namespace AdvancedFilters.Domain.Instance.Models
         public int Id { get; set; }
         public string Subdomain { get; set; }
         public string Domain { get; set; }
-        public string Cluster { get; set; }
         public bool IsActive { get; set; }
         public DateTime CreatedAt { get; set; }
         public string Cluster { get; set; }
