@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import { IDistributor } from '@cc/domain/billing/distributors';
 import { IEnvironment } from '@cc/domain/environments';
 
 import {
@@ -114,14 +113,12 @@ export class EnvironmentAdvancedFilterApiMappingService {
   }
 
   private getClusterAdvancedFilter(attributes: IAdvancedFilterAttributes, encapsulate: IFilterCriterionEncapsulation): AdvancedFilter {
-    const clusterIds = attributes.value.fieldValues[attributes.filterKey].map((d: IDistributor) => d.id);
-
-    const { operator, itemsMatched, logicalOperator } = AdvancedFilterOperatorMapping.getListComparisonOperatorDto(attributes.operator);
+    const clusterIds = attributes.value.fieldValues[attributes.filterKey];
+    const operator = AdvancedFilterOperatorMapping.getComparisonOperatorDto(attributes.operator);
     const toFilterCriterion = c => (encapsulate({
-      distributorId: c,
-      itemsMatched,
+      cluster: c,
     }));
 
-    return AdvancedFilterTypeMapping.toAdvancedFilter(clusterIds, operator, toFilterCriterion, logicalOperator);
+    return AdvancedFilterTypeMapping.toAdvancedFilter(clusterIds, operator, toFilterCriterion);
   }
 }
