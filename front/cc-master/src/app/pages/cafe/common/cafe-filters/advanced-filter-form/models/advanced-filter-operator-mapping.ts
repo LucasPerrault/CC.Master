@@ -17,9 +17,9 @@ export class AdvancedFilterOperatorMapping {
       case ComparisonOperator.NotEquals :
         return ComparisonOperatorDto.NotEquals;
       case ComparisonOperator.TrueOnly :
-        return ComparisonOperatorDto.TrueOnly;
+        return ComparisonOperatorDto.Equals;
       case ComparisonOperator.FalseOnly :
-        return ComparisonOperatorDto.FalseOnly;
+        return ComparisonOperatorDto.Equals;
       case ComparisonOperator.StrictlyLessThan :
         return ComparisonOperatorDto.StrictlyLessThan;
       case ComparisonOperator.StrictlyGreaterThan:

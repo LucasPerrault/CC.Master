@@ -10,27 +10,34 @@ import { EnvironmentAdvancedFilterConfiguration } from '../../../environments/ad
 import { ContactCategory } from '../../common/enums/cafe-contacts-category.enum';
 import { SpeContactAdvancedFilterKey } from './specialized-contact-advanced-filter-key.enum';
 import { SpecializedContactFormlyConfiguration } from './specialized-contact-formly.configuration';
+import { SpeContactCriterionKey } from './specialized-contact-criterion-key.enum';
 
 @Injectable()
 export class SpecializedContactAdvancedFilterConfiguration implements IAdvancedFilterConfiguration {
   public readonly categoryId = ContactCategory.Specialized;
   public readonly criterions: ICriterionConfiguration[] = [
     {
-      key: SpeContactAdvancedFilterKey.Environment,
+      key: SpeContactCriterionKey.Environment,
       name: this.translatePipe.transform('cafe_filters_contact_environment'),
       children: this.environmentAdvancedFilterConfiguration.criterions,
     },
     {
-      key: SpeContactAdvancedFilterKey.Role,
+      key: SpeContactCriterionKey.Role,
       name: this.translatePipe.transform('cafe_filters_contact_role'),
       operators: [
         { id: ComparisonOperator.Equals, name: this.translatePipe.transform('cafe_filters_operator_isAmong') },
         { id: ComparisonOperator.NotEquals, name: this.translatePipe.transform('cafe_filters_operator_isNotAmong') },
       ],
       fields: [this.formlyConfiguration.roles],
+      componentConfigs: [
+        {
+          key: SpeContactAdvancedFilterKey.Role,
+          components: [this.formlyConfiguration.roles],
+        },
+      ],
     },
     {
-      key: SpeContactAdvancedFilterKey.IsConfirmed,
+      key: SpeContactCriterionKey.IsConfirmed,
       name: this.translatePipe.transform('cafe_filters_contact_isConfirmed'),
       operators: [
         { id: ComparisonOperator.TrueOnly, name: this.translatePipe.transform('cafe_filters_operator_true') },

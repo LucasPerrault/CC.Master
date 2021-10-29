@@ -37,6 +37,7 @@ export class AdvancedFilterFormMapping {
     return AdvancedFilterTypeMapping.toFilterCombination(advancedFilterForm.logicalOperator.id, filtersCriterion);
   }
 
-  private static toAdvancedFilterAttributes = (form: IComparisonFilterCriterionForm): IAdvancedFilterAttributes =>
-      ({ filterKey: form?.criterion?.key, operator: form?.operator?.id, value: form?.values });
+  private static toAdvancedFilterAttributes = (form: IComparisonFilterCriterionForm): IAdvancedFilterAttributes => {
+    return ({ filterKey: form?.values?.key ?? form?.criterion?.key, operator: form?.operator?.id, value: form?.values });
+  }
 }

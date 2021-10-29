@@ -9,13 +9,14 @@ import {
 import { EnvironmentsCategory } from '../enums/environments-category.enum';
 import { EnvironmentAdvancedFilterKey } from './environment-advanced-filter-key.enum';
 import { EnvironmentFormlyConfiguration } from './environment-formly-configuration.service';
+import { EnvironmentCriterionKey } from './environment-criterion-key.enum';
 
 @Injectable()
 export class EnvironmentAdvancedFilterConfiguration implements IAdvancedFilterConfiguration {
   public readonly categoryId = EnvironmentsCategory.Environments;
   public readonly criterions: ICriterionConfiguration[] = [
     {
-      key: EnvironmentAdvancedFilterKey.AppInstances,
+      key: EnvironmentCriterionKey.AppInstances,
       name: this.translatePipe.transform('cafe_filters_environment_applications'),
       operators: [
         { id: ComparisonOperator.ListAreAmong, name: this.translatePipe.transform('cafe_filters_operator_areAmong') },
@@ -23,45 +24,102 @@ export class EnvironmentAdvancedFilterConfiguration implements IAdvancedFilterCo
         { id: ComparisonOperator.ListContainsOnly, name: this.translatePipe.transform('cafe_filters_operator_containsOnly') },
         { id: ComparisonOperator.ListContains, name: this.translatePipe.transform('cafe_filters_operator_contains') },
       ],
-      fields: [this.formlyConfiguration.applications],
+      componentConfigs: [
+        {
+          key: EnvironmentAdvancedFilterKey.AppInstances,
+          components: [this.formlyConfiguration.applications],
+          matchingOperators: [
+            ComparisonOperator.ListAreAmong,
+            ComparisonOperator.ListNotContains,
+            ComparisonOperator.ListContains,
+          ],
+        },
+        {
+          key: EnvironmentAdvancedFilterKey.AppInstance,
+          components: [this.formlyConfiguration.application],
+          matchingOperators: [ComparisonOperator.ListContainsOnly],
+        },
+      ],
     },
     {
-      key: EnvironmentAdvancedFilterKey.CreatedAt,
+      key: EnvironmentCriterionKey.CreatedAt,
       name: this.translatePipe.transform('cafe_filters_environment_createdAt'),
       operators: [
         { id: ComparisonOperator.StrictlyGreaterThan, name: this.translatePipe.transform('cafe_filters_operator_since') },
         { id: ComparisonOperator.StrictlyLessThan, name: this.translatePipe.transform('cafe_filters_operator_until') },
       ],
-      fields: [this.formlyConfiguration.createdAt],
+      componentConfigs: [
+        {
+          key: EnvironmentAdvancedFilterKey.CreatedAt,
+          components: [this.formlyConfiguration.createdAt],
+        },
+      ],
     },
     {
-      key: EnvironmentAdvancedFilterKey.Countries,
+      key: EnvironmentCriterionKey.Countries,
       name: this.translatePipe.transform('cafe_filters_environment_countries'),
       operators: [
+        { id: ComparisonOperator.ListAreAmong, name: this.translatePipe.transform('cafe_filters_operator_areAmong') },
+        { id: ComparisonOperator.ListNotContains, name: this.translatePipe.transform('cafe_filters_operator_areNotAmong') },
+        { id: ComparisonOperator.ListContainsOnly, name: this.translatePipe.transform('cafe_filters_operator_containsOnly') },
         { id: ComparisonOperator.ListContains, name: this.translatePipe.transform('cafe_filters_operator_contains') },
-        { id: ComparisonOperator.Equals, name: this.translatePipe.transform('cafe_filters_operator_areAmong') },
-        { id: ComparisonOperator.NotEquals, name: this.translatePipe.transform('cafe_filters_operator_areNotAmong') },
       ],
-      fields: [this.formlyConfiguration.countries],
+      componentConfigs: [
+        {
+          key: EnvironmentAdvancedFilterKey.Countries,
+          components: [this.formlyConfiguration.countries],
+          matchingOperators: [
+            ComparisonOperator.ListAreAmong,
+            ComparisonOperator.ListNotContains,
+            ComparisonOperator.ListContains,
+          ],
+        },
+        {
+          key: EnvironmentAdvancedFilterKey.Country,
+          components: [this.formlyConfiguration.country],
+          matchingOperators: [ComparisonOperator.ListContainsOnly],
+        },
+      ],
     },
     {
-      key: EnvironmentAdvancedFilterKey.Distributors,
+      key: EnvironmentCriterionKey.Distributors,
       name: this.translatePipe.transform('cafe_filters_environment_distributors'),
       operators: [
+        { id: ComparisonOperator.ListAreAmong, name: this.translatePipe.transform('cafe_filters_operator_areAmong') },
+        { id: ComparisonOperator.ListNotContains, name: this.translatePipe.transform('cafe_filters_operator_areNotAmong') },
+        { id: ComparisonOperator.ListContainsOnly, name: this.translatePipe.transform('cafe_filters_operator_containsOnly') },
         { id: ComparisonOperator.ListContains, name: this.translatePipe.transform('cafe_filters_operator_contains') },
-        { id: ComparisonOperator.Equals, name: this.translatePipe.transform('cafe_filters_operator_areAmong') },
-        { id: ComparisonOperator.NotEquals, name: this.translatePipe.transform('cafe_filters_operator_areNotAmong') },
       ],
-      fields: [this.formlyConfiguration.distributors],
+      componentConfigs: [
+        {
+          key: EnvironmentAdvancedFilterKey.Distributors,
+          components: [this.formlyConfiguration.distributors],
+          matchingOperators: [
+            ComparisonOperator.ListAreAmong,
+            ComparisonOperator.ListNotContains,
+            ComparisonOperator.ListContains,
+          ],
+        },
+        {
+          key: EnvironmentAdvancedFilterKey.Distributor,
+          components: [this.formlyConfiguration.application],
+          matchingOperators: [ComparisonOperator.ListContainsOnly],
+        },
+      ],
     },
     {
-      key: EnvironmentAdvancedFilterKey.Subdomain,
+      key: EnvironmentCriterionKey.Subdomain,
       name: this.translatePipe.transform('cafe_filters_environment_subdomain'),
       operators: [
         { id: ComparisonOperator.Equals, name: this.translatePipe.transform('cafe_filters_operator_isAmong') },
         { id: ComparisonOperator.NotEquals, name: this.translatePipe.transform('cafe_filters_operator_isNotAmong') },
       ],
-      fields: [this.formlyConfiguration.subdomain],
+      componentConfigs: [
+        {
+          key: EnvironmentAdvancedFilterKey.Subdomain,
+          components: [this.formlyConfiguration.subdomain],
+        },
+      ],
     },
   ];
 

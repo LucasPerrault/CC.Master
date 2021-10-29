@@ -9,8 +9,6 @@ export enum AdvancedFilterType {
 export enum ComparisonOperatorDto {
   Equals = 'Equals',
   NotEquals = 'NotEquals',
-  TrueOnly = 'TrueOnly',
-  FalseOnly = 'FalseOnly',
   StrictlyGreaterThan = 'StrictlyGreaterThan',
   StrictlyLessThan = 'StrictlyLessThan',
 }

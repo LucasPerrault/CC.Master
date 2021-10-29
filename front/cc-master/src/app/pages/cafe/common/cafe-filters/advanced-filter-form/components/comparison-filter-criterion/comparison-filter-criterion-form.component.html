@@ -21,12 +21,12 @@
                                        [required]="true"
                                        (blur)="onTouch()">
         </cc-comparison-operator-select>
-
-        <cc-comparison-value-select [formControlName]="formKey.Values"
-                                    [configurations]="configuration?.fields"
-                                    (blur)="onTouch()">
-        </cc-comparison-value-select>
       </ng-container>
+
+      <cc-comparison-value-select [formControlName]="formKey.Values"
+                                  [configuration]="getComponentConfiguration(configuration, operator)"
+                                  (blur)="onTouch()">
+      </cc-comparison-value-select>
     </ng-template>
 
   </ng-container>

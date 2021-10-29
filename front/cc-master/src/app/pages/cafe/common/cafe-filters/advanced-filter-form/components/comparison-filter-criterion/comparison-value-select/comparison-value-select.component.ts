@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, forwardRef, Input, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, forwardRef, Input, OnDestroy,OnInit } from '@angular/core';
 import {
   AbstractControl,
   ControlValueAccessor,
@@ -8,11 +8,11 @@ import {
   ValidationErrors,
   Validator,
 } from '@angular/forms';
-import { FormlyFieldConfig } from '@ngx-formly/core/lib/components/formly.field.config';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { IComparisonValue } from './comparison-value.interface';
+import { IComponentConfiguration } from '../../../models/advanced-filter-configuration.interface';
+import { IComparisonValue, IFormlyFieldValue } from './comparison-value.interface';
 
 @Component({
   selector: 'cc-comparison-value-select',
@@ -32,19 +32,17 @@ import { IComparisonValue } from './comparison-value.interface';
   ],
 })
 export class ComparisonValueSelectComponent implements OnInit, OnDestroy, Validator, ControlValueAccessor {
-  @Input() public configurations: FormlyFieldConfig[];
+  @Input() public configuration: IComponentConfiguration;
 
   public formGroup: FormGroup = new FormGroup({});
-  public model: IComparisonValue = {};
+  public model: IFormlyFieldValue = {};
 
   private destroy$: Subject<void> = new Subject<void>();
-
-  constructor() { }
 
   public ngOnInit(): void {
     this.formGroup.valueChanges
       .pipe(takeUntil(this.destroy$))
-      .subscribe(values => this.onChange(values));
+      .subscribe(fieldValue => this.onChange(this.toComparisonValue(fieldValue)));
   }
 
   public ngOnDestroy(): void {
@@ -52,7 +50,7 @@ export class ComparisonValueSelectComponent implements OnInit, OnDestroy, Valida
     this.destroy$.complete();
   }
 
-  public onChange: (values: IComparisonValue) => void = () => {};
+  public onChange: (configuration: IComparisonValue) => void = () => {};
   public onTouch: () => void = () => {};
 
   public registerOnChange(fn: () => void): void {
@@ -63,19 +61,32 @@ export class ComparisonValueSelectComponent implements OnInit, OnDestroy, Valida
     this.onTouch = fn;
   }
 
-  public writeValue(values: IComparisonValue): void {
-    if (!!values) {
-      this.formGroup.patchValue(values);
-    }
+  public writeValue(configuration: IComparisonValue): void {
+    this.reset(configuration);
   }
 
   public validate(control: AbstractControl): ValidationErrors | null {
-    if (!this.configurations?.length) {
+    if (!this.configuration?.components?.length) {
       return null;
     }
 
     if (this.formGroup.invalid) {
       return  { invalid: true };
     }
+  }
+
+  private reset(configuration: IComparisonValue): void {
+    this.model = configuration?.fieldValues ?? {};
+
+    const controlKeys = Object.keys(this.formGroup.controls);
+    controlKeys.forEach(key => this.formGroup.removeControl(key));
+
+    this.formGroup.reset(configuration?.fieldValues ?? {});
+    this.formGroup.updateValueAndValidity();
+  }
+
+  private toComparisonValue(fieldValues: IFormlyFieldValue): IComparisonValue {
+    const isEmptyOrNull = !fieldValues || !Object.keys(fieldValues).length;
+    return !isEmptyOrNull ? { key: this.configuration.key, fieldValues } : null;
   }
 }

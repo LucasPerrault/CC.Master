@@ -34,7 +34,7 @@ export class AppContactAdvancedFilterApiMappingService {
   }
 
   private getAppInstanceAdvancedFilter(attributes: IAdvancedFilterAttributes): AdvancedFilter {
-    const appInstanceIds = attributes.value[attributes.filterKey]?.map((a: IAppInstance) => a.id);
+    const appInstanceIds = attributes.value.fieldValues[attributes.filterKey]?.map((a: IAppInstance) => a.id);
     const operator = AdvancedFilterOperatorMapping.getComparisonOperatorDto(attributes.operator);
     const toFilterCriterion = c => ({ appInstance: { applicationId: c } });
 

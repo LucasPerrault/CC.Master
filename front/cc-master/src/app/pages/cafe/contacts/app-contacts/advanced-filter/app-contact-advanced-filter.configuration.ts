@@ -9,6 +9,7 @@ import {
 import { EnvironmentAdvancedFilterConfiguration } from '../../../environments/advanced-filter';
 import { ContactCategory } from '../../common/enums/cafe-contacts-category.enum';
 import { AppContactAdvancedFilterKey } from './app-contact-advanced-filter-key.enum';
+import { AppContactCriterionKey } from './app-contact-criterion-key.enum';
 import { AppContactFormlyConfiguration } from './app-contact-formly.configuration';
 
 @Injectable()
@@ -16,21 +17,26 @@ export class AppContactAdvancedFilterConfiguration implements IAdvancedFilterCon
   public readonly categoryId = ContactCategory.Application;
   public readonly criterions: ICriterionConfiguration[] = [
     {
-      key: AppContactAdvancedFilterKey.Environment,
+      key: AppContactCriterionKey.Environment,
       name: this.translatePipe.transform('cafe_filters_contact_environment'),
       children: this.environmentAdvancedFilterConfiguration.criterions,
     },
     {
-      key: AppContactAdvancedFilterKey.AppInstance,
+      key: AppContactCriterionKey.AppInstance,
       name: this.translatePipe.transform('cafe_filters_contact_applications'),
       operators: [
         { id: ComparisonOperator.Equals, name: this.translatePipe.transform('cafe_filters_operator_isAmong') },
         { id: ComparisonOperator.NotEquals, name: this.translatePipe.transform('cafe_filters_operator_isNotAmong') },
       ],
-      fields: [this.formlyConfiguration.applications],
+      componentConfigs: [
+        {
+          key: AppContactAdvancedFilterKey.AppInstance,
+          components: [this.formlyConfiguration.applications],
+        },
+      ],
     },
     {
-      key: AppContactAdvancedFilterKey.IsConfirmed,
+      key: AppContactCriterionKey.IsConfirmed,
       name: this.translatePipe.transform('cafe_filters_contact_isConfirmed'),
       operators: [
         { id: ComparisonOperator.TrueOnly, name: this.translatePipe.transform('cafe_filters_operator_true') },
