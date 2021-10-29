@@ -1,5 +1,5 @@
-import { IContract } from '../../billing/models/contract.interface';
 import { IAppInstance } from './app-instance.interface';
+import { IEnvironmentAccess } from './environment-access.interface';
 import { ILegalUnit } from './legal-unit.interface';
 
 export interface IEnvironment {
@@ -10,7 +10,7 @@ export interface IEnvironment {
   createdAt: string;
   productionHost: string;
   cluster: string;
-  contracts: IContract[];
+  accesses: IEnvironmentAccess[];
 
   legalUnits: ILegalUnit[];
   appInstances: IAppInstance[];

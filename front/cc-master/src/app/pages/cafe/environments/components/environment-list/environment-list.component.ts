@@ -43,7 +43,7 @@ export class EnvironmentListComponent {
   }
 
   public getDistributorNames(environment: IEnvironment): string {
-    const distributors = environment.contracts?.map(c => c.distributor.name) ?? [];
+    const distributors = environment.accesses?.map(a => a.distributor.name) ?? [];
     return distributors.join(', ');
   }
 
