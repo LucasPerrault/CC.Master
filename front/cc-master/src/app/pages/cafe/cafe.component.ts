@@ -3,11 +3,11 @@ import { FormControl } from '@angular/forms';
 
 import { CafeConfiguration } from './cafe-configuration';
 import { ICafeConfiguration } from './cafe-configuration.interface';
+import { CafeExportService } from './cafe-export.service';
 import { IAdvancedFilterForm } from './common/cafe-filters/advanced-filter-form';
 import { ICategory } from './common/cafe-filters/category-filter/category-select/category.interface';
 import { ContactCategory } from './contacts/common/enums/cafe-contacts-category.enum';
 import { EnvironmentsCategory } from './environments/enums/environments-category.enum';
-import { CafeExportService } from './cafe-export.service';
 
 @Component({
   selector: 'cc-cafe',
@@ -33,11 +33,7 @@ export class CafeComponent {
 
   public get isContactCategory(): boolean {
     return !!this.contactCategories.find(c => c === this.category);
-	}
-	
-	public export(): void {
-		this.cafeExportService.export();
-	}
+    }
 
   private readonly contactCategories = [
     ContactCategory.Client,
@@ -49,6 +45,14 @@ export class CafeComponent {
     this.configuration = cafeConfiguration;
 
     this.cafeFilters.patchValue({ category: this.getDefaultCategory(EnvironmentsCategory.Environments) });
+  }
+
+  public canExport(): boolean {
+    return !!this.advancedFilterForm;
+  }
+
+  public export(): void {
+    this.cafeExportService.export();
   }
 
   private getDefaultCategory(category: EnvironmentsCategory | ContactCategory): ICategory {

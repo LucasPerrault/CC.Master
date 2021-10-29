@@ -3,16 +3,16 @@ import { Observable, Subject } from 'rxjs';
 
 @Injectable()
 export class CafeExportService {
-	public get exports() : Observable<void> { 
-		return this.exports$.asObservable();
-	} 
+    public get exports(): Observable<void> {
+        return this.exports$.asObservable();
+    }
 
-	private exports$: Subject<void> = new Subject<void>();
-	
-	constructor() {
-	}
+    private exports$: Subject<void> = new Subject<void>();
 
-	public export(): void {
-		this.exports$.next();
-	}
+    constructor() {
+    }
+
+    public export(): void {
+        this.exports$.next();
+    }
 }
