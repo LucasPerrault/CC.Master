@@ -58,5 +58,15 @@ namespace Instances.Application.Instances
                 environment.GetInstanceExecutingCluster(instanceType)
             );
         }
+
+        internal Task RequestResetInstanceCacheAsync(Environment environment, InstanceType instanceType)
+        {
+            return _ccDataService.ResetInstanceCacheAsync
+            (
+                new ResetInstanceCacheRequestDto { TenantHost = environment.GetInstanceHost(instanceType) },
+                environment.GetInstanceExecutingCluster(instanceType)
+            );
+        }
+
     }
 }
