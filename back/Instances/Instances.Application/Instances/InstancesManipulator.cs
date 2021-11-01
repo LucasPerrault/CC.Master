@@ -19,10 +19,15 @@ namespace Instances.Application.Instances
             _ccDataService = ccDataService;
         }
 
-        internal Task RequestRemoteDuplicationAsync
-            (InstanceDuplication duplication, bool skipBufferServer, string callbackPath)
+        internal async Task RequestRemoteDuplicationAsync
+            (InstanceDuplication duplication, bool withAnonymization, bool skipBufferServer, string callbackPath)
         {
-            var scripts = _scriptPicker.GetForDuplication(duplication);
+            var scripts = (await _scriptPicker.GetForCleaningAsync(duplication))
+                .Union(await _scriptPicker.GetExtraForDuplicationAsync(duplication));
+            if(withAnonymization)
+            {
+                scripts = scripts.Union(await _scriptPicker.GetForAnonymizationAsync(duplication));
+            }
 
             var sourceClusterUri = duplication.SourceCluster == duplication.TargetCluster
                 ? null
@@ -42,7 +47,7 @@ namespace Instances.Application.Instances
                 PostRestoreScripts = scripts.Select(uri => new UriLinkDto { Uri = uri }).ToList()
             };
 
-            return _ccDataService.StartDuplicateInstanceAsync
+            await _ccDataService.StartDuplicateInstanceAsync
             (
                 duplicateInstanceRequest,
                 duplication.TargetCluster,

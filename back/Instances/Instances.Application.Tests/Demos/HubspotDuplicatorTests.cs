@@ -152,8 +152,10 @@ namespace Instances.Application.Tests.Demos
             _clusterSelectorMock.Setup(s => s.GetFillingClusterAsync("aperture-science"))
                 .ReturnsAsync("demo-cluster");
 
-            _sqlScriptPickerMock.Setup(p => p.GetForDuplication(It.IsAny<InstanceDuplication>()))
-                .Returns(new List<Uri>());
+            _sqlScriptPickerMock.Setup(p => p.GetForCleaningAsync(It.IsAny<InstanceDuplication>()))
+                .ReturnsAsync(new List<Uri>());
+            _sqlScriptPickerMock.Setup(p => p.GetExtraForDuplicationAsync(It.IsAny<InstanceDuplication>()))
+                .ReturnsAsync(new List<Uri>());
 
             var duplicator = new HubspotDemoDuplicator
                 (
