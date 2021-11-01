@@ -8,7 +8,15 @@ using System.Threading.Tasks;
 
 namespace Instances.Infra.Instances.Services
 {
-    public class InstancesRemoteStore : IInstancesStore
+    public interface IInstancesRemoteStore
+    {
+        Task<Instance> CreateForTrainingAsync(int environmentId, bool isAnonymized);
+        Task<Instance> CreateForDemoAsync(string password);
+        Task DeleteByIdAsync(int instanceId);
+        Task DeleteByIdsAsync(IEnumerable<int> instanceIds);
+    }
+
+    public class InstancesRemoteStore : IInstancesRemoteStore
     {
 
         private readonly RestApiV3HttpClientHelper _httpClientHelper;

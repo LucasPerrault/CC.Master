@@ -125,6 +125,7 @@ namespace Instances.Web
             services.AddScoped<IHelmRepository, HelmRepository>();
 
             services.AddScoped<IDemosStore, DemosStore>();
+            services.AddScoped<IInstancesStore, InstancesStore>();
             services.AddScoped<IInstanceDuplicationsStore, InstanceDuplicationsStore>();
             services.AddScoped<IDemoDuplicationsStore, DemoDuplicationsStore>();
             services.AddScoped<DemoRightsFilter>();
@@ -155,7 +156,7 @@ namespace Instances.Web
                     .WithBaseAddress(configuration.Hubspot.ServerUri);
             });
 
-            services.AddHttpClient<IInstancesStore, InstancesRemoteStore>(client =>
+            services.AddHttpClient<IInstancesRemoteStore, InstancesRemoteStore>(client =>
             {
                 client.WithUserAgent(nameof(InstancesRemoteStore))
                     .WithBaseAddress(configuration.InstancesStore.Host, configuration.InstancesStore.Endpoint)
