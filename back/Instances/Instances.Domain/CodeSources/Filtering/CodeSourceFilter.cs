@@ -18,5 +18,10 @@ namespace Instances.Domain.CodeSources.Filtering
             Code = code,
             Lifecycle = CodeSource.ActiveSteps
         };
+        public static CodeSourceFilter MonotenantInProduction => new CodeSourceFilter
+        {
+            Type = CodeSource.MonotenantTypes,
+            Lifecycle = new HashSet<CodeSourceLifecycleStep> { CodeSourceLifecycleStep.InProduction },
+        };
     }
 }

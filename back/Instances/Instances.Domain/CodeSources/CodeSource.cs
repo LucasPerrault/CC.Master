@@ -35,6 +35,8 @@ namespace Instances.Domain.CodeSources
             .Except(new[] { CodeSourceLifecycleStep.Deleted, CodeSourceLifecycleStep.ToDelete })
             .ToHashSet();
 
+        public static HashSet<CodeSourceType> MonotenantTypes => new HashSet<CodeSourceType> { CodeSourceType.Monolithe, CodeSourceType.App };
+
         public int Id { get; set; }
         public string Name { get; set; }
         public string Code { get; set; }
