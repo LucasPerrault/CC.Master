@@ -4,14 +4,16 @@ using Billing.Contracts.Infra.Storage;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Billing.Contracts.Infra.Migrations
 {
     [DbContext(typeof(ContractsDbContext))]
-    partial class ContractsDbContextModelSnapshot : ModelSnapshot
+    [Migration("20211020203440_AddContractEnvironment")]
+    partial class AddContractEnvironment
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -123,6 +125,10 @@ namespace Billing.Contracts.Infra.Migrations
                         .HasColumnType("int")
                         .HasColumnName("EnvironmentId");
 
+                    b.Property<string>("EnvironmentSubdomain")
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("EnvironmentSubdomain");
+
                     b.Property<Guid>("ExternalId")
                         .HasColumnType("uniqueidentifier")
                         .HasColumnName("ExternalId");
@@ -158,8 +164,6 @@ namespace Billing.Contracts.Infra.Migrations
                     b.HasIndex("CommercialOfferId");
 
                     b.HasIndex("DistributorId");
-
-                    b.HasIndex("EnvironmentId");
 
                     b.ToTable("Contracts");
                 });
@@ -244,10 +248,6 @@ namespace Billing.Contracts.Infra.Migrations
                     b.Property<int>("ContractId")
                         .HasColumnType("int")
                         .HasColumnName("ContractId");
-
-                    b.Property<string>("EndReason")
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("EndReason");
 
                     b.Property<DateTime?>("EndsOn")
                         .HasColumnType("datetime2")
@@ -533,17 +533,11 @@ namespace Billing.Contracts.Infra.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Billing.Contracts.Domain.Environments.ContractEnvironment", "Environment")
-                        .WithMany()
-                        .HasForeignKey("EnvironmentId");
-
                     b.Navigation("Client");
 
                     b.Navigation("CommercialOffer");
 
                     b.Navigation("Distributor");
-
-                    b.Navigation("Environment");
                 });
 
             modelBuilder.Entity("Billing.Contracts.Domain.Environments.Establishment", b =>
@@ -557,7 +551,7 @@ namespace Billing.Contracts.Infra.Migrations
 
             modelBuilder.Entity("Billing.Contracts.Domain.Environments.EstablishmentAttachment", b =>
                 {
-                    b.HasOne("Billing.Contracts.Domain.Contracts.Contract", "Contract")
+                    b.HasOne("Billing.Contracts.Domain.Contracts.Contract", null)
                         .WithMany("Attachments")
                         .HasForeignKey("ContractId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -568,8 +562,6 @@ namespace Billing.Contracts.Infra.Migrations
                         .HasForeignKey("EstablishmentId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("Contract");
                 });
 
             modelBuilder.Entity("Billing.Contracts.Domain.Environments.EstablishmentExclusion", b =>

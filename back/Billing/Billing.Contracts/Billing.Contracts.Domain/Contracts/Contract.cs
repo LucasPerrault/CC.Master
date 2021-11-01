@@ -1,10 +1,13 @@
 ﻿using Billing.Contracts.Domain.Clients;
+using Billing.Contracts.Domain.Environments;
 using Billing.Products.Domain;
 using Distributors.Domain.Models;
+using Lucca.Core.Shared.Domain.Expressions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using Tools;
 
 namespace Billing.Contracts.Domain.Contracts
 {
@@ -13,13 +16,15 @@ namespace Billing.Contracts.Domain.Contracts
         public int Id { get; set; }
         public Guid ExternalId { get; set; }
         public Guid ClientExternalId { get; set; }
-        public int? EnvironmentId { get; set; }
-        public string EnvironmentSubdomain { get; set; }
+
         public DateTime CreatedAt { get; set; }
 
         public DateTime TheoreticalStartOn { get; set; }
         public DateTime? TheoreticalEndOn { get; set; }
         public ContractEndReason EndReason { get; set; }
+
+        public DateTime StartsOn => ContractExpressions.StartsOnCompiled(this);
+        public DateTime? EndsOn => ContractExpressions.EndsOnCompiled(this);
 
         public DateTime? ArchivedAt { get; set; }
 
@@ -29,6 +34,8 @@ namespace Billing.Contracts.Domain.Contracts
         public int ClientId { get; set; }
         public Client Client { get; set; }
 
+        public int? EnvironmentId { get; set; }
+        public ContractEnvironment Environment { get; set; }
 
         public int CommercialOfferId { get; set; }
         public CommercialOffer CommercialOffer { get; set; }
@@ -41,6 +48,12 @@ namespace Billing.Contracts.Domain.Contracts
         public DateTime? RebateEndsOn { get; set; }
         public double MinimalBillingPercentage { get; set; }
         public BillingPeriodicity BillingPeriodicity { get; set; }
+
+        public ContractStatus Status => ContractExpressions.IsNotStartedCompiled(this)
+            ? ContractStatus.NotStarted
+            : ContractExpressions.IsEndedCompiled(this)
+                ? ContractStatus.Ended
+                : ContractStatus.InProgress;
     }
 
     public static class ContractExpressions
@@ -48,14 +61,36 @@ namespace Billing.Contracts.Domain.Contracts
         public static readonly Expression<Func<Contract, DateTime>> StartsOn = c => c.Attachments.Any()
             ? c.Attachments
                 .Select(a => a.StartsOn)
+                .DefaultIfEmpty()
                 .Min()
             : c.TheoreticalStartOn;
+        public static readonly Func<Contract, DateTime> StartsOnCompiled = StartsOn.Compile();
 
         public static readonly Expression<Func<Contract, DateTime?>> EndsOn = c => c.Attachments.Any()
             ? c.Attachments
                 .Select(a => a.EndsOn)
+                .DefaultIfEmpty()
                 .Min()
             : null;
+        public static readonly Func<Contract, DateTime?> EndsOnCompiled = EndsOn.Compile();
+
+        public static Expression<Func<Contract, bool>> IsAttachedToAnyEstablishment(HashSet<int> establishmentIds, DateTime period) => c =>
+        c.Attachments.Any(a =>
+            establishmentIds.Contains(a.EstablishmentId)
+            && a.StartsOn < period
+            && ( a.EndsOn == null || a.EndsOn > period )
+        );
+
+        public static Expression<Func<Contract, bool>> IsNotStarted => c => c.TheoreticalStartOn > DateTime.Today;
+        public static Func<Contract, bool> IsNotStartedCompiled => IsNotStarted.Compile();
+
+        public static Expression<Func<Contract, bool>> IsEnded => c => c.TheoreticalEndOn < DateTime.Today;
+        public static Func<Contract, bool> IsEndedCompiled => IsEnded.Compile();
+
+        public static Expression<Func<Contract, bool>> IsInProgress =>
+            IsNotStarted.Inverse().SmartAndAlso(
+                IsEnded.Inverse().SmartOrElse(c => !c.TheoreticalEndOn.HasValue)
+            );
     }
 
     public enum ContractEndReason
@@ -82,16 +117,5 @@ namespace Billing.Contracts.Domain.Contracts
         AnnualNovember = 11,
         AnnualDecember = 12,
         Quarterly = 13,
-    }
-
-    public class EstablishmentAttachment
-    {
-        public int Id { get; set; }
-        public int ContractId { get; set; }
-        public int EstablishmentId { get; set; }
-        public int EstablishmentRemoteId { get; set; }
-        public string EstablishmentName { get; set; }
-        public DateTime StartsOn { get; set; }
-        public DateTime? EndsOn { get; set; }
     }
 }

@@ -13,6 +13,7 @@
     <ItemGroup>
       <ProjectReference Include="..\..\..\Core\Proxy\Proxy.Infra\Proxy.Infra.csproj" />
       <ProjectReference Include="..\..\..\Core\Rights\Rights.Web\Rights.Web.csproj" />
+      <ProjectReference Include="..\..\..\Core\Tools\Tools.Web\Tools.Web.csproj" />
       <ProjectReference Include="..\Billing.Contracts.Application\Billing.Contracts.Application.csproj" />
       <ProjectReference Include="..\Billing.Contracts.Infra\Billing.Contracts.Infra.csproj" />
     </ItemGroup>
@@ -20,6 +21,7 @@
     <ItemGroup>
       <PackageReference Include="Lucca.Core.Api.Web" Version="0.3.4" />
       <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="5.0.0" />
+      <PackageReference Include="NExtends" Version="2.3.2" />
     </ItemGroup>
 
 </Project>
