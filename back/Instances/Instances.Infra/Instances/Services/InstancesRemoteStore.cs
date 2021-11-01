@@ -40,21 +40,21 @@ namespace Instances.Infra.Instances.Services
             public int Id { get; set; }
         }
 
-        public async Task DeleteAsync(Instance instance)
+        public async Task DeleteByIdAsync(int instanceId)
         {
             await _httpClientHelper.PostObjectResponseAsync<DeleteDto, Instance>
             (
                 "deleteForCCMaster",
-                new DeleteDto { Id =  instance.Id },
+                new DeleteDto { Id =  instanceId },
                 new Dictionary<string, string>()
             );
         }
 
-        public async Task DeleteAsync(IEnumerable<Instance> instances)
+        public async Task DeleteByIdsAsync(IEnumerable<int> instanceIds)
         {
-            foreach (var instance in instances)
+            foreach (var instanceId in instanceIds)
             {
-                await DeleteAsync(instance);
+                await DeleteByIdAsync(instanceId);
             }
         }
     }

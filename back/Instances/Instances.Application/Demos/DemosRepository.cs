@@ -81,7 +81,7 @@ namespace Instances.Application.Demos
             }
 
             await _dnsService.DeleteAsync(DnsEntry.ForDemo(demo.Subdomain, demo.Cluster));
-            await _instancesStore.DeleteAsync(demo.Instance);
+            await _instancesStore.DeleteByIdAsync(demo.InstanceID);
             await _demosStore.DeleteAsync(demo);
             await _ccDataService.DeleteInstanceAsync(demo.Subdomain, demo.Cluster, string.Empty);
             return demo;

@@ -222,12 +222,12 @@ namespace Instances.Application.Specflow.Tests.Demos.Steps
                 .Returns(Task.FromResult(new Instance { Id = 1 }));
 
             instancesStoreMock
-                .Setup(s => s.DeleteAsync(It.IsAny<Instance>()))
-                .Callback<Instance>(
-                    instance =>
+                .Setup(s => s.DeleteByIdAsync(It.IsAny<int>()))
+                .Callback<int>(
+                    instanceId =>
                     {
-                        _results.DeleteInstances
-                            .Add(instance);
+                        _results.DeletedInstanceIds
+                            .Add(instanceId);
                     })
                 .Returns(Task.FromResult(new Instance { Id = 1}));
 
@@ -263,7 +263,7 @@ namespace Instances.Application.Specflow.Tests.Demos.Steps
         [Then(@"duplication '(.*)' should result in instance deletion")]
         public void ThenDuplicationShouldResultInInstanceDeletion(Guid duplicationId)
         {
-            Assert.Single(_results.DeleteInstances);
+            Assert.Single(_results.DeletedInstanceIds);
         }
 
         [Then(@"dns propagation should start (.*)")]
@@ -299,7 +299,7 @@ namespace Instances.Application.Specflow.Tests.Demos.Steps
         [Then(@"duplication '(.*)' should not result in instance deletion")]
         public void ThenDuplicationShouldNotResultInInstanceDeletion(Guid duplicationId)
         {
-            Assert.Empty(_results.DeleteInstances);
+            Assert.Empty(_results.DeletedInstanceIds);
         }
 
         [Then(@"(no|one) duplication should be found as pending (.*)")]
