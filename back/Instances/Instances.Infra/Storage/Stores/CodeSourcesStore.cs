@@ -95,6 +95,14 @@ namespace Instances.Infra.Storage.Stores
                 .Where(c => c.CodeSourceId == codeSourceId)
                 .ToListAsync();
         }
+
+        public Task<List<CodeSourceArtifacts>> GetArtifactsAsync(IEnumerable<int> codeSourceIds, CodeSourceArtifactType codeSourceArtifactType)
+        {
+            return _dbContext
+                .Set<CodeSourceArtifacts>()
+                .Where(c => c.ArtifactType == codeSourceArtifactType && codeSourceIds.Contains(c.CodeSourceId))
+                .ToListAsync();
+        }
     }
 
     internal static class CodeSourceQueryableExtensions

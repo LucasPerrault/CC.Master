@@ -14,5 +14,6 @@ namespace Instances.Domain.CodeSources
         Task AddProductionVersionAsync(CodeSource codeSource, CodeSourceProductionVersion productionVersion);
         Task ReplaceProductionArtifactsAsync(CodeSource codeSource, IEnumerable<CodeSourceArtifacts> codeSourceArtifacts);
         Task<List<CodeSourceArtifacts>> GetArtifactsAsync(int codeSourceId);
+        Task<List<CodeSourceArtifacts>> GetArtifactsAsync(IEnumerable<int> codeSourceId, CodeSourceArtifactType artifactType);
     }
 }
