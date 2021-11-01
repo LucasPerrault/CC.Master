@@ -104,10 +104,6 @@
             "ServerUri": "{{ CC.Master:HubspotServerUri }}",
             "OutboundToken": "{{ CC.Master:HubspotOutboundToken }}"
         },
-        "SqlScriptPicker": {
-            "JenkinsBaseUri": "http://jenkins3.lucca.local:8080/",
-            "MonolithJobPath": "job/Monolith"
-        },
         "DemoClusterSelection": {
             "UseFixedCluster": "{{ CC.Master:UseFixedClusterForDemos }}",
             "FixedClusterName": "{{ CC.Master:FixedClusterName }}",

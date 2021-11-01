@@ -82,6 +82,7 @@ namespace Instances.Application.Demos.Duplication
             await _instancesDuplicator.RequestRemoteDuplicationAsync
             (
                 duplication.InstanceDuplication,
+                withAnonymization: false,
                 $"/api/demos/duplications/{duplication.InstanceDuplicationId}/notify"
             );
 

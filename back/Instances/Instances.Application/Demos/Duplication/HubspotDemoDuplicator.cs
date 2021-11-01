@@ -117,7 +117,10 @@ namespace Instances.Application.Demos.Duplication
 
             await _dnsService.CreateAsync(DnsEntry.ForDemo(targetSubdomain, targetCluster));
             await _duplicationsStore.CreateAsync(duplication);
-            await _instancesDuplicator.RequestRemoteDuplicationAsync(duplication.InstanceDuplication, $"/api/hubspot/duplications/{duplication.InstanceDuplicationId}/notify");
+            await _instancesDuplicator.RequestRemoteDuplicationAsync(
+                duplication.InstanceDuplication,
+                withAnonymization: false,
+                $"/api/hubspot/duplications/{duplication.InstanceDuplicationId}/notify");
 
             return duplication;
         }

@@ -59,7 +59,6 @@ namespace Instances.Web
             public CcDataConfiguration CcData { get; set; }
             public WsAuthConfiguration WsAuth { get; set; }
             public HubspotConfiguration Hubspot { get; set; }
-            public SqlScriptPickerConfiguration SqlScriptPicker { get; set; }
             public ClusterSelectorConfiguration DemoClusterSelection { get; set; }
             public GithubConfiguration Github { get; set; }
             public DnsConfiguration Dns { get; set; }
@@ -72,7 +71,6 @@ namespace Instances.Web
             services.AddSingleton(configuration.Identity);
             services.AddSingleton(configuration.CcData);
             services.AddSingleton(configuration.Hubspot);
-            services.AddSingleton(configuration.SqlScriptPicker);
             services.AddSingleton(configuration.DemoClusterSelection);
             services.AddSingleton(configuration.Dns.Internal);
             services.AddSingleton(configuration.Dns.Ovh);
