@@ -50,7 +50,7 @@ namespace Billing.Contracts.Domain.Contracts
         public BillingPeriodicity BillingPeriodicity { get; set; }
 
         public ContractStatus Status => ContractExpressions.IsNotStartedCompiled(this)
-            ? ContractStatus.InProgress
+            ? ContractStatus.NotStarted
             : ContractExpressions.IsEndedCompiled(this)
                 ? ContractStatus.Ended
                 : ContractStatus.InProgress;
