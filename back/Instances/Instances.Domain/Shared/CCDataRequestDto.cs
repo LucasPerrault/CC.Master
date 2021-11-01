@@ -24,6 +24,11 @@ namespace Instances.Domain.Shared
         public TenantDto Tenant { get; private set; }
     }
 
+    public class ResetInstanceCacheRequestDto
+    {
+        public string TenantHost { get; set; }
+    }
+
     public class UriLinkDto
     {
         public Uri Uri { get; set; }
