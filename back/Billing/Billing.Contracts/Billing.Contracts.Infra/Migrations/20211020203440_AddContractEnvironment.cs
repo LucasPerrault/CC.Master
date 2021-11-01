@@ -44,6 +44,10 @@ namespace Billing.Contracts.Infra.Migrations
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
-        { }
+        {
+            migrationBuilder.Sql($@"DROP VIEW [billing].[EstablishmentExclusions]");
+            migrationBuilder.Sql($@"DROP VIEW [billing].[Establishments]");
+            migrationBuilder.Sql($@"DROP VIEW [billing].[ContractEnvironments]");
+        }
     }
 }

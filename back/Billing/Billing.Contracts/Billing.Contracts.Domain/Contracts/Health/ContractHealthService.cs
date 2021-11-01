@@ -22,24 +22,24 @@ namespace Billing.Contracts.Domain.Contracts.Health
                 ContractId = contract.Id,
                 EnvironmentId = environment.Id,
                 Establishments = environment.Establishments
-                    .Select(e => GetEstablishmentHealth(e, contract.CommercialOffer.ProductId))
+                    .Select(e => GetEstablishmentHealth(contract.CommercialOffer.ProductId, e))
                     .Where(e => e.AttachmentErrors.Any())
                     .ToList()
             };
         }
 
-        private EstablishmentHealth GetEstablishmentHealth(Establishment establishment, int productId)
+        private EstablishmentHealth GetEstablishmentHealth(int productId, Establishment establishment)
         {
             return new EstablishmentHealth
             {
                 Id = establishment.Id,
-                AttachmentErrors = GetAttachmentErrors(establishment, productId),
+                AttachmentErrors = GetAttachmentErrors(productId, establishment),
             };
         }
 
-        private List<ContractAttachmentError> GetAttachmentErrors(Establishment establishment, int productId)
+        private List<ContractAttachmentError> GetAttachmentErrors(int productId, Establishment establishment)
         {
-            if (IsExcluded(establishment, productId))
+            if (IsExcluded(productId, establishment))
             {
                 return new List<ContractAttachmentError>();
             }
@@ -57,7 +57,7 @@ namespace Billing.Contracts.Domain.Contracts.Health
             return new List<ContractAttachmentError>();
         }
 
-        private bool IsExcluded(Establishment establishment, int productId)
+        private bool IsExcluded(int productId, Establishment establishment)
         {
             return establishment.Exclusions.Any(e => e.ProductId == productId);
         }
