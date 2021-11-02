@@ -48,11 +48,15 @@ export class EstablishmentListComponent {
   public selectedEntries: IEstablishmentWithAttachments[] = [];
 
   public get lastCountPeriod(): Date {
+    if (!this.realCounts?.length) {
+      return null;
+    }
+
     const countsAscSorted = this.realCounts.sort((a, b) =>
       new Date(a.countPeriod).getTime() - new Date(b.countPeriod).getTime());
 
-    const lastCount = countsAscSorted.pop();
-    return !!lastCount ? new Date(lastCount.countPeriod) : null;
+    const lastCountPeriod = countsAscSorted[0]?.countPeriod;
+    return new Date(lastCountPeriod);
   }
 
   public get isLinked(): boolean {
