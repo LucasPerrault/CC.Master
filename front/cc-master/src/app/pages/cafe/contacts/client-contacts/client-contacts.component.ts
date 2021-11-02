@@ -45,7 +45,6 @@ export class ClientContactsComponent implements OnInit, OnDestroy {
     ClientContactAdditionalColumn.LastName,
     ClientContactAdditionalColumn.FirstName,
     ClientContactAdditionalColumn.Mail,
-    ClientContactAdditionalColumn.IsConfirmed,
     ClientContactAdditionalColumn.Client,
   ]));
   public additionalColumns = clientContactAdditionalColumns;

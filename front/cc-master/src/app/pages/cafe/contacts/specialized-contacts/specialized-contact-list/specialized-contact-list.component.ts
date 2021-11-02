@@ -32,12 +32,6 @@ export class SpecializedContactListComponent {
     return this.translatePipe.transform(`cafe_role_spe_${ code }`);
   }
 
-  public getIsConfirmedTranslation(isConfirmed: boolean): string {
-    return isConfirmed
-      ? this.translatePipe.transform('cafe_contacts_list_isConfirmed_true')
-      : this.translatePipe.transform('cafe_contacts_list_isConfirmed_false');
-  }
-
   public isHidden(column: SpecializedContactAdditionalColumn): boolean {
     return !this.selectedColumns.find(c => c.id === column);
   }

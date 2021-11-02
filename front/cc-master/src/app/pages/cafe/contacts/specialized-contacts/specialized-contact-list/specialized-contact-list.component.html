@@ -16,9 +16,6 @@
       <th class="table-head-row-cell" [ngClass]="{ 'mod-hidden': isHidden(additionalColumn.Role) }">
         {{ 'cafe_contacts_list_role' | translate }}
       </th>
-      <th class="table-head-row-cell" [ngClass]="{ 'mod-hidden': isHidden(additionalColumn.IsConfirmed) }">
-        {{ 'cafe_contacts_list_isConfirmed' | translate }}
-      </th>
       <th class="table-head-row-cell" [ngClass]="{ 'mod-hidden': isHidden(additionalColumn.CreatedAt) }">
         {{ 'cafe_contacts_list_createdAt' | translate }}
       </th>
@@ -43,9 +40,6 @@
       </td>
       <td class="table-body-row-cell" [ngClass]="{ 'mod-hidden': isHidden(additionalColumn.Role) }">
         {{ getRole(contact.roleCode) }}
-      </td>
-      <td class="table-body-row-cell" [ngClass]="{ 'mod-hidden': isHidden(additionalColumn.IsConfirmed) }">
-        {{ getIsConfirmedTranslation(contact.isConfirmed) }}
       </td>
       <td class="table-body-row-cell" [ngClass]="{ 'mod-hidden': isHidden(additionalColumn.CreatedAt) }">
         {{ contact.createdAt | date: 'shortDate' }}

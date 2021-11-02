@@ -6,7 +6,6 @@ export enum ClientContactAdditionalColumn {
   FirstName = 'firstName',
   Mail = 'mail',
   Client = 'client',
-  IsConfirmed = 'isConfirmed',
   CreatedAt = 'createdAt',
   ExpiresAt = 'expiresAt',
 }
@@ -31,10 +30,6 @@ export const clientContactAdditionalColumns: IContactAdditionalColumn[] = [
   {
     id: ClientContactAdditionalColumn.Client,
     name: 'cafe_contacts_list_client',
-  },
-  {
-    id: ClientContactAdditionalColumn.IsConfirmed,
-    name: 'cafe_contacts_list_isConfirmed',
   },
   {
     id: ClientContactAdditionalColumn.CreatedAt,

@@ -1,5 +1,4 @@
 import { Component, Input } from '@angular/core';
-import { TranslatePipe } from '@cc/aspects/translate';
 
 import {
   IContactAdditionalColumn,
@@ -18,7 +17,7 @@ export class ClientContactListComponent {
 
   public additionalColumn = ClientContactAdditionalColumn;
 
-  constructor(private translatePipe: TranslatePipe) { }
+  constructor() { }
 
   public trackBy(index: number, contact: IClientContact): number {
     return contact.id;
@@ -26,12 +25,6 @@ export class ClientContactListComponent {
 
   public getEnvironmentName(subdomain: string, domain: string): string {
     return `${ subdomain }.${ domain }`;
-  }
-
-  public getIsConfirmedTranslation(isConfirmed: boolean): string {
-    return isConfirmed
-      ? this.translatePipe.transform('cafe_contacts_list_isConfirmed_true')
-      : this.translatePipe.transform('cafe_contacts_list_isConfirmed_false');
   }
 
   public isHidden(column: ClientContactAdditionalColumn): boolean {

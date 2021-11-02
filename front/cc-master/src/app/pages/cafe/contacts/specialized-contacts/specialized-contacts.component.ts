@@ -49,7 +49,6 @@ export class SpecializedContactsComponent implements OnInit, OnDestroy {
     SpecializedContactAdditionalColumn.FirstName,
     SpecializedContactAdditionalColumn.Mail,
     SpecializedContactAdditionalColumn.Role,
-    SpecializedContactAdditionalColumn.IsConfirmed,
   ]));
 
   public additionalColumns = specializedContactAdditionalColumns;
