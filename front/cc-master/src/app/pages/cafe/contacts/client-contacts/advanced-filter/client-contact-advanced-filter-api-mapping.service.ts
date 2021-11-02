@@ -10,7 +10,6 @@ import {
 } from '../../../common/cafe-filters/advanced-filter-form';
 import { AdvancedFilterOperatorMapping } from '../../../common/cafe-filters/advanced-filter-form';
 import { EnvironmentAdvancedFilterApiMappingService } from '../../../environments/advanced-filter';
-import { CommonApiMappingStrategies } from '../../common/advanced-filter/common-api-mapping-strategies';
 import { ClientContactAdvancedFilterKey } from './client-contact-advanced-filter-key.enum';
 
 @Injectable()
@@ -26,8 +25,6 @@ export class ClientContactAdvancedFilterApiMappingService {
     switch (attributes.filterKey) {
       case ClientContactAdvancedFilterKey.Client:
         return this.getClientsAdvancedFilter(attributes);
-      case ClientContactAdvancedFilterKey.IsConfirmed:
-        return CommonApiMappingStrategies.getIsConfirmedAdvancedFilter(attributes.operator);
       default:
         return this.getEnvironmentAdvancedFilter(attributes);
     }

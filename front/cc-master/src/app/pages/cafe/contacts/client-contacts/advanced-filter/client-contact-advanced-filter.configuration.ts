@@ -36,14 +36,6 @@ export class ClientContactAdvancedFilterConfiguration implements IAdvancedFilter
         },
       ],
     },
-    {
-      key: ClientContactCriterionKey.IsConfirmed,
-      name: this.translatePipe.transform('cafe_filters_contact_isConfirmed'),
-      operators: [
-        { id: ComparisonOperator.TrueOnly, name: this.translatePipe.transform('cafe_filters_operator_true') },
-        { id: ComparisonOperator.FalseOnly, name: this.translatePipe.transform('cafe_filters_operator_false') },
-      ],
-    },
   ];
 
   constructor(

@@ -9,7 +9,6 @@ import {
 } from '../../../common/cafe-filters/advanced-filter-form';
 import { AdvancedFilterOperatorMapping } from '../../../common/cafe-filters/advanced-filter-form';
 import { EnvironmentAdvancedFilterApiMappingService } from '../../../environments/advanced-filter';
-import { CommonApiMappingStrategies } from '../../common/advanced-filter/common-api-mapping-strategies';
 import { SpeContactAdvancedFilterKey } from './specialized-contact-advanced-filter-key.enum';
 
 @Injectable()
@@ -23,8 +22,6 @@ export class SpecializedContactAdvancedFilterApiMappingService {
 
   private getAdvancedFilter(attributes: IAdvancedFilterAttributes): AdvancedFilter {
     switch (attributes.filterKey) {
-      case SpeContactAdvancedFilterKey.IsConfirmed:
-        return CommonApiMappingStrategies.getIsConfirmedAdvancedFilter(attributes.operator);
       case SpeContactAdvancedFilterKey.Role:
         return this.getRoleAdvancedFilter(attributes);
       default:
