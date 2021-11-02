@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import { IEnvironment } from '@cc/domain/environments';
 
 import {
   AdvancedFilter,
@@ -11,6 +10,7 @@ import {
   IFilterCriterionEncapsulation,
 } from '../../common/cafe-filters/advanced-filter-form';
 import { AdvancedFilterOperatorMapping } from '../../common/cafe-filters/advanced-filter-form';
+import { IEnvironment } from '../models/environment.interface';
 import { EnvironmentAdvancedFilterKey } from './environment-advanced-filter-key.enum';
 
 @Injectable()
@@ -55,7 +55,7 @@ export class EnvironmentAdvancedFilterApiMappingService {
     attributes: IAdvancedFilterAttributes,
     encapsulate: IFilterCriterionEncapsulation,
   ): AdvancedFilter {
-    const subdomains = attributes.value.fieldValues[attributes.filterKey].map((e: IEnvironment) => e.subDomain);
+    const subdomains = attributes.value.fieldValues[attributes.filterKey].map((e: IEnvironment) => e.subdomain);
     const { operator, logicalOperator } = AdvancedFilterOperatorMapping.getComparisonOperatorDto(attributes.operator);
     const toFilterCriterion = c => (encapsulate({ subdomain: c }));
 

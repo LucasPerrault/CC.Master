@@ -4,12 +4,12 @@ import { ReactiveFormsModule } from '@angular/forms';
 import {
   ClusterApiSelectModule,
   CountryApiSelectModule,
-  EnvironmentApiSelectModule,
   EnvironmentDomainSelectModule,
   SpecializedContactRoleApiSelectModule,
 } from '@cc/common/forms';
 import { FormlyModule } from '@ngx-formly/core';
 
+import { EnvironmentApiSelectModule } from '../../../pages/cafe/common/forms';
 import { FormlyFieldCluster } from './cluster/cluster.component';
 import { FormlyFieldCountry } from './country/country.component';
 import { FormlyFieldEnvironmentDomain } from './environment-domain/environment-domain.component';
