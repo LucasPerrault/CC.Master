@@ -50,7 +50,7 @@ export class CloseContractFormService {
     const params = new HttpParams()
       .set('fields', attachmentEndedFields)
       .set('contractId', String(contractId))
-      .set('isActive', `${ true }`)
+      .set('legalEntity.isActive', `${ true }`)
       .set('end', 'notequal,null');
 
     return this.httpClient.get<IHttpApiV3CollectionResponse<IAttachmentEnded>>(this.attachmentsEndpoint, { params })
