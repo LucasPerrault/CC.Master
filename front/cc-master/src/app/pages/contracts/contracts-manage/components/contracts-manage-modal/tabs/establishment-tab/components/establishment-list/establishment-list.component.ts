@@ -56,7 +56,7 @@ export class EstablishmentListComponent {
       new Date(a.countPeriod).getTime() - new Date(b.countPeriod).getTime());
 
     const lastCountPeriod = countsAscSorted[0]?.countPeriod;
-    return new Date(lastCountPeriod);
+    return !!lastCountPeriod ? new Date(lastCountPeriod) : null;
   }
 
   public get isLinked(): boolean {
