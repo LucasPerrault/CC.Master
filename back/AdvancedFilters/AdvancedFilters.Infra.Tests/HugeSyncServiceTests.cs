@@ -214,7 +214,7 @@ namespace AdvancedFilters.Infra.Tests
             });
             SetupHttpResponse("https://toto.dev/api/app-instances", new AppInstancesDto
             {
-                Data = ApiV3Response(new AppInstance { EnvironmentId = 1 })
+                Data = ApiV3Response(new AppInstance { EnvironmentId = 1, ApplicationId = "WFIGGO"})
             });
 
             await service.SyncMonoTenantDataAsync(new HashSet<string> { "toto", "titi" });

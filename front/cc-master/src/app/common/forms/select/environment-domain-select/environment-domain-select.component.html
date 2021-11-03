@@ -1,20 +1,25 @@
-<label class="textfield" [ngClass]="textfieldClass">
-  <lu-select [(ngModel)]="domainsSelected"
-             (ngModelChange)="safeOnChange($event)"
-             class="textfield-input"
-             [placeholder]="'front_filterLabel_domainName' | translate"
-             multiple>
-    <ng-container *luDisplayer="let domains; multiple: true">
+<lu-select [(ngModel)]="domainsSelected"
+           (ngModelChange)="safeOnChange($event)"
+           class="textfield-input"
+           [formlyAttributes]="formlyAttributes"
+           [placeholder]="placeholder"
+           [multiple]="multiple">
+
+  <ng-container *luDisplayer="let domains; multiple: multiple">
+    <ng-container *ngIf="multiple; else notMultiple">
       <span [luTooltip]="getDomainNamesRawString(domains)" *ngIf="domains?.length !== 1; else: singleView">
-        <span class="label">{{ domains.length }}</span>
+      <span class="label">{{ domains.length }}</span>
         {{ 'front_filterSelection_domainName' | translate: { count: domains.length } }}
-      </span>
+    </span>
       <ng-template #singleView>{{domains[0].name }}</ng-template>
     </ng-container>
-    <lu-option-picker-advanced>
-      <lu-option-feeder [options]="environmentDomains"></lu-option-feeder>
-      <lu-option *luForOptions="let domain; trackBy: trackBy" [value]="domain">{{domain.name}}</lu-option>
-    </lu-option-picker-advanced>
-    <lu-input-clearer></lu-input-clearer>
-  </lu-select>
-</label>
+    <ng-template #notMultiple>{{ domains.name }}</ng-template>
+  </ng-container>
+
+  <lu-option-picker-advanced>
+    <lu-option-feeder [options]="environmentDomains"></lu-option-feeder>
+    <lu-option *luForOptions="let domain; trackBy: trackBy" [value]="domain">{{domain.name}}</lu-option>
+  </lu-option-picker-advanced>
+
+  <lu-input-clearer></lu-input-clearer>
+</lu-select>

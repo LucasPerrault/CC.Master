@@ -3,6 +3,7 @@ using AdvancedFilters.Domain.Contacts.Interfaces;
 using AdvancedFilters.Domain.Core.Collections;
 using AdvancedFilters.Domain.DataSources;
 using AdvancedFilters.Domain.Instance.Interfaces;
+using AdvancedFilters.Infra.Services;
 using AdvancedFilters.Infra.Services.Sync;
 using AdvancedFilters.Infra.Storage.Services;
 using AdvancedFilters.Infra.Storage.Stores;
@@ -28,6 +29,9 @@ namespace AdvancedFilters.Web
             services.ConfigureInstances();
             services.ConfigureBilling();
             services.ConfigureContacts();
+
+            services.AddScoped<IExportService, ExportCsvService>();
+
         }
 
         public static void ConfigureStorage(this IServiceCollection services)
@@ -66,6 +70,7 @@ namespace AdvancedFilters.Web
             services.AddPublicData();
 
             services.AddScoped<IClientsStore, ClientsStore>();
+            services.AddScoped<IDistributorsStore, DistributorsStore>();
             services.AddScoped<IContractsStore, ContractsStore>();
             services.AddScoped<ILegalUnitsStore, LegalUnitsStore>();
             services.AddScoped<IEstablishmentsStore, EstablishmentsStore>();

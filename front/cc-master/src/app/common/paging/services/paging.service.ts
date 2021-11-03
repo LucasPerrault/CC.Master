@@ -1,6 +1,7 @@
 import { HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { PaginatedListState } from '@cc/common/paging/enums/paginated-list-state.enum';
+import { ApiStandard } from '@cc/common/queries';
 import { BehaviorSubject, Observable } from 'rxjs';
 
 import { IPaginatedResult } from '../models/paginated-result.interface';
@@ -10,14 +11,19 @@ type PagedFetchFunction<T> = (httpParams: HttpParams) => Observable<IPaginatedRe
 
 @Injectable()
 export class PagingService {
-  public paginate<T>(fetch: PagedFetchFunction<T>, paging: IPagingParams = defaultPagingParams): PaginatedList<T> {
-    return new PaginatedList<T>(fetch, paging);
+  public paginate<T>(
+    fetch: PagedFetchFunction<T>,
+    paging: IPagingParams = defaultPagingParams,
+    standard: ApiStandard = ApiStandard.V3,
+  ): PaginatedList<T> {
+    return new PaginatedList<T>(fetch, paging, standard);
   }
 }
 
 export class PaginatedList<T> {
 
   private paging: IPagingParams;
+  private readonly standard: ApiStandard;
   private httpParams: HttpParams;
   private state: BehaviorSubject<PaginatedListState> = new BehaviorSubject<PaginatedListState>(PaginatedListState.Idle);
 
@@ -36,8 +42,9 @@ export class PaginatedList<T> {
     return this.state.asObservable();
   }
 
-  constructor(private fetchMore: PagedFetchFunction<T>, paging) {
+  constructor(private fetchMore: PagedFetchFunction<T>, paging, standard) {
     this.paging = paging;
+    this.standard = standard;
   }
 
   public nextPage(): void {
@@ -72,7 +79,7 @@ export class PaginatedList<T> {
       this.items.next([]);
     }
 
-    const paramsWithPaging = this.toApiV3PagingParams(this.httpParams, this.paging);
+    const paramsWithPaging = this.toPagingParams(this.httpParams, this.paging);
 
     this.fetchMore(paramsWithPaging).subscribe(
       res => {
@@ -86,7 +93,12 @@ export class PaginatedList<T> {
     );
   }
 
-  private toApiV3PagingParams(params: HttpParams, paging: IPagingParams): HttpParams {
-    return params.set('paging', `${paging.page * paging.limit},${paging.limit}`);
+  private toPagingParams(params: HttpParams, paging: IPagingParams): HttpParams {
+    switch (this.standard) {
+      case ApiStandard.V3:
+        return params.set('paging', `${paging.page * paging.limit},${paging.limit}`);
+      case ApiStandard.V4:
+        return params.set('page', paging.page + 1).set('limit', paging.limit);
+    }
   }
 }

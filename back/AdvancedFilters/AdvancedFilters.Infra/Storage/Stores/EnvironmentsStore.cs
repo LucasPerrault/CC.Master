@@ -44,6 +44,19 @@ namespace AdvancedFilters.Infra.Storage.Stores
             return _queryPager.ToPageAsync(envs, pageToken);
         }
 
+        public Task<List<Environment>> SearchAsync(IAdvancedFilter filter)
+        {
+            return Environments
+                .Filter(filter)
+                .AsNoTracking()
+                .ToListAsync();
+        }
+
+        public Task<List<string>> GetClustersAsync()
+        {
+            return Environments.Select(e => e.Cluster).Distinct().OrderBy(e => e).ToListAsync();
+        }
+
         private IQueryable<Environment> Get(EnvironmentFilter filter)
         {
             return Environments
@@ -55,7 +68,8 @@ namespace AdvancedFilters.Infra.Storage.Stores
             .Set<Environment>()
             .Include(e => e.LegalUnits).ThenInclude(lu => lu.Country)
             .Include(e => e.LegalUnits).ThenInclude(lu => lu.Establishments)
-            .Include(e => e.AppInstances);
+            .Include(e => e.AppInstances)
+            .Include(e => e.Accesses).ThenInclude(a => a.Distributor);
     }
 
     internal static class EnvironmentQueryableExtensions

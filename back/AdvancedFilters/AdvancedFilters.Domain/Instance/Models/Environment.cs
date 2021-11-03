@@ -15,11 +15,13 @@ namespace AdvancedFilters.Domain.Instance.Models
         public string Domain { get; set; }
         public bool IsActive { get; set; }
         public DateTime CreatedAt { get; set; }
+        public string Cluster { get; set; }
         public string ProductionHost { get; set; }
 
         public IEnumerable<LegalUnit> LegalUnits { get; set; }
         public IEnumerable<AppInstance> AppInstances { get; set; }
         public IEnumerable<Contract> Contracts { get; set; }
+        public IEnumerable<EnvironmentAccess> Accesses { get; set; }
 
         public Environment DeepCopy()
         {
@@ -31,8 +33,10 @@ namespace AdvancedFilters.Domain.Instance.Models
     {
         public SingleDateTimeComparisonCriterion CreatedAt { get; set; }
         public SingleStringComparisonCriterion Subdomain { get; set; }
+        public SingleStringComparisonCriterion Cluster { get; set; }
         public LegalUnitsAdvancedCriterion LegalUnits { get; set; }
         public AppInstancesAdvancedCriterion AppInstances { get; set; }
+        public DistributorsAdvancedCriterion Distributors { get; set; }
 
         public override IQueryableExpressionBuilder<Environment> GetExpressionBuilder(IQueryableExpressionBuilderFactory factory)
             => factory.Create(this);

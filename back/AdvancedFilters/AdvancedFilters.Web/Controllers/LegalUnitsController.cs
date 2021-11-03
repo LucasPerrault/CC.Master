@@ -34,9 +34,9 @@ namespace AdvancedFilters.Web.Controllers
 
         [HttpGet("countries")]
         [ForbidIfMissing(Operation.ReadAllCafe)]
-        public Task<Page<Country>> GetCountriesAsync()
+        public Task<Page<Country>> GetCountriesAsync(string search)
         {
-            return _store.GetAllCountriesAsync();
+            return _store.GetAllCountriesAsync(search);
         }
 
         private Page<LegalUnit> PreparePage(Page<LegalUnit> src)

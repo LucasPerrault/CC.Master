@@ -1,3 +1,4 @@
+using AdvancedFilters.Domain.Core.Collections;
 using AdvancedFilters.Domain.Core.Models;
 using AdvancedFilters.Domain.Filters.Builders;
 using AdvancedFilters.Domain.Filters.Models;
@@ -10,6 +11,7 @@ namespace AdvancedFilters.Domain.Instance.Models
     {
         public int Id { get; set; }
         public string Name { get; set; }
+        public string ApplicationName => ApplicationsCollection.GetName(ApplicationId) ?? Name;
         public string ApplicationId { get; set; }
         public int EnvironmentId { get; set; }
         public DateTime? DeletedAt { get; set; }

@@ -1,3 +1,4 @@
+using AdvancedFilters.Domain.Billing.Models;
 using AdvancedFilters.Domain.Contacts.Models;
 using AdvancedFilters.Domain.Filters.Builders;
 using AdvancedFilters.Domain.Filters.Models;
@@ -32,6 +33,11 @@ namespace AdvancedFilters.Infra.Filters.Builders
         public IQueryableExpressionBuilder<LegalUnit> Create(LegalUnitAdvancedCriterion criterion)
         {
             return new LegalUnitCriterionExpressionBuilder(criterion);
+        }
+
+        public IQueryableExpressionBuilder<Distributor> Create(DistributorAdvancedCriterion criterion)
+        {
+            return new DistributorCriterionExpressionBuilder(criterion);
         }
 
         public IQueryableExpressionBuilder<AppContact> Create(AppContactAdvancedCriterion criterion)

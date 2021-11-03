@@ -140,7 +140,9 @@
                     "EnvironmentsEndpoint": "/api/environments?limit=100000&isActive=true&purpose=contractual",
                     "ContractsEndpoint": "/api/contracts?limit=100000&isActive=true,false",
                     "ContractsSubdomainParamName": "subdomain",
-                    "ClientsEndpoint": "/api/clients?limit=10000&isActive=true,false"
+                    "ClientsEndpoint": "/api/clients?limit=10000&isActive=true,false",
+                    "DistributorsEndpoint":  "/api/distributors?limit=10000",
+                    "EnvironmentAccessesEndpoint": "/api/v3/environmentAccesses?lifecycle=1&environment.isActive=true&environment.purpose=0&fields=id,environmentId,distributorId"
                 }
             },
             "Tenants": {

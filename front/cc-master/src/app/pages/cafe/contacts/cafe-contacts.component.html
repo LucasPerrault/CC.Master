@@ -1,0 +1,10 @@
+<ng-container [ngSwitch]="category">
+
+  <cc-app-contacts *ngSwitchCase="contactCategory.Application" [advancedFilterForm]="advancedFilterForm"></cc-app-contacts>
+
+  <cc-client-contacts *ngSwitchCase="contactCategory.Client" [advancedFilterForm]="advancedFilterForm"></cc-client-contacts>
+
+  <cc-specialized-contacts *ngSwitchCase="contactCategory.Specialized" [advancedFilterForm]="advancedFilterForm"></cc-specialized-contacts>
+
+</ng-container>
+

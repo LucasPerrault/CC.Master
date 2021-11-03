@@ -56,6 +56,18 @@ namespace AdvancedFilters.Web.Configuration
             new HostDataSourceRoute(c.Routes.Hosts.CloudControl.Host, c.Routes.Hosts.CloudControl.ClientsEndpoint)
         );
 
+        public static RemoteDataSource Distributor(this AdvancedFiltersConfiguration c) => new DistributorDataSource
+        (
+            new AuthorizationAuthentication(c.Auth.CloudControlAuthScheme, c.Auth.CloudControlAuthParameter),
+            new HostDataSourceRoute(c.Routes.Hosts.CloudControl.Host, c.Routes.Hosts.CloudControl.DistributorsEndpoint)
+        );
+
+        public static RemoteDataSource EnvironmentAccess(this AdvancedFiltersConfiguration c) => new EnvironmentAccessDataSource
+        (
+            new AuthorizationAuthentication(c.Auth.CloudControlAuthScheme, c.Auth.CloudControlAuthParameter),
+            new HostDataSourceRoute(c.Routes.Hosts.CloudControl.Host, c.Routes.Hosts.CloudControl.EnvironmentAccessesEndpoint)
+        );
+
         public static RemoteDataSource AppContact(this AdvancedFiltersConfiguration c) => new AppContactDataSource
         (
             new LuccaAuthentication(c.Auth.ClientCenterWebserviceToken),

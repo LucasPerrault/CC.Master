@@ -2,6 +2,7 @@ using AdvancedFilters.Domain.Filters.Models;
 using AdvancedFilters.Domain.Instance.Filters;
 using AdvancedFilters.Domain.Instance.Interfaces;
 using AdvancedFilters.Domain.Instance.Models;
+using AdvancedFilters.Infra.Services;
 using AdvancedFilters.Web.Binding;
 using AdvancedFilters.Web.Format;
 using Lucca.Core.Api.Abstractions.Paging;
@@ -21,10 +22,12 @@ namespace AdvancedFilters.Web.Controllers
     public class EnvironmentsController
     {
         private readonly IEnvironmentsStore _store;
+        private readonly IExportService _exportService;
 
-        public EnvironmentsController(IEnvironmentsStore store)
+        public EnvironmentsController(IEnvironmentsStore store, IExportService exportService)
         {
             _store = store;
+            _exportService = exportService;
         }
 
         [HttpGet]
@@ -33,6 +36,18 @@ namespace AdvancedFilters.Web.Controllers
         {
             var page = await _store.GetAsync(query.Page, query.ToFilter());
             return PreparePage(page);
+        }
+
+        [HttpGet("clusters")]
+        [ForbidIfMissing(Operation.ReadAllCafe)]
+        public async Task<Page<string>> GetAsync()
+        {
+            var clusters = await _store.GetClustersAsync();
+            return new Page<string>
+            {
+                Items = clusters,
+                Count = clusters.Count
+            };
         }
 
         [HttpPost("search")]
@@ -46,6 +61,21 @@ namespace AdvancedFilters.Web.Controllers
         {
             var page = await _store.SearchAsync(pageToken, criterion);
             return PreparePage(page);
+        }
+
+        [HttpPost("export")]
+        [ForbidIfMissing(Operation.ReadAllCafe)]
+        public async Task<FileStreamResult> ExportAsync
+        (
+            [FromBody, ModelBinder(BinderType = typeof(AdvancedFilterModelBinder<EnvironmentAdvancedCriterion>))]
+            IAdvancedFilter criterion
+        )
+        {
+            var environments = await _store.SearchAsync(criterion);
+
+            var filename = $"export-{System.DateTime.Now:yyyyMMdd-HHmmss}.csv";
+            return _exportService.Export(environments, filename);
+
         }
 
         private Page<Environment> PreparePage(Page<Environment> src)

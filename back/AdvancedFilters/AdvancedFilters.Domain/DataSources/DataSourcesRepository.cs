@@ -11,7 +11,9 @@ namespace AdvancedFilters.Domain.DataSources
         {
             DataSources.Countries,
             DataSources.Environments,
-            DataSources.Clients
+            DataSources.Clients,
+            DataSources.Distributors,
+            DataSources.EnvironmentAccesses,
         };
 
         public DataSourcesRepository(Dictionary<DataSources, DataSource> dataSources)
