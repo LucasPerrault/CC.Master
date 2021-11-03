@@ -105,6 +105,7 @@ export class AttachmentStartEditionModalComponent implements OnInit, OnDestroy, 
     const sortedStartedAttachments = this.modalData.attachments
       .sort((a, b) => new Date(a.start).getTime() - new Date(b.start).getTime());
 
-    return new Date(sortedStartedAttachments[0]?.start);
+    const lastAttachmentStartDate = sortedStartedAttachments[0]?.start;
+    return !!lastAttachmentStartDate ? new Date(sortedStartedAttachments[0]?.start) : null;
   }
 }
