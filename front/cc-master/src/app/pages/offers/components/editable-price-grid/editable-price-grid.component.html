@@ -1,0 +1,60 @@
+<form [formGroup]="formGroup">
+  <table class="table" [ngClass]="{ 'mod-error': hasFormErrors }" #tableElement>
+    <thead class="table-head">
+    <tr class="table-head-row">
+      <th class="table-head-row-cell mod-alignRight">{{ 'front_priceGrid_column_lowerBound' | translate }}</th>
+      <th class="table-head-row-cell mod-alignRight">{{ 'front_priceGrid_column_upperBound' | translate }}</th>
+      <th class="table-head-row-cell mod-alignRight">{{ 'front_priceGrid_column_unitPrice' | translate }}</th>
+      <th class="table-head-row-cell mod-alignRight">{{ 'front_priceGrid_column_fixedPrice' | translate }}</th>
+      <th class="table-head-row-cell mod-actions"></th>
+    </tr>
+    </thead>
+    <tbody class="table-body" [formArrayName]="formArrayKey">
+      <tr class="table-body-row" *ngFor="let control of formArray.controls; let i = index" [formGroupName]="i">
+        <td class="table-body-row-cell mod-alignRight u-paddingReset">
+          <cc-editable-price-cell (keydownChange)="updateFocus($event, i, 0)"
+                                  [formControlName]="formKey.LowerBound">
+          </cc-editable-price-cell>
+        </td>
+        <td class="table-body-row-cell mod-alignRight u-paddingReset" [tabindex]="2">
+          <cc-editable-price-cell (keydownChange)="updateFocus($event, i, 1)"
+                                  [formControlName]="formKey.UpperBound">
+          </cc-editable-price-cell>
+        </td>
+        <td class="table-body-row-cell mod-alignRight u-paddingReset" [tabindex]="3">
+          <cc-editable-price-cell (keydownChange)="updateFocus($event, i, 2)"
+                                  [formControlName]="formKey.UnitPrice">
+          </cc-editable-price-cell>
+        </td>
+        <td class="table-body-row-cell mod-alignRight u-paddingReset" [tabindex]="4">
+          <cc-editable-price-cell (keydownChange)="updateFocus($event, i, 3)"
+                                  [formControlName]="formKey.FixedPrice">
+          </cc-editable-price-cell>
+        </td>
+        <td class="table-body-row-cell mod-actions u-paddingReset">
+          <button class="actionIcon u-marginLeftSmallest" (click)="insert(i )">
+            <span aria-hidden="true" class="lucca-icon icon-plus"></span>
+          </button>
+          <button class="actionIcon" (click)="remove(i)">
+            <span aria-hidden="true" class="lucca-icon icon-trash"></span>
+          </button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="u-displayFlex u-flexDirectionColumn textfield-messages">
+    <span *ngIf="formGroup.hasError(validationError.MinBound)" class="textfield-messages-error">
+      {{ 'offers_forms_validationError_minBound' | translate }}
+    </span>
+    <span *ngIf="formGroup.hasError(validationError.BoundsContinuity)" class="textfield-messages-error">
+      {{ 'offers_forms_validationError_boundsContinuity' | translate }}
+    </span>
+    <span *ngIf="hasRequiredError" class="textfield-messages-error">
+      {{ 'offers_forms_validationError_required' | translate }}
+    </span>
+    <span *ngIf="hasClosestBoundsError" class="textfield-messages-error">
+      {{ 'offers_forms_validationError_closestBounds' | translate }}
+    </span>
+  </div>
+</form>

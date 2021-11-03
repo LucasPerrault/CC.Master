@@ -1,0 +1,11 @@
+<label class="textfield palette-grey mod-outlined mod-editableCell">
+  <input class="textfield-input"
+         type="number"
+         [min]="0"
+         [required]="true"
+         [formControl]="formControl"
+         (keydown.control.arrowLeft)="keydownLeft()"
+         (keydown.control.arrowRight)="keydownRight()"
+         (keydown.control.arrowDown)="keydownDown()"
+         (keydown.control.arrowUp)="keydownUp()"/>
+</label>
