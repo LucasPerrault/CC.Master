@@ -98,10 +98,14 @@ export class AttachmentStartEditionModalComponent implements OnInit, OnDestroy, 
   }
 
   private getLastAttachmentStartDate(): Date {
-    const lastStartedAttachments = this.modalData.attachments
-      .sort((a, b) => new Date(a.start).getTime() - new Date(b.start).getTime())
-      .pop();
+    if (!this.modalData.attachments?.length) {
+      return null;
+    }
 
-    return !!lastStartedAttachments ? new Date(lastStartedAttachments.start) : null;
+    const sortedStartedAttachments = this.modalData.attachments
+      .sort((a, b) => new Date(a.start).getTime() - new Date(b.start).getTime());
+
+    const lastAttachmentStartDate = sortedStartedAttachments[0]?.start;
+    return !!lastAttachmentStartDate ? new Date(sortedStartedAttachments[0]?.start) : null;
   }
 }
