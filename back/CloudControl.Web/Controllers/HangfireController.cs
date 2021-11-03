@@ -1,4 +1,5 @@
-﻿using Instances.Application.Demos.Deletion;
+﻿using AdvancedFilters.Domain.DataSources;
+using Instances.Application.Demos.Deletion;
 using Microsoft.AspNetCore.Mvc;
 using Rights.Domain;
 using Rights.Web.Attributes;
@@ -12,11 +13,13 @@ namespace CloudControl.Web.Controllers
     {
         private readonly InactiveDemosCleaner _cleaner;
         private readonly IUsersSyncService _usersSyncService;
+        private readonly ISyncService _syncService;
 
-        public HangfireController(InactiveDemosCleaner cleaner, IUsersSyncService usersSyncService)
+        public HangfireController(InactiveDemosCleaner cleaner, IUsersSyncService usersSyncService, ISyncService syncService)
         {
             _cleaner = cleaner;
             _usersSyncService = usersSyncService;
+            _syncService = syncService;
         }
 
         [HttpPost("cleanup-demos")]
@@ -29,6 +32,13 @@ namespace CloudControl.Web.Controllers
         public async Task SyncUsers()
         {
             await _usersSyncService.SyncAsync();
+        }
+
+        [HttpPost("sync-cafe")]
+        public async Task SyncCafe()
+        {
+            await _syncService.PurgeEverythingAsync();
+            await _syncService.SyncEverythingAsync();
         }
     }
 }
