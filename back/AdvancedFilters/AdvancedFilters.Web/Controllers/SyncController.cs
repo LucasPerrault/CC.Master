@@ -1,5 +1,4 @@
 using AdvancedFilters.Domain.DataSources;
-using AdvancedFilters.Infra.Services.Sync;
 using Lucca.Core.Shared.Domain.Exceptions;
 using Microsoft.AspNetCore.Mvc;
 using Rights.Domain;
@@ -13,9 +12,9 @@ namespace AdvancedFilters.Web.Controllers
     [ApiController, Route("/api/cafe/sync")]
     public class SyncController
     {
-        private readonly SyncService _syncService;
+        private readonly ISyncService _syncService;
 
-        public SyncController(SyncService syncService)
+        public SyncController(ISyncService syncService)
         {
             _syncService = syncService;
         }
