@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 namespace AdvancedFilters.Web.Controllers
 {
     [ApiController, Route("/api/cafe/distributors")]
-    [ApiSort(nameof(Distributor.Id))]
+    [ApiSort(nameof(Distributor.Name))]
     public class DistributorsController
     {
         private readonly IDistributorsStore _store;
