@@ -32,9 +32,6 @@
           </cc-editable-price-cell>
         </td>
         <td class="table-body-row-cell mod-actions u-paddingReset">
-          <button class="actionIcon u-marginLeftSmallest" (click)="insert(i)">
-            <span aria-hidden="true" class="lucca-icon icon-plus"></span>
-          </button>
           <button class="actionIcon" (click)="remove(i)" *ngIf="canRemove">
             <span aria-hidden="true" class="lucca-icon icon-trash"></span>
           </button>
@@ -57,4 +54,8 @@
       {{ 'offers_forms_validationError_closestBounds' | translate }}
     </span>
   </div>
+
+  <button class="button mod-small mod-outline palette-grey u-right" (click)="insert()">
+    {{ 'offers_forms_add_button_label' | translate }}
+  </button>
 </form>

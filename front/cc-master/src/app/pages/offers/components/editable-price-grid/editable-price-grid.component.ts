@@ -138,13 +138,13 @@ export class EditablePriceGridComponent implements OnInit, OnDestroy, ControlVal
     }
   }
 
-  public insert(currentIndex: number): void {
-    const priceList: IEditablePriceGrid = this.formArray.at(currentIndex).value;
+  public insert(): void {
+    const lastIndex = this.formArray.length - 1;
+    const priceList: IEditablePriceGrid = this.formArray.at(lastIndex).value;
     const nextLowerBound = priceList.upperBound + 1;
-    const nextDefaultUpperBound = nextLowerBound;
-    const formGroup = this.getFormGroup(nextLowerBound, nextDefaultUpperBound, 0, 0);
+    const formGroup = this.getFormGroup(nextLowerBound, nextLowerBound, 0, 0);
 
-    this.formArray.insert(currentIndex + 1, formGroup);
+    this.formArray.insert(lastIndex + 1, formGroup);
   }
 
   public addRange(priceLists?: IEditablePriceGrid[]): void {
