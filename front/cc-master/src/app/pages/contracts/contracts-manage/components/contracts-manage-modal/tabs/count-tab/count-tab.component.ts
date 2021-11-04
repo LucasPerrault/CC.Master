@@ -21,6 +21,7 @@ import { CountContractsRestrictionsService } from './services/count-contracts-re
 @Component({
   selector: 'cc-count-tab',
   templateUrl: './count-tab.component.html',
+  styleUrls: ['./count-tab.component.scss'],
 })
 export class CountTabComponent implements OnInit, OnDestroy {
   public get contract$(): Observable<ICountContract> {

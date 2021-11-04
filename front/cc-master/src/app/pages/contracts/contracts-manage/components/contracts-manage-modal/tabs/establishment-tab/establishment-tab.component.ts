@@ -18,6 +18,7 @@ import { EstablishmentsWithAttachmentsService } from './services/establishments-
   selector: 'cc-establishment-tab',
   templateUrl: './establishment-tab.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
+  styleUrls: ['./establishment-tab.component.scss'],
 })
 export class EstablishmentTabComponent implements OnInit, OnDestroy {
 

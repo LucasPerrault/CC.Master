@@ -23,6 +23,7 @@ enum LinkingFormKey {
 @Component({
   selector: 'cc-environment-tab',
   templateUrl: './environment-tab.component.html',
+  styleUrls: ['./environment-tab.component.scss'],
 })
 export class EnvironmentTabComponent implements OnInit, OnDestroy {
   public contractEnvironment$: ReplaySubject<IContractEnvironmentDetailed>

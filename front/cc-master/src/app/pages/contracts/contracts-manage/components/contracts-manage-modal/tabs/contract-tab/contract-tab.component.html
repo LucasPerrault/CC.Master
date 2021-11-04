@@ -1,33 +1,37 @@
-<div class="loading mod-dialog" *ngIf="isLoading$ | async; else notLoading"></div>
+<div class="loading mod-fullPage" *ngIf="isLoading$ | async; else notLoading"></div>
 
 <ng-template #notLoading>
-  <div class="callout u-animatedSlideInTop palette-grey u-marginBottomStandard u-displayInlineFlex u-alignItemsCenter"
-       *ngIf="(canDeleteContract$ | async) && showDeletionCallout">
-    {{ 'front_contractPage_delete_info_description' | translate }}
-    <div>
-      <button (click)="delete()" class="button palette-grey mod-outline u-marginLeftSmaller u-marginRightStandard"
-              [ngClass]="deleteState$ | async">
-        {{ 'front_contractPage_deleteButton_label' | translate }}
-      </button>
+  <div class="page-content">
+    <div class="callout u-animatedSlideInTop palette-grey u-marginBottomStandard u-displayInlineFlex u-alignItemsCenter"
+         *ngIf="(canDeleteContract$ | async) && showDeletionCallout">
+      {{ 'front_contractPage_delete_info_description' | translate }}
+      <div>
+        <button (click)="delete()" class="button palette-grey mod-outline u-marginLeftSmaller u-marginRightStandard"
+                [ngClass]="deleteState$ | async">
+          {{ 'front_contractPage_deleteButton_label' | translate }}
+        </button>
+      </div>
+      <button class="callout-kill" (click)="hideDeletionCallout()"></button>
     </div>
-    <button class="callout-kill" (click)="hideDeletionCallout()"></button>
+
+    <cc-contract-tab-form [formControl]="contractForm" [validationContext]="validationContext$ | async">
+    </cc-contract-tab-form>
   </div>
 
-  <cc-contract-tab-form [formControl]="contractForm" [validationContext]="validationContext$ | async">
-  </cc-contract-tab-form>
+  <footer class="page-footer">
+    <div class="page-footer-right">
+      <button *ngIf="canEditContract"
+              (click)="edit()"
+              class="button"
+              [disabled]="contractForm.invalid || !contractForm.dirty"
+              [ngClass]="editButtonState$ | async">
+        {{ 'front_contractPage_editButton_label' | translate }}
+      </button>
 
-  <footer class="mod-footer">
-    <button *ngIf="canEditContract"
-            (click)="edit()"
-            class="button"
-            [disabled]="contractForm.invalid || !contractForm.dirty"
-            [ngClass]="editButtonState$ | async">
-      {{ 'front_contractPage_editButton_label' | translate }}
-    </button>
-
-    <button class="button mod-link" (click)="close()">
-      {{ 'front_contractPage_modal_cancel_button_label' | translate }}
-    </button>
+      <button class="button mod-link" (click)="close()">
+        {{ 'front_contractPage_modal_cancel_button_label' | translate }}
+      </button>
+    </div>
   </footer>
 </ng-template>
 

@@ -11,6 +11,7 @@ import { ContractLogsService } from './services/contract-logs.service';
 @Component({
   selector: 'cc-history-tab',
   templateUrl: './history-tab.component.html',
+  styleUrls: ['./history-tab.component.scss'],
 })
 export class HistoryTabComponent implements OnInit {
 

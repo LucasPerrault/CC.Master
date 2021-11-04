@@ -11,6 +11,7 @@ import { AccountingEntryListService } from './services/accounting-entry-list.ser
 @Component({
   selector: 'cc-accounting-tab',
   templateUrl: './accounting-tab.component.html',
+  styleUrls: ['./accounting-tab.component.scss'],
 })
 export class AccountingTabComponent implements OnInit {
   public get isLoading$(): Observable<boolean> {

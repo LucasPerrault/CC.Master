@@ -1,77 +1,76 @@
-<div class="loading mod-dialog" *ngIf="isLoading$ | async; else isNotLoading"></div>
+<div class="loading mod-fullPage" *ngIf="isLoading$ | async; else isNotLoading"></div>
 
 <ng-template #isNotLoading>
+ <div class="page-content u-paddingBottomStandard">
+   <cc-contract-without-environment-callout *ngIf="(hasEnvironment$ | async) === false; else hasEnvironment">
+   </cc-contract-without-environment-callout>
 
-  <cc-contract-without-environment-callout *ngIf="(hasEnvironment$ | async) === false; else hasEnvironment">
-  </cc-contract-without-environment-callout>
+   <ng-template #hasEnvironment>
+     <ng-container *ngIf="establishments$ | async; let establishments">
 
-  <ng-template #hasEnvironment>
-    <ng-container *ngIf="establishments$ | async; let establishments">
+       <cc-establishment-type-section [title]="'front_contractPage_establishments_type_linkedToContract' | translate"
+                                      [totalCount]="establishments.linkedToContract.length"
+                                      [isExpandedByDefault]="true">
+         <div class="u-paddingTopSmaller u-paddingBottomSmall">
+           <cc-establishment-list class="u-displayBlock u-paddingTopSmaller"
+                                  [type]="establishmentType.LinkedToContract"
+                                  [realCounts]="realCounts$ | async"
+                                  [contract]="contract$ | async"
+                                  [entries]="establishments.linkedToContract">
+           </cc-establishment-list>
+         </div>
+       </cc-establishment-type-section>
 
-      <cc-establishment-type-section [title]="'front_contractPage_establishments_type_linkedToContract' | translate"
-                                     [totalCount]="establishments.linkedToContract.length"
-                                     [isExpandedByDefault]="true">
-        <div class="u-paddingTopSmaller u-paddingBottomSmall">
-          <cc-establishment-list class="u-displayBlock u-paddingTopSmaller"
-                                 [type]="establishmentType.LinkedToContract"
-                                 [realCounts]="realCounts$ | async"
-                                 [contract]="contract$ | async"
-                                 [entries]="establishments.linkedToContract">
-          </cc-establishment-list>
-        </div>
-      </cc-establishment-type-section>
+       <cc-establishment-type-section [title]="'front_contractPage_establishments_type_linkedToAnotherContract' | translate"
+                                      [totalCount]="establishments.linkedToAnotherContract.length">
+         <div class="u-paddingTopSmaller u-paddingBottomSmall">
+           <cc-establishment-list class="u-displayBlock u-paddingTopSmaller"
+                                  [type]="establishmentType.LinkedToAnotherContract"
+                                  [realCounts]="realCounts$ | async"
+                                  [contract]="contract$ | async"
+                                  [entries]="establishments.linkedToAnotherContract">
+           </cc-establishment-list>
+         </div>
+       </cc-establishment-type-section>
 
-      <cc-establishment-type-section [title]="'front_contractPage_establishments_type_linkedToAnotherContract' | translate"
-                                     [totalCount]="establishments.linkedToAnotherContract.length">
-        <div class="u-paddingTopSmaller u-paddingBottomSmall">
-          <cc-establishment-list class="u-displayBlock u-paddingTopSmaller"
-                                 [type]="establishmentType.LinkedToAnotherContract"
-                                 [realCounts]="realCounts$ | async"
-                                 [contract]="contract$ | async"
-                                 [entries]="establishments.linkedToAnotherContract">
-          </cc-establishment-list>
-        </div>
-      </cc-establishment-type-section>
+       <cc-establishment-type-section [title]="'front_contractPage_establishments_type_excluded' | translate"
+                                      [totalCount]="establishments.excluded.length">
+         <cc-establishment-list class="u-displayBlock u-paddingTopSmaller"
+                                [type]="establishmentType.Excluded"
+                                [realCounts]="realCounts$ | async"
+                                [contract]="contract$ | async"
+                                [entries]="establishments.excluded">
+         </cc-establishment-list>
+       </cc-establishment-type-section>
 
-      <cc-establishment-type-section [title]="'front_contractPage_establishments_type_excluded' | translate"
-                                     [totalCount]="establishments.excluded.length">
-        <cc-establishment-list class="u-displayBlock u-paddingTopSmaller"
-                               [type]="establishmentType.Excluded"
-                               [realCounts]="realCounts$ | async"
-                               [contract]="contract$ | async"
-                               [entries]="establishments.excluded">
-        </cc-establishment-list>
-      </cc-establishment-type-section>
+       <cc-establishment-type-section [title]="'front_contractPage_establishments_type_withError' | translate"
+                                      [totalCount]="establishments.withError.length">
+         <cc-establishment-list class="u-displayBlock u-paddingTopSmaller"
+                                [type]="establishmentType.WithError"
+                                [realCounts]="realCounts$ | async"
+                                [contract]="contract$ | async"
+                                [entries]="establishments.withError">
+         </cc-establishment-list>
+       </cc-establishment-type-section>
 
-      <cc-establishment-type-section [title]="'front_contractPage_establishments_type_withError' | translate"
-                                     [totalCount]="establishments.withError.length">
-        <cc-establishment-list class="u-displayBlock u-paddingTopSmaller"
-                               [type]="establishmentType.WithError"
-                               [realCounts]="realCounts$ | async"
-                               [contract]="contract$ | async"
-                               [entries]="establishments.withError">
-        </cc-establishment-list>
-      </cc-establishment-type-section>
+     </ng-container>
+   </ng-template>
 
-    </ng-container>
-  </ng-template>
+   <div class="u-displayFlex u-alignFlexItemsCenter u-justifyContentSpaceBetween u-marginTopStandard">
+     <button class="button mod-icon mod-link" (click)="openEstablishmentsDoc()">
+       <span aria-hidden="true" class="button-icon lucca-icon icon-outside"></span>
+       {{ 'front_contractPage_establishments_doc' | translate  }}
+     </button>
 
-  <div class="u-displayFlex u-alignFlexItemsCenter u-justifyContentSpaceBetween u-marginTopStandard">
-    <button class="button mod-icon mod-link" (click)="openEstablishmentsDoc()">
-      <span aria-hidden="true" class="button-icon lucca-icon icon-outside"></span>
-      {{ 'front_contractPage_establishments_doc' | translate  }}
-    </button>
-
-    <ng-container *ngIf="hasEnvironment$ | async">
-      <button *ngIf="contract$ | async; let contract"
-              class="button mod-icon palette-grey mod-outline"
-              [ngClass]="synchronizeButtonClass$ | async"
-              (click)="synchronize(contract.environmentId)">
-        <span aria-hidden="true" class="button-icon lucca-icon icon-refresh"></span>
-        {{ 'front_contractPage_establishments_synchronize_button_label' | translate  }}
-      </button>
-    </ng-container>
-  </div>
-
-
+     <ng-container *ngIf="hasEnvironment$ | async">
+       <button *ngIf="contract$ | async; let contract"
+               class="button mod-icon palette-grey mod-outline"
+               [ngClass]="synchronizeButtonClass$ | async"
+               (click)="synchronize(contract.environmentId)">
+         <span aria-hidden="true" class="button-icon lucca-icon icon-refresh"></span>
+         {{ 'front_contractPage_establishments_synchronize_button_label' | translate  }}
+       </button>
+     </ng-container>
+   </div>
+ </div>
 </ng-template>

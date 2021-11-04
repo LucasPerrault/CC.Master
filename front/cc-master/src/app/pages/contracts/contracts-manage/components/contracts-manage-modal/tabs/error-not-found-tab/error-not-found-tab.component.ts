@@ -6,6 +6,7 @@ import { ContractsManageModalService } from '../../contracts-manage-modal.servic
 @Component({
   selector: 'cc-error-not-found-tab',
   templateUrl: './error-not-found-tab.component.html',
+  styleUrls: ['error-not-found-tab.component.scss'],
 })
 export class ErrorNotFoundTabComponent {
 

@@ -18,6 +18,7 @@ import { ContractValidationContextService } from './services/contract-validation
 @Component({
   selector: 'cc-contract-tab',
   templateUrl: './contract-tab.component.html',
+  styleUrls: ['./contract-tab.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ContractTabComponent implements OnInit {

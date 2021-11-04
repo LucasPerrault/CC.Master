@@ -17,6 +17,7 @@ import { CloseContractFormService } from './services/close-contract-form.service
 @Component({
   selector: 'cc-close-tab',
   templateUrl: './close-tab.component.html',
+  styleUrls: ['./close-tab.component.scss'],
 })
 export class CloseTabComponent implements OnInit, OnDestroy {
   public contractClosureDetailed$: ReplaySubject<IContractClosureDetailed>
