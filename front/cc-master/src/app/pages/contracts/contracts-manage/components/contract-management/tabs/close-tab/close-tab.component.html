@@ -1,22 +1,23 @@
 <div class="loading mod-fullPage" *ngIf="isLoading$ | async; else isNotLoading"></div>
 
 <ng-template #isNotLoading>
-  <div class="page-content">
-    <cc-closure-cancellation *ngIf="(isContractClosed$ | async); else isContractOpened"
-                             [contractClosureDetailed]="contractClosureDetailed$ | async"
-                             [closeCancelButtonState]="cancelButtonState$ | async"
-                             (cancelClosure)="cancelClosure()">
-    </cc-closure-cancellation>
+  <ng-container *ngIf="(isContractClosed$ | async); else isContractOpened">
+    <div class="page-content">
+      <cc-closure-cancellation [contractClosureDetailed]="contractClosureDetailed$ | async"
+                               [closeCancelButtonState]="cancelButtonState$ | async"
+                               (cancelClosure)="cancelClosure()">
+      </cc-closure-cancellation>
+    </div>
+  </ng-container>
 
-    <ng-template #isContractOpened>
-      <cc-contract-closure-form [contractClosureDetailed]="contractClosureDetailed$ | async"
-                                [lastAttachmentEnded]="lastAttachmentEnded$ | async"
-                                [formValidationContext]="closureFormValidationContext$ | async"
-                                [maxContractClosedDate]="maxContractClosedDate$ | async"
-                                [closeButtonState]="closeButtonState$ | async"
-                                (closeContract)="closeContract($event)">
-      </cc-contract-closure-form>
-    </ng-template>
-  </div>
+  <ng-template #isContractOpened>
+    <cc-contract-closure-form [contractClosureDetailed]="contractClosureDetailed$ | async"
+                              [lastAttachmentEnded]="lastAttachmentEnded$ | async"
+                              [formValidationContext]="closureFormValidationContext$ | async"
+                              [maxContractClosedDate]="maxContractClosedDate$ | async"
+                              [closeButtonState]="closeButtonState$ | async"
+                              (closeContract)="closeContract($event)">
+    </cc-contract-closure-form>
+  </ng-template>
 
 </ng-template>

@@ -1,38 +1,47 @@
 <ng-container *ngIf="!showConfirmation; else displayConfirmation">
-  <cc-contract-closure-form-information *ngIf="!!formValidationContext"
-                                        [lastAttachmentEnded]="lastAttachmentEnded"
-                                        [formValidationContext]="formValidationContext">
-  </cc-contract-closure-form-information>
+  <div class="page-content">
+    <cc-contract-closure-form-information *ngIf="!!formValidationContext"
+                                          [lastAttachmentEnded]="lastAttachmentEnded"
+                                          [formValidationContext]="formValidationContext">
+    </cc-contract-closure-form-information>
 
-  <form [formGroup]="formGroup" (ngSubmit)="setShowConfirmation(true)">
-    <label class="textfield is-required mod-longest palette-grey">
-      <lu-date-select class="textfield-input" granularity="month"
-                      [formControlName]="formGroupKey.CloseOn"
-                      [required]="true" [min]="getFirstDay(maxContractClosedDate)"></lu-date-select>
-      <span class="textfield-label">{{ 'front_contractPage_endContractDateSelect_label' | translate }}</span>
-    </label>
+    <form [formGroup]="formGroup">
+      <label class="textfield is-required mod-longest palette-grey">
+        <lu-date-select class="textfield-input" granularity="month"
+                        [formControlName]="formGroupKey.CloseOn"
+                        [required]="true" [min]="getFirstDay(maxContractClosedDate)"></lu-date-select>
+        <span class="textfield-label">{{ 'front_contractPage_endContractDateSelect_label' | translate }}</span>
+      </label>
 
-    <cc-close-contract-reason-select [formControlName]="formGroupKey.CloseReason" [required]="true"
-                                     textfieldClass="mod-longest palette-grey">
-    </cc-close-contract-reason-select>
+      <cc-close-contract-reason-select [formControlName]="formGroupKey.CloseReason" [required]="true"
+                                       textfieldClass="mod-longest palette-grey">
+      </cc-close-contract-reason-select>
+    </form>
+  </div>
 
-    <button class="button u-marginTopStandard" type="submit" [disabled]="formGroup.invalid">
-      {{ 'front_contractPage_endContractButton_label' | translate }}
-    </button>
-  </form>
+  <div class="page-footer">
+    <div class="page-footer-right">
+      <button class="button" type="submit" [disabled]="formGroup.invalid" (click)="setShowConfirmation(true)">
+        {{ 'front_contractPage_endContractButton_label' | translate }}
+      </button>
+    </div>
+  </div>
 </ng-container>
 
 <ng-template #displayConfirmation>
-  <div class="callout palette-warning u-animatedSlideInTop">
-    <div class="u-displayFlex u-flexDirectionColumn">
+  <div class="callout mod-icon palette-warning u-animatedSlideInTop u-marginStandard">
+    <div class="callout-icon">
+      <span aria-hidden="true" class="lucca-icon icon-warning"></span>
+    </div>
+    <div class="u-displayFlex">
       {{ 'front_contractPage_closeContract_confirmation' | translate }}
-      <div class="u-marginLeftAuto">
-        <button class="button mod-link" (click)="setShowConfirmation(false)">
-          {{ 'front_contractPage_closeContract_confirmation_cancelButton' | translate }}
-        </button>
+      <div class="u-displayFlex u-marginLeftAuto">
         <button class="button palette-secondary" (click)="onCloseContract()"
                 [ngClass]="closeButtonState">
           {{ 'front_contractPage_closeContract_confirmation_confirmButton' | translate }}
+        </button>
+        <button class="button mod-link" (click)="setShowConfirmation(false)">
+          {{ 'front_contractPage_closeContract_confirmation_cancelButton' | translate }}
         </button>
       </div>
     </div>

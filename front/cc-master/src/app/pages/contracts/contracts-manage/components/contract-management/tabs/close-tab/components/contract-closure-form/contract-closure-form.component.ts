@@ -17,6 +17,7 @@ enum CloseContractFormKey {
 @Component({
   selector: 'cc-contract-closure-form',
   templateUrl: './contract-closure-form.component.html',
+  styleUrls: ['./contract-closure-form.component.scss'],
 })
 export class ContractClosureFormComponent {
   @Input() lastAttachmentEnded: IAttachmentEnded | null;
