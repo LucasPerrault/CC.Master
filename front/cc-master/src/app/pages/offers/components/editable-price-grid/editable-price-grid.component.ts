@@ -155,6 +155,17 @@ export class EditablePriceGridComponent implements OnInit, OnDestroy, ControlVal
     this.formArray.removeAt(index);
   }
 
+  public paste(event: ClipboardEvent): void {
+    this.formArray.clear();
+
+    const csv = event.clipboardData.getData('text');
+    const rows = csv.split('\n');
+    const validRows = rows.filter(row => this.isPriceRowValid(row));
+    const priceRows = validRows.map(row => this.toPriceList(row));
+
+    this.addRange(priceRows);
+  }
+
   public updateFocus(arrow: ArrowKey, row: number, col: number): void {
     const nextFocusedPosition = this.getNextFocusedPosition(arrow, row, col);
 
@@ -204,5 +215,21 @@ export class EditablePriceGridComponent implements OnInit, OnDestroy, ControlVal
       case ArrowKey.Left:
         return { row, col: col === leftBorder ? rightBorder : col - 1 };
     }
+  }
+
+  private isPriceRowValid(row: string): boolean {
+    const requiredColumnsNumber = 4;
+    const columns = row.split('\t');
+    return columns.length === requiredColumnsNumber;
+  }
+
+  private toPriceList(row: string): IEditablePriceGrid {
+    const columns = row.split('\t');
+    return {
+      lowerBound: parseInt(columns[0], 10),
+      upperBound: parseInt(columns[1], 10),
+      unitPrice: parseInt(columns[2], 10),
+      fixedPrice: parseInt(columns[3], 10),
+    };
   }
 }

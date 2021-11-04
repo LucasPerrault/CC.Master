@@ -13,21 +13,25 @@
       <tr class="table-body-row" *ngFor="let control of formArray.controls; let i = index" [formGroupName]="i">
         <td class="table-body-row-cell mod-alignRight u-paddingReset">
           <cc-editable-price-cell (keydownChange)="updateFocus($event, i, 0)"
+                                  (pasteChange)="paste($event)"
                                   [formControlName]="formKey.LowerBound">
           </cc-editable-price-cell>
         </td>
         <td class="table-body-row-cell mod-alignRight u-paddingReset" [tabindex]="2">
           <cc-editable-price-cell (keydownChange)="updateFocus($event, i, 1)"
+                                  (pasteChange)="paste($event)"
                                   [formControlName]="formKey.UpperBound">
           </cc-editable-price-cell>
         </td>
         <td class="table-body-row-cell mod-alignRight u-paddingReset" [tabindex]="3">
           <cc-editable-price-cell (keydownChange)="updateFocus($event, i, 2)"
+                                  (pasteChange)="paste($event)"
                                   [formControlName]="formKey.UnitPrice">
           </cc-editable-price-cell>
         </td>
         <td class="table-body-row-cell mod-alignRight u-paddingReset" [tabindex]="4">
           <cc-editable-price-cell (keydownChange)="updateFocus($event, i, 3)"
+                                  (pasteChange)="paste($event)"
                                   [formControlName]="formKey.FixedPrice">
           </cc-editable-price-cell>
         </td>

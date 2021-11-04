@@ -24,6 +24,7 @@ import { ArrowKey } from '../editable-price-grid.component';
 })
 export class EditablePriceCellComponent implements OnInit, OnDestroy, ControlValueAccessor {
   @Output() public keydownChange: EventEmitter<ArrowKey> = new EventEmitter<ArrowKey>();
+  @Output() public pasteChange: EventEmitter<ClipboardEvent> = new EventEmitter<ClipboardEvent>();
 
   public formControl: FormControl = new FormControl();
 
@@ -83,6 +84,11 @@ export class EditablePriceCellComponent implements OnInit, OnDestroy, ControlVal
 
   public keydownUp(): boolean {
     this.keydownChange.emit(ArrowKey.Up);
+    return this.isEventPropagated;
+  }
+
+  public paste(event: ClipboardEvent): boolean {
+    this.pasteChange.emit(event);
     return this.isEventPropagated;
   }
 }
