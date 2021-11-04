@@ -4,9 +4,9 @@ import { RouterModule } from '@angular/router';
 import { RightsModule } from '@cc/aspects/rights';
 import { TranslateModule } from '@cc/aspects/translate';
 
-import { ContractsManageModalComponent } from './contracts-manage-modal.component';
-import { ContractsManageModalService } from './contracts-manage-modal.service';
-import { ContractsManageModalDataService } from './contracts-manage-modal-data.service';
+import { ContractManagementComponent } from './contract-management.component';
+import { ContractManagementService } from './contract-management.service';
+import { ContractManagementDataService } from './contract-management-data.service';
 import { AccountingTabModule } from './tabs/accounting-tab/accounting-tab.module';
 import { CloseTabModule } from './tabs/close-tab/close-tab.module';
 import { ContractTabModule } from './tabs/contract-tab/contract-tab.module';
@@ -17,7 +17,7 @@ import { EstablishmentTabModule } from './tabs/establishment-tab/establishment-t
 import { HistoryTabModule } from './tabs/history-tab/history-tab.module';
 
 @NgModule({
-  declarations: [ContractsManageModalComponent],
+  declarations: [ContractManagementComponent],
   imports: [
     CommonModule,
     RightsModule,
@@ -32,6 +32,6 @@ import { HistoryTabModule } from './tabs/history-tab/history-tab.module';
     EstablishmentTabModule,
     ErrorNotFoundTabModule,
   ],
-  providers: [ContractsManageModalService, ContractsManageModalDataService],
+  providers: [ContractManagementService, ContractManagementDataService],
 })
-export class ContractsManageModalModule { }
+export class ContractManagementModule { }

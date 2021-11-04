@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
 
 @Injectable()
-export class ContractsManageModalService {
+export class ContractManagementService {
   private onClose: Subject<void> = new Subject<void>();
   public get onClose$(): Observable<void> {
     return this.onClose.asObservable();

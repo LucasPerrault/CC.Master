@@ -9,15 +9,15 @@ import { catchError, finalize, takeUntil } from 'rxjs/operators';
 
 import { ContractsModalTabPath } from './constants/contracts-modal-tab-path.enum';
 import { contractsModalTabs } from './constants/contracts-modal-tabs.const';
-import { ContractsManageModalService } from './contracts-manage-modal.service';
-import { ContractsManageModalDataService } from './contracts-manage-modal-data.service';
+import { ContractManagementService } from './contract-management.service';
+import { ContractManagementDataService } from './contract-management-data.service';
 
 @Component({
   selector: 'cc-contracts-manage-modal',
-  templateUrl: './contracts-manage-modal.component.html',
-  styleUrls: ['./contracts-manage-modal.component.scss'],
+  templateUrl: './contract-management.component.html',
+  styleUrls: ['./contract-management.component.scss'],
 })
-export class ContractsManageModalComponent implements OnInit, OnDestroy {
+export class ContractManagementComponent implements OnInit, OnDestroy {
   public title: string;
   public isLoading$: ReplaySubject<boolean> = new ReplaySubject<boolean>(1);
   public isNotFound$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
@@ -34,10 +34,10 @@ export class ContractsManageModalComponent implements OnInit, OnDestroy {
   constructor(
     private rightsService: RightsService,
     private activatedRoute: ActivatedRoute,
-    private manageModalDataService: ContractsManageModalDataService,
+    private manageModalDataService: ContractManagementDataService,
     private translatePipe: TranslatePipe,
     private router: Router,
-    private contractsManageModalService: ContractsManageModalService,
+    private contractsManageModalService: ContractManagementService,
   ) {
     this.contractId = parseInt(this.activatedRoute.snapshot.paramMap.get('id'), 10);
   }

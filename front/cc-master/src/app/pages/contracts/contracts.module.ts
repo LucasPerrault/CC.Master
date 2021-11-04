@@ -8,22 +8,22 @@ import { ContractsComponent } from './contracts.component';
 import { ContractsDraftEntryModalComponent } from './contracts-draft/components/contracts-draft-modal/contracts-draft-modal.component';
 import { ContractsDraftComponent } from './contracts-draft/contracts-draft.component';
 import { ContractsDraftModule } from './contracts-draft/contracts-draft.module';
-import { ContractsModalTabPath } from './contracts-manage/components/contracts-manage-modal/constants/contracts-modal-tab-path.enum';
-import { ContractsManageModalComponent } from './contracts-manage/components/contracts-manage-modal/contracts-manage-modal.component';
-import { AccountingTabComponent } from './contracts-manage/components/contracts-manage-modal/tabs/accounting-tab/accounting-tab.component';
-import { CloseTabComponent } from './contracts-manage/components/contracts-manage-modal/tabs/close-tab/close-tab.component';
-import { ContractTabComponent } from './contracts-manage/components/contracts-manage-modal/tabs/contract-tab/contract-tab.component';
-import { CountTabComponent } from './contracts-manage/components/contracts-manage-modal/tabs/count-tab/count-tab.component';
+import { ContractsModalTabPath } from './contracts-manage/components/contract-management/constants/contracts-modal-tab-path.enum';
+import { ContractManagementComponent } from './contracts-manage/components/contract-management/contract-management.component';
+import { AccountingTabComponent } from './contracts-manage/components/contract-management/tabs/accounting-tab/accounting-tab.component';
+import { CloseTabComponent } from './contracts-manage/components/contract-management/tabs/close-tab/close-tab.component';
+import { ContractTabComponent } from './contracts-manage/components/contract-management/tabs/contract-tab/contract-tab.component';
+import { CountTabComponent } from './contracts-manage/components/contract-management/tabs/count-tab/count-tab.component';
 import {
   EnvironmentTabComponent,
-} from './contracts-manage/components/contracts-manage-modal/tabs/environment-tab/environment-tab.component';
+} from './contracts-manage/components/contract-management/tabs/environment-tab/environment-tab.component';
 import {
   ErrorNotFoundTabComponent,
-} from './contracts-manage/components/contracts-manage-modal/tabs/error-not-found-tab/error-not-found-tab.component';
+} from './contracts-manage/components/contract-management/tabs/error-not-found-tab/error-not-found-tab.component';
 import {
   EstablishmentTabComponent,
-} from './contracts-manage/components/contracts-manage-modal/tabs/establishment-tab/establishment-tab.component';
-import { HistoryTabComponent } from './contracts-manage/components/contracts-manage-modal/tabs/history-tab/history-tab.component';
+} from './contracts-manage/components/contract-management/tabs/establishment-tab/establishment-tab.component';
+import { HistoryTabComponent } from './contracts-manage/components/contract-management/tabs/history-tab/history-tab.component';
 import { ContractsManageComponent } from './contracts-manage/contracts-manage.component';
 import { ContractsManageModule } from './contracts-manage/contracts-manage.module';
 
@@ -81,7 +81,7 @@ const routes: Routes = [
       },
       {
         path: `${ NavigationPath.ContractsManage }/:id`,
-        component: ContractsManageModalComponent,
+        component: ContractManagementComponent,
         children: contractTabsRoutes,
       },
       {

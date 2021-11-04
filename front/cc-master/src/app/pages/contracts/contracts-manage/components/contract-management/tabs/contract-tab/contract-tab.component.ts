@@ -8,7 +8,7 @@ import { Observable, ReplaySubject, Subject } from 'rxjs';
 import { finalize, map, startWith, take } from 'rxjs/operators';
 
 import { ContractsListService } from '../../../../services/contracts-list.service';
-import { ContractsManageModalService } from '../../contracts-manage-modal.service';
+import { ContractManagementService } from '../../contract-management.service';
 import { IContractDetailed } from './models/contract-detailed.interface';
 import { IContractValidationContext } from './models/contract-validation-context.interface';
 import { ContractActionRestrictionsService } from './services/contract-action-restrictions.service.';
@@ -52,7 +52,7 @@ export class ContractTabComponent implements OnInit {
     private contractTabService: ContractTabService,
     private contractFormValidationService: ContractActionRestrictionsService,
     private contractValidationContextService: ContractValidationContextService,
-    private contractsManageModalService: ContractsManageModalService,
+    private contractsManageModalService: ContractManagementService,
     private contractsListService: ContractsListService,
   ) {}
 

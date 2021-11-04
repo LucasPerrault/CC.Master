@@ -7,7 +7,7 @@ import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 @Injectable()
-export class ContractsManageModalDataService {
+export class ContractManagementDataService {
   private readonly contractsEndPoint = '/api/v3/newcontracts';
 
   constructor(private httpClient: HttpClient) {

@@ -8,7 +8,7 @@ import { endOfMonth, isEqual, max, min, startOfMonth } from 'date-fns';
 import { BehaviorSubject, combineLatest, Observable, pipe, ReplaySubject, Subject, UnaryFunction } from 'rxjs';
 import { debounceTime, filter, finalize, map, take, takeUntil } from 'rxjs/operators';
 
-import { ContractsManageModalService } from '../../contracts-manage-modal.service';
+import { ContractManagementService } from '../../contract-management.service';
 import { CountsReplayModalComponent } from './components/counts-replay-modal/counts-replay-modal.component';
 import { ICountContract } from './models/count-contract.interface';
 import { ICountListEntry } from './models/count-list-entry.interface';
@@ -73,12 +73,12 @@ export class CountTabComponent implements OnInit, OnDestroy {
 
   constructor(
     private activatedRoute: ActivatedRoute,
-    private contractsManageModalService: ContractsManageModalService,
+    private contractsManageModalService: ContractManagementService,
     private countContractsListService: CountContractsListService,
     private countContractsService: CountContractsDataService,
     private restrictionsService: CountContractsRestrictionsService,
     private luModal: LuModal,
-    private manageModalService: ContractsManageModalService,
+    private manageModalService: ContractManagementService,
   ) { }
 
   public ngOnInit(): void {
