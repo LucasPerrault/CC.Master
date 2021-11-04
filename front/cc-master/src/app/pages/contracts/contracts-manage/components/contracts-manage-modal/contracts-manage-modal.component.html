@@ -1,27 +1,42 @@
-<div class="loading mod-dialog" *ngIf="isLoading$ | async; else notLoading"></div>
+<div class="loading mod-fullPage" *ngIf="isLoading$ | async; else isNotLoading"></div>
 
-<ng-template #notLoading>
-  <nav class="menu u-nowrap" #navScrollWrapper *ngIf="(isNotFound$ | async) === false">
-    <button type="button" class="button mod-scrollIcon mod-outline mod-white u-paddingSmaller" (click)="scrollLeft(navScrollWrapper)">
-      <span aria-hidden="true" class="lucca-icon icon-arrowWest"></span>
-    </button>
+<ng-template #isNotLoading>
+  <div class="page mod-fullWidth mod-withFullwidthTable mod-horizontal">
+    <header class="pageHeader mod-withMenu" *ngIf="(isNotFound$ | async) === false">
+      <nav class="breadcrumbs" aria-describedby="breadcrumbs-title">
+        <p id="breadcrumbs-title" class="u-mask">{{ 'contract_breadcrumbs' | translate }}</p>
+        <ul class="breadcrumbs-list">
+          <li class="breadcrumbs-list-item">
+            <button (click)="redirectToContracts()" class="breadcrumbs-list-item-action mod-link">
+              {{ 'front_contractPage_title' | translate }}
+            </button>
+          </li>
+          <li class="breadcrumbs-list-item">
+            <span aria-current="page" class="breadcrumbs-list-item-action">{{ title }}</span>
+          </li>
+        </ul>
+      </nav>
 
-    <ng-container *ngFor="let tab of tabs">
-      <a [routerLink]="getRelativeRouteUrl(tab.url)" [routerLinkActive]="'is-active'" queryParamsHandling="preserve" class="menu-link">
-        {{ tab.name | translate }}
-      </a>
-    </ng-container>
+      <div class="pageHeader-content">
+        <div class="header-contentLeft">
+          <div class="header-nav">
+            <a (click)="redirectToContracts()" class="header-nav-back"></a>
+            <h1 class="header-nav-title">{{ title }}</h1>
+          </div>
+        </div>
+      </div>
 
-    <button type="button" class="button mod-scrollIcon mod-outline mod-white u-paddingSmaller" (click)="scrollRight(navScrollWrapper)">
-      <span aria-hidden="true" class="lucca-icon icon-arrowEast"></span>
-    </button>
-  </nav>
+      <nav class="menu u-flexWrapWrap">
+        <ng-container *ngFor="let tab of tabs">
+          <a [routerLink]="['./', tab.url]"
+             [routerLinkActive]="'is-active'"
+             queryParamsHandling="preserve" class="menu-link">
+            {{ tab.name | translate }}
+          </a>
+        </ng-container>
+      </nav>
+    </header>
 
-
-  <div class="contracts-sidepanel-content">
-    <ng-template [ngTemplateOutlet]="parentRouterOutletRef"></ng-template>
+    <router-outlet></router-outlet>
   </div>
 </ng-template>
-
-
-

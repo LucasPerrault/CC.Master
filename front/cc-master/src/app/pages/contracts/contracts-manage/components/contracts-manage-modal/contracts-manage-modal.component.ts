@@ -1,11 +1,10 @@
-import { AfterViewInit, Component, Inject, OnDestroy, OnInit, TemplateRef, ViewChild } from '@angular/core';
-import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 import { RightsService } from '@cc/aspects/rights';
 import { TranslatePipe } from '@cc/aspects/translate';
 import { INavigationTab, NavigationPath } from '@cc/common/navigation';
 import { IContract } from '@cc/domain/billing/contracts';
-import { ILuSidepanelContent, LU_SIDEPANEL_DATA, LuSidepanel } from '@lucca-front/ng/sidepanel';
-import { BehaviorSubject, from, Subject } from 'rxjs';
+import { BehaviorSubject, from, ReplaySubject, Subject } from 'rxjs';
 import { catchError, finalize, takeUntil } from 'rxjs/operators';
 
 import { ContractsModalTabPath } from './constants/contracts-modal-tab-path.enum';
@@ -13,74 +12,14 @@ import { contractsModalTabs } from './constants/contracts-modal-tabs.const';
 import { ContractsManageModalService } from './contracts-manage-modal.service';
 import { ContractsManageModalDataService } from './contracts-manage-modal-data.service';
 
-interface IContractsManageModalData {
-  contractId: number;
-  routerOutletRef: TemplateRef<RouterOutlet>;
-}
-
-@Component({
-  selector: 'cc-contracts-manage-entry-modal',
-  template: '<ng-template><router-outlet></router-outlet></ng-template>',
-})
-export class ContractsManageEntryModalComponent implements OnDestroy, AfterViewInit {
-  @ViewChild(TemplateRef) routerOutletRef: TemplateRef<RouterOutlet>;
-
-  private destroy$: Subject<void> = new Subject<void>();
-
-  constructor(
-    private luSidepanel: LuSidepanel,
-    private router: Router,
-    private activatedRoute: ActivatedRoute,
-    private contractsManageModalService: ContractsManageModalService,
-  ) {}
-
-  public ngAfterViewInit(): void {
-    const contractId = parseInt(this.activatedRoute.snapshot.paramMap.get('id'), 10);
-
-    const data = { contractId, routerOutletRef: this.routerOutletRef };
-    const dialog = this.luSidepanel.open(ContractsManageModalComponent, data, {
-      panelClass: ['lu-popup-panel','mod-sidepanel', 'mod-contracts-sidepanel'],
-    });
-
-    dialog.onClose
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(async () => await this.redirectToParentAsync());
-
-    dialog.onDismiss
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(async () => await this.redirectToParentAsync());
-
-    this.contractsManageModalService.onClose$
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(() => dialog.close(''));
-
-    this.contractsManageModalService.onDismiss$
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(() => dialog.dismiss());
-  }
-
-  public ngOnDestroy(): void {
-    this.destroy$.next();
-    this.destroy$.complete();
-  }
-
-  private async redirectToParentAsync(): Promise<void> {
-    await this.router.navigate(['.'], {
-      relativeTo: this.activatedRoute.parent,
-      queryParamsHandling: 'preserve',
-    });
-  }
-}
-
 @Component({
   selector: 'cc-contracts-manage-modal',
   templateUrl: './contracts-manage-modal.component.html',
   styleUrls: ['./contracts-manage-modal.component.scss'],
 })
-export class ContractsManageModalComponent implements ILuSidepanelContent, OnInit, OnDestroy {
+export class ContractsManageModalComponent implements OnInit, OnDestroy {
   public title: string;
-  public parentRouterOutletRef: TemplateRef<RouterOutlet>;
-  public isLoading$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+  public isLoading$: ReplaySubject<boolean> = new ReplaySubject<boolean>(1);
   public isNotFound$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
   private readonly contractId: number;
@@ -99,10 +38,8 @@ export class ContractsManageModalComponent implements ILuSidepanelContent, OnIni
     private translatePipe: TranslatePipe,
     private router: Router,
     private contractsManageModalService: ContractsManageModalService,
-    @Inject(LU_SIDEPANEL_DATA) data: IContractsManageModalData,
   ) {
-    this.contractId = data.contractId;
-    this.parentRouterOutletRef = data.routerOutletRef;
+    this.contractId = parseInt(this.activatedRoute.snapshot.paramMap.get('id'), 10);
   }
 
   public ngOnInit(): void {
@@ -111,6 +48,10 @@ export class ContractsManageModalComponent implements ILuSidepanelContent, OnIni
     this.contractsManageModalService.onRefresh$
       .pipe(takeUntil(this.destroy$))
       .subscribe(() => this.updateContractTitle());
+
+    this.contractsManageModalService.onClose$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(() => this.redirectToContracts());
   }
 
   public ngOnDestroy(): void {
@@ -118,23 +59,17 @@ export class ContractsManageModalComponent implements ILuSidepanelContent, OnIni
     this.destroy$.complete();
   }
 
-  public getRelativeRouteUrl(url: string): string[] {
-    return [NavigationPath.Contracts, NavigationPath.ContractsManage, String(this.contractId), url];
-  }
-
-  public scrollLeft(tabsWrapper: Element): void {
-    tabsWrapper.scrollTo({ behavior: 'smooth', left: 0 });
-  }
-
-  public scrollRight(tabsWrapper: Element): void {
-    tabsWrapper.scrollTo({ behavior: 'smooth', left: tabsWrapper.scrollWidth });
+  public redirectToContracts(): void {
+    const route = `${ NavigationPath.Contracts }/${ NavigationPath.ContractsManage }`;
+    this.router.navigate([route], {
+      queryParamsHandling: 'preserve',
+    });
   }
 
   private setTitle(contractName: string): void {
-    if (!contractName) {
-      return;
-    }
-    this.title = `${ this.translatePipe.transform('front_contractPage_modalTitle') } ${ contractName }`;
+    this.title = !!contractName
+      ? `${ this.translatePipe.transform('front_contractPage_modalTitle') } ${ contractName }`
+      : '';
   }
 
   private updateContractTitle(): void {
@@ -152,10 +87,9 @@ export class ContractsManageModalComponent implements ILuSidepanelContent, OnIni
   private redirectToNotFoundPage(): Promise<IContract> {
     this.isNotFound$.next(true);
 
-    const notFoundUrl = this.getRelativeRouteUrl(ContractsModalTabPath.NotFound);
-
+    const route = [ContractsModalTabPath.NotFound];
     return this.router
-      .navigate(notFoundUrl, { queryParamsHandling: 'preserve' })
+      .navigate(route, { queryParamsHandling: 'preserve', relativeTo: this.activatedRoute })
       .then(() => null);
   }
 }

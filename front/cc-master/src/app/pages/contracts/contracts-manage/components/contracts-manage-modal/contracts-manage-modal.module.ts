@@ -3,10 +3,8 @@ import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { RightsModule } from '@cc/aspects/rights';
 import { TranslateModule } from '@cc/aspects/translate';
-import { LuModalModule } from '@lucca-front/ng/modal';
-import { LuSidepanelModule } from '@lucca-front/ng/sidepanel';
 
-import { ContractsManageEntryModalComponent, ContractsManageModalComponent } from './contracts-manage-modal.component';
+import { ContractsManageModalComponent } from './contracts-manage-modal.component';
 import { ContractsManageModalService } from './contracts-manage-modal.service';
 import { ContractsManageModalDataService } from './contracts-manage-modal-data.service';
 import { AccountingTabModule } from './tabs/accounting-tab/accounting-tab.module';
@@ -19,17 +17,12 @@ import { EstablishmentTabModule } from './tabs/establishment-tab/establishment-t
 import { HistoryTabModule } from './tabs/history-tab/history-tab.module';
 
 @NgModule({
-  declarations: [
-    ContractsManageEntryModalComponent,
-    ContractsManageModalComponent,
-  ],
+  declarations: [ContractsManageModalComponent],
   imports: [
     CommonModule,
     RightsModule,
     TranslateModule,
     RouterModule,
-    LuSidepanelModule,
-    LuModalModule,
     ContractTabModule,
     HistoryTabModule,
     CloseTabModule,

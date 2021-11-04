@@ -9,7 +9,7 @@ import { ContractsDraftEntryModalComponent } from './contracts-draft/components/
 import { ContractsDraftComponent } from './contracts-draft/contracts-draft.component';
 import { ContractsDraftModule } from './contracts-draft/contracts-draft.module';
 import { ContractsModalTabPath } from './contracts-manage/components/contracts-manage-modal/constants/contracts-modal-tab-path.enum';
-import { ContractsManageEntryModalComponent } from './contracts-manage/components/contracts-manage-modal/contracts-manage-modal.component';
+import { ContractsManageModalComponent } from './contracts-manage/components/contracts-manage-modal/contracts-manage-modal.component';
 import { AccountingTabComponent } from './contracts-manage/components/contracts-manage-modal/tabs/accounting-tab/accounting-tab.component';
 import { CloseTabComponent } from './contracts-manage/components/contracts-manage-modal/tabs/close-tab/close-tab.component';
 import { ContractTabComponent } from './contracts-manage/components/contracts-manage-modal/tabs/contract-tab/contract-tab.component';
@@ -78,13 +78,11 @@ const routes: Routes = [
       {
         path: NavigationPath.ContractsManage,
         component: ContractsManageComponent,
-        children: [
-          {
-            path: ':id',
-            component: ContractsManageEntryModalComponent,
-            children: contractTabsRoutes,
-          },
-        ],
+      },
+      {
+        path: `${ NavigationPath.ContractsManage }/:id`,
+        component: ContractsManageModalComponent,
+        children: contractTabsRoutes,
       },
       {
         path: NavigationPath.ContractsDraft,

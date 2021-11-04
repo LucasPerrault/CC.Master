@@ -8,11 +8,6 @@ export class ContractsManageModalService {
     return this.onClose.asObservable();
   }
 
-  private onDismiss: Subject<void> = new Subject<void>();
-  public get onDismiss$(): Observable<void> {
-    return this.onDismiss.asObservable();
-  }
-
   private onRefresh: Subject<void> = new Subject<void>();
   public get onRefresh$(): Observable<void> {
     return this.onRefresh.asObservable();
@@ -20,10 +15,6 @@ export class ContractsManageModalService {
 
   public close(): void {
     this.onClose.next();
-  }
-
-  public dismiss(): void {
-    this.onDismiss.next();
   }
 
   public refresh(): void {
