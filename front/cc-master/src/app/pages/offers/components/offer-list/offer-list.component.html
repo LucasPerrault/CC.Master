@@ -36,17 +36,17 @@
   </tr>
   </thead>
   <tbody class="table-body">
-  <tr *ngFor="let offer of offers" class="table-body-row">
+  <tr *ngFor="let offer of offers" class="table-body-row" [routerLink]="[offer.id, 'edit']">
     <td class="table-body-row-cell">{{ offer.name }}</td>
     <td class="table-body-row-cell">{{ offer.product.name }}</td>
     <td class="table-body-row-cell">{{ getBillingMode(offer.billingMode) }}</td>
     <td class="table-body-row-cell">{{ offer.pricingMethod }}</td>
     <td class="table-body-row-cell">{{ offer.forecastMethod }}</td>
     <td class="table-body-row-cell">{{ offer.currency.name }}</td>
-    <td class="table-body-row-cell mod-alignRight">
+    <td class="table-body-row-cell mod-alignRight" (click)="$event.stopPropagation()">
       <button class="link" (click)="redirectToContracts(offer.id)">{{ offer.activeContractNumber }}</button>
     </td>
-    <td class="table-body-row-cell mod-actions">
+    <td class="table-body-row-cell mod-actions" (click)="$event.stopPropagation()">
       <button class="actionIcon"
               *ngIf="canBeDeleted(offer)"
               (click)="openDeletionModal(offer)"
@@ -55,9 +55,6 @@
       </button>
       <button class="actionIcon" [luTooltip]="'offers_list_actions_edit' | translate" [routerLink]="[offer.id, 'edit']">
         <span aria-hidden="true" class="lucca-icon icon-edit"></span>
-      </button>
-      <button class="actionIcon" [luTooltip]="'offers_list_actions_priceLists' | translate">
-        <span aria-hidden="true" class="lucca-icon icon-table"></span>
       </button>
     </td>
   </tr>
