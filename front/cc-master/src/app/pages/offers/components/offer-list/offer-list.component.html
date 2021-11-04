@@ -1,6 +1,9 @@
 <table class="table mod-clickable">
   <thead class="table-head">
   <tr class="table-head-row">
+    <th class="table-head-row-cell">
+      {{ 'offers_list_column_id' | translate }}
+    </th>
     <th class="table-head-row-cell" [attr.aria-sort]="getSortOrderClass(sortParamKey.Name)">
       <button class="table-head-row-cell-sortableButton" (click)="sortBy(sortParamKey.Name)">
         {{ 'offers_list_column_name' | translate }}
@@ -37,6 +40,7 @@
   </thead>
   <tbody class="table-body">
   <tr *ngFor="let offer of offers" class="table-body-row" [routerLink]="[offer.id, 'edit']">
+    <td class="table-body-row-cell mod-alignRight">{{ offer.id }}</td>
     <td class="table-body-row-cell">{{ offer.name }}</td>
     <td class="table-body-row-cell">{{ offer.product.name }}</td>
     <td class="table-body-row-cell">{{ getBillingMode(offer.billingMode) }}</td>
