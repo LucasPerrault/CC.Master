@@ -1,9 +1,8 @@
-import { DatePipe } from '@angular/common';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { TranslatePipe } from '@cc/aspects/translate';
 import { startOfMonth } from 'date-fns';
 
+import { getCloseContractReason } from '../../constants/close-contract-reason.enum';
 import { IAttachmentEnded } from '../../models/attachment-ended.interface';
 import { IClosureFormValidationContext } from '../../models/closure-form-validation-context.interface';
 import { IContractClosureDetailed } from '../../models/contract-closure-detailed.interface';
@@ -24,8 +23,8 @@ export class ContractClosureFormComponent {
   @Input() maxContractClosedDate: Date;
   @Input() closeButtonState: string;
   @Input() set contractClosureDetailed(contractClosureDetailed: IContractClosureDetailed) {
-    this.formGroup.setValue({
-      [CloseContractFormKey.CloseReason]: contractClosureDetailed.closeReason,
+    this.formGroup.patchValue({
+      [CloseContractFormKey.CloseReason]: getCloseContractReason(contractClosureDetailed.closeReason),
       [CloseContractFormKey.CloseOn]: contractClosureDetailed.closeOn,
     });
   }
@@ -36,7 +35,7 @@ export class ContractClosureFormComponent {
 
   public showConfirmation = false;
 
-  constructor(private translatePipe: TranslatePipe, private datePipe: DatePipe) {
+  constructor() {
     this.formGroup = new FormGroup({
       [CloseContractFormKey.CloseReason]: new FormControl(),
       [CloseContractFormKey.CloseOn]: new FormControl(),

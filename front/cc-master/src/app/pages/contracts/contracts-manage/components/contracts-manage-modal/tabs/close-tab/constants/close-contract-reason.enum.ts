@@ -15,3 +15,6 @@ export const closeContractReasons: ICloseContractReason[] = [
     name: 'front_contractPage_endContractReason_modification',
   },
 ];
+
+export const getCloseContractReason = (id: CloseContractReason): ICloseContractReason =>
+  closeContractReasons.find(r => r.id === id);
