@@ -33,7 +33,7 @@ export class ContractValidationContextService {
     const params = new HttpParams()
       .set('fields', 'collection.count')
       .set('contractId', String(contractId))
-      .set('isActive', String(true));
+      .set('legalEntity.isActive', String(true));
 
     return this.httpClient.get<IHttpApiV3CountResponse>(this.attachmentsEndpoint, { params })
       .pipe(map(response => response.data.count));
