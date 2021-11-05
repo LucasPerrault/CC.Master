@@ -9,7 +9,7 @@ namespace Instances.Domain.Instances
 {
     public static class EnvironmentExtensions
     {
-        private const string PreviewDomain = "ilucca-preview.net";
+        public const string PreviewDomain = "ilucca-preview.net";
 
         public static string GetInstanceExecutingCluster(this CCEnvironment environment, InstanceType instanceType)
         {
