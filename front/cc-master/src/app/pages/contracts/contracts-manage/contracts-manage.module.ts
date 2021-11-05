@@ -17,9 +17,9 @@ import { ProductChipModule } from '../common';
 import {
   ContractAdditionalColumnSelectModule,
 } from './components/contract-additional-column-select/contract-additional-column-select.module';
+import { ContractManagementModule } from './components/contract-management/contract-management.module';
 import { ContractsManageFilterModule } from './components/contracts-manage-filter/contracts-manage-filter.module';
 import { ContractsManageListComponent } from './components/contracts-manage-list/contracts-manage-list.component';
-import { ContractsManageModalModule } from './components/contracts-manage-modal/contracts-manage-modal.module';
 import { ContractsManageComponent } from './contracts-manage.component';
 import { ContractsApiMappingService } from './services/contracts-api-mapping.service';
 import { ContractsFilterRoutingService } from './services/contracts-filter-routing.service';
@@ -37,7 +37,7 @@ import { ContractsRoutingService } from './services/contracts-routing.service';
       ReactiveFormsModule,
       DownloadModule,
       ContractsManageFilterModule,
-      ContractsManageModalModule,
+      ContractManagementModule,
       ContractAdditionalColumnSelectModule,
       LuTooltipTriggerModule,
   ],
