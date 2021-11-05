@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 using Users.Domain;
 using Xunit;
 
-namespace Authentication.Tests
+namespace Authentication.Infra.Tests
 {
     public class PrincipalStoreTests
     {
