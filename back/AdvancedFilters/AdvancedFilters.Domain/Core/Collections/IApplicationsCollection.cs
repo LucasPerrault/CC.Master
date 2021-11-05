@@ -39,6 +39,7 @@ namespace AdvancedFilters.Domain.Core.Collections
             var applications = ApplicationNamesById
                 .Select(kvp => new Application { Id = kvp.Key, Name = kvp.Value })
                 .Where(a => string.IsNullOrEmpty(search) || a.Name.ToLowerInvariant().StartsWith(search.ToLowerInvariant()))
+                .OrderBy(a => a.Name)
                 .ToList();
 
             return Task.FromResult<IReadOnlyCollection<Application>>(applications);
