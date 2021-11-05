@@ -6,7 +6,7 @@
       <th class="table-head-row-cell mod-alignRight">{{ 'front_priceGrid_column_upperBound' | translate }}</th>
       <th class="table-head-row-cell mod-alignRight">{{ 'front_priceGrid_column_unitPrice' | translate }}</th>
       <th class="table-head-row-cell mod-alignRight">{{ 'front_priceGrid_column_fixedPrice' | translate }}</th>
-      <th class="table-head-row-cell mod-actions"></th>
+      <th class="table-head-row-cell"></th>
     </tr>
     </thead>
     <tbody class="table-body" [formArrayName]="formArrayKey">
@@ -31,9 +31,9 @@
                                   [formControlName]="formKey.FixedPrice">
           </cc-editable-price-cell>
         </td>
-        <td class="table-body-row-cell mod-actions u-paddingReset">
+        <td class="table-body-row-cell u-paddingReset">
           <button class="actionIcon" (click)="remove(i)" *ngIf="canRemove">
-            <span aria-hidden="true" class="lucca-icon icon-trash"></span>
+            <span aria-hidden="true" class="lucca-icon icon-cross"></span>
           </button>
         </td>
       </tr>
