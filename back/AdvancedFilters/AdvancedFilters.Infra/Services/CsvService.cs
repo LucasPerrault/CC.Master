@@ -86,7 +86,7 @@ namespace AdvancedFilters.Infra.Services
                 CreatedAt = environment.CreatedAt;
                 Cluster = environment.Cluster;
                 EnvironmentName = $"{environment.Subdomain}.{environment.Domain}";
-                AppInstances = string.Join(",", environment.AppInstances.Select(a => a.Name));
+                AppInstances = string.Join(",", environment.AppInstances.Select(a => a.ApplicationName));
                 LuCountries = string.Join(",", environment.LegalUnits.Select(x => x.Country.Name).Distinct());
             }
 
@@ -111,7 +111,7 @@ namespace AdvancedFilters.Infra.Services
                 UserLastName = contact.UserLastName;
                 UserFirstName = contact.UserFirstName;
                 UserMail = contact.UserMail;
-                AppInstance = contact.AppInstance.Name;
+                AppInstance = contact.AppInstance.ApplicationName;
                 IsConfirmed = contact.IsConfirmed;
                 CreatedAt = contact.CreatedAt;
                 ExpiredAt = contact.ExpiresAt;
