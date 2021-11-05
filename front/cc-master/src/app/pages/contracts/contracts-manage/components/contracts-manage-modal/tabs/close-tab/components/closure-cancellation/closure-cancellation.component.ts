@@ -1,7 +1,7 @@
 import { DatePipe } from '@angular/common';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { TranslatePipe } from '@cc/aspects/translate';
-import { addMonths, startOfMonth } from 'date-fns';
+import { addMonths, isFuture, startOfMonth } from 'date-fns';
 
 import { CloseContractReason, closeContractReasons } from '../../constants/close-contract-reason.enum';
 import { IContractClosureDetailed } from '../../models/contract-closure-detailed.interface';
@@ -28,8 +28,13 @@ export class ClosureCancellationComponent {
   }
 
   public getContractClosedInformation(): string {
-    return this.translatePipe.transform('front_contractPage_endContractCallout_text', {
-      closeOn: this.datePipe.transform(new Date(this.contractClosureDetailed.closeOn), 'mediumDate'),
+    const closeDate = new Date(this.contractClosureDetailed.closeOn);
+    const translationKey = isFuture(closeDate)
+      ? 'front_contractPage_futureEndContractCallout_text'
+      : 'front_contractPage_endContractCallout_text';
+
+    return this.translatePipe.transform(translationKey, {
+      closeOn: this.datePipe.transform(closeDate, 'mediumDate'),
       closeReason: this.getTranslatedCloseReason(this.contractClosureDetailed.closeReason),
     });
   }
