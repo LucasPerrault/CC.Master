@@ -53,7 +53,7 @@
               [luTooltip]="'offers_list_actions_delete' | translate">
         <span aria-hidden="true" class="lucca-icon icon-close"></span>
       </button>
-      <button class="actionIcon" [luTooltip]="'offers_list_actions_edit' | translate">
+      <button class="actionIcon" [luTooltip]="'offers_list_actions_edit' | translate" [routerLink]="[offer.id, 'edit']">
         <span aria-hidden="true" class="lucca-icon icon-edit"></span>
       </button>
       <button class="actionIcon" [luTooltip]="'offers_list_actions_priceLists' | translate">

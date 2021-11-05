@@ -9,6 +9,7 @@ import { OfferDeletionModule } from './components/offer-deletion/offer-deletion.
 import { OfferFiltersModule } from './components/offer-filters/offer-filters.module';
 import { OfferListComponent } from './components/offer-list/offer-list.component';
 import { OffersComponent } from './offers.component';
+import { OffersRoutingModule } from './offers-routing.module';
 import { OfferListService } from './services/offer-list.service';
 import { OffersApiMappingService } from './services/offers-api-mapping.service';
 import { OffersDataService } from './services/offers-data.service';
@@ -23,9 +24,10 @@ import { OffersDataService } from './services/offers-data.service';
     TranslateModule,
     PagingModule,
     LuTooltipTriggerModule,
-    OfferFiltersModule,
     ReactiveFormsModule,
+    OfferFiltersModule,
     OfferDeletionModule,
+    OffersRoutingModule,
   ],
   providers: [
     OffersDataService,

@@ -28,3 +28,5 @@ export const billingModes: IBillingMode[] = [
     name: 'offers_billingMode_activeUsers',
   },
 ];
+
+export const getBillingMode = (id: BillingMode): IBillingMode => billingModes.find(b => b.id === id);

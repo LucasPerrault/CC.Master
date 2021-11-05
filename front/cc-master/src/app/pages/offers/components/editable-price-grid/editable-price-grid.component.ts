@@ -63,6 +63,10 @@ export class EditablePriceGridComponent implements OnInit, OnDestroy, ControlVal
     this.addRange(priceLists);
   }
 
+  public get canRemove(): boolean {
+    return this.formArray.length > 1;
+  }
+
   public formArrayKey = 'priceLists';
   public formArray: FormArray = new FormArray([]);
   public formKey = PriceListFormKey;
@@ -117,6 +121,11 @@ export class EditablePriceGridComponent implements OnInit, OnDestroy, ControlVal
   }
 
   public writeValue(priceLists: IEditablePriceGrid[]): void {
+    if (!priceLists?.length) {
+      this.init();
+      return;
+    }
+
     if (!!priceLists) {
       this.formArray.clear();
       this.addRange(priceLists);
@@ -132,7 +141,8 @@ export class EditablePriceGridComponent implements OnInit, OnDestroy, ControlVal
   public insert(currentIndex: number): void {
     const priceList: IEditablePriceGrid = this.formArray.at(currentIndex).value;
     const nextLowerBound = priceList.upperBound + 1;
-    const formGroup = this.getFormGroup(nextLowerBound);
+    const nextDefaultUpperBound = nextLowerBound;
+    const formGroup = this.getFormGroup(nextLowerBound, nextDefaultUpperBound, 0, 0);
 
     this.formArray.insert(currentIndex + 1, formGroup);
   }
@@ -156,7 +166,12 @@ export class EditablePriceGridComponent implements OnInit, OnDestroy, ControlVal
     input.focus();
   }
 
-  private add(priceList?: IEditablePriceGrid): void {
+  private init(): void {
+    const defaultPriceList: IEditablePriceGrid = { lowerBound: 0, upperBound: 0, unitPrice: 0, fixedPrice: 0 };
+    this.add(defaultPriceList);
+  }
+
+  private add(priceList: IEditablePriceGrid): void {
     const formGroup = this.getFormGroup(priceList.lowerBound, priceList.upperBound, priceList.unitPrice, priceList.fixedPrice);
     this.formArray.push(formGroup);
   }

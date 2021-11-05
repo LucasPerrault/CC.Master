@@ -32,10 +32,10 @@
           </cc-editable-price-cell>
         </td>
         <td class="table-body-row-cell mod-actions u-paddingReset">
-          <button class="actionIcon u-marginLeftSmallest" (click)="insert(i )">
+          <button class="actionIcon u-marginLeftSmallest" (click)="insert(i)">
             <span aria-hidden="true" class="lucca-icon icon-plus"></span>
           </button>
-          <button class="actionIcon" (click)="remove(i)">
+          <button class="actionIcon" (click)="remove(i)" *ngIf="canRemove">
             <span aria-hidden="true" class="lucca-icon icon-trash"></span>
           </button>
         </td>
