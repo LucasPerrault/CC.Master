@@ -1,0 +1,9 @@
+<label class="textfield" [ngClass]="to?.mod">
+  <cc-application-api-select [formControl]="formControl"
+                             [formlyAttributes]="field"
+                             [placeholder]="to?.placeholder"
+                             [multiple]="to?.multiple"
+                             [required]="to?.required">
+  </cc-application-api-select>
+  <span class="textfield-label" *ngIf="to?.label">{{ to.label }}</span>
+</label>

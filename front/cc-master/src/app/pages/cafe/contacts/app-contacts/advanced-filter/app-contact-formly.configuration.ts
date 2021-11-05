@@ -9,10 +9,8 @@ export class AppContactFormlyConfiguration {
 
   public readonly applications: FormlyFieldConfig = {
     key: AppContactAdvancedFilterKey.AppInstance,
-    type: 'api',
+    type: 'application',
     templateOptions: {
-      api: '/api/cafe/applications',
-      standard: 'v4',
       multiple: true,
       required: true,
       mod: 'palette-grey mod-outlined mod-inline mod-longer',

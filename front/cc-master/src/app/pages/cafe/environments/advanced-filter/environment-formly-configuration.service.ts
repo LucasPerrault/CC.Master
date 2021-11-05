@@ -20,10 +20,8 @@ export class EnvironmentFormlyConfiguration {
 
   public readonly applications: FormlyFieldConfig = {
     key: EnvironmentAdvancedFilterKey.AppInstances,
-    type: 'api',
+    type: 'application',
     templateOptions: {
-      api: '/api/cafe/applications',
-      standard: 'v4',
       multiple: true,
       required: true,
       mod: 'palette-grey mod-outlined mod-inline mod-longer',
@@ -33,10 +31,8 @@ export class EnvironmentFormlyConfiguration {
 
   public readonly application: FormlyFieldConfig = {
     key: EnvironmentAdvancedFilterKey.AppInstance,
-    type: 'api',
+    type: 'application',
     templateOptions: {
-      api: '/api/cafe/applications',
-      standard: 'v4',
       required: true,
       mod: 'palette-grey mod-outlined mod-inline mod-longer',
       placeholder: this.translatePipe.transform('cafe_filters_environment_app_placeholder'),

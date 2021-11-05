@@ -9,7 +9,8 @@ import {
 } from '@cc/common/forms';
 import { FormlyModule } from '@ngx-formly/core';
 
-import { EnvironmentApiSelectModule } from '../../../pages/cafe/common/forms';
+import { ApplicationApiSelectModule, EnvironmentApiSelectModule } from '../../../pages/cafe/common/forms';
+import { FormlyFieldApplication } from './application/application.component';
 import { FormlyFieldCluster } from './cluster/cluster.component';
 import { FormlyFieldCountry } from './country/country.component';
 import { FormlyFieldEnvironmentDomain } from './environment-domain/environment-domain.component';
@@ -24,11 +25,13 @@ import { FormlyFieldSpecializedContactRole } from './specialized-contact-role/sp
     FormlyFieldCountry,
     FormlyFieldSpecializedContactRole,
     FormlyFieldCluster,
+    FormlyFieldApplication,
   ],
   imports: [
     CommonModule,
     EnvironmentDomainSelectModule,
     EnvironmentApiSelectModule,
+    ApplicationApiSelectModule,
     ReactiveFormsModule,
     FormlyModule.forChild(luFormlyConfig),
     CountryApiSelectModule,
