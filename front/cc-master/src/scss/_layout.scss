@@ -1,6 +1,35 @@
+@import "theming.import";
+
 .page {
   display: block;
   padding: _theme("spacings.standard");
+
+  &.mod-horizontal {
+    padding-top: 0;
+    min-height: calc(100vh - #{_theme("commons.banner-height")});
+
+    .pageHeader { z-index: 99; }
+    .pageHeader .pageHeader-content { align-items: center; }
+    .pageHeader .pageHeader-content .menu:after { border-bottom: none; }
+    .pageHeader .pageHeader-content .header-nav .header-nav-title { color: _color('grey', 'dark'); }
+    .pageHeader .pageHeader-content .header-nav .header-nav-back { border-right: 0; }
+
+    .page-content {
+      padding-top: _theme('spacings.smaller');
+      background: transparent;
+      overflow: auto;
+      flex-grow: 1;
+    }
+
+    .page-footer { box-shadow: _theme('commons.elevations.elevation-1'); }
+    .page-footer .page-footer-right {
+      display: flex;
+      justify-content: end;
+    }
+
+    .errorPage .errorPage-section { width: auto; }
+  }
+
   &.mod-fullWidth {
     padding-left: 0;
     padding-right: 0;
