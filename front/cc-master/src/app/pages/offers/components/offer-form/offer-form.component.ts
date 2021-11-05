@@ -11,7 +11,7 @@ import {
 } from '@angular/forms';
 import { SelectDisplayMode } from '@cc/common/forms';
 import { IOffer } from '@cc/domain/billing/offers';
-import { ReplaySubject, Subject } from 'rxjs';
+import { BehaviorSubject, Subject } from 'rxjs';
 import { filter, finalize, switchMap, takeUntil, tap } from 'rxjs/operators';
 
 import { OffersDataService } from '../../services/offers-data.service';
@@ -53,7 +53,7 @@ export class OfferFormComponent implements OnInit, OnDestroy, ControlValueAccess
   public formMode = SelectDisplayMode.Form;
 
   public offer: FormControl = new FormControl();
-  public isPriceListsLoading$: ReplaySubject<boolean> = new ReplaySubject<boolean>(1);
+  public isPriceListsLoading$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
   private destroy$: Subject<void> = new Subject<void>();
 

@@ -1,6 +1,7 @@
 import { HttpParams } from '@angular/common/http';
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
+import { Operation, RightsService } from '@cc/aspects/rights';
 import { defaultPagingParams, IPaginatedResult, PaginatedList, PaginatedListState, PagingService } from '@cc/common/paging';
 import { ISortParams, SortOrder } from '@cc/common/sort';
 import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
@@ -37,6 +38,10 @@ export class OffersComponent implements OnInit {
     );
   }
 
+  public get canCreateOffer(): boolean {
+    return this.rightsService.hasOperation(Operation.CreateCommercialOffers);
+  }
+
   public filters: FormControl = new FormControl();
   public sortParams$: BehaviorSubject<ISortParams> = new BehaviorSubject<ISortParams>(null);
 
@@ -45,6 +50,7 @@ export class OffersComponent implements OnInit {
   private destroy$: Subject<void> = new Subject();
 
   constructor(
+    private rightsService: RightsService,
     private apiMappingService: OffersApiMappingService,
     private offersDataService: OffersDataService,
     private offerListService: OfferListService,

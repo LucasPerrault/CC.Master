@@ -1,6 +1,9 @@
 <div class="page mod-fullWidth mod-withFullwidthTable">
   <header class="page-header blockWithFixedSizeInFlex">
     <h1>{{ "offers_page_title" | translate }}</h1>
+    <button class="button" routerLink="create" *ngIf="canCreateOffer">
+      {{ "offers_page_button_create" | translate }}
+    </button>
   </header>
 
   <cc-offer-filters class="header blockWithFixedSizeInFlex" [formControl]="filters"></cc-offer-filters>

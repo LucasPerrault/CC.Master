@@ -73,6 +73,8 @@
       <div class="u-marginTopStandard loading" *ngIf="isPriceListsLoading$ | async"></div>
     </div>
 
-    <cc-editable-price-grid [formControlName]="formKey.PriceList"></cc-editable-price-grid>
+    <cc-editable-price-grid *ngIf="(isPriceListsLoading$ | async) === false"
+                            [formControlName]="formKey.PriceList">
+    </cc-editable-price-grid>
   </div>
 </form>

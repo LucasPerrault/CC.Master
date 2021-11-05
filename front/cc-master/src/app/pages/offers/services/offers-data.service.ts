@@ -1,15 +1,16 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { IHttpApiV3CollectionCount, IHttpApiV3CollectionCountResponse, IHttpApiV3Response } from '@cc/common/queries';
-import { IOfferPriceList, IPriceList } from '@cc/domain/billing/offers';
+import { IPriceList } from '@cc/domain/billing/offers';
 import { forkJoin, Observable, of } from 'rxjs';
-import { map, mapTo, switchMapTo } from 'rxjs/operators';
+import { map, switchMapTo } from 'rxjs/operators';
 
-import { detailedOfferFields, IDetailedOffer } from '../models/detailed-offer.interface';
-import { IPriceListsOffer, priceListsOfferFields } from '../models/price-lists-offer.interface';
 import { IOfferForm } from '../components/offer-form/offer-form.interface';
+import { detailedOfferFields, IDetailedOffer } from '../models/detailed-offer.interface';
+import { IOfferCreationDto } from '../models/offer-creation-dto.interface';
 import { IOfferEditionDto } from '../models/offer-edition-dto.interface';
 import { IOfferPriceListEditionDto } from '../models/offer-price-list-edition-dto.interface';
+import { IPriceListsOffer, priceListsOfferFields } from '../models/price-lists-offer.interface';
 
 @Injectable()
 export class OffersDataService {
@@ -37,6 +38,11 @@ export class OffersDataService {
     return this.httpClient.delete<void>(url);
   }
 
+  public create$(form: IOfferForm): Observable<void> {
+    const body = this.toOfferCreationDto(form);
+    return this.httpClient.post<void>(this.offersEndpoint, body);
+  }
+
   public edit$(offerId: number, form: IOfferForm): Observable<void> {
     return forkJoin([this.editOffer$(offerId, form), this.editPriceList$(offerId, form)])
       .pipe(switchMapTo(of<void>()));
@@ -47,6 +53,21 @@ export class OffersDataService {
     const url = `${ this.offersEndpoint }/${ offerId }`;
     return this.httpClient.get<IHttpApiV3Response<IPriceListsOffer>>(url, { params })
       .pipe(map(res => res.data.priceLists));
+  }
+
+  private toOfferCreationDto(form: IOfferForm): IOfferCreationDto {
+    return {
+      name: form.name,
+      productId: form.product.id,
+      currencyID: form.currency.code,
+      tag: form.tag,
+      pricingMethod: form.pricingMethod,
+      forecastMethod: form.forecastMethod,
+      billingMode: form.billingMode.id,
+      sageBusiness: form.sageBusiness,
+      unit: form.billingUnit.id,
+      priceLists: form.priceLists,
+    };
   }
 
   private editOffer$(offerId: number, form: IOfferForm): Observable<void> {
@@ -88,6 +109,4 @@ export class OffersDataService {
       upperBound: priceList.upperBound,
     };
   }
-
-
 }
