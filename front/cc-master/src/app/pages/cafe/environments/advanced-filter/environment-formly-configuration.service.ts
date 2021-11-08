@@ -72,12 +72,10 @@ export class EnvironmentFormlyConfiguration {
 
   public readonly distributors: FormlyFieldConfig = {
     key: EnvironmentAdvancedFilterKey.Distributors,
-    type: 'api',
+    type: 'distributor',
     templateOptions: {
-      api: '/api/cafe/distributors',
       multiple: true,
       required: true,
-      standard: 'v4',
       mod: 'palette-grey mod-outlined mod-inline mod-longer',
       placeholder: this.translatePipe.transform('cafe_filters_environment_distributors_placeholder'),
     },
@@ -85,11 +83,9 @@ export class EnvironmentFormlyConfiguration {
 
   public readonly distributor: FormlyFieldConfig = {
     key: EnvironmentAdvancedFilterKey.Distributor,
-    type: 'api',
+    type: 'distributor',
     templateOptions: {
-      api: '/api/cafe/distributors',
       required: true,
-      standard: 'v4',
       mod: 'palette-grey mod-outlined mod-inline mod-longer',
       placeholder: this.translatePipe.transform('cafe_filters_environment_distributor_placeholder'),
     },
