@@ -86,7 +86,7 @@ namespace AdvancedFilters.Infra.Services
                 CreatedAt = environment.CreatedAt;
                 Cluster = environment.Cluster;
                 EnvironmentName = $"{environment.Subdomain}.{environment.Domain}";
-                Distributors = string.Join(",", environment.Accesses.Select(a => a.Distributor.Name));
+                Distributors = string.Join(",", environment.Accesses.Select(a => a.Distributor.Name).Distinct());
                 AppInstances = string.Join(",", environment.AppInstances.Select(a => a.ApplicationName));
                 LuCountries = string.Join(",", environment.LegalUnits.Select(x => x.Country.Name).Distinct());
             }
