@@ -6,7 +6,7 @@ import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 @Injectable()
-export class PriceListService {
+export class PriceGridModalDataService {
 
   private readonly offersEndPoint = '/api/v3/offers';
 

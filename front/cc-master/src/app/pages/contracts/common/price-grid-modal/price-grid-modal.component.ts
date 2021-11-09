@@ -5,7 +5,7 @@ import { ILuModalContent, LU_MODAL_DATA } from '@lucca-front/ng/modal';
 import { BehaviorSubject } from 'rxjs';
 import { finalize } from 'rxjs/operators';
 
-import { PriceListService } from '../../services/price-list.service';
+import { PriceGridModalDataService } from './price-grid-modal-data.service';
 
 @Component({
   selector: 'cc-price-grid-modal',
@@ -21,7 +21,7 @@ export class PriceGridModalComponent implements ILuModalContent, OnInit {
 
   constructor(
     @Inject(LU_MODAL_DATA) offerId: number,
-    private priceListService: PriceListService,
+    private priceListService: PriceGridModalDataService,
     private translatePipe: TranslatePipe,
   ) {
     this.offerId = offerId;
