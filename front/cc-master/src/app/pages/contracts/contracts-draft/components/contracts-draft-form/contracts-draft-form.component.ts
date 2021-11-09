@@ -142,8 +142,10 @@ export class ContractsDraftFormComponent implements ControlValueAccessor, Valida
     }
   }
 
-  public openPriceGridModal(offerId: number): void {
-    this.luModal.open(PriceGridModalComponent, offerId);
+  public openPriceGridModal(): void {
+    const offerId = this.formGroup.get(DraftFormKey.Offer).value?.id;
+    const contractStartOn = this.formGroup.get(DraftFormKey.TheoreticalStartOn).value;
+    this.luModal.open(PriceGridModalComponent, { offerId, contractStartOn });
   }
 
   public redirectToExternalDistributorUrl(): void {
