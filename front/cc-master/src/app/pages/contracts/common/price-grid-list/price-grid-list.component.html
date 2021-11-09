@@ -8,11 +8,11 @@
   </tr>
   </thead>
   <tbody class="table-body">
-  <tr class="table-body-row" *ngFor="let priceList of offerPriceList.priceLists">
-    <td class="table-body-row-cell mod-alignRight">{{ priceList.lowerBound }}</td>
-    <td class="table-body-row-cell mod-alignRight">{{ priceList.upperBound }}</td>
-    <td class="table-body-row-cell mod-alignRight">{{ priceList.unitPrice | currency : offerPriceList.currency.name }}</td>
-    <td class="table-body-row-cell mod-alignRight">{{ priceList.fixedPrice | currency : offerPriceList.currency.name }}</td>
+  <tr class="table-body-row" *ngFor="let priceRow of priceRows">
+    <td class="table-body-row-cell mod-alignRight">{{ getLowerBound(priceRow.maxIncludedCount) }}</td>
+    <td class="table-body-row-cell mod-alignRight">{{ priceRow.maxIncludedCount }}</td>
+    <td class="table-body-row-cell mod-alignRight">{{ priceRow.unitPrice | currency : offerPriceList.currency.name }}</td>
+    <td class="table-body-row-cell mod-alignRight">{{ priceRow.fixedPrice | currency : offerPriceList.currency.name }}</td>
   </tr>
   </tbody>
 </table>

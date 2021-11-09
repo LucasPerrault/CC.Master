@@ -1,6 +1,6 @@
 import { currencyFields, ICurrency } from './currency.interface';
 
-export const offerPriceListFields = `currency[${currencyFields}],priceLists[id,lowerBound,upperBound,unitPrice,fixedPrice]`;
+export const offerPriceListFields = `currency[${currencyFields}],priceLists[id,rows[id,maxIncludedCount,unitPrice,fixedPrice,listId]]`;
 export interface IOfferPriceList {
   currency: ICurrency;
   priceLists: IPriceList[];
@@ -8,8 +8,13 @@ export interface IOfferPriceList {
 
 export interface IPriceList {
   id: number;
-  lowerBound: number;
-  upperBound: number;
+  rows: IPriceRow[];
+}
+
+export interface IPriceRow {
+  id: number;
+  maxIncludedCount: number;
   unitPrice: number;
   fixedPrice: number;
+  listId: number;
 }
