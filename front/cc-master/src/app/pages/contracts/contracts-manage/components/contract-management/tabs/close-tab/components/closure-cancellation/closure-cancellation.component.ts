@@ -53,6 +53,6 @@ export class ClosureCancellationComponent {
   private getEstablishmentActivationDate(): string {
     const closeOnAsDate = new Date(this.contractClosureDetailed.closeOn);
     const establishmentActivationDate = startOfMonth(addMonths(closeOnAsDate, 1));
-    return this.datePipe.transform(establishmentActivationDate, 'MMMM YYYY');
+    return this.datePipe.transform(establishmentActivationDate, 'MMMM yyyy');
   }
 }
