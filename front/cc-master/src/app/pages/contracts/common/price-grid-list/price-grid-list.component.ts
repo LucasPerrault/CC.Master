@@ -1,17 +1,13 @@
 import { Component, Input } from '@angular/core';
-import { IPriceListOffer, IPriceRow } from '@cc/domain/billing/offers';
+import { ICurrency, IPriceRow } from '@cc/domain/billing/offers';
 
 @Component({
   selector: 'cc-price-grid-list',
   templateUrl: './price-grid-list.component.html',
 })
 export class PriceGridListComponent {
-  @Input() public offerPriceList: IPriceListOffer;
-
-  public get priceRows(): IPriceRow[] {
-    const priceList = this.offerPriceList.priceLists[0];
-    return priceList.rows;
-  }
+  @Input() public priceRows: IPriceRow[];
+  @Input() public currency: ICurrency;
 
   public getLowerBound(maxIncludedCount: number): number {
     const currentRowIndex = this.priceRows.findIndex(row => row.maxIncludedCount === maxIncludedCount);

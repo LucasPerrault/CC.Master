@@ -11,8 +11,8 @@
   <tr class="table-body-row" *ngFor="let priceRow of priceRows">
     <td class="table-body-row-cell mod-alignRight">{{ getLowerBound(priceRow.maxIncludedCount) }}</td>
     <td class="table-body-row-cell mod-alignRight">{{ priceRow.maxIncludedCount }}</td>
-    <td class="table-body-row-cell mod-alignRight">{{ priceRow.unitPrice | currency : offerPriceList.currency.name }}</td>
-    <td class="table-body-row-cell mod-alignRight">{{ priceRow.fixedPrice | currency : offerPriceList.currency.name }}</td>
+    <td class="table-body-row-cell mod-alignRight">{{ priceRow.unitPrice | currency : currency.name }}</td>
+    <td class="table-body-row-cell mod-alignRight">{{ priceRow.fixedPrice | currency : currency.name }}</td>
   </tr>
   </tbody>
 </table>

@@ -1,6 +1,6 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { TranslatePipe } from '@cc/aspects/translate';
-import { IPriceListOffer } from '@cc/domain/billing/offers';
+import { IPriceListOffer, IPriceRow } from '@cc/domain/billing/offers';
 import { ILuModalContent, LU_MODAL_DATA } from '@lucca-front/ng/modal';
 import { BehaviorSubject } from 'rxjs';
 import { finalize } from 'rxjs/operators';
@@ -14,7 +14,7 @@ import { PriceGridModalDataService } from './price-grid-modal-data.service';
 export class PriceGridModalComponent implements ILuModalContent, OnInit {
   title = this.translatePipe.transform('front_priceGrid_modal_title');
 
-  public offerPriceList: IPriceListOffer;
+  public offer: IPriceListOffer;
   public isLoading$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(true);
 
   public offerId: number;
@@ -30,7 +30,11 @@ export class PriceGridModalComponent implements ILuModalContent, OnInit {
   public ngOnInit(): void {
     this.priceListService.getOfferPriceList$(this.offerId)
       .pipe(finalize(() => this.isLoading$.next(false)))
-      .subscribe(offerPriceList => this.offerPriceList = offerPriceList);
+      .subscribe(offerPriceList => this.offer = offerPriceList);
+  }
+
+  public getPriceRows(): IPriceRow[] {
+    return this.offer.priceLists[0]?.rows ?? [];
   }
 }
 
