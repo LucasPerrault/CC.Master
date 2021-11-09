@@ -1,6 +1,6 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { TranslatePipe } from '@cc/aspects/translate';
-import { IOfferPriceList } from '@cc/domain/billing/offers';
+import { IPriceListOffer } from '@cc/domain/billing/offers';
 import { ILuModalContent, LU_MODAL_DATA } from '@lucca-front/ng/modal';
 import { BehaviorSubject } from 'rxjs';
 import { finalize } from 'rxjs/operators';
@@ -14,7 +14,7 @@ import { PriceListService } from '../../services/price-list.service';
 export class PriceGridModalComponent implements ILuModalContent, OnInit {
   title = this.translatePipe.transform('front_priceGrid_modal_title');
 
-  public offerPriceList: IOfferPriceList;
+  public offerPriceList: IPriceListOffer;
   public isLoading$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(true);
 
   public offerId: number;

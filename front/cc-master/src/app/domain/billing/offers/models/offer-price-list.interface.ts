@@ -1,7 +1,7 @@
 import { currencyFields, ICurrency } from './currency.interface';
 
 export const offerPriceListFields = `currency[${currencyFields}],priceLists[id,rows[id,maxIncludedCount,unitPrice,fixedPrice,listId]]`;
-export interface IOfferPriceList {
+export interface IPriceListOffer {
   currency: ICurrency;
   priceLists: IPriceList[];
 }

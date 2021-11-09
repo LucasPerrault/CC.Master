@@ -1,12 +1,12 @@
 import { Component, Input } from '@angular/core';
-import { IOfferPriceList, IPriceRow } from '@cc/domain/billing/offers';
+import { IPriceListOffer, IPriceRow } from '@cc/domain/billing/offers';
 
 @Component({
   selector: 'cc-price-grid-list',
   templateUrl: './price-grid-list.component.html',
 })
 export class PriceGridListComponent {
-  @Input() public offerPriceList: IOfferPriceList;
+  @Input() public offerPriceList: IPriceListOffer;
 
   public get priceRows(): IPriceRow[] {
     const priceList = this.offerPriceList.priceLists[0];
