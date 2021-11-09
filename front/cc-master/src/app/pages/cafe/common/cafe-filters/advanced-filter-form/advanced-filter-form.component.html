@@ -43,10 +43,14 @@
 </form>
 
 <div class="u-displayFlex u-justifyContentSpaceBetween u-paddingSmaller">
-  <button type="button" class="link" (click)="reset()">
-    {{ 'cafe_filters_delete_all_button_label' | translate }}
+  <button class="button mod-link mod-icon" (click)="openExternalDocumentation()">
+    <span aria-hidden="true" class="button-icon lucca-icon icon-help"></span>
+    {{ 'cafe_external_documentation_button' | translate }}
   </button>
-  <div>
+  <div class="u-marginLeftAuto">
+    <button class="button palette-grey mod-outline" (click)="reset()">
+      {{ 'cafe_filters_delete_all_button_label' | translate }}
+    </button>
     <button class="button palette-grey" (click)="submitAdvancedFilter()" [disabled]="invalid">
       {{ 'cafe_filters_submit_button_label' | translate }}
     </button>

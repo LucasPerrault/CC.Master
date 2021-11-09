@@ -125,6 +125,11 @@ export class AdvancedFilterFormComponent implements ControlValueAccessor, OnInit
     this.onChange(advancedFilterForm);
   }
 
+  public openExternalDocumentation(): void {
+    const externalDocumentationUrl = 'https://commentseboitlecafe.com';
+    window.open(externalDocumentationUrl);
+  }
+
   private addRange(criterionForms: IComparisonFilterCriterionForm[]): void {
     criterionForms.forEach((f, index) => this.insertAt(index, f));
   }
