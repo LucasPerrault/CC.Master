@@ -74,6 +74,7 @@ namespace AdvancedFilters.Infra.Services
         private class CsvEnvironment
         {
             public string EnvironmentName { get; set; }
+            public string DistributorType { get; set; }
             public string AppInstances { get; set; }
             public string LuCountries { get; set; }
             public string Distributors { get; set; }
@@ -89,8 +90,8 @@ namespace AdvancedFilters.Infra.Services
                 Distributors = string.Join(",", environment.Accesses.Select(a => a.Distributor.Name).Distinct());
                 AppInstances = string.Join(",", environment.AppInstances.Select(a => a.ApplicationName));
                 LuCountries = string.Join(",", environment.LegalUnits.Select(x => x.Country.Name).Distinct());
+                DistributorType = environment.DistributorType.ToString();
             }
-
         }
 
         private class CsvAppContact
