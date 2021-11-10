@@ -135,6 +135,19 @@ export class EnvironmentAdvancedFilterConfiguration implements IAdvancedFilterCo
         },
       ],
     },
+    {
+      key: EnvironmentCriterionKey.DistributorType,
+      name: this.translatePipe.transform('cafe_filters_environment_distributorType'),
+      operators: [
+        { id: ComparisonOperator.Equals, name: this.translatePipe.transform('cafe_filters_operator_equals') },
+      ],
+      componentConfigs: [
+        {
+          key: EnvironmentAdvancedFilterKey.DistributorType,
+          components: [this.formlyConfiguration.distributorType],
+        },
+      ],
+    },
   ];
 
   constructor(

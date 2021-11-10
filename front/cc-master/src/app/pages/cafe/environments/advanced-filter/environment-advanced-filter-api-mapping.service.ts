@@ -48,6 +48,8 @@ export class EnvironmentAdvancedFilterApiMappingService {
         return this.getDistributorsAdvancedFilter(distributors.map(d => d.id), attributes.operator, encapsulate);
       case EnvironmentAdvancedFilterKey.Cluster:
         return this.getClusterAdvancedFilter(attributes, encapsulate);
+      case EnvironmentAdvancedFilterKey.DistributorType:
+        return this.getDistributorTypeAdvancedFilter(attributes, encapsulate);
     }
   }
 
@@ -120,5 +122,16 @@ export class EnvironmentAdvancedFilterApiMappingService {
     }));
 
     return AdvancedFilterTypeMapping.toAdvancedFilter(clusterIds, operator, toFilterCriterion, logicalOperator);
+  }
+
+  private getDistributorTypeAdvancedFilter(
+    attributes: IAdvancedFilterAttributes,
+    encapsulate: IFilterCriterionEncapsulation,
+  ): AdvancedFilter {
+    const distributorType = attributes.value.fieldValues[attributes.filterKey];
+    const { operator, logicalOperator } = AdvancedFilterOperatorMapping.getComparisonOperatorDto(attributes.operator);
+    const toFilterCriterion = c => (encapsulate({ distributorType: c }));
+
+    return AdvancedFilterTypeMapping.toAdvancedFilter([distributorType], operator, toFilterCriterion, logicalOperator);
   }
 }

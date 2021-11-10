@@ -1,8 +1,9 @@
 import { Component, Input } from '@angular/core';
+import { TranslatePipe } from '@cc/aspects/translate';
 import { luccaDistributorId } from '@cc/domain/billing/distributors';
 
 import { IAppInstance } from '../../models/app-instance.interface';
-import { IEnvironment } from '../../models/environment.interface';
+import { DistributorType, IEnvironment } from '../../models/environment.interface';
 import { ILegalUnit } from '../../models/legal-unit.interface';
 import {
   EnvironmentAdditionalColumn,
@@ -17,6 +18,9 @@ import {
 export class EnvironmentListComponent {
   @Input() public environments: IEnvironment[];
   @Input() public selectedColumns: IEnvironmentAdditionalColumn[];
+
+  constructor(private translatePipe: TranslatePipe)
+  { }
 
   public additionalColumn = EnvironmentAdditionalColumn;
 
@@ -54,6 +58,15 @@ export class EnvironmentListComponent {
 
     const distributorNames = !!luccaDistributor ? [luccaDistributor?.name, ...sorted] : sorted;
     return distributorNames.join(', ');
+  }
+
+  public getDistributorTypeTranslation(environment: IEnvironment): string {
+    switch (environment.distributorType) {
+      case DistributorType.Direct:
+        return this.translatePipe.transform('cafe_environments_list_direct');
+      case DistributorType.Indirect:
+        return this.translatePipe.transform('cafe_environments_list_indirect');
+    }
   }
 
   public isHidden(column: EnvironmentAdditionalColumn): boolean {

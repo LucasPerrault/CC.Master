@@ -102,5 +102,14 @@ export class EnvironmentFormlyConfiguration {
     },
   };
 
+  public readonly distributorType: FormlyFieldConfig = {
+    key: EnvironmentAdvancedFilterKey.DistributorType,
+    type: 'distributorType',
+    templateOptions: {
+      required: true,
+      mod: 'palette-grey mod-outlined mod-inline mod-longer',
+    },
+  };
+
   constructor(private translatePipe: TranslatePipe) {}
 }
