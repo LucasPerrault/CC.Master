@@ -139,17 +139,17 @@ export class EstablishmentListComponent {
     }
 
     if (willBeCovered && !wasCovered) {
-      const until = this.datePipe.transform(entry.nextAttachment.start, 'dd/MM/YYYY');
+      const until = this.datePipe.transform(entry.nextAttachment.start, 'dd/MM/yyyy');
       return this.translatePipe.transform('front_contractPage_establishments_errorState_notLinkedUntil', { until });
     }
 
     if (wasCovered && !willBeCovered) {
-      const since = this.datePipe.transform(entry.lastAttachment.end, 'dd/MM/YYYY');
+      const since = this.datePipe.transform(entry.lastAttachment.end, 'dd/MM/yyyy');
       return this.translatePipe.transform('front_contractPage_establishments_errorState_notLinkedSince', { since });
     }
 
-    const from = this.datePipe.transform(entry.lastAttachment.end, 'dd/MM/YYYY');
-    const to = this.datePipe.transform(entry.nextAttachment.start, 'dd/MM/YYYY');
+    const from = this.datePipe.transform(entry.lastAttachment.end, 'dd/MM/yyyy');
+    const to = this.datePipe.transform(entry.nextAttachment.start, 'dd/MM/yyyy');
     return this.translatePipe.transform('front_contractPage_establishments_errorState_notCoveredBetween', { from, to });
   }
 }

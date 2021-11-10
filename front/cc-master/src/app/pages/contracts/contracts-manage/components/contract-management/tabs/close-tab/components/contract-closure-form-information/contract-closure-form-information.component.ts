@@ -22,19 +22,19 @@ export class ContractClosureFormInformationComponent implements OnInit {
     return this.translatePipe.transform('front_contractPage_closeDateCondition_lastAttachment_callout', {
       name: this.lastAttachmentEnded.legalEntity.name,
       id: this.lastAttachmentEnded.legalEntity.id,
-      endDate: this.datePipe.transform(this.lastAttachmentEnded.end, 'dd MMMM YYYY'),
+      endDate: this.datePipe.transform(this.lastAttachmentEnded.end, 'dd MMMM yyyy'),
     });
   }
 
   public getLastCountDateInformation(): string {
     return this.translatePipe.transform('front_contractPage_closeDateCondition_lastCountDate_callout', {
-      date: this.datePipe.transform(this.formValidationContext.lastCountPeriod, 'MMMM YYYY'),
+      date: this.datePipe.transform(this.formValidationContext.lastCountPeriod, 'MMMM yyyy'),
     });
   }
 
   public getTheoreticalStartOnInformation(): string {
     return this.translatePipe.transform('front_contractPage_closeDateCondition_theoreticalStartOn_callout', {
-      date: this.datePipe.transform(this.formValidationContext.theoreticalStartOn, 'MMMM YYYY'),
+      date: this.datePipe.transform(this.formValidationContext.theoreticalStartOn, 'MMMM yyyy'),
     });
   }
 

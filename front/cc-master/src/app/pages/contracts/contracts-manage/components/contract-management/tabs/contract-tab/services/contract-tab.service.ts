@@ -41,11 +41,16 @@ export class ContractTabService {
       offerId: contractForm.offer?.id,
       unityNumberTheorical: contractForm.theoreticalDraftCount,
       clientRebate: contractForm.clientRebate.count,
-      endClientRebateOn: this.apiV3DateService.toApiV3DateFormat(new Date(contractForm.clientRebate.endAt)),
+      endClientRebateOn: this.formatNullableDate(contractForm.clientRebate.endAt),
       nbMonthTheorical: contractForm.theoreticalMonthRebate,
-      theoricalStartOn: this.apiV3DateService.toApiV3DateFormat(new Date(contractForm.theoreticalStartOn)),
+      theoricalStartOn: this.apiV3DateService.toApiV3DateFormat(contractForm.theoreticalStartOn),
       minimalBillingPercentage: contractForm.minimalBillingPercentage,
       comment: contractForm.comment,
     };
+  }
+
+  private formatNullableDate(date: Date): string | null {
+    const formattedDate = this.apiV3DateService.toApiV3DateFormat(date);
+    return !!formattedDate ? formattedDate : null;
   }
 }

@@ -59,7 +59,7 @@
                          textfieldClass="palette-grey mod-longest">
     </cc-offer-api-select>
     <div class="textfield-messages u-displayFlex u-flexWrapWrap u-justifyContentSpaceBetween">
-      <a class="textfield-messages-helper u-marginRightStandard u-textDefault" *ngIf="!!formGroup.value.offer" (click)="openPriceGridModal(formGroup.value.offer.id)">
+      <a class="textfield-messages-helper u-marginRightStandard u-textDefault" *ngIf="!!formGroup.value.offer" (click)="openPriceGridModal()">
         {{ "front_priceGrid_openModal_link" | translate }}
       </a>
       <span *ngIf="!!draftFormInformation?.externalOfferName" class="textfield-messages-helper u-textSmaller" >
