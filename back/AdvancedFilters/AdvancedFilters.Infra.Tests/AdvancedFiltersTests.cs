@@ -119,6 +119,30 @@ namespace AdvancedFilters.Infra.Tests
                 Check = e =>
                     e.AppInstances.All(ai => ai.ApplicationId != "wfiggo")
             }};
+            yield return new object[] { new AdvancedFilterTestEntry<Environment>
+            {
+                Filter = new EnvironmentAdvancedCriterion().WithDistributorType(ComparisonOperators.Equals, DistributorType.Direct),
+                Check = e =>
+                    e.Accesses.All(a => a.Type != EnvironmentAccessType.Contract || a.DistributorId == Environment.LuccaDistributorId)
+            }};
+            yield return new object[] { new AdvancedFilterTestEntry<Environment>
+            {
+                Filter = new EnvironmentAdvancedCriterion().WithDistributorType(ComparisonOperators.Equals, DistributorType.Indirect),
+                Check = e =>
+                    e.Accesses.Any(a => a.Type == EnvironmentAccessType.Contract && a.DistributorId != Environment.LuccaDistributorId)
+            }};
+            yield return new object[] { new AdvancedFilterTestEntry<Environment>
+            {
+                Filter = new EnvironmentAdvancedCriterion().WithDistributorType(ComparisonOperators.NotEquals, DistributorType.Direct),
+                Check = e =>
+                    e.Accesses.Any(a => a.Type == EnvironmentAccessType.Contract && a.DistributorId != Environment.LuccaDistributorId)
+            }};
+            yield return new object[] { new AdvancedFilterTestEntry<Environment>
+            {
+                Filter = new EnvironmentAdvancedCriterion().WithDistributorType(ComparisonOperators.NotEquals, DistributorType.Indirect),
+                Check = e =>
+                    e.Accesses.All(a => a.Type != EnvironmentAccessType.Contract || a.DistributorId == Environment.LuccaDistributorId)
+            }};
         }
 
         [Theory]
@@ -158,7 +182,8 @@ namespace AdvancedFilters.Infra.Tests
                     Subdomain = "miaou",
                     Cluster = "c2",
                     LegalUnits = GetLegalUnits(250, 42),
-                    AppInstances = GetAppInstances("wfiggo", "wpagga")
+                    AppInstances = GetAppInstances("wfiggo", "wpagga"),
+                    Accesses = GetAccesses(1, (Environment.LuccaDistributorId, EnvironmentAccessType.Contract))
                 },
                 new Environment
                 {
@@ -167,7 +192,8 @@ namespace AdvancedFilters.Infra.Tests
                     Subdomain = "ouaf",
                     Cluster = "c1",
                     LegalUnits = GetLegalUnits(250, 276),
-                    AppInstances = GetAppInstances("wexpenses", "wpoplee")
+                    AppInstances = GetAppInstances("wexpenses", "wpoplee"),
+                    Accesses = GetAccesses(2, (Environment.LuccaDistributorId, EnvironmentAccessType.Contract), (42, EnvironmentAccessType.Manual))
                 },
                 new Environment
                 {
@@ -176,10 +202,22 @@ namespace AdvancedFilters.Infra.Tests
                     Subdomain = "wau",
                     Cluster = "c2",
                     LegalUnits = GetLegalUnits(276, 9001),
-                    AppInstances = GetAppInstances("wfiggo")
+                    AppInstances = GetAppInstances("wfiggo"),
+                    Accesses = GetAccesses(3, (Environment.LuccaDistributorId, EnvironmentAccessType.Contract), (42, EnvironmentAccessType.Contract))
+                },
+                new Environment
+                {
+                    Id = 4,
+                    CreatedAt = new DateTime(2002, 03, 01),
+                    Subdomain = "wau",
+                    Cluster = "c2",
+                    LegalUnits = GetLegalUnits(276, 9001),
+                    AppInstances = GetAppInstances("wfiggo"),
+                    Accesses = GetAccesses(4, (42, EnvironmentAccessType.Contract))
                 }
             }.AsQueryable();
         }
+
         private IEnumerable<LegalUnit> GetLegalUnits(params int[] countryIds)
         {
             return countryIds.Select(id => new LegalUnit { CountryId = id }).ToList();
@@ -187,6 +225,10 @@ namespace AdvancedFilters.Infra.Tests
         private IEnumerable<AppInstance> GetAppInstances(params string[] applicationIds)
         {
             return applicationIds.Select(id => new AppInstance { ApplicationId = id }).ToList();
+        }
+        private IEnumerable<EnvironmentAccess> GetAccesses(int envId, params (int DistributorId, EnvironmentAccessType AccessType)[] accesses)
+        {
+            return accesses.Select(access => new EnvironmentAccess { EnvironmentId = envId, DistributorId = access.DistributorId, Type = access.AccessType }).ToList();
         }
         #endregion Environments
 
@@ -593,6 +635,15 @@ namespace AdvancedFilters.Infra.Tests
             {
                 Operator = op,
                 Value = createdAt
+            };
+            return criterion;
+        }
+        public static EnvironmentAdvancedCriterion WithDistributorType(this EnvironmentAdvancedCriterion criterion, ComparisonOperators op, DistributorType distributorType)
+        {
+            criterion.DistributorType = new SingleEnumComparisonCriterion<DistributorType>
+            {
+                Operator = op,
+                Value = distributorType
             };
             return criterion;
         }

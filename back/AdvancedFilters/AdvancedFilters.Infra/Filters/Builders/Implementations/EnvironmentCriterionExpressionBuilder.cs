@@ -23,6 +23,9 @@ namespace AdvancedFilters.Infra.Filters.Builders.Implementations
                     .Where(i => i.ApplicationId != AppInstance.LuccaApplicationId)
             );
             yield return ApplyMany(Criterion.Distributors).To(e => e.Accesses.Select(a => a.Distributor).Distinct());
+            yield return Apply(Criterion.DistributorType).To(EnvironmentExpressions.DistributorTypeFn);
         }
+
+
     }
 }

@@ -9,6 +9,7 @@ namespace AdvancedFilters.Domain.Instance.Models
         public int Id { get; set; }
         public int EnvironmentId { get; set; }
         public int DistributorId { get; set; }
+        public EnvironmentAccessType Type { get; set; }
 
         public Environment Environment { get; set; }
         public Distributor Distributor { get; set; }
@@ -17,5 +18,12 @@ namespace AdvancedFilters.Domain.Instance.Models
         {
             return this.DeepCopyByExpressionTree();
         }
+    }
+
+    public enum EnvironmentAccessType
+    {
+        Manual = 0,
+        EnvironmentCreation = 1,
+        Contract = 2,
     }
 }
