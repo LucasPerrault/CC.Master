@@ -19,10 +19,10 @@ export class EnvironmentListComponent {
   @Input() public environments: IEnvironment[];
   @Input() public selectedColumns: IEnvironmentAdditionalColumn[];
 
+  public additionalColumn = EnvironmentAdditionalColumn;
+
   constructor(private translatePipe: TranslatePipe)
   { }
-
-  public additionalColumn = EnvironmentAdditionalColumn;
 
   public trackBy(index: number, environment: IEnvironment): number {
     return environment.id;

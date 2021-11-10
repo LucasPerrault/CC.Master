@@ -1,6 +1,6 @@
-import { TranslatePipe } from '@cc/aspects/translate';
 import { Component } from '@angular/core';
 import { FormControl } from '@angular/forms';
+import { TranslatePipe } from '@cc/aspects/translate';
 import { FieldType } from '@ngx-formly/core';
 import { DistributorType } from 'src/app/pages/cafe/environments/models/environment.interface';
 
@@ -15,7 +15,7 @@ export class FormlyFieldDistributorType extends FieldType {
     return Object
       .keys(DistributorType)
       .filter(k => isNaN(Number(k)))
-      .map(k => DistributorType[k]); 
+      .map(k => DistributorType[k]);
   }
 
   constructor(private translatePipe: TranslatePipe)

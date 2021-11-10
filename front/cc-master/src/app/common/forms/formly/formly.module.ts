@@ -1,13 +1,22 @@
-import { TranslateModule } from '@cc/aspects/translate';
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
+import { TranslateModule } from '@cc/aspects/translate';
 import {
   ClusterApiSelectModule,
   CountryApiSelectModule,
   EnvironmentDomainSelectModule,
   SpecializedContactRoleApiSelectModule,
 } from '@cc/common/forms';
+import { LuInputClearerModule, LuInputDisplayerModule } from '@lucca-front/ng/input';
+import {
+  LuForOptionsModule,
+  LuOptionFeederModule,
+  LuOptionItemModule,
+  LuOptionPickerModule,
+  LuOptionSearcherModule,
+} from '@lucca-front/ng/option';
+import { LuSelectInputModule } from '@lucca-front/ng/select';
 import { FormlyModule } from '@ngx-formly/core';
 
 import { ApplicationApiSelectModule, DistributorApiSelectModule,EnvironmentApiSelectModule } from '../../../pages/cafe/common/forms';
@@ -20,9 +29,6 @@ import { FormlyFieldEnvironmentDomain } from './environment-domain/environment-d
 import { FormlyFieldEnvironmentSubdomain } from './environment-subdomain/environment-subdomain.component';
 import { luFormlyConfig } from './formly.config';
 import { FormlyFieldSpecializedContactRole } from './specialized-contact-role/specialized-contact-role.component';
-import { LuSelectInputModule } from '@lucca-front/ng/select';
-import { LuInputClearerModule, LuInputDisplayerModule } from '@lucca-front/ng/input';
-import { LuOptionPickerModule, LuOptionFeederModule, LuOptionSearcherModule, LuOptionItemModule, LuForOptionsModule } from '@lucca-front/ng/option';
 
 @NgModule({
   declarations: [
