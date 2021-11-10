@@ -66,12 +66,14 @@ namespace Billing.Contracts.Domain.Contracts
             : c.TheoreticalStartOn;
         public static readonly Func<Contract, DateTime> StartsOnCompiled = StartsOn.Compile();
 
-        public static readonly Expression<Func<Contract, DateTime?>> EndsOn = c => c.Attachments.Any()
-            ? c.Attachments
-                .Select(a => a.EndsOn)
-                .DefaultIfEmpty()
-                .Min()
-            : null;
+        public static readonly Expression<Func<Contract, DateTime?>> EndsOn = c =>
+            c.Attachments.Any() && c.Attachments.All(a => a.EndsOn.HasValue)
+                ? c.Attachments
+                    .Select(a => a.EndsOn)
+                    .DefaultIfEmpty()
+                    .OrderByDescending(endsOn => endsOn)
+                    .Max()
+                : c.TheoreticalEndOn;
         public static readonly Func<Contract, DateTime?> EndsOnCompiled = EndsOn.Compile();
 
         public static Expression<Func<Contract, bool>> IsAttachedToAnyEstablishment(HashSet<int> establishmentIds, DateTime period) => c =>
