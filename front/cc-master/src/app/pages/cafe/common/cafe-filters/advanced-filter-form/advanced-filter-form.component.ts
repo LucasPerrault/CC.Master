@@ -125,6 +125,11 @@ export class AdvancedFilterFormComponent implements ControlValueAccessor, OnInit
     this.onChange(advancedFilterForm);
   }
 
+  public openExternalDocumentation(): void {
+    const externalDocumentationUrl = 'https://support.lucca.fr/hc/fr/articles/4409676130578-Module-de-rapport-CC';
+    window.open(externalDocumentationUrl);
+  }
+
   private addRange(criterionForms: IComparisonFilterCriterionForm[]): void {
     criterionForms.forEach((f, index) => this.insertAt(index, f));
   }

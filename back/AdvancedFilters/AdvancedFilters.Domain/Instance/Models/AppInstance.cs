@@ -9,6 +9,7 @@ namespace AdvancedFilters.Domain.Instance.Models
 {
     public class AppInstance : IDeepCopyable<AppInstance>
     {
+        public const string LuccaApplicationId = "LUCCA";
         public int Id { get; set; }
         public string Name { get; set; }
         public string ApplicationName => ApplicationsCollection.GetName(ApplicationId) ?? Name;

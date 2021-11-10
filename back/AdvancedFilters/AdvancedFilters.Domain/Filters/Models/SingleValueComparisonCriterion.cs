@@ -19,6 +19,7 @@ namespace AdvancedFilters.Domain.Filters.Models
         };
     }
     public class SingleGuidComparisonCriterion : SingleValueComparisonCriterion<Guid> { }
+    public class SingleEnumComparisonCriterion<T> : SingleValueComparisonCriterion<T> where T : Enum { }
 
     public abstract class SingleValueComparisonCriterion<TValue> : IComparisonCriterion
     {

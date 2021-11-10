@@ -36,20 +36,21 @@ namespace AdvancedFilters.Infra.Storage.Stores
             return envs.ToListAsync();
         }
 
-        public Task<Page<Environment>> SearchAsync(IPageToken pageToken, IAdvancedFilter filter)
+        public async Task<Page<Environment>> SearchAsync(IPageToken pageToken, IAdvancedFilter filter)
         {
-            var envs = Environments
-                .Filter(filter)
-                .AsNoTracking();
-            return _queryPager.ToPageAsync(envs, pageToken);
+            var envs = Get(filter);
+            var page = await _queryPager.ToPageAsync(envs, pageToken);
+
+            FilterLuccaApp(page.Items);
+            return page;
         }
 
         public Task<List<Environment>> SearchAsync(IAdvancedFilter filter)
         {
-            return Environments
-                .Filter(filter)
-                .AsNoTracking()
-                .ToListAsync();
+            var filteredEnvs = Get(filter).ToList();
+
+            FilterLuccaApp(filteredEnvs);
+            return Task.FromResult(filteredEnvs);
         }
 
         public Task<List<string>> GetClustersAsync()
@@ -62,6 +63,22 @@ namespace AdvancedFilters.Infra.Storage.Stores
             return Environments
                 .WhereMatches(filter)
                 .AsNoTracking();
+        }
+
+        private IQueryable<Environment> Get(IAdvancedFilter filter)
+        {
+            return Environments
+                .Filter(filter)
+                .AsNoTracking();
+        }
+
+        private void FilterLuccaApp(IEnumerable<Environment> envs)
+        {
+            foreach (var env in envs)
+            {
+                env.AppInstances = env.AppInstances
+                    .Where(a => a.ApplicationId != AppInstance.LuccaApplicationId);
+            }
         }
 
         private IQueryable<Environment> Environments => _dbContext

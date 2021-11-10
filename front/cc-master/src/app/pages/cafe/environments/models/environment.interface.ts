@@ -11,7 +11,13 @@ export interface IEnvironment {
   productionHost: string;
   cluster: string;
   accesses: IEnvironmentAccess[];
+  distributorType: DistributorType;
 
   legalUnits: ILegalUnit[];
   appInstances: IAppInstance[];
+}
+
+export enum DistributorType {
+  Direct = 'Direct',
+  Indirect = 'Indirect'
 }

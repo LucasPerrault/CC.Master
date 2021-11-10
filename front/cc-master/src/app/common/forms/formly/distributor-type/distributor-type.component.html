@@ -1,0 +1,18 @@
+<label class="textfield" [ngClass]="to?.mod">
+    <lu-select [formControl]="formControl"
+            class="textfield-input"
+            [formlyAttributes]="field"
+            [placeholder]="to?.placeholder"
+            [multiple]="to?.multiple"
+            [required]="to?.required"
+            (blur)="onTouch()">
+        <ng-container *luDisplayer="let distributorType">{{ getDistributorTypeTranslation(distributorType) }}</ng-container>
+
+        <lu-option-picker-advanced>
+            <lu-option-feeder [options]="distributorTypes"></lu-option-feeder>
+            <lu-option *luForOptions="let distributorType" [value]="distributorType">
+                {{ getDistributorTypeTranslation(distributorType) | translate }}
+            </lu-option>
+        </lu-option-picker-advanced>
+    </lu-select>
+</label>

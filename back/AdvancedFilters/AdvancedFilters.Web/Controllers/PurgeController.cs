@@ -1,4 +1,6 @@
 using AdvancedFilters.Domain.DataSources;
+using AdvancedFilters.Web.Controllers.Locks;
+using Lock.Web;
 using Microsoft.AspNetCore.Mvc;
 using Rights.Domain;
 using Rights.Web.Attributes;
@@ -20,6 +22,7 @@ namespace AdvancedFilters.Web.Controllers
         }
 
         [HttpPost("all")]
+        [OneRequestAtATime(AdvancedFiltersSyncLock.Name, AdvancedFiltersSyncLock.TimeoutInSeconds)]
         [ForbidIfMissing(Operation.SyncAllCafe)]
         public Task HugeSyncAsync()
         {
@@ -27,6 +30,7 @@ namespace AdvancedFilters.Web.Controllers
         }
 
         [HttpPost("mono-tenant")]
+        [OneRequestAtATime(AdvancedFiltersSyncLock.Name, AdvancedFiltersSyncLock.TimeoutInSeconds)]
         [ForbidIfMissing(Operation.SyncAllCafe)]
         public Task HugeSyncAsync([FromQuery]HashSet<string> subdomains)
         {

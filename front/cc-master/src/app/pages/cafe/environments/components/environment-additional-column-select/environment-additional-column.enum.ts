@@ -5,6 +5,7 @@ export enum EnvironmentAdditionalColumn {
   CreatedAt = 'createdAt',
   Countries = 'countries',
   Cluster = 'cluster',
+  DistributorType = 'distributorType',
 }
 
 export interface IEnvironmentAdditionalColumn {
@@ -37,8 +38,11 @@ export const environmentAdditionalColumns: IEnvironmentAdditionalColumn[] = [
     id: EnvironmentAdditionalColumn.Cluster,
     name: 'cafe_environments_list_cluster',
   },
+  {
+    id: EnvironmentAdditionalColumn.DistributorType,
+    name: 'cafe_environments_list_distributorType',
+  },
 ];
 
 export const getAdditionalColumnByIds = (ids: EnvironmentAdditionalColumn[]): IEnvironmentAdditionalColumn[] =>
     environmentAdditionalColumns.filter(c => ids.includes(c.id));
-

@@ -74,9 +74,10 @@ namespace AdvancedFilters.Infra.Services
         private class CsvEnvironment
         {
             public string EnvironmentName { get; set; }
+            public string DistributorType { get; set; }
             public string AppInstances { get; set; }
-
             public string LuCountries { get; set; }
+            public string Distributors { get; set; }
             public string Cluster { get; set; }
 
             public System.DateTime CreatedAt { get; set; }
@@ -86,10 +87,11 @@ namespace AdvancedFilters.Infra.Services
                 CreatedAt = environment.CreatedAt;
                 Cluster = environment.Cluster;
                 EnvironmentName = $"{environment.Subdomain}.{environment.Domain}";
-                AppInstances = string.Join(",", environment.AppInstances.Select(a => a.Name));
+                Distributors = string.Join(",", environment.Accesses.Select(a => a.Distributor.Name).Distinct());
+                AppInstances = string.Join(",", environment.AppInstances.Select(a => a.ApplicationName));
                 LuCountries = string.Join(",", environment.LegalUnits.Select(x => x.Country.Name).Distinct());
+                DistributorType = environment.DistributorType.ToString();
             }
-
         }
 
         private class CsvAppContact
@@ -111,7 +113,7 @@ namespace AdvancedFilters.Infra.Services
                 UserLastName = contact.UserLastName;
                 UserFirstName = contact.UserFirstName;
                 UserMail = contact.UserMail;
-                AppInstance = contact.AppInstance.Name;
+                AppInstance = contact.AppInstance.ApplicationName;
                 IsConfirmed = contact.IsConfirmed;
                 CreatedAt = contact.CreatedAt;
                 ExpiredAt = contact.ExpiresAt;

@@ -14,6 +14,7 @@ namespace AdvancedFilters.Infra.Storage.Configurations
 
             builder.Property(c => c.EnvironmentId).HasColumnName("EnvironmentId").IsRequired();
             builder.Property(c => c.DistributorId).HasColumnName("DistributorId").IsRequired();
+            builder.Property(c => c.Type).HasColumnName("Type").IsRequired();
 
             builder
                 .HasOne(a => a.Environment)

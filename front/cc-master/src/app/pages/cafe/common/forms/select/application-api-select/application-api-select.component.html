@@ -1,0 +1,32 @@
+<lu-select [formControl]="formControl"
+           class="textfield-input"
+           [placeholder]="placeholder"
+           [multiple]="multiple"
+           [required]="required"
+           [formlyAttributes]="formlyAttributes"
+           (blur)="onTouch()">
+
+  <ng-container *luDisplayer="let value; multiple: multiple">
+    <ng-container *ngIf="multiple; else notMultiple">
+      <span *ngIf="value?.length !== 1; else: singleView">
+      <span class="label">{{ value.length }}</span>
+        {{ 'cafe_applications_filter_selection' | translate: { count: value.length } }}
+    </span>
+      <ng-template #singleView>{{ value[0].name }}</ng-template>
+    </ng-container>
+
+    <ng-template #notMultiple>{{ value.name }}</ng-template>
+  </ng-container>
+
+  <lu-option-picker-advanced>
+    <header class="lu-picker-header">
+      <lu-api-feeder [api]="apiUrl" standard="v4"></lu-api-feeder>
+    </header>
+
+    <lu-option *luForOptions="let application; trackBy: trackBy" [value]="application">
+        {{ application.name }}
+    </lu-option>
+  </lu-option-picker-advanced>
+  <lu-input-clearer></lu-input-clearer>
+</lu-select>
+

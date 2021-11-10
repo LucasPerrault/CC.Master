@@ -19,6 +19,10 @@ namespace AdvancedFilters.Infra.Storage.Configurations
             builder.Property(e => e.CreatedAt).HasColumnName("CreatedAt").IsRequired();
             builder.Property(e => e.ProductionHost).HasColumnName("ProductionHost").IsRequired();
             builder.Property(e => e.Cluster).HasColumnName("Cluster").IsRequired();
+
+            builder.Ignore(e => e.DistributorType);
+
+            builder.HasIndex(e => e.Subdomain);
         }
     }
 }

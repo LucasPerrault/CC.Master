@@ -18,8 +18,14 @@ namespace AdvancedFilters.Infra.Filters.Builders.Implementations
             yield return Apply(Criterion.Subdomain).To(e => e.Subdomain);
             yield return Apply(Criterion.Cluster).To(e => e.Cluster);
             yield return ApplyMany(Criterion.LegalUnits).To(e => e.LegalUnits);
-            yield return ApplyMany(Criterion.AppInstances).To(e => e.AppInstances);
+            yield return ApplyMany(Criterion.AppInstances).To(
+                e => e.AppInstances
+                    .Where(i => i.ApplicationId != AppInstance.LuccaApplicationId)
+            );
             yield return ApplyMany(Criterion.Distributors).To(e => e.Accesses.Select(a => a.Distributor).Distinct());
+            yield return Apply(Criterion.DistributorType).To(EnvironmentExpressions.DistributorTypeFn);
         }
+
+
     }
 }

@@ -1,4 +1,6 @@
 using AdvancedFilters.Domain.DataSources;
+using AdvancedFilters.Web.Controllers.Locks;
+using Lock.Web;
 using Lucca.Core.Shared.Domain.Exceptions;
 using Microsoft.AspNetCore.Mvc;
 using Rights.Domain;
@@ -20,6 +22,7 @@ namespace AdvancedFilters.Web.Controllers
         }
 
         [HttpPost("huge")]
+        [OneRequestAtATime(AdvancedFiltersSyncLock.Name, AdvancedFiltersSyncLock.TimeoutInSeconds)]
         [ForbidIfMissing(Operation.SyncAllCafe)]
         public Task HugeSyncAsync()
         {
@@ -27,6 +30,7 @@ namespace AdvancedFilters.Web.Controllers
         }
 
         [HttpPost("multi-tenant")]
+        [OneRequestAtATime(AdvancedFiltersSyncLock.Name, AdvancedFiltersSyncLock.TimeoutInSeconds)]
         [ForbidIfMissing(Operation.SyncAllCafe)]
         public Task MultiSyncAsync()
         {
@@ -34,6 +38,7 @@ namespace AdvancedFilters.Web.Controllers
         }
 
         [HttpPost("mono-tenant")]
+        [OneRequestAtATime(AdvancedFiltersSyncLock.Name, AdvancedFiltersSyncLock.TimeoutInSeconds)]
         [ForbidIfMissing(Operation.SyncAllCafe)]
         public Task MonoSyncAsync([FromQuery]SyncQuery query)
         {
@@ -45,6 +50,7 @@ namespace AdvancedFilters.Web.Controllers
         }
 
         [HttpPost("mono-tenant/random")]
+        [OneRequestAtATime(AdvancedFiltersSyncLock.Name, AdvancedFiltersSyncLock.TimeoutInSeconds)]
         [ForbidIfMissing(Operation.SyncAllCafe)]
         public Task RandomMonoSyncAsync([FromQuery]int tenantCount)
         {
