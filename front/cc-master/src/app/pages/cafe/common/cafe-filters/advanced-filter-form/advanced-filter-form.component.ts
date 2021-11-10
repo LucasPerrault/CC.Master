@@ -126,7 +126,7 @@ export class AdvancedFilterFormComponent implements ControlValueAccessor, OnInit
   }
 
   public openExternalDocumentation(): void {
-    const externalDocumentationUrl = 'https://commentseboitlecafe.com';
+    const externalDocumentationUrl = 'https://support.lucca.fr/hc/fr/articles/4409676130578-Module-de-rapport-CC';
     window.open(externalDocumentationUrl);
   }
 
