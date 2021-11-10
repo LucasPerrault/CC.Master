@@ -27,7 +27,7 @@ namespace AdvancedFilters.Domain.Instance.Models
         public IEnumerable<LegalUnit> LegalUnits { get; set; }
         public IEnumerable<AppInstance> AppInstances { get; set; }
         public IEnumerable<Contract> Contracts { get; set; }
-        public IEnumerable<EnvironmentAccess> Accesses { get; set; }
+        public IEnumerable<EnvironmentAccess> Accesses { get; set; } = new List<EnvironmentAccess>();
 
         public Environment DeepCopy()
         {
