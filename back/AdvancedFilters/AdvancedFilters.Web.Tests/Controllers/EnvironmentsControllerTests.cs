@@ -31,7 +31,7 @@ namespace AdvancedFilters.Web.Tests.Controllers
                 .Setup(s => s.GetAsync(It.IsAny<IPageToken>(), It.IsAny<EnvironmentFilter>()))
                 .ReturnsAsync(new Page<Environment>
                 {
-                    Items = new List<Environment> { new Environment() }
+                    Items = new List<Environment> { new Environment { Accesses = new List<EnvironmentAccess>() } }
                 });
 
             var webApplicationFactory = new MockedWebApplicationFactory();
@@ -61,7 +61,7 @@ namespace AdvancedFilters.Web.Tests.Controllers
                 .Setup(s => s.SearchAsync(It.IsAny<IPageToken>(), It.IsAny<IAdvancedFilter>()))
                 .ReturnsAsync(new Page<Environment>
                 {
-                    Items = new List<Environment> { new Environment() }
+                    Items = new List<Environment> { new Environment { Accesses = new List<EnvironmentAccess>() } }
                 });
 
             var exportServiceMock = new Mock<IExportService>();
