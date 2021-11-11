@@ -33,14 +33,30 @@ namespace Rights.Infra.Remote
             var queryParams = new Dictionary<string, string>
             {
                 { "appInstanceId", RightsHelper.CloudControlAppInstanceId.ToString() },
-                { "fields", ApiKeyPermission.ApiFields }
+                { "fields", ApiKeyPermissionDto.ApiFields }
             };
 
-            var apiKeyPermissionsResponse = await _httpClientHelper.GetObjectCollectionResponseAsync<ApiKeyPermission>(queryParams);
+            var apiKeyPermissionsResponse = await _httpClientHelper.GetObjectCollectionResponseAsync<ApiKeyPermissionDto>(queryParams);
 
-            var allApiKeyPermissions = apiKeyPermissionsResponse.Data.Items;
+            return apiKeyPermissionsResponse.Data.Items
+                .Select(i => i.ToApiKeyPermission())
+                .ToList();
+        }
 
-            return allApiKeyPermissions.ToList();
+        internal class ApiKeyPermissionDto
+        {
+            public static readonly string ApiFields = $"{nameof(LegalEntityId)},{nameof(ExternalEntityId)},{nameof(OperationId)}";
+
+            public int? LegalEntityId { get; set; }
+            public int ExternalEntityId { get; set; }
+            public int OperationId { get; set; }
+
+            public ApiKeyPermission ToApiKeyPermission() => new ApiKeyPermission
+            {
+                EstablishmentId = LegalEntityId,
+                OperationId = OperationId,
+                ExternalEntityId = ExternalEntityId
+            };
         }
     }
 }

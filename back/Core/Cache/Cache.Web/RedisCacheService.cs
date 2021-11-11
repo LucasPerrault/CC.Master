@@ -8,7 +8,7 @@ namespace Cache.Web
 {
     public class RedisHealthService : ICacheService, IRedisHealthService
     {
-        private const int _cacheVersion = 1;
+        private const int _cacheVersion = 2;
         private readonly ConnectionMultiplexer _multiplexer;
         private readonly TimeSpan _defaultInvalidation;
 

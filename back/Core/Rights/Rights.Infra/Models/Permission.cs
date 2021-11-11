@@ -8,8 +8,6 @@ namespace Rights.Infra.Models
 {
     public class Permission : IUserPermission
     {
-        public static readonly string ApiFields = $"{nameof(EstablishmentId)},{nameof(Scope)},{nameof(ExternalEntityId)},{nameof(SpecificDepartmentId)},{nameof(SpecificUserId)},{nameof(HasContextualEstablishmentAssociation)},{nameof(OperationId)}";
-
         public int? EstablishmentId { get; set; }
         public Scope Scope { get; set; }
         public int ExternalEntityId { get; set; }
@@ -21,8 +19,6 @@ namespace Rights.Infra.Models
 
     public class ApiKeyPermission : IApiKeyPermission
     {
-        public static readonly string ApiFields = $"{nameof(EstablishmentId)},{nameof(Scope)},{nameof(ExternalEntityId)},{nameof(OperationId)}";
-
         public int? EstablishmentId { get; set; }
         public int ExternalEntityId { get; set; }
         public int OperationId { get; set; }
