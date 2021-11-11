@@ -126,6 +126,18 @@ export const navigationTabs: INavigationTab[] = [
       ],
       mode: OperationRestrictionMode.Some,
     },
+    children: [
+      {
+        url: NavigationPath.DistributorsManage,
+        name: 'front_navigation_distributorsManageTab',
+        isLegacy: true,
+      },
+      {
+        url: NavigationPath.DistributorsEnvironmentAccesses,
+        name: 'front_navigation_distributorsEnvironmentAccessesTab',
+        isLegacy: true,
+      },
+    ],
   },
   {
     name: 'front_navigation_offersTab',
