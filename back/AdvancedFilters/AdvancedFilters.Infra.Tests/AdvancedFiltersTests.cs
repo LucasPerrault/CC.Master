@@ -121,27 +121,41 @@ namespace AdvancedFilters.Infra.Tests
             }};
             yield return new object[] { new AdvancedFilterTestEntry<Environment>
             {
-                Filter = new EnvironmentAdvancedCriterion().WithDistributorType(ComparisonOperators.Equals, DistributorType.Direct),
+                Filter = new EnvironmentAdvancedCriterion().WithDistributorType(ComparisonOperators.Equals, DistributorType.DirectOnly),
                 Check = e =>
                     e.Accesses.All(a => a.Type != EnvironmentAccessType.Contract || a.DistributorId == Environment.LuccaDistributorId)
             }};
             yield return new object[] { new AdvancedFilterTestEntry<Environment>
             {
-                Filter = new EnvironmentAdvancedCriterion().WithDistributorType(ComparisonOperators.Equals, DistributorType.Indirect),
+                Filter = new EnvironmentAdvancedCriterion().WithDistributorType(ComparisonOperators.Equals, DistributorType.IndirectOnly),
+                Check = e =>
+                    e.Accesses.All(a => a.Type == EnvironmentAccessType.Contract && a.DistributorId != Environment.LuccaDistributorId)
+            }};
+            yield return new object[] { new AdvancedFilterTestEntry<Environment>
+            {
+                Filter = new EnvironmentAdvancedCriterion().WithDistributorType(ComparisonOperators.Equals, DistributorType.DirectAndIndirect),
+                Check = e =>
+                    e.Accesses.Any(a => a.Type == EnvironmentAccessType.Contract && a.DistributorId != Environment.LuccaDistributorId)
+                    && e.Accesses.Any(a => a.Type == EnvironmentAccessType.Contract && a.DistributorId == Environment.LuccaDistributorId)
+            }};
+            yield return new object[] { new AdvancedFilterTestEntry<Environment>
+            {
+                Filter = new EnvironmentAdvancedCriterion().WithDistributorType(ComparisonOperators.NotEquals, DistributorType.DirectOnly),
                 Check = e =>
                     e.Accesses.Any(a => a.Type == EnvironmentAccessType.Contract && a.DistributorId != Environment.LuccaDistributorId)
             }};
             yield return new object[] { new AdvancedFilterTestEntry<Environment>
             {
-                Filter = new EnvironmentAdvancedCriterion().WithDistributorType(ComparisonOperators.NotEquals, DistributorType.Direct),
+                Filter = new EnvironmentAdvancedCriterion().WithDistributorType(ComparisonOperators.NotEquals, DistributorType.IndirectOnly),
                 Check = e =>
-                    e.Accesses.Any(a => a.Type == EnvironmentAccessType.Contract && a.DistributorId != Environment.LuccaDistributorId)
+                    e.Accesses.Any(a => a.Type == EnvironmentAccessType.Contract && a.DistributorId == Environment.LuccaDistributorId)
             }};
             yield return new object[] { new AdvancedFilterTestEntry<Environment>
             {
-                Filter = new EnvironmentAdvancedCriterion().WithDistributorType(ComparisonOperators.NotEquals, DistributorType.Indirect),
+                Filter = new EnvironmentAdvancedCriterion().WithDistributorType(ComparisonOperators.NotEquals, DistributorType.DirectAndIndirect),
                 Check = e =>
                     e.Accesses.All(a => a.Type != EnvironmentAccessType.Contract || a.DistributorId == Environment.LuccaDistributorId)
+                    || e.Accesses.All(a => a.Type != EnvironmentAccessType.Contract || a.DistributorId != Environment.LuccaDistributorId)
             }};
         }
 
