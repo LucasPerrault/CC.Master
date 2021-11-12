@@ -1,10 +1,12 @@
 ﻿using Billing.Contracts.Application;
 using Billing.Contracts.Application.Clients;
+using Billing.Contracts.Application.Offers;
 using Billing.Contracts.Domain.Clients;
 using Billing.Contracts.Domain.Clients.Interfaces;
 using Billing.Contracts.Domain.Contracts;
 using Billing.Contracts.Domain.Contracts.Health;
 using Billing.Contracts.Domain.Contracts.Interfaces;
+using Billing.Contracts.Domain.Offers.Validation;
 using Billing.Contracts.Infra.Configurations;
 using Billing.Contracts.Infra.Legacy;
 using Billing.Contracts.Infra.Storage.Stores;
@@ -29,6 +31,10 @@ namespace Billing.Contracts.Web
             services.AddScoped<ClientRightFilter>();
             services.AddScoped<ClientsRepository>();
             services.AddScoped<ContractHealthHelper>();
+
+            services.AddScoped<ICommercialOfferValidationService, CommercialOfferValidationService>();
+            services.AddScoped<ICommercialOffersStore, CommercialOffersStore>();
+            services.AddScoped<CommercialOffersRepository>();
 
             services.AddHttpClient<ILegacyClientsRemoteService, LegacyClientsRemoteService>((provider, client) =>
             {
