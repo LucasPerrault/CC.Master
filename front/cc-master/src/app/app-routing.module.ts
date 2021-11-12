@@ -4,6 +4,7 @@ import { OperationsPageGuard } from '@cc/aspects/rights';
 import { ForbiddenComponent, NotFoundComponent } from '@cc/common/error-redirections';
 import { NavigationPath, navigationTabs } from '@cc/common/navigation';
 import { NoNavPath } from '@cc/common/routing';
+
 import { AccountingComponent } from './pages/accounting/accounting.component';
 import { AccountingModule } from './pages/accounting/accounting.module';
 import { CafeComponent } from './pages/cafe/cafe.component';
