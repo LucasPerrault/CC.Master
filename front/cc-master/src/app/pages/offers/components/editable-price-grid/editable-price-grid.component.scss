@@ -1,13 +1,12 @@
-@import "theming.import";
+@import "../../../../../scss/theming.import";
 
 .table.mod-error {
+  .table-head-row-cell {
+    color: _color('error');
+  }
+
   .table-head-row-cell,
   .table-body-row-cell {
     border-color: _color('error');
-    color: _color('error');
-
-    .mod-editableCell .textfield-input {
-      color: _color('error');
-    }
   }
 }

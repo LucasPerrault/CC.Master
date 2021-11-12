@@ -3,24 +3,23 @@ import { NgModule } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { TranslateModule } from '@cc/aspects/translate';
 import { OfferApiSelectModule, ProductApiSelectModule } from '@cc/common/forms';
+import { LuDateSelectInputModule } from '@lucca-front/ng/date';
 import { LuTooltipTriggerModule } from '@lucca-front/ng/tooltip';
 
-import { EditablePriceGridModule } from '../editable-price-grid/editable-price-grid.module';
+import { EditablePriceGridModule } from '../../editable-price-grid/editable-price-grid.module';
 import {
   OfferBillingModeSelectModule,
-  OfferBillingUnitSelectModule,
-  OfferCurrencyApiSelectModule,
+  OfferBillingUnitSelectModule, OfferCurrencyApiSelectModule,
   OfferForecastMethodApiSelectModule,
-  OfferPricingMethodApiSelectModule,
-  OfferTagApiSelectModule,
-} from '../offer-selects';
-import { OfferTagAutocompleteSelectModule } from '../offer-selects/offer-tag-autocomplete-select/offer-tag-autocomplete-select.module';
-import { OfferFormComponent } from './offer-form.component';
+  OfferPricingMethodApiSelectModule, OfferTagApiSelectModule,
+  OfferTagAutocompleteSelectModule,
+} from '../../offer-selects';
+import { OfferCreationFormComponent } from './offer-creation-form.component';
 
 @NgModule({
-    declarations: [
-        OfferFormComponent,
-    ],
+  declarations: [
+    OfferCreationFormComponent,
+  ],
   imports: [
     CommonModule,
     ReactiveFormsModule,
@@ -36,7 +35,9 @@ import { OfferFormComponent } from './offer-form.component';
     OfferApiSelectModule,
     EditablePriceGridModule,
     LuTooltipTriggerModule,
+    LuDateSelectInputModule,
   ],
-    exports: [OfferFormComponent],
+  exports: [OfferCreationFormComponent],
 })
-export class OfferFormModule { }
+export class OfferCreationFormModule {
+}

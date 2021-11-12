@@ -1,11 +1,11 @@
-import { IPriceList } from '@cc/domain/billing/offers';
+import { IPriceListCreationDto } from './price-list-creation-dto.interface';
 
 export interface IOfferCreationDto {
   billingMode: number;
   currencyID: number;
   forecastMethod: string;
   name: string;
-  priceLists: IPriceList[];
+  priceLists: IPriceListCreationDto[];
   pricingMethod: string;
   productId: number;
   sageBusiness: string;

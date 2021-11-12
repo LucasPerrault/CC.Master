@@ -6,9 +6,8 @@ import { NavigationPath } from '@cc/common/navigation';
 import { ReplaySubject } from 'rxjs';
 import { finalize, map, take } from 'rxjs/operators';
 
-import { OfferListService } from '../../services/offer-list.service';
 import { OffersDataService } from '../../services/offers-data.service';
-import { IOfferForm } from '../offer-form/offer-form.interface';
+import { IOfferCreationForm } from './offer-creation-form/offer-creation-form.interface';
 
 @Component({
   selector: 'cc-offer-creation',
@@ -24,21 +23,17 @@ export class OfferCreationComponent {
     private router: Router,
     private activatedRoute: ActivatedRoute,
     private offersDataService: OffersDataService,
-    private offerListService: OfferListService,
   ) { }
 
   public create(): void {
-    const form: IOfferForm = this.formControl.value;
+    const form: IOfferCreationForm = this.formControl.value;
 
     this.offersDataService.create$(form)
       .pipe(
         take(1),
         toSubmissionState(),
         map(state => getButtonState(state)),
-        finalize(() => {
-          this.offerListService.refresh();
-          this.redirectToOffers();
-        }),
+        finalize(() => this.redirectToOffers()),
       )
       .subscribe(state => this.creationButtonState$.next(state));
   }

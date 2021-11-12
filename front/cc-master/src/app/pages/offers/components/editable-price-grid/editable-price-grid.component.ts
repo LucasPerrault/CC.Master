@@ -10,17 +10,17 @@ import {
   ValidationErrors,
   Validator,
 } from '@angular/forms';
-import { IPriceList } from '@cc/domain/billing/offers';
-import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { IOffer } from '@cc/domain/billing/offers';
+import { BehaviorSubject, Subject } from 'rxjs';
+import { filter, finalize, map, switchMap, takeUntil, tap } from 'rxjs/operators';
 
-import { IOfferCurrency } from '../../models/offer-currency.interface';
-import { IEditablePriceGrid } from './editable-price-grid.interface';
+import { IPriceRowForm } from '../../models/price-list-form.interface';
+import { OfferPriceListService } from '../../services/offer-price-list.service';
+import { OffersDataService } from '../../services/offers-data.service';
 import { EditablePriceGridValidators, PriceGridValidationError } from './editable-price-grid.validators';
 
-enum PriceListFormKey {
-  LowerBound = 'lowerBound',
-  UpperBound = 'upperBound',
+enum PriceRowFormKey {
+  MaxIncludedCount = 'maxIncludedCount',
   UnitPrice = 'unitPrice',
   FixedPrice = 'fixedPrice',
 }
@@ -56,52 +56,54 @@ export enum ArrowKey {
   ],
 })
 export class EditablePriceGridComponent implements OnInit, OnDestroy, ControlValueAccessor, Validator {
+  @Input() public set disabled(isDisabled: boolean) { this.setDisabledState(isDisabled); }
   @ViewChild('tableElement') public tableElement: ElementRef<HTMLTableElement>;
-
-  @Input() public currency: IOfferCurrency;
-  @Input() public set priceLists(priceLists: IPriceList[]) {
-    this.addRange(priceLists);
-  }
 
   public get canRemove(): boolean {
     return this.formArray.length > 1;
   }
 
-  public formArrayKey = 'priceLists';
+  public offer: FormControl = new FormControl();
+  public isPriceListsLoading$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+
+  public formArrayKey = 'priceRows';
   public formArray: FormArray = new FormArray([]);
-  public formKey = PriceListFormKey;
+  public formKey = PriceRowFormKey;
   public formGroup: FormGroup = new FormGroup(
     { [this.formArrayKey]: this.formArray },
-    [EditablePriceGridValidators.boundsContinuity, EditablePriceGridValidators.minimumZero],
+    [EditablePriceGridValidators.boundsContinuity],
   );
 
   public validationError = PriceGridValidationError;
   public get hasFormErrors(): boolean {
-    return this.hasClosestBoundsError
-      || this.hasRequiredError
-      || this.formGroup.hasError(PriceGridValidationError.BoundsContinuity)
-      || this.formGroup.hasError(PriceGridValidationError.MinBound);
-  }
-
-  public get hasClosestBoundsError(): boolean {
-    return !!this.formArray.controls.find(c => c.hasError(PriceGridValidationError.ClosestBounds));
+    return this.hasRequiredError || this.formGroup.hasError(PriceGridValidationError.BoundsContinuity);
   }
 
   public get hasRequiredError(): boolean {
     return !!this.formArray.controls.find((c: FormGroup) => {
-      const priceListKeys = Object.keys(c.controls);
-      return !!priceListKeys.find(key => c.get(key).hasError(PriceGridValidationError.Required));
+      const priceRowKeys = Object.keys(c.controls);
+      return !!priceRowKeys.find(key => c.get(key).hasError(PriceGridValidationError.Required));
     });
   }
 
   private destroy$: Subject<void> = new Subject<void>();
 
-  constructor() { }
+  constructor(private dataService: OffersDataService) { }
 
   public ngOnInit(): void {
     this.formGroup.valueChanges
       .pipe(takeUntil(this.destroy$))
       .subscribe(formGroup => this.onChange(formGroup[this.formArrayKey]));
+
+    this.offer.valueChanges
+      .pipe(
+        takeUntil(this.destroy$), filter(o => !!o),
+        tap(() => this.isPriceListsLoading$.next(true)),
+        switchMap((o: IOffer) => this.dataService.getPriceLists$(o.id)
+          .pipe(finalize(() => this.isPriceListsLoading$.next(false)))),
+        map(priceLists => OfferPriceListService.getCurrent(priceLists)),
+      )
+      .subscribe(priceList => this.reset(priceList.rows));
   }
 
   public ngOnDestroy(): void {
@@ -109,7 +111,7 @@ export class EditablePriceGridComponent implements OnInit, OnDestroy, ControlVal
     this.destroy$.complete();
   }
 
-  public onChange: (priceLists: IEditablePriceGrid[]) => void = () => {};
+  public onChange: (priceRows: IPriceRowForm[]) => void = () => {};
   public onTouch: () => void = () => {};
 
   public registerOnChange(fn: () => void): void {
@@ -120,16 +122,24 @@ export class EditablePriceGridComponent implements OnInit, OnDestroy, ControlVal
     this.onTouch = fn;
   }
 
-  public writeValue(priceLists: IEditablePriceGrid[]): void {
-    if (!priceLists?.length) {
+  public writeValue(priceRows: IPriceRowForm[]): void {
+    if (!priceRows?.length) {
       this.init();
       return;
     }
 
-    if (!!priceLists) {
-      this.formArray.clear();
-      this.addRange(priceLists);
+    if (!!priceRows) {
+      this.reset(priceRows);
     }
+  }
+
+  public setDisabledState(isDisabled: boolean) {
+    if (isDisabled) {
+      this.offer.disable();
+      this.formArray.controls.forEach(control => control.disable());
+      return;
+    }
+    this.offer.enable();
   }
 
   public validate(control: AbstractControl): ValidationErrors | null {
@@ -140,19 +150,24 @@ export class EditablePriceGridComponent implements OnInit, OnDestroy, ControlVal
 
   public insert(): void {
     const lastIndex = this.formArray.length - 1;
-    const priceList: IEditablePriceGrid = this.formArray.at(lastIndex).value;
-    const nextLowerBound = priceList.upperBound + 1;
-    const formGroup = this.getFormGroup(nextLowerBound, nextLowerBound, 0, 0);
+    const priceRow: IPriceRowForm = this.formArray.at(lastIndex).value;
+    const nextUpperBound = priceRow.maxIncludedCount + 1;
+    const formGroup = this.getFormGroup(nextUpperBound, 0, 0);
 
     this.formArray.insert(lastIndex + 1, formGroup);
   }
 
-  public addRange(priceLists?: IEditablePriceGrid[]): void {
-    priceLists.forEach(priceList => this.add(priceList));
+  public addRange(priceRows?: IPriceRowForm[]): void {
+    priceRows.forEach(priceRow => this.add(priceRow));
   }
 
   public remove(index: number) {
     this.formArray.removeAt(index);
+  }
+
+  public reset(priceRows: IPriceRowForm[]): void {
+    this.formArray.clear();
+    this.addRange(priceRows);
   }
 
   public paste(event: ClipboardEvent): void {
@@ -161,7 +176,7 @@ export class EditablePriceGridComponent implements OnInit, OnDestroy, ControlVal
     const csv = event.clipboardData.getData('text');
     const rows = csv.split('\n');
     const validRows = rows.filter(row => this.isPriceRowValid(row));
-    const priceRows = validRows.map(row => this.toPriceList(row));
+    const priceRows = validRows.map(row => this.toPriceRow(row));
 
     this.addRange(priceRows);
   }
@@ -174,28 +189,34 @@ export class EditablePriceGridComponent implements OnInit, OnDestroy, ControlVal
     const tableCell = tableRow.cells.item(nextFocusedPosition.col);
     const label = tableCell.childNodes.item(0);
     const input = label.childNodes.item(0) as HTMLInputElement;
-    input.focus();
+    input?.focus();
+  }
+
+  public getLowerBound(maxIncludedCount: number): number {
+    const priceRows = this.formArray.value;
+    const currentRowIndex = priceRows.findIndex(row => row.maxIncludedCount === maxIncludedCount);
+    const previousMaxIncludedCount = priceRows[currentRowIndex - 1]?.maxIncludedCount;
+
+    return !!previousMaxIncludedCount ? previousMaxIncludedCount + 1 : 0;
   }
 
   private init(): void {
-    const defaultPriceList: IEditablePriceGrid = { lowerBound: 0, upperBound: 0, unitPrice: 0, fixedPrice: 0 };
-    this.add(defaultPriceList);
+    const defaultPriceRow: IPriceRowForm = { maxIncludedCount: 0, unitPrice: 0, fixedPrice: 0 };
+    this.add(defaultPriceRow);
   }
 
-  private add(priceList: IEditablePriceGrid): void {
-    const formGroup = this.getFormGroup(priceList.lowerBound, priceList.upperBound, priceList.unitPrice, priceList.fixedPrice);
+  private add(priceRow: IPriceRowForm): void {
+    const formGroup = this.getFormGroup(priceRow.maxIncludedCount, priceRow.unitPrice, priceRow.fixedPrice);
     this.formArray.push(formGroup);
   }
 
-  private getFormGroup(lowerBound?: number, upperBound?: number, unitPrice?: number, fixedPrice?: number): FormGroup {
+  private getFormGroup(maxIncludedCount: number, unitPrice?: number, fixedPrice?: number): FormGroup {
     return new FormGroup(
       {
-        [PriceListFormKey.LowerBound]: new FormControl(lowerBound),
-        [PriceListFormKey.UpperBound]: new FormControl(upperBound),
-        [PriceListFormKey.UnitPrice]: new FormControl(unitPrice),
-        [PriceListFormKey.FixedPrice]: new FormControl(fixedPrice),
+        [PriceRowFormKey.MaxIncludedCount]: new FormControl(maxIncludedCount),
+        [PriceRowFormKey.UnitPrice]: new FormControl(unitPrice),
+        [PriceRowFormKey.FixedPrice]: new FormControl(fixedPrice),
       },
-      EditablePriceGridValidators.upperBoundSuperior,
     );
   }
 
@@ -223,11 +244,11 @@ export class EditablePriceGridComponent implements OnInit, OnDestroy, ControlVal
     return columns.length === requiredColumnsNumber;
   }
 
-  private toPriceList(row: string): IEditablePriceGrid {
+  private toPriceRow(row: string): IPriceRowForm {
     const columns = row.split('\t');
+
     return {
-      lowerBound: parseInt(columns[0], 10),
-      upperBound: parseInt(columns[1], 10),
+      maxIncludedCount: parseInt(columns[1], 10),
       unitPrice: parseInt(columns[2], 10),
       fixedPrice: parseInt(columns[3], 10),
     };

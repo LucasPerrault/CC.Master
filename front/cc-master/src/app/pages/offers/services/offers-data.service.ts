@@ -1,23 +1,25 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { IHttpApiV3CollectionCount, IHttpApiV3CollectionCountResponse, IHttpApiV3Response } from '@cc/common/queries';
+import { ApiV3DateService, IHttpApiV3CollectionCount, IHttpApiV3CollectionCountResponse, IHttpApiV3Response } from '@cc/common/queries';
 import { IPriceList } from '@cc/domain/billing/offers';
 import { forkJoin, Observable, of } from 'rxjs';
 import { map, switchMapTo } from 'rxjs/operators';
 
-import { IOfferForm } from '../components/offer-form/offer-form.interface';
+import { IOfferCreationForm } from '../components/offer-creation/offer-creation-form/offer-creation-form.interface';
+import { IOfferEditionForm } from '../components/offer-edition/offer-edition-form/offer-edition-form.interface';
 import { detailedOfferFields, IDetailedOffer } from '../models/detailed-offer.interface';
 import { IOfferCreationDto } from '../models/offer-creation-dto.interface';
 import { IOfferEditionDto } from '../models/offer-edition-dto.interface';
-import { IOfferPriceListEditionDto } from '../models/offer-price-list-edition-dto.interface';
+import { IPriceListCreationDto } from '../models/price-list-creation-dto.interface';
+import { IPriceListEditionDto, IPriceRowEditionDto } from '../models/price-list-edition-dto.interface';
+import { IPriceListForm, IPriceRowForm } from '../models/price-list-form.interface';
 import { IPriceListsOffer, priceListsOfferFields } from '../models/price-lists-offer.interface';
 
 @Injectable()
 export class OffersDataService {
   private readonly offersEndpoint = '/api/v3/offers';
-  private readonly pricesEndpoint = '/api/v3/prices/sync';
 
-  constructor(private httpClient: HttpClient) {
+  constructor(private httpClient: HttpClient, private apiDateService: ApiV3DateService) {
   }
 
   public getOffers$(params: HttpParams): Observable<IHttpApiV3CollectionCount<IDetailedOffer>> {
@@ -38,14 +40,14 @@ export class OffersDataService {
     return this.httpClient.delete<void>(url);
   }
 
-  public create$(form: IOfferForm): Observable<void> {
+  public create$(form: IOfferCreationForm): Observable<void> {
     const body = this.toOfferCreationDto(form);
     return this.httpClient.post<void>(this.offersEndpoint, body);
   }
 
-  public edit$(offerId: number, form: IOfferForm): Observable<void> {
-    return forkJoin([this.editOffer$(offerId, form), this.editPriceList$(offerId, form)])
-      .pipe(switchMapTo(of<void>()));
+  public edit$(offerId: number, priceListId: number, form: IOfferEditionForm): Observable<void> {
+    const requests$ = [this.editOffer$(offerId, form), this.editPriceList$(offerId, priceListId, form.priceList)];
+    return forkJoin(requests$).pipe(switchMapTo(of<void>()));
   }
 
   public getPriceLists$(offerId: number): Observable<IPriceList[]> {
@@ -55,7 +57,7 @@ export class OffersDataService {
       .pipe(map(res => res.data.priceLists));
   }
 
-  private toOfferCreationDto(form: IOfferForm): IOfferCreationDto {
+  private toOfferCreationDto(form: IOfferCreationForm): IOfferCreationDto {
     return {
       name: form.name,
       productId: form.product.id,
@@ -66,17 +68,24 @@ export class OffersDataService {
       billingMode: form.billingMode.id,
       sageBusiness: form.sageBusiness,
       unit: form.billingUnit.id,
-      priceLists: form.priceLists,
+      priceLists: [this.toPriceListDto(form.priceList)],
     };
   }
 
-  private editOffer$(offerId: number, form: IOfferForm): Observable<void> {
+  private toPriceListDto(priceList: IPriceListForm): IPriceListCreationDto {
+    return {
+      startsOn: this.apiDateService.toApiV3DateFormat(priceList.startsOn),
+      rows: priceList.rows,
+    };
+  }
+
+  private editOffer$(offerId: number, form: IOfferEditionForm): Observable<void> {
     const body = this.toOfferEditionDto(form);
     const url = `${ this.offersEndpoint }/${ offerId }`;
     return this.httpClient.put<void>(url, body);
   }
 
-  private toOfferEditionDto(form: IOfferForm): IOfferEditionDto {
+  private toOfferEditionDto(form: IOfferEditionForm): IOfferEditionDto {
     return {
       name: form.name,
       productId: form.product.id,
@@ -90,23 +99,19 @@ export class OffersDataService {
     };
   }
 
-  private editPriceList$(offerId: number, form: IOfferForm): Observable<void> {
-    const body = this.toOfferPriceListsEditionDto(offerId, form);
-    const url = `${ this.pricesEndpoint }`;
+  private editPriceList$(offerId: number, priceListId: number, form: IPriceListForm): Observable<void> {
+    const body = [this.toPriceListEditionDto(priceListId, form)];
+    const url = `/api/v3/offers/${ offerId }/updatePriceList`;
     return this.httpClient.put<void>(url, body);
   }
 
-  private toOfferPriceListsEditionDto(offerId: number, form: IOfferForm): IOfferPriceListEditionDto[] {
-    return form.priceLists.map(p => this.toOfferPriceListEditionDto(offerId, p));
+  private toPriceListEditionDto(id: number, form: IPriceListForm): IPriceListEditionDto {
+    const startsOn = this.apiDateService.toApiV3DateFormat(form.startsOn);
+    const rows = form.rows?.map(row => this.toPriceRowEditionDto(id, row));
+    return { id, startsOn, rows };
   }
 
-  private toOfferPriceListEditionDto(offerId: number, priceList: IPriceList): IOfferPriceListEditionDto {
-    return {
-      commercialOfferID: offerId,
-      fixedPrice: priceList.fixedPrice,
-      unitPrice: priceList.unitPrice,
-      lowerBound: priceList.lowerBound,
-      upperBound: priceList.upperBound,
-    };
+  private toPriceRowEditionDto(listId: number, form: IPriceRowForm): IPriceRowEditionDto {
+    return { ...form, listId };
   }
 }

@@ -10,12 +10,12 @@ import {
   Validator,
 } from '@angular/forms';
 import { SelectDisplayMode } from '@cc/common/forms';
-import { IOffer } from '@cc/domain/billing/offers';
-import { BehaviorSubject, Subject } from 'rxjs';
-import { filter, finalize, switchMap, takeUntil, tap } from 'rxjs/operators';
+import { ELuDateGranularity } from '@lucca-front/ng/core';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
-import { OffersDataService } from '../../services/offers-data.service';
-import { IOfferForm } from './offer-form.interface';
+import { OfferPriceListService } from '../../../services/offer-price-list.service';
+import { IOfferCreationForm } from './offer-creation-form.interface';
 
 enum OfferFormKey {
   Name = 'name',
@@ -27,37 +27,44 @@ enum OfferFormKey {
   BillingMode = 'billingMode',
   PricingMethod = 'pricingMethod',
   ForecastMethod = 'forecastMethod',
-  PriceList = 'priceLists',
+  PriceList = 'priceList',
+}
+
+enum PriceListFormKey {
+  StartsOn = 'startsOn',
+  Rows = 'rows',
 }
 
 @Component({
-  selector: 'cc-offer-form',
-  templateUrl: './offer-form.component.html',
+  selector: 'cc-offer-creation-form',
+  templateUrl: './offer-creation-form.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,
-      useExisting: forwardRef(() => OfferFormComponent),
+      useExisting: forwardRef(() => OfferCreationFormComponent),
       multi: true,
     },
     {
       provide: NG_VALIDATORS,
       multi: true,
-      useExisting: OfferFormComponent,
+      useExisting: OfferCreationFormComponent,
     },
   ],
 })
-export class OfferFormComponent implements OnInit, OnDestroy, ControlValueAccessor, Validator {
+export class OfferCreationFormComponent implements OnInit, OnDestroy, ControlValueAccessor, Validator {
   public formGroup: FormGroup;
-  public formKey = OfferFormKey;
+  public offerFormKey = OfferFormKey;
+  public priceListFormKey = PriceListFormKey;
+  public granularity = ELuDateGranularity;
   public formMode = SelectDisplayMode.Form;
-
-  public offer: FormControl = new FormControl();
-  public isPriceListsLoading$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
   private destroy$: Subject<void> = new Subject<void>();
 
-  constructor(private offersDataService: OffersDataService) {
+  constructor() {
+  }
+
+  public ngOnInit(): void {
     this.formGroup = new FormGroup({
       [OfferFormKey.Name]: new FormControl(),
       [OfferFormKey.Product]: new FormControl(),
@@ -68,23 +75,15 @@ export class OfferFormComponent implements OnInit, OnDestroy, ControlValueAccess
       [OfferFormKey.BillingMode]: new FormControl(),
       [OfferFormKey.PricingMethod]: new FormControl(),
       [OfferFormKey.ForecastMethod]: new FormControl(),
-      [OfferFormKey.PriceList]: new FormControl(),
+      [OfferFormKey.PriceList]: new FormGroup({
+        [PriceListFormKey.StartsOn]: new FormControl({ value: OfferPriceListService.defaultStartsOn, disabled: true }),
+        [PriceListFormKey.Rows]: new FormControl(),
+      }),
     });
-  }
 
-  public ngOnInit(): void {
     this.formGroup.valueChanges
       .pipe(takeUntil(this.destroy$))
-      .subscribe(form => this.onChange(form));
-
-    this.offer.valueChanges
-      .pipe(
-        takeUntil(this.destroy$), filter(o => !!o),
-        tap(() => this.isPriceListsLoading$.next(true)),
-        switchMap((o: IOffer) => this.offersDataService.getPriceLists$(o.id)
-          .pipe(finalize(() => this.isPriceListsLoading$.next(false)))),
-      )
-      .subscribe(priceLists => this.formGroup.get(OfferFormKey.PriceList).setValue(priceLists));
+      .subscribe(form => this.onChange(this.formGroup.getRawValue()));
   }
 
   public ngOnDestroy(): void {
@@ -92,7 +91,7 @@ export class OfferFormComponent implements OnInit, OnDestroy, ControlValueAccess
     this.destroy$.complete();
   }
 
-  public onChange: (form: IOfferForm) => void = () => {};
+  public onChange: (form: IOfferCreationForm) => void = () => {};
   public onTouch: () => void = () => {};
 
   public registerOnChange(fn: () => void): void {
@@ -103,7 +102,7 @@ export class OfferFormComponent implements OnInit, OnDestroy, ControlValueAccess
     this.onTouch = fn;
   }
 
-  public writeValue(form: IOfferForm): void {
+  public writeValue(form: IOfferCreationForm): void {
     if (!!form && this.formGroup.value !== form) {
       this.formGroup.patchValue(form);
     }

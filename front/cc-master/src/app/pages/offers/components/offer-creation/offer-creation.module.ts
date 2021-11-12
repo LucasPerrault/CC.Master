@@ -4,9 +4,9 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { TranslateModule } from '@cc/aspects/translate';
 
 import { EditablePriceGridModule } from '../editable-price-grid/editable-price-grid.module';
-import { OfferFormModule } from '../offer-form/offer-form.module';
 import { OfferPageTemplateModule } from '../offer-page-template/offer-page-template.module';
 import { OfferCreationComponent } from './offer-creation.component';
+import { OfferCreationFormModule } from './offer-creation-form/offer-creation-form.module';
 
 
 @NgModule({
@@ -15,9 +15,9 @@ import { OfferCreationComponent } from './offer-creation.component';
     CommonModule,
     OfferPageTemplateModule,
     TranslateModule,
-    OfferFormModule,
     ReactiveFormsModule,
     EditablePriceGridModule,
+    OfferCreationFormModule,
   ],
 })
 export class OfferCreationModule {

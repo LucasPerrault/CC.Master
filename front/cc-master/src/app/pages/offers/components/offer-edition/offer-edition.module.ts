@@ -4,9 +4,11 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { TranslateModule } from '@cc/aspects/translate';
 
 import { EditablePriceGridModule } from '../editable-price-grid/editable-price-grid.module';
-import { OfferFormModule } from '../offer-form/offer-form.module';
 import { OfferPageTemplateModule } from '../offer-page-template/offer-page-template.module';
 import { OfferEditionComponent } from './offer-edition.component';
+import { OfferEditionFormModule } from './offer-edition-form/offer-edition-form.module';
+import { OfferEditionRestrictionsService } from './offer-edition-restrictions.service';
+import { OfferEditionValidationContextService } from './offer-edition-validation-context.service';
 
 
 @NgModule({
@@ -15,10 +17,11 @@ import { OfferEditionComponent } from './offer-edition.component';
     CommonModule,
     OfferPageTemplateModule,
     TranslateModule,
-    OfferFormModule,
     ReactiveFormsModule,
     EditablePriceGridModule,
+    OfferEditionFormModule,
   ],
+  providers: [OfferEditionRestrictionsService, OfferEditionValidationContextService],
 })
 export class OfferEditionModule {
 }

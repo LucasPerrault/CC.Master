@@ -1,10 +1,11 @@
-<cc-offer-template *ngIf="offer$ | async; let offer"
-                   [title]="'offers_edition_title' | translate: { name: offer.name }">
+<cc-offer-template *ngIf="offerName$ | async; let offerName"
+                   [title]="'offers_edition_title' | translate: { name: offerName }">
 
   <div class="page-content">
     <div class="loading mod-dialog" *ngIf="isLoading$ | async; else isNotLoading"></div>
     <ng-template #isNotLoading>
-      <cc-offer-form [formControl]="formControl"></cc-offer-form>
+      <cc-offer-edition-form [formControl]="formControl" [validationContext]="validationContext$ | async">
+      </cc-offer-edition-form>
     </ng-template>
   </div>
 
