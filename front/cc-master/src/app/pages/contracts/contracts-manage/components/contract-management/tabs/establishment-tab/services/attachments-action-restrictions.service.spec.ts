@@ -93,6 +93,15 @@ describe('AttachmentsActionRestrictionsService', () => {
     expect(resultWithTerminatedAttachment).toBeFalsy();
   });
 
+  it('should link attachment when should be ended in future', () => {
+    const nextMonth = addMonths(today, 1);
+    const mockedFutureEndedAttachment = fakeAttachment(startOfMonth(nextMonth), endOfMonth(nextMonth));
+
+    const resultWithEndedAttachment = spectator.service.canLink(mockedFutureEndedAttachment);
+
+    expect(resultWithEndedAttachment).toBeTruthy();
+  });
+
   it('should link attachment when is finished', () => {
     const lastMonth = subMonths(today, 1);
     const mockedEndedAttachment = fakeAttachment(startOfMonth(lastMonth), endOfMonth(lastMonth));
@@ -109,8 +118,7 @@ describe('AttachmentsActionRestrictionsService', () => {
   });
 
   it('should not link attachment when is not finished', () => {
-    const nextMonth = addMonths(today, 1);
-    const mockedAttachment = fakeAttachment(startOfMonth(today), endOfMonth(nextMonth));
+    const mockedAttachment = fakeAttachment(startOfMonth(today), null);
 
     const result = spectator.service.canLink(mockedAttachment);
 

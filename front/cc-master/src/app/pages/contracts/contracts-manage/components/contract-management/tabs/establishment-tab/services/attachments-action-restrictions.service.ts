@@ -44,7 +44,7 @@ export class AttachmentsActionRestrictionsService {
   }
 
   public canLink(attachment: IEstablishmentAttachment): boolean {
-    return !attachment || this.timelineService.isFinished(attachment);
+    return !attachment || this.timelineService.isFinished(attachment) || this.timelineService.shouldBeEndedInFuture(attachment);
   }
 
   public canEditFutureStartRange(attachments: IEstablishmentAttachment[], realCounts: IContractCount[]): boolean {
