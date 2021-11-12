@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 
@@ -21,6 +22,12 @@ namespace Tools
             }
 
             return value.ToString();
+        }
+
+        public static bool ContainsAllEnumValues<T>(this IEnumerable<T> enums) where T : Enum
+        {
+            var allValues = Enum.GetValues(typeof(T)).Cast<T>().ToHashSet();
+            return allValues.All(enums.Contains);
         }
     }
 }

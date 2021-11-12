@@ -172,6 +172,22 @@ namespace AdvancedFilters.Infra.Services.Sync
             return Task.FromResult(synchronizer);
         }
 
+        public Task<IDataSourceSynchronizer> BuildFromAsync(DistributorDataSource dataSource)
+        {
+            var context = new EmptyDataSourceContext<Distributor>("CC.Master");
+            var config = new BulkUpsertConfig();
+            var synchronizer = BuildFrom<DistributorsDto, Distributor, EmptyDataSourceContext<Distributor>>(dataSource, new List<EmptyDataSourceContext<Distributor>> { context }, config);
+            return Task.FromResult(synchronizer);
+        }
+
+        public Task<IDataSourceSynchronizer> BuildFromAsync(EnvironmentAccessDataSource dataSource)
+        {
+            var context = new EmptyDataSourceContext<EnvironmentAccess>("CC.Master");
+            var config = new BulkUpsertConfig();
+            var synchronizer = BuildFrom<EnvironmentAccessesDto, EnvironmentAccess, EmptyDataSourceContext<EnvironmentAccess>>(dataSource, new List<EmptyDataSourceContext<EnvironmentAccess>> { context }, config);
+            return Task.FromResult(synchronizer);
+        }
+
         public async Task<IDataSourceSynchronizer> BuildFromAsync(AppContactDataSource dataSource)
         {
             Action<Environment, AppContact> finalizeAction = (environment, contact) => { contact.EnvironmentId = environment.Id; };

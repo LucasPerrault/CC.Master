@@ -1,7 +1,6 @@
 using AdvancedFilters.Domain.Filters.Models;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Linq.Expressions;
 
 namespace AdvancedFilters.Infra.Filters.Builders.Chaining
@@ -17,9 +16,10 @@ namespace AdvancedFilters.Infra.Filters.Builders.Chaining
             _getPropertyExpression = getPropertyExpression;
         }
 
-        public Expression<Func<IEnumerable<TValue>, bool>> ForList()
+        public Expression<Func<IEnumerable<TValue>, bool>> ForList(ItemsMatching matching)
         {
-            return values => values.AsQueryable().Any(_criterion.ChainToPropertyItem(_getPropertyExpression));
+            var predicate = _criterion.ChainToPropertyItem(_getPropertyExpression);
+            return predicate.ToExpressionForList(matching);
         }
 
         public Expression<Func<TValue, bool>> ForItem()
@@ -39,14 +39,15 @@ namespace AdvancedFilters.Infra.Filters.Builders.Chaining
             _getPropertyListExpression = getPropertyListExpression;
         }
 
-        public Expression<Func<IEnumerable<TValue>, bool>> ForList()
+        public Expression<Func<IEnumerable<TValue>, bool>> ForList(ItemsMatching matching)
         {
-            return values => values.AsQueryable().Any(_criterion.ChainToPropertyItem(_getPropertyListExpression));
+            var predicate = _criterion.ChainToPropertyList(_getPropertyListExpression);
+            return predicate.ToExpressionForList(matching);
         }
 
         public Expression<Func<TValue, bool>> ForItem()
         {
-            return _criterion.ChainToPropertyItem(_getPropertyListExpression);
+            return _criterion.ChainToPropertyList(_getPropertyListExpression);
         }
     }
 }

@@ -13,5 +13,6 @@ namespace Distributors.Domain.Models
         public string Code { get; set; }
         public int DepartmentId { get; set; }
         public bool IsAllowingCommercialCommunication { get; set; }
+        public bool IsActive { get; set; }
     }
 }

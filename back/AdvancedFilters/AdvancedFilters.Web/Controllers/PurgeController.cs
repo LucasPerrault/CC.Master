@@ -1,4 +1,6 @@
-using AdvancedFilters.Infra.Services.Sync;
+using AdvancedFilters.Domain.DataSources;
+using AdvancedFilters.Web.Controllers.Locks;
+using Lock.Web;
 using Microsoft.AspNetCore.Mvc;
 using Rights.Domain;
 using Rights.Web.Attributes;
@@ -12,14 +14,15 @@ namespace AdvancedFilters.Web.Controllers
     [ApiController, Route("/api/cafe/purge")]
     public class PurgeController
     {
-        private readonly SyncService _syncService;
+        private readonly ISyncService _syncService;
 
-        public PurgeController(SyncService syncService)
+        public PurgeController(ISyncService syncService)
         {
             _syncService = syncService;
         }
 
         [HttpPost("all")]
+        [OneRequestAtATime(AdvancedFiltersSyncLock.Name, AdvancedFiltersSyncLock.TimeoutInSeconds)]
         [ForbidIfMissing(Operation.SyncAllCafe)]
         public Task HugeSyncAsync()
         {
@@ -27,6 +30,7 @@ namespace AdvancedFilters.Web.Controllers
         }
 
         [HttpPost("mono-tenant")]
+        [OneRequestAtATime(AdvancedFiltersSyncLock.Name, AdvancedFiltersSyncLock.TimeoutInSeconds)]
         [ForbidIfMissing(Operation.SyncAllCafe)]
         public Task HugeSyncAsync([FromQuery]HashSet<string> subdomains)
         {

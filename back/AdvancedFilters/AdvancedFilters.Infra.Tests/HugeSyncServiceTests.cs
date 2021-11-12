@@ -85,7 +85,7 @@ namespace AdvancedFilters.Infra.Tests
 
             SetupHttpResponse("https://mocked-cc.ilucca.local/api/envs", new EnvironmentsDto
             {
-                Items = new List<Environment> { new Environment { Subdomain = "aperture-science", Id = 1} }
+                Items = new List<Environment> { new Environment { Subdomain = "aperture-science", Id = 1, Accesses = new List<EnvironmentAccess>() } }
             });
 
             await service.SyncEverythingAsync();
@@ -122,7 +122,7 @@ namespace AdvancedFilters.Infra.Tests
                 _teamNotifierMock.Object
             );
 
-            SetupKnownEnvironments(new Environment { Id = 42, ProductionHost = "https://mocked-tenant.dev" });
+            SetupKnownEnvironments(new Environment { Id = 42, ProductionHost = "https://mocked-tenant.dev", Accesses = new List<EnvironmentAccess>() });
             SetupHttpResponse("https://mocked-tenant.dev/api/app-instances", new AppInstancesDto
             {
                 Data = ApiV3Response(new AppInstance { EnvironmentId = 42, ApplicationId = "glados" })
@@ -162,7 +162,7 @@ namespace AdvancedFilters.Infra.Tests
                 _teamNotifierMock.Object
             );
 
-            SetupKnownEnvironments(new Environment { Id = 42, ProductionHost = "https://mocked-tenant.dev" });
+            SetupKnownEnvironments(new Environment { Id = 42, ProductionHost = "https://mocked-tenant.dev", Accesses = new List<EnvironmentAccess>() });
             SetupHttpResponse("https://mocked-tenant.dev/api/legal-units", new LegalUnitsDto
             {
                 Items = new List<LegalUnit> { new LegalUnit { EnvironmentId = 42, Name = "Aperture Science Colorado"} }
@@ -205,8 +205,8 @@ namespace AdvancedFilters.Infra.Tests
 
             SetupKnownEnvironments
             (
-                new Environment { Id = 1, Subdomain = "toto", ProductionHost = "https://toto.dev" },
-                new Environment { Id = 2, Subdomain = "titi", ProductionHost = "https://titi.dev" }
+                new Environment { Id = 1, Subdomain = "toto", ProductionHost = "https://toto.dev", Accesses = new List<EnvironmentAccess>() },
+                new Environment { Id = 2, Subdomain = "titi", ProductionHost = "https://titi.dev", Accesses = new List<EnvironmentAccess>() }
             );
             SetupHttpResponse("https://toto.dev/api/legal-units", new LegalUnitsDto
             {
@@ -214,7 +214,7 @@ namespace AdvancedFilters.Infra.Tests
             });
             SetupHttpResponse("https://toto.dev/api/app-instances", new AppInstancesDto
             {
-                Data = ApiV3Response(new AppInstance { EnvironmentId = 1 })
+                Data = ApiV3Response(new AppInstance { EnvironmentId = 1, ApplicationId = "WFIGGO"})
             });
 
             await service.SyncMonoTenantDataAsync(new HashSet<string> { "toto", "titi" });

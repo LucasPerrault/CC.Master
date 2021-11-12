@@ -152,4 +152,10 @@ export const navigationTabs: INavigationTab[] = [
     icon: 'list',
     restriction: { operations: [Operation.EnvironmentLogTab] },
   },
+  {
+    name: 'front_navigation_cafeTab',
+    url: NavigationPath.Cafe,
+    icon: 'table',
+    restriction: { operations: [Operation.ReadAllCafe] },
+  },
 ];

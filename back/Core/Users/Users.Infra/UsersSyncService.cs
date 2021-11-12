@@ -44,6 +44,7 @@ namespace Users.Infra
             var localUsersDict = localUsers.ToDictionary(u => u.Id, u => u);
 
             var distributorsPerCode = ( await _distributorsStore.GetAllAsync() )
+                .Where(d => d.IsActive)
                 .ToDictionary(d => d.Code, d => d);
 
             var usersByDepartmentCodeErrors = new Dictionary<string, List<int>>();

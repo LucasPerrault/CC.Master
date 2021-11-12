@@ -36,10 +36,13 @@
     <cc-offer-api-select [formControlName]="filterKey.Offers" [displayMode]="selectMode.Filter"
                          [multiple]="true" textfieldClass="palette-grey mod-outlined mod-inline u-marginTopSmaller mod-long">
     </cc-offer-api-select>
-    
-    <cc-environment-api-select [multiple]="true" [formControlName]="filterKey.Environments"
-                                textfieldClass="palette-grey mod-outlined mod-inline u-marginTopSmaller mod-long">
-    </cc-environment-api-select>
+
+    <label class="textfield palette-grey mod-outlined mod-inline u-marginTopSmaller mod-long">
+      <cc-environment-api-select [placeholder]="'front_select_environments_label' | translate"
+                                 [multiple]="true"
+                                 [formControlName]="filterKey.Environments">
+      </cc-environment-api-select>
+    </label>
 
     <cc-contract-state-select [formControlName]="filterKey.States"
                               textfieldClass="palette-grey mod-outlined mod-inline u-marginTopSmaller mod-long">

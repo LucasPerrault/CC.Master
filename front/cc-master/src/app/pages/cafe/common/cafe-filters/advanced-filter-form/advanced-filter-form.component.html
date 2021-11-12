@@ -1,0 +1,62 @@
+<form [formGroup]="formGroup" class="u-marginTopSmall">
+
+  <div [formArrayName]="formArrayKey">
+
+    <div *ngFor="let formControl of formArray.controls; let i = index; trackBy: trackBy"
+         class="u-displayFlex u-flexWrapWrap u-alignItemsCenter u-flexGrow0 u-flexShrink1 u-marginTopSmallest">
+
+      <ng-container [ngSwitch]="i">
+        <div *ngSwitchCase="0" class="textfield mod-inline mod-shorter"></div>
+        <div *ngSwitchCase="1">
+          <cc-logical-operator-select textfieldClass="palette-grey mod-outlined mod-inline mod-shorter"
+                                      [formControl]="logicalOperator"
+                                      [required]="true">
+          </cc-logical-operator-select>
+        </div>
+        <div *ngSwitchDefault class="textfield mod-inline mod-shorter u-paddingLeftSmaller">
+          {{ logicalOperator.value?.name | translate }}
+        </div>
+      </ng-container>
+
+      <cc-comparison-filter-criterion-form [formControl]="formControl"
+                                           [configurations]="configuration.criterions"
+                                           [required]="true">
+      </cc-comparison-filter-criterion-form>
+
+      <div class="u-marginLeftAuto">
+        <button type="button" class="actionIcon"
+                [luTooltip]="'cafe_filters_add_one_button_label' | translate"
+                (click)="insertAt(i)">
+          <span aria-hidden="true" class="lucca-icon icon-plus"></span>
+          <span class="u-mask">{{ 'cafe_filters_add_one_button_label' | translate }}</span>
+        </button>
+        <button type="button" class="actionIcon"
+                [luTooltip]="'cafe_filters_delete_one_button_label' | translate"
+                (click)="removeAt(i)">
+          <span aria-hidden="true" class="lucca-icon icon-cross"></span>
+          <span class="u-mask">{{ 'cafe_filters_delete_one_button_label' | translate }}</span>
+        </button>
+      </div>
+    </div>
+
+  </div>
+</form>
+
+<div class="u-displayFlex u-justifyContentSpaceBetween u-paddingSmaller">
+  <button class="button mod-link mod-icon" (click)="openExternalDocumentation()">
+    <span aria-hidden="true" class="button-icon lucca-icon icon-help"></span>
+    {{ 'cafe_external_documentation_button' | translate }}
+  </button>
+  <div class="u-marginLeftAuto">
+    <button class="button palette-grey mod-outline" (click)="reset()">
+      {{ 'cafe_filters_delete_all_button_label' | translate }}
+    </button>
+    <button class="button palette-grey" (click)="submitAdvancedFilter()" [disabled]="invalid">
+      {{ 'cafe_filters_submit_button_label' | translate }}
+    </button>
+
+    <button class="button mod-link" (click)="cancelForm()">
+      {{ 'cafe_filters_cancel_button_label' | translate }}
+    </button>
+  </div>
+</div>

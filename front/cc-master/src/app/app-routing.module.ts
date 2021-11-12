@@ -4,9 +4,10 @@ import { OperationsPageGuard } from '@cc/aspects/rights';
 import { ForbiddenComponent, NotFoundComponent } from '@cc/common/error-redirections';
 import { NavigationPath, navigationTabs } from '@cc/common/navigation';
 import { NoNavPath } from '@cc/common/routing';
-
 import { AccountingComponent } from './pages/accounting/accounting.component';
 import { AccountingModule } from './pages/accounting/accounting.module';
+import { CafeComponent } from './pages/cafe/cafe.component';
+import { CafeModule } from './pages/cafe/cafe.module';
 import { CodeSourcesComponent } from './pages/code-sources/code-sources.component';
 import { CodeSourcesModule } from './pages/code-sources/code-sources.module';
 import { ContractsComponent } from './pages/contracts/contracts.component';
@@ -31,6 +32,10 @@ const pageRoutes: Routes = [
     path: NavigationPath.Accounting,
     component: AccountingComponent,
   },
+  {
+    path: NavigationPath.Cafe,
+    component: CafeComponent,
+  },
 ];
 
 const routes: Routes = [
@@ -47,6 +52,7 @@ const routes: Routes = [
     CodeSourcesModule,
     ContractsModule,
     AccountingModule,
+    CafeModule,
   ],
   exports: [RouterModule],
 })

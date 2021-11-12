@@ -6,8 +6,8 @@ namespace Distributors.Domain
 {
     public interface IDistributorsStore
     {
-        Task<Distributor> GetByIdAsync(int id);
-        Task<Distributor> GetByCodeAsync(string code);
+        Task<Distributor> GetActiveByIdAsync(int id);
+        Task<Distributor> GetActiveByCodeAsync(string code);
         Task<List<Distributor>> GetAllAsync();
     }
 }

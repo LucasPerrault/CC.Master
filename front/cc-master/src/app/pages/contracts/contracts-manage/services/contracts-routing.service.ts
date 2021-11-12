@@ -4,7 +4,7 @@ import { ActivatedRoute, convertToParamMap, ParamMap, Router } from '@angular/ro
 import { getLegacyParams, getUrlWithoutParams, hasLegacyParams } from '../constants/legacy-params.functions';
 import { IContractsRoutingParams } from '../models/contracts-routing-params.interface';
 
-enum ContractsRoutingKey {
+export enum ContractsRoutingKey {
   Ids = 'contractIds',
   Name = 'name',
   State = 'stateids',

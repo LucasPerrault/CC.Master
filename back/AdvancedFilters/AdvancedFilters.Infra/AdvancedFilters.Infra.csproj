@@ -5,6 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="CsvHelper" Version="27.1.1" />
     <PackageReference Include="EFCore.BulkExtensions" Version="5.4.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="5.0.10" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="5.0.10" />
@@ -15,6 +16,7 @@
     <ProjectReference Include="..\..\Core\Email\Email.Domain\Email.Domain.csproj" />
     <ProjectReference Include="..\..\Core\Storage\Storage.Infra\Storage.Infra.csproj" />
     <ProjectReference Include="..\..\Core\TeamNotification\TeamNotification.Abstractions\TeamNotification.Abstractions.csproj" />
+    <ProjectReference Include="..\..\Shared\Environments\Environments.Domain\Environments.Domain.csproj" />
     <ProjectReference Include="..\AdvancedFilters.Domain\AdvancedFilters.Domain.csproj" />
   </ItemGroup>
 

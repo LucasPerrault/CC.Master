@@ -11,6 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\Core\Lock\Lock.Web\Lock.Web.csproj" />
     <ProjectReference Include="..\..\Core\Rights\Rights.Domain\Rights.Domain.csproj" />
     <ProjectReference Include="..\..\Core\Rights\Rights.Web\Rights.Web.csproj" />
     <ProjectReference Include="..\..\Core\Tools\Tools.Web\Tools.Web.csproj" />

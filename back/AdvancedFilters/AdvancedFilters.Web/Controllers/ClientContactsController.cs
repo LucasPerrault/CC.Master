@@ -2,6 +2,7 @@ using AdvancedFilters.Domain.Contacts.Filters;
 using AdvancedFilters.Domain.Contacts.Interfaces;
 using AdvancedFilters.Domain.Contacts.Models;
 using AdvancedFilters.Domain.Filters.Models;
+using AdvancedFilters.Infra.Services;
 using AdvancedFilters.Web.Binding;
 using AdvancedFilters.Web.Format;
 using Lucca.Core.Api.Abstractions.Paging;
@@ -21,10 +22,13 @@ namespace AdvancedFilters.Web.Controllers
     public class ClientContactsController
     {
         private readonly IClientContactsStore _store;
+        private readonly IExportService _exportService;
 
-        public ClientContactsController(IClientContactsStore store)
+
+        public ClientContactsController(IClientContactsStore store, IExportService exportService)
         {
             _store = store;
+            _exportService = exportService;
         }
 
         [HttpGet]
@@ -48,6 +52,18 @@ namespace AdvancedFilters.Web.Controllers
             return PreparePage(page);
         }
 
+        [HttpPost("export")]
+        [ForbidIfMissing(Operation.ReadAllCafe)]
+        public async Task<FileStreamResult> ExportAsync
+        (
+            [FromBody, ModelBinder(BinderType = typeof(AdvancedFilterModelBinder<ClientContactAdvancedCriterion>))]
+            IAdvancedFilter criterion
+        )
+        {
+            var contacts = await _store.SearchAsync(criterion);
+            var filename = $"export-{DateTime.Now:yyyyMMdd-HHmmss}.csv";
+            return _exportService.Export(contacts, filename);
+        }
         private Page<ClientContact> PreparePage(Page<ClientContact> src)
         {
             return new Page<ClientContact>

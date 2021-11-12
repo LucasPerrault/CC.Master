@@ -69,6 +69,32 @@ namespace AdvancedFilters.Infra.Migrations
                     b.ToTable("Contracts");
                 });
 
+            modelBuilder.Entity("AdvancedFilters.Domain.Billing.Models.Distributor", b =>
+                {
+                    b.Property<int>("Id")
+                        .HasColumnType("int");
+
+                    b.Property<int>("DepartmentId")
+                        .HasColumnType("int")
+                        .HasColumnName("DepartmentId");
+
+                    b.Property<bool>("IsAllowingCommercialCommunication")
+                        .HasColumnType("bit")
+                        .HasColumnName("IsAllowingCommercialCommunication");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("Name");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("DepartmentId")
+                        .IsUnique();
+
+                    b.ToTable("Distributors");
+                });
+
             modelBuilder.Entity("AdvancedFilters.Domain.Billing.Models.EstablishmentContract", b =>
                 {
                     b.Property<int>("EnvironmentId")
@@ -311,6 +337,11 @@ namespace AdvancedFilters.Infra.Migrations
                     b.Property<int>("Id")
                         .HasColumnType("int");
 
+                    b.Property<string>("Cluster")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("Cluster");
+
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2")
                         .HasColumnName("CreatedAt");
@@ -337,10 +368,35 @@ namespace AdvancedFilters.Infra.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("Subdomain")
-                        .IsClustered(false);
+                    b.HasIndex("Subdomain");
 
                     b.ToTable("Environments");
+                });
+
+            modelBuilder.Entity("AdvancedFilters.Domain.Instance.Models.EnvironmentAccess", b =>
+                {
+                    b.Property<int>("Id")
+                        .HasColumnType("int");
+
+                    b.Property<int>("DistributorId")
+                        .HasColumnType("int")
+                        .HasColumnName("DistributorId");
+
+                    b.Property<int>("EnvironmentId")
+                        .HasColumnType("int")
+                        .HasColumnName("EnvironmentId");
+
+                    b.Property<int>("Type")
+                        .HasColumnType("int")
+                        .HasColumnName("Type");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("DistributorId");
+
+                    b.HasIndex("EnvironmentId");
+
+                    b.ToTable("EnvironmentAccesses");
                 });
 
             modelBuilder.Entity("AdvancedFilters.Domain.Instance.Models.Establishment", b =>
@@ -566,6 +622,25 @@ namespace AdvancedFilters.Infra.Migrations
                     b.Navigation("Environment");
                 });
 
+            modelBuilder.Entity("AdvancedFilters.Domain.Instance.Models.EnvironmentAccess", b =>
+                {
+                    b.HasOne("AdvancedFilters.Domain.Billing.Models.Distributor", "Distributor")
+                        .WithMany("EnvironmentAccesses")
+                        .HasForeignKey("DistributorId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("AdvancedFilters.Domain.Instance.Models.Environment", "Environment")
+                        .WithMany("Accesses")
+                        .HasForeignKey("EnvironmentId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("Distributor");
+
+                    b.Navigation("Environment");
+                });
+
             modelBuilder.Entity("AdvancedFilters.Domain.Instance.Models.Establishment", b =>
                 {
                     b.HasOne("AdvancedFilters.Domain.Instance.Models.Environment", "Environment")
@@ -614,8 +689,15 @@ namespace AdvancedFilters.Infra.Migrations
                     b.Navigation("EstablishmentAttachments");
                 });
 
+            modelBuilder.Entity("AdvancedFilters.Domain.Billing.Models.Distributor", b =>
+                {
+                    b.Navigation("EnvironmentAccesses");
+                });
+
             modelBuilder.Entity("AdvancedFilters.Domain.Instance.Models.Environment", b =>
                 {
+                    b.Navigation("Accesses");
+
                     b.Navigation("AppInstances");
 
                     b.Navigation("Contracts");

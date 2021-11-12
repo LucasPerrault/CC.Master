@@ -1,0 +1,29 @@
+<ng-container *ngIf="!!environmentsSuggested.length">
+  <h4>
+    {{ 'front_contractPage_environmentSuggested_title' | translate }}
+    <span [luTooltip]="'front_contractPage_environmentSuggested_description' | translate" aria-hidden="true" class="lucca-icon icon-info"></span>
+  </h4>
+
+  <ul class="list">
+    <li class="list-item mod-clickable palette-grey" *ngFor="let environment of environmentsSuggested" (click)="suggest(environment)">
+      <div class="list-item-content">
+        <p class="list-item-content-description">{{ environment.name }}</p>
+      </div>
+    </li>
+  </ul>
+</ng-container>
+
+<h4 class="u-marginTopStandard">
+  {{ 'front_contractPage_environmentLinkForm_title' | translate }}
+  <span [luTooltip]="'front_contractPage_environmentLinkForm_description' | translate" aria-hidden="true" class="lucca-icon icon-info"></span>
+</h4>
+
+<label class="textfield palette-grey mod-outlined mod-longest is-required">
+  <cc-environment-api-select [formControl]="formControl" [required]="true"></cc-environment-api-select>
+  <span class="textfield-label">{{ 'front_select_environment_label' | translate }}</span>
+  <span class="textfield-messages" *ngIf="formControl.touched && formControl.hasError('required')">
+  <span class="textfield-messages-error">
+    {{ "front_select_environments_errorMessage_required" | translate }}
+  </span>
+</span>
+</label>

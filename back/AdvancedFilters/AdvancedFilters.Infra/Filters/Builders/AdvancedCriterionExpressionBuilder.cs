@@ -1,6 +1,7 @@
 using AdvancedFilters.Domain.Filters.Builders;
 using AdvancedFilters.Domain.Filters.Models;
 using AdvancedFilters.Infra.Filters.Builders.Chaining;
+using AdvancedFilters.Infra.Filters.Builders.Exceptions;
 using Storage.Infra.Extensions;
 using System;
 using System.Collections.Generic;
@@ -14,7 +15,7 @@ namespace AdvancedFilters.Infra.Filters.Builders
     {
         protected TCriterion Criterion { get; }
 
-        public Expression<Func<IEnumerable<TValue>, bool>> IntersectionOrBypass => GetPredicateOrBypassExpression(b => b.ForList());
+        public Expression<Func<IEnumerable<TValue>, bool>> IntersectionOrBypass => GetPredicateOrBypassExpression(b => b.ForList(GetItemMatching()));
         public Expression<Func<TValue, bool>> MatchOrBypass => GetPredicateOrBypassExpression(b => b.ForItem());
 
         protected AdvancedCriterionExpressionBuilder(TCriterion criterion)
@@ -30,6 +31,21 @@ namespace AdvancedFilters.Infra.Filters.Builders
             => new SingleValueExpressionBuilderSelector<TValue, TProperty>(criterion);
         protected IPropertyExpressionBuilderSelector<TValue, TProperty> Apply<TProperty>(AdvancedCriterion<TProperty> criterion)
             => new AdvancedExpressionBuilderSelector<TValue, TProperty>(criterion);
+
+        protected IPropertyListExpressionBuilderSelector<TValue, TProperty> ApplyMany<TProperty>(SingleValueComparisonCriterion<TProperty> criterion)
+            => new SingleValueListExpressionBuilderSelector<TValue, TProperty>(criterion);
+        protected IPropertyListExpressionBuilderSelector<TValue, TProperty> ApplyMany<TProperty>(AdvancedCriterion<TProperty> criterion)
+            => new AdvancedListExpressionBuilderSelector<TValue, TProperty>(criterion);
+
+        private ItemsMatching GetItemMatching()
+        {
+            if (!(Criterion is IListCriterion listCriterion))
+            {
+                throw new MissingItemsMatchedFieldException<TCriterion>();
+            }
+
+            return listCriterion.ItemsMatched;
+        }
 
         private Expression<Func<TInput, bool>> GetPredicateOrBypassExpression<TInput>(Func<IPropertyExpressionBuilder<TValue>, Expression<Func<TInput, bool>>> buildExpressionFn)
             => CanBuild()

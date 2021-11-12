@@ -60,7 +60,48 @@ namespace AdvancedFilters.Infra.Services.Sync.Dtos
         }
     }
 
+    internal class DistributorsDto : IDto<Distributor>
+    {
+        public List<DistributorDto> Items { get; set; }
 
+        public List<Distributor> ToItems()
+        {
+            return Items.Select(ToDistributor).ToList();
+        }
+
+        private Distributor ToDistributor(DistributorDto dto)
+        {
+            return new Distributor
+            {
+                Id = dto.Id,
+                Name = GetDistributorName(dto),
+                IsAllowingCommercialCommunication = dto.IsAllowingCommercialCommunication,
+                DepartmentId = dto.DepartmentId
+            };
+        }
+
+        private string GetDistributorName(DistributorDto dto)
+        {
+            var lengthToRemove = $"{dto.Code} - ".Length;
+            return dto.Name.Substring(lengthToRemove);
+        }
+    }
+    internal class DistributorDto
+    {
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public string Code { get; set; }
+        public int DepartmentId { get; set; }
+        public bool IsAllowingCommercialCommunication { get; set; }
+    }
+
+    internal class EnvironmentAccessesDto : ApiV3Dto<EnvironmentAccess>, IDto<EnvironmentAccess>
+    {
+        public List<EnvironmentAccess> ToItems()
+        {
+            return Data.Items;
+        }
+    }
 
     internal class ContactDtoUser
     {
@@ -109,22 +150,21 @@ namespace AdvancedFilters.Infra.Services.Sync.Dtos
 
         ClientContact ToClientContact(ClientContactDto c)
         {
-            c.UserFirstName = c.User.FirstName;
-            c.UserLastName = c.User.LastName;
-            c.UserMail = c.User.Mail;
-            c.EstablishmentId = c.User.EstablishmentId;
             return new ClientContact
             {
                 Id = c.Id,
                 ClientId = c.ClientId,
                 EnvironmentId = c.EnvironmentId,
-                RoleCode = c.Role.Code,
                 CreatedAt = c.CreatedAt,
                 ExpiresAt = c.ExpiresAt,
-                EstablishmentId = c.EstablishmentId,
                 IsConfirmed = c.IsConfirmed,
                 RoleId = c.RoleId,
-                UserId = c.UserId
+                RoleCode = c.Role.Code,
+                UserId = c.UserId,
+                UserFirstName = c.User.FirstName,
+                UserLastName = c.User.LastName,
+                UserMail = c.User.Mail,
+                EstablishmentId = c.User.EstablishmentId,
             };
         }
 

@@ -36,12 +36,26 @@ namespace AdvancedFilters.Infra.Storage.Stores
             return envs.ToListAsync();
         }
 
-        public Task<Page<Environment>> SearchAsync(IPageToken pageToken, IAdvancedFilter filter)
+        public async Task<Page<Environment>> SearchAsync(IPageToken pageToken, IAdvancedFilter filter)
         {
-            var envs = Environments
-                .Filter(filter)
-                .AsNoTracking();
-            return _queryPager.ToPageAsync(envs, pageToken);
+            var envs = Get(filter);
+            var page = await _queryPager.ToPageAsync(envs, pageToken);
+
+            FilterLuccaApp(page.Items);
+            return page;
+        }
+
+        public Task<List<Environment>> SearchAsync(IAdvancedFilter filter)
+        {
+            var filteredEnvs = Get(filter).ToList();
+
+            FilterLuccaApp(filteredEnvs);
+            return Task.FromResult(filteredEnvs);
+        }
+
+        public Task<List<string>> GetClustersAsync()
+        {
+            return Environments.Select(e => e.Cluster).Distinct().OrderBy(e => e).ToListAsync();
         }
 
         private IQueryable<Environment> Get(EnvironmentFilter filter)
@@ -51,11 +65,28 @@ namespace AdvancedFilters.Infra.Storage.Stores
                 .AsNoTracking();
         }
 
+        private IQueryable<Environment> Get(IAdvancedFilter filter)
+        {
+            return Environments
+                .Filter(filter)
+                .AsNoTracking();
+        }
+
+        private void FilterLuccaApp(IEnumerable<Environment> envs)
+        {
+            foreach (var env in envs)
+            {
+                env.AppInstances = env.AppInstances
+                    .Where(a => a.ApplicationId != AppInstance.LuccaApplicationId);
+            }
+        }
+
         private IQueryable<Environment> Environments => _dbContext
             .Set<Environment>()
             .Include(e => e.LegalUnits).ThenInclude(lu => lu.Country)
             .Include(e => e.LegalUnits).ThenInclude(lu => lu.Establishments)
-            .Include(e => e.AppInstances);
+            .Include(e => e.AppInstances)
+            .Include(e => e.Accesses).ThenInclude(a => a.Distributor);
     }
 
     internal static class EnvironmentQueryableExtensions

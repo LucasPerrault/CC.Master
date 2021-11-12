@@ -1,0 +1,42 @@
+<div class="loading mod-fullPage" *ngIf="isLoading$ | async; else isNotLoading"></div>
+
+<ng-template #isNotLoading>
+  <ng-container *ngIf="(environmentLinked$ | async); else hasNoEnvironmentLinked">
+    <div class="page-content">
+      <cc-contract-environment-linked [environment]="environmentLinked$ | async"
+                                      [canRemoveEnvironmentLinked]="canRemoveEnvironmentLinked$ | async"
+                                      [unlinkButtonState]="unlinkButtonState$ | async"
+                                      (unlinkEnvironment)="unlinkEnvironment()">
+      </cc-contract-environment-linked>
+    </div>
+  </ng-container>
+
+  <ng-template #hasNoEnvironmentLinked>
+    <div class="page-content">
+      <form class="u-displayFlex u-flexDirectionColumn u-flexWrapWrap" [formGroup]="formGroup">
+        <cc-environment-link-select [formControlName]="formGroupKey.Environment"
+                                    [environmentsSuggested]="environmentsSuggested$ | async">
+        </cc-environment-link-select>
+        <div *ngIf="arePreviousContractsLoading$ | async"
+             class="loading u-textSmall u-textLight u-displayFlex u-alignItemsCenter">
+          {{ 'front_contractPage_previousContracts_loading' | translate }}
+        </div>
+
+        <cc-environment-creation-cause-select [previousContracts]="previousContracts$ | async"
+                                              [formControlName]="formGroupKey.Cause">
+        </cc-environment-creation-cause-select>
+      </form>
+    </div>
+
+    <footer class="page-footer">
+      <div class="page-footer-right">
+        <button class="button" type="submit"
+                (click)="linkEnvironment()"
+                [disabled]="formGroup.invalid"
+                [ngClass]="linkButtonState$ | async">
+          {{ 'front_contractPage_environmentLink_button_label' | translate }}
+        </button>
+      </div>
+    </footer>
+  </ng-template>
+</ng-template>

@@ -13,11 +13,18 @@ namespace Tools
         public static CompareDateTime IsBeforeOrEqual(DateTime dateTime) => new IsBeforeCompareDateTime(dateTime, isStrict:false);
         public static CompareDateTime IsStrictlyBefore(DateTime dateTime) => new IsBeforeCompareDateTime(dateTime, isStrict:true);
         public static CompareDateTime IsEqual(DateTime dateTime) => new IsEqualCompareDateTime(dateTime);
+        public static CompareDateTime MatchesNone() => new NoMatchCompareDateTime();
     }
 
     public class BypassCompareDateTime : CompareDateTime
     {
         protected internal BypassCompareDateTime()
+        { }
+    }
+
+    public class NoMatchCompareDateTime : CompareDateTime
+    {
+        protected internal NoMatchCompareDateTime()
         { }
     }
 
@@ -74,6 +81,7 @@ namespace Tools
         public static CompareNullableDateTime Bypass() => CompareDateTime.Bypass().OrNull();
         public static CompareNullableDateTime IsNull() => new IsNullCompareNullableDateTimeQueryBuilder();
         public static CompareNullableDateTime AnyNotNull() => CompareDateTime.Bypass().AndNotNull();
+        public static CompareNullableDateTime MatchesNone() => CompareDateTime.MatchesNone().AndNotNull();
     }
 
     public class IsNullCompareNullableDateTimeQueryBuilder : CompareNullableDateTime

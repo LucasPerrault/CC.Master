@@ -152,7 +152,7 @@ namespace Instances.Application.Specflow.Tests.Demos.Steps
             var distributorsStoreMock = new Mock<IDistributorsStore>();
 
             distributorsStoreMock
-                .Setup(s => s.GetByCodeAsync(It.IsAny<string>()))
+                .Setup(s => s.GetActiveByCodeAsync(It.IsAny<string>()))
                 .Returns<string>(distributor => Task.FromResult(_demosContext.DbContext.Set<Distributor>().Single(d => d.Code == distributor)));
 
             var rightsServiceMock = new Mock<IRightsService>();

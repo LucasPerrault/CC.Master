@@ -33,13 +33,13 @@ namespace Core.Proxy.Infra.Extensions
             "/health/ready",
             "/health/live",
             "/warmup",
-            "/webhooks/github",
 
             // front
             "/cc-master",
             "/logs",
             "/sources",
             "/accounting"
+            "/reports",
         };
 
         private static readonly HashSet<string> BetaNonRedirectableSegments = new HashSet<string>(StringComparer.OrdinalIgnoreCase)

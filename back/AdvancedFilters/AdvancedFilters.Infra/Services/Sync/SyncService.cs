@@ -12,7 +12,7 @@ using Environment = AdvancedFilters.Domain.Instance.Models.Environment;
 
 namespace AdvancedFilters.Infra.Services.Sync
 {
-    public class SyncService
+    public class SyncService : ISyncService
     {
         private readonly DataSourcesRepository _dataSourcesRepository;
         private readonly IDataSourceSyncCreationService _creationService;

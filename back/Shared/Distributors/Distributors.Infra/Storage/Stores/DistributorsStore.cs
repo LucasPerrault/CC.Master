@@ -26,16 +26,20 @@ namespace Distributors.Infra.Storage.Stores
             _distributorsCache = distributorsCache;
         }
 
-        public async Task<Distributor> GetByIdAsync(int id)
+        public Task<Distributor> GetActiveByIdAsync(int id)
         {
-            var distributors = await GetAllAsync();
-            return distributors.SingleOrDefault(d => d.Id == id);
+            return GetDistributorWhereAsync(d => d.Id == id);
         }
 
-        public async Task<Distributor> GetByCodeAsync(string code)
+        public Task<Distributor> GetActiveByCodeAsync(string code)
+        {
+            return GetDistributorWhereAsync(d => d.Code == code);
+        }
+
+        private async Task<Distributor> GetDistributorWhereAsync(Func<Distributor, bool> predicate)
         {
             var distributors = await GetAllAsync();
-            return distributors.SingleOrDefault(d => d.Code == code);
+            return distributors.Where(d => d.IsActive).SingleOrDefault(predicate);
         }
 
         public async Task<List<Distributor>> GetAllAsync()

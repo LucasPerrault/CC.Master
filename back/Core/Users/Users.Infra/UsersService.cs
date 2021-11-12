@@ -26,7 +26,7 @@ namespace Users.Infra
             var luccaUser = await _httpClientHelper.GetObjectResponseAsync<LuccaUser>(queryParams);
 
             var userDepartmentCode = luccaUser.Data.Department.Code;
-            var distributor = await _distributorsStore.GetByCodeAsync(userDepartmentCode);
+            var distributor = await _distributorsStore.GetActiveByCodeAsync(userDepartmentCode);
 
             if (distributor is null)
             {

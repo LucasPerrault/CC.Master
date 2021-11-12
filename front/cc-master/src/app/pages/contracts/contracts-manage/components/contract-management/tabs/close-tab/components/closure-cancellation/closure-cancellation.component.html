@@ -1,0 +1,28 @@
+<div class="callout palette-grey" *ngIf="!showConfirmation; else displayConfirmation">
+  <div class="u-displayFlex u-alignItemsCenter">
+    {{ getContractClosedInformation() }}
+    <button class="button mod-outline palette-grey u-marginLeftAuto" (click)="setShowConfirmation(true)">
+      {{ 'front_contractPage_cancelContractClosedButton_label' | translate }}
+    </button>
+  </div>
+</div>
+
+<ng-template #displayConfirmation>
+  <div class="callout mod-icon palette-warning u-animatedSlideInTop">
+    <div class="callout-icon">
+      <span aria-hidden="true" class="lucca-icon icon-warning"></span>
+    </div>
+    <div class="u-displayFlex">
+      {{ getClosureCancellationConfirmation() }}
+      <div class="u-displayFlex u-marginLeftAuto">
+        <button class="button palette-secondary" (click)="cancelContractClosure()"
+                [ngClass]="closeCancelButtonState">
+          {{ 'front_contractPage_cancelContractClosure_confirmation_confirmButton' | translate }}
+        </button>
+        <button class="button mod-link" (click)="setShowConfirmation(false)">
+          {{ 'front_contractPage_cancelContractClosure_confirmation_cancelButton' | translate }}
+        </button>
+      </div>
+    </div>
+  </div>
+</ng-template>

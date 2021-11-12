@@ -7,12 +7,12 @@ namespace AdvancedFilters.Domain.Core.Collections
 {
     public interface IApplicationsCollection
     {
-        Task<IReadOnlyCollection<Application>> GetAsync();
+        Task<IReadOnlyCollection<Application>> GetAsync(string search);
     }
 
     public class ApplicationsCollection : IApplicationsCollection
     {
-        private static readonly Dictionary<string, string> ApplicationNamesById = new Dictionary<string, string>
+        private static readonly Dictionary<string, string> MainApplicationNamesById = new Dictionary<string, string>
         {
             { "WEXPENSES", "Cleemy" },
             { "DIRECTORY", "Collaborateurs" },
@@ -34,13 +34,42 @@ namespace AdvancedFilters.Domain.Core.Collections
             { "PAYMONITOR", "PayMonitor" },
         };
 
-        public Task<IReadOnlyCollection<Application>> GetAsync()
+        private static readonly Dictionary<string, string> SecondaryApplicationNamesById = new Dictionary<string, string>
         {
-            var applications = ApplicationNamesById
+            { "GUI", "GUI" },
+            { "WCALENDAR", "Calendar" },
+            { "WEXTERNE", "Externe" },
+            { "WGEDSIMPLE", "Gedsimple" },
+            { "WINFOSUGO", "Infosugo" },
+            { "WPLANNER", "Planner" },
+            { "WPLANNING", "Planning" },
+            { "WPM", "Wpm" },
+            { "WUCALHEBDO", "Ucalhebdo" },
+            { "WURBA", "Urba" },
+            { "WUTIMEEXPORT", "Utimeexport" },
+        };
+
+        public Task<IReadOnlyCollection<Application>> GetAsync(string search)
+        {
+            var applications = MainApplicationNamesById
                 .Select(kvp => new Application { Id = kvp.Key, Name = kvp.Value })
+                .Where(a => string.IsNullOrEmpty(search) || a.Name.ToLowerInvariant().StartsWith(search.ToLowerInvariant()))
+                .OrderBy(a => a.Name)
                 .ToList();
 
             return Task.FromResult<IReadOnlyCollection<Application>>(applications);
+        }
+
+        public static string GetName(string applicationId)
+        {
+            if (applicationId is null
+                || !(MainApplicationNamesById.TryGetValue(applicationId, out var name)
+                     || SecondaryApplicationNamesById.TryGetValue(applicationId, out name)))
+            {
+                return null;
+            }
+
+            return name;
         }
     }
 }

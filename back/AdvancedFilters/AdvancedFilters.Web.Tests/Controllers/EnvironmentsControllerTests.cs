@@ -2,6 +2,7 @@ using AdvancedFilters.Domain.Filters.Models;
 using AdvancedFilters.Domain.Instance.Filters;
 using AdvancedFilters.Domain.Instance.Interfaces;
 using AdvancedFilters.Domain.Instance.Models;
+using AdvancedFilters.Infra.Services;
 using CloudControl.Web.Tests.Mocks;
 using FluentAssertions;
 using Lucca.Core.Api.Abstractions.Paging;
@@ -30,11 +31,14 @@ namespace AdvancedFilters.Web.Tests.Controllers
                 .Setup(s => s.GetAsync(It.IsAny<IPageToken>(), It.IsAny<EnvironmentFilter>()))
                 .ReturnsAsync(new Page<Environment>
                 {
-                    Items = new List<Environment> { new Environment() }
+                    Items = new List<Environment> { new Environment { Accesses = new List<EnvironmentAccess>() } }
                 });
 
             var webApplicationFactory = new MockedWebApplicationFactory();
+
+            var exportServiceMock = new Mock<IExportService>();
             webApplicationFactory.Mocks.AddScoped(envStoreMock.Object);
+            webApplicationFactory.Mocks.AddScoped(exportServiceMock.Object);
 
             var httpClient = webApplicationFactory.CreateAuthenticatedClient();
 
@@ -57,11 +61,14 @@ namespace AdvancedFilters.Web.Tests.Controllers
                 .Setup(s => s.SearchAsync(It.IsAny<IPageToken>(), It.IsAny<IAdvancedFilter>()))
                 .ReturnsAsync(new Page<Environment>
                 {
-                    Items = new List<Environment> { new Environment() }
+                    Items = new List<Environment> { new Environment { Accesses = new List<EnvironmentAccess>() } }
                 });
+
+            var exportServiceMock = new Mock<IExportService>();
 
             var webApplicationFactory = new MockedWebApplicationFactory();
             webApplicationFactory.Mocks.AddScoped(envStoreMock.Object);
+            webApplicationFactory.Mocks.AddScoped(exportServiceMock.Object);
 
             var httpClient = webApplicationFactory.CreateAuthenticatedClient();
 

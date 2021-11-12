@@ -1,0 +1,18 @@
+<div class="loading mod-fullPage" *ngIf="isLoading$ | async; else isNotLoading"></div>
+
+<ng-template #isNotLoading>
+  <h4 class="page-content page-resultsCount u-displayFlex u-alignItemsCenter u-justifyContentSpaceBetween">
+    {{ 'cafe_environments_count' | translate : { count: environmentsCount$ | async } }}
+
+    <cc-environment-additional-column-select textfieldClass="palette-grey mod-outlined mod-long"
+                                             [formControl]="selectedColumns">
+    </cc-environment-additional-column-select>
+  </h4>
+
+  <cc-environment-list ccInfiniteScroll
+                       (bottomReached)="nextPage()"
+                       [environments]="environments$ | async"
+                       [selectedColumns]="selectedColumns.value">
+  </cc-environment-list>
+</ng-template>
+

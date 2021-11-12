@@ -1,8 +1,8 @@
 using AdvancedFilters.Domain.Filters.Models;
+using AdvancedFilters.Infra.Filters.Builders.Exceptions;
 using Storage.Infra.Extensions;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
 using System.Linq.Expressions;
 
@@ -10,15 +10,6 @@ namespace AdvancedFilters.Infra.Filters.Builders.Chaining
 {
     internal static class SingleValueExpressionChainingExtensions
     {
-        public static Expression<Func<IEnumerable<TItem>, bool>> Chain<TItem, TProperty>
-        (
-            this SingleValueComparisonCriterion<TProperty> criterion,
-            Expression<Func<IEnumerable<TItem>, IEnumerable<TProperty>>> expression
-        )
-        {
-            return expression.Chain(ApplyToList(criterion));
-        }
-
         public static Expression<Func<TItem, bool>> Chain<TItem, TProperty>
         (
             this SingleValueComparisonCriterion<TProperty> criterion,
@@ -44,9 +35,8 @@ namespace AdvancedFilters.Infra.Filters.Builders.Chaining
                 return _ => true;
             }
 
-            return criterion.Operator.ShouldApplyToAll()
-                ? items => items.AsQueryable().All(criterion.Expression)
-                : items => items.AsQueryable().Any(criterion.Expression);
+            var itemsMatching = GetItemMatching(criterion);
+            return criterion.Expression.ToExpressionForList(itemsMatching);
         }
 
         private static Expression<Func<TProperty, bool>> ApplyToItem<TProperty>(SingleValueComparisonCriterion<TProperty> criterion)
@@ -59,9 +49,14 @@ namespace AdvancedFilters.Infra.Filters.Builders.Chaining
             return criterion.Expression;
         }
 
-        private static bool ShouldApplyToAll(this ComparisonOperators comparisonOperator)
+        private static ItemsMatching GetItemMatching<TProperty>(SingleValueComparisonCriterion<TProperty> criterion)
         {
-            return comparisonOperator == ComparisonOperators.NotEquals;
+            if (!(criterion is IListCriterion listCriterion))
+            {
+                throw new MissingItemsMatchedFieldException<SingleValueComparisonCriterion<TProperty>>();
+            }
+
+            return listCriterion.ItemsMatched;
         }
     }
 }
