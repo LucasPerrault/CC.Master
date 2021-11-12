@@ -9,7 +9,7 @@ import { IDetailedCount } from '../models/detailed-count.interface';
 export class CountContractsListService {
 
   public toCountListEntries(counts: IDetailedCount[], contract: ICountContract): ICountListEntry[] {
-    const startPeriod = min([startOfMonth(new Date(contract.theoricalStartOn)), this.getFirstCountPeriod(counts)]);
+    const startPeriod = this.getStartPeriod(counts, contract.theoricalStartOn);
     const endPeriod = this.getEndPeriod(counts, contract.closeOn);
 
     const entries = this.getCountListEntries(startPeriod, endPeriod, counts);
@@ -29,6 +29,12 @@ export class CountContractsListService {
   private getCountListEntry(countPeriod: Date, counts: IDetailedCount[]): ICountListEntry {
     const count = counts.find(c => isEqual(new Date(c?.countPeriod), countPeriod));
     return ({ month: countPeriod, count });
+  }
+
+  private getStartPeriod(counts: IDetailedCount[], theoreticalStartOn: string): Date {
+    const firstCountPeriod = this.getFirstCountPeriod(counts);
+    const contractStartDate = startOfMonth(new Date(theoreticalStartOn));
+    return min([contractStartDate, firstCountPeriod]);
   }
 
   private getFirstCountPeriod(counts: IDetailedCount[]): Date {
