@@ -38,8 +38,11 @@ export class CountContractsListService {
   }
 
   private getFirstCountPeriod(counts: IDetailedCount[]): Date {
+    if (!counts?.length) {
+      return null;
+    }
     const countsAscSorted = counts.sort((a, b) => new Date(a?.countPeriod).getTime() - new Date(b?.countPeriod).getTime());
-    return new Date(countsAscSorted[0]?.countPeriod);
+    return new Date(countsAscSorted[0].countPeriod);
   }
 
   private getEndPeriod(counts: IDetailedCount[], closeOn: string): Date {
