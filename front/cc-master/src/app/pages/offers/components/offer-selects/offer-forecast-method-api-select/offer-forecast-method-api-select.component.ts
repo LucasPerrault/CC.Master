@@ -26,6 +26,7 @@ import { OfferForecastMethodApiSelectService } from './offer-forecast-method-api
 export class OfferForecastMethodApiSelectComponent implements OnInit, OnDestroy, ControlValueAccessor {
   @Input() public required = false;
   @Input() public placeholder: string;
+  @Input() public set disabled(isDisabled: boolean) { this.setDisabledState(isDisabled); }
 
   public formControl: FormControl = new FormControl();
   private destroy$: Subject<void> = new Subject<void>();
@@ -58,6 +59,14 @@ export class OfferForecastMethodApiSelectComponent implements OnInit, OnDestroy,
     if (!!forecastMethod && this.formControl.value !== forecastMethod) {
       this.formControl.setValue(forecastMethod);
     }
+  }
+
+  public setDisabledState(isDisabled: boolean) {
+    if (isDisabled) {
+      this.formControl.disable();
+      return;
+    }
+    this.formControl.enable();
   }
 
   public trackBy(index: number, forecastMethod: string): string {

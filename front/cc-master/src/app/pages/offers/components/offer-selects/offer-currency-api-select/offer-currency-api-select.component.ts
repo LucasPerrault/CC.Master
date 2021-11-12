@@ -28,6 +28,7 @@ export class OfferCurrencyApiSelectComponent implements OnInit, OnDestroy, Contr
   @Input() public placeholder: string;
   @Input() public multiple = false;
   @Input() public required = false;
+  @Input() public set disabled(isDisabled: boolean) { this.setDisabledState(isDisabled); }
 
   public formControl: FormControl = new FormControl();
 
@@ -61,6 +62,14 @@ export class OfferCurrencyApiSelectComponent implements OnInit, OnDestroy, Contr
     if (!!currency && this.formControl.value !== currency) {
       this.formControl.setValue(currency);
     }
+  }
+
+  public setDisabledState(isDisabled: boolean) {
+    if (isDisabled) {
+      this.formControl.disable();
+      return;
+    }
+    this.formControl.enable();
   }
 
   public trackBy(index: number, currency: IOfferCurrency): number {

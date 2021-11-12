@@ -20,6 +20,7 @@ export class OfferTagAutocompleteSelectComponent implements OnInit, OnDestroy, C
   @Input() public required = false;
   @Input() public placeholder: string;
   @Input() public multiple: string;
+  @Input() public set disabled(isDisabled: boolean) { this.setDisabledState(isDisabled); }
 
   public api = '/api/v3/offers/tags';
 
@@ -60,6 +61,14 @@ export class OfferTagAutocompleteSelectComponent implements OnInit, OnDestroy, C
     if (!!tag && this.formControl.value !== tag) {
       this.formControl.setValue(tag);
     }
+  }
+
+  public setDisabledState(isDisabled: boolean) {
+    if (isDisabled) {
+      this.formControl.disable();
+      return;
+    }
+    this.formControl.enable();
   }
 
   public trackBy(index: number, tag: string): string {

@@ -22,6 +22,7 @@ import { billingUnits, IBillingUnit } from '../../../enums/billing-unit.enum';
 export class OfferBillingUnitSelectComponent implements OnInit, OnDestroy, ControlValueAccessor {
   @Input() public placeholder: string;
   @Input() public required = false;
+  @Input() public set disabled(isDisabled: boolean) { this.setDisabledState(isDisabled); }
 
   public billingUnits: IBillingUnit[];
   public formControl: FormControl = new FormControl();
@@ -58,6 +59,14 @@ export class OfferBillingUnitSelectComponent implements OnInit, OnDestroy, Contr
     if (!!billingUnit && this.formControl.value !== billingUnit) {
       this.formControl.setValue(this.getTranslatedBillingUnit(billingUnit));
     }
+  }
+
+  public setDisabledState(isDisabled: boolean) {
+    if (isDisabled) {
+      this.formControl.disable();
+      return;
+    }
+    this.formControl.enable();
   }
 
   public trackBy(index: number, billingUnit: IBillingUnit): number {

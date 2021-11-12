@@ -20,6 +20,7 @@ import { takeUntil } from 'rxjs/operators';
 export class OfferPricingMethodApiSelectComponent implements OnInit, OnDestroy, ControlValueAccessor {
   @Input() public required = false;
   @Input() public placeholder: string;
+  @Input() public set disabled(isDisabled: boolean) { this.setDisabledState(isDisabled); }
 
   public api = '/api/v3/offers/pricingMethod';
 
@@ -54,6 +55,14 @@ export class OfferPricingMethodApiSelectComponent implements OnInit, OnDestroy, 
     if (!!pricingMethod && this.formControl.value !== pricingMethod) {
       this.formControl.setValue(pricingMethod);
     }
+  }
+
+  public setDisabledState(isDisabled: boolean) {
+    if (isDisabled) {
+      this.formControl.disable();
+      return;
+    }
+    this.formControl.enable();
   }
 
   public trackBy(index: number, pricingMethod: string): string {

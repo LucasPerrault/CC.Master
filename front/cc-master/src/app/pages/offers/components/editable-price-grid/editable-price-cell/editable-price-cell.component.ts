@@ -1,4 +1,4 @@
-import { Component, EventEmitter, forwardRef, OnDestroy, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, forwardRef, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { AbstractControl, ControlValueAccessor, FormControl, NG_VALIDATORS, NG_VALUE_ACCESSOR, ValidationErrors } from '@angular/forms';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
@@ -25,6 +25,7 @@ import { ArrowKey } from '../editable-price-grid.component';
 export class EditablePriceCellComponent implements OnInit, OnDestroy, ControlValueAccessor {
   @Output() public keydownChange: EventEmitter<ArrowKey> = new EventEmitter<ArrowKey>();
   @Output() public pasteChange: EventEmitter<ClipboardEvent> = new EventEmitter<ClipboardEvent>();
+  @Input() public set disabled(isDisabled: boolean) { this.setDisabledState(isDisabled); }
 
   public formControl: FormControl = new FormControl();
 
@@ -58,6 +59,14 @@ export class EditablePriceCellComponent implements OnInit, OnDestroy, ControlVal
 
   public writeValue(price: number): void {
     this.formControl.setValue(price);
+  }
+
+  public setDisabledState(isDisabled: boolean) {
+    if (isDisabled) {
+      this.formControl.disable();
+      return;
+    }
+    this.formControl.enable();
   }
 
   public validate(control: AbstractControl): ValidationErrors | null {

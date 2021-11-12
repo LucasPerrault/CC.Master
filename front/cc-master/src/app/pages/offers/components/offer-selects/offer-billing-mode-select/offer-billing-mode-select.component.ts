@@ -23,6 +23,7 @@ export class OfferBillingModeSelectComponent implements OnInit, OnDestroy, Contr
   @Input() public required = false;
   @Input() public placeholder: string;
   @Input() public multiple = false;
+  @Input() public set disabled(isDisabled: boolean) { this.setDisabledState(isDisabled); }
 
   public billingModes: IBillingMode[];
   public formControl: FormControl = new FormControl();
@@ -63,6 +64,14 @@ export class OfferBillingModeSelectComponent implements OnInit, OnDestroy, Contr
 
   public trackBy(index: number, billingMode: IBillingMode): number {
     return billingMode.id;
+  }
+
+  public setDisabledState(isDisabled: boolean) {
+    if (isDisabled) {
+      this.formControl.disable();
+      return;
+    }
+    this.formControl.enable();
   }
 
   private getTranslatedBillingMode(mode: IBillingMode): IBillingMode {
