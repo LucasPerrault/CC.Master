@@ -6,7 +6,6 @@ import { TranslatePipe } from '@cc/aspects/translate';
 import { getAttachmentEndReason } from '../../constants/attachment-end-reason.const';
 import { EstablishmentType } from '../../constants/establishment-type.enum';
 import { IContractCount } from '../../models/contract-count.interface';
-import { IContractEstablishment } from '../../models/contract-establishment.interface';
 import { IEstablishmentActionsContext } from '../../models/establishment-actions-context.interface';
 import { IEstablishmentAttachment } from '../../models/establishment-attachment.interface';
 import { IEstablishmentContract } from '../../models/establishment-contract.interface';
@@ -23,14 +22,6 @@ export class EstablishmentListComponent {
   @Input() public entries: IEstablishmentWithAttachments[];
   @Input() public contract: IEstablishmentContract;
   @Input() public realCounts: IContractCount[];
-
-  public get selectedEstablishments(): IContractEstablishment[] {
-    return this.selectedEntries.map(e => e.establishment);
-  }
-
-  public get selectedAttachments(): IEstablishmentAttachment[] {
-    return this.selectedEntries.map(e => e.currentAttachment || e.nextAttachment);
-  }
 
   public get areAllSelected(): boolean {
     return this.selectedEntries.length === this.entries.length;

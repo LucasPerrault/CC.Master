@@ -95,12 +95,20 @@ export class EstablishmentListActionsService {
     luModalRef.onClose.pipe(take(1)).subscribe(() => this.updateList());
   }
 
-  public openAttachmentLinking(establishment: IContractEstablishment, contract: IEstablishmentContract): void {
-    this.openAttachmentsLinking([establishment], contract);
+  public openAttachmentLinking(
+    establishment: IContractEstablishment,
+    attachment: IEstablishmentAttachment,
+    contract: IEstablishmentContract,
+  ): void {
+    this.openAttachmentsLinking([establishment], [attachment], contract);
   }
 
-  public openAttachmentsLinking(establishments: IContractEstablishment[], contract: IEstablishmentContract): void {
-    const modalData: IAttachmentLinkingModalData = { establishments, contract };
+  public openAttachmentsLinking(
+    establishments: IContractEstablishment[],
+    attachments: IEstablishmentAttachment[],
+    contract: IEstablishmentContract,
+  ): void {
+    const modalData: IAttachmentLinkingModalData = { establishments, attachments, contract };
 
     const luModalRef = this.luModal.open(AttachmentLinkingModalComponent, modalData);
     luModalRef.onClose.pipe(take(1)).subscribe(() => this.updateList());
