@@ -27,10 +27,12 @@ export class FormlyFieldDistributorType extends FieldType {
 
   public getDistributorTypeTranslation(type: DistributorType): string {
     switch (type) {
-      case DistributorType.Direct:
-        return this.translatePipe.transform('cafe_environments_select_direct');
-      case DistributorType.Indirect:
-        return this.translatePipe.transform('cafe_environments_select_indirect');
+      case DistributorType.DirectOnly:
+        return this.translatePipe.transform('cafe_environments_select_direct_only');
+      case DistributorType.IndirectOnly:
+        return this.translatePipe.transform('cafe_environments_select_indirect_only');
+      case DistributorType.DirectAndIndirect:
+        return this.translatePipe.transform('cafe_environments_select_direct_and_indirect');
     }
   }
 }

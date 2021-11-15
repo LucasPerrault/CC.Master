@@ -51,19 +51,20 @@ namespace AdvancedFilters.Domain.Instance.Models
 
     public enum DistributorType
     {
-        Direct,
-        Indirect
+        DirectOnly = 1,
+        IndirectOnly = 2,
+        DirectAndIndirect = 3,
     }
+
 
     public static class EnvironmentExpressions
     {
         public static Expression<Func<Environment, DistributorType>> DistributorTypeFn
-            => e => e.Accesses
-                .Where(a => a.Type == EnvironmentAccessType.Contract)
-                .All(a => a.DistributorId == Environment.LuccaDistributorId)
-                ? DistributorType.Direct
-                : DistributorType.Indirect;
-
+            => e => e.Accesses.Where(a => a.Type == EnvironmentAccessType.Contract).Any(a => a.DistributorId == Environment.LuccaDistributorId)
+                ? e.Accesses.Where(a => a.Type == EnvironmentAccessType.Contract).Any(a => a.DistributorId != Environment.LuccaDistributorId)
+                    ? DistributorType.DirectAndIndirect
+                    : DistributorType.DirectOnly
+                : DistributorType.IndirectOnly;
         public static Func<Environment, DistributorType> CompiledDistributorTypeFn
             => DistributorTypeFn.Compile();
     }

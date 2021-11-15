@@ -140,6 +140,7 @@ export class EnvironmentAdvancedFilterConfiguration implements IAdvancedFilterCo
       name: this.translatePipe.transform('cafe_filters_environment_distributorType'),
       operators: [
         { id: ComparisonOperator.Equals, name: this.translatePipe.transform('cafe_filters_operator_equals') },
+        { id: ComparisonOperator.NotEquals, name: this.translatePipe.transform('cafe_filters_operator_notEqual') },
       ],
       componentConfigs: [
         {
