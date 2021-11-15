@@ -1,3 +1,4 @@
+using AdvancedFilters.Domain.Core.Collections;
 using AdvancedFilters.Domain.Filters.Models;
 using AdvancedFilters.Domain.Instance.Filters;
 using AdvancedFilters.Domain.Instance.Interfaces;
@@ -41,7 +42,7 @@ namespace AdvancedFilters.Infra.Storage.Stores
             var envs = Get(filter);
             var page = await _queryPager.ToPageAsync(envs, pageToken);
 
-            FilterLuccaApp(page.Items);
+            FilterSystemApps(page.Items);
             return page;
         }
 
@@ -49,7 +50,7 @@ namespace AdvancedFilters.Infra.Storage.Stores
         {
             var filteredEnvs = Get(filter).ToList();
 
-            FilterLuccaApp(filteredEnvs);
+            FilterSystemApps(filteredEnvs);
             return Task.FromResult(filteredEnvs);
         }
 
@@ -72,12 +73,12 @@ namespace AdvancedFilters.Infra.Storage.Stores
                 .AsNoTracking();
         }
 
-        private void FilterLuccaApp(IEnumerable<Environment> envs)
+        private void FilterSystemApps(IEnumerable<Environment> envs)
         {
             foreach (var env in envs)
             {
                 env.AppInstances = env.AppInstances
-                    .Where(a => a.ApplicationId != AppInstance.LuccaApplicationId);
+                    .Where(e => !ApplicationsCollection.SystemApplicationIds.Contains(e.ApplicationId));
             }
         }
 

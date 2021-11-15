@@ -1,4 +1,5 @@
 using AdvancedFilters.Domain.Billing.Models;
+using AdvancedFilters.Domain.Core.Collections;
 using AdvancedFilters.Domain.Core.Models;
 using AdvancedFilters.Domain.Filters.Builders;
 using AdvancedFilters.Domain.Filters.Models;
@@ -65,6 +66,9 @@ namespace AdvancedFilters.Domain.Instance.Models
                     ? DistributorType.DirectAndIndirect
                     : DistributorType.DirectOnly
                 : DistributorType.IndirectOnly;
+
+        public static Expression<Func<Environment, IEnumerable<AppInstance>>> AppInstancesAvailableForSelection =>
+            e => e.AppInstances.Where(e => !ApplicationsCollection.SystemApplicationIds.Contains(e.ApplicationId));
         public static Func<Environment, DistributorType> CompiledDistributorTypeFn
             => DistributorTypeFn.Compile();
     }
