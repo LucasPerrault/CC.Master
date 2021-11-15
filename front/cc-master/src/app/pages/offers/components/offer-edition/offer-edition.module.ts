@@ -9,10 +9,11 @@ import { OfferEditionComponent } from './offer-edition.component';
 import { OfferEditionFormModule } from './offer-edition-form/offer-edition-form.module';
 import { OfferEditionRestrictionsService } from './offer-edition-restrictions.service';
 import { OfferEditionValidationContextService } from './offer-edition-validation-context.service';
+import { OfferEditionTabComponent } from './offer-edition-tab/offer-edition-tab.component';
 
 
 @NgModule({
-  declarations: [OfferEditionComponent],
+  declarations: [OfferEditionComponent, OfferEditionTabComponent],
   imports: [
     CommonModule,
     OfferPageTemplateModule,

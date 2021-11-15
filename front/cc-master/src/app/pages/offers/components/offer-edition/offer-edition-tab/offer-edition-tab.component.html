@@ -1,0 +1,21 @@
+<div class="page-content">
+  <div class="loading mod-fullPage" *ngIf="isLoading$ | async; else isNotLoading"></div>
+  <ng-template #isNotLoading>
+    <cc-offer-edition-form [formControl]="formControl" [validationContext]="validationContext$ | async">
+    </cc-offer-edition-form>
+  </ng-template>
+</div>
+
+<div class="page-footer">
+  <div class="page-footer-right u-flexGrow1">
+    <button class="button"
+            [ngClass]="editionButtonState$ | async"
+            [disabled]="!formControl.dirty || formControl.invalid"
+            (click)="edit()">
+      {{ 'offers_forms_edit' | translate }}
+    </button>
+    <button class="button mod-link" (click)="cancel()">
+      {{ 'offers_forms_cancel' | translate }}
+    </button>
+  </div>
+</div>

@@ -1,7 +1,7 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { ApiV3DateService, IHttpApiV3CollectionCount, IHttpApiV3CollectionCountResponse, IHttpApiV3Response } from '@cc/common/queries';
-import { IPriceList } from '@cc/domain/billing/offers';
+import { IOffer, IPriceList, offerFields } from '@cc/domain/billing/offers';
 import { forkJoin, Observable, of } from 'rxjs';
 import { map, switchMapTo } from 'rxjs/operators';
 
@@ -27,6 +27,12 @@ export class OffersDataService {
 
     return this.httpClient.get<IHttpApiV3CollectionCountResponse<IDetailedOffer>>(this.offersEndpoint, { params })
       .pipe(map(res => res.data));
+  }
+
+  public getName$(offerId: number): Observable<string> {
+    const params = new HttpParams().set('fields', offerFields);
+    const url = `${ this.offersEndpoint }/${ offerId }`;
+    return this.httpClient.get<IHttpApiV3Response<IOffer>>(url, { params }).pipe(map(res => res.data.name));
   }
 
   public getById$(offerId: number): Observable<IDetailedOffer> {
