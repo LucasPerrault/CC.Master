@@ -33,7 +33,7 @@ export class AttachmentEndEditionModalComponent implements OnInit, OnDestroy, IL
 
   public get min(): Date {
     return !!this.modalData.lastCountPeriod
-      ? addMonths(this.modalData.lastCountPeriod, 1)
+      ? this.modalData.lastCountPeriod
       : this.getLastAttachmentStartDate();
   }
 
