@@ -6,7 +6,7 @@ import { forkJoin, Observable, of } from 'rxjs';
 import { map, switchMapTo } from 'rxjs/operators';
 
 import { IOfferCreationForm } from '../components/offer-creation/offer-creation-form/offer-creation-form.interface';
-import { IOfferEditionForm } from '../components/offer-edition/offer-edition-form/offer-edition-form.interface';
+import { IOfferEditionForm } from '../components/offer-edition/offer-edition-tab/offer-edition-form/offer-edition-form.interface';
 import { detailedOfferFields, IDetailedOffer } from '../models/detailed-offer.interface';
 import { IOfferCreationDto } from '../models/offer-creation-dto.interface';
 import { IOfferEditionDto } from '../models/offer-edition-dto.interface';

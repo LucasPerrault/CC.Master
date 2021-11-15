@@ -14,8 +14,8 @@ import { ELuDateGranularity } from '@lucca-front/ng/core';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { OfferEditionRestrictionsService } from '../offer-edition-restrictions.service';
-import { IOfferEditionValidationContext } from '../offer-edition-validation-context.interface';
+import { OfferEditionRestrictionsService } from '../../offer-edition-restrictions.service';
+import { IOfferEditionValidationContext } from '../../offer-edition-validation-context.interface';
 import { IOfferEditionForm } from './offer-edition-form.interface';
 
 enum OfferFormKey {

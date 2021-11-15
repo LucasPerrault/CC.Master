@@ -6,15 +6,15 @@ import { OfferApiSelectModule, ProductApiSelectModule } from '@cc/common/forms';
 import { LuDateSelectInputModule } from '@lucca-front/ng/date';
 import { LuTooltipTriggerModule } from '@lucca-front/ng/tooltip';
 
-import { EditablePriceGridModule } from '../../editable-price-grid/editable-price-grid.module';
+import { EditablePriceGridModule } from '../../../editable-price-grid/editable-price-grid.module';
 import {
   OfferBillingModeSelectModule,
   OfferBillingUnitSelectModule, OfferCurrencyApiSelectModule,
   OfferForecastMethodApiSelectModule,
   OfferPricingMethodApiSelectModule, OfferTagApiSelectModule,
   OfferTagAutocompleteSelectModule,
-} from '../../offer-selects';
-import { OfferEditionValidationContextService } from '../offer-edition-validation-context.service';
+} from '../../../offer-selects';
+import { OfferEditionValidationContextService } from '../../offer-edition-validation-context.service';
 import { OfferEditionFormComponent } from './offer-edition-form.component';
 
 @NgModule({

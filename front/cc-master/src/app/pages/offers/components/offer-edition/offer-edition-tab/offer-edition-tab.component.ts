@@ -14,7 +14,7 @@ import { IPriceListForm } from '../../../models/price-list-form.interface';
 import { OfferListService } from '../../../services/offer-list.service';
 import { OfferPriceListService } from '../../../services/offer-price-list.service';
 import { OffersDataService } from '../../../services/offers-data.service';
-import { IOfferEditionForm } from '../offer-edition-form/offer-edition-form.interface';
+import { IOfferEditionForm } from './offer-edition-form/offer-edition-form.interface';
 import { IOfferEditionValidationContext } from '../offer-edition-validation-context.interface';
 import { OfferEditionValidationContextService } from '../offer-edition-validation-context.service';
 
