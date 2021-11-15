@@ -60,13 +60,11 @@ namespace AdvancedFilters.Domain.Instance.Models
     public static class EnvironmentExpressions
     {
         public static Expression<Func<Environment, DistributorType>> DistributorTypeFn
-            => (Environment e) => (DistributorType)e.Accesses
-             .Where(a => a.Type == EnvironmentAccessType.Contract && a.DistributorId == Environment.LuccaDistributorId)
-             .Select(a => DistributorType.DirectOnly).Distinct()
-             .Union(e.Accesses
-             .Where(a => a.Type == EnvironmentAccessType.Contract && a.DistributorId != Environment.LuccaDistributorId)
-             .Select(a => DistributorType.IndirectOnly).Distinct())
-             .Sum(e => (int)e);
+            => e => e.Accesses.Where(a => a.Type == EnvironmentAccessType.Contract).Any(a => a.DistributorId == Environment.LuccaDistributorId)
+                ? e.Accesses.Where(a => a.Type == EnvironmentAccessType.Contract).Any(a => a.DistributorId != Environment.LuccaDistributorId)
+                    ? DistributorType.DirectAndIndirect
+                    : DistributorType.DirectOnly
+                : DistributorType.IndirectOnly;
         public static Func<Environment, DistributorType> CompiledDistributorTypeFn
             => DistributorTypeFn.Compile();
     }
