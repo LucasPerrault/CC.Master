@@ -12,7 +12,8 @@ import {
   OfferBillingUnitSelectModule,
   OfferCurrencySelectModule,
   OfferForecastMethodSelectModule,
-  OfferPricingMethodSelectModule, OfferTagApiSelectModule,
+  OfferPricingMethodSelectModule,
+  OfferTagApiSelectModule,
   OfferTagAutocompleteSelectModule,
 } from '../../offer-selects';
 import { OfferCreationFormComponent } from './offer-creation-form.component';
