@@ -10,7 +10,7 @@ import { IEstablishmentActionsContext } from '../../models/establishment-actions
 import { IEstablishmentAttachment } from '../../models/establishment-attachment.interface';
 import { IEstablishmentContract } from '../../models/establishment-contract.interface';
 import { IEstablishmentWithAttachments } from '../../models/establishment-with-attachments.interface';
-import { AttachmentsTimelineService } from '../../services/attachments-timeline.service';
+import { EstablishmentActionContextService } from '../../services/establishment-action-context.service';
 
 @Component({
   selector: 'cc-establishment-list',
@@ -28,27 +28,10 @@ export class EstablishmentListComponent {
   }
 
   public get actionsContext(): IEstablishmentActionsContext {
-    return {
-      contract: this.contract,
-      realCounts: this.realCounts,
-      lastCountPeriod: this.lastCountPeriod,
-      establishmentType: this.type,
-    };
+    return this.actionContextService.getActionContext(this.contract, this.realCounts, this.type);
   }
 
   public selectedEntries: IEstablishmentWithAttachments[] = [];
-
-  public get lastCountPeriod(): Date {
-    if (!this.realCounts?.length) {
-      return null;
-    }
-
-    const sortedDescCounts = this.realCounts.sort((a, b) =>
-      new Date(b.countPeriod).getTime() - new Date(a.countPeriod).getTime());
-
-    const lastCountPeriod = sortedDescCounts[0]?.countPeriod;
-    return !!lastCountPeriod ? new Date(lastCountPeriod) : null;
-  }
 
   public get isLinked(): boolean {
     return [EstablishmentType.LinkedToAnotherContract, EstablishmentType.LinkedToContract].includes(this.type);
@@ -64,7 +47,7 @@ export class EstablishmentListComponent {
     private translatePipe: TranslatePipe,
     private datePipe: DatePipe,
     private rightsService: RightsService,
-    private timelineService: AttachmentsTimelineService,
+    private actionContextService: EstablishmentActionContextService,
   ) { }
 
   public isType(type: EstablishmentType): boolean {
