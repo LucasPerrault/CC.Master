@@ -1,40 +1,37 @@
 import { ChangeDetectionStrategy, Component, forwardRef, Input, OnDestroy, OnInit } from '@angular/core';
 import { ControlValueAccessor, FormControl, NG_VALUE_ACCESSOR } from '@angular/forms';
-import { ALuApiService } from '@lucca-front/ng/api';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { IOfferCurrency } from '../../../models/offer-currency.interface';
-import { OfferCurrencyApiSelectService } from './offer-currency-api-select.service';
+import { currencies, IOfferCurrency } from '../../../models/offer-currency.interface';
 
 @Component({
   selector: 'cc-offer-currency-api-select',
-  templateUrl: './offer-currency-api-select.component.html',
-  styleUrls: ['./offer-currency-api-select.component.scss'],
+  templateUrl: './offer-currency-select.component.html',
+  styleUrls: ['./offer-currency-select.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [
     {
-      provide: ALuApiService,
-      useClass: OfferCurrencyApiSelectService,
-    },
-    {
       provide: NG_VALUE_ACCESSOR,
-      useExisting: forwardRef(() => OfferCurrencyApiSelectComponent),
+      useExisting: forwardRef(() => OfferCurrencySelectComponent),
       multi: true,
     },
   ],
 })
-export class OfferCurrencyApiSelectComponent implements OnInit, OnDestroy, ControlValueAccessor {
+export class OfferCurrencySelectComponent implements OnInit, OnDestroy, ControlValueAccessor {
   @Input() public placeholder: string;
   @Input() public multiple = false;
   @Input() public required = false;
   @Input() public set disabled(isDisabled: boolean) { this.setDisabledState(isDisabled); }
 
   public formControl: FormControl = new FormControl();
+  public currencies: IOfferCurrency[];
 
   private destroy$: Subject<void> = new Subject<void>();
 
-  constructor() { }
+  constructor() {
+    this.currencies = currencies;
+  }
 
   public ngOnInit(): void {
     this.formControl.valueChanges

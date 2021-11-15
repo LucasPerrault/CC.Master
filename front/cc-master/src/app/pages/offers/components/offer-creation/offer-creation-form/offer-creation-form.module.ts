@@ -9,7 +9,8 @@ import { LuTooltipTriggerModule } from '@lucca-front/ng/tooltip';
 import { EditablePriceGridModule } from '../../editable-price-grid/editable-price-grid.module';
 import {
   OfferBillingModeSelectModule,
-  OfferBillingUnitSelectModule, OfferCurrencyApiSelectModule,
+  OfferBillingUnitSelectModule,
+  OfferCurrencySelectModule,
   OfferForecastMethodApiSelectModule,
   OfferPricingMethodApiSelectModule, OfferTagApiSelectModule,
   OfferTagAutocompleteSelectModule,
@@ -26,7 +27,7 @@ import { OfferCreationFormComponent } from './offer-creation-form.component';
     TranslateModule,
     ProductApiSelectModule,
     OfferBillingModeSelectModule,
-    OfferCurrencyApiSelectModule,
+    OfferCurrencySelectModule,
     OfferTagApiSelectModule,
     OfferBillingUnitSelectModule,
     OfferPricingMethodApiSelectModule,
@@ -39,5 +40,4 @@ import { OfferCreationFormComponent } from './offer-creation-form.component';
   ],
   exports: [OfferCreationFormComponent],
 })
-export class OfferCreationFormModule {
-}
+export class OfferCreationFormModule {}

@@ -7,10 +7,7 @@
   <span [ngClass]="{ 'chip mod-unkillable' : multiple }" *luDisplayer="let currency">{{ currency.name }}</span>
 
   <lu-option-picker-advanced>
-    <header class="lu-picker-header">
-      <lu-api-searcher></lu-api-searcher>
-    </header>
-
+    <lu-option-feeder [options]="currencies"></lu-option-feeder>
     <lu-option *luForOptions="let currency; trackBy: trackBy" [value]="currency">{{ currency.name }}</lu-option>
 
   </lu-option-picker-advanced>

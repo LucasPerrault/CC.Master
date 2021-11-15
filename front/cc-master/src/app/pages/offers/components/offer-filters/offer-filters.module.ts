@@ -6,7 +6,7 @@ import { ProductApiSelectModule } from '@cc/common/forms';
 
 import {
   OfferBillingModeSelectModule,
-  OfferCurrencyApiSelectModule,
+  OfferCurrencySelectModule,
   OfferTagApiSelectModule,
 } from '../offer-selects';
 import { OfferFiltersComponent } from './offer-filters.component';
@@ -18,7 +18,7 @@ import { OfferFiltersComponent } from './offer-filters.component';
     ReactiveFormsModule,
     OfferTagApiSelectModule,
     ProductApiSelectModule,
-    OfferCurrencyApiSelectModule,
+    OfferCurrencySelectModule,
     OfferBillingModeSelectModule,
     TranslateModule,
   ],

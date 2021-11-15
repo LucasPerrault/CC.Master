@@ -7,12 +7,11 @@ import { LuInputClearerModule, LuInputDisplayerModule } from '@lucca-front/ng/in
 import { LuForOptionsModule, LuOptionFeederModule, LuOptionItemModule, LuOptionPickerModule } from '@lucca-front/ng/option';
 import { LuSelectInputModule } from '@lucca-front/ng/select';
 
-import { OfferCurrencyApiSelectComponent } from './offer-currency-api-select.component';
-import { OfferCurrencyApiSelectService } from './offer-currency-api-select.service';
+import { OfferCurrencySelectComponent } from './offer-currency-select.component';
 
 
 @NgModule({
-  declarations: [OfferCurrencyApiSelectComponent],
+  declarations: [OfferCurrencySelectComponent],
   imports: [
     CommonModule,
     LuSelectInputModule,
@@ -26,8 +25,7 @@ import { OfferCurrencyApiSelectService } from './offer-currency-api-select.servi
     LuApiSearcherModule,
     LuInputClearerModule,
   ],
-  exports: [OfferCurrencyApiSelectComponent],
-  providers: [OfferCurrencyApiSelectService],
+  exports: [OfferCurrencySelectComponent],
 })
-export class OfferCurrencyApiSelectModule {
+export class OfferCurrencySelectModule {
 }
