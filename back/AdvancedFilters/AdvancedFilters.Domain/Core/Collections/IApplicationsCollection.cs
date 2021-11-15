@@ -15,7 +15,7 @@ namespace AdvancedFilters.Domain.Core.Collections
     {
         public static readonly HashSet<string> SystemApplicationIds = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
         {
-            "LUCCA", "DIRECTORY", "CLIENT-CENTER"
+            "LUCCA", "DIRECTORY", "CLIENT-CENTER", "WEXTERNE"
         };
 
         private static readonly Dictionary<string, string> ApplicationNamesById = new Dictionary<string, string>
