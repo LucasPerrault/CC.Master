@@ -2,10 +2,10 @@ import { Component, Input } from '@angular/core';
 import { ICurrency, IPriceRow } from '@cc/domain/billing/offers';
 
 @Component({
-  selector: 'cc-price-grid-list',
-  templateUrl: './price-grid-list.component.html',
+  selector: 'cc-price-list',
+  templateUrl: './price-list.component.html',
 })
-export class PriceGridListComponent {
+export class PriceListComponent {
   @Input() public priceRows: IPriceRow[];
   @Input() public currency: ICurrency;
 

@@ -2,14 +2,14 @@ import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { TranslateModule } from '@cc/aspects/translate';
 
-import { PriceGridListComponent } from './price-grid-list.component';
+import { PriceListComponent } from './price-list.component';
 
 @NgModule({
-  declarations: [PriceGridListComponent],
+  declarations: [PriceListComponent],
   imports: [
     CommonModule,
     TranslateModule,
   ],
-  exports: [PriceGridListComponent],
+  exports: [PriceListComponent],
 })
-export class PriceGridListModule { }
+export class PriceListModule { }

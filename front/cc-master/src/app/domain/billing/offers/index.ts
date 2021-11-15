@@ -1,3 +1,4 @@
+export * from './components/price-list/price-list.module';
 export * from './enums/product-id.enum';
 export * from './models/currency.interface';
 export * from './models/offer.interface';

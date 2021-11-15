@@ -1,18 +1,18 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { TranslateModule } from '@cc/aspects/translate';
+import { PriceListModule } from '@cc/domain/billing/offers';
 
-import { PriceGridListModule } from '../price-grid-list/price-grid-list.module';
 import { PriceGridModalComponent } from './price-grid-modal.component';
 import { PriceGridModalDataService } from './price-grid-modal-data.service';
 
 @NgModule({
   declarations: [PriceGridModalComponent],
-  imports: [
-    CommonModule,
-    TranslateModule,
-    PriceGridListModule,
-  ],
+    imports: [
+        CommonModule,
+        TranslateModule,
+        PriceListModule,
+    ],
   exports: [PriceGridModalComponent],
   providers: [PriceGridModalDataService],
 })
