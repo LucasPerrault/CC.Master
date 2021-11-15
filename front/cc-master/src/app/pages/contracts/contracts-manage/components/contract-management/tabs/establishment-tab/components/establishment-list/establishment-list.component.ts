@@ -43,10 +43,10 @@ export class EstablishmentListComponent {
       return null;
     }
 
-    const countsAscSorted = this.realCounts.sort((a, b) =>
-      new Date(a.countPeriod).getTime() - new Date(b.countPeriod).getTime());
+    const sortedDescCounts = this.realCounts.sort((a, b) =>
+      new Date(b.countPeriod).getTime() - new Date(a.countPeriod).getTime());
 
-    const lastCountPeriod = countsAscSorted[0]?.countPeriod;
+    const lastCountPeriod = sortedDescCounts[0]?.countPeriod;
     return !!lastCountPeriod ? new Date(lastCountPeriod) : null;
   }
 
