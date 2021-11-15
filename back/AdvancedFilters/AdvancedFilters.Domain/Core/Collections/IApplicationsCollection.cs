@@ -13,7 +13,7 @@ namespace AdvancedFilters.Domain.Core.Collections
 
     public class ApplicationsCollection : IApplicationsCollection
     {
-        public static readonly HashSet<string> SystemApplicationIds = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+        public static HashSet<string> SystemApplicationIds => new HashSet<string>(StringComparer.OrdinalIgnoreCase)
         {
             "LUCCA", "DIRECTORY", "CLIENT-CENTER", "WEXTERNE"
         };
