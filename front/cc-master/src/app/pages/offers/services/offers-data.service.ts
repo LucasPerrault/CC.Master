@@ -2,6 +2,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { ApiV3DateService, IHttpApiV3CollectionCount, IHttpApiV3CollectionCountResponse, IHttpApiV3Response } from '@cc/common/queries';
 import { IOffer, IPriceList, offerFields } from '@cc/domain/billing/offers';
+import { startOfMonth } from 'date-fns';
 import { forkJoin, Observable, of } from 'rxjs';
 import { map, switchMapTo } from 'rxjs/operators';
 
@@ -51,6 +52,12 @@ export class OffersDataService {
     return this.httpClient.post<void>(this.offersEndpoint, body);
   }
 
+  public createPriceList$(offerId: number, form: IPriceListForm): Observable<void> {
+    const url = `/api/commercialOffers/${ offerId }/priceLists`;
+    const body = this.toPriceListDto(form);
+    return this.httpClient.post<void>(url, body);
+  }
+
   public edit$(offerId: number, priceListId: number, form: IOfferEditionForm): Observable<void> {
     const requests$ = [this.editOffer$(offerId, form), this.editPriceList$(offerId, priceListId, form.priceList)];
     return forkJoin(requests$).pipe(switchMapTo(of<void>()));
@@ -80,7 +87,7 @@ export class OffersDataService {
 
   private toPriceListDto(priceList: IPriceListForm): IPriceListCreationDto {
     return {
-      startsOn: this.apiDateService.toApiV3DateFormat(priceList.startsOn),
+      startsOn: this.apiDateService.toApiV3DateFormat(startOfMonth(new Date(priceList.startsOn))),
       rows: priceList.rows,
     };
   }
@@ -112,7 +119,7 @@ export class OffersDataService {
   }
 
   private toPriceListEditionDto(id: number, form: IPriceListForm): IPriceListEditionDto {
-    const startsOn = this.apiDateService.toApiV3DateFormat(form.startsOn);
+    const startsOn = this.apiDateService.toApiV3DateFormat(startOfMonth(new Date(form.startsOn)));
     const rows = form.rows?.map(row => this.toPriceRowEditionDto(id, row));
     return { id, startsOn, rows };
   }

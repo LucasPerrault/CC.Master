@@ -1,1 +1,13 @@
-<p>offer-price-lists-tab works!</p>
+<div class="page-content u-paddingReset">
+  <div class="loading mod-dialog" *ngIf="isLoading$ | async; else isNotLoading"></div>
+
+  <ng-template #isNotLoading>
+    <ng-container *ngIf="offer$ | async; let offer">
+
+      <div class="header">
+        <button class="button u-marginLeftAuto" (click)="openCreationModal(offer)">Créer une grille tarifaire</button>
+      </div>
+    </ng-container>
+  </ng-template>
+
+</div>
