@@ -10,10 +10,12 @@ import { OfferEditionFormModule } from './offer-edition-tab/offer-edition-form/o
 import { OfferEditionRestrictionsService } from './offer-edition-restrictions.service';
 import { OfferEditionValidationContextService } from './offer-edition-validation-context.service';
 import { OfferEditionTabComponent } from './offer-edition-tab/offer-edition-tab.component';
+import { RouterModule } from '@angular/router';
+import { OfferPriceListsTabComponent } from './offer-price-lists-tab/offer-price-lists-tab.component';
 
 
 @NgModule({
-  declarations: [OfferEditionComponent, OfferEditionTabComponent],
+  declarations: [OfferEditionComponent, OfferEditionTabComponent, OfferPriceListsTabComponent],
   imports: [
     CommonModule,
     OfferPageTemplateModule,
@@ -21,6 +23,7 @@ import { OfferEditionTabComponent } from './offer-edition-tab/offer-edition-tab.
     ReactiveFormsModule,
     EditablePriceGridModule,
     OfferEditionFormModule,
+    RouterModule,
   ],
   providers: [OfferEditionRestrictionsService, OfferEditionValidationContextService],
 })

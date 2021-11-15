@@ -1,5 +1,5 @@
 <div class="page mod-fullWidth mod-withFullwidthTable mod-horizontal">
-  <header class="pageHeader">
+  <header class="pageHeader" [ngClass]="{ 'mod-withMenu': !!tabs?.length }">
     <nav class="breadcrumbs" aria-describedby="breadcrumbs-title">
       <p id="breadcrumbs-title" class="u-mask">Breadcrumbs</p>
       <ul class="breadcrumbs-list">
@@ -22,6 +22,16 @@
         </div>
       </div>
     </div>
+
+    <nav class="menu u-flexWrapWrap" *ngIf="!!tabs?.length">
+      <ng-container *ngFor="let tab of tabs">
+        <a [routerLink]="['./', tab.url]"
+           [routerLinkActive]="'is-active'"
+           queryParamsHandling="preserve" class="menu-link">
+          {{ tab.name | translate }}
+        </a>
+      </ng-container>
+    </nav>
   </header>
 
   <ng-content></ng-content>

@@ -1,6 +1,7 @@
 <cc-offer-template *ngIf="offerName$ | async; let offerName"
+                   [tabs]="tabs"
                    [title]="'offers_edition_title' | translate: { name: offerName }">
 
-  <cc-offer-edition-tab></cc-offer-edition-tab>
+  <router-outlet></router-outlet>
 
 </cc-offer-template>

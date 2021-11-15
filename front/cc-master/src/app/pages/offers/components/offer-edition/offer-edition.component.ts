@@ -1,9 +1,11 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { INavigationTab } from '@cc/common/navigation';
 import { ReplaySubject } from 'rxjs';
 import { take } from 'rxjs/operators';
 
 import { OffersDataService } from '../../services/offers-data.service';
+import { navigationTabs } from './offer-edition-navigation-tabs.const';
 
 @Component({
   selector: 'cc-offer-edition',
@@ -13,6 +15,10 @@ import { OffersDataService } from '../../services/offers-data.service';
 })
 export class OfferEditionComponent implements OnInit {
   public offerName$: ReplaySubject<string> = new ReplaySubject<string>(1);
+
+  public get tabs(): INavigationTab[] {
+    return navigationTabs;
+  }
 
   private get offerId(): number {
     return parseInt(this.activatedRoute.snapshot.paramMap.get('id'), 10);

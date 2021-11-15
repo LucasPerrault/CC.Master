@@ -34,7 +34,7 @@ export class OfferEditionTabComponent implements OnInit {
   public editionButtonState$: ReplaySubject<string> = new ReplaySubject<string>(1);
 
   private get offerId(): number {
-    return parseInt(this.activatedRoute.snapshot.paramMap.get('id'), 10);
+    return parseInt(this.activatedRoute.parent.snapshot.paramMap.get('id'), 10);
   }
 
   constructor(

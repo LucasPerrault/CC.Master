@@ -1,6 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { Router } from '@angular/router';
-import { NavigationPath } from '@cc/common/navigation';
+import { INavigationTab, NavigationPath } from '@cc/common/navigation';
 
 @Component({
   selector: 'cc-offer-template',
@@ -9,6 +9,7 @@ import { NavigationPath } from '@cc/common/navigation';
 })
 export class OfferPageTemplateComponent {
   @Input() public title: string;
+  @Input() public tabs: INavigationTab[] = [];
 
   constructor(private router: Router) { }
 
