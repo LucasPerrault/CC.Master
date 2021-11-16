@@ -69,7 +69,7 @@ export class OfferBillingUnitSelectComponent implements OnInit, OnDestroy, Contr
     this.formControl.enable();
   }
 
-  public trackBy(index: number, billingUnit: IBillingUnit): number {
+  public trackBy(index: number, billingUnit: IBillingUnit): string {
     return billingUnit.id;
   }
 

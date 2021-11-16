@@ -1,8 +1,8 @@
 export enum BillingMode {
-  FlatFee = 1,
-  AllUsers = 2,
-  UsersWithAccess = 3,
-  ActiveUsers = 4,
+  FlatFee = 'FlatFee',
+  AllUsers = 'AllUsers',
+  UsersWithAccess = 'UsersWithAccess',
+  ActiveUsers = 'ActiveUsers',
 }
 
 export interface IBillingMode {

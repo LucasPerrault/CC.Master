@@ -62,7 +62,7 @@ export class OfferBillingModeSelectComponent implements OnInit, OnDestroy, Contr
     }
   }
 
-  public trackBy(index: number, billingMode: IBillingMode): number {
+  public trackBy(index: number, billingMode: IBillingMode): string {
     return billingMode.id;
   }
 
