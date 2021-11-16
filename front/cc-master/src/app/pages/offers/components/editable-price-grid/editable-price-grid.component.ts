@@ -15,7 +15,7 @@ import { BehaviorSubject, Subject } from 'rxjs';
 import { filter, finalize, map, switchMap, takeUntil, tap } from 'rxjs/operators';
 
 import { IPriceRowForm } from '../../models/price-list-form.interface';
-import { OfferPriceListService } from '../../services/offer-price-list.service';
+import { PriceListsTimelineService } from '../../services/price-lists-timeline.service';
 import { OffersDataService } from '../../services/offers-data.service';
 import { EditablePriceGridValidators, PriceGridValidationError } from './editable-price-grid.validators';
 
@@ -101,7 +101,7 @@ export class EditablePriceGridComponent implements OnInit, OnDestroy, ControlVal
         tap(() => this.isPriceListsLoading$.next(true)),
         switchMap((o: IOffer) => this.dataService.getPriceLists$(o.id)
           .pipe(finalize(() => this.isPriceListsLoading$.next(false)))),
-        map(priceLists => OfferPriceListService.getCurrent(priceLists)),
+        map(priceLists => PriceListsTimelineService.getCurrent(priceLists)),
       )
       .subscribe(priceList => this.reset(priceList.rows));
   }

@@ -12,11 +12,11 @@ import { getBillingUnit } from '../../../enums/billing-unit.enum';
 import { IDetailedOffer } from '../../../models/detailed-offer.interface';
 import { IPriceListForm } from '../../../models/price-list-form.interface';
 import { OfferListService } from '../../../services/offer-list.service';
-import { OfferPriceListService } from '../../../services/offer-price-list.service';
+import { PriceListsTimelineService } from '../../../services/price-lists-timeline.service';
 import { OffersDataService } from '../../../services/offers-data.service';
 import { IOfferEditionForm } from './offer-edition-form/offer-edition-form.interface';
-import { IOfferEditionValidationContext } from '../offer-edition-validation-context.interface';
-import { OfferEditionValidationContextService } from '../offer-edition-validation-context.service';
+import { IOfferValidationContext } from '../../../models/offer-validation-context.interface';
+import { OfferValidationContextDataService } from '../../../services/offer-validation-context-data.service';
 import { PriceListsDataService } from '../../../services/price-lists-data.service';
 
 @Component({
@@ -29,7 +29,7 @@ export class OfferEditionTabComponent implements OnInit {
 
   public priceListId$: BehaviorSubject<number> = new BehaviorSubject<number>(null);
   public isLoading$: ReplaySubject<boolean> = new ReplaySubject<boolean>(1);
-  public validationContext$ = new ReplaySubject<IOfferEditionValidationContext>(1);
+  public validationContext$ = new ReplaySubject<IOfferValidationContext>(1);
 
   public formControl: FormControl = new FormControl();
   public editionButtonState$: ReplaySubject<string> = new ReplaySubject<string>(1);
@@ -44,7 +44,7 @@ export class OfferEditionTabComponent implements OnInit {
     private offersDataService: OffersDataService,
     private listsDataService: PriceListsDataService,
     private offerListService: OfferListService,
-    private contextValidationService: OfferEditionValidationContextService,
+    private contextValidationService: OfferValidationContextDataService,
   ) { }
 
   public ngOnInit(): void {
@@ -89,7 +89,7 @@ export class OfferEditionTabComponent implements OnInit {
     ])
       .pipe(take(1), finalize(() => this.isLoading$.next(false)))
       .subscribe(([offer, realCountNumber]) => {
-        this.priceListId$.next(OfferPriceListService.getCurrent(offer.priceLists)?.id);
+        this.priceListId$.next(PriceListsTimelineService.getCurrent(offer.priceLists)?.id);
         this.formControl.patchValue(this.toOfferForm(offer));
         this.validationContext$.next({ offer, realCountNumber });
       });
@@ -110,7 +110,7 @@ export class OfferEditionTabComponent implements OnInit {
       billingUnit: getBillingUnit(offer.unit),
       pricingMethod: offer.pricingMethod,
       forecastMethod: offer.forecastMethod,
-      priceList: this.toPriceListForm(OfferPriceListService.getCurrent(offer.priceLists)),
+      priceList: this.toPriceListForm(PriceListsTimelineService.getCurrent(offer.priceLists)),
     };
   }
 

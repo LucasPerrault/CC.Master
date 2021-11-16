@@ -8,6 +8,7 @@ import { ContractsRoutingKey } from '../../../contracts/contracts-manage/service
 import { BillingMode, billingModes, IBillingMode } from '../../enums/billing-mode.enum';
 import { OfferSortParamKey } from '../../enums/offer-sort-param-key.enum';
 import { IDetailedOffer } from '../../models/detailed-offer.interface';
+import { OfferRestrictionsService } from '../../services/offer-restrictions.service';
 import { OfferDeletionComponent } from '../offer-deletion/offer-deletion.component';
 
 @Component({
@@ -20,6 +21,9 @@ export class OfferListComponent implements OnInit {
   @Input() public sortParams: ISortParams;
   @Output() public sort: EventEmitter<ISortParams> = new EventEmitter<ISortParams>();
 
+  public get hasRightToEdit(): boolean {
+    return this.restrictionsService.hasRightToCreateOffers();
+  }
 
   public sortParamKey = OfferSortParamKey;
   public sortOrder = SortOrder;
@@ -28,6 +32,7 @@ export class OfferListComponent implements OnInit {
     private luModal: LuModal,
     private translatePipe: TranslatePipe,
     private sortService: SortService,
+    private restrictionsService: OfferRestrictionsService,
   ) { }
 
   ngOnInit(): void {
@@ -56,7 +61,7 @@ export class OfferListComponent implements OnInit {
   }
 
   public canBeDeleted(offer: IDetailedOffer): boolean {
-    return offer.activeContractNumber === 0;
+    return this.restrictionsService.canDeleteOffer(offer.activeContractNumber);
   }
 
   public openDeletionModal(offer: IDetailedOffer): void {

@@ -8,8 +8,8 @@ import { addMonths, startOfMonth } from 'date-fns';
 import { Observable, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
+import { OfferRestrictionsService } from '../../../../services/offer-restrictions.service';
 import { PriceListsDataService } from '../../../../services/price-lists-data.service';
-import { OfferEditionRestrictionsService } from '../../offer-edition-restrictions.service';
 import { OfferPriceListFormValidator, PriceListValidationError } from '../offer-price-list-form.validator';
 import { IOfferPriceListEditionModalData } from './offer-price-list-edition-modal-data.interface';
 
@@ -43,8 +43,8 @@ export class OfferPriceListEditionModalComponent implements OnInit, OnDestroy, I
     @Inject(LU_MODAL_DATA) public data: IOfferPriceListEditionModalData,
     private translatePipe: TranslatePipe,
     private dataService: PriceListsDataService,
-    private restrictionsService: OfferEditionRestrictionsService,
     private datePipe: DatePipe,
+    private restrictionsService: OfferRestrictionsService,
   ) {
     const start = datePipe.transform(new Date(this.data.priceListToEdit.startsOn), 'MMMM yyyy');
     this.title = this.translatePipe.transform('offers_priceList_edition_title', { start });

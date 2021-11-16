@@ -14,7 +14,7 @@ import { ELuDateGranularity } from '@lucca-front/ng/core';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { OfferPriceListService } from '../../../services/offer-price-list.service';
+import { PriceListsTimelineService } from '../../../services/price-lists-timeline.service';
 import { IOfferCreationForm } from './offer-creation-form.interface';
 
 enum OfferFormKey {
@@ -76,7 +76,7 @@ export class OfferCreationFormComponent implements OnInit, OnDestroy, ControlVal
       [OfferFormKey.PricingMethod]: new FormControl(),
       [OfferFormKey.ForecastMethod]: new FormControl(),
       [OfferFormKey.PriceList]: new FormGroup({
-        [PriceListFormKey.StartsOn]: new FormControl({ value: OfferPriceListService.defaultStartsOn, disabled: true }),
+        [PriceListFormKey.StartsOn]: new FormControl({ value: PriceListsTimelineService.defaultStartsOn, disabled: true }),
         [PriceListFormKey.Rows]: new FormControl(),
       }),
     });

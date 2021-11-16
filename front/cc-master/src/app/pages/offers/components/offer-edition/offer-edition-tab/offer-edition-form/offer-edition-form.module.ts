@@ -14,7 +14,6 @@ import {
   OfferPricingMethodApiSelectModule, OfferTagApiSelectModule,
   OfferTagAutocompleteSelectModule,
 } from '../../../offer-selects';
-import { OfferEditionValidationContextService } from '../../offer-edition-validation-context.service';
 import { OfferEditionFormComponent } from './offer-edition-form.component';
 
 @NgModule({
@@ -38,7 +37,6 @@ import { OfferEditionFormComponent } from './offer-edition-form.component';
     LuTooltipTriggerModule,
     LuDateSelectInputModule,
   ],
-  providers: [OfferEditionValidationContextService],
   exports: [OfferEditionFormComponent],
 })
 export class OfferEditionFormModule {

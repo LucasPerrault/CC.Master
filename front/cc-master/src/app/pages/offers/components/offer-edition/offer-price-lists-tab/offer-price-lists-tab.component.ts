@@ -4,14 +4,14 @@ import { ActivatedRoute } from '@angular/router';
 import { TranslatePipe } from '@cc/aspects/translate';
 import { IPriceList } from '@cc/domain/billing/offers';
 import { LuModal } from '@lucca-front/ng/modal';
-import { isAfter } from 'date-fns';
 import { combineLatest, ReplaySubject } from 'rxjs';
 import { finalize, take } from 'rxjs/operators';
 
 import { IDetailedOffer } from '../../../models/detailed-offer.interface';
+import { IOfferValidationContext } from '../../../models/offer-validation-context.interface';
+import { OfferRestrictionsService } from '../../../services/offer-restrictions.service';
+import { OfferValidationContextDataService } from '../../../services/offer-validation-context-data.service';
 import { OffersDataService } from '../../../services/offers-data.service';
-import { IOfferEditionValidationContext } from '../offer-edition-validation-context.interface';
-import { OfferEditionValidationContextService } from '../offer-edition-validation-context.service';
 import { OfferPriceListCreationModalComponent } from './offer-price-list-creation-modal/offer-price-list-creation-modal.component';
 import { OfferPriceListDeletionModalComponent } from './offer-price-list-deletion-modal/offer-price-list-deletion-modal.component';
 import { IOfferPriceListDeletionModalData } from './offer-price-list-deletion-modal/offer-price-list-deletion-modal-data.interface';
@@ -27,7 +27,7 @@ import { OfferPriceListsTabService, PriceListStatus } from './offer-price-lists-
 export class OfferPriceListsTabComponent implements OnInit {
   public isLoading$: ReplaySubject<boolean> = new ReplaySubject<boolean>(1);
   public offer$: ReplaySubject<IDetailedOffer> = new ReplaySubject<IDetailedOffer>(1);
-  public validationContext$ = new ReplaySubject<IOfferEditionValidationContext>(1);
+  public validationContext$ = new ReplaySubject<IOfferValidationContext>(1);
 
   private get offerId(): number {
     return parseInt(this.activatedRoute.parent.snapshot.paramMap.get('id'), 10);
@@ -36,11 +36,12 @@ export class OfferPriceListsTabComponent implements OnInit {
   constructor(
     private activatedRoute: ActivatedRoute,
     private dataService: OffersDataService,
-    private contextValidationService: OfferEditionValidationContextService,
+    private contextValidationService: OfferValidationContextDataService,
     private luModal: LuModal,
     private datePipe: DatePipe,
     private translatePipe: TranslatePipe,
     private tabService: OfferPriceListsTabService,
+    private restrictionsService: OfferRestrictionsService,
   ) { }
 
   public ngOnInit(): void {
@@ -62,9 +63,7 @@ export class OfferPriceListsTabComponent implements OnInit {
   }
 
   public canDelete(priceList: IPriceList): boolean {
-    const today = Date.now();
-    const startDate = new Date(priceList.startsOn);
-    return isAfter(startDate, today);
+    return this.restrictionsService.canDeletePriceList(priceList);
   }
 
   public openCreationModal(offer: IDetailedOffer): void {
@@ -72,7 +71,7 @@ export class OfferPriceListsTabComponent implements OnInit {
     dialogRef.onClose.pipe(take(1)).subscribe(() => this.reset());
   }
 
-  public openEditionModal(priceListToEdit: IPriceList, validationContext: IOfferEditionValidationContext): void {
+  public openEditionModal(priceListToEdit: IPriceList, validationContext: IOfferValidationContext): void {
     const data: IOfferPriceListEditionModalData = { priceListToEdit, validationContext };
     const dialogRef = this.luModal.open(OfferPriceListEditionModalComponent, data);
     dialogRef.onClose.pipe(take(1)).subscribe(() => this.reset());

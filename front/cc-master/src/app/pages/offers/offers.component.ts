@@ -1,7 +1,6 @@
 import { HttpParams } from '@angular/common/http';
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { Operation, RightsService } from '@cc/aspects/rights';
 import { defaultPagingParams, IPaginatedResult, PaginatedList, PaginatedListState, PagingService } from '@cc/common/paging';
 import { ISortParams, SortOrder } from '@cc/common/sort';
 import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
@@ -10,6 +9,7 @@ import { debounceTime, map, takeUntil } from 'rxjs/operators';
 import { OfferSortParamKey } from './enums/offer-sort-param-key.enum';
 import { IDetailedOffer } from './models/detailed-offer.interface';
 import { OfferListService } from './services/offer-list.service';
+import { OfferRestrictionsService } from './services/offer-restrictions.service';
 import { OffersApiMappingService } from './services/offers-api-mapping.service';
 import { OffersDataService } from './services/offers-data.service';
 
@@ -39,7 +39,7 @@ export class OffersComponent implements OnInit {
   }
 
   public get canCreateOffer(): boolean {
-    return this.rightsService.hasOperation(Operation.CreateCommercialOffers);
+    return this.restrictionsService.hasRightToCreateOffers();
   }
 
   public filters: FormControl = new FormControl();
@@ -50,7 +50,7 @@ export class OffersComponent implements OnInit {
   private destroy$: Subject<void> = new Subject();
 
   constructor(
-    private rightsService: RightsService,
+    private restrictionsService: OfferRestrictionsService,
     private apiMappingService: OffersApiMappingService,
     private offersDataService: OffersDataService,
     private offerListService: OfferListService,

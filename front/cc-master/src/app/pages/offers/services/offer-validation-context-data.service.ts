@@ -6,7 +6,7 @@ import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 @Injectable()
-export class OfferEditionValidationContextService {
+export class OfferValidationContextDataService {
   private readonly countsEndpoint = '/api/v3/counts';
 
   constructor(private httpClient: HttpClient) {

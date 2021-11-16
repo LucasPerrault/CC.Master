@@ -1,7 +1,7 @@
 import { IPriceList } from '@cc/domain/billing/offers';
 import { isBefore, isEqual } from 'date-fns';
 
-export class OfferPriceListService {
+export class PriceListsTimelineService {
   public static get defaultStartsOn(): Date {
     return new Date('01/01/2002');
   }

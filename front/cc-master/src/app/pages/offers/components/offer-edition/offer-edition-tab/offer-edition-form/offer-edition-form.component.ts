@@ -14,8 +14,8 @@ import { ELuDateGranularity } from '@lucca-front/ng/core';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { OfferEditionRestrictionsService } from '../../offer-edition-restrictions.service';
-import { IOfferEditionValidationContext } from '../../offer-edition-validation-context.interface';
+import { IOfferValidationContext } from '../../../../models/offer-validation-context.interface';
+import { OfferRestrictionsService } from '../../../../services/offer-restrictions.service';
 import { IOfferEditionForm } from './offer-edition-form.interface';
 
 enum OfferFormKey {
@@ -54,7 +54,7 @@ enum PriceListFormKey {
   ],
 })
 export class OfferEditionFormComponent implements OnInit, OnDestroy, ControlValueAccessor, Validator {
-  @Input() public set validationContext(context: IOfferEditionValidationContext) {
+  @Input() public set validationContext(context: IOfferValidationContext) {
     this.setFormGroupValidation(context);
   }
 
@@ -66,7 +66,7 @@ export class OfferEditionFormComponent implements OnInit, OnDestroy, ControlValu
 
   private destroy$: Subject<void> = new Subject<void>();
 
-  constructor(private restrictionsService: OfferEditionRestrictionsService) {
+  constructor(private restrictionsService: OfferRestrictionsService) {
     this.formGroup = new FormGroup({
       [OfferFormKey.Name]: new FormControl(),
       [OfferFormKey.Product]: new FormControl(),
@@ -118,7 +118,7 @@ export class OfferEditionFormComponent implements OnInit, OnDestroy, ControlValu
     }
   }
 
-  private setFormGroupValidation(context: IOfferEditionValidationContext) {
+  private setFormGroupValidation(context: IOfferValidationContext) {
     if (!this.restrictionsService.canEdit(context)) {
       this.formGroup.disable();
       this.formGroup.get(OfferFormKey.Name).enable();

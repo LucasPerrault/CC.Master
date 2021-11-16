@@ -11,6 +11,7 @@ import { OfferListComponent } from './components/offer-list/offer-list.component
 import { OffersComponent } from './offers.component';
 import { OffersRoutingModule } from './offers-routing.module';
 import { OfferListService } from './services/offer-list.service';
+import { OfferRestrictionsService } from './services/offer-restrictions.service';
 import { OffersApiMappingService } from './services/offers-api-mapping.service';
 import { OffersDataService } from './services/offers-data.service';
 import { PriceListsDataService } from './services/price-lists-data.service';
@@ -35,6 +36,7 @@ import { PriceListsDataService } from './services/price-lists-data.service';
     PriceListsDataService,
     OffersApiMappingService,
     OfferListService,
+    OfferRestrictionsService,
   ],
 })
 export class OffersModule { }
