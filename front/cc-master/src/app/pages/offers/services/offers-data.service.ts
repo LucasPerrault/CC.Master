@@ -76,6 +76,11 @@ export class OffersDataService {
       .pipe(map(res => res.data.priceLists));
   }
 
+  public deletePriceList$(offerId: number, priceListId: number): Observable<void> {
+    const url = `/api/commercial-offers/${ offerId }/price-lists/${ priceListId }`;
+    return this.httpClient.delete<void>(url);
+  }
+
   private toOfferCreationDto(form: IOfferCreationForm): IOfferCreationDto {
     return {
       name: form.name,

@@ -9,12 +9,15 @@ import { finalize, take } from 'rxjs/operators';
 
 import { IDetailedOffer } from '../../../models/detailed-offer.interface';
 import { OffersDataService } from '../../../services/offers-data.service';
+import { IOfferEditionValidationContext } from '../offer-edition-validation-context.interface';
+import { OfferEditionValidationContextService } from '../offer-edition-validation-context.service';
 import { OfferPriceListCreationModalComponent } from './offer-price-list-creation-modal/offer-price-list-creation-modal.component';
-import { OfferPriceListsTabService, PriceListStatus } from './offer-price-lists-tab.service';
+import { OfferPriceListDeletionModalComponent } from './offer-price-list-deletion-modal/offer-price-list-deletion-modal.component';
+import { IOfferPriceListDeletionModalData } from './offer-price-list-deletion-modal/offer-price-list-deletion-modal-data.interface';
 import { OfferPriceListEditionModalComponent } from './offer-price-list-edition-modal/offer-price-list-edition-modal.component';
 import { IOfferPriceListEditionModalData } from './offer-price-list-edition-modal/offer-price-list-edition-modal-data.interface';
-import { OfferEditionValidationContextService } from '../offer-edition-validation-context.service';
-import { IOfferEditionValidationContext } from '../offer-edition-validation-context.interface';
+import { OfferPriceListsTabService, PriceListStatus } from './offer-price-lists-tab.service';
+import { isAfter } from 'date-fns';
 
 @Component({
   selector: 'cc-offer-price-lists-tab',
@@ -58,6 +61,12 @@ export class OfferPriceListsTabComponent implements OnInit {
       });
   }
 
+  public canDelete(priceList: IPriceList): boolean {
+    const today = Date.now();
+    const startDate = new Date(priceList.startsOn);
+    return isAfter(startDate, today);
+  }
+
   public openCreationModal(offer: IDetailedOffer): void {
     const dialogRef = this.luModal.open(OfferPriceListCreationModalComponent, offer);
     dialogRef.onClose.pipe(take(1)).subscribe(() => this.reset());
@@ -66,6 +75,12 @@ export class OfferPriceListsTabComponent implements OnInit {
   public openEditionModal(priceListToEdit: IPriceList, validationContext: IOfferEditionValidationContext): void {
     const data: IOfferPriceListEditionModalData = { priceListToEdit, validationContext };
     const dialogRef = this.luModal.open(OfferPriceListEditionModalComponent, data);
+    dialogRef.onClose.pipe(take(1)).subscribe(() => this.reset());
+  }
+
+  public openDeletionModal(offerId: number, priceListId: number, priceListStartsOn: string): void {
+    const data: IOfferPriceListDeletionModalData = { offerId, priceListId, priceListStartsOn };
+    const dialogRef = this.luModal.open(OfferPriceListDeletionModalComponent, data);
     dialogRef.onClose.pipe(take(1)).subscribe(() => this.reset());
   }
 

@@ -15,10 +15,16 @@
           <span class="label palette-grey">
             {{ getPriceListStatus(priceList, offer.priceLists) }}
           </span>
-          <button *ngIf="validationContext$ | async; let validationContext" class="button palette-grey mod-outline mod-small"
-                  (click)="openEditionModal(priceList, validationContext)">
-            {{ 'offers_priceList_tab_edition_button' | translate }}
-          </button>
+          <div>
+            <button *ngIf="validationContext$ | async; let validationContext" class="button palette-grey mod-outline mod-small"
+                    (click)="openEditionModal(priceList, validationContext)">
+              {{ 'offers_priceList_tab_edition_button' | translate }}
+            </button>
+            <button [disabled]="!canDelete(priceList)" class="button palette-grey mod-outline mod-small"
+                    (click)="openDeletionModal(offer.id, priceList.id, priceList.startsOn)">
+              {{ 'offers_priceList_tab_deletion_button' | translate }}
+            </button>
+          </div>
         </div>
         <cc-price-list [priceRows]="priceList.rows" [currency]="offer.currency"></cc-price-list>
       </div>
