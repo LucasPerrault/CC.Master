@@ -2,12 +2,25 @@
   <div class="loading mod-dialog" *ngIf="isLoading$ | async; else isNotLoading"></div>
 
   <ng-template #isNotLoading>
-    <ng-container *ngIf="offer$ | async; let offer">
 
+    <ng-container *ngIf="offer$ | async; let offer">
       <div class="header">
-        <button class="button u-marginLeftAuto" (click)="openCreationModal(offer)">Créer une grille tarifaire</button>
+        <button class="button u-marginLeftAuto" (click)="openCreationModal(offer)">
+          {{ 'offers_priceList_tab_creation_button' | translate }}
+        </button>
       </div>
+
+      <div class="u-marginTopStandard" *ngFor="let priceList of offer.priceLists; trackBy: trackBy">
+        <div class="u-marginLeftSmall u-marginRightSmall">
+          <span class="label palette-grey">
+            {{ getPriceListStatus(priceList, offer.priceLists) }}
+          </span>
+        </div>
+        <cc-price-list [priceRows]="priceList.rows" [currency]="offer.currency"></cc-price-list>
+      </div>
+
     </ng-container>
+
   </ng-template>
 
 </div>

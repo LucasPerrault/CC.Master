@@ -18,6 +18,7 @@ import {
   OfferPriceListCreationModalComponent,
 } from './offer-price-lists-tab/offer-price-list-creation-modal/offer-price-list-creation-modal.component';
 import { OfferPriceListsTabComponent } from './offer-price-lists-tab/offer-price-lists-tab.component';
+import { OfferPriceListsTabService } from './offer-price-lists-tab/offer-price-lists-tab.service';
 
 @NgModule({
   declarations: [
@@ -38,7 +39,11 @@ import { OfferPriceListsTabComponent } from './offer-price-lists-tab/offer-price
     PriceListModule,
     LuDateSelectInputModule,
   ],
-  providers: [OfferEditionRestrictionsService, OfferEditionValidationContextService],
+  providers: [
+    OfferEditionRestrictionsService,
+    OfferEditionValidationContextService,
+    OfferPriceListsTabService,
+  ],
 })
 export class OfferEditionModule {
 }
