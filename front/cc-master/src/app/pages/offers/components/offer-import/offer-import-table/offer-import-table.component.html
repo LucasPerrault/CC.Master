@@ -1,0 +1,37 @@
+<table class="table">
+	<thead class="table-head">
+		<tr class="table-head-row">
+			<th class="table-head-row-cell">{{ 'offers_import_table_name' | translate }}</th>
+			<th class="table-head-row-cell">{{ 'offers_import_table_product' | translate }}</th>
+			<th class="table-head-row-cell">{{ 'offers_import_table_billing_unit' | translate }}</th>
+			<th class="table-head-row-cell">{{ 'offers_import_table_sage' | translate }}</th>
+			<th class="table-head-row-cell">{{ 'offers_import_table_tag' | translate }}</th>
+			<th class="table-head-row-cell">{{ 'offers_import_table_billing_mode' | translate }}</th>
+			<th class="table-head-row-cell">{{ 'offers_import_table_pricing_method' | translate }}</th>
+			<th class="table-head-row-cell">{{ 'offers_import_table_forecast_method' | translate }}</th>
+			<th class="table-head-row-cell">{{ 'offers_import_table_currency' | translate }}</th>
+			<th class="table-head-row-cell">{{ 'offers_import_table_price_list' | translate }}</th>
+		</tr>
+	</thead>
+	<tbody class="table-body">
+		<tr class="table-body-row" *ngFor="let offer of offers; trackBy: trackBy">
+			<td class="table-body-row-cell">{{ offer.name }}</td>
+			<td class="table-body-row-cell">{{ offer.product?.name }}</td>
+			<td class="table-body-row-cell">{{ getBillingUnit(offer.unit) }}</td>
+			<td class="table-body-row-cell">{{ offer.sageBusiness }}</td>
+			<td class="table-body-row-cell">{{ offer.tag }}</td>
+			<td class="table-body-row-cell">{{ getBillingMode(offer.billingMode) }}</td>
+			<td class="table-body-row-cell">{{ offer.pricingMethod }}</td>
+			<td class="table-body-row-cell">{{ offer.forecastMethod }}</td>
+			<td class="table-body-row-cell">{{ getCurrencyName(offer.currencyID) }}</td>
+			<td class="table-body-row-cell">{{ offer.currencyID }}</td>
+		</tr>
+	</tbody>
+</table>
+
+<section *ngIf="!offers?.length" class="emptyState">
+  <h3 class="emptyState-title">{{ 'offers_import_table_emptyState_title' | translate }}</h3>
+  <p class="emptyState-description">{{ 'offers_import_table_emptyState_information' | translate }}</p>
+</section>
+
+

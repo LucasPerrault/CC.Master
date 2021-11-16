@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { IImportedOffer } from './imported-offer.interface';
 
 @Component({
   selector: 'cc-offer-import',
@@ -6,6 +7,8 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./offer-import.component.scss'],
 })
 export class OfferImportComponent implements OnInit {
+
+  public offers: IImportedOffer[] = [];
 
   constructor() { }
 
