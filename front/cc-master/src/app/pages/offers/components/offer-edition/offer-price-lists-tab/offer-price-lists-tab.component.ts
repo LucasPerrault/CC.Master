@@ -4,6 +4,7 @@ import { ActivatedRoute } from '@angular/router';
 import { TranslatePipe } from '@cc/aspects/translate';
 import { IPriceList } from '@cc/domain/billing/offers';
 import { LuModal } from '@lucca-front/ng/modal';
+import { isAfter } from 'date-fns';
 import { combineLatest, ReplaySubject } from 'rxjs';
 import { finalize, take } from 'rxjs/operators';
 
@@ -17,7 +18,6 @@ import { IOfferPriceListDeletionModalData } from './offer-price-list-deletion-mo
 import { OfferPriceListEditionModalComponent } from './offer-price-list-edition-modal/offer-price-list-edition-modal.component';
 import { IOfferPriceListEditionModalData } from './offer-price-list-edition-modal/offer-price-list-edition-modal-data.interface';
 import { OfferPriceListsTabService, PriceListStatus } from './offer-price-lists-tab.service';
-import { isAfter } from 'date-fns';
 
 @Component({
   selector: 'cc-offer-price-lists-tab',

@@ -4,8 +4,8 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { getButtonState, toSubmissionState } from '@cc/common/forms';
 import { NavigationPath } from '@cc/common/navigation';
 import { IPriceList } from '@cc/domain/billing/offers';
-import { BehaviorSubject, combineLatest, ReplaySubject } from 'rxjs';
-import { finalize, map, take } from 'rxjs/operators';
+import { BehaviorSubject, combineLatest, forkJoin, Observable, of, ReplaySubject } from 'rxjs';
+import { finalize, map, switchMapTo, take } from 'rxjs/operators';
 
 import { getBillingMode } from '../../../enums/billing-mode.enum';
 import { getBillingUnit } from '../../../enums/billing-unit.enum';
@@ -17,6 +17,7 @@ import { OffersDataService } from '../../../services/offers-data.service';
 import { IOfferEditionForm } from './offer-edition-form/offer-edition-form.interface';
 import { IOfferEditionValidationContext } from '../offer-edition-validation-context.interface';
 import { OfferEditionValidationContextService } from '../offer-edition-validation-context.service';
+import { PriceListsDataService } from '../../../services/price-lists-data.service';
 
 @Component({
   selector: 'cc-offer-edition-tab',
@@ -41,6 +42,7 @@ export class OfferEditionTabComponent implements OnInit {
     private router: Router,
     private activatedRoute: ActivatedRoute,
     private offersDataService: OffersDataService,
+    private listsDataService: PriceListsDataService,
     private offerListService: OfferListService,
     private contextValidationService: OfferEditionValidationContextService,
   ) { }
@@ -52,7 +54,7 @@ export class OfferEditionTabComponent implements OnInit {
   public edit(): void {
     const form: IOfferEditionForm = this.formControl.value;
 
-    this.offersDataService.edit$(this.offerId, this.priceListId$.value, form)
+    this.edit$(this.offerId, this.priceListId$.value, form)
       .pipe(
         take(1),
         toSubmissionState(),
@@ -68,6 +70,14 @@ export class OfferEditionTabComponent implements OnInit {
   public cancel(): void {
     this.formControl.reset();
     this.redirectToOffers();
+  }
+
+  private edit$(offerId: number, priceListId: number, form: IOfferEditionForm): Observable<void> {
+    const requests$ = [
+      this.offersDataService.edit$(offerId, form),
+      this.listsDataService.edit$(offerId, priceListId, form.priceList),
+    ];
+    return forkJoin(requests$).pipe(switchMapTo(of<void>()));
   }
 
   private reset(): void {

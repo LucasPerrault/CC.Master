@@ -4,7 +4,7 @@ import { TranslatePipe } from '@cc/aspects/translate';
 import { ILuModalContent, LU_MODAL_DATA } from '@lucca-front/ng/modal';
 import { Observable } from 'rxjs';
 
-import { OffersDataService } from '../../../../services/offers-data.service';
+import { PriceListsDataService } from '../../../../services/price-lists-data.service';
 import { IOfferPriceListDeletionModalData } from './offer-price-list-deletion-modal-data.interface';
 
 @Component({
@@ -23,7 +23,7 @@ export class OfferPriceListDeletionModalComponent implements ILuModalContent {
   constructor(
     @Inject(LU_MODAL_DATA) private data: IOfferPriceListDeletionModalData,
     private translatePipe: TranslatePipe,
-    private dataService: OffersDataService,
+    private dataService: PriceListsDataService,
     private datePipe: DatePipe,
   ) {
     this.title = this.translatePipe.transform('offers_priceList_deletion_title', { start: this.start });
@@ -31,7 +31,7 @@ export class OfferPriceListDeletionModalComponent implements ILuModalContent {
   }
 
   public submitAction(): Observable<void> {
-    return this.dataService.deletePriceList$(this.data.offerId, this.data.priceListId);
+    return this.dataService.delete$(this.data.offerId, this.data.priceListId);
   }
 
 }

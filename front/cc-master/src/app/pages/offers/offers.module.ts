@@ -13,6 +13,7 @@ import { OffersRoutingModule } from './offers-routing.module';
 import { OfferListService } from './services/offer-list.service';
 import { OffersApiMappingService } from './services/offers-api-mapping.service';
 import { OffersDataService } from './services/offers-data.service';
+import { PriceListsDataService } from './services/price-lists-data.service';
 
 @NgModule({
   declarations: [
@@ -31,6 +32,7 @@ import { OffersDataService } from './services/offers-data.service';
   ],
   providers: [
     OffersDataService,
+    PriceListsDataService,
     OffersApiMappingService,
     OfferListService,
   ],

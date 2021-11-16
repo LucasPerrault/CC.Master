@@ -8,7 +8,7 @@ import { Observable, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
 import { IDetailedOffer } from '../../../../models/detailed-offer.interface';
-import { OffersDataService } from '../../../../services/offers-data.service';
+import { PriceListsDataService } from '../../../../services/price-lists-data.service';
 import { OfferPriceListFormValidator, PriceListValidationError } from '../offer-price-list-form.validator';
 
 enum PriceListFormKey {
@@ -41,7 +41,7 @@ export class OfferPriceListCreationModalComponent implements OnInit, OnDestroy, 
   constructor(
     @Inject(LU_MODAL_DATA) public offer: IDetailedOffer,
     private translatePipe: TranslatePipe,
-    private dataService: OffersDataService,
+    private dataService: PriceListsDataService,
   ) {
     this.formGroup = new FormGroup({
       [PriceListFormKey.StartsOn]: new FormControl('', [OfferPriceListFormValidator.uniqStartsOn(offer.priceLists)]),
@@ -62,7 +62,7 @@ export class OfferPriceListCreationModalComponent implements OnInit, OnDestroy, 
 
   public submitAction(): Observable<void> {
     const form = this.formGroup.value;
-    return this.dataService.createPriceList$(this.offer.id, form);
+    return this.dataService.create$(this.offer.id, form);
   }
 
 }

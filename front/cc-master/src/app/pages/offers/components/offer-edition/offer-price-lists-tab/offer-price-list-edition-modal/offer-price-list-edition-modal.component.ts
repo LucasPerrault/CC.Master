@@ -8,7 +8,7 @@ import { addMonths, startOfMonth } from 'date-fns';
 import { Observable, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { OffersDataService } from '../../../../services/offers-data.service';
+import { PriceListsDataService } from '../../../../services/price-lists-data.service';
 import { OfferEditionRestrictionsService } from '../../offer-edition-restrictions.service';
 import { OfferPriceListFormValidator, PriceListValidationError } from '../offer-price-list-form.validator';
 import { IOfferPriceListEditionModalData } from './offer-price-list-edition-modal-data.interface';
@@ -42,7 +42,7 @@ export class OfferPriceListEditionModalComponent implements OnInit, OnDestroy, I
   constructor(
     @Inject(LU_MODAL_DATA) public data: IOfferPriceListEditionModalData,
     private translatePipe: TranslatePipe,
-    private dataService: OffersDataService,
+    private dataService: PriceListsDataService,
     private restrictionsService: OfferEditionRestrictionsService,
     private datePipe: DatePipe,
   ) {
@@ -79,6 +79,6 @@ export class OfferPriceListEditionModalComponent implements OnInit, OnDestroy, I
 
     const offerId = this.data.validationContext.offer.id;
     const priceListId = this.data.priceListToEdit.id;
-    return this.dataService.editPriceList$(offerId, priceListId, form);
+    return this.dataService.edit$(offerId, priceListId, form);
   }
 }
