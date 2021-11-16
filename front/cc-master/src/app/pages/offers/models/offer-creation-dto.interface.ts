@@ -1,7 +1,9 @@
+import { BillingMode } from '../enums/billing-mode.enum';
+import { BillingUnit } from '../enums/billing-unit.enum';
 import { IPriceListCreationDto } from './price-list-creation-dto.interface';
 
 export interface IOfferCreationDto {
-  billingMode: number;
+  billingMode: BillingMode;
   currencyID: number;
   forecastMethod: string;
   name: string;
@@ -10,5 +12,5 @@ export interface IOfferCreationDto {
   productId: number;
   sageBusiness: string;
   tag: string;
-  unit: number;
+  unit: BillingUnit;
 }
