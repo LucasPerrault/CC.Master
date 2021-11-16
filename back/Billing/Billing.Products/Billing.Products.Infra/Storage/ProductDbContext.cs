@@ -18,7 +18,6 @@ namespace Billing.Products.Infra.Storage
             modelBuilder.ApplyConfiguration(new ProductSolutionsConfiguration());
             modelBuilder.ApplyConfiguration(new SolutionConfiguration());
             modelBuilder.ApplyConfiguration(new ProductFamilyConfiguration());
-            modelBuilder.ApplyConfiguration(new CommercialOfferConfiguration());
         }
     }
 
