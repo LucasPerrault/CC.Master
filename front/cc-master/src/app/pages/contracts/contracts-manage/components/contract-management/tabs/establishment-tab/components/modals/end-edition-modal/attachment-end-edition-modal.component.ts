@@ -3,7 +3,7 @@ import { FormControl, FormGroup } from '@angular/forms';
 import { TranslatePipe } from '@cc/aspects/translate';
 import { ELuDateGranularity } from '@lucca-front/ng/core';
 import { ILuModalContent, LU_MODAL_DATA } from '@lucca-front/ng/modal';
-import { addMonths, endOfMonth, isEqual } from 'date-fns';
+import { endOfMonth, isEqual } from 'date-fns';
 import { Observable, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
@@ -33,7 +33,7 @@ export class AttachmentEndEditionModalComponent implements OnInit, OnDestroy, IL
 
   public get min(): Date {
     return !!this.modalData.lastCountPeriod
-      ? addMonths(this.modalData.lastCountPeriod, 1)
+      ? this.modalData.lastCountPeriod
       : this.getLastAttachmentStartDate();
   }
 
