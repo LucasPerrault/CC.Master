@@ -1,0 +1,23 @@
+@import "theming.import";
+
+.table-body-row.mod-error .table-body-row-cell {
+  background-color: _color('error', 50);
+}
+
+.textfield.mod-readonly {
+  pointer-events: none;
+  display: contents;
+
+  .textfield-input {
+    border-radius: 0;
+    padding: 0;
+    box-shadow: none!important;
+    background-color: transparent!important;
+  }
+
+  lu-select {
+    .lu-select-value { padding: 0; min-height: auto }
+    .lu-select-suffix { display: none; }
+    &::after { display: none; }
+  }
+}
