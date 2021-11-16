@@ -10,8 +10,8 @@ import { takeUntil } from 'rxjs/operators';
 
 import { OfferRestrictionsService } from '../../../../services/offer-restrictions.service';
 import { PriceListsDataService } from '../../../../services/price-lists-data.service';
-import { OfferPriceListFormValidator, PriceListValidationError } from '../offer-price-list-form.validator';
 import { IOfferPriceListEditionModalData } from './offer-price-list-edition-modal-data.interface';
+import { PriceListsValidators, PriceListValidationError } from '../../../../services/price-lists.validators';
 
 enum PriceListFormKey {
   StartsOn = 'startsOn',
@@ -55,7 +55,7 @@ export class OfferPriceListEditionModalComponent implements OnInit, OnDestroy, I
       [PriceListFormKey.StartsOn]: new FormControl({
         value: new Date(data.priceListToEdit.startsOn),
         disabled: !this.restrictionsService.canEditPriceListStartsOn(data.validationContext),
-      }, [OfferPriceListFormValidator.uniqStartsOn(priceListsWithoutEdition)]),
+      }, [PriceListsValidators.uniqStartsOn(priceListsWithoutEdition)]),
       [PriceListFormKey.PriceRows]: new FormControl({
         value: data.priceListToEdit.rows,
         disabled: !this.restrictionsService.canEdit(data.validationContext),

@@ -8,8 +8,8 @@ import { Observable, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
 import { IDetailedOffer } from '../../../../models/detailed-offer.interface';
+import { PriceListsValidators, PriceListValidationError } from '../../../../services/price-lists.validators';
 import { PriceListsDataService } from '../../../../services/price-lists-data.service';
-import { OfferPriceListFormValidator, PriceListValidationError } from '../offer-price-list-form.validator';
 
 enum PriceListFormKey {
   StartsOn = 'startsOn',
@@ -44,7 +44,7 @@ export class OfferPriceListCreationModalComponent implements OnInit, OnDestroy, 
     private dataService: PriceListsDataService,
   ) {
     this.formGroup = new FormGroup({
-      [PriceListFormKey.StartsOn]: new FormControl('', [OfferPriceListFormValidator.uniqStartsOn(offer.priceLists)]),
+      [PriceListFormKey.StartsOn]: new FormControl('', [PriceListsValidators.uniqStartsOn(offer.priceLists)]),
       [PriceListFormKey.PriceRows]: new FormControl(),
     });
   }

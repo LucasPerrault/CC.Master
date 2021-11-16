@@ -17,7 +17,7 @@ import { filter, finalize, map, switchMap, takeUntil, tap } from 'rxjs/operators
 import { IPriceRowForm } from '../../models/price-list-form.interface';
 import { PriceListsTimelineService } from '../../services/price-lists-timeline.service';
 import { OffersDataService } from '../../services/offers-data.service';
-import { EditablePriceGridValidators, PriceGridValidationError } from './editable-price-grid.validators';
+import { PriceListsValidators, PriceListValidationError } from '../../services/price-lists.validators';
 
 enum PriceRowFormKey {
   MaxIncludedCount = 'maxIncludedCount',
@@ -71,18 +71,18 @@ export class EditablePriceGridComponent implements OnInit, OnDestroy, ControlVal
   public formKey = PriceRowFormKey;
   public formGroup: FormGroup = new FormGroup(
     { [this.formArrayKey]: this.formArray },
-    [EditablePriceGridValidators.boundsContinuity],
+    [PriceListsValidators.boundsContinuity],
   );
 
-  public validationError = PriceGridValidationError;
+  public validationError = PriceListValidationError;
   public get hasFormErrors(): boolean {
-    return this.hasRequiredError || this.formGroup.hasError(PriceGridValidationError.BoundsContinuity);
+    return this.hasRequiredError || this.formGroup.hasError(PriceListValidationError.BoundsContinuity);
   }
 
   public get hasRequiredError(): boolean {
     return !!this.formArray.controls.find((c: FormGroup) => {
       const priceRowKeys = Object.keys(c.controls);
-      return !!priceRowKeys.find(key => c.get(key).hasError(PriceGridValidationError.Required));
+      return !!priceRowKeys.find(key => c.get(key).hasError(PriceListValidationError.Required));
     });
   }
 
