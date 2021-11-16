@@ -3,6 +3,7 @@ import { NgModule } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { TranslateModule } from '@cc/aspects/translate';
 import { PagingModule } from '@cc/common/paging';
+import { LuDropdownItemModule, LuDropdownPanelModule, LuDropdownTriggerModule } from '@lucca-front/ng/dropdown';
 import { LuTooltipTriggerModule } from '@lucca-front/ng/tooltip';
 
 import { OfferDeletionModule } from './components/offer-deletion/offer-deletion.module';
@@ -31,6 +32,9 @@ import { PriceListsDataService } from './services/price-lists-data.service';
     OfferFiltersModule,
     OfferDeletionModule,
     OffersRoutingModule,
+    LuDropdownPanelModule,
+    LuDropdownTriggerModule,
+    LuDropdownItemModule,
   ],
   providers: [
     OffersDataService,

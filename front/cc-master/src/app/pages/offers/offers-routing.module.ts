@@ -11,6 +11,8 @@ import { OfferEditionNavigationPath } from './components/offer-edition/offer-edi
 import { OfferEditionTabComponent } from './components/offer-edition/offer-edition-tab/offer-edition-tab.component';
 import { OfferNotFoundTabComponent } from './components/offer-edition/offer-not-found-tab/offer-not-found-tab.component';
 import { OfferPriceListsTabComponent } from './components/offer-edition/offer-price-lists-tab/offer-price-lists-tab.component';
+import { OfferImportComponent } from './components/offer-import/offer-import.component';
+import { OfferImportModule } from './components/offer-import/offer-import.module';
 import { OffersComponent } from './offers.component';
 
 const routes: Routes = [
@@ -21,6 +23,12 @@ const routes: Routes = [
   {
     path: `${ NavigationPath.Offers }/create`,
     component: OfferCreationComponent,
+    canActivate: [OperationsGuard],
+    data: { operations: [Operation.CreateCommercialOffers] },
+  },
+  {
+      path: `${ NavigationPath.Offers }/import`,
+    component: OfferImportComponent,
     canActivate: [OperationsGuard],
     data: { operations: [Operation.CreateCommercialOffers] },
   },
@@ -56,6 +64,7 @@ const routes: Routes = [
     RouterModule.forChild(routes),
     OfferEditionModule,
     OfferCreationModule,
+    OfferImportModule,
   ],
   exports: [RouterModule],
 })
