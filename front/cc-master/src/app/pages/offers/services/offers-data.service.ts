@@ -63,6 +63,12 @@ export class OffersDataService {
     return forkJoin(requests$).pipe(switchMapTo(of<void>()));
   }
 
+  public editPriceList$(offerId: number, priceListId: number, form: IPriceListForm): Observable<void> {
+    const body = [this.toPriceListEditionDto(priceListId, form)];
+    const url = `/api/v3/offers/${ offerId }/updatePriceList`;
+    return this.httpClient.put<void>(url, body);
+  }
+
   public getPriceLists$(offerId: number): Observable<IPriceList[]> {
     const params = new HttpParams().set('fields', priceListsOfferFields);
     const url = `${ this.offersEndpoint }/${ offerId }`;
@@ -110,12 +116,6 @@ export class OffersDataService {
       sageBusiness: form.sageBusiness,
       unit: form.billingUnit.id,
     };
-  }
-
-  private editPriceList$(offerId: number, priceListId: number, form: IPriceListForm): Observable<void> {
-    const body = [this.toPriceListEditionDto(priceListId, form)];
-    const url = `/api/v3/offers/${ offerId }/updatePriceList`;
-    return this.httpClient.put<void>(url, body);
   }
 
   private toPriceListEditionDto(id: number, form: IPriceListForm): IPriceListEditionDto {

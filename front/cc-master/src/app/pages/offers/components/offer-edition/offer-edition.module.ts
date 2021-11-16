@@ -17,6 +17,7 @@ import { OfferEditionValidationContextService } from './offer-edition-validation
 import {
   OfferPriceListCreationModalComponent,
 } from './offer-price-lists-tab/offer-price-list-creation-modal/offer-price-list-creation-modal.component';
+import { OfferPriceListEditionModalComponent } from './offer-price-lists-tab/offer-price-list-edition-modal/offer-price-list-edition-modal.component';
 import { OfferPriceListsTabComponent } from './offer-price-lists-tab/offer-price-lists-tab.component';
 import { OfferPriceListsTabService } from './offer-price-lists-tab/offer-price-lists-tab.service';
 
@@ -26,6 +27,7 @@ import { OfferPriceListsTabService } from './offer-price-lists-tab/offer-price-l
     OfferEditionTabComponent,
     OfferPriceListsTabComponent,
     OfferPriceListCreationModalComponent,
+    OfferPriceListEditionModalComponent,
   ],
   imports: [
     CommonModule,

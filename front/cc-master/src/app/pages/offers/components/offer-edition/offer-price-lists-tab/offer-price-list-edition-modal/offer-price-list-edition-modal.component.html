@@ -1,0 +1,17 @@
+<form [formGroup]="formGroup" class="u-marginBottomBig">
+  <label class="textfield palette-grey mod-outline is-required mod-longer u-marginBottomStandard">
+    <lu-date-select class="textfield-input"
+                    [required]="true"
+                    [hideClearer]="true"
+                    [min]="min"
+                    [granularity]="granularity.month"
+                    [formControlName]="formKey.StartsOn">
+    </lu-date-select>
+    <span class="textfield-label">{{ 'offers_form_pricegrid_startsOn_label' | translate }}</span>
+    <span class="textfield-messages" *ngIf="formGroup.get(formKey.StartsOn).hasError(validationError.UniqStartsOn)">
+      <span class="textfield-messages-error">{{ 'offers_form_pricegrid_startsOn_error' | translate }}</span>
+    </span>
+  </label>
+
+  <cc-editable-price-grid [formControlName]="formKey.PriceRows"></cc-editable-price-grid>
+</form>

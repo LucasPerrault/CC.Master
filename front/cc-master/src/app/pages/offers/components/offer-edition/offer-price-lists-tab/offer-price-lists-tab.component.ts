@@ -4,13 +4,17 @@ import { ActivatedRoute } from '@angular/router';
 import { TranslatePipe } from '@cc/aspects/translate';
 import { IPriceList } from '@cc/domain/billing/offers';
 import { LuModal } from '@lucca-front/ng/modal';
-import { ReplaySubject } from 'rxjs';
+import { combineLatest, ReplaySubject } from 'rxjs';
 import { finalize, take } from 'rxjs/operators';
 
 import { IDetailedOffer } from '../../../models/detailed-offer.interface';
 import { OffersDataService } from '../../../services/offers-data.service';
 import { OfferPriceListCreationModalComponent } from './offer-price-list-creation-modal/offer-price-list-creation-modal.component';
 import { OfferPriceListsTabService, PriceListStatus } from './offer-price-lists-tab.service';
+import { OfferPriceListEditionModalComponent } from './offer-price-list-edition-modal/offer-price-list-edition-modal.component';
+import { IOfferPriceListEditionModalData } from './offer-price-list-edition-modal/offer-price-list-edition-modal-data.interface';
+import { OfferEditionValidationContextService } from '../offer-edition-validation-context.service';
+import { IOfferEditionValidationContext } from '../offer-edition-validation-context.interface';
 
 @Component({
   selector: 'cc-offer-price-lists-tab',
@@ -20,6 +24,7 @@ import { OfferPriceListsTabService, PriceListStatus } from './offer-price-lists-
 export class OfferPriceListsTabComponent implements OnInit {
   public isLoading$: ReplaySubject<boolean> = new ReplaySubject<boolean>(1);
   public offer$: ReplaySubject<IDetailedOffer> = new ReplaySubject<IDetailedOffer>(1);
+  public validationContext$ = new ReplaySubject<IOfferEditionValidationContext>(1);
 
   private get offerId(): number {
     return parseInt(this.activatedRoute.parent.snapshot.paramMap.get('id'), 10);
@@ -28,6 +33,7 @@ export class OfferPriceListsTabComponent implements OnInit {
   constructor(
     private activatedRoute: ActivatedRoute,
     private dataService: OffersDataService,
+    private contextValidationService: OfferEditionValidationContextService,
     private luModal: LuModal,
     private datePipe: DatePipe,
     private translatePipe: TranslatePipe,
@@ -41,13 +47,25 @@ export class OfferPriceListsTabComponent implements OnInit {
   public reset(): void {
     this.isLoading$.next(true);
 
-    this.dataService.getById$(this.offerId)
+    combineLatest([
+      this.dataService.getById$(this.offerId),
+      this.contextValidationService.getRealCountNumber$(this.offerId),
+    ])
       .pipe(take(1), finalize(() => this.isLoading$.next(false)))
-      .subscribe(priceLists => this.offer$.next(priceLists));
+      .subscribe(([offer, realCountNumber]) => {
+        this.offer$.next(offer);
+        this.validationContext$.next({ offer, realCountNumber });
+      });
   }
 
   public openCreationModal(offer: IDetailedOffer): void {
     const dialogRef = this.luModal.open(OfferPriceListCreationModalComponent, offer);
+    dialogRef.onClose.pipe(take(1)).subscribe(() => this.reset());
+  }
+
+  public openEditionModal(priceListToEdit: IPriceList, validationContext: IOfferEditionValidationContext): void {
+    const data: IOfferPriceListEditionModalData = { priceListToEdit, validationContext };
+    const dialogRef = this.luModal.open(OfferPriceListEditionModalComponent, data);
     dialogRef.onClose.pipe(take(1)).subscribe(() => this.reset());
   }
 
