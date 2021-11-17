@@ -1,7 +1,6 @@
 using Billing.Contracts.Domain.Offers.Interfaces;
 using Billing.Contracts.Domain.Offers.Validation.Exceptions;
 using Resources.Translations;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using Tools;

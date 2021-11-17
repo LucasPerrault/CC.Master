@@ -4,10 +4,10 @@ namespace Billing.Contracts.Domain.Offers.Filtering
 {
     public class CommercialOfferFilter
     {
-        public HashSet<string> Search { get; set; }
+        public HashSet<string> Search { get; set; } = new HashSet<string>();
         public int? Id { get; set; }
-        public HashSet<BillingMode> BillingModes { get; set; }
-        public HashSet<string> Tags { get; set; }
+        public HashSet<BillingMode> BillingModes { get; set; } = new HashSet<BillingMode>();
+        public HashSet<string> Tags { get; set; } = new HashSet<string>();
 
         public static CommercialOfferFilter All => new CommercialOfferFilter();
     }

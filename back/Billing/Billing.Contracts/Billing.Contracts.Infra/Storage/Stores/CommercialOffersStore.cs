@@ -20,12 +20,20 @@ namespace Billing.Contracts.Infra.Storage.Stores
         private readonly ContractsDbContext _dbContext;
         private readonly IQueryPager _queryPager;
         private readonly ICommercialOfferValidationService _validation;
+        private readonly ICommercialOfferUsageService _usageService;
 
-        public CommercialOffersStore(ContractsDbContext dbContext, IQueryPager queryPager, ICommercialOfferValidationService validation)
+        public CommercialOffersStore
+        (
+            ContractsDbContext dbContext,
+            IQueryPager queryPager,
+            ICommercialOfferValidationService validation,
+            ICommercialOfferUsageService usageService
+        )
         {
             _dbContext = dbContext;
             _queryPager = queryPager;
             _validation = validation;
+            _usageService = usageService;
         }
 
         public Task<Page<CommercialOffer>> GetPageAsync(AccessRight accessRight, CommercialOfferFilter filter, IPageToken pageToken)
@@ -138,7 +146,7 @@ namespace Billing.Contracts.Infra.Storage.Stores
 
         public Task<CommercialOfferUsage> GetOfferUsage(int id)
         {
-            throw new System.NotImplementedException();
+            return _usageService.BuildAsync(id);
         }
 
         private IQueryable<CommercialOffer> GetQueryable(AccessRight accessRight, CommercialOfferFilter filter)

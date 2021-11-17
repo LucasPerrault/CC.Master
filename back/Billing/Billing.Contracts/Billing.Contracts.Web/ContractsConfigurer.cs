@@ -6,6 +6,9 @@ using Billing.Contracts.Domain.Clients.Interfaces;
 using Billing.Contracts.Domain.Contracts;
 using Billing.Contracts.Domain.Contracts.Health;
 using Billing.Contracts.Domain.Contracts.Interfaces;
+using Billing.Contracts.Domain.Counts.Interfaces;
+using Billing.Contracts.Domain.Offers.Interfaces;
+using Billing.Contracts.Domain.Offers.Services;
 using Billing.Contracts.Domain.Offers.Validation;
 using Billing.Contracts.Infra.Configurations;
 using Billing.Contracts.Infra.Legacy;
@@ -27,11 +30,14 @@ namespace Billing.Contracts.Web
             services.AddScoped<ContractsRightsFilter>();
             services.AddScoped<ContractsRepository>();
 
+            services.AddScoped<ICountsStore, CountsStore>();
+
             services.AddScoped<IClientsStore, ClientsStore>();
             services.AddScoped<ClientRightFilter>();
             services.AddScoped<ClientsRepository>();
             services.AddScoped<ContractHealthHelper>();
 
+            services.AddScoped<ICommercialOfferUsageService, CommercialOfferUsageService>();
             services.AddScoped<ICommercialOfferValidationService, CommercialOfferValidationService>();
             services.AddScoped<ICommercialOffersStore, CommercialOffersStore>();
             services.AddScoped<CommercialOffersRepository>();
