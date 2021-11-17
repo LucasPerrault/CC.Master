@@ -155,6 +155,8 @@ namespace Billing.Contracts.Infra.Migrations
 
                     b.HasIndex("ClientId");
 
+                    b.HasIndex("CommercialOfferId");
+
                     b.HasIndex("DistributorId");
 
                     b.HasIndex("EnvironmentId");
@@ -599,6 +601,12 @@ namespace Billing.Contracts.Infra.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("Billing.Contracts.Domain.Offers.CommercialOffer", "CommercialOffer")
+                        .WithMany()
+                        .HasForeignKey("CommercialOfferId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("Distributors.Domain.Models.Distributor", "Distributor")
                         .WithMany()
                         .HasForeignKey("DistributorId")
@@ -610,6 +618,8 @@ namespace Billing.Contracts.Infra.Migrations
                         .HasForeignKey("EnvironmentId");
 
                     b.Navigation("Client");
+
+                    b.Navigation("CommercialOffer");
 
                     b.Navigation("Distributor");
 
