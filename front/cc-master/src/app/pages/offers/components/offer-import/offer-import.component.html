@@ -1,13 +1,12 @@
 <cc-offer-template [title]="'offers_page_import' | translate">
 
-  <div class="page-content">
-    <div class="u-paddingStandard">
+  <div class="page-content u-paddingReset">
+    <div class="u-paddingStandard mod-stickyLeft">
       <button class="link">{{ 'offers_link_import_template' | translate }}</button>
-
 			<cc-offer-upload (upload)="upload($event)"></cc-offer-upload>
 		</div>
 
-		<h4>{{ 'offers_import_table_count' | translate : { count: totalCount$ | async } }}</h4>
+		<h4 class="u-marginLeftStandard">{{ 'offers_import_table_count' | translate : { count: totalCount$ | async } }}</h4>
 		<cc-offer-import-table [offers]="uploadedOffers$ | async"></cc-offer-import-table>
   </div>
 
