@@ -16,6 +16,7 @@ import {
 import { OfferImportComponent } from './offer-import.component';
 import { OfferImportTableComponent } from './offer-import-table/offer-import-table.component';
 import { OfferUploadComponent } from './offer-upload/offer-upload.component';
+import { OfferUploadService } from './offer-upload/offer-upload.service';
 
 @NgModule({
   declarations: [
@@ -36,5 +37,8 @@ import { OfferUploadComponent } from './offer-upload/offer-upload.component';
     OfferForecastMethodApiSelectModule,
     OfferCurrencySelectModule,
   ],
+  providers: [
+    OfferUploadService,
+  ]
 })
 export class OfferImportModule { }

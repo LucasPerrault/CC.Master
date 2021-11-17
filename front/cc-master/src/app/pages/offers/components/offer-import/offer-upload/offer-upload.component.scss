@@ -1,3 +1,9 @@
+@import "theming.import";
+
 .mod-maxWidthReset {
   max-width: none;
+}
+
+.file-name {
+  color: _color('grey', 600);
 }

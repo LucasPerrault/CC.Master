@@ -4,11 +4,11 @@
     <div class="u-paddingStandard">
       <button class="link">{{ 'offers_link_import_template' | translate }}</button>
 
-			<cc-offer-upload></cc-offer-upload>
+			<cc-offer-upload (upload)="upload($event)"></cc-offer-upload>
 		</div>
 
-		<h4>{{ 'offers_import_table_count' | translate : { count: offers.length } }}</h4> <!--TODO-->
-		<cc-offer-import-table [offers]="offers"></cc-offer-import-table>
+		<h4>{{ 'offers_import_table_count' | translate : { count: totalCount$ | async } }}</h4>
+		<cc-offer-import-table [offers]="uploadedOffers$ | async"></cc-offer-import-table>
   </div>
 
 </cc-offer-template>
