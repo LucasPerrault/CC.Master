@@ -9,9 +9,9 @@ import { Observable, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
 import { OfferRestrictionsService } from '../../../../services/offer-restrictions.service';
+import { PriceListsValidators, PriceListValidationError } from '../../../../services/price-lists.validators';
 import { PriceListsDataService } from '../../../../services/price-lists-data.service';
 import { IOfferPriceListEditionModalData } from './offer-price-list-edition-modal-data.interface';
-import { PriceListsValidators, PriceListValidationError } from '../../../../services/price-lists.validators';
 
 enum PriceListFormKey {
   StartsOn = 'startsOn',

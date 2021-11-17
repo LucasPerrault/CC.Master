@@ -10,14 +10,14 @@ import { finalize, map, switchMapTo, take } from 'rxjs/operators';
 import { getBillingMode } from '../../../enums/billing-mode.enum';
 import { getBillingUnit } from '../../../enums/billing-unit.enum';
 import { IDetailedOffer } from '../../../models/detailed-offer.interface';
+import { IOfferValidationContext } from '../../../models/offer-validation-context.interface';
 import { IPriceListForm } from '../../../models/price-list-form.interface';
 import { OfferListService } from '../../../services/offer-list.service';
-import { PriceListsTimelineService } from '../../../services/price-lists-timeline.service';
-import { OffersDataService } from '../../../services/offers-data.service';
-import { IOfferEditionForm } from './offer-edition-form/offer-edition-form.interface';
-import { IOfferValidationContext } from '../../../models/offer-validation-context.interface';
 import { OfferValidationContextDataService } from '../../../services/offer-validation-context-data.service';
+import { OffersDataService } from '../../../services/offers-data.service';
 import { PriceListsDataService } from '../../../services/price-lists-data.service';
+import { PriceListsTimelineService } from '../../../services/price-lists-timeline.service';
+import { IOfferEditionForm } from './offer-edition-form/offer-edition-form.interface';
 
 @Component({
   selector: 'cc-offer-edition-tab',

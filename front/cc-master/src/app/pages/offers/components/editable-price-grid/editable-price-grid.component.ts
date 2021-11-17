@@ -15,9 +15,9 @@ import { BehaviorSubject, Subject } from 'rxjs';
 import { filter, finalize, map, switchMap, takeUntil, tap } from 'rxjs/operators';
 
 import { IPriceRowForm } from '../../models/price-list-form.interface';
-import { PriceListsTimelineService } from '../../services/price-lists-timeline.service';
 import { OffersDataService } from '../../services/offers-data.service';
 import { PriceListsValidators, PriceListValidationError } from '../../services/price-lists.validators';
+import { PriceListsTimelineService } from '../../services/price-lists-timeline.service';
 
 enum PriceRowFormKey {
   MaxIncludedCount = 'maxIncludedCount',

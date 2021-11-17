@@ -4,5 +4,5 @@ import { IOfferValidationContext } from '../../../../models/offer-validation-con
 
 export interface IOfferPriceListEditionModalData {
   priceListToEdit: IPriceList;
-  validationContext: IOfferValidationContext,
+  validationContext: IOfferValidationContext;
 }

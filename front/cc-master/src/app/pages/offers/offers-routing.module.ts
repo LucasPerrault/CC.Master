@@ -7,10 +7,10 @@ import { OfferCreationComponent } from './components/offer-creation/offer-creati
 import { OfferCreationModule } from './components/offer-creation/offer-creation.module';
 import { OfferEditionComponent } from './components/offer-edition/offer-edition.component';
 import { OfferEditionModule } from './components/offer-edition/offer-edition.module';
+import { OfferEditionNavigationPath } from './components/offer-edition/offer-edition-navigation-tabs.const';
 import { OfferEditionTabComponent } from './components/offer-edition/offer-edition-tab/offer-edition-tab.component';
 import { OfferPriceListsTabComponent } from './components/offer-edition/offer-price-lists-tab/offer-price-lists-tab.component';
 import { OffersComponent } from './offers.component';
-import { OfferEditionNavigationPath } from './components/offer-edition/offer-edition-navigation-tabs.const';
 
 const routes: Routes = [
   {
