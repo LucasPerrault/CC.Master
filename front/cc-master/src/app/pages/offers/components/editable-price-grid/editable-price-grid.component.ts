@@ -67,7 +67,7 @@ export class EditablePriceGridComponent implements OnInit, OnDestroy, ControlVal
 
   public duplicatedOffer: FormControl = new FormControl();
 
-  public formArrayKey = 'priceRows';
+  public formArrayKey = 'rows';
   public formArray: FormArray = new FormArray([]);
   public formKey = PriceRowFormKey;
   public formGroup: FormGroup = new FormGroup(

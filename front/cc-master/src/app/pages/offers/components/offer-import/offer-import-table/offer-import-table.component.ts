@@ -72,7 +72,11 @@ export class OfferImportTableComponent implements OnInit {
         [ImportedOfferFormKey.PricingMethod]: new FormControl(offer?.pricingMethod),
         [ImportedOfferFormKey.ForecastMethod]: new FormControl(offer?.forecastMethod),
         [ImportedOfferFormKey.Currency]: new FormControl(getCurrency(offer?.currencyID)),
-        [ImportedOfferFormKey.PriceLists]: new FormControl(offer?.priceLists),
+        [ImportedOfferFormKey.PriceLists]: new FormControl(offer?.priceLists, [
+          PriceListsValidators.uniqStartsOnRange,
+          PriceListsValidators.boundsContinuityRange,
+          Validators.required,
+        ]),
       },
     );
   }

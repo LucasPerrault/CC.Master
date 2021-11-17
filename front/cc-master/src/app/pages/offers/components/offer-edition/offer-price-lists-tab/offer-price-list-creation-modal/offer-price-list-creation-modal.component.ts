@@ -7,8 +7,8 @@ import { addMonths, startOfMonth } from 'date-fns';
 import { Observable, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { PriceListsValidators, PriceListValidationError } from '../../../../services/price-lists.validators';
 import { OffersEditionStoreService } from '../../offers-edition-store.service';
+import { PriceListValidationError, PriceListsValidators } from '../../../../services/price-lists.validators';
 import { IOfferPriceListCreationModalData } from './offer-price-list-creation-modal-data.interface';
 
 enum PriceListFormKey {
@@ -44,9 +44,9 @@ export class OfferPriceListCreationModalComponent implements OnInit, OnDestroy, 
     private storeService: OffersEditionStoreService,
   ) {
     this.formGroup = new FormGroup({
-      [PriceListFormKey.StartsOn]: new FormControl('', [PriceListsValidators.uniqStartsOn(data.allListStartDates)]),
+      [PriceListFormKey.StartsOn]: new FormControl(),
       [PriceListFormKey.PriceRows]: new FormControl(),
-    });
+    }, [PriceListsValidators.uniqStartsOn(data.allListStartDates)]);
   }
 
   public ngOnInit(): void {

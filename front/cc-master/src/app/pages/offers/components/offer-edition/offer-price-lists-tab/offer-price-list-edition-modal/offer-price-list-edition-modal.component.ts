@@ -9,8 +9,8 @@ import { Observable, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
 import { OfferRestrictionsService } from '../../../../services/offer-restrictions.service';
-import { PriceListsValidators, PriceListValidationError } from '../../../../services/price-lists.validators';
 import { OffersEditionStoreService } from '../../offers-edition-store.service';
+import { PriceListValidationError, PriceListsValidators } from '../../../../services/price-lists.validators';
 import { IOfferPriceListEditionModalData } from './offer-price-list-edition-modal-data.interface';
 
 enum PriceListFormKey {
@@ -60,7 +60,7 @@ export class OfferPriceListEditionModalComponent implements OnInit, OnDestroy, I
         disabled: !this.restrictionsService.canEditPriceListStartsOn(data.offer),
       }, [PriceListsValidators.uniqStartsOn(this.data.allListStartDates)]),
       [PriceListFormKey.PriceRows]: new FormControl(data.priceListToEdit.rows),
-    });
+    },[PriceListsValidators.uniqStartsOn(this.data.allListStartDates)]);
   }
 
   public ngOnInit(): void {
