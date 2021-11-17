@@ -6,7 +6,6 @@
 			<th class="table-head-row-cell">{{ 'offers_import_table_name' | translate }}</th>
 			<th class="table-head-row-cell">{{ 'offers_import_table_product' | translate }}</th>
 			<th class="table-head-row-cell">{{ 'offers_import_table_billing_unit' | translate }}</th>
-			<th class="table-head-row-cell">{{ 'offers_import_table_sage' | translate }}</th>
 			<th class="table-head-row-cell">{{ 'offers_import_table_tag' | translate }}</th>
 			<th class="table-head-row-cell">{{ 'offers_import_table_billing_mode' | translate }}</th>
 			<th class="table-head-row-cell">{{ 'offers_import_table_pricing_method' | translate }}</th>
@@ -36,11 +35,6 @@
         <label class="textfield palette-grey mod-outlined mod-readonly">
           <cc-offer-billing-unit-select [formControlName]="formKey.BillingUnit" [required]="true">
           </cc-offer-billing-unit-select>
-        </label>
-      </td>
-			<td class="table-body-row-cell">
-        <label class="textfield palette-grey mod-outlined mod-readonly">
-          <input class="textfield-input" type="text" [formControlName]="formKey.SageBusiness" [required]="true">
         </label>
       </td>
 			<td class="table-body-row-cell">

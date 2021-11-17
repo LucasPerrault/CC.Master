@@ -12,7 +12,6 @@ export interface IUploadedOffer {
   priceLists: IPriceList[];
   pricingMethod: string;
   product: IProduct;
-  sageBusiness: string;
   category: string;
   billingUnit: BillingUnit;
 }
