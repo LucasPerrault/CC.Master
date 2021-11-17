@@ -13,6 +13,7 @@ import { OfferRestrictionsService } from '../../../services/offer-restrictions.s
 import { OfferValidationContextDataService } from '../../../services/offer-validation-context-data.service';
 import { OffersDataService } from '../../../services/offers-data.service';
 import { OfferPriceListCreationModalComponent } from './offer-price-list-creation-modal/offer-price-list-creation-modal.component';
+import { IOfferPriceListCreationModalData } from './offer-price-list-creation-modal/offer-price-list-creation-modal-data.interface';
 import { OfferPriceListDeletionModalComponent } from './offer-price-list-deletion-modal/offer-price-list-deletion-modal.component';
 import { IOfferPriceListDeletionModalData } from './offer-price-list-deletion-modal/offer-price-list-deletion-modal-data.interface';
 import { OfferPriceListEditionModalComponent } from './offer-price-list-edition-modal/offer-price-list-edition-modal.component';
@@ -66,13 +67,16 @@ export class OfferPriceListsTabComponent implements OnInit {
     return this.restrictionsService.canDeletePriceList(priceList);
   }
 
-  public openCreationModal(offer: IDetailedOffer): void {
-    const dialogRef = this.luModal.open(OfferPriceListCreationModalComponent, offer);
+  public openCreationModal(offerId: number, allPriceLists: IPriceList[]): void {
+    const allListStartDates = allPriceLists.map(p => new Date(p.startsOn));
+    const data: IOfferPriceListCreationModalData = { offerId, allListStartDates };
+    const dialogRef = this.luModal.open(OfferPriceListCreationModalComponent, data);
     dialogRef.onClose.pipe(take(1)).subscribe(() => this.reset());
   }
 
-  public openEditionModal(priceListToEdit: IPriceList, validationContext: IOfferValidationContext): void {
-    const data: IOfferPriceListEditionModalData = { priceListToEdit, validationContext };
+  public openEditionModal(priceListToEdit: IPriceList, allPriceLists: IPriceList[], validationContext: IOfferValidationContext): void {
+    const allListStartDates = allPriceLists.map(p => new Date(p.startsOn));
+    const data: IOfferPriceListEditionModalData = { priceListToEdit, allListStartDates, validationContext };
     const dialogRef = this.luModal.open(OfferPriceListEditionModalComponent, data);
     dialogRef.onClose.pipe(take(1)).subscribe(() => this.reset());
   }

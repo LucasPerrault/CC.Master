@@ -7,9 +7,9 @@ import { addMonths, startOfMonth } from 'date-fns';
 import { Observable, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { IDetailedOffer } from '../../../../models/detailed-offer.interface';
 import { PriceListsValidators, PriceListValidationError } from '../../../../services/price-lists.validators';
 import { PriceListsDataService } from '../../../../services/price-lists-data.service';
+import { IOfferPriceListCreationModalData } from './offer-price-list-creation-modal-data.interface';
 
 enum PriceListFormKey {
   StartsOn = 'startsOn',
@@ -39,12 +39,12 @@ export class OfferPriceListCreationModalComponent implements OnInit, OnDestroy, 
   private destroy$: Subject<void> = new Subject<void>();
 
   constructor(
-    @Inject(LU_MODAL_DATA) public offer: IDetailedOffer,
+    @Inject(LU_MODAL_DATA) public data: IOfferPriceListCreationModalData,
     private translatePipe: TranslatePipe,
     private dataService: PriceListsDataService,
   ) {
     this.formGroup = new FormGroup({
-      [PriceListFormKey.StartsOn]: new FormControl('', [PriceListsValidators.uniqStartsOn(offer.priceLists)]),
+      [PriceListFormKey.StartsOn]: new FormControl('', [PriceListsValidators.uniqStartsOn(data.allListStartDates)]),
       [PriceListFormKey.PriceRows]: new FormControl(),
     });
   }
@@ -62,7 +62,7 @@ export class OfferPriceListCreationModalComponent implements OnInit, OnDestroy, 
 
   public submitAction(): Observable<void> {
     const form = this.formGroup.value;
-    return this.dataService.create$(this.offer.id, form);
+    return this.dataService.create$(this.data.offerId, form);
   }
 
 }

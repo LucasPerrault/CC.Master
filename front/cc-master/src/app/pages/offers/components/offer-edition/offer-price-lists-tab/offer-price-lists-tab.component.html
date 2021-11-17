@@ -5,7 +5,7 @@
 
     <ng-container *ngIf="offer$ | async; let offer">
       <div class="header">
-        <button class="button u-marginLeftAuto" (click)="openCreationModal(offer)">
+        <button class="button u-marginLeftAuto" (click)="openCreationModal(offer.id, offer.priceLists)">
           {{ 'offers_priceList_tab_creation_button' | translate }}
         </button>
       </div>
@@ -17,7 +17,7 @@
           </span>
           <div>
             <button *ngIf="validationContext$ | async; let validationContext" class="button palette-grey mod-outline mod-small"
-                    (click)="openEditionModal(priceList, validationContext)">
+                    (click)="openEditionModal(priceList, offer.priceLists, validationContext)">
               {{ 'offers_priceList_tab_edition_button' | translate }}
             </button>
             <button [disabled]="!canDelete(priceList)" class="button palette-grey mod-outline mod-small"

@@ -54,12 +54,11 @@ export class OfferPriceListEditionModalComponent implements OnInit, OnDestroy, I
     this.title = this.translatePipe.transform('offers_priceList_edition_title', { start });
     this.submitLabel = this.translatePipe.transform('offers_priceList_edition_button');
 
-    const priceListsWithoutEdition = data.validationContext.offer.priceLists.filter(p => p.id !== data.priceListToEdit.id);
     this.formGroup = new FormGroup({
       [PriceListFormKey.StartsOn]: new FormControl({
         value: new Date(data.priceListToEdit.startsOn),
         disabled: !this.restrictionsService.canEditPriceListStartsOn(data.validationContext),
-      }, [PriceListsValidators.uniqStartsOn(priceListsWithoutEdition)]),
+      }, [PriceListsValidators.uniqStartsOn(this.data.allListStartDates)]),
       [PriceListFormKey.PriceRows]: new FormControl(data.priceListToEdit.rows),
     });
   }

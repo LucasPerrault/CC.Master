@@ -1,8 +1,7 @@
 import { AbstractControl, FormControl, ValidationErrors, ValidatorFn } from '@angular/forms';
+import { isEqual } from 'date-fns';
 
 import { IPriceRowForm } from '../models/price-list-form.interface';
-import { IPriceList } from '@cc/domain/billing/offers';
-import { isEqual } from 'date-fns';
 
 export enum PriceListValidationError {
   UniqStartsOn = 'uniqStartsOn',
@@ -22,10 +21,10 @@ export class PriceListsValidators {
     return areAllContinuous ? null : { [PriceListValidationError.BoundsContinuity]: true };
   }
 
-  public static uniqStartsOn(priceLists: IPriceList[]): ValidatorFn {
+  public static uniqStartsOn(startDates: Date[]): ValidatorFn {
     return (control: AbstractControl): ValidationErrors => {
       const startsOn = !!control.value ? new Date(control.value) : null;
-      const isUniq = priceLists.every(p => !isEqual(new Date(p.startsOn), startsOn));
+      const isUniq = startDates.every(date => !isEqual(date, startsOn));
       return !isUniq ? { [PriceListValidationError.UniqStartsOn]: true } : null;
     };
   }
