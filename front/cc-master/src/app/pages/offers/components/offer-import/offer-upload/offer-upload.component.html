@@ -1,7 +1,7 @@
 <label class="file mod-small u-marginTopSmaller mod-maxWidthReset">
   <ng-container *ngIf="(isLoading$ | async) === false; else isLoading">
     <input class="file-input" [ngClass]="fileClass$ | async" type="file" (change)="fileChange($event)"
-           accept=".xls,.xlsx,.csv" [attr.aria-invalid]="isError$ | async" />
+           accept=".csv" [attr.aria-invalid]="isError$ | async" />
       <span role="text" class="file-content">
       <span aria-hidden="true" class="file-icon lucca-icon icon-success u-textSuccess"></span>
       <span aria-hidden="true" class="file-icon lucca-icon icon-error u-textError u-marginBottomReset"></span>

@@ -56,7 +56,10 @@ export class OfferUploadComponent implements OnInit {
         take(1),
         tap(offers => this.upload.emit(offers)),
         map(() => SubmissionState.Success),
-        catchError(() => of(SubmissionState.Error)),
+        catchError(() => {
+          this.upload.emit([]);
+          return of(SubmissionState.Error);
+        }),
         startWith(SubmissionState.Load),
       )
       .subscribe(state => {
