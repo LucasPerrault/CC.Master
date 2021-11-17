@@ -1,4 +1,5 @@
 using AdvancedFilters.Domain.Contacts.Models;
+using AdvancedFilters.Domain.Core.Collections;
 using AdvancedFilters.Domain.Filters.Models;
 using AdvancedFilters.Domain.Instance.Models;
 using AdvancedFilters.Infra.Filters;
@@ -62,12 +63,12 @@ namespace AdvancedFilters.Infra.Tests
             yield return new object[] { new AdvancedFilterTestEntry<Environment>
             {
                 Filter = new EnvironmentAdvancedCriterion().WithApplicationId(ComparisonOperators.Equals, "wpagga", ItemsMatching.Any),
-                Check = e => e.AppInstances.Any(ai => ai.ApplicationId == "wpagga")
+                Check = e => Filter(e.AppInstances).Any(ai => ai.ApplicationId == "wpagga")
             }};
             yield return new object[] { new AdvancedFilterTestEntry<Environment>
             {
                 Filter = new EnvironmentAdvancedCriterion().WithApplicationId(ComparisonOperators.NotEquals, "wpagga", ItemsMatching.Any),
-                Check = e => e.AppInstances.Any(ai => ai.ApplicationId != "wpagga")
+                Check = e => Filter(e.AppInstances).Any(ai => ai.ApplicationId != "wpagga")
             }};
             yield return new object[] { new AdvancedFilterTestEntry<Environment>
             {
@@ -78,7 +79,7 @@ namespace AdvancedFilters.Infra.Tests
                 Check = e =>
                     e.Subdomain == "miaou"
                     && e.LegalUnits.Any(lu => lu.CountryId != 250)
-                    && e.AppInstances.Any(ai => ai.ApplicationId == "wpagga")
+                    && Filter(e.AppInstances).Any(ai => ai.ApplicationId == "wpagga")
             }};
             yield return new object[] { new AdvancedFilterTestEntry<Environment>
             {
@@ -89,14 +90,14 @@ namespace AdvancedFilters.Infra.Tests
                 Check = e =>
                     e.Subdomain != "miaou"
                     && e.LegalUnits.Any(lu => lu.CountryId == 250)
-                    && e.AppInstances.Any(ai => ai.ApplicationId != "wpagga")
+                    && Filter(e.AppInstances).Any(ai => ai.ApplicationId != "wpagga")
             }};
             yield return new object[] { new AdvancedFilterTestEntry<Environment>
             {
                 Filter = new EnvironmentAdvancedCriterion().WithApplicationId(ComparisonOperators.Equals, "wfiggo", ItemsMatching.Any)
                     .And(new EnvironmentAdvancedCriterion().WithSubdomain(ComparisonOperators.NotEquals, "miaou")),
                 Check = e =>
-                    e.AppInstances.Any(ai => ai.ApplicationId == "wfiggo")
+                    Filter(e.AppInstances).Any(ai => ai.ApplicationId == "wfiggo")
                     && e.Subdomain != "miaou"
             }};
             yield return new object[] { new AdvancedFilterTestEntry<Environment>
@@ -104,20 +105,20 @@ namespace AdvancedFilters.Infra.Tests
                 Filter = new EnvironmentAdvancedCriterion().WithApplicationId(ComparisonOperators.Equals, "wfiggo", ItemsMatching.Any)
                     .Or(new EnvironmentAdvancedCriterion().WithSubdomain(ComparisonOperators.NotEquals, "miaou")),
                 Check = e =>
-                    e.AppInstances.Any(ai => ai.ApplicationId == "wfiggo")
+                    Filter(e.AppInstances).Any(ai => ai.ApplicationId == "wfiggo")
                     || e.Subdomain != "miaou"
             }};
             yield return new object[] { new AdvancedFilterTestEntry<Environment>
             {
                 Filter = new EnvironmentAdvancedCriterion().WithApplicationId(ComparisonOperators.Equals, "wfiggo", ItemsMatching.All),
                 Check = e =>
-                    e.AppInstances.All(ai => ai.ApplicationId == "wfiggo")
+                    Filter(e.AppInstances).All(ai => ai.ApplicationId == "wfiggo")
             }};
             yield return new object[] { new AdvancedFilterTestEntry<Environment>
             {
                 Filter = new EnvironmentAdvancedCriterion().WithApplicationId(ComparisonOperators.NotEquals, "wfiggo", ItemsMatching.All),
                 Check = e =>
-                    e.AppInstances.All(ai => ai.ApplicationId != "wfiggo")
+                    Filter(e.AppInstances).All(ai => ai.ApplicationId != "wfiggo")
             }};
             yield return new object[] { new AdvancedFilterTestEntry<Environment>
             {
@@ -159,6 +160,20 @@ namespace AdvancedFilters.Infra.Tests
             }};
         }
 
+        public static IEnumerable<object[]> GetEnvironmentTestDataForEmptyResult()
+        {
+            yield return new object[] { new AdvancedFilterEmptyResultTestEntry<Environment>
+            {
+                Filter = new EnvironmentAdvancedCriterion().WithApplicationId(ComparisonOperators.Equals, "miaou", ItemsMatching.All),
+                ExpectedCount = 0
+            }};
+            yield return new object[] { new AdvancedFilterEmptyResultTestEntry<Environment>
+            {
+                Filter = new EnvironmentAdvancedCriterion().WithApplicationId(ComparisonOperators.NotEquals, "miaou", ItemsMatching.All),
+                ExpectedCount = GetEnvironments().Where(e => e.AppInstances.Any()).Count()
+            }};
+        }
+
         [Theory]
         [MemberData(nameof(GetEnvironmentTestData))]
         public void Environments_ShouldBeFoundBy_Search(AdvancedFilterTestEntry<Environment> testEntry)
@@ -167,6 +182,15 @@ namespace AdvancedFilters.Infra.Tests
 
             searchResult.Should().NotBeEmpty();
             searchResult.Should().OnlyContain(testEntry.Check);
+        }
+
+        [Theory]
+        [MemberData(nameof(GetEnvironmentTestDataForEmptyResult))]
+        public void Environments_ShouldBeEmpty_WhenSearching(AdvancedFilterEmptyResultTestEntry<Environment> testEntry)
+        {
+            var searchResult = GetEnvironments().Filter(testEntry.Filter);
+
+            searchResult.Should().HaveCount(testEntry.ExpectedCount);
         }
 
         [Fact]
@@ -185,7 +209,7 @@ namespace AdvancedFilters.Infra.Tests
             luFilterFn.Should().ThrowExactly<MissingItemsMatchedFieldException<AppInstance>>();
         }
 
-        private IQueryable<Environment> GetEnvironments()
+        private static IQueryable<Environment> GetEnvironments()
         {
             return new List<Environment>
             {
@@ -196,7 +220,7 @@ namespace AdvancedFilters.Infra.Tests
                     Subdomain = "miaou",
                     Cluster = "c2",
                     LegalUnits = GetLegalUnits(250, 42),
-                    AppInstances = GetAppInstances("wfiggo", "wpagga"),
+                    AppInstances = GetAppInstances("lucca", "wfiggo", "wpagga"),
                     Accesses = GetAccesses(1, (Environment.LuccaDistributorId, EnvironmentAccessType.Contract))
                 },
                 new Environment
@@ -206,7 +230,7 @@ namespace AdvancedFilters.Infra.Tests
                     Subdomain = "ouaf",
                     Cluster = "c1",
                     LegalUnits = GetLegalUnits(250, 276),
-                    AppInstances = GetAppInstances("wexpenses", "wpoplee"),
+                    AppInstances = GetAppInstances("lucca", "wexpenses", "wpoplee"),
                     Accesses = GetAccesses(2, (Environment.LuccaDistributorId, EnvironmentAccessType.Contract), (42, EnvironmentAccessType.Manual))
                 },
                 new Environment
@@ -216,7 +240,7 @@ namespace AdvancedFilters.Infra.Tests
                     Subdomain = "wau",
                     Cluster = "c2",
                     LegalUnits = GetLegalUnits(276, 9001),
-                    AppInstances = GetAppInstances("wfiggo"),
+                    AppInstances = GetAppInstances("lucca", "wfiggo"),
                     Accesses = GetAccesses(3, (Environment.LuccaDistributorId, EnvironmentAccessType.Contract), (42, EnvironmentAccessType.Contract))
                 },
                 new Environment
@@ -228,21 +252,36 @@ namespace AdvancedFilters.Infra.Tests
                     LegalUnits = GetLegalUnits(276, 9001),
                     AppInstances = GetAppInstances("wfiggo"),
                     Accesses = GetAccesses(4, (42, EnvironmentAccessType.Contract))
+                },
+                new Environment
+                {
+                    Id = 5,
+                    CreatedAt = new DateTime(2002, 03, 01),
+                    Subdomain = "wau",
+                    Cluster = "c2",
+                    LegalUnits = GetLegalUnits(276, 9001),
+                    AppInstances = GetAppInstances(),
+                    Accesses = GetAccesses(5, (42, EnvironmentAccessType.Contract))
                 }
             }.AsQueryable();
         }
 
-        private IEnumerable<LegalUnit> GetLegalUnits(params int[] countryIds)
+        private static IEnumerable<LegalUnit> GetLegalUnits(params int[] countryIds)
         {
             return countryIds.Select(id => new LegalUnit { CountryId = id }).ToList();
         }
-        private IEnumerable<AppInstance> GetAppInstances(params string[] applicationIds)
+        private static IEnumerable<AppInstance> GetAppInstances(params string[] applicationIds)
         {
             return applicationIds.Select(id => new AppInstance { ApplicationId = id }).ToList();
         }
-        private IEnumerable<EnvironmentAccess> GetAccesses(int envId, params (int DistributorId, EnvironmentAccessType AccessType)[] accesses)
+        private static IEnumerable<EnvironmentAccess> GetAccesses(int envId, params (int DistributorId, EnvironmentAccessType AccessType)[] accesses)
         {
             return accesses.Select(access => new EnvironmentAccess { EnvironmentId = envId, DistributorId = access.DistributorId, Type = access.AccessType }).ToList();
+        }
+
+        private static IEnumerable<AppInstance> Filter(IEnumerable<AppInstance> appInstances)
+        {
+            return appInstances.Where(ai => !ApplicationsCollection.SystemApplicationIds.Contains(ai.ApplicationId));
         }
         #endregion Environments
 
@@ -609,7 +648,13 @@ namespace AdvancedFilters.Infra.Tests
     public class AdvancedFilterTestEntry<T>
     {
         public IAdvancedFilter Filter { get; set; }
-        public Expression<Func<T, bool>> Check { get;set; }
+        public Expression<Func<T, bool>> Check { get; set; }
+    }
+
+    public class AdvancedFilterEmptyResultTestEntry<T>
+    {
+        public IAdvancedFilter Filter { get; set; }
+        public int ExpectedCount { get; set; }
     }
 
     internal static class AdvancedFilterExtensions
