@@ -9,6 +9,7 @@ import { OfferEditionComponent } from './components/offer-edition/offer-edition.
 import { OfferEditionModule } from './components/offer-edition/offer-edition.module';
 import { OfferEditionNavigationPath } from './components/offer-edition/offer-edition-navigation-tabs.const';
 import { OfferEditionTabComponent } from './components/offer-edition/offer-edition-tab/offer-edition-tab.component';
+import { OfferNotFoundTabComponent } from './components/offer-edition/offer-not-found-tab/offer-not-found-tab.component';
 import { OfferPriceListsTabComponent } from './components/offer-edition/offer-price-lists-tab/offer-price-lists-tab.component';
 import { OffersComponent } from './offers.component';
 
@@ -16,6 +17,16 @@ const routes: Routes = [
   {
     path: NavigationPath.Offers,
     component: OffersComponent,
+  },
+  {
+    path: `${ NavigationPath.Offers }/create`,
+    component: OfferCreationComponent,
+    canActivate: [OperationsGuard],
+    data: { operations: [Operation.CreateCommercialOffers] },
+  },
+  {
+    path: `${ NavigationPath.Offers }/:id/${ OfferEditionNavigationPath.NotFound }`,
+    component: OfferNotFoundTabComponent,
   },
   {
     path: `${ NavigationPath.Offers }/:id`,
@@ -37,12 +48,6 @@ const routes: Routes = [
         redirectTo: OfferEditionNavigationPath.Edit,
       },
     ],
-  },
-  {
-    path: `${ NavigationPath.Offers }/create`,
-    component: OfferCreationComponent,
-    canActivate: [OperationsGuard],
-    data: { operations: [Operation.CreateCommercialOffers] },
   },
 ];
 

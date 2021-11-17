@@ -13,6 +13,7 @@ import { OfferPageTemplateModule } from '../offer-page-template/offer-page-templ
 import { OfferEditionComponent } from './offer-edition.component';
 import { OfferEditionFormModule } from './offer-edition-tab/offer-edition-form/offer-edition-form.module';
 import { OfferEditionTabComponent } from './offer-edition-tab/offer-edition-tab.component';
+import { OfferNotFoundTabComponent } from './offer-not-found-tab/offer-not-found-tab.component';
 import {
   OfferPriceListCreationModalComponent,
 } from './offer-price-lists-tab/offer-price-list-creation-modal/offer-price-list-creation-modal.component';
@@ -33,6 +34,7 @@ import { OfferPriceListsTabService } from './offer-price-lists-tab/offer-price-l
     OfferPriceListCreationModalComponent,
     OfferPriceListEditionModalComponent,
     OfferPriceListDeletionModalComponent,
+    OfferNotFoundTabComponent,
   ],
   imports: [
     CommonModule,

@@ -1,5 +1,6 @@
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpContext, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { BYPASS_INTERCEPTOR } from '@cc/aspects/errors';
 import { ApiV3DateService, IHttpApiV3CollectionCount, IHttpApiV3CollectionCountResponse, IHttpApiV3Response } from '@cc/common/queries';
 import { IOffer, IPriceList, offerFields } from '@cc/domain/billing/offers';
 import { Observable } from 'rxjs';
@@ -37,7 +38,9 @@ export class OffersDataService {
   public getName$(offerId: number): Observable<string> {
     const url = OfferApiEndpoint.id(offerId);
     const params = new HttpParams().set('fields', offerFields);
-    return this.httpClient.get<IHttpApiV3Response<IOffer>>(url, { params }).pipe(map(res => res.data.name));
+    const context = new HttpContext().set(BYPASS_INTERCEPTOR, true);
+    return this.httpClient.get<IHttpApiV3Response<IOffer>>(url, { params, context })
+      .pipe(map(res => res.data?.name));
   }
 
   public getById$(offerId: number): Observable<IDetailedOffer> {

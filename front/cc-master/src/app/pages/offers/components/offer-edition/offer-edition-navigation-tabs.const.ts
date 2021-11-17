@@ -3,6 +3,7 @@ import { INavigationTab } from '@cc/common/navigation';
 export enum OfferEditionNavigationPath {
   Edit = 'edit',
   PriceLists = 'priceLists',
+  NotFound = 'notFound',
 }
 
 export const navigationTabs: INavigationTab[] = [
