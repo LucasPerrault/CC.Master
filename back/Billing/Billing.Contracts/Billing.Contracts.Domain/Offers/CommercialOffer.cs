@@ -76,7 +76,7 @@ namespace Billing.Contracts.Domain.Offers
         public int Id { get; set; }
         public int ListId { get; set; }
         public int MaxIncludedCount { get; set; }
-        public double UnitPrice { get; set; }
-        public double FixedPrice { get; set; }
+        public decimal UnitPrice { get; set; }
+        public decimal FixedPrice { get; set; }
     }
 }
