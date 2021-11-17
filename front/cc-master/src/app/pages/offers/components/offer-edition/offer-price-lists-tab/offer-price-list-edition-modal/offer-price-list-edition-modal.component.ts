@@ -34,6 +34,10 @@ export class OfferPriceListEditionModalComponent implements OnInit, OnDestroy, I
 
   public granularity = ELuDateGranularity;
 
+  public get canEdit(): boolean {
+    return this.restrictionsService.canEdit(this.data.validationContext);
+  }
+
   public get min(): Date {
     return addMonths(startOfMonth(Date.now()), 1);
   }
@@ -56,10 +60,7 @@ export class OfferPriceListEditionModalComponent implements OnInit, OnDestroy, I
         value: new Date(data.priceListToEdit.startsOn),
         disabled: !this.restrictionsService.canEditPriceListStartsOn(data.validationContext),
       }, [PriceListsValidators.uniqStartsOn(priceListsWithoutEdition)]),
-      [PriceListFormKey.PriceRows]: new FormControl({
-        value: data.priceListToEdit.rows,
-        disabled: !this.restrictionsService.canEdit(data.validationContext),
-      }),
+      [PriceListFormKey.PriceRows]: new FormControl(data.priceListToEdit.rows),
     });
   }
 

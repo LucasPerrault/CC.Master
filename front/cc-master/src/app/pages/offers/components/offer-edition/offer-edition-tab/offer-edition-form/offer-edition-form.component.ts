@@ -58,6 +58,8 @@ export class OfferEditionFormComponent implements OnInit, OnDestroy, ControlValu
     this.setFormGroupValidation(context);
   }
 
+  public isPriceRowsReadonly = false;
+
   public formGroup: FormGroup;
   public offerFormKey = OfferFormKey;
   public priceListFormKey = PriceListFormKey;
@@ -122,6 +124,7 @@ export class OfferEditionFormComponent implements OnInit, OnDestroy, ControlValu
     if (!this.restrictionsService.canEdit(context)) {
       this.formGroup.disable();
       this.formGroup.get(OfferFormKey.Name).enable();
+      this.isPriceRowsReadonly = true;
     }
 
     if (!this.restrictionsService.canEditPriceListStartsOn(context)) {

@@ -25,7 +25,7 @@ import { ArrowKey } from '../editable-price-grid.component';
 export class EditablePriceCellComponent implements OnInit, OnDestroy, ControlValueAccessor {
   @Output() public keydownChange: EventEmitter<ArrowKey> = new EventEmitter<ArrowKey>();
   @Output() public pasteChange: EventEmitter<ClipboardEvent> = new EventEmitter<ClipboardEvent>();
-  @Input() public set disabled(isDisabled: boolean) { this.setDisabledState(isDisabled); }
+  @Input() public readonly = false;
 
   public formControl: FormControl = new FormControl();
 
@@ -59,14 +59,6 @@ export class EditablePriceCellComponent implements OnInit, OnDestroy, ControlVal
 
   public writeValue(price: number): void {
     this.formControl.setValue(price);
-  }
-
-  public setDisabledState(isDisabled: boolean) {
-    if (isDisabled) {
-      this.formControl.disable();
-      return;
-    }
-    this.formControl.enable();
   }
 
   public validate(control: AbstractControl): ValidationErrors | null {

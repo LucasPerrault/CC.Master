@@ -56,8 +56,12 @@ export enum ArrowKey {
   ],
 })
 export class EditablePriceGridComponent implements OnInit, OnDestroy, ControlValueAccessor, Validator {
-  @Input() public set disabled(isDisabled: boolean) { this.setDisabledState(isDisabled); }
+  @Input() public withAddPriceRowButton = false;
+  @Input() public set readonly(isReadonly: boolean) { this.readonly$.next(isReadonly); }
   @ViewChild('tableElement') public tableElement: ElementRef<HTMLTableElement>;
+
+  public readonly$: BehaviorSubject<boolean> = new BehaviorSubject(false);
+  public readonlyFormControls: AbstractControl[] = [];
 
   public get canRemove(): boolean {
     return this.formArray.length > 1;
@@ -94,6 +98,10 @@ export class EditablePriceGridComponent implements OnInit, OnDestroy, ControlVal
     this.formGroup.valueChanges
       .pipe(takeUntil(this.destroy$))
       .subscribe(formGroup => this.onChange(formGroup[this.formArrayKey]));
+
+    this.readonly$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(readonly => this.setReadOnlyState(readonly));
 
     this.offer.valueChanges
       .pipe(
@@ -133,15 +141,6 @@ export class EditablePriceGridComponent implements OnInit, OnDestroy, ControlVal
     }
   }
 
-  public setDisabledState(isDisabled: boolean) {
-    if (isDisabled) {
-      this.offer.disable();
-      this.formArray.controls.forEach(control => control.disable());
-      return;
-    }
-    this.offer.enable();
-  }
-
   public validate(control: AbstractControl): ValidationErrors | null {
     if (this.formGroup.invalid) {
       return  { invalid: true };
@@ -168,6 +167,7 @@ export class EditablePriceGridComponent implements OnInit, OnDestroy, ControlVal
   public reset(priceRows: IPriceRowForm[]): void {
     this.formArray.clear();
     this.addRange(priceRows);
+    this.updateReadonlyState();
   }
 
   public paste(event: ClipboardEvent): void {
@@ -200,9 +200,26 @@ export class EditablePriceGridComponent implements OnInit, OnDestroy, ControlVal
     return !!previousMaxIncludedCount ? previousMaxIncludedCount + 1 : 0;
   }
 
+  public isReadonly(control: AbstractControl): boolean {
+    return !!this.readonlyFormControls.find(c => c === control);
+  }
+
+  private updateReadonlyState(): void {
+    this.setReadOnlyState(this.readonly$.value);
+  }
+
+  private setReadOnlyState(isReadonly: boolean): void {
+    if (isReadonly) {
+      this.readonlyFormControls.push(...this.formArray.controls);
+      return;
+    }
+    this.readonlyFormControls = [];
+  }
+
   private init(): void {
     const defaultPriceRow: IPriceRowForm = { maxIncludedCount: 0, unitPrice: 0, fixedPrice: 0 };
     this.add(defaultPriceRow);
+    this.updateReadonlyState();
   }
 
   private add(priceRow: IPriceRowForm): void {

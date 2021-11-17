@@ -78,7 +78,10 @@
         <span class="textfield-label">{{ 'offers_form_pricegrid_startsOn_label' | translate }}</span>
       </label>
 
-      <cc-editable-price-grid [formControlName]="priceListFormKey.Rows"></cc-editable-price-grid>
+      <cc-editable-price-grid [formControlName]="priceListFormKey.Rows"
+                              [readonly]="isPriceRowsReadonly"
+                              [withAddPriceRowButton]="true">
+      </cc-editable-price-grid>
     </div>
 
   </div>

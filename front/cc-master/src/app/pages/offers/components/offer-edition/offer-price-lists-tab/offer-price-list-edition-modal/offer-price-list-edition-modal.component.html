@@ -13,5 +13,8 @@
     </span>
   </label>
 
-  <cc-editable-price-grid [formControlName]="formKey.PriceRows"></cc-editable-price-grid>
+  <cc-editable-price-grid [formControlName]="formKey.PriceRows"
+                          [readonly]="!canEdit"
+                          [withAddPriceRowButton]="true">
+  </cc-editable-price-grid>
 </form>
