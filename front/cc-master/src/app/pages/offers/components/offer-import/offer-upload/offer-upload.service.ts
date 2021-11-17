@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 
-import { IUploadedOffer } from '../uploaded-offer.interface';
+import { IUploadedOffer } from '../uploaded-offer-dto.interface';
 
 @Injectable()
 export class OfferUploadService {

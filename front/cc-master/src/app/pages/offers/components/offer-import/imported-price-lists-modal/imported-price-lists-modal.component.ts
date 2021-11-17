@@ -1,11 +1,11 @@
 import { Component, Inject } from '@angular/core';
 import { AbstractControl, FormArray, FormControl, FormGroup } from '@angular/forms';
+import { TranslatePipe } from '@cc/aspects/translate';
 import { ELuDateGranularity } from '@lucca-front/ng/core';
 import { ILuModalContent, LU_MODAL_DATA } from '@lucca-front/ng/modal';
 
 import { IPriceListForm } from '../../../models/price-list-form.interface';
-import { PriceListValidationError, PriceListsValidators } from '../../../services/price-lists.validators';
-import { TranslatePipe } from '@cc/aspects/translate';
+import { PriceListsValidators,PriceListValidationError } from '../../../services/price-lists.validators';
 
 enum ImportedListFormKey {
   StartsOn = 'startsOn',

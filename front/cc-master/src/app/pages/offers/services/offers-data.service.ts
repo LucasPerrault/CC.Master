@@ -10,6 +10,7 @@ import { Observable, of } from 'rxjs';
 import { IOfferCreationForm } from '../components/offer-creation/offer-creation-form/offer-creation-form.interface';
 import { IOfferEditionForm } from '../components/offer-edition/offer-edition-tab/offer-edition-form/offer-edition-form.interface';
 import { IDetailedOffer, IDetailedOfferWithoutUsage } from '../models/detailed-offer.interface';
+import { IUploadedOffer } from '../components/offer-import/uploaded-offer-dto.interface';
 import { IOfferCreationDto } from '../models/offer-creation-dto.interface';
 import { IOfferEditionDto } from '../models/offer-edition-dto.interface';
 import { IOfferUsage } from '../models/offer-usage.interface';
@@ -65,6 +66,21 @@ export class OffersDataService {
     const url = OfferApiEndpoint.id(offer.id);
     const body = this.toEditionDto(offer, form);
     return this.httpClient.put<void>(url, body);
+  }
+
+  private toMultipleCreationDto(uploadedOffers: IUploadedOffer[]): IOfferCreationDto[] {
+    return uploadedOffers.map(o => ({
+      name: o.name,
+      productId: o.product.id,
+      currencyID: o.currencyID,
+      tag: o.category,
+      pricingMethod: o.pricingMethod,
+      forecastMethod: o.forecastMethod,
+      billingMode: o.billingMode,
+      unit: o.billingUnit,
+      sageBusiness: '',
+      priceLists: o.priceLists.map(priceList => this.listsDataService.toCreationDto(priceList)),
+    }));
   }
 
   private toCreationDto(form: IOfferCreationForm): IOfferCreationDto {

@@ -3,7 +3,11 @@ import { NgModule } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { TranslateModule } from '@cc/aspects/translate';
 import { ProductApiSelectModule } from '@cc/common/forms';
+import { LuDateSelectInputModule } from '@lucca-front/ng/date';
+import { LuModalModule } from '@lucca-front/ng/modal';
+import { LuTooltipTriggerModule } from '@lucca-front/ng/tooltip';
 
+import { EditablePriceGridModule } from '../editable-price-grid/editable-price-grid.module';
 import { OfferPageTemplateModule } from '../offer-page-template/offer-page-template.module';
 import {
   OfferBillingModeSelectModule,
@@ -13,15 +17,11 @@ import {
   OfferPricingMethodApiSelectModule,
   OfferTagApiSelectModule,
 } from '../offer-selects';
+import { ImportedPriceListsModalComponent } from './imported-price-lists-modal/imported-price-lists-modal.component';
 import { OfferImportComponent } from './offer-import.component';
 import { OfferImportTableComponent } from './offer-import-table/offer-import-table.component';
 import { OfferUploadComponent } from './offer-upload/offer-upload.component';
 import { OfferUploadService } from './offer-upload/offer-upload.service';
-import { ImportedPriceListsModalComponent } from './imported-price-lists-modal/imported-price-lists-modal.component';
-import { LuModalModule } from '@lucca-front/ng/modal';
-import { LuDateSelectInputModule } from '@lucca-front/ng/date';
-import { EditablePriceGridModule } from '../editable-price-grid/editable-price-grid.module';
-import { LuTooltipTriggerModule } from '@lucca-front/ng/tooltip';
 
 @NgModule({
   declarations: [

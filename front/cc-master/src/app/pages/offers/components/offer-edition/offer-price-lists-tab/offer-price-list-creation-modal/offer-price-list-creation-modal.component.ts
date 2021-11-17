@@ -8,7 +8,7 @@ import { Observable, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
 import { OffersEditionStoreService } from '../../offers-edition-store.service';
-import { PriceListValidationError, PriceListsValidators } from '../../../../services/price-lists.validators';
+import { PriceListsValidators,PriceListValidationError } from '../../../../services/price-lists.validators';
 import { IOfferPriceListCreationModalData } from './offer-price-list-creation-modal-data.interface';
 
 enum PriceListFormKey {

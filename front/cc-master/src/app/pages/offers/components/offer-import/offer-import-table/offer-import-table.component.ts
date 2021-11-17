@@ -1,6 +1,17 @@
-import { ChangeDetectionStrategy, Component, Input, OnInit, ViewEncapsulation } from '@angular/core';
-import { AbstractControl, FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
+import { Component, forwardRef, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
+import {
+  AbstractControl,
+  ControlValueAccessor,
+  FormArray,
+  FormControl,
+  FormGroup, NG_VALIDATORS,
+  NG_VALUE_ACCESSOR,
+  ValidationErrors,
+  Validators,
+} from '@angular/forms';
 import { LuModal } from '@lucca-front/ng/modal';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 import { getBillingMode } from '../../../enums/billing-mode.enum';
 import { getBillingUnit } from '../../../enums/billing-unit.enum';
@@ -8,13 +19,14 @@ import { getCurrency } from '../../../models/offer-currency.interface';
 import { IPriceListForm } from '../../../models/price-list-form.interface';
 import { PriceListsValidators } from '../../../services/price-lists.validators';
 import { ImportedPriceListsModalComponent } from '../imported-price-lists-modal/imported-price-lists-modal.component';
-import { IUploadedOffer } from '../uploaded-offer.interface';
+import { IUploadedOffer } from '../uploaded-offer-dto.interface';
+import { IUploadedOfferForm } from '../uploaded-offer-form.interface';
 
 enum ImportedOfferFormKey {
   Name = 'name',
   Product ='product',
   BillingUnit = 'billingUnit',
-  Tag = 'tag',
+  Tag = 'category',
   BillingMode = 'billingMode',
   Currency = 'currency',
   ForecastMethod = 'forecastMethod',
@@ -26,14 +38,21 @@ enum ImportedOfferFormKey {
   selector: 'cc-offer-import-table',
   templateUrl: './offer-import-table.component.html',
   styleUrls: ['./offer-import-table.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
+  providers: [
+    {
+      provide: NG_VALUE_ACCESSOR,
+      useExisting: forwardRef(() => OfferImportTableComponent),
+      multi: true,
+    },
+    {
+      provide: NG_VALIDATORS,
+      multi: true,
+      useExisting: OfferImportTableComponent,
+    },
+  ],
 })
-export class OfferImportTableComponent implements OnInit {
-  @Input() public set offers(importedOffers: IUploadedOffer[]) {
-    this.reset(importedOffers);
-  }
-
+export class OfferImportTableComponent implements OnInit, OnDestroy, ControlValueAccessor, Validators {
   public formArrayKey = 'importedOffers';
   public formArray: FormArray = new FormArray([]);
   public formKey = ImportedOfferFormKey;
@@ -41,9 +60,40 @@ export class OfferImportTableComponent implements OnInit {
     { [this.formArrayKey]: this.formArray },
   );
 
+  private destroy$: Subject<void> = new Subject<void>();
+
   constructor(private luModal: LuModal) { }
 
   public ngOnInit(): void {
+    this.formGroup.valueChanges
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(() => this.onChange(this.toUploadOffers(this.formArray.value)));
+  }
+
+  public ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+
+  public onChange: (uploadedOffers: IUploadedOffer[]) => void = () => {};
+  public onTouch: () => void = () => {};
+
+  public registerOnChange(fn: () => void): void {
+    this.onChange = fn;
+  }
+
+  public registerOnTouched(fn: () => void): void {
+    this.onTouch = fn;
+  }
+
+  public writeValue(uploadedOffers: IUploadedOffer[]): void {
+    this.reset(uploadedOffers);
+  }
+
+  public validate(control: AbstractControl): ValidationErrors | null {
+    if (this.formGroup.invalid) {
+      return  { invalid: true };
+    }
   }
 
   public trackBy(index: number, offer: AbstractControl): AbstractControl {
@@ -92,5 +142,19 @@ export class OfferImportTableComponent implements OnInit {
         ]),
       },
     );
+  }
+
+  private toUploadOffers(offers: IUploadedOfferForm[]): IUploadedOffer[] {
+    return offers.map(offer => ({
+      name: offer.name,
+      priceLists: offer.priceLists,
+      forecastMethod: offer.forecastMethod,
+      pricingMethod: offer.pricingMethod,
+      category: offer.category,
+      product: offer.product,
+      currencyID: offer.currency.code,
+      billingMode: offer.billingMode.id,
+      billingUnit: offer.billingUnit.id,
+    }));
   }
 }

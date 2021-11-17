@@ -4,7 +4,7 @@ import { SubmissionState } from '@cc/common/forms';
 import { BehaviorSubject, Observable, of, ReplaySubject } from 'rxjs';
 import { catchError, map, startWith, take, tap } from 'rxjs/operators';
 
-import { IUploadedOffer } from '../uploaded-offer.interface';
+import { IUploadedOffer } from '../uploaded-offer-dto.interface';
 import { OfferUploadService } from './offer-upload.service';
 
 @Component({

@@ -10,7 +10,7 @@ import { takeUntil } from 'rxjs/operators';
 
 import { OfferRestrictionsService } from '../../../../services/offer-restrictions.service';
 import { OffersEditionStoreService } from '../../offers-edition-store.service';
-import { PriceListValidationError, PriceListsValidators } from '../../../../services/price-lists.validators';
+import { PriceListsValidators,PriceListValidationError } from '../../../../services/price-lists.validators';
 import { IOfferPriceListEditionModalData } from './offer-price-list-edition-modal-data.interface';
 
 enum PriceListFormKey {
