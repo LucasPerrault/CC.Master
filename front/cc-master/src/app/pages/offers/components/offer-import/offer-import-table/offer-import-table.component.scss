@@ -11,7 +11,7 @@
   background-color: _color('error', 50);
 }
 
-.textfield.mod-readonly {
+.table-body-row .table-body-row-cell .textfield.mod-readonly {
   pointer-events: none;
   width: auto;
 
@@ -28,4 +28,8 @@
     .lu-select-suffix { display: none; }
     &::after { display: none; }
   }
+}
+
+.mod-widthAuto {
+  width: auto;
 }

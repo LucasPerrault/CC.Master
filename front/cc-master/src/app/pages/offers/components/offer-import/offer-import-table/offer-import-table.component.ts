@@ -1,9 +1,13 @@
 import { ChangeDetectionStrategy, Component, Input, OnInit, ViewEncapsulation } from '@angular/core';
-import { AbstractControl, FormArray, FormControl, FormGroup } from '@angular/forms';
+import { AbstractControl, FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
+import { LuModal } from '@lucca-front/ng/modal';
 
 import { getBillingMode } from '../../../enums/billing-mode.enum';
 import { getBillingUnit } from '../../../enums/billing-unit.enum';
 import { getCurrency } from '../../../models/offer-currency.interface';
+import { IPriceListForm } from '../../../models/price-list-form.interface';
+import { PriceListsValidators } from '../../../services/price-lists.validators';
+import { ImportedPriceListsModalComponent } from '../imported-price-lists-modal/imported-price-lists-modal.component';
 import { IUploadedOffer } from '../uploaded-offer.interface';
 
 enum ImportedOfferFormKey {
@@ -37,14 +41,23 @@ export class OfferImportTableComponent implements OnInit {
     { [this.formArrayKey]: this.formArray },
   );
 
-  constructor() { }
+  constructor(private luModal: LuModal) { }
 
   public ngOnInit(): void {
-
   }
 
   public trackBy(index: number, offer: AbstractControl): AbstractControl {
     return offer;
+  }
+
+  public getPriceLists(control: AbstractControl): IPriceListForm[] {
+    return control.get(ImportedOfferFormKey.PriceLists).value ?? [];
+  }
+
+  public openPriceListsDetails(priceLists: IPriceListForm[]) {
+    this.luModal.open(ImportedPriceListsModalComponent, priceLists, {
+      panelClass: ['lu-popup-panel', 'mod-widthAuto'],
+    });
   }
 
   private reset(offers: IUploadedOffer[]): void {
@@ -53,7 +66,7 @@ export class OfferImportTableComponent implements OnInit {
   }
 
   private addRange(offers: IUploadedOffer[]): void {
-    offers.forEach(offer => this.add(offer));
+    offers?.forEach(offer => this.add(offer));
   }
 
   private add(offer: IUploadedOffer): void {

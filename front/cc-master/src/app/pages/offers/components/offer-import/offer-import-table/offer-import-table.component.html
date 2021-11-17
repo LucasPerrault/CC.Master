@@ -64,7 +64,15 @@
           <cc-offer-currency-api-select [formControlName]="formKey.Currency" [required]="true"></cc-offer-currency-api-select>
         </label>
       </td>
-			<td class="table-body-row-cell">
+			<td class="table-body-row-cell u-textRight">
+        <ng-container *ngIf="getPriceLists(control); let priceLists; else noPriceList">
+          <button class="link"
+                  [ngClass]="{ 'u-textError': control.get(formKey.PriceLists).invalid }"
+                  (click)="openPriceListsDetails(priceLists)">
+            {{ priceLists.length }}
+          </button>
+        </ng-container>
+        <ng-template #noPriceList><span class="u-textError">0</span></ng-template>
       </td>
 		</tr>
 	</tbody>

@@ -17,12 +17,18 @@ import { OfferImportComponent } from './offer-import.component';
 import { OfferImportTableComponent } from './offer-import-table/offer-import-table.component';
 import { OfferUploadComponent } from './offer-upload/offer-upload.component';
 import { OfferUploadService } from './offer-upload/offer-upload.service';
+import { ImportedPriceListsModalComponent } from './imported-price-lists-modal/imported-price-lists-modal.component';
+import { LuModalModule } from '@lucca-front/ng/modal';
+import { LuDateSelectInputModule } from '@lucca-front/ng/date';
+import { EditablePriceGridModule } from '../editable-price-grid/editable-price-grid.module';
+import { LuTooltipTriggerModule } from '@lucca-front/ng/tooltip';
 
 @NgModule({
   declarations: [
     OfferImportComponent,
     OfferUploadComponent,
     OfferImportTableComponent,
+    ImportedPriceListsModalComponent,
   ],
   imports: [
     CommonModule,
@@ -36,9 +42,13 @@ import { OfferUploadService } from './offer-upload/offer-upload.service';
     OfferPricingMethodApiSelectModule,
     OfferForecastMethodApiSelectModule,
     OfferCurrencySelectModule,
+    LuModalModule,
+    LuDateSelectInputModule,
+    EditablePriceGridModule,
+    LuTooltipTriggerModule,
   ],
   providers: [
     OfferUploadService,
-  ]
+  ],
 })
 export class OfferImportModule { }
