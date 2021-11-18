@@ -21,7 +21,6 @@ import { ImportedPriceListsModalComponent } from './imported-price-lists-modal/i
 import { OfferImportComponent } from './offer-import.component';
 import { OfferImportTableComponent } from './offer-import-table/offer-import-table.component';
 import { OfferUploadComponent } from './offer-upload/offer-upload.component';
-import { OfferUploadService } from './offer-upload/offer-upload.service';
 
 @NgModule({
   declarations: [
@@ -46,9 +45,6 @@ import { OfferUploadService } from './offer-upload/offer-upload.service';
     LuDateSelectInputModule,
     EditablePriceGridModule,
     LuTooltipTriggerModule,
-  ],
-  providers: [
-    OfferUploadService,
   ],
 })
 export class OfferImportModule { }

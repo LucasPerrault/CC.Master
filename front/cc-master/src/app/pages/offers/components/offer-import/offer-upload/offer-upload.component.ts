@@ -4,8 +4,8 @@ import { SubmissionState } from '@cc/common/forms';
 import { BehaviorSubject, Observable, of, ReplaySubject } from 'rxjs';
 import { catchError, map, startWith, take, tap } from 'rxjs/operators';
 
+import { OffersDataService } from '../../../services/offers-data.service';
 import { IUploadedOffer } from '../uploaded-offer-dto.interface';
-import { OfferUploadService } from './offer-upload.service';
 
 @Component({
   selector: 'cc-offer-upload',
@@ -39,7 +39,7 @@ export class OfferUploadComponent implements OnInit {
 
   private state$: BehaviorSubject<SubmissionState> = new BehaviorSubject<SubmissionState>(SubmissionState.Idle);
 
-  constructor(private uploadService: OfferUploadService, private translatePipe: TranslatePipe) { }
+  constructor(private dataService: OffersDataService, private translatePipe: TranslatePipe) { }
 
   ngOnInit(): void {
   }
@@ -51,7 +51,7 @@ export class OfferUploadComponent implements OnInit {
 
     const file = event.target.files[0];
 
-    this.uploadService.upload$(file)
+    this.dataService.upload$(file)
       .pipe(
         take(1),
         tap(offers => this.upload.emit(offers)),

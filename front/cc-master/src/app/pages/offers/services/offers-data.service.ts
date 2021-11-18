@@ -19,6 +19,8 @@ import { PriceListsDataService } from './price-lists-data.service';
 class OfferApiEndpoint {
   public static base = '/api/commercial-offers';
   public static usages = `${ OfferApiEndpoint.base }/usages`;
+  public static createRange = `${ OfferApiEndpoint.base }/creation`;
+  public static upload = `${ OfferApiEndpoint.base }/upload-csv`;
   public static id = (offerId: number) => `${ OfferApiEndpoint.base }/${ offerId }`;
 }
 
@@ -66,6 +68,14 @@ export class OffersDataService {
     const url = OfferApiEndpoint.id(offer.id);
     const body = this.toEditionDto(offer, form);
     return this.httpClient.put<void>(url, body);
+  }
+
+  public upload$(file: any): Observable<IUploadedOffer[]> {
+    const url = OfferApiEndpoint.upload;
+    const formData = new FormData();
+    formData.append('file', file);
+    return this.httpClient.post<IHttpApiV4CollectionResponse<IUploadedOffer>>(url, formData)
+      .pipe(map(res => res.items));
   }
 
   private toMultipleCreationDto(uploadedOffers: IUploadedOffer[]): IOfferCreationDto[] {
