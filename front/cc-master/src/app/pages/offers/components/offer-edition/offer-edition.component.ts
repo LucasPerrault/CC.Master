@@ -1,12 +1,13 @@
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { SubmissionState } from '@cc/common/forms';
 import { INavigationTab } from '@cc/common/navigation';
 import { IContract } from '@cc/domain/billing/contracts';
-import { from, ReplaySubject } from 'rxjs';
-import { catchError, take } from 'rxjs/operators';
+import { Observable, Subject } from 'rxjs';
+import { filter, map, takeUntil } from 'rxjs/operators';
 
-import { OffersDataService } from '../../services/offers-data.service';
 import { navigationTabs, OfferEditionNavigationPath } from './offer-edition-navigation-tabs.const';
+import { OffersEditionStoreService } from './offers-edition-store.service';
 
 @Component({
   selector: 'cc-offer-edition',
@@ -14,27 +15,40 @@ import { navigationTabs, OfferEditionNavigationPath } from './offer-edition-navi
   changeDetection: ChangeDetectionStrategy.OnPush,
   styleUrls: ['./offer-edition.component.scss'],
 })
-export class OfferEditionComponent implements OnInit {
-  public offerName$: ReplaySubject<string> = new ReplaySubject<string>(1);
+export class OfferEditionComponent implements OnInit, OnDestroy {
+
+  public get offerName$(): Observable<string> {
+    return this.storeService.offer$.pipe(map(offer => offer.name));
+  }
+
+  public get loading$(): Observable<boolean> {
+    return this.storeService.loading$;
+  }
 
   public get tabs(): INavigationTab[] {
     return navigationTabs;
   }
 
-  private get offerId(): number {
-    return parseInt(this.activatedRoute.snapshot.paramMap.get('id'), 10);
-  }
+  private destroy$: Subject<void> = new Subject();
 
   constructor(
     private router: Router,
     private activatedRoute: ActivatedRoute,
-    private offersDataService: OffersDataService,
+    private storeService: OffersEditionStoreService,
   ) { }
 
   public ngOnInit(): void {
-    this.offersDataService.getName$(this.offerId)
-      .pipe(take(1), catchError(() => from(this.redirectToNotFoundPage())))
-      .subscribe(this.offerName$);
+    this.storeService.state$
+      .pipe(takeUntil(this.destroy$), filter(state => state === SubmissionState.Error))
+      .subscribe(() => this.redirectToNotFoundPage());
+
+    const offerId = parseInt(this.activatedRoute.snapshot.paramMap.get('id'), 10);
+    this.storeService.init(offerId);
+  }
+
+  public ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   private redirectToNotFoundPage(): Promise<IContract> {

@@ -1,7 +1,11 @@
-<cc-offer-template *ngIf="offerName$ | async; let offerName"
-                   [tabs]="tabs"
-                   [title]="'offers_edition_title' | translate: { name: offerName }">
+<div class="loading mod-fullPage" *ngIf="loading$ | async; else isNotLoading"></div>
 
-  <router-outlet></router-outlet>
+<ng-template #isNotLoading>
+  <cc-offer-template *ngIf="offerName$ | async; let offerName"
+                     [tabs]="tabs"
+                     [title]="'offers_edition_title' | translate: { name: offerName }">
 
-</cc-offer-template>
+    <router-outlet></router-outlet>
+
+  </cc-offer-template>
+</ng-template>

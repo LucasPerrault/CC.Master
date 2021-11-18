@@ -1,9 +1,6 @@
 <div class="page-content">
-  <div class="loading mod-fullPage" *ngIf="isLoading$ | async; else isNotLoading"></div>
-  <ng-template #isNotLoading>
-    <cc-offer-edition-form [formControl]="formControl" [validationContext]="validationContext$ | async">
-    </cc-offer-edition-form>
-  </ng-template>
+  <cc-offer-edition-form [formControl]="formControl" [validationContext]="validationContext$ | async">
+  </cc-offer-edition-form>
 </div>
 
 <div class="page-footer">

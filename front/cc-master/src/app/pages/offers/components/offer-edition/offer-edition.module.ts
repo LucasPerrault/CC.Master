@@ -25,6 +25,7 @@ import {
 } from './offer-price-lists-tab/offer-price-list-edition-modal/offer-price-list-edition-modal.component';
 import { OfferPriceListsTabComponent } from './offer-price-lists-tab/offer-price-lists-tab.component';
 import { OfferPriceListsTabService } from './offer-price-lists-tab/offer-price-lists-tab.service';
+import { OffersEditionStoreService } from './offers-edition-store.service';
 
 @NgModule({
   declarations: [
@@ -51,6 +52,7 @@ import { OfferPriceListsTabService } from './offer-price-lists-tab/offer-price-l
   providers: [
     OfferValidationContextDataService,
     OfferPriceListsTabService,
+    OffersEditionStoreService,
   ],
 })
 export class OfferEditionModule {

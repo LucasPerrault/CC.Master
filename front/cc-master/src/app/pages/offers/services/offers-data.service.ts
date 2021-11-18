@@ -1,8 +1,7 @@
 import { HttpClient, HttpContext, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { BYPASS_INTERCEPTOR } from '@cc/aspects/errors';
 import { ApiV3DateService, IHttpApiV3CollectionCount, IHttpApiV3CollectionCountResponse, IHttpApiV3Response } from '@cc/common/queries';
-import { IOffer, IPriceList, offerFields } from '@cc/domain/billing/offers';
+import { IPriceList } from '@cc/domain/billing/offers';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
@@ -13,6 +12,7 @@ import { IOfferCreationDto } from '../models/offer-creation-dto.interface';
 import { IOfferEditionDto } from '../models/offer-edition-dto.interface';
 import { IPriceListsOffer, priceListsOfferFields } from '../models/price-lists-offer.interface';
 import { PriceListsDataService } from './price-lists-data.service';
+import { BYPASS_INTERCEPTOR } from '@cc/aspects/errors';
 
 class OfferApiEndpoint {
   public static base = '/api/v3/offers';
@@ -35,18 +35,11 @@ export class OffersDataService {
       .pipe(map(res => res.data));
   }
 
-  public getName$(offerId: number): Observable<string> {
-    const url = OfferApiEndpoint.id(offerId);
-    const params = new HttpParams().set('fields', offerFields);
-    const context = new HttpContext().set(BYPASS_INTERCEPTOR, true);
-    return this.httpClient.get<IHttpApiV3Response<IOffer>>(url, { params, context })
-      .pipe(map(res => res.data?.name));
-  }
-
   public getById$(offerId: number): Observable<IDetailedOffer> {
     const url = OfferApiEndpoint.id(offerId);
     const params = new HttpParams().set('fields', detailedOfferFields);
-    return this.httpClient.get<IHttpApiV3Response<IDetailedOffer>>(url, { params }).pipe(map(res => res.data));
+    const context = new HttpContext().set(BYPASS_INTERCEPTOR, true);
+    return this.httpClient.get<IHttpApiV3Response<IDetailedOffer>>(url, { params, context }).pipe(map(res => res.data));
   }
 
   public getPriceLists$(offerId: number): Observable<IPriceList[]> {

@@ -4,19 +4,16 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { getButtonState, toSubmissionState } from '@cc/common/forms';
 import { NavigationPath } from '@cc/common/navigation';
 import { IPriceList } from '@cc/domain/billing/offers';
-import { BehaviorSubject, combineLatest, forkJoin, Observable, of, ReplaySubject } from 'rxjs';
-import { finalize, map, switchMapTo, take } from 'rxjs/operators';
+import { BehaviorSubject, Observable, ReplaySubject } from 'rxjs';
+import { map, take } from 'rxjs/operators';
 
 import { getBillingMode } from '../../../enums/billing-mode.enum';
 import { getBillingUnit } from '../../../enums/billing-unit.enum';
 import { IDetailedOffer } from '../../../models/detailed-offer.interface';
 import { IOfferValidationContext } from '../../../models/offer-validation-context.interface';
 import { IPriceListForm } from '../../../models/price-list-form.interface';
-import { OfferListService } from '../../../services/offer-list.service';
-import { OfferValidationContextDataService } from '../../../services/offer-validation-context-data.service';
-import { OffersDataService } from '../../../services/offers-data.service';
-import { PriceListsDataService } from '../../../services/price-lists-data.service';
 import { PriceListsTimelineService } from '../../../services/price-lists-timeline.service';
+import { OffersEditionStoreService } from '../offers-edition-store.service';
 import { IOfferEditionForm } from './offer-edition-form/offer-edition-form.interface';
 
 @Component({
@@ -28,41 +25,38 @@ import { IOfferEditionForm } from './offer-edition-form/offer-edition-form.inter
 export class OfferEditionTabComponent implements OnInit {
 
   public priceListId$: BehaviorSubject<number> = new BehaviorSubject<number>(null);
-  public isLoading$: ReplaySubject<boolean> = new ReplaySubject<boolean>(1);
-  public validationContext$ = new ReplaySubject<IOfferValidationContext>(1);
 
   public formControl: FormControl = new FormControl();
   public editionButtonState$: ReplaySubject<string> = new ReplaySubject<string>(1);
 
-  private get offerId(): number {
-    return parseInt(this.activatedRoute.parent.snapshot.paramMap.get('id'), 10);
+  public get validationContext$(): Observable<IOfferValidationContext> {
+    return this.storeService.validationContext$;
   }
 
   constructor(
     private router: Router,
     private activatedRoute: ActivatedRoute,
-    private offersDataService: OffersDataService,
-    private listsDataService: PriceListsDataService,
-    private offerListService: OfferListService,
-    private contextValidationService: OfferValidationContextDataService,
+    private storeService: OffersEditionStoreService,
   ) { }
 
   public ngOnInit(): void {
-    this.reset();
+    this.storeService.offer$
+      .pipe(take(1))
+      .subscribe(offer => {
+        this.formControl.patchValue(this.toOfferForm(offer));
+        this.priceListId$.next(PriceListsTimelineService.getCurrent(offer.priceLists)?.id);
+      });
   }
 
   public edit(): void {
     const form: IOfferEditionForm = this.formControl.value;
+    const offerId = parseInt(this.activatedRoute.parent.snapshot.paramMap.get('id'), 10);
 
-    this.edit$(this.offerId, this.priceListId$.value, form)
+    this.storeService.editOfferAndPriceList$(offerId, this.priceListId$.value, form)
       .pipe(
         take(1),
         toSubmissionState(),
         map(state => getButtonState(state)),
-        finalize(() => {
-          this.offerListService.refresh();
-          this.reset();
-        }),
       )
       .subscribe(state => this.editionButtonState$.next(state));
   }
@@ -70,29 +64,6 @@ export class OfferEditionTabComponent implements OnInit {
   public cancel(): void {
     this.formControl.reset();
     this.redirectToOffers();
-  }
-
-  private edit$(offerId: number, priceListId: number, form: IOfferEditionForm): Observable<void> {
-    const requests$ = [
-      this.offersDataService.edit$(offerId, form),
-      this.listsDataService.edit$(offerId, priceListId, form.priceList),
-    ];
-    return forkJoin(requests$).pipe(switchMapTo(of<void>()));
-  }
-
-  private reset(): void {
-    this.isLoading$.next(true);
-
-    combineLatest([
-      this.offersDataService.getById$(this.offerId),
-      this.contextValidationService.getRealCountNumber$(this.offerId),
-    ])
-      .pipe(take(1), finalize(() => this.isLoading$.next(false)))
-      .subscribe(([offer, realCountNumber]) => {
-        this.priceListId$.next(PriceListsTimelineService.getCurrent(offer.priceLists)?.id);
-        this.formControl.patchValue(this.toOfferForm(offer));
-        this.validationContext$.next({ offer, realCountNumber });
-      });
   }
 
   private redirectToOffers(): void {

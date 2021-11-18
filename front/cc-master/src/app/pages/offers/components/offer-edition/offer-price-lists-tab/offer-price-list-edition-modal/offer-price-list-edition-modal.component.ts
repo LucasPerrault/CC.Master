@@ -10,7 +10,7 @@ import { takeUntil } from 'rxjs/operators';
 
 import { OfferRestrictionsService } from '../../../../services/offer-restrictions.service';
 import { PriceListsValidators, PriceListValidationError } from '../../../../services/price-lists.validators';
-import { PriceListsDataService } from '../../../../services/price-lists-data.service';
+import { OffersEditionStoreService } from '../../offers-edition-store.service';
 import { IOfferPriceListEditionModalData } from './offer-price-list-edition-modal-data.interface';
 
 enum PriceListFormKey {
@@ -46,7 +46,7 @@ export class OfferPriceListEditionModalComponent implements OnInit, OnDestroy, I
   constructor(
     @Inject(LU_MODAL_DATA) public data: IOfferPriceListEditionModalData,
     private translatePipe: TranslatePipe,
-    private dataService: PriceListsDataService,
+    private storeService: OffersEditionStoreService,
     private datePipe: DatePipe,
     private restrictionsService: OfferRestrictionsService,
   ) {
@@ -79,6 +79,6 @@ export class OfferPriceListEditionModalComponent implements OnInit, OnDestroy, I
 
     const offerId = this.data.validationContext.offer.id;
     const priceListId = this.data.priceListToEdit.id;
-    return this.dataService.edit$(offerId, priceListId, form);
+    return this.storeService.editPriceList$(offerId, priceListId, form);
   }
 }
