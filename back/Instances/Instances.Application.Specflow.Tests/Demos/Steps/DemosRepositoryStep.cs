@@ -7,16 +7,16 @@ using Instances.Domain.Demos;
 using Instances.Domain.Demos.Filtering;
 using Instances.Domain.Instances;
 using Instances.Domain.Shared;
+using Instances.Infra.Storage;
 using Instances.Infra.Storage.Stores;
 using Moq;
-using Rights.Domain;
-using Rights.Domain.Abstractions;
 using Rights.Domain.Filtering;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using TechTalk.SpecFlow;
+using Testing.Specflow;
 using Tools;
 using Tools.Web;
 using Xunit;
@@ -26,12 +26,15 @@ namespace Instances.Application.Specflow.Tests.Demos.Steps
     [Binding]
     public class DemosRepositoryStep
     {
-        private readonly DemosContext _demosContext;
+        private readonly SpecflowTestContext _testContext;
+        private readonly DemoTestResults _results;
+        private readonly InstancesDbContext _dbContext;
 
-        public DemosRepositoryStep(DemosContext demosContext)
+        public DemosRepositoryStep(SpecflowTestContext testContext, DemoTestResults results, InstancesDbContext dbContext)
         {
-            _demosContext = demosContext;
-
+            _testContext = testContext;
+            _results = results;
+            _dbContext = dbContext;
         }
 
         [When("I get the list of (.*) demos")]
@@ -43,7 +46,7 @@ namespace Instances.Application.Specflow.Tests.Demos.Steps
             };
             var demosRepository = GetNewRepository();
             var demoPage = await demosRepository.GetDemosAsync(null, demoFilter);
-            _demosContext.Results.Demos.AddRange(demoPage.Items);
+            _results.Demos.AddRange(demoPage.Items);
         }
 
         [When("I get the list of demos (.*)")]
@@ -55,7 +58,7 @@ namespace Instances.Application.Specflow.Tests.Demos.Steps
             };
             var demosRepository = GetNewRepository();
             var demoPage = await demosRepository.GetDemosAsync(null, demoFilter);
-            _demosContext.Results.Demos.AddRange(demoPage.Items);
+            _results.Demos.AddRange(demoPage.Items);
         }
 
         [When("I update the comment to '(.*)' on (.*) demo (.*)")]
@@ -65,7 +68,7 @@ namespace Instances.Application.Specflow.Tests.Demos.Steps
             {
                 Comment = comment,
             };
-            var id = _demosContext.DbContext.Set<Demo>().Where(filter.AsFunc).First(d => d.IsTemplate == isTemplate).Id;
+            var id = _dbContext.Set<Demo>().Where(filter.AsFunc).First(d => d.IsTemplate == isTemplate).Id;
             await SafePutAsync(id, demoPutPayload);
         }
 
@@ -74,18 +77,18 @@ namespace Instances.Application.Specflow.Tests.Demos.Steps
             var demosRepository = GetNewRepository();
             try
             {
-                _demosContext.Results.SingleDemo = await demosRepository.UpdateDemoAsync(id, payload);
+                _results.SingleDemo = await demosRepository.UpdateDemoAsync(id, payload);
             }
             catch (Exception e)
             {
-                _demosContext.Results.ExceptionResult.Exception = e;
+                _testContext.ThrownException = e;
             }
         }
 
         [When(@"I delete (.*) demo (.*)")]
         public async Task WhenIDeleteDemoAsync(bool isTemplate, DistributorFilter filter)
         {
-            var id = _demosContext.DbContext.Set<Demo>().Where(filter.AsFunc).First(d => d.IsTemplate == isTemplate).Id;
+            var id = _dbContext.Set<Demo>().Where(filter.AsFunc).First(d => d.IsTemplate == isTemplate).Id;
             await SafeDeleteAsync(id);
         }
 
@@ -98,7 +101,7 @@ namespace Instances.Application.Specflow.Tests.Demos.Steps
             }
             catch (Exception e)
             {
-                _demosContext.Results.ExceptionResult.Exception = e;
+                _testContext.ThrownException = e;
             }
         }
 
@@ -111,34 +114,34 @@ namespace Instances.Application.Specflow.Tests.Demos.Steps
             };
             var demosRepository = GetNewRepository();
             var demoPage = await demosRepository.GetDemosAsync(null, demoFilter);
-            _demosContext.Results.Demos.AddRange(demoPage.Items);
+            _results.Demos.AddRange(demoPage.Items);
         }
 
         [Then("it should contain (.*) demos")]
         public void ThenItShouldContainDemos(bool isTemplateDemo)
         {
-            Assert.Contains(_demosContext.Results.Demos, d => d.IsTemplate == isTemplateDemo);
+            Assert.Contains(_results.Demos, d => d.IsTemplate == isTemplateDemo);
         }
 
         [Then("it should contain (.*) demos (.*)")]
         public void ThenItShouldContainDemosFromDistributor(bool isTemplateDemo, DistributorFilter filter)
         {
-            Assert.Contains(_demosContext.Results.Demos, d => d.IsTemplate == isTemplateDemo && filter.AsFunc(d));
+            Assert.Contains(_results.Demos, d => d.IsTemplate == isTemplateDemo && filter.AsFunc(d));
         }
 
         [Then("it should not contain any (.*) demos (.*)")]
         public void ThenItShouldNotContainAnyDemosFromDistributorsOtherThan(bool isTemplateDemo, DistributorFilter filter)
         {
-            Assert.DoesNotContain(_demosContext.Results.Demos, d => d.IsTemplate == isTemplateDemo && filter.AsFunc(d));
+            Assert.DoesNotContain(_results.Demos, d => d.IsTemplate == isTemplateDemo && filter.AsFunc(d));
         }
 
         [Then(@"demo '(.*)' should exist for distributor '(.*)'")]
         public void ThenDemoShouldExistForDistributor(string subdomain, string distributorCode)
         {
-            var distributor = _demosContext.DbContext.Set<Distributor>().Single(d => d.Code == distributorCode);
+            var distributor = _dbContext.Set<Distributor>().Single(d => d.Code == distributorCode);
             Assert.Contains
             (
-                _demosContext.Results.Demos,
+                _results.Demos,
                 d => d.Subdomain == subdomain && d.DistributorId == distributor.Id
             );
         }
@@ -146,19 +149,19 @@ namespace Instances.Application.Specflow.Tests.Demos.Steps
         [Then("demo comment should be '(.*)'")]
         public void ThenDemoCommentShouldBe(string comment)
         {
-            Assert.Equal(comment, _demosContext.Results.SingleDemo.Comment);
+            Assert.Equal(comment, _results.SingleDemo.Comment);
         }
 
         [Then("it should contain demos (.*)")]
         public void ThenItShouldContainDemosForSubdomain(SubdomainSelection selection)
         {
-            Assert.Contains(_demosContext.Results.Demos, d => d.Subdomain == selection.Subdomain);
+            Assert.Contains(_results.Demos, d => d.Subdomain == selection.Subdomain);
         }
 
         [Then("it should not contain any demo other than '(.*)'")]
         public void ThenItShouldNotContainDemosWithSubdomainOtherThan(string subdomain)
         {
-            Assert.DoesNotContain(_demosContext.Results.Demos, d => d.Subdomain != subdomain);
+            Assert.DoesNotContain(_results.Demos, d => d.Subdomain != subdomain);
         }
 
         [Then(@"demo '(.*)' should not exist")]
@@ -166,7 +169,7 @@ namespace Instances.Application.Specflow.Tests.Demos.Steps
         {
             Assert.DoesNotContain
                 (
-                    _demosContext.Results.Demos,
+                    _results.Demos,
                     d => d.Subdomain == subdomain
                 );
         }
@@ -176,7 +179,7 @@ namespace Instances.Application.Specflow.Tests.Demos.Steps
         {
             Assert.DoesNotContain
                 (
-                    _demosContext.Results.Demos,
+                    _results.Demos,
                     d => d.IsTemplate == isTemplateDemo && filter.AsFunc(d)
                 );
         }
@@ -186,7 +189,7 @@ namespace Instances.Application.Specflow.Tests.Demos.Steps
         {
             Assert.Equal
                 (
-                    selection.Subdomain, _demosContext.DbContext.Set<InstanceDuplication>()
+                    selection.Subdomain, _dbContext.Set<InstanceDuplication>()
                         .Single()
                         .TargetSubdomain
                 );
@@ -194,13 +197,12 @@ namespace Instances.Application.Specflow.Tests.Demos.Steps
 
         private DemosRepository GetNewRepository()
         {
-            var demosStore = new DemosStore(_demosContext.DbContext, new DummyQueryPager());
-            var rightsServiceMock = new Mock<IRightsService>();
+            var demosStore = new DemosStore(_dbContext, new DummyQueryPager());
             var instanceStoreMock = new Mock<IInstancesStore>();
             var ccDataServiceMock = new Mock<ICcDataService>();
             var dnsServiceMock = new Mock<IDnsService>();
-            rightsServiceMock.Setup(rs => rs.GetUserOperationHighestScopeAsync(It.IsAny<Operation>())).ReturnsAsync((Operation op) => _demosContext.TestPrincipal.OperationsWithScope[op]);
-            return new DemosRepository(_demosContext.TestPrincipal.Principal, demosStore, instanceStoreMock.Object, new DemoRightsFilter(new RightsFilter(rightsServiceMock.Object)), ccDataServiceMock.Object, dnsServiceMock.Object);
+            var rightsService = _testContext.GetRightsService();
+            return new DemosRepository(_testContext.Principal, demosStore, instanceStoreMock.Object, new DemoRightsFilter(new RightsFilter(rightsService)), ccDataServiceMock.Object, dnsServiceMock.Object);
         }
     }
 }
