@@ -17,7 +17,7 @@ import { IOfferEditionDto } from '../models/offer-edition-dto.interface';
 import { PriceListsDataService } from './price-lists-data.service';
 
 class OfferApiEndpoint {
-  public static base = '/api/v3/offers';
+  public static base = '/api/commercial-offers';
   public static id = (offerId: number) => `${ OfferApiEndpoint.base }/${ offerId }`;
 }
 
