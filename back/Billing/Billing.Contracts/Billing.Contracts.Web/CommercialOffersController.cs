@@ -1,15 +1,18 @@
 using Billing.Contracts.Application.Offers;
 using Billing.Contracts.Domain.Offers;
 using Billing.Contracts.Domain.Offers.Filtering;
+using Billing.Contracts.Domain.Offers.Parsing;
 using Lucca.Core.Api.Abstractions.Paging;
 using Lucca.Core.Api.Web.ModelBinding.Sorting;
 using Microsoft.AspNetCore.Mvc;
 using Rights.Domain;
 using Rights.Web.Attributes;
 using System.Collections.Generic;
+using System.IO;
 using System.Threading.Tasks;
 using Tools.Web;
 using Billing.Contracts.Application.Offers.Dtos;
+using Billing.Contracts.Domain.Offers.Interfaces;
 using Microsoft.AspNetCore.Http;
 
 namespace Billing.Contracts.Web
@@ -19,9 +22,9 @@ namespace Billing.Contracts.Web
     public class CommercialOffersController
     {
         private readonly CommercialOffersRepository _commercialOffersRepository;
-        private readonly IImportedOffersService _importedOfferService;
+        private readonly IOfferRowsService _importedOfferService;
 
-        public CommercialOffersController(CommercialOffersRepository commercialOffersRepository, IImportedOffersService importedOfferService)
+        public CommercialOffersController(CommercialOffersRepository commercialOffersRepository, IOfferRowsService importedOfferService)
         {
             _commercialOffersRepository = commercialOffersRepository;
             _importedOfferService = importedOfferService;
@@ -105,12 +108,22 @@ namespace Billing.Contracts.Web
             return _commercialOffersRepository.GetUsagesAsync(query.ToFilter());
         }
 
-        [Route("upload")]
+        [Route("upload-csv")]
         [HttpPost, ForbidIfMissing(Operation.CreateCommercialOffers)]
-        public Task<IEnumerable<ImportedOfferDto>> UploadAsync([FromForm] FileDto file)
+        public async Task<ImportedOffersDto> UploadAsync([FromForm] FileDto file)
         {
-            return _importedOfferService.UploadAsync(file.File);
+            using var ms = new MemoryStream();
+
+            await file.File.CopyToAsync(ms);
+            ms.Position = 0;
+
+            return new ImportedOffersDto { Items = await _importedOfferService.UploadAsync(ms) };
         }
+    }
+
+    public class ImportedOffersDto
+    {
+        public IEnumerable<ParsedOffer> Items { get; set; }
     }
 
     public class CommercialOfferQuery
