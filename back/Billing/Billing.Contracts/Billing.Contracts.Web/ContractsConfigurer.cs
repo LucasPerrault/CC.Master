@@ -1,4 +1,4 @@
-﻿using Billing.Contracts.Application;
+using Billing.Contracts.Application;
 using Billing.Contracts.Application.Clients;
 using Billing.Contracts.Application.Offers;
 using Billing.Contracts.Domain.Clients;
@@ -48,6 +48,7 @@ namespace Billing.Contracts.Web
             services.AddScoped<CommercialOffersRepository>();
             services.AddScoped<ITranslations, Translations>();
             services.AddScoped<CommercialOfferRightsFilter>();
+            services.AddScoped<IImportedOffersService, ImportedOffersService>();
 
             services.AddHttpClient<ILegacyClientsRemoteService, LegacyClientsRemoteService>((provider, client) =>
             {

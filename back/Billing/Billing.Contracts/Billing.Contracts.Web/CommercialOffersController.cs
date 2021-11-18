@@ -9,6 +9,8 @@ using Rights.Web.Attributes;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Tools.Web;
+using Billing.Contracts.Application.Offers.Dtos;
+using Microsoft.AspNetCore.Http;
 
 namespace Billing.Contracts.Web
 {
@@ -17,11 +19,14 @@ namespace Billing.Contracts.Web
     public class CommercialOffersController
     {
         private readonly CommercialOffersRepository _commercialOffersRepository;
+        private readonly IImportedOffersService _importedOfferService;
 
-        public CommercialOffersController(CommercialOffersRepository commercialOffersRepository)
+        public CommercialOffersController(CommercialOffersRepository commercialOffersRepository, IImportedOffersService importedOfferService)
         {
             _commercialOffersRepository = commercialOffersRepository;
+            _importedOfferService = importedOfferService;
         }
+
 
         [HttpGet]
         [ForbidIfMissing(Operation.ReadCommercialOffers)]
@@ -99,6 +104,13 @@ namespace Billing.Contracts.Web
         {
             return _commercialOffersRepository.GetUsagesAsync(query.ToFilter());
         }
+
+        [Route("upload")]
+        [HttpPost, ForbidIfMissing(Operation.CreateCommercialOffers)]
+        public Task<IEnumerable<ImportedOfferDto>> UploadAsync([FromForm] FileDto file)
+        {
+            return _importedOfferService.UploadAsync(file.File);
+        }
     }
 
     public class CommercialOfferQuery
@@ -139,5 +151,10 @@ namespace Billing.Contracts.Web
                 OfferIds = OfferId
             };
         }
+    }
+
+    public class FileDto
+    {
+        public IFormFile File { get; set; }
     }
 }

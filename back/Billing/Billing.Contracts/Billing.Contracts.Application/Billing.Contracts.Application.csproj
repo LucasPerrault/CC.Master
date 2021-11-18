@@ -5,6 +5,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="CsvHelper" Version="27.1.1" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\..\..\Core\Salesforce\Salesforce.Domain\Salesforce.Domain.csproj" />
     <ProjectReference Include="..\Billing.Contracts.Domain\Billing.Contracts.Domain.csproj" />
   </ItemGroup>
