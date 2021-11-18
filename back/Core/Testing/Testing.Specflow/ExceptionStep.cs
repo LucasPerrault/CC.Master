@@ -1,35 +1,29 @@
-﻿using System;
-using TechTalk.SpecFlow;
+﻿using TechTalk.SpecFlow;
 using Xunit;
 
 namespace Testing.Specflow
 {
 
-    public class ExceptionResult
-    {
-        public Exception Exception { get; set; }
-    }
-
     [Binding]
     public class ExceptionStep
     {
-        private readonly ExceptionResult _exceptionResult;
-        public ExceptionStep(ExceptionResult exceptionResult)
+        private readonly SpecflowTestContext _testContext;
+        public ExceptionStep(SpecflowTestContext testContext)
         {
-            _exceptionResult = exceptionResult;
+            _testContext = testContext;
         }
 
         [Then(@"user should get an error containing '(.*)'")]
         public void ThenUserShouldGetErrorContaining(string errorMessageExtract)
         {
-            Assert.NotNull(_exceptionResult.Exception);
-            Assert.Contains(errorMessageExtract, _exceptionResult.Exception.Message);
+            Assert.NotNull(_testContext.ThrownException);
+            Assert.Contains(errorMessageExtract, _testContext.ThrownException.Message);
         }
 
         [Then(@"user should not get an error")]
         public void ThenUserShouldNotGetError()
         {
-            Assert.Null(_exceptionResult.Exception);
+            Assert.Null(_testContext.ThrownException);
         }
     }
 }
