@@ -42,8 +42,6 @@ namespace CloudControl.Web
             app.UseCertificateForwarding();
             app.UseRouting();
 
-            app.UseHttpsRedirection();
-
             app.UseMiddleware<SessionKeyAuthMiddleware>();
             app.UseAuthentication();
             app.UseMiddleware<BetaTesterDetectionMiddleware>();
