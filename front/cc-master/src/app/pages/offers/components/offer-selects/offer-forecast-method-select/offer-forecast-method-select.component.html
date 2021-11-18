@@ -8,7 +8,7 @@
 
   <lu-option-picker-advanced>
     <header class="lu-picker-header">
-      <lu-api-searcher></lu-api-searcher>
+      <lu-option-feeder [options]="forecastMethods"></lu-option-feeder>
     </header>
 
     <lu-option *luForOptions="let forecastMethod; trackBy: trackBy" [value]="forecastMethod">{{ forecastMethod }}</lu-option>

@@ -11,8 +11,8 @@ import {
   OfferBillingModeSelectModule,
   OfferBillingUnitSelectModule,
   OfferCurrencySelectModule,
-  OfferForecastMethodApiSelectModule,
-  OfferPricingMethodApiSelectModule, OfferTagApiSelectModule,
+  OfferForecastMethodSelectModule,
+  OfferPricingMethodSelectModule, OfferTagApiSelectModule,
   OfferTagAutocompleteSelectModule,
 } from '../../offer-selects';
 import { OfferCreationFormComponent } from './offer-creation-form.component';
@@ -30,8 +30,8 @@ import { OfferCreationFormComponent } from './offer-creation-form.component';
     OfferCurrencySelectModule,
     OfferTagApiSelectModule,
     OfferBillingUnitSelectModule,
-    OfferPricingMethodApiSelectModule,
-    OfferForecastMethodApiSelectModule,
+    OfferPricingMethodSelectModule,
+    OfferForecastMethodSelectModule,
     OfferTagAutocompleteSelectModule,
     OfferApiSelectModule,
     EditablePriceGridModule,

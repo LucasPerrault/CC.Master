@@ -42,14 +42,14 @@
     </label>
 
     <label class="textfield palette-grey is-required u-marginBottomStandard mod-longer">
-      <cc-offer-pricing-method-api-select [formControlName]="offerFormKey.PricingMethod" [required]="true">
-      </cc-offer-pricing-method-api-select>
+      <cc-offer-pricing-method-select [formControlName]="offerFormKey.PricingMethod" [required]="true">
+      </cc-offer-pricing-method-select>
       <span class="textfield-label">{{ 'offers_form_pricingMethod' | translate }}</span>
     </label>
 
     <label class="textfield palette-grey is-required u-marginBottomStandard mod-longer">
-      <cc-offer-forecast-method-api-select [formControlName]="offerFormKey.ForecastMethod" [required]="true">
-      </cc-offer-forecast-method-api-select>
+      <cc-offer-forecast-method-select [formControlName]="offerFormKey.ForecastMethod" [required]="true">
+      </cc-offer-forecast-method-select>
       <span class="textfield-label">{{ 'offers_form_forecast_method' | translate }}</span>
     </label>
   </div>

@@ -1,32 +1,30 @@
 import { ChangeDetectionStrategy, Component, forwardRef, Input, OnDestroy, OnInit } from '@angular/core';
 import { ControlValueAccessor, FormControl, NG_VALUE_ACCESSOR } from '@angular/forms';
-import { ALuApiService } from '@lucca-front/ng/api';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { OfferForecastMethodApiSelectService } from './offer-forecast-method-api-select.service';
+import { PricingMethod, pricingMethods } from '../../../enums/pricing-method.enum';
+
 
 @Component({
-  selector: 'cc-offer-forecast-method-api-select',
-  templateUrl: './offer-forecast-method-api-select.component.html',
-  styleUrls: ['offer-forecast-method-api-select.component.scss'],
+  selector: 'cc-offer-pricing-method-select',
+  templateUrl: './offer-pricing-method-select.component.html',
+  styleUrls: ['offer-pricing-method-select.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [
     {
-      provide: ALuApiService,
-      useClass: OfferForecastMethodApiSelectService,
-    },
-    {
       provide: NG_VALUE_ACCESSOR,
-      useExisting: forwardRef(() => OfferForecastMethodApiSelectComponent),
+      useExisting: forwardRef(() => OfferPricingMethodSelectComponent),
       multi: true,
     },
   ],
 })
-export class OfferForecastMethodApiSelectComponent implements OnInit, OnDestroy, ControlValueAccessor {
+export class OfferPricingMethodSelectComponent implements OnInit, OnDestroy, ControlValueAccessor {
   @Input() public required = false;
   @Input() public placeholder: string;
   @Input() public set disabled(isDisabled: boolean) { this.setDisabledState(isDisabled); }
+
+  public pricingMethods = pricingMethods;
 
   public formControl: FormControl = new FormControl();
   private destroy$: Subject<void> = new Subject<void>();
@@ -36,7 +34,7 @@ export class OfferForecastMethodApiSelectComponent implements OnInit, OnDestroy,
   public ngOnInit(): void {
     this.formControl.valueChanges
       .pipe(takeUntil(this.destroy$))
-      .subscribe(forecastMethod => this.onChange(forecastMethod));
+      .subscribe(pricingMethod => this.onChange(pricingMethod));
   }
 
   public ngOnDestroy(): void {
@@ -44,7 +42,7 @@ export class OfferForecastMethodApiSelectComponent implements OnInit, OnDestroy,
     this.destroy$.complete();
   }
 
-  public onChange: (forecastMethod: string) => void = () => {};
+  public onChange: (pricingMethod: PricingMethod) => void = () => {};
   public onTouch: () => void = () => {};
 
   public registerOnChange(fn: () => void): void {
@@ -55,9 +53,9 @@ export class OfferForecastMethodApiSelectComponent implements OnInit, OnDestroy,
     this.onTouch = fn;
   }
 
-  public writeValue(forecastMethod: string): void {
-    if (!!forecastMethod && this.formControl.value !== forecastMethod) {
-      this.formControl.setValue(forecastMethod);
+  public writeValue(pricingMethod: PricingMethod): void {
+    if (!!pricingMethod && this.formControl.value !== pricingMethod) {
+      this.formControl.setValue(pricingMethod);
     }
   }
 
@@ -69,7 +67,7 @@ export class OfferForecastMethodApiSelectComponent implements OnInit, OnDestroy,
     this.formControl.enable();
   }
 
-  public trackBy(index: number, forecastMethod: string): string {
-    return forecastMethod;
+  public trackBy(index: number, pricingMethod: string): string {
+    return pricingMethod;
   }
 }

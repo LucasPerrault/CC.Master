@@ -3,26 +3,27 @@ import { ControlValueAccessor, FormControl, NG_VALUE_ACCESSOR } from '@angular/f
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
+import { ForecastMethod, forecastMethods } from '../../../enums/forecast-method.enum';
 
 @Component({
-  selector: 'cc-offer-pricing-method-api-select',
-  templateUrl: './offer-pricing-method-api-select.component.html',
-  styleUrls: ['offer-pricing-method-api-select.component.scss'],
+  selector: 'cc-offer-forecast-method-select',
+  templateUrl: './offer-forecast-method-select.component.html',
+  styleUrls: ['offer-forecast-method-select.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,
-      useExisting: forwardRef(() => OfferPricingMethodApiSelectComponent),
+      useExisting: forwardRef(() => OfferForecastMethodSelectComponent),
       multi: true,
     },
   ],
 })
-export class OfferPricingMethodApiSelectComponent implements OnInit, OnDestroy, ControlValueAccessor {
+export class OfferForecastMethodSelectComponent implements OnInit, OnDestroy, ControlValueAccessor {
   @Input() public required = false;
   @Input() public placeholder: string;
   @Input() public set disabled(isDisabled: boolean) { this.setDisabledState(isDisabled); }
 
-  public api = '/api/v3/offers/pricingMethod';
+  public forecastMethods = forecastMethods;
 
   public formControl: FormControl = new FormControl();
   private destroy$: Subject<void> = new Subject<void>();
@@ -32,7 +33,7 @@ export class OfferPricingMethodApiSelectComponent implements OnInit, OnDestroy, 
   public ngOnInit(): void {
     this.formControl.valueChanges
       .pipe(takeUntil(this.destroy$))
-      .subscribe(pricingMethod => this.onChange(pricingMethod));
+      .subscribe(forecastMethod => this.onChange(forecastMethod));
   }
 
   public ngOnDestroy(): void {
@@ -40,7 +41,7 @@ export class OfferPricingMethodApiSelectComponent implements OnInit, OnDestroy, 
     this.destroy$.complete();
   }
 
-  public onChange: (pricingMethod: string) => void = () => {};
+  public onChange: (forecastMethod: ForecastMethod) => void = () => {};
   public onTouch: () => void = () => {};
 
   public registerOnChange(fn: () => void): void {
@@ -51,9 +52,9 @@ export class OfferPricingMethodApiSelectComponent implements OnInit, OnDestroy, 
     this.onTouch = fn;
   }
 
-  public writeValue(pricingMethod: string): void {
-    if (!!pricingMethod && this.formControl.value !== pricingMethod) {
-      this.formControl.setValue(pricingMethod);
+  public writeValue(forecastMethod: ForecastMethod): void {
+    if (!!forecastMethod && this.formControl.value !== forecastMethod) {
+      this.formControl.setValue(forecastMethod);
     }
   }
 
@@ -65,7 +66,7 @@ export class OfferPricingMethodApiSelectComponent implements OnInit, OnDestroy, 
     this.formControl.enable();
   }
 
-  public trackBy(index: number, pricingMethod: string): string {
-    return pricingMethod;
+  public trackBy(index: number, forecastMethod: ForecastMethod): ForecastMethod {
+    return forecastMethod;
   }
 }

@@ -13,11 +13,11 @@ import {
 } from '@lucca-front/ng/option';
 import { LuSelectInputModule } from '@lucca-front/ng/select';
 
-import { OfferPricingMethodApiSelectComponent } from './offer-pricing-method-api-select.component';
+import { OfferPricingMethodSelectComponent } from './offer-pricing-method-select.component';
 
 @NgModule({
   declarations: [
-    OfferPricingMethodApiSelectComponent,
+    OfferPricingMethodSelectComponent,
   ],
   imports: [
     CommonModule,
@@ -33,6 +33,6 @@ import { OfferPricingMethodApiSelectComponent } from './offer-pricing-method-api
     LuOptionPagerModule,
     LuInputClearerModule,
   ],
-  exports: [OfferPricingMethodApiSelectComponent],
+  exports: [OfferPricingMethodSelectComponent],
 })
-export class OfferPricingMethodApiSelectModule { }
+export class OfferPricingMethodSelectModule { }
