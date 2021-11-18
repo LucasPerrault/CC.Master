@@ -1,7 +1,7 @@
 import { HttpClient, HttpContext, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { BYPASS_INTERCEPTOR } from '@cc/aspects/errors';
 import { ApiV3DateService, IHttpApiV3CollectionCount, IHttpApiV3CollectionCountResponse, IHttpApiV3Response } from '@cc/common/queries';
-import { IPriceList } from '@cc/domain/billing/offers';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
@@ -10,9 +10,7 @@ import { IOfferEditionForm } from '../components/offer-edition/offer-edition-tab
 import { detailedOfferFields, IDetailedOffer } from '../models/detailed-offer.interface';
 import { IOfferCreationDto } from '../models/offer-creation-dto.interface';
 import { IOfferEditionDto } from '../models/offer-edition-dto.interface';
-import { IPriceListsOffer, priceListsOfferFields } from '../models/price-lists-offer.interface';
 import { PriceListsDataService } from './price-lists-data.service';
-import { BYPASS_INTERCEPTOR } from '@cc/aspects/errors';
 
 class OfferApiEndpoint {
   public static base = '/api/v3/offers';
@@ -40,13 +38,6 @@ export class OffersDataService {
     const params = new HttpParams().set('fields', detailedOfferFields);
     const context = new HttpContext().set(BYPASS_INTERCEPTOR, true);
     return this.httpClient.get<IHttpApiV3Response<IDetailedOffer>>(url, { params, context }).pipe(map(res => res.data));
-  }
-
-  public getPriceLists$(offerId: number): Observable<IPriceList[]> {
-    const url = OfferApiEndpoint.id(offerId);
-    const params = new HttpParams().set('fields', priceListsOfferFields);
-    return this.httpClient.get<IHttpApiV3Response<IPriceListsOffer>>(url, { params })
-      .pipe(map(res => res.data.priceLists));
   }
 
   public delete$(offerId: number): Observable<void> {

@@ -5,7 +5,6 @@ import { TranslatePipe } from '@cc/aspects/translate';
 import { IPriceList } from '@cc/domain/billing/offers';
 import { LuModal } from '@lucca-front/ng/modal';
 import { Observable } from 'rxjs';
-import { take } from 'rxjs/operators';
 
 import { IDetailedOffer } from '../../../models/detailed-offer.interface';
 import { IOfferValidationContext } from '../../../models/offer-validation-context.interface';

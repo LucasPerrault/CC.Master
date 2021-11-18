@@ -10,14 +10,12 @@ import {
   ValidationErrors,
   Validator,
 } from '@angular/forms';
-import { IOffer } from '@cc/domain/billing/offers';
 import { BehaviorSubject, Subject } from 'rxjs';
-import { filter, finalize, map, switchMap, takeUntil, tap } from 'rxjs/operators';
+import { filter, takeUntil } from 'rxjs/operators';
 
 import { IPriceRowForm } from '../../models/price-list-form.interface';
-import { OffersDataService } from '../../services/offers-data.service';
 import { PriceListsValidators, PriceListValidationError } from '../../services/price-lists.validators';
-import { PriceListsTimelineService } from '../../services/price-lists-timeline.service';
+import { IPriceListOfferSelectOption } from '../offer-selects/offer-price-list-api-select/offer-price-list-selection.interface';
 
 enum PriceRowFormKey {
   MaxIncludedCount = 'maxIncludedCount',
@@ -67,8 +65,7 @@ export class EditablePriceGridComponent implements OnInit, OnDestroy, ControlVal
     return this.formArray.length > 1;
   }
 
-  public offer: FormControl = new FormControl();
-  public isPriceListsLoading$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+  public duplicatedOffer: FormControl = new FormControl();
 
   public formArrayKey = 'priceRows';
   public formArray: FormArray = new FormArray([]);
@@ -92,7 +89,7 @@ export class EditablePriceGridComponent implements OnInit, OnDestroy, ControlVal
 
   private destroy$: Subject<void> = new Subject<void>();
 
-  constructor(private dataService: OffersDataService) { }
+  constructor() { }
 
   public ngOnInit(): void {
     this.formGroup.valueChanges
@@ -103,15 +100,9 @@ export class EditablePriceGridComponent implements OnInit, OnDestroy, ControlVal
       .pipe(takeUntil(this.destroy$))
       .subscribe(readonly => this.setReadOnlyState(readonly));
 
-    this.offer.valueChanges
-      .pipe(
-        takeUntil(this.destroy$), filter(o => !!o),
-        tap(() => this.isPriceListsLoading$.next(true)),
-        switchMap((o: IOffer) => this.dataService.getPriceLists$(o.id)
-          .pipe(finalize(() => this.isPriceListsLoading$.next(false)))),
-        map(priceLists => PriceListsTimelineService.getCurrent(priceLists)),
-      )
-      .subscribe(priceList => this.reset(priceList.rows));
+    this.duplicatedOffer.valueChanges
+      .pipe(takeUntil(this.destroy$), filter(o => !!o))
+      .subscribe((offer: IPriceListOfferSelectOption) => this.reset(offer.priceList.rows));
   }
 
   public ngOnDestroy(): void {

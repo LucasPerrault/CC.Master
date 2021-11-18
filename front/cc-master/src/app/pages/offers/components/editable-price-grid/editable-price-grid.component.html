@@ -1,13 +1,12 @@
 <div class="u-displayFlex u-alignItemsCenter">
   <label class="textfield palette-grey mod-longer" *ngIf="(readonly$ | async) === false">
-    <cc-offer-api-select [formControl]="offer"></cc-offer-api-select>
+    <cc-offer-price-list-api-select [formControl]="duplicatedOffer"></cc-offer-price-list-api-select>
     <span class="textfield-label">{{ "offers_form_pricegrid_offer_label" | translate }}</span>
   </label>
-  <div class="u-marginTopStandard loading" *ngIf="isPriceListsLoading$ | async"></div>
 </div>
 
 
-<form [formGroup]="formGroup" *ngIf="(isPriceListsLoading$ | async) === false">
+<form [formGroup]="formGroup">
   <table class="table" [ngClass]="{ 'mod-error': hasFormErrors }" #tableElement>
     <thead class="table-head">
     <tr class="table-head-row">

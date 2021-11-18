@@ -1,0 +1,22 @@
+<lu-select class="textfield-input" [formControl]="formControl" [placeholder]="placeholder">
+
+  <ng-container *luDisplayer="let value">{{ value.name }}</ng-container>
+
+  <lu-option-picker-advanced>
+    <header class="lu-picker-header">
+      <lu-api-paged-searcher [api]="api"></lu-api-paged-searcher>
+    </header>
+
+    <lu-option *luForOptions="let offer; trackBy: trackBy" [value]="offer">
+      <div class="u-displayFlex u-flexDirectionColumn">
+        {{ offer?.name }}
+        <span class="mod-textSmall">
+          {{ 'offers_price_list_api_select_option_name' | translate : { start: offer.priceList.startsOn | date : 'MMMM yyyy' } }}
+        </span>
+      </div>
+    </lu-option>
+
+  </lu-option-picker-advanced>
+  <lu-input-clearer></lu-input-clearer>
+</lu-select>
+
