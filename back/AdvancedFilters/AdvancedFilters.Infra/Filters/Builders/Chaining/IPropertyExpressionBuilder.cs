@@ -19,7 +19,7 @@ namespace AdvancedFilters.Infra.Filters.Builders.Chaining
             => matching switch
             {
                 ItemsMatching.Any => values => values.AsQueryable().Any(itemPredicate),
-                ItemsMatching.All => values => values.AsQueryable().All(itemPredicate),
+                ItemsMatching.All => values => values.Any() && values.AsQueryable().All(itemPredicate),
                 _ => throw new MissingItemsMatchedFieldException<TValue>()
             };
     }
