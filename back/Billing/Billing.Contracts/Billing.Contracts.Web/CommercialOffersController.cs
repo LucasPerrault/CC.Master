@@ -1,8 +1,7 @@
 using Billing.Contracts.Application.Offers;
 using Billing.Contracts.Domain.Offers;
-using Billing.Contracts.Domain.Offers.Filtering;
+using Billing.Contracts.Domain.Offers.Interfaces;
 using Billing.Contracts.Domain.Offers.Parsing;
-using Lucca.Core.Api.Abstractions.Paging;
 using Lucca.Core.Api.Web.ModelBinding.Sorting;
 using Microsoft.AspNetCore.Mvc;
 using Rights.Domain;
@@ -13,6 +12,8 @@ using System.Threading.Tasks;
 using Tools.Web;
 using Billing.Contracts.Application.Offers.Dtos;
 using Billing.Contracts.Domain.Offers.Interfaces;
+using Billing.Contracts.Domain.Offers.Filtering;
+using Lucca.Core.Api.Abstractions.Paging;
 using Microsoft.AspNetCore.Http;
 
 namespace Billing.Contracts.Web

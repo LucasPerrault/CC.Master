@@ -1,6 +1,5 @@
 using Billing.Contracts.Application;
 using Billing.Contracts.Application.Clients;
-using Billing.Contracts.Application.Offers;
 using Billing.Contracts.Domain.Clients;
 using Billing.Contracts.Domain.Clients.Interfaces;
 using Billing.Contracts.Domain.Contracts;
