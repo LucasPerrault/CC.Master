@@ -22,7 +22,7 @@
           </button>
         </div>
       </div>
-      <cc-price-list [priceRows]="priceList.rows" [currency]="offer.currency"></cc-price-list>
+      <cc-price-list [priceRows]="priceList.rows" [currency]="getCurrency(offer.currencyId)"></cc-price-list>
     </div>
   </ng-container>
 </div>

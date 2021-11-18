@@ -1,13 +1,17 @@
 import { HttpClient, HttpContext, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BYPASS_INTERCEPTOR } from '@cc/aspects/errors';
-import { ApiV3DateService, IHttpApiV3CollectionCount, IHttpApiV3CollectionCountResponse, IHttpApiV3Response } from '@cc/common/queries';
+import {
+  ApiV3DateService,
+  IHttpApiV4CollectionCountResponse,
+  IHttpApiV4CollectionResponse,
+} from '@cc/common/queries';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 import { IOfferCreationForm } from '../components/offer-creation/offer-creation-form/offer-creation-form.interface';
 import { IOfferEditionForm } from '../components/offer-edition/offer-edition-tab/offer-edition-form/offer-edition-form.interface';
-import { detailedOfferFields, IDetailedOffer } from '../models/detailed-offer.interface';
+import { IDetailedOffer } from '../models/detailed-offer.interface';
 import { IOfferCreationDto } from '../models/offer-creation-dto.interface';
 import { IOfferEditionDto } from '../models/offer-edition-dto.interface';
 import { PriceListsDataService } from './price-lists-data.service';
@@ -26,18 +30,14 @@ export class OffersDataService {
   ) {
   }
 
-  public getOffers$(params: HttpParams): Observable<IHttpApiV3CollectionCount<IDetailedOffer>> {
-    params = params.set('fields', detailedOfferFields);
-
-    return this.httpClient.get<IHttpApiV3CollectionCountResponse<IDetailedOffer>>(OfferApiEndpoint.base, { params })
-      .pipe(map(res => res.data));
+  public getOffers$(params: HttpParams): Observable<IHttpApiV4CollectionCountResponse<IDetailedOffer>> {
+    return this.httpClient.get<IHttpApiV4CollectionCountResponse<IDetailedOffer>>(OfferApiEndpoint.base, { params });
   }
 
   public getById$(offerId: number): Observable<IDetailedOffer> {
     const url = OfferApiEndpoint.id(offerId);
-    const params = new HttpParams().set('fields', detailedOfferFields);
     const context = new HttpContext().set(BYPASS_INTERCEPTOR, true);
-    return this.httpClient.get<IHttpApiV3Response<IDetailedOffer>>(url, { params, context }).pipe(map(res => res.data));
+    return this.httpClient.get<IDetailedOffer>(url, { context });
   }
 
   public delete$(offerId: number): Observable<void> {

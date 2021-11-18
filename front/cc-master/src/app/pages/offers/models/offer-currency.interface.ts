@@ -14,12 +14,12 @@ export enum CurrencyCode {
 
 export const currencies: IOfferCurrency[] = [
   {
-    code: 978,
+    code: CurrencyCode.EUR,
     name: 'EUR',
     symbol: '€',
   },
   {
-    code: 756,
+    code: CurrencyCode.CHF,
     symbol: 'CHF',
     name: 'CHF',
   },

@@ -12,6 +12,7 @@ import { OfferListService } from './services/offer-list.service';
 import { OfferRestrictionsService } from './services/offer-restrictions.service';
 import { OffersApiMappingService } from './services/offers-api-mapping.service';
 import { OffersDataService } from './services/offers-data.service';
+import { ApiStandard } from '@cc/common/queries';
 
 // It is defined in the offer model in the back project.
 // It is used for the default selection.
@@ -73,6 +74,7 @@ export class OffersComponent implements OnInit {
     this.paginatedOffers = this.pagingService.paginate<IDetailedOffer>(
       (httpParams) => this.getPaginatedOffers$(httpParams),
       { page: defaultPagingParams.page, limit: 100 },
+      ApiStandard.V4,
     );
 
     this.offerListService.refresh$

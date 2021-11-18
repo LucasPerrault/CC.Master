@@ -7,6 +7,7 @@ import { LuModal } from '@lucca-front/ng/modal';
 import { Observable } from 'rxjs';
 
 import { IDetailedOffer } from '../../../models/detailed-offer.interface';
+import { getCurrency, IOfferCurrency } from '../../../models/offer-currency.interface';
 import { IOfferValidationContext } from '../../../models/offer-validation-context.interface';
 import { OfferRestrictionsService } from '../../../services/offer-restrictions.service';
 import { OffersEditionStoreService } from '../offers-edition-store.service';
@@ -48,6 +49,10 @@ export class OfferPriceListsTabComponent implements OnInit {
   ) { }
 
   public ngOnInit(): void {
+  }
+
+  public getCurrency(currencyId: number): IOfferCurrency {
+    return getCurrency(currencyId);
   }
 
   public canDelete(priceList: IPriceList): boolean {

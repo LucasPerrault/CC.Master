@@ -8,6 +8,7 @@ import { ContractsRoutingKey } from '../../../contracts/contracts-manage/service
 import { BillingMode, billingModes, IBillingMode } from '../../enums/billing-mode.enum';
 import { OfferSortParamKey } from '../../enums/offer-sort-param-key.enum';
 import { IDetailedOffer } from '../../models/detailed-offer.interface';
+import { getCurrency } from '../../models/offer-currency.interface';
 import { OfferRestrictionsService } from '../../services/offer-restrictions.service';
 import { OfferDeletionComponent } from '../offer-deletion/offer-deletion.component';
 
@@ -50,6 +51,10 @@ export class OfferListComponent implements OnInit {
   public getBillingMode(mode: BillingMode): string {
     const billingMode: IBillingMode = billingModes.find(m => m.id === mode);
     return this.translatePipe.transform(billingMode.name);
+  }
+
+  public getCurrencyName(currencyId: number): string {
+    return getCurrency(currencyId)?.name;
   }
 
   public redirectToContracts(offerId: number): void {

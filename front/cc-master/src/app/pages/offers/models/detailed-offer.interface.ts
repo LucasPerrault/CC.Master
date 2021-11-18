@@ -1,38 +1,22 @@
-import { IOffer, IPriceList, offerFields, priceListFields } from '@cc/domain/billing/offers';
+import { IOffer, IPriceList } from '@cc/domain/billing/offers';
 
 import { BillingMode } from '../enums/billing-mode.enum';
 import { BillingUnit } from '../enums/billing-unit.enum';
-import { IOfferCurrency, offerCurrencyFields } from './offer-currency.interface';
-import { IOfferProduct, offerProductFields } from './offer-product.interface';
-
-export const detailedOfferFields = [
-  'collection.count',
-  offerFields,
-  'tag',
-  'billingMode',
-  'currencyID',
-  'isCatalog',
-  'pricingMethod',
-  'unit',
-  'productId',
-  'forecastMethod',
-  'activeContractNumber',
-  `currency[${ offerCurrencyFields }]`,
-  `product[${ offerProductFields }]`,
-  `priceLists[${ priceListFields }]`,
-].join(',');
+import { ForecastMethod } from '../enums/forecast-method.enum';
+import { PricingMethod } from '../enums/pricing-method.enum';
+import { IOfferProduct } from './offer-product.interface';
 
 export interface IDetailedOffer extends IOffer {
-  tag: string;
-  billingMode: BillingMode;
-  currencyID: number;
-  isCatalog: boolean;
-  pricingMethod: string;
-  unit: BillingUnit;
   productId: number;
-  forecastMethod: string;
-  activeContractNumber: number;
-  currency: IOfferCurrency;
   product: IOfferProduct;
+  billingMode: BillingMode;
+  pricingMethod: PricingMethod;
+  forecastMethod: ForecastMethod;
+  tag: string;
+  isCatalog: boolean;
+  currencyId: number;
+  isArchived: boolean;
+  billingUnit: BillingUnit;
+  activeContractNumber: number;
   priceLists: IPriceList[];
 }

@@ -46,7 +46,7 @@
     <td class="table-body-row-cell">{{ getBillingMode(offer.billingMode) }}</td>
     <td class="table-body-row-cell">{{ offer.pricingMethod }}</td>
     <td class="table-body-row-cell">{{ offer.forecastMethod }}</td>
-    <td class="table-body-row-cell">{{ offer.currency.name }}</td>
+    <td class="table-body-row-cell">{{ getCurrencyName(offer.currencyId) }}</td>
     <td class="table-body-row-cell mod-alignRight" (click)="$event.stopPropagation()">
       <button class="link" (click)="redirectToContracts(offer.id)">{{ offer.activeContractNumber }}</button>
     </td>

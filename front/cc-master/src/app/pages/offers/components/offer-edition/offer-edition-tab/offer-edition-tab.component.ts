@@ -10,6 +10,7 @@ import { map, take } from 'rxjs/operators';
 import { getBillingMode } from '../../../enums/billing-mode.enum';
 import { getBillingUnit } from '../../../enums/billing-unit.enum';
 import { IDetailedOffer } from '../../../models/detailed-offer.interface';
+import { getCurrency } from '../../../models/offer-currency.interface';
 import { IOfferValidationContext } from '../../../models/offer-validation-context.interface';
 import { IPriceListForm } from '../../../models/price-list-form.interface';
 import { PriceListsTimelineService } from '../../../services/price-lists-timeline.service';
@@ -75,9 +76,9 @@ export class OfferEditionTabComponent implements OnInit {
       name: offer.name,
       product: offer.product,
       billingMode: getBillingMode(offer.billingMode),
-      currency: offer.currency,
+      currency: getCurrency(offer.currencyId),
       tag: offer.tag,
-      billingUnit: getBillingUnit(offer.unit),
+      billingUnit: getBillingUnit(offer.billingUnit),
       pricingMethod: offer.pricingMethod,
       forecastMethod: offer.forecastMethod,
       priceList: this.toPriceListForm(PriceListsTimelineService.getCurrent(offer.priceLists)),
