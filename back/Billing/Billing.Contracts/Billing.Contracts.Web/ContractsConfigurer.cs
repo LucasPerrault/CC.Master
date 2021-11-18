@@ -1,5 +1,6 @@
-using Billing.Contracts.Application;
+﻿using Billing.Contracts.Application;
 using Billing.Contracts.Application.Clients;
+using Billing.Contracts.Application.Offers;
 using Billing.Contracts.Domain.Clients;
 using Billing.Contracts.Domain.Clients.Interfaces;
 using Billing.Contracts.Domain.Contracts;
@@ -50,6 +51,9 @@ namespace Billing.Contracts.Web
             services.AddScoped<ITranslations, Translations>();
             services.AddScoped<CommercialOfferRightsFilter>();
             services.AddScoped<IImportedOffersService, ImportedOffersService>();
+            services.AddScoped<CommercialOfferRightsFilter>();
+            services.AddScoped<Translations>();
+
             services.AddScoped<IOfferRowsService, OfferRowsService>();
             services.AddSingleton<ParsedOffersService>();
 
