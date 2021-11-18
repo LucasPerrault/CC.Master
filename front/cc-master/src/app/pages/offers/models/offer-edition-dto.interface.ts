@@ -10,5 +10,4 @@ export interface IOfferEditionDto {
   tag: string;
   currencyID: number;
   forecastMethod: string;
-  sageBusiness: string;
 }

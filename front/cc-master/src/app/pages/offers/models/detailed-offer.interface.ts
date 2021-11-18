@@ -17,7 +17,6 @@ export const detailedOfferFields = [
   'productId',
   'forecastMethod',
   'activeContractNumber',
-  'sageBusiness',
   `currency[${ offerCurrencyFields }]`,
   `product[${ offerProductFields }]`,
   `priceLists[${ priceListFields }]`,
@@ -33,7 +32,6 @@ export interface IDetailedOffer extends IOffer {
   productId: number;
   forecastMethod: string;
   activeContractNumber: number;
-  sageBusiness: string;
   currency: IOfferCurrency;
   product: IOfferProduct;
   priceLists: IPriceList[];

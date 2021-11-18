@@ -10,7 +10,6 @@ export interface IOfferEditionForm {
   product: IProduct;
   billingUnit: IBillingUnit;
   currency: IOfferCurrency;
-  sageBusiness: string;
   tag: string;
   billingMode: IBillingMode;
   pricingMethod: string;

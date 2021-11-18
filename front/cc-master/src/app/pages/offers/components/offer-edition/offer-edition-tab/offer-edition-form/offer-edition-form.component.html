@@ -29,12 +29,6 @@
     </label>
 
     <label class="textfield palette-grey is-required u-marginBottomStandard mod-longer">
-      <input class="textfield-input" type="text"
-             [formControlName]="offerFormKey.SageBusiness" [required]="true">
-      <span class="textfield-label">{{ 'offers_form_sageBusiness' | translate }}</span>
-    </label>
-
-    <label class="textfield palette-grey is-required u-marginBottomStandard mod-longer">
       <cc-offer-tag-autocomplete-select [formControlName]="offerFormKey.Tag" [required]="true"></cc-offer-tag-autocomplete-select>
       <span class="textfield-label">{{ 'offers_form_tag' | translate }}</span>
     </label>

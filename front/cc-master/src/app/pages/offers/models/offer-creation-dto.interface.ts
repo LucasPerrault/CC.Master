@@ -10,7 +10,6 @@ export interface IOfferCreationDto {
   priceLists: IPriceListCreationDto[];
   pricingMethod: string;
   productId: number;
-  sageBusiness: string;
   tag: string;
   unit: BillingUnit;
 }

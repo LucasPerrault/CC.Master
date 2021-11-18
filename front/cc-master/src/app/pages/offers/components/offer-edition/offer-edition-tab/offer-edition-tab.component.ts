@@ -76,7 +76,6 @@ export class OfferEditionTabComponent implements OnInit {
       product: offer.product,
       billingMode: getBillingMode(offer.billingMode),
       currency: offer.currency,
-      sageBusiness: offer.sageBusiness,
       tag: offer.tag,
       billingUnit: getBillingUnit(offer.unit),
       pricingMethod: offer.pricingMethod,

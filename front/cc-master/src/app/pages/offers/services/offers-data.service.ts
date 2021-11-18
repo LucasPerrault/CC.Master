@@ -66,7 +66,6 @@ export class OffersDataService {
       pricingMethod: form.pricingMethod,
       forecastMethod: form.forecastMethod,
       billingMode: form.billingMode.id,
-      sageBusiness: form.sageBusiness,
       unit: form.billingUnit.id,
       priceLists: [this.listsDataService.toCreationDto(form.priceList)],
     };
@@ -81,7 +80,6 @@ export class OffersDataService {
       pricingMethod: form.pricingMethod,
       forecastMethod: form.forecastMethod,
       billingMode: form.billingMode.id,
-      sageBusiness: form.sageBusiness,
       unit: form.billingUnit.id,
     };
   }
