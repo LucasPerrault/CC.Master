@@ -160,9 +160,9 @@ export class OfferImportTableComponent implements OnInit, OnDestroy, ControlValu
       pricingMethod: offer.pricingMethod,
       category: offer.category,
       product: offer.product,
-      currencyID: offer.currency.code,
-      billingMode: offer.billingMode.id,
-      billingUnit: offer.billingUnit.id,
+      currencyID: offer.currency?.code,
+      billingMode: offer.billingMode?.id,
+      billingUnit: offer.billingUnit?.id,
     }));
   }
 }
