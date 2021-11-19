@@ -66,7 +66,12 @@ namespace Billing.Contracts.Infra.Offers
             Map(o => o.BillingMode).Name("mode decompte", "mode décompte").TypeConverter(new NullableEnumConverter<ParsedBillingMode>());
             Map(o => o.PricingMethod).Name("methode de pricing", "méthode de pricing").TypeConverter(new NullableEnumConverter<ParsedPricingMethod>());
             Map(o => o.ForecastMethod).Name("algorithme previsionnel", "algorithme prévisionnel").TypeConverter(new NullableEnumConverter<ParsedForecastMethod>());
-            Map(o => o.StartsOn).Name("date de début de la grille", "date de debut de la grille").TypeConverterOption.Format("dd/MM/yyyy");
+            Map(o => o.StartsOn).Name("date de début de la grille", "date de debut de la grille")
+                .TypeConverterOption.Format("dd/MM/yyyy")
+                .TypeConverterOption.Format("d/MM/yyyy")
+                .TypeConverterOption.Format("dd/M/yyyy")
+                .TypeConverterOption.Format("d/M/yyyy");
+
             Map(o => o.MinIncludedCount).Name("borne inferieure", "borne inférieure");
             Map(o => o.MaxIncludedCount).Name("borne superieure", "borne supérieure");
             Map(o => o.UnitPrice).Name("prix unitaire");
