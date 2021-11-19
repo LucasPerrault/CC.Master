@@ -1,49 +1,40 @@
-<label class="textfield {{ textfieldClass }}" [ngClass]="{ 'is-required': required }">
-  <lu-select [(ngModel)]="model"
-             (ngModelChange)="update($event)"
-             #productCtrl="ngModel"
-             class="textfield-input"
-             [placeholder]="placeholder"
-             (onOpen)="setProductsDisplayed()"
-             [disabled]="disabled"
-             [multiple]="multiple"
-             [required]="required">
+<lu-select [(ngModel)]="model"
+           (ngModelChange)="update($event)"
+           class="textfield-input"
+           [placeholder]="placeholder"
+           (onOpen)="setProductsDisplayed()"
+           [disabled]="disabled"
+           [multiple]="multiple"
+           [required]="required">
 
-    <ng-container *luDisplayer="let value; multiple: multiple">
-      <ng-container *ngIf="multiple; else notMultiple">
-        <span *ngIf="value?.length !== 1; else: singleSelection">
-        <span class="label">{{ value.length }}</span>
-          {{ 'front_select_products_selection' | translate: { count: value.length } }}
-        </span>
-        <ng-template #singleSelection>{{value[0].name }}</ng-template>
-      </ng-container>
-
-      <ng-template #notMultiple>{{ value.name }}</ng-template>
+  <ng-container *luDisplayer="let value; multiple: multiple">
+    <ng-container *ngIf="multiple; else notMultiple">
+      <span *ngIf="value?.length !== 1; else: singleSelection">
+      <span class="label">{{ value.length }}</span>
+        {{ 'front_select_products_selection' | translate: { count: value.length } }}
+      </span>
+      <ng-template #singleSelection>{{value[0].name }}</ng-template>
     </ng-container>
 
-    <lu-option-picker-advanced>
-      <header class="lu-picker-header">
-        <lu-api-paged-searcher [api]="apiUrl" [filters]="filtersToExcludeSelection"></lu-api-paged-searcher>
-      </header>
+    <ng-template #notMultiple>{{ value.name }}</ng-template>
+  </ng-container>
 
-      <lu-option-pager *ngIf="multiple"></lu-option-pager>
-      <ng-container *ngIf="multiple">
-        <lu-option *ngFor="let productSelected of productsSelected" [value]="productSelected" selected>
-          {{ productSelected.name }}
-        </lu-option>
-      </ng-container>
+  <lu-option-picker-advanced>
+    <header class="lu-picker-header">
+      <lu-api-paged-searcher [api]="apiUrl" [filters]="filtersToExcludeSelection"></lu-api-paged-searcher>
+    </header>
 
-      <lu-option *luForOptions="let product; trackBy: trackBy" [value]="product">
-        {{product.name}}
+    <lu-option-pager *ngIf="multiple"></lu-option-pager>
+    <ng-container *ngIf="multiple">
+      <lu-option *ngFor="let productSelected of productsSelected" [value]="productSelected" selected>
+        {{ productSelected.name }}
       </lu-option>
+    </ng-container>
 
-    </lu-option-picker-advanced>
-    <lu-input-clearer></lu-input-clearer>
-  </lu-select>
-  <span class="textfield-label" *ngIf="isFormDisplayMode">{{ label }}</span>
-  <span class="textfield-messages" *ngIf="productCtrl.touched && productCtrl.hasError('required')">
-    <span class="textfield-messages-error">
-      {{ "front_select_products_errorMessage_required" | translate }}
-    </span>
-  </span>
-</label>
+    <lu-option *luForOptions="let product; trackBy: trackBy" [value]="product">
+      {{product.name}}
+    </lu-option>
+
+  </lu-option-picker-advanced>
+  <lu-input-clearer></lu-input-clearer>
+</lu-select>

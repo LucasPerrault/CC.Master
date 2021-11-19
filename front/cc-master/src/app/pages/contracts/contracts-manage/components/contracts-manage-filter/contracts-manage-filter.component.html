@@ -29,9 +29,11 @@
   </div>
 
   <div class="grid-lg12 u-displayFlex u-flexWrapWrap" *ngIf="showAdditionalFilters">
-    <cc-product-api-select [formControlName]="filterKey.Products" [displayMode]="selectMode.Filter"
-                           [multiple]="true" textfieldClass="palette-grey mod-outlined mod-inline u-marginTopSmaller mod-long">
-    </cc-product-api-select>
+    <label class="textfield palette-grey mod-outlined mod-inline u-marginTopSmaller mod-long">
+      <cc-product-api-select [formControlName]="filterKey.Products" [multiple]="true"
+                             [placeholder]="'front_select_products_label' | translate">
+      </cc-product-api-select>
+    </label>
 
     <label class="textfield palette-grey mod-outlined mod-inline u-marginTopSmaller mod-long">
       <cc-offer-api-select [formControlName]="filterKey.Offers"

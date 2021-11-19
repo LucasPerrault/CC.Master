@@ -27,9 +27,12 @@
         </label>
       </td>
 			<td class="table-body-row-cell">
-        <cc-product-api-select textfieldClass="palette-grey mod-outlined mod-readonly"
-                               [formControlName]="formKey.Product" [required]="true">
-        </cc-product-api-select>
+        <label class="textfield palette-grey mod-outlined mod-readonly is-required">
+          <cc-product-api-select [formControlName]="formKey.Product"
+                                 [required]="true"
+                                 [placeholder]="'front_select_product_label' | translate">
+          </cc-product-api-select>
+        </label>
       </td>
 			<td class="table-body-row-cell">
         <label class="textfield palette-grey mod-outlined mod-readonly">

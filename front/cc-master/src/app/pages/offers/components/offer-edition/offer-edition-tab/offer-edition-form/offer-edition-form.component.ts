@@ -9,7 +9,6 @@ import {
   ValidationErrors,
   Validator,
 } from '@angular/forms';
-import { SelectDisplayMode } from '@cc/common/forms';
 import { ELuDateGranularity } from '@lucca-front/ng/core';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
@@ -63,7 +62,6 @@ export class OfferEditionFormComponent implements OnInit, OnDestroy, ControlValu
   public offerFormKey = OfferFormKey;
   public priceListFormKey = PriceListFormKey;
   public granularity = ELuDateGranularity;
-  public formMode = SelectDisplayMode.Form;
 
   private destroy$: Subject<void> = new Subject<void>();
 
@@ -116,6 +114,11 @@ export class OfferEditionFormComponent implements OnInit, OnDestroy, ControlValu
     if (this.formGroup.invalid) {
       return { invalid: true };
     }
+  }
+
+  public hasRequiredError(formKey: OfferFormKey): boolean {
+    const ctrl = this.formGroup.get(formKey);
+    return ctrl.touched && ctrl.hasError('required');
   }
 
   private setFormGroupValidation(offer: IDetailedOffer) {

@@ -111,4 +111,9 @@ export class OfferCreationFormComponent implements OnInit, OnDestroy, ControlVal
       return { invalid: true };
     }
   }
+
+  public hasRequiredError(formKey: OfferFormKey): boolean {
+    const ctrl = this.formGroup.get(formKey);
+    return ctrl.touched && ctrl.hasError('required');
+  }
 }

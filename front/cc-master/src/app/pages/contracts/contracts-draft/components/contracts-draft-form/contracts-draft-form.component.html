@@ -45,18 +45,23 @@
                         textfieldClass="palette-grey mod-longest u-marginTopStandard">
   </cc-client-api-select>
 
-  <cc-product-api-select [formControlName]="formGroupKey.Product"
-                         [displayMode]="selectDisplayMode.Form"
-                         [required]="true"
-                         textfieldClass="palette-grey mod-longest u-marginTopStandard">
-  </cc-product-api-select>
+  <label class="textfield palette-grey mod-longest u-marginTopStandard is-required">
+    <cc-product-api-select [formControlName]="formGroupKey.Product" [required]="true">
+    </cc-product-api-select>
+    <span class="textfield-label">{{ 'front_select_product_label' | translate }}</span>
+    <span class="textfield-messages" *ngIf="hasRequiredError(formGroupKey.Product)">
+      <span class="textfield-messages-error">
+        {{ "front_select_products_errorMessage_required" | translate }}
+      </span>
+    </span>
+  </label>
 
   <div class="u-marginTopStandard mod-widthFitContent">
     <label class="textfield is-required palette-grey mod-longest">
       <cc-offer-api-select [formControlName]="formGroupKey.Offer" [required]="true" [filters]="offerApiFilters">
       </cc-offer-api-select>
       <span class="textfield-label">{{ 'offer_select_label' | translate }}</span>
-      <span class="textfield-messages" *ngIf="hasRequiredOfferError">
+      <span class="textfield-messages" *ngIf="hasRequiredError(formGroupKey.Offer)">
         <span class="textfield-messages-error">
           {{ "front_select_offers_errorMessage_required" | translate }}
         </span>

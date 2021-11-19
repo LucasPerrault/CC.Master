@@ -10,11 +10,16 @@
       <span class="textfield-label">{{ 'offers_form_name' | translate }}</span>
     </label>
 
-    <cc-product-api-select textfieldClass="textfield palette-grey u-marginBottomStandard mod-longer"
-                           [displayMode]="formMode"
-                           [formControlName]="offerFormKey.Product"
-                           [required]="true">
-    </cc-product-api-select>
+    <label class="textfield palette-grey u-marginBottomStandard mod-longer is-required">
+      <cc-product-api-select [formControlName]="offerFormKey.Product" [required]="true">
+      </cc-product-api-select>
+      <span class="textfield-label">{{ 'front_select_product_label' | translate }}</span>
+      <span class="textfield-messages" *ngIf="hasRequiredError(offerFormKey.Product)">
+        <span class="textfield-messages-error">
+          {{ "front_select_products_errorMessage_required" | translate }}
+        </span>
+      </span>
+    </label>
 
     <label class="textfield palette-grey is-required u-marginBottomStandard mod-longer">
       <cc-offer-billing-unit-select [formControlName]="offerFormKey.BillingUnit" [required]="true">

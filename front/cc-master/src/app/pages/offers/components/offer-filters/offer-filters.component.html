@@ -25,8 +25,9 @@
 
   <div class="u-displayFlex u-flexWrapWrap u-alignItemsFlexStart u-animatedFadeIn u-marginTopSmallest"
        *ngIf="showAdditionalFilters">
-    <cc-product-api-select textfieldClass="palette-grey mod-outlined mod-inline" [formControlName]="formKey.Product">
-    </cc-product-api-select>
+    <label class="textfield palette-grey mod-outlined mod-inline">
+      <cc-product-api-select [formControlName]="formKey.Product" [placeholder]="'front_select_product_label' | translate"></cc-product-api-select>
+    </label>
 
     <label class="textfield palette-grey mod-outlined mod-inline">
       <cc-offer-currency-api-select [formControlName]="formKey.Currencies"

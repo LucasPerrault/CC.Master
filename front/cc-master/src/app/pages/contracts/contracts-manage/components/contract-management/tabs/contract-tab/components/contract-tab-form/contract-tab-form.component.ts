@@ -59,10 +59,6 @@ export class ContractTabFormComponent implements OnInit, OnDestroy, ControlValue
 
   public isFrequencyDisabled$: ReplaySubject<boolean> = new ReplaySubject<boolean>();
 
-  public get hasRequiredOfferError(): boolean {
-    return this.formGroup.get(ContractFormKey.Offer).touched && this.formGroup.get(ContractFormKey.Offer).hasError('required');
-  }
-
   public get offerApiFilters(): string[] {
     const product = this.formGroup.get(ContractFormKey.Product).value;
     if (!product) {
@@ -174,6 +170,11 @@ export class ContractTabFormComponent implements OnInit, OnDestroy, ControlValue
     if (!this.formGroup || this.formGroup.invalid) {
       return { invalid: true };
     }
+  }
+
+  public hasRequiredError(formKey: ContractFormKey): boolean {
+    const ctrl = this.formGroup.get(formKey);
+    return ctrl.touched && ctrl.hasError('required');
   }
 
   private setBillingMonthDisabled(billingMonth: ContractBillingMonth): void {

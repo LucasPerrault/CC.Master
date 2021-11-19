@@ -64,11 +64,6 @@ export class ContractsDraftFormComponent implements ControlValueAccessor, Valida
     return this.formGroup.get(DraftFormKey.Distributor).value;
   }
 
-  public get hasRequiredOfferError(): boolean {
-    const offerCtrl = this.formGroup.get(DraftFormKey.Offer);
-    return offerCtrl.touched && offerCtrl.hasError('required');
-  }
-
   public get offerApiFilters(): string[] {
     const product = this.formGroup.get(DraftFormKey.Product).value;
     if (!product) {
@@ -166,6 +161,11 @@ export class ContractsDraftFormComponent implements ControlValueAccessor, Valida
     if (!this.formGroup || this.formGroup.invalid) {
       return { invalid: true };
     }
+  }
+
+  public hasRequiredError(formKey: DraftFormKey): boolean {
+    const ctrl = this.formGroup.get(formKey);
+    return ctrl.touched && ctrl.hasError('required');
   }
 
   private updateMinimalBillingEligibility(): void {
