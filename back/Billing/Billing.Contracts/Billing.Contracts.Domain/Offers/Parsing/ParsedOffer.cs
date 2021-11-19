@@ -9,7 +9,7 @@ namespace Billing.Contracts.Domain.Offers.Parsing
         public string Name { get; set; }
         public Product Product { set; get; }
         public BillingUnit? BillingUnit { get; set; }
-        public int? CurrencyID { get; set; }
+        public int? CurrencyId { get; set; }
         public string Category { get; set; }
         public BillingMode? BillingMode { get; set; }
         public PricingMethod? PricingMethod { get; set; }
@@ -19,15 +19,15 @@ namespace Billing.Contracts.Domain.Offers.Parsing
         public ParsedOffer(OfferRow row, Product product)
         {
             Name = row.Name;
-                Product = product;
-                BillingMode = GetBillingMode(row.BillingMode);
-                CurrencyID = row.CurrencyId;
-                BillingUnit = GetBillingUnit(row.BillingUnit);
-                PricingMethod = GetPricingMethod(row.PricingMethod);
-                Category = row.Category;
-                ForecastMethod = GetForecastMethod(row.ForecastMethod);
+            Product = product;
+            BillingMode = GetBillingMode(row.BillingMode);
+            CurrencyId = row.CurrencyId;
+            BillingUnit = GetBillingUnit(row.BillingUnit);
+            PricingMethod = GetPricingMethod(row.PricingMethod);
+            Category = row.Category;
+            ForecastMethod = GetForecastMethod(row.ForecastMethod);
         }
-        
+
 
         private BillingMode? GetBillingMode(ParsedBillingMode? billingMode) => billingMode switch
         {
@@ -46,7 +46,6 @@ namespace Billing.Contracts.Domain.Offers.Parsing
             ParsedBillingUnit.DownloadedDocuments => Offers.BillingUnit.DownloadedDocuments,
             ParsedBillingUnit.FixedPrice => Offers.BillingUnit.FixedPrice,
             ParsedBillingUnit.Licenses => Offers.BillingUnit.Licenses,
-            ParsedBillingUnit.Unknown => Offers.BillingUnit.None,
             ParsedBillingUnit.Servers => Offers.BillingUnit.Servers,
             ParsedBillingUnit.SynchronizedAccounts => Offers.BillingUnit.SynchronizedAccounts,
             ParsedBillingUnit.Users => Offers.BillingUnit.Users,
