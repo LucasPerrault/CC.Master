@@ -1,11 +1,12 @@
 import { AbstractControl, FormControl, ValidationErrors, ValidatorFn } from '@angular/forms';
-import { isEqual } from 'date-fns';
+import { isEqual, isFirstDayOfMonth } from 'date-fns';
 
 import { IPriceListForm, IPriceRowForm } from '../models/price-list-form.interface';
 
 export enum PriceListValidationError {
   UniqStartsOn = 'uniqStartsOn',
   BoundsContinuity = 'boundsContinuity',
+  IsStartedOnFirstDayOfTheMonth = 'IsStartedOnFirstDayOfTheMonth',
   Required = 'required',
 }
 
@@ -45,6 +46,15 @@ export class PriceListsValidators {
     });
 
     return !allHaveUniqStartDate ? { [PriceListValidationError.UniqStartsOn]: true } : null;
+  }
+
+  public static isStartedOnFirstDayOfTheMonth(control: FormControl): ValidationErrors {
+    const priceList: IPriceListForm = control.value;
+    const startDate = !!priceList.startsOn ? new Date(priceList.startsOn) : null;
+
+    return !!startDate && !isFirstDayOfMonth(startDate)
+      ? { [PriceListValidationError.IsStartedOnFirstDayOfTheMonth]: true }
+      : null;
   }
 
   private static areContinuousBounds(priceRows: IPriceRowForm[]): boolean {

@@ -1,4 +1,11 @@
+@import "theming.import";
+
 .mod-stickyLeft {
   position: sticky;
   left: 0;
+}
+
+.mod-stickyLeftStandard {
+  position: sticky;
+  left: _theme("spacings.standard");;
 }

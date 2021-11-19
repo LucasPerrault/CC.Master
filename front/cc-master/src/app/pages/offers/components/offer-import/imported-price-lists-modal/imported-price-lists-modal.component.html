@@ -1,26 +1,34 @@
 <form [formGroup]="formGroup">
   <div [formArrayName]="formArrayKey">
     <div class="u-marginBottomBig" *ngFor="let control of formArray.controls; let i = index; trackBy: trackBy" [formGroupName]="i">
-      <label class="textfield palette-grey mod-longer u-marginBottomStandard mod-readonly">
+      <label class="textfield palette-grey mod-longer u-marginBottomStandard"
+             [ngClass]="{ 'mod-readonly': data.readonly }">
         <lu-date-select class="textfield-input"
-                        [ngClass]="{ 'is-error': formArray.hasError(validationError.UniqStartsOn) }"
+                        [ngClass]="{ 'is-error': hasErrors(control) }"
                         [required]="true"
                         [hideClearer]="true"
-                        [granularity]="granularity.month"
+                        [granularity]="granularity.day"
                         [formControlName]="formKey.StartsOn">
         </lu-date-select>
         <span class="textfield-label">
           {{ 'offers_form_pricegrid_startsOn_label' | translate }}
-          <span aria-hidden="true" class="lucca-icon icon-lock"
-                [ngClass]="{ 'u-textError': formArray.hasError(validationError.UniqStartsOn) }"
+          <span aria-hidden="true" class="lucca-icon icon-lock" *ngIf="data.readonly"
+                [ngClass]="{ 'u-textError': hasErrors(control) }"
                 [luTooltip]="'offers_readonly_information' | translate"></span>
         </span>
         <span class="textfield-messages" *ngIf="formArray.hasError(validationError.UniqStartsOn)">
-          <span class="textfield-messages-error">{{ 'offers_form_pricegrid_startsOn_error' | translate }}</span>
+          <span class="textfield-messages-error">
+            {{ 'offers_form_priceList_uniqStartsOn_error' | translate }}
+          </span>
+        </span>
+        <span class="textfield-messages" *ngIf="control.hasError(validationError.IsStartedOnFirstDayOfTheMonth)">
+          <span class="textfield-messages-error">
+            {{ 'offers_form_priceList_startedOnFirstDay_error' | translate }}
+          </span>
         </span>
       </label>
 
-      <cc-editable-price-grid [readonly]="true" [formControlName]="formKey.PriceRows"></cc-editable-price-grid>
+      <cc-editable-price-grid [readonly]="data.readonly" [formControlName]="formKey.PriceRows"></cc-editable-price-grid>
     </div>
   </div>
 </form>

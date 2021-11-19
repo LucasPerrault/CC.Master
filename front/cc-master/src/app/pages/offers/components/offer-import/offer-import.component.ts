@@ -17,6 +17,7 @@ import { IUploadedOffer } from './uploaded-offer-dto.interface';
 })
 export class OfferImportComponent implements OnInit {
 
+  public isReadonly: FormControl = new FormControl(true);
   public formControl: FormControl = new FormControl([]);
 
   public buttonClass$: Subject<string> = new Subject<string>();

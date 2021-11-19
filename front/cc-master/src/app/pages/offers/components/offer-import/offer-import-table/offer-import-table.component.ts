@@ -1,4 +1,4 @@
-import { Component, forwardRef, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
+import { Component, forwardRef, Input, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
 import {
   AbstractControl,
   ControlValueAccessor,
@@ -19,6 +19,7 @@ import { getCurrency } from '../../../models/offer-currency.interface';
 import { IPriceListForm } from '../../../models/price-list-form.interface';
 import { PriceListsValidators } from '../../../services/price-lists.validators';
 import { ImportedPriceListsModalComponent } from '../imported-price-lists-modal/imported-price-lists-modal.component';
+import { IImportedPriceListsModalData } from '../imported-price-lists-modal/imported-price-lists-modal-data.interface';
 import { IUploadedOffer } from '../uploaded-offer-dto.interface';
 import { IUploadedOfferForm } from '../uploaded-offer-form.interface';
 
@@ -53,6 +54,8 @@ enum ImportedOfferFormKey {
   ],
 })
 export class OfferImportTableComponent implements OnInit, OnDestroy, ControlValueAccessor, Validators {
+  @Input() public readonly = true;
+
   public formArrayKey = 'importedOffers';
   public formArray: FormArray = new FormArray([]);
   public formKey = ImportedOfferFormKey;
@@ -104,10 +107,15 @@ export class OfferImportTableComponent implements OnInit, OnDestroy, ControlValu
     return control.get(ImportedOfferFormKey.PriceLists).value ?? [];
   }
 
-  public openPriceListsDetails(priceLists: IPriceListForm[]) {
-    this.luModal.open(ImportedPriceListsModalComponent, priceLists, {
+  public openPriceListsDetails(priceLists: IPriceListForm[], control: AbstractControl) {
+    const data: IImportedPriceListsModalData = { priceLists, readonly: this.readonly };
+    const dialogRef = this.luModal.open(ImportedPriceListsModalComponent, data, {
       panelClass: ['lu-popup-panel', 'mod-widthAuto'],
     });
+
+    dialogRef.onClose
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(lists => control.get(ImportedOfferFormKey.PriceLists).reset(lists));
   }
 
   private reset(offers: IUploadedOffer[]): void {

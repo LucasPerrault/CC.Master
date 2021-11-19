@@ -22,12 +22,12 @@
         <span *ngIf="control.invalid" aria-hidden="true" class="lucca-icon icon-error u-textError"></span>
       </td>
 			<td class="table-body-row-cell">
-        <label class="textfield palette-grey mod-outlined mod-readonly">
+        <label class="textfield palette-grey mod-outlined" [ngClass]="{ 'mod-readonly': readonly }">
           <input class="textfield-input" type="text" [formControlName]="formKey.Name" [required]="true">
         </label>
       </td>
 			<td class="table-body-row-cell">
-        <label class="textfield palette-grey mod-outlined mod-readonly is-required">
+        <label class="textfield palette-grey mod-outlined mod-readonly is-required" [ngClass]="{ 'mod-readonly': readonly }">
           <cc-product-api-select [formControlName]="formKey.Product"
                                  [required]="true"
                                  [placeholder]="'front_select_product_label' | translate">
@@ -35,35 +35,35 @@
         </label>
       </td>
 			<td class="table-body-row-cell">
-        <label class="textfield palette-grey mod-outlined mod-readonly">
+        <label class="textfield palette-grey mod-outlined" [ngClass]="{ 'mod-readonly': readonly }">
           <cc-offer-billing-unit-select [formControlName]="formKey.BillingUnit" [required]="true">
           </cc-offer-billing-unit-select>
         </label>
       </td>
 			<td class="table-body-row-cell">
-        <label class="textfield palette-grey mod-outlined mod-readonly">
+        <label class="textfield palette-grey mod-outlined" [ngClass]="{ 'mod-readonly': readonly }">
           <cc-offer-tag-api-select [formControlName]="formKey.Tag" [required]="true"></cc-offer-tag-api-select>
         </label>
       </td>
 			<td class="table-body-row-cell">
-        <label class="textfield palette-grey mod-outlined mod-readonly">
+        <label class="textfield palette-grey mod-outlined" [ngClass]="{ 'mod-readonly': readonly }">
           <cc-offer-billing-mode-select [formControlName]="formKey.BillingMode" [required]="true"></cc-offer-billing-mode-select>
         </label>
       </td>
 			<td class="table-body-row-cell">
-        <label class="textfield palette-grey mod-outlined mod-readonly">
+        <label class="textfield palette-grey mod-outlined" [ngClass]="{ 'mod-readonly': readonly }">
           <cc-offer-pricing-method-select [formControlName]="formKey.PricingMethod" [required]="true">
           </cc-offer-pricing-method-select>
         </label>
       </td>
 			<td class="table-body-row-cell">
-        <label class="textfield palette-grey mod-outlined mod-readonly">
+        <label class="textfield palette-grey mod-outlined" [ngClass]="{ 'mod-readonly': readonly }">
           <cc-offer-forecast-method-select [formControlName]="formKey.ForecastMethod" [required]="true">
           </cc-offer-forecast-method-select>
         </label>
       </td>
 			<td class="table-body-row-cell">
-        <label class="textfield palette-grey mod-outlined mod-readonly">
+        <label class="textfield palette-grey mod-outlined" [ngClass]="{ 'mod-readonly': readonly }">
           <cc-offer-currency-api-select [formControlName]="formKey.Currency" [required]="true"></cc-offer-currency-api-select>
         </label>
       </td>
@@ -71,7 +71,7 @@
         <ng-container *ngIf="getPriceLists(control); let priceLists; else noPriceList">
           <button class="link"
                   [ngClass]="{ 'u-textError': control.get(formKey.PriceLists).invalid }"
-                  (click)="openPriceListsDetails(priceLists)">
+                  (click)="openPriceListsDetails(priceLists, control)">
             {{ priceLists.length }}
           </button>
         </ng-container>

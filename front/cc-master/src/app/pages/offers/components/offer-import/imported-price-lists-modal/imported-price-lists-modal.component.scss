@@ -13,3 +13,13 @@
   }
   .textfield-input::after { color: _color('grey', 300); }
 }
+
+.textfield .textfield-input {
+  &.is-error {
+    background-color: _color('error', 50);
+
+    &::after {
+      color: _color('error', 700);
+    }
+  }
+}

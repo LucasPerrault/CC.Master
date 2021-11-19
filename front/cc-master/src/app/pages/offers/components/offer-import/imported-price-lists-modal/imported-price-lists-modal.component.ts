@@ -1,11 +1,14 @@
-import { Component, Inject } from '@angular/core';
+import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { AbstractControl, FormArray, FormControl, FormGroup } from '@angular/forms';
 import { TranslatePipe } from '@cc/aspects/translate';
 import { ELuDateGranularity } from '@lucca-front/ng/core';
 import { ILuModalContent, LU_MODAL_DATA } from '@lucca-front/ng/modal';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 import { IPriceListForm } from '../../../models/price-list-form.interface';
 import { PriceListsValidators,PriceListValidationError } from '../../../services/price-lists.validators';
+import { IImportedPriceListsModalData } from './imported-price-lists-modal-data.interface';
 
 enum ImportedListFormKey {
   StartsOn = 'startsOn',
@@ -17,8 +20,10 @@ enum ImportedListFormKey {
   templateUrl: './imported-price-lists-modal.component.html',
   styleUrls: ['./imported-price-lists-modal.component.scss'],
 })
-export class ImportedPriceListsModalComponent implements ILuModalContent {
-  public title = this.translatePipe.transform('offers_form_imported_priceList_title', { count: this.priceLists?.length });
+export class ImportedPriceListsModalComponent implements OnInit, OnDestroy, ILuModalContent {
+  public title = this.translatePipe.transform('offers_form_imported_priceList_title', { count: this.data.priceLists?.length });
+  public submitLabel = this.translatePipe.transform('offers_form_imported_priceList_button');
+  public submitDisabled = true;
 
   public formArrayKey = 'importedPriceLists';
   public formArray: FormArray = new FormArray([], [PriceListsValidators.uniqStartsOnRange]);
@@ -29,15 +34,37 @@ export class ImportedPriceListsModalComponent implements ILuModalContent {
   public granularity = ELuDateGranularity;
   public validationError = PriceListValidationError;
 
+  private destroy$: Subject<void> = new Subject();
+
   constructor(
-    @Inject(LU_MODAL_DATA) private priceLists: IPriceListForm[],
+    @Inject(LU_MODAL_DATA) public data: IImportedPriceListsModalData,
     private translatePipe: TranslatePipe,
   ) {
-    this.addRange(priceLists);
+    this.addRange(data.priceLists);
+  }
+
+  public ngOnInit(): void {
+    this.formArray.statusChanges
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(() => this.submitDisabled = this.formArray.invalid);
+  }
+
+  public ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+
+  public hasErrors(control: AbstractControl): boolean {
+    return this.formArray.hasError(PriceListValidationError.UniqStartsOn)
+      || control.hasError(PriceListValidationError.IsStartedOnFirstDayOfTheMonth);
   }
 
   public trackBy(index: number, list: AbstractControl): AbstractControl {
     return list;
+  }
+
+  public submitAction(): IPriceListForm[] {
+    return this.formArray.value;
   }
 
   private addRange(lists: IPriceListForm[]): void {
@@ -55,7 +82,6 @@ export class ImportedPriceListsModalComponent implements ILuModalContent {
         [ImportedListFormKey.StartsOn]: new FormControl(new Date(list?.startsOn)),
         [ImportedListFormKey.PriceRows]: new FormControl(list?.rows),
       },
-    );
+      [PriceListsValidators.isStartedOnFirstDayOfTheMonth]);
   }
-
 }
