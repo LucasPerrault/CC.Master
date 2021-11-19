@@ -3,9 +3,12 @@ using Billing.Contracts.Domain.Contracts.Interfaces;
 using Billing.Contracts.Domain.Counts.Filtering;
 using Billing.Contracts.Domain.Counts.Interfaces;
 using Billing.Contracts.Domain.Offers.Interfaces;
+using Rights.Domain.Filtering;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Tools;
 
 namespace Billing.Contracts.Domain.Offers.Services
 {
@@ -13,44 +16,60 @@ namespace Billing.Contracts.Domain.Offers.Services
     {
         private readonly IContractsStore _contractsStore;
         private readonly ICountsStore _countsStore;
+        private readonly ITimeProvider _time;
 
-        public CommercialOfferUsageService(IContractsStore contractsStore, ICountsStore countsStore)
+        public CommercialOfferUsageService(IContractsStore contractsStore, ICountsStore countsStore, ITimeProvider time)
         {
             _contractsStore = contractsStore;
             _countsStore = countsStore;
+            _time = time;
         }
 
-        public Task<CommercialOfferUsage> BuildAsync(int offerId)
+        public async Task<CommercialOfferUsage> BuildAsync(int offerId)
         {
-            var nbContracts = _contractsStore
-                .GetQueryable(GetContractFilter(offerId))
-                .Count();
-            var nbActiveContracts = _contractsStore
-                .GetQueryable(GetContractFilter(offerId, ContractStatus.InProgress))
-                .Count();
-            var nbNotStartedContracts = _contractsStore
-                .GetQueryable(GetContractFilter(offerId, ContractStatus.NotStarted))
-                .Count();
-            var nbContractsWithCount = _countsStore
-                .GetQueryable(new CountFilter { CommercialOfferIds = new HashSet<int> { offerId } })
-                .GroupBy(c => c.ContractId)
-                .Count();
-
-            return Task.FromResult(new CommercialOfferUsage
-            {
-                Id = offerId,
-                NumberOfContracts = nbContracts,
-                NumberOfActiveContracts = nbActiveContracts,
-                NumberOfNotStartedContracts = nbNotStartedContracts,
-                NumberOfCountedContracts = nbContractsWithCount
-            });
+            return (await BuildAsync(new HashSet<int> { offerId })).SingleOrDefault();
         }
 
-        private ContractFilter GetContractFilter(int offerId, ContractStatus? status = null)
+        public async Task<IReadOnlyCollection<CommercialOfferUsage>> BuildAsync(HashSet<int> offerIds, AccessRight accessRight)
+        {
+            if (!HasRight(accessRight))
+            {
+                return new List<CommercialOfferUsage>();
+            }
+
+            return await BuildAsync(offerIds);
+        }
+
+        private async Task<IReadOnlyCollection<CommercialOfferUsage>> BuildAsync(HashSet<int> offerIds)
+        {
+            var contractsByOfferId = (await _contractsStore
+                .GetAsync(AccessRight.All, GetContractFilter(offerIds)))
+                .Select(c => new { c.Id, c.CommercialOfferId, c.Status })
+                .GroupBy(c => c.CommercialOfferId);
+
+            var nbCountedContractsByOfferId = (await _countsStore
+                .GetAsync(new CountFilter { CommercialOfferIds = offerIds }))
+                .GroupBy(c => c.CommercialOfferId)
+                .ToDictionary(g => g.Key, g => g.Select(c => c.ContractId).Distinct().Count());
+
+            return contractsByOfferId
+                .Select(kvp => new CommercialOfferUsage
+                {
+                    OfferId = kvp.Key,
+                    NumberOfContracts = kvp.Count(),
+                    NumberOfActiveContracts = kvp.Where(c => c.Status == ContractStatus.InProgress).Count(),
+                    NumberOfNotStartedContracts = kvp.Where(c => c.Status == ContractStatus.NotStarted).Count(),
+                    NumberOfCountedContracts = nbCountedContractsByOfferId.ContainsKey(kvp.Key) ? nbCountedContractsByOfferId[kvp.Key] : 0
+                })
+                .ToList();
+        }
+
+        private ContractFilter GetContractFilter(HashSet<int> offerIds, ContractStatus? status = null)
         {
             var filter = new ContractFilter
             {
-                CommercialOfferIds = new HashSet<int> { offerId }
+                CommercialOfferIds = offerIds,
+                ArchivedAt = CompareDateTime.IsStrictlyAfter(_time.Now()).OrNull()
             };
 
             if (status.HasValue)
@@ -59,6 +78,16 @@ namespace Billing.Contracts.Domain.Offers.Services
             }
 
             return filter;
+        }
+
+        private bool HasRight(AccessRight accessRight)
+        {
+            return accessRight switch
+            {
+                NoAccessRight _ => false,
+                AllAccessRight _ => true,
+                _ => throw new ApplicationException($"Unknown type of offer filter right {accessRight}")
+            };
         }
     }
 }

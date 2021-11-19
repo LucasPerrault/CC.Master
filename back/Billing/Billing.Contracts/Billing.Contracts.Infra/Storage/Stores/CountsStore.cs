@@ -1,8 +1,11 @@
 using Billing.Contracts.Domain.Counts;
 using Billing.Contracts.Domain.Counts.Filtering;
 using Billing.Contracts.Domain.Counts.Interfaces;
+using Microsoft.EntityFrameworkCore;
 using Storage.Infra.Extensions;
+using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Billing.Contracts.Infra.Storage.Stores
 {
@@ -15,10 +18,11 @@ namespace Billing.Contracts.Infra.Storage.Stores
             _dbContext = dbContext;
         }
 
-        public IQueryable<Count> GetQueryable(CountFilter filter)
+        public async Task<IReadOnlyCollection<Count>> GetAsync(CountFilter filter)
         {
-            return Counts
-                .WhereMatches(filter);
+            return await Counts
+                .WhereMatches(filter)
+                .ToListAsync();
         }
 
         private IQueryable<Count> Counts => _dbContext.Set<Count>();

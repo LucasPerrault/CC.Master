@@ -45,12 +45,6 @@ namespace Billing.Contracts.Infra.Storage.Stores
             return Set(accessRight, filter).ToListAsync();
         }
 
-        public IQueryable<Contract> GetQueryable(ContractFilter filter)
-        {
-            return _dbContext.Set<Contract>()
-                .WhereMatches(filter);
-        }
-
         public Task<ContractComment> GetCommentAsync(AccessRight accessRight, int contractId)
         {
             return _dbContext.Set<ContractComment>()

@@ -1,10 +1,11 @@
 using Billing.Contracts.Domain.Counts.Filtering;
-using System.Linq;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Billing.Contracts.Domain.Counts.Interfaces
 {
     public interface ICountsStore
     {
-        IQueryable<Count> GetQueryable(CountFilter filter);
+        Task<IReadOnlyCollection<Count>> GetAsync(CountFilter filter);
     }
 }

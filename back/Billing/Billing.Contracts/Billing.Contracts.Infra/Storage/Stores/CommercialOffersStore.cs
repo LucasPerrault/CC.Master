@@ -144,7 +144,7 @@ namespace Billing.Contracts.Infra.Storage.Stores
             await _dbContext.SaveChangesAsync();
         }
 
-        public Task<CommercialOfferUsage> GetOfferUsage(int id)
+        private Task<CommercialOfferUsage> GetOfferUsage(int id)
         {
             return _usageService.BuildAsync(id);
         }
@@ -170,9 +170,9 @@ namespace Billing.Contracts.Infra.Storage.Stores
                 .WhenNotNullOrEmpty(filter.Tags).ApplyWhere(o => filter.Tags.Contains(o.Tag));
         }
 
-        public static IQueryable<CommercialOffer> WhereHasRight(this IQueryable<CommercialOffer> clients, AccessRight accessRight)
+        public static IQueryable<CommercialOffer> WhereHasRight(this IQueryable<CommercialOffer> offers, AccessRight accessRight)
         {
-            return clients.Where(accessRight.ToRightExpression());
+            return offers.Where(accessRight.ToRightExpression());
         }
 
         private static IQueryable<CommercialOffer> Search(this IQueryable<CommercialOffer> offers, HashSet<string> words)

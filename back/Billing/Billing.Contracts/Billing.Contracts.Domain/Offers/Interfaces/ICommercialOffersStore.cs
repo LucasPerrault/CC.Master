@@ -18,7 +18,5 @@ namespace Billing.Contracts.Domain.Offers.Interfaces
         Task<CommercialOffer> AddPriceListAsync(int id, PriceList priceList, AccessRight accessRight);
         Task ModifyPriceListAsync(int id, int listId, PriceList priceList, AccessRight accessRight);
         Task DeletePriceListAsync(int id, int listId, AccessRight accessRight);
-
-        Task<CommercialOfferUsage> GetOfferUsage(int id);
     }
 }

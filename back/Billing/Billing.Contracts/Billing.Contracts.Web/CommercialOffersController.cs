@@ -91,6 +91,13 @@ namespace Billing.Contracts.Web
         {
             return _commercialOffersRepository.DeletePriceListAsync(id, listId);
         }
+
+        [HttpGet("usages")]
+        [ForbidIfMissing(Operation.ReadCommercialOffers)]
+        public Task<IReadOnlyCollection<CommercialOfferUsage>> GetUsagesAsync([FromQuery] CommercialOfferUsageQuery query)
+        {
+            return _commercialOffersRepository.GetUsagesAsync(query.ToFilter());
+        }
     }
 
     public class CommercialOfferQuery
@@ -110,6 +117,19 @@ namespace Billing.Contracts.Web
                 Search = Search,
                 BillingModes = BillingMode,
                 Tags = Tag,
+            };
+        }
+    }
+
+    public class CommercialOfferUsageQuery
+    {
+        public HashSet<int> OfferId { get; set; } = new HashSet<int>();
+
+        internal CommercialOfferUsageFilter ToFilter()
+        {
+            return new CommercialOfferUsageFilter
+            {
+                OfferIds = OfferId
             };
         }
     }

@@ -2,6 +2,7 @@ using Billing.Contracts.Domain.Offers;
 using Billing.Contracts.Domain.Offers.Filtering;
 using Billing.Contracts.Domain.Offers.Interfaces;
 using Lucca.Core.Api.Abstractions.Paging;
+using System;
 using System.Collections.Generic;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -11,12 +12,14 @@ namespace Billing.Contracts.Application.Offers
     public class CommercialOffersRepository
     {
         private readonly ICommercialOffersStore _commercialOffersStore;
+        private readonly ICommercialOfferUsageService _usageService;
         private readonly CommercialOfferRightsFilter _rightsFilter;
         private readonly ClaimsPrincipal _principal;
 
-        public CommercialOffersRepository(ICommercialOffersStore commercialOffersStore, CommercialOfferRightsFilter rightsFilter, ClaimsPrincipal principal)
+        public CommercialOffersRepository(ICommercialOffersStore commercialOffersStore, ICommercialOfferUsageService usageService, CommercialOfferRightsFilter rightsFilter, ClaimsPrincipal principal)
         {
             _commercialOffersStore = commercialOffersStore;
+            _usageService = usageService;
             _rightsFilter = rightsFilter;
             _principal = principal;
         }
@@ -79,6 +82,12 @@ namespace Billing.Contracts.Application.Offers
         {
             var accessRight = await _rightsFilter.GetReadAccessAsync(_principal);
             await _commercialOffersStore.DeletePriceListAsync(id, listId, accessRight);
+        }
+
+        public async Task<IReadOnlyCollection<CommercialOfferUsage>> GetUsagesAsync(CommercialOfferUsageFilter filter)
+        {
+            var accessRight = await _rightsFilter.GetReadAccessAsync(_principal);
+            return await _usageService.BuildAsync(filter.OfferIds, accessRight);
         }
     }
 }
