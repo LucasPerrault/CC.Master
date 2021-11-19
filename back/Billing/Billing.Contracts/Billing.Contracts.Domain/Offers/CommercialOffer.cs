@@ -50,6 +50,7 @@ namespace Billing.Contracts.Domain.Offers
         public Product Product { get; set; }
 
         public BillingMode BillingMode { get; set; }
+        public BillingUnit Unit { get; set; }
         public PricingMethod PricingMethod { get; set; }
         public ForecastMethod ForecastMethod { get; set; }
 

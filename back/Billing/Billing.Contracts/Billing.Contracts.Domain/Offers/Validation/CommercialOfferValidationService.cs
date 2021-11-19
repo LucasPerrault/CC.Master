@@ -132,6 +132,7 @@ namespace Billing.Contracts.Domain.Offers.Validation
             // TODO tester avec une sérialisation json ? Pour éviter une régression à l'ajout d'une propriété
             return oldOffer.ProductId != newOffer.ProductId
                 || oldOffer.BillingMode != newOffer.BillingMode
+                || oldOffer.Unit != newOffer.Unit
                 || oldOffer.PricingMethod != newOffer.PricingMethod
                 || oldOffer.ForecastMethod != newOffer.ForecastMethod
                 || oldOffer.Tag != newOffer.Tag
