@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 namespace Billing.Contracts.Web
 {
     [ApiController, Route("/api/commercial-offers")]
-    [ApiSort(nameof(CommercialOffer.Id))]
+    [ApiSort(nameof(CommercialOffer.Name))]
     public class CommercialOffersController
     {
         private readonly CommercialOffersRepository _commercialOffersRepository;
