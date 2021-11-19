@@ -95,13 +95,21 @@ namespace Billing.Contracts.Web
 
     public class CommercialOfferQuery
     {
+        public HashSet<int> Id { get; set; } = new HashSet<int>();
+        public HashSet<string> Search { get; set; } = new HashSet<string>();
+        public HashSet<BillingMode> BillingMode { get; set; } = new HashSet<BillingMode>();
+        public HashSet<string> Tag { get; set; } = new HashSet<string>();
+
         public IPageToken PageToken { get; set; }
 
         internal CommercialOfferFilter ToFilter()
         {
             return new CommercialOfferFilter
             {
-
+                Ids = Id,
+                Search = Search,
+                BillingModes = BillingMode,
+                Tags = Tag,
             };
         }
     }

@@ -44,7 +44,7 @@ namespace Billing.Contracts.Infra.Storage.Stores
 
         public Task<CommercialOffer> GetByIdAsync(int id, AccessRight accessRight)
         {
-            var filter = new CommercialOfferFilter { Id = id };
+            var filter = new CommercialOfferFilter { Ids = new HashSet<int> { id } };
             return GetQueryable(accessRight, filter).SingleOrDefaultAsync();
         }
 
@@ -165,7 +165,7 @@ namespace Billing.Contracts.Infra.Storage.Stores
         {
             return offers
                 .Search(filter.Search)
-                .WhenHasValue(filter.Id).ApplyWhere(o => o.Id == filter.Id.Value)
+                .WhenNotNullOrEmpty(filter.Ids).ApplyWhere(o => filter.Ids.Contains(o.Id))
                 .WhenNotNullOrEmpty(filter.BillingModes).ApplyWhere(o => filter.BillingModes.Contains(o.BillingMode))
                 .WhenNotNullOrEmpty(filter.Tags).ApplyWhere(o => filter.Tags.Contains(o.Tag));
         }
