@@ -156,7 +156,9 @@ namespace Billing.Contracts.Infra.Storage.Stores
                 .WhereMatches(filter);
         }
 
-        private IQueryable<CommercialOffer> Offers => _dbContext.Set<CommercialOffer>(); //.Where(o => !o.IsArchived) TODO ??
+        private IQueryable<CommercialOffer> Offers => _dbContext.Set<CommercialOffer>()
+            .Include(o => o.Product)
+            .Include(o => o.PriceLists).ThenInclude(pl => pl.Rows); //.Where(o => !o.IsArchived) TODO ??
     }
 
     internal static class CommercialOffersQueryableExtensions
