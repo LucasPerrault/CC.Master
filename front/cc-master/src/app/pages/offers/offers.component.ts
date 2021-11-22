@@ -15,6 +15,8 @@ import { OfferRestrictionsService } from './services/offer-restrictions.service'
 import { OfferUsageStoreService } from './services/offer-usage-store.service';
 import { OffersApiMappingService } from './services/offers-api-mapping.service';
 import { OffersDataService } from './services/offers-data.service';
+import { OfferFilterKey } from './models/offer-filters-form.interface';
+import { OfferState } from './components/offer-filters/offer-state-filter';
 
 // It is defined in the offer model in the back project.
 // It is used for the default selection.
@@ -118,6 +120,9 @@ export class OffersComponent implements OnInit {
 
   private initDefaultFiltersAndSort(): void {
     this.sortParams$.next({ field: OfferSortParamKey.Name, order: SortOrder.Asc });
-    this.filters.patchValue({ tag: offerPrincipalTag });
+    this.filters.patchValue({
+      [OfferFilterKey.Tag]: offerPrincipalTag,
+      [OfferFilterKey.State]: OfferState.All,
+    });
   }
 }

@@ -4,6 +4,7 @@ import { ApiSortHelper } from '@cc/common/queries';
 import { ISortParams } from '@cc/common/sort';
 import { IProduct } from '@cc/domain/billing/offers';
 
+import { OfferState } from '../components/offer-filters/offer-state-filter';
 import { IBillingMode } from '../enums/billing-mode.enum';
 import { IOfferCurrency } from '../models/offer-currency.interface';
 import { IOfferFiltersForm } from '../models/offer-filters-form.interface';
@@ -19,6 +20,7 @@ enum OfferQueryParamKey {
   ProductId = 'product.id',
   Currency = 'currencyId',
   BillingMode = 'billingMode',
+  IsArchived = 'isArchived',
 }
 
 @Injectable()
@@ -47,6 +49,7 @@ export class OffersApiMappingService {
     params = this.getProductHttpParams(params, filters.product);
     params = this.getCurrencyHttpParams(params, filters.currencies);
     params = this.getBillingModeHttpParams(params, filters.billingModes);
+    params = this.getStateHttpParams(params, filters.state);
     return params;
   }
 
@@ -78,6 +81,17 @@ export class OffersApiMappingService {
     return !!billingModes?.length
       ? params.set(OfferQueryParamKey.BillingMode, billingModes.map(b => b.id).join(','))
       : params.delete(OfferQueryParamKey.BillingMode);
+  }
+
+  private getStateHttpParams(params: HttpParams, state: OfferState): HttpParams {
+    switch (state) {
+      case OfferState.All:
+        return params.set(OfferQueryParamKey.IsArchived, 'true,false');
+      case OfferState.Archived:
+        return params.set(OfferQueryParamKey.IsArchived, 'true');
+      case OfferState.NoArchived:
+        return params.set(OfferQueryParamKey.IsArchived, 'false');
+    }
   }
 
 }

@@ -10,18 +10,20 @@ import {
   OfferTagApiSelectModule,
 } from '../offer-selects';
 import { OfferFiltersComponent } from './offer-filters.component';
+import { OfferStateFilterModule } from './offer-state-filter';
 
 @NgModule({
   declarations: [OfferFiltersComponent],
-  imports: [
-    CommonModule,
-    ReactiveFormsModule,
-    OfferTagApiSelectModule,
-    ProductApiSelectModule,
-    OfferCurrencySelectModule,
-    OfferBillingModeSelectModule,
-    TranslateModule,
-  ],
+    imports: [
+        CommonModule,
+        ReactiveFormsModule,
+        OfferTagApiSelectModule,
+        ProductApiSelectModule,
+        OfferCurrencySelectModule,
+        OfferBillingModeSelectModule,
+        TranslateModule,
+        OfferStateFilterModule,
+    ],
   exports: [OfferFiltersComponent],
 })
 export class OfferFiltersModule { }

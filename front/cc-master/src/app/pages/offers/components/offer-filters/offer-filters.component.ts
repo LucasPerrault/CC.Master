@@ -3,15 +3,7 @@ import { ControlValueAccessor, FormControl, FormGroup, NG_VALUE_ACCESSOR } from 
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { IOfferFiltersForm } from '../../models/offer-filters-form.interface';
-
-enum OfferFilterKey {
-  Search = 'search',
-  Tag = 'tag',
-  Product = 'product',
-  Currencies = 'currencies',
-  BillingModes = 'billingModes',
-}
+import { IOfferFiltersForm, OfferFilterKey } from '../../models/offer-filters-form.interface';
 
 @Component({
   selector: 'cc-offer-filters',
@@ -46,6 +38,7 @@ export class OfferFiltersComponent implements OnInit, OnDestroy, ControlValueAcc
       [OfferFilterKey.Product]: new FormControl(),
       [OfferFilterKey.Currencies]: new FormControl(),
       [OfferFilterKey.BillingModes]: new FormControl(),
+      [OfferFilterKey.State]: new FormControl(),
     });
   }
 

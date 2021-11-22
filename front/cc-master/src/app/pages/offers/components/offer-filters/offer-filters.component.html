@@ -1,6 +1,6 @@
 <form [formGroup]="formGroup" class="u-displayFlex u-flexDirectionColumn u-flexWrapWrap u-flexGrow1">
   <div class="u-displayFlex u-alignItemsFlexStart">
-    <div class="u-displayFlex u-flexWrapWrap u-alignItemsFlexStart">
+    <div class="u-displayFlex u-flexWrapWrap u-alignItemsCenter">
       <label class="textfield mod-search mod-inline palette-grey mod-outlined mod-longer">
         <input class="textfield-input" type="text"
                [placeholder]="'offers_filters_search' | translate" [formControlName]="formKey.Search">
@@ -41,6 +41,8 @@
                                     [multiple]="true">
       </cc-offer-billing-mode-select>
     </label>
+
+    <cc-offer-state-filter [formControlName]="formKey.State"></cc-offer-state-filter>
   </div>
 
 </form>
