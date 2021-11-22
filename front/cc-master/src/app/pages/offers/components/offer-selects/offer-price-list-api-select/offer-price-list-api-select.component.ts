@@ -26,8 +26,6 @@ import { IPriceListOfferSelectOption } from './offer-price-list-selection.interf
 export class OfferPriceListApiSelectComponent implements OnInit, OnDestroy, ControlValueAccessor {
   @Input() placeholder: string;
 
-  public api = 'api/v3/offers';
-
   public formControl: FormControl = new FormControl();
   private destroy$: Subject<void> = new Subject();
 
