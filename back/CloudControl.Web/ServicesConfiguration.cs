@@ -156,7 +156,8 @@ namespace CloudControl.Web
                     .SetPagingDefaultLimit(100)
                     .AddModelBinding()
                     .AddEntityFrameworkQuerying()
-                    .ConfigureLuccaApiForInstances();
+                    .ConfigureLuccaApiForInstances()
+                    .ConfigureLuccaApiForContracts();
             });
 
             services.AddMvc().AddLuccaApi(o =>

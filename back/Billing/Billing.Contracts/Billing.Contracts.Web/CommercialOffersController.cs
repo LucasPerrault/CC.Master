@@ -107,7 +107,7 @@ namespace Billing.Contracts.Web
         public HashSet<BillingMode> BillingMode { get; set; } = new HashSet<BillingMode>();
         public HashSet<string> Tag { get; set; } = new HashSet<string>();
 
-        public IPageToken PageToken { get; set; }
+        public IPageToken PageToken { get; set; } = null;
 
         internal CommercialOfferFilter ToFilter()
         {
