@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Tools;
 
 namespace Billing.Contracts.Domain.Offers.Filtering
 {
@@ -10,6 +11,7 @@ namespace Billing.Contracts.Domain.Offers.Filtering
         public HashSet<string> Tags { get; set; } = new HashSet<string>();
         public HashSet<int> ProductIds { get; set; } = new HashSet<int>();
         public HashSet<int> CurrencyIds { get; set; } = new HashSet<int>();
+        public CompareBoolean IsArchived { get; set; } = CompareBoolean.Bypass;
 
         public static CommercialOfferFilter All => new CommercialOfferFilter();
     }

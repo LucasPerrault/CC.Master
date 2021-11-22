@@ -8,6 +8,7 @@ using Rights.Domain;
 using Rights.Web.Attributes;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Tools.Web;
 
 namespace Billing.Contracts.Web
 {
@@ -108,6 +109,7 @@ namespace Billing.Contracts.Web
         public HashSet<string> Tag { get; set; } = new HashSet<string>();
         public HashSet<int> ProductId { get; set; } = new HashSet<int>();
         public HashSet<int> CurrencyId { get; set; } = new HashSet<int>();
+        public HashSet<bool> IsArchived { get; set; } = new HashSet<bool> { true, false };
 
         public IPageToken PageToken { get; set; } = null;
 
@@ -121,6 +123,7 @@ namespace Billing.Contracts.Web
                 Tags = Tag,
                 ProductIds = ProductId,
                 CurrencyIds = CurrencyId,
+                IsArchived = IsArchived.ToCompareBoolean(),
             };
         }
     }

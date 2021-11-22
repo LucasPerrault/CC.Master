@@ -158,7 +158,7 @@ namespace Billing.Contracts.Infra.Storage.Stores
 
         private IQueryable<CommercialOffer> Offers => _dbContext.Set<CommercialOffer>()
             .Include(o => o.Product)
-            .Include(o => o.PriceLists).ThenInclude(pl => pl.Rows); //.Where(o => !o.IsArchived) TODO ??
+            .Include(o => o.PriceLists).ThenInclude(pl => pl.Rows);
     }
 
     internal static class CommercialOffersQueryableExtensions
@@ -171,7 +171,8 @@ namespace Billing.Contracts.Infra.Storage.Stores
                 .WhenNotNullOrEmpty(filter.BillingModes).ApplyWhere(o => filter.BillingModes.Contains(o.BillingMode))
                 .WhenNotNullOrEmpty(filter.Tags).ApplyWhere(o => filter.Tags.Contains(o.Tag))
                 .WhenNotNullOrEmpty(filter.ProductIds).ApplyWhere(o => filter.ProductIds.Contains(o.ProductId))
-                .WhenNotNullOrEmpty(filter.CurrencyIds).ApplyWhere(o => filter.CurrencyIds.Contains(o.CurrencyId));
+                .WhenNotNullOrEmpty(filter.CurrencyIds).ApplyWhere(o => filter.CurrencyIds.Contains(o.CurrencyId))
+                .Apply(filter.IsArchived).To(o => o.IsArchived);
         }
 
         public static IQueryable<CommercialOffer> WhereHasRight(this IQueryable<CommercialOffer> offers, AccessRight accessRight)
