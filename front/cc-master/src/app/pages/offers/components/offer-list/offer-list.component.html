@@ -48,9 +48,12 @@
     <td class="table-body-row-cell">{{ offer.forecastMethod }}</td>
     <td class="table-body-row-cell">{{ getCurrencyName(offer.currencyId) }}</td>
     <td class="table-body-row-cell mod-alignRight" (click)="$event.stopPropagation()">
-      <button class="link" (click)="redirectToContracts(offer.id)">
+      <button *ngIf="!!offer.usage?.numberOfActiveContracts; else noActiveContract"
+              class="link" (click)="redirectToContracts(offer.id)">
         {{ offer.usage?.numberOfActiveContracts }}
       </button>
+
+      <ng-template #noActiveContract>0</ng-template>
     </td>
     <td class="table-body-row-cell mod-actions" (click)="$event.stopPropagation()">
       <button class="actionIcon"
