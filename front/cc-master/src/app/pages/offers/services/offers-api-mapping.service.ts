@@ -14,7 +14,7 @@ interface HttpParamsAttributes {
 }
 
 enum OfferQueryParamKey {
-  Name = 'name',
+  Search = 'search',
   Tag = 'tag',
   ProductId = 'product.id',
   Currency = 'currencyId',
@@ -52,8 +52,8 @@ export class OffersApiMappingService {
 
   private getNameHttpParams(params: HttpParams, search: string): HttpParams {
     return !!search
-      ? params.set(OfferQueryParamKey.Name, `like,${ encodeURIComponent(search) }`)
-      : params.delete(OfferQueryParamKey.Name);
+      ? params.set(OfferQueryParamKey.Search, encodeURIComponent(search))
+      : params.delete(OfferQueryParamKey.Search);
   }
 
   private getTagHttpParams(params: HttpParams, tag: string): HttpParams {
