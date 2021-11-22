@@ -8,5 +8,7 @@ namespace Billing.Contracts.Domain.Offers.Interfaces
     public interface IOfferRowsService
     {
         Task<List<ParsedOffer>> UploadAsync(Stream stream);
+
+        Task<MemoryStream> GetTemplateStreamAsync();
     }
 }
