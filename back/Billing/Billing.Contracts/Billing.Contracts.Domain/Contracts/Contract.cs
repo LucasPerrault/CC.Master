@@ -1,6 +1,6 @@
 ﻿using Billing.Contracts.Domain.Clients;
 using Billing.Contracts.Domain.Environments;
-using Billing.Products.Domain;
+using Billing.Contracts.Domain.Offers;
 using Distributors.Domain.Models;
 using Lucca.Core.Shared.Domain.Expressions;
 using System;
