@@ -5,6 +5,16 @@ namespace Tools
 {
     public abstract class ValueObject
     {
+        public static bool operator ==(ValueObject left, ValueObject right)
+        {
+            return EqualOperator(left, right);
+        }
+
+        public static bool operator !=(ValueObject left, ValueObject right)
+        {
+            return NotEqualOperator(left, right);
+        }
+
         protected static bool EqualOperator(ValueObject left, ValueObject right)
         {
             if (ReferenceEquals(left, null) ^ ReferenceEquals(right, null))
