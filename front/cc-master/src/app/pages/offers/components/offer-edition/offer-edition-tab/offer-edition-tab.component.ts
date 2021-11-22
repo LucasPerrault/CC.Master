@@ -75,7 +75,7 @@ export class OfferEditionTabComponent implements OnInit {
       billingMode: getBillingMode(offer.billingMode),
       currency: getCurrency(offer.currencyId),
       tag: offer.tag,
-      billingUnit: getBillingUnit(offer.billingUnit),
+      billingUnit: getBillingUnit(offer.unit),
       pricingMethod: offer.pricingMethod,
       forecastMethod: offer.forecastMethod,
       priceList: this.toPriceListForm(PriceListsTimelineService.getCurrent(offer.priceLists)),

@@ -19,7 +19,7 @@ export interface IDetailedOffer extends IOffer {
   isCatalog: boolean;
   currencyId: number;
   isArchived: boolean;
-  billingUnit: BillingUnit;
+  unit: BillingUnit;
   priceLists: IPriceList[];
   usage: IOfferUsage;
 }
