@@ -12,8 +12,8 @@
           {{ getPriceListStatus(priceList, offer.priceLists) }}
         </span>
         <div>
-          <button *ngIf="validationContext$ | async; let validationContext" class="button palette-grey mod-outline mod-small"
-                  (click)="openEditionModal(priceList, offer.priceLists, validationContext)">
+          <button class="button palette-grey mod-outline mod-small"
+                  (click)="openEditionModal(offer, priceList, offer.priceLists)">
             {{ 'offers_priceList_tab_edition_button' | translate }}
           </button>
           <button [disabled]="!canDelete(priceList)" class="button palette-grey mod-outline mod-small"

@@ -4,20 +4,21 @@ import { BYPASS_INTERCEPTOR } from '@cc/aspects/errors';
 import {
   ApiV3DateService,
   IHttpApiV4CollectionCountResponse,
-  IHttpApiV4CollectionResponse,
 } from '@cc/common/queries';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 import { IOfferCreationForm } from '../components/offer-creation/offer-creation-form/offer-creation-form.interface';
 import { IOfferEditionForm } from '../components/offer-edition/offer-edition-tab/offer-edition-form/offer-edition-form.interface';
-import { IDetailedOffer } from '../models/detailed-offer.interface';
+import { IDetailedOffer, IDetailedOfferWithoutUsage } from '../models/detailed-offer.interface';
 import { IOfferCreationDto } from '../models/offer-creation-dto.interface';
 import { IOfferEditionDto } from '../models/offer-edition-dto.interface';
+import { IOfferUsage } from '../models/offer-usage.interface';
 import { PriceListsDataService } from './price-lists-data.service';
 
 class OfferApiEndpoint {
   public static base = '/api/commercial-offers';
+  public static usages = `${ OfferApiEndpoint.base }/usages`;
   public static id = (offerId: number) => `${ OfferApiEndpoint.base }/${ offerId }`;
 }
 
@@ -30,14 +31,24 @@ export class OffersDataService {
   ) {
   }
 
-  public getOffers$(params: HttpParams): Observable<IHttpApiV4CollectionCountResponse<IDetailedOffer>> {
-    return this.httpClient.get<IHttpApiV4CollectionCountResponse<IDetailedOffer>>(OfferApiEndpoint.base, { params });
+  public getOffersWithoutUsage$(params: HttpParams): Observable<IHttpApiV4CollectionCountResponse<IDetailedOfferWithoutUsage>> {
+    params = params.set('fields.root', 'count');
+    return this.httpClient.get<IHttpApiV4CollectionCountResponse<IDetailedOfferWithoutUsage>>(OfferApiEndpoint.base, { params });
   }
 
-  public getById$(offerId: number): Observable<IDetailedOffer> {
+  public getById$(offerId: number): Observable<IDetailedOfferWithoutUsage> {
     const url = OfferApiEndpoint.id(offerId);
     const context = new HttpContext().set(BYPASS_INTERCEPTOR, true);
     return this.httpClient.get<IDetailedOffer>(url, { context });
+  }
+
+  public getUsages$(offerIds: number[]): Observable<IOfferUsage[]> {
+    if (!offerIds?.length) {
+      return of([]);
+    }
+
+    const params = new HttpParams().set('offerId', offerIds.join(','));
+    return this.httpClient.get<IOfferUsage[]>(OfferApiEndpoint.usages, { params });
   }
 
   public delete$(offerId: number): Observable<void> {

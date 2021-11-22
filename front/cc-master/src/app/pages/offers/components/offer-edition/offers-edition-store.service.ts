@@ -3,11 +3,11 @@ import { SubmissionState, toSubmissionState } from '@cc/common/forms';
 import { BehaviorSubject, combineLatest, forkJoin, Observable, of, ReplaySubject } from 'rxjs';
 import { finalize, map, switchMapTo, take, tap } from 'rxjs/operators';
 
-import { IDetailedOffer } from '../../models/detailed-offer.interface';
-import { IOfferValidationContext } from '../../models/offer-validation-context.interface';
+import { IDetailedOffer, IDetailedOfferWithoutUsage } from '../../models/detailed-offer.interface';
+import { IOfferUsage } from '../../models/offer-usage.interface';
 import { IPriceListForm } from '../../models/price-list-form.interface';
 import { OfferListService } from '../../services/offer-list.service';
-import { OfferValidationContextDataService } from '../../services/offer-validation-context-data.service';
+import { OfferUsageStoreService } from '../../services/offer-usage-store.service';
 import { OffersDataService } from '../../services/offers-data.service';
 import { PriceListsDataService } from '../../services/price-lists-data.service';
 import { IOfferEditionForm } from './offer-edition-tab/offer-edition-form/offer-edition-form.interface';
@@ -19,10 +19,6 @@ export class OffersEditionStoreService {
     return this.offer.asObservable();
   }
 
-  public get validationContext$(): Observable<IOfferValidationContext> {
-    return this.validationContext.asObservable();
-  }
-
   public get state$(): Observable<SubmissionState> {
     return this.state.asObservable();
   }
@@ -32,14 +28,13 @@ export class OffersEditionStoreService {
   }
 
   private offer: ReplaySubject<IDetailedOffer> = new ReplaySubject<IDetailedOffer>(1);
-  private validationContext: ReplaySubject<IOfferValidationContext> = new ReplaySubject<IOfferValidationContext>(1);
 
   private state: BehaviorSubject<SubmissionState> = new BehaviorSubject<SubmissionState>(SubmissionState.Idle);
 
   constructor(
     private offersDataService: OffersDataService,
+    private usageStoreService: OfferUsageStoreService,
     private listsDataService: PriceListsDataService,
-    private contextDataService: OfferValidationContextDataService,
     private offerListService: OfferListService,
   ) {
   }
@@ -81,18 +76,17 @@ export class OffersEditionStoreService {
   private refresh(offerId: number): void {
     combineLatest([
       this.offersDataService.getById$(offerId),
-      this.contextDataService.getRealCountNumber$(offerId),
+      this.usageStoreService.getUsage$(offerId),
     ])
       .pipe(
         take(1),
-        tap(([offer, realCountNumber]) => this.set(offer, realCountNumber)),
+        tap(([offer, usage]) => this.set(offer, usage)),
         toSubmissionState(),
       )
       .subscribe(state => this.state.next(state));
   }
 
-  private set(offer: IDetailedOffer, realCountNumber: number): void {
-    this.offer.next(offer);
-    this.validationContext.next({ offer, realCountNumber });
+  private set(offer: IDetailedOfferWithoutUsage, usage: IOfferUsage): void {
+    this.offer.next(({ ...offer, usage }));
   }
 }

@@ -1,9 +1,9 @@
 import { IPriceList } from '@cc/domain/billing/offers';
 
-import { IOfferValidationContext } from '../../../../models/offer-validation-context.interface';
+import { IDetailedOffer } from '../../../../models/detailed-offer.interface';
 
 export interface IOfferPriceListEditionModalData {
+  offer: IDetailedOffer;
   priceListToEdit: IPriceList;
   allListStartDates: Date[];
-  validationContext: IOfferValidationContext;
 }

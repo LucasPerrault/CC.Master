@@ -50,7 +50,7 @@ export class OfferListComponent implements OnInit {
 
   public getBillingMode(mode: BillingMode): string {
     const billingMode: IBillingMode = billingModes.find(m => m.id === mode);
-    return this.translatePipe.transform(billingMode.name);
+    return !!billingMode ? this.translatePipe.transform(billingMode.name) : '';
   }
 
   public getCurrencyName(currencyId: number): string {
@@ -66,7 +66,7 @@ export class OfferListComponent implements OnInit {
   }
 
   public canBeDeleted(offer: IDetailedOffer): boolean {
-    return this.restrictionsService.canDeleteOffer(offer.activeContractNumber);
+    return this.restrictionsService.canDeleteOffer(offer.usage?.numberOfActiveContracts);
   }
 
   public openDeletionModal(offer: IDetailedOffer): void {

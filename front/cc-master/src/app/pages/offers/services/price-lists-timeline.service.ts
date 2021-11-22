@@ -7,6 +7,10 @@ export class PriceListsTimelineService {
   }
 
   public static getCurrent(priceLists: IPriceList[]): IPriceList {
+    if (!priceLists?.length) {
+      return null;
+    }
+
     const today = Date.now();
     return priceLists.find(p => isBefore(new Date(p.startsOn), today) || isEqual(new Date(p.startsOn), today));
   }

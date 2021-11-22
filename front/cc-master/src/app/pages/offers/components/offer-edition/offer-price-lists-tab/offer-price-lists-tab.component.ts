@@ -8,7 +8,6 @@ import { Observable } from 'rxjs';
 
 import { IDetailedOffer } from '../../../models/detailed-offer.interface';
 import { getCurrency, IOfferCurrency } from '../../../models/offer-currency.interface';
-import { IOfferValidationContext } from '../../../models/offer-validation-context.interface';
 import { OfferRestrictionsService } from '../../../services/offer-restrictions.service';
 import { OffersEditionStoreService } from '../offers-edition-store.service';
 import { OfferPriceListCreationModalComponent } from './offer-price-list-creation-modal/offer-price-list-creation-modal.component';
@@ -28,14 +27,6 @@ export class OfferPriceListsTabComponent implements OnInit {
 
   public get offer$(): Observable<IDetailedOffer> {
     return this.storeService.offer$;
-  }
-
-  public get validationContext$(): Observable<IOfferValidationContext> {
-    return this.storeService.validationContext$;
-  }
-
-  private get offerId(): number {
-    return parseInt(this.activatedRoute.parent.snapshot.paramMap.get('id'), 10);
   }
 
   constructor(
@@ -65,9 +56,9 @@ export class OfferPriceListsTabComponent implements OnInit {
     this.luModal.open(OfferPriceListCreationModalComponent, data);
   }
 
-  public openEditionModal(priceListToEdit: IPriceList, allPriceLists: IPriceList[], validationContext: IOfferValidationContext): void {
+  public openEditionModal(offer: IDetailedOffer, priceListToEdit: IPriceList, allPriceLists: IPriceList[]): void {
     const allListStartDates = allPriceLists.map(p => new Date(p.startsOn));
-    const data: IOfferPriceListEditionModalData = { priceListToEdit, allListStartDates, validationContext };
+    const data: IOfferPriceListEditionModalData = { offer, priceListToEdit, allListStartDates };
     this.luModal.open(OfferPriceListEditionModalComponent, data);
   }
 

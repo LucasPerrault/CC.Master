@@ -42,13 +42,15 @@
   <tr *ngFor="let offer of offers" class="table-body-row" [routerLink]="[offer.id, 'edit']">
     <td class="table-body-row-cell mod-alignRight">{{ offer.id }}</td>
     <td class="table-body-row-cell">{{ offer.name }}</td>
-    <td class="table-body-row-cell">{{ offer.product.name }}</td>
+    <td class="table-body-row-cell">{{ offer.product?.name }}</td>
     <td class="table-body-row-cell">{{ getBillingMode(offer.billingMode) }}</td>
     <td class="table-body-row-cell">{{ offer.pricingMethod }}</td>
     <td class="table-body-row-cell">{{ offer.forecastMethod }}</td>
     <td class="table-body-row-cell">{{ getCurrencyName(offer.currencyId) }}</td>
     <td class="table-body-row-cell mod-alignRight" (click)="$event.stopPropagation()">
-      <button class="link" (click)="redirectToContracts(offer.id)">{{ offer.activeContractNumber }}</button>
+      <button class="link" (click)="redirectToContracts(offer.id)">
+        {{ offer.usage?.numberOfActiveContracts }}
+      </button>
     </td>
     <td class="table-body-row-cell mod-actions" (click)="$event.stopPropagation()">
       <button class="actionIcon"

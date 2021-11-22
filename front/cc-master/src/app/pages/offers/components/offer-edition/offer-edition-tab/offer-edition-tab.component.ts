@@ -4,14 +4,13 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { getButtonState, toSubmissionState } from '@cc/common/forms';
 import { NavigationPath } from '@cc/common/navigation';
 import { IPriceList } from '@cc/domain/billing/offers';
-import { BehaviorSubject, Observable, ReplaySubject } from 'rxjs';
+import { BehaviorSubject, ReplaySubject } from 'rxjs';
 import { map, take } from 'rxjs/operators';
 
 import { getBillingMode } from '../../../enums/billing-mode.enum';
 import { getBillingUnit } from '../../../enums/billing-unit.enum';
 import { IDetailedOffer } from '../../../models/detailed-offer.interface';
 import { getCurrency } from '../../../models/offer-currency.interface';
-import { IOfferValidationContext } from '../../../models/offer-validation-context.interface';
 import { IPriceListForm } from '../../../models/price-list-form.interface';
 import { PriceListsTimelineService } from '../../../services/price-lists-timeline.service';
 import { OffersEditionStoreService } from '../offers-edition-store.service';
@@ -25,14 +24,11 @@ import { IOfferEditionForm } from './offer-edition-form/offer-edition-form.inter
 })
 export class OfferEditionTabComponent implements OnInit {
 
+  public offerToEdit$: ReplaySubject<IDetailedOffer> = new ReplaySubject<IDetailedOffer>(1);
   public priceListId$: BehaviorSubject<number> = new BehaviorSubject<number>(null);
 
   public formControl: FormControl = new FormControl();
   public editionButtonState$: ReplaySubject<string> = new ReplaySubject<string>(1);
-
-  public get validationContext$(): Observable<IOfferValidationContext> {
-    return this.storeService.validationContext$;
-  }
 
   constructor(
     private router: Router,
@@ -46,6 +42,7 @@ export class OfferEditionTabComponent implements OnInit {
       .subscribe(offer => {
         this.formControl.patchValue(this.toOfferForm(offer));
         this.priceListId$.next(PriceListsTimelineService.getCurrent(offer.priceLists)?.id);
+        this.offerToEdit$.next(offer);
       });
   }
 
@@ -87,8 +84,8 @@ export class OfferEditionTabComponent implements OnInit {
 
   private toPriceListForm(priceList: IPriceList): IPriceListForm {
     return {
-      startsOn: !!priceList.startsOn ? new Date(priceList.startsOn) : null,
-      rows: priceList.rows,
+      startsOn: !!priceList?.startsOn ? new Date(priceList.startsOn) : null,
+      rows: priceList?.rows ?? [],
     };
   }
 }

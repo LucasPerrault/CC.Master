@@ -2,21 +2,23 @@ import { HttpParams } from '@angular/common/http';
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { defaultPagingParams, IPaginatedResult, PaginatedList, PaginatedListState, PagingService } from '@cc/common/paging';
+import { ApiStandard } from '@cc/common/queries';
 import { ISortParams, SortOrder } from '@cc/common/sort';
 import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
-import { debounceTime, map, takeUntil } from 'rxjs/operators';
+import { debounceTime, map, switchMap, takeUntil } from 'rxjs/operators';
 
 import { OfferSortParamKey } from './enums/offer-sort-param-key.enum';
-import { IDetailedOffer } from './models/detailed-offer.interface';
+import { IDetailedOffer, IDetailedOfferWithoutUsage } from './models/detailed-offer.interface';
+import { IOfferUsage } from './models/offer-usage.interface';
 import { OfferListService } from './services/offer-list.service';
 import { OfferRestrictionsService } from './services/offer-restrictions.service';
+import { OfferUsageStoreService } from './services/offer-usage-store.service';
 import { OffersApiMappingService } from './services/offers-api-mapping.service';
 import { OffersDataService } from './services/offers-data.service';
-import { ApiStandard } from '@cc/common/queries';
 
 // It is defined in the offer model in the back project.
 // It is used for the default selection.
-const offerPrincipalTag = 'Catalogue';
+const offerPrincipalTag = 'Catalogues';
 
 @Component({
   selector: 'cc-offers',
@@ -54,6 +56,7 @@ export class OffersComponent implements OnInit {
     private restrictionsService: OfferRestrictionsService,
     private apiMappingService: OffersApiMappingService,
     private offersDataService: OffersDataService,
+    private usageStoreService: OfferUsageStoreService,
     private offerListService: OfferListService,
     private pagingService: PagingService,
   ) {
@@ -73,7 +76,7 @@ export class OffersComponent implements OnInit {
 
     this.paginatedOffers = this.pagingService.paginate<IDetailedOffer>(
       (httpParams) => this.getPaginatedOffers$(httpParams),
-      { page: defaultPagingParams.page, limit: 100 },
+      { page: defaultPagingParams.page, limit: defaultPagingParams.limit },
       ApiStandard.V4,
     );
 
@@ -98,9 +101,19 @@ export class OffersComponent implements OnInit {
   }
 
   private getPaginatedOffers$(httpParams: HttpParams): Observable<IPaginatedResult<IDetailedOffer>> {
-    return this.offersDataService.getOffers$(httpParams).pipe(
-      map(response => ({ items: response.items, totalCount: response.count })),
+    return this.offersDataService.getOffersWithoutUsage$(httpParams).pipe(
+      switchMap(response => this.getDetailedOffers$(response.items, response.count)),
     );
+  }
+
+  private getDetailedOffers$(offers: IDetailedOfferWithoutUsage[], count: number): Observable<IPaginatedResult<IDetailedOffer>> {
+    const offerIds = offers.map(o => o.id) ?? [];
+    return this.usageStoreService.getUsages$(offerIds).pipe(
+      map(usages => ({ items: this.toDetailedOffers(offers, usages), totalCount: count })));
+  }
+
+  private toDetailedOffers(offers: IDetailedOfferWithoutUsage[], usages: IOfferUsage[]): IDetailedOffer[] {
+    return offers.map(offer => ({ ...offer, usage: usages.find(u => u.offerId === offer.id) }));
   }
 
   private initDefaultFiltersAndSort(): void {

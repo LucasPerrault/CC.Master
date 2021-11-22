@@ -35,7 +35,7 @@ export class OfferPriceListEditionModalComponent implements OnInit, OnDestroy, I
   public granularity = ELuDateGranularity;
 
   public get canEdit(): boolean {
-    return this.restrictionsService.canEdit(this.data.validationContext);
+    return this.restrictionsService.canEdit(this.data.offer);
   }
 
   public get min(): Date {
@@ -57,7 +57,7 @@ export class OfferPriceListEditionModalComponent implements OnInit, OnDestroy, I
     this.formGroup = new FormGroup({
       [PriceListFormKey.StartsOn]: new FormControl({
         value: new Date(data.priceListToEdit.startsOn),
-        disabled: !this.restrictionsService.canEditPriceListStartsOn(data.validationContext),
+        disabled: !this.restrictionsService.canEditPriceListStartsOn(data.offer),
       }, [PriceListsValidators.uniqStartsOn(this.data.allListStartDates)]),
       [PriceListFormKey.PriceRows]: new FormControl(data.priceListToEdit.rows),
     });
@@ -77,7 +77,7 @@ export class OfferPriceListEditionModalComponent implements OnInit, OnDestroy, I
   public submitAction(): Observable<void> {
     const form = this.formGroup.getRawValue();
 
-    const offerId = this.data.validationContext.offer.id;
+    const offerId = this.data.offer.id;
     const priceListId = this.data.priceListToEdit.id;
     return this.storeService.editPriceList$(offerId, priceListId, form);
   }

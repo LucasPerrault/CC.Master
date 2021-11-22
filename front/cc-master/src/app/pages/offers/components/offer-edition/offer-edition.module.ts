@@ -7,7 +7,6 @@ import { PriceListModule } from '@cc/domain/billing/offers';
 import { LuDateSelectInputModule } from '@lucca-front/ng/date';
 import { LuModalModule } from '@lucca-front/ng/modal';
 
-import { OfferValidationContextDataService } from '../../services/offer-validation-context-data.service';
 import { EditablePriceGridModule } from '../editable-price-grid/editable-price-grid.module';
 import { OfferPageTemplateModule } from '../offer-page-template/offer-page-template.module';
 import { OfferEditionComponent } from './offer-edition.component';
@@ -50,7 +49,6 @@ import { OffersEditionStoreService } from './offers-edition-store.service';
     LuDateSelectInputModule,
   ],
   providers: [
-    OfferValidationContextDataService,
     OfferPriceListsTabService,
     OffersEditionStoreService,
   ],

@@ -14,7 +14,7 @@ import { ELuDateGranularity } from '@lucca-front/ng/core';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { IOfferValidationContext } from '../../../../models/offer-validation-context.interface';
+import { IDetailedOffer } from '../../../../models/detailed-offer.interface';
 import { OfferRestrictionsService } from '../../../../services/offer-restrictions.service';
 import { IOfferEditionForm } from './offer-edition-form.interface';
 
@@ -53,8 +53,8 @@ enum PriceListFormKey {
   ],
 })
 export class OfferEditionFormComponent implements OnInit, OnDestroy, ControlValueAccessor, Validator {
-  @Input() public set validationContext(context: IOfferValidationContext) {
-    this.setFormGroupValidation(context);
+  @Input() public set offerToEdit(offer: IDetailedOffer) {
+    this.setFormGroupValidation(offer);
   }
 
   public isPriceRowsReadonly = false;
@@ -118,14 +118,14 @@ export class OfferEditionFormComponent implements OnInit, OnDestroy, ControlValu
     }
   }
 
-  private setFormGroupValidation(context: IOfferValidationContext) {
-    if (!this.restrictionsService.canEdit(context)) {
+  private setFormGroupValidation(offer: IDetailedOffer) {
+    if (!this.restrictionsService.canEdit(offer)) {
       this.formGroup.disable();
       this.formGroup.get(OfferFormKey.Name).enable();
       this.isPriceRowsReadonly = true;
     }
 
-    if (!this.restrictionsService.canEditPriceListStartsOn(context)) {
+    if (!this.restrictionsService.canEditPriceListStartsOn(offer)) {
       this.formGroup.get(OfferFormKey.PriceList).get(PriceListFormKey.StartsOn).disable();
     }
   }
