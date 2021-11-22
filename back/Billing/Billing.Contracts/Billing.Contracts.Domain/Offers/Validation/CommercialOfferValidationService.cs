@@ -10,9 +10,9 @@ namespace Billing.Contracts.Domain.Offers.Validation
     public class CommercialOfferValidationService : ICommercialOfferValidationService
     {
         private readonly ITimeProvider _time;
-        private readonly Translations _translations;
+        private readonly ITranslations _translations;
 
-        public CommercialOfferValidationService(ITimeProvider time, Translations translations)
+        public CommercialOfferValidationService(ITimeProvider time, ITranslations translations)
         {
             _time = time;
             _translations = translations;
@@ -233,7 +233,7 @@ namespace Billing.Contracts.Domain.Offers.Validation
 
         private bool HasStarted(PriceList priceList)
         {
-            return priceList.StartsOn >= _time.Today();
+            return priceList.StartsOn < _time.Today();
         }
 
         private bool HasActiveContract(CommercialOfferUsage usage)
