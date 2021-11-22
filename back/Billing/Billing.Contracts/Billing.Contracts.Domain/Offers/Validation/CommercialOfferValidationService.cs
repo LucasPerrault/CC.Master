@@ -24,10 +24,6 @@ namespace Billing.Contracts.Domain.Offers.Validation
             {
                 throw new OfferValidationException(GetCreateOfferMessage(_translations.PriceListStartsOnFirstOfMonth()));
             }
-            if (newOffer.PriceLists.Any(l => IsStartDateInThePast(l)))
-            {
-                throw new OfferValidationException(GetCreateOfferMessage(_translations.PriceListStartDefinedInThePast()));
-            }
             if (HasSameStartDateOnSeveralPriceLists(newOffer.PriceLists))
             {
                 throw new OfferValidationException(GetCreateOfferMessage(_translations.PriceListsStartsOnSameDay()));
