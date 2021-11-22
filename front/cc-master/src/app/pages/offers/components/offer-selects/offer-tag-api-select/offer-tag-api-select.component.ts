@@ -21,7 +21,7 @@ export class OfferTagApiSelectComponent implements OnInit, OnDestroy, ControlVal
   @Input() public placeholder: string;
   @Input() public multiple: string;
 
-  public api = '/api/v3/offers/tags';
+  public api = '/api/commercial-offers/tags';
 
   public formControl: FormControl = new FormControl();
   private destroy$: Subject<void> = new Subject<void>();
@@ -58,5 +58,9 @@ export class OfferTagApiSelectComponent implements OnInit, OnDestroy, ControlVal
 
   public trackBy(index: number, tag: string): string {
     return tag;
+  }
+
+  public capitalize(tag: string): string {
+    return !!tag ? `${ tag[0].toUpperCase() }${ tag.slice(1) }` : '';
   }
 }

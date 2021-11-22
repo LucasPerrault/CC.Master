@@ -6,7 +6,7 @@
 
   <lu-option-picker-advanced>
     <header class="lu-picker-header">
-      <lu-api-feeder [api]="api"></lu-api-feeder>
+      <lu-api-feeder [api]="api" standard="v4"></lu-api-feeder>
     </header>
 
     <label class="textfield mod-block palette-grey mod-outlined mod-optionItem">
@@ -14,7 +14,7 @@
              [formControl]="autocomplete">
     </label>
 
-    <lu-option *luForOptions="let tag; trackBy: trackBy" [value]="tag">{{ tag }}</lu-option>
+    <lu-option *luForOptions="let tag; trackBy: trackBy" [value]="tag">{{ capitalize(tag) }}</lu-option>
 
   </lu-option-picker-advanced>
 

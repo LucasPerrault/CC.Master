@@ -22,7 +22,7 @@ export class OfferTagAutocompleteSelectComponent implements OnInit, OnDestroy, C
   @Input() public multiple: string;
   @Input() public set disabled(isDisabled: boolean) { this.setDisabledState(isDisabled); }
 
-  public api = '/api/v3/offers/tags';
+  public api = '/api/commercial-offers/tags';
 
   public autocomplete: FormControl = new FormControl();
 
@@ -73,5 +73,9 @@ export class OfferTagAutocompleteSelectComponent implements OnInit, OnDestroy, C
 
   public trackBy(index: number, tag: string): string {
     return tag;
+  }
+
+  public capitalize(tag: string): string {
+    return !!tag ? `${ tag[0].toUpperCase() }${ tag.slice(1) }` : '';
   }
 }
