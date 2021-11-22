@@ -1,3 +1,4 @@
+using Billing.Contracts.Domain.Offers.Comparisons;
 using Billing.Contracts.Domain.Offers.Interfaces;
 using Billing.Contracts.Domain.Offers.Validation.Exceptions;
 using Resources.Translations;
@@ -32,7 +33,7 @@ namespace Billing.Contracts.Domain.Offers.Validation
 
         public void ThrowIfCannotModifyOffer(CommercialOffer oldOffer, CommercialOffer newOffer, CommercialOfferUsage oldUsage)
         {
-            if (HasContractWithCount(oldUsage) && HasAnyOfferPropertyChangedBesidesByName(oldOffer, newOffer))
+            if (HasContractWithCount(oldUsage) && HasAnyOfferPropertyChangedBesidesName(oldOffer, newOffer))
             {
                 throw new OfferValidationException(GetModifyOfferMessage(oldOffer.Id, _translations.OfferChangedDespiteCount()));
             }
@@ -123,17 +124,12 @@ namespace Billing.Contracts.Domain.Offers.Validation
             return usage.NumberOfCountedContracts > 0;
         }
 
-        private bool HasAnyOfferPropertyChangedBesidesByName(CommercialOffer oldOffer, CommercialOffer newOffer)
+        private bool HasAnyOfferPropertyChangedBesidesName(CommercialOffer oldOffer, CommercialOffer newOffer)
         {
-            // TODO tester avec une sérialisation json ? Pour éviter une régression à l'ajout d'une propriété
-            return oldOffer.ProductId != newOffer.ProductId
-                || oldOffer.BillingMode != newOffer.BillingMode
-                || oldOffer.Unit != newOffer.Unit
-                || oldOffer.PricingMethod != newOffer.PricingMethod
-                || oldOffer.ForecastMethod != newOffer.ForecastMethod
-                || oldOffer.Tag != newOffer.Tag
-                || oldOffer.CurrencyId != newOffer.CurrencyId
-                || oldOffer.IsArchived != newOffer.IsArchived;
+            var oldOfferComparison = new CommercialOfferComparisonObject(oldOffer);
+            var newOfferComparison = new CommercialOfferComparisonObject(newOffer);
+
+            return oldOfferComparison != newOfferComparison;
         }
 
         private bool HasAnyOfferPriceListChanged(CommercialOffer oldOffer, CommercialOffer newOffer)
@@ -155,8 +151,10 @@ namespace Billing.Contracts.Domain.Offers.Validation
 
         private bool HasAnyPriceListPropertyChanged(PriceList oldList, PriceList newList)
         {
-            // TODO tester avec une sérialisation json ? Pour éviter une régression à l'ajout d'une propriété
-            return oldList.StartsOn != newList.StartsOn;
+            var oldListComparison = new PriceListComparisonObject(oldList);
+            var newListComparison = new PriceListComparisonObject(newList);
+
+            return oldListComparison != newListComparison;
         }
 
         private bool HasAnyRowChanged(PriceList oldPriceList, PriceList newPriceList, bool allowNewHigherRows)
@@ -191,9 +189,10 @@ namespace Billing.Contracts.Domain.Offers.Validation
 
         private bool AreEqual(PriceRow r1, PriceRow r2)
         {
-            return r1.MaxIncludedCount == r2.MaxIncludedCount
-                && r1.UnitPrice == r2.UnitPrice
-                && r1.FixedPrice == r2.FixedPrice;
+            var r1Comparison = new PriceRowComparisonObject(r1);
+            var r2Comparison = new PriceRowComparisonObject(r2);
+
+            return r1Comparison == r2Comparison;
         }
 
         private bool IsStartDateInThePast(PriceList priceList)
