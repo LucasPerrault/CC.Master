@@ -1,18 +1,18 @@
 <table class="table mod-clickable" [ngClass]="{ 'mod-clickable': hasRightToEdit }">
   <thead class="table-head">
   <tr class="table-head-row">
-    <th class="table-head-row-cell">
-      {{ 'offers_list_column_id' | translate }}
+    <th class="table-head-row-cell" [attr.aria-sort]="getSortOrderClass(sortParamKey.Id)">
+      <button class="table-head-row-cell-sortableButton" (click)="sortBy(sortParamKey.Id)">
+        {{ 'offers_list_column_id' | translate }}
+      </button>
     </th>
     <th class="table-head-row-cell" [attr.aria-sort]="getSortOrderClass(sortParamKey.Name)">
       <button class="table-head-row-cell-sortableButton" (click)="sortBy(sortParamKey.Name)">
         {{ 'offers_list_column_name' | translate }}
       </button>
     </th>
-    <th class="table-head-row-cell" [attr.aria-sort]="getSortOrderClass(sortParamKey.Product)">
-      <button class="table-head-row-cell-sortableButton" (click)="sortBy(sortParamKey.Product)">
-        {{ 'offers_list_column_product' | translate }}
-      </button>
+    <th class="table-head-row-cell">
+      {{ 'offers_list_column_product' | translate }}
     </th>
     <th class="table-head-row-cell" [attr.aria-sort]="getSortOrderClass(sortParamKey.BillingMode)">
       <button class="table-head-row-cell-sortableButton" (click)="sortBy(sortParamKey.BillingMode)">

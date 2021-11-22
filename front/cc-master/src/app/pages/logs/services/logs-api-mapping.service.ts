@@ -1,7 +1,7 @@
 import { HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { IDateRange } from '@cc/common/date';
-import { ApiV3DateService, apiV3SortToHttpParams, toApiV3SortParams } from '@cc/common/queries';
+import { ApiSortHelper, ApiV3DateService } from '@cc/common/queries';
 import { ISortParams } from '@cc/common/sort';
 import { IEnvironment, IEnvironmentAction, IEnvironmentDomain } from '@cc/domain/environments';
 import { IUser } from '@cc/domain/users';
@@ -38,8 +38,7 @@ export class LogsApiMappingService {
       return params;
     }
 
-    const apiV3SortParams = toApiV3SortParams(sortParams);
-    return apiV3SortToHttpParams(params, apiV3SortParams);
+    return ApiSortHelper.toV3HttpParams(params, sortParams);
   }
 
   private setLogsFilter(params: HttpParams, filters: ILogsFilter): HttpParams {

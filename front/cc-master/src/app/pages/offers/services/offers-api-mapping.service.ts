@@ -1,6 +1,6 @@
 import { HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { apiV3SortToHttpParams, toApiV3SortParams } from '@cc/common/queries';
+import { ApiSortHelper } from '@cc/common/queries';
 import { ISortParams } from '@cc/common/sort';
 import { IProduct } from '@cc/domain/billing/offers';
 
@@ -34,8 +34,7 @@ export class OffersApiMappingService {
       return params;
     }
 
-    const apiV3SortParams = toApiV3SortParams(sortParams);
-    return apiV3SortToHttpParams(params, apiV3SortParams);
+    return ApiSortHelper.toV4HttpParams(params, sortParams);
   }
 
   private setOfferFilters(params: HttpParams, filters: IOfferFiltersForm): HttpParams {
