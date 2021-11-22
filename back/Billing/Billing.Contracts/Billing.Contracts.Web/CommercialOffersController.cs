@@ -106,6 +106,8 @@ namespace Billing.Contracts.Web
         public HashSet<string> Search { get; set; } = new HashSet<string>();
         public HashSet<BillingMode> BillingMode { get; set; } = new HashSet<BillingMode>();
         public HashSet<string> Tag { get; set; } = new HashSet<string>();
+        public HashSet<int> ProductId { get; set; } = new HashSet<int>();
+        public HashSet<int> CurrencyId { get; set; } = new HashSet<int>();
 
         public IPageToken PageToken { get; set; } = null;
 
@@ -117,6 +119,8 @@ namespace Billing.Contracts.Web
                 Search = Search,
                 BillingModes = BillingMode,
                 Tags = Tag,
+                ProductIds = ProductId,
+                CurrencyIds = CurrencyId,
             };
         }
     }

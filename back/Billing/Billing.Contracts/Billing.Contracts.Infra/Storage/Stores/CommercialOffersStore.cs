@@ -169,7 +169,9 @@ namespace Billing.Contracts.Infra.Storage.Stores
                 .Search(filter.Search)
                 .WhenNotNullOrEmpty(filter.Ids).ApplyWhere(o => filter.Ids.Contains(o.Id))
                 .WhenNotNullOrEmpty(filter.BillingModes).ApplyWhere(o => filter.BillingModes.Contains(o.BillingMode))
-                .WhenNotNullOrEmpty(filter.Tags).ApplyWhere(o => filter.Tags.Contains(o.Tag));
+                .WhenNotNullOrEmpty(filter.Tags).ApplyWhere(o => filter.Tags.Contains(o.Tag))
+                .WhenNotNullOrEmpty(filter.ProductIds).ApplyWhere(o => filter.ProductIds.Contains(o.ProductId))
+                .WhenNotNullOrEmpty(filter.CurrencyIds).ApplyWhere(o => filter.CurrencyIds.Contains(o.CurrencyId));
         }
 
         public static IQueryable<CommercialOffer> WhereHasRight(this IQueryable<CommercialOffer> offers, AccessRight accessRight)
