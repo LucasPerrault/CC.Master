@@ -218,11 +218,14 @@ namespace Billing.Contracts.Domain.Offers.Validation
 
         private bool HasAnyPriceListIdChanged(PriceList oldPriceList, PriceList newPriceList)
         {
-            var oldListIdsByRowId = oldPriceList.Rows.ToDictionary(pr => pr.Id, pr => pr.ListId);
-            var newListIdsByRowId = newPriceList.Rows.ToDictionary(pr => pr.Id, pr => pr.ListId);
+            var oldListIdsByRowId = oldPriceList.Rows
+                .ToDictionary(pr => pr.Id, pr => pr.ListId);
+            var newListIdsByRowId = newPriceList.Rows
+                .Where(r => oldListIdsByRowId.Keys.Contains(r.Id))
+                .ToDictionary(pr => pr.Id, pr => pr.ListId);
+
             return oldListIdsByRowId.Keys.Any(rowId =>
-                newListIdsByRowId.ContainsKey(rowId)
-                && oldListIdsByRowId[rowId] != newListIdsByRowId[rowId]
+                oldListIdsByRowId[rowId] != newListIdsByRowId[rowId]
             );
         }
 

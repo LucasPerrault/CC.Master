@@ -46,7 +46,7 @@ namespace Billing.Contracts.Domain.Tests
         {
             var offer = new CommercialOffer().Build();
 
-            var priceList = new PriceList().BuildFor(offer)
+            var priceList = new PriceList().CreateFor(offer)
                 .StartingOn(new DateTime(2020, 01, 02));
             ShouldThrowWhenAdd(priceList, offer, t => t.PriceListStartsOnFirstOfMonth());
 
@@ -101,7 +101,7 @@ namespace Billing.Contracts.Domain.Tests
             var offer = new CommercialOffer().Build()
                 .WithPriceList(startingOn: startDate);
 
-            var newPriceList = new PriceList().BuildFor(offer)
+            var newPriceList = new PriceList().CreateFor(offer)
                 .StartingOn(startDate);
             ShouldThrowWhenAdd(newPriceList, offer, t => t.PriceListsStartsOnSameDay());
 
@@ -240,22 +240,39 @@ namespace Billing.Contracts.Domain.Tests
 
             var newPriceList = new PriceList().BuildFor(offer, oldPriceList.Id)
                 .WithPriceRow(id: oldPriceList.Rows.First().Id, maxExcludedCount: 42)
-                .WithPriceRow(maxExcludedCount: 9001);
+                .WithNewPriceRow(maxExcludedCount: 9001);
             ShouldNotThrowWhenModify(oldPriceList, newPriceList, offer, usageWithCount);
 
             Reset();
 
             var newPriceList2 = new PriceList().BuildFor(offer, oldPriceList.Id)
                 .WithPriceRow(id: oldPriceList.Rows.First().Id, maxExcludedCount: 42)
-                .WithPriceRow(maxExcludedCount: 28);
+                .WithNewPriceRow(maxExcludedCount: 28);
             ShouldThrowWhenModify(oldPriceList, newPriceList2, offer, usageWithCount, t => t.PriceListChangedDespiteCount());
+        }
+
+        [Fact]
+        public void ModifyPriceList_Validation_ShouldNotThrowWhen_TwoRowsAdded_OnTop_EvenWhenHavingACount()
+        {
+            var offer = new CommercialOffer().Build()
+                .WithPriceList()
+                .AndPriceRow(maxExcludedCount: 42);
+            var oldPriceList = offer.PriceLists.First();
+            var usageWithCount = new CommercialOfferUsage().BuildFor(offer)
+                .WithCountedContractsNumber(1);
+
+            var newPriceList = new PriceList().BuildFor(offer, oldPriceList.Id)
+                .WithPriceRow(id: oldPriceList.Rows.First().Id, maxExcludedCount: 42)
+                .WithNewPriceRow(maxExcludedCount: 9001)
+                .WithNewPriceRow(maxExcludedCount: 9003);
+            ShouldNotThrowWhenModify(oldPriceList, newPriceList, offer, usageWithCount);
         }
 
         [Fact]
         public void AddPriceList_Validation_ShouldThrowOnlyIf_StartDate_InThePast()
         {
             var offer = new CommercialOffer().Build();
-            var priceList = new PriceList().BuildFor(offer)
+            var priceList = new PriceList().CreateFor(offer)
                 .StartingOn(new DateTime(2010, 01, 01));
 
             _time.Setup(time => time.Today())
@@ -464,9 +481,9 @@ namespace Billing.Contracts.Domain.Tests
 
     internal static class OfferTestDataBuildingExtensions
     {
-        private static int _offerNewId = 0;
-        private static int _priceListNewId = 0;
-        private static int _priceRowNewId = 0;
+        private static int _offerNewId = 1;
+        private static int _priceListNewId = 1;
+        private static int _priceRowNewId = 1;
 
         public static CommercialOffer Build(this CommercialOffer offer, int? id = null)
         {
@@ -533,6 +550,14 @@ namespace Billing.Contracts.Domain.Tests
             return priceList;
         }
 
+        public static PriceList CreateFor(this PriceList priceList, CommercialOffer offer)
+        {
+            var newPl = priceList.BuildFor(offer);
+            newPl.Id = 0;
+
+            return newPl;
+        }
+
         public static PriceList StartingOn(this PriceList pl, DateTime startingOn)
         {
             pl.StartsOn = startingOn;
@@ -552,6 +577,14 @@ namespace Billing.Contracts.Domain.Tests
 
             pl.Rows.Add(pr);
             return pl;
+        }
+
+        public static PriceList WithNewPriceRow(this PriceList pl, int maxExcludedCount = default, decimal unitPrice = default, decimal fixedPrice = default)
+        {
+            var modifiedPl = pl.WithPriceRow(maxExcludedCount: maxExcludedCount, unitPrice: unitPrice, fixedPrice: fixedPrice);
+            modifiedPl.Rows.Last().Id = 0;
+
+            return modifiedPl;
         }
 
         public static CommercialOfferUsage BuildFor(this CommercialOfferUsage usage, CommercialOffer offer)
