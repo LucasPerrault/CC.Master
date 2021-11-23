@@ -10,7 +10,7 @@
       {{ 'offers_import_table_count' | translate : { count: totalCount } }}
       <label class="switch">
         <input class="switch-input" type="checkbox" name="switchList1" [formControl]="isReadonly">
-        <span class="switch-label">Mode lecture seule</span>
+        <span class="switch-label">{{ 'offers_import_readonly_mode' | translate }}</span>
       </label>
     </h4>
 		<cc-offer-import-table [formControl]="formControl" [readonly]="isReadonly.value"></cc-offer-import-table>
