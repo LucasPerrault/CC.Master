@@ -95,7 +95,7 @@ namespace Billing.Contracts.Infra.Storage.Stores
             await _dbContext.SaveChangesAsync();
         }
 
-        public async Task DeleteAsync(int id, AccessRight accessRight)
+        public async Task ArchiveAsync(int id, AccessRight accessRight)
         {
             var offer = await GetSingleOfDefaultAsync(CommercialOfferFilter.ForId(id), accessRight);
             var usage = await GetOfferUsage(id);

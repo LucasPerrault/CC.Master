@@ -2,7 +2,6 @@ using Billing.Contracts.Domain.Offers;
 using Billing.Contracts.Domain.Offers.Filtering;
 using Billing.Contracts.Domain.Offers.Interfaces;
 using Lucca.Core.Api.Abstractions.Paging;
-using System;
 using System.Collections.Generic;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -45,43 +44,43 @@ namespace Billing.Contracts.Application.Offers
 
         public async Task<CommercialOffer> CreateAsync(CommercialOffer offer)
         {
-            var accessRight = await _rightsFilter.GetReadAccessAsync(_principal);
+            var accessRight = await _rightsFilter.GetWriteAccessAsync(_principal);
             return await _commercialOffersStore.CreateAsync(offer, accessRight);
         }
 
         public async Task<IReadOnlyCollection<CommercialOffer>> CreateManyAsync(IReadOnlyCollection<CommercialOffer> offers)
         {
-            var accessRight = await _rightsFilter.GetReadAccessAsync(_principal);
+            var accessRight = await _rightsFilter.GetWriteAccessAsync(_principal);
             return await _commercialOffersStore.CreateManyAsync(offers, accessRight);
         }
 
         public async Task PutAsync(int id, CommercialOffer offer)
         {
-            var accessRight = await _rightsFilter.GetReadAccessAsync(_principal);
+            var accessRight = await _rightsFilter.GetWriteAccessAsync(_principal);
             await _commercialOffersStore.PutAsync(id, offer, accessRight);
         }
 
         public async Task DeleteAsync(int id)
         {
-            var accessRight = await _rightsFilter.GetReadAccessAsync(_principal);
-            await _commercialOffersStore.DeleteAsync(id, accessRight);
+            var accessRight = await _rightsFilter.GetWriteAccessAsync(_principal);
+            await _commercialOffersStore.ArchiveAsync(id, accessRight);
         }
 
         public async Task<CommercialOffer> AddPriceListAsync(int id, PriceList priceList)
         {
-            var accessRight = await _rightsFilter.GetReadAccessAsync(_principal);
+            var accessRight = await _rightsFilter.GetWriteAccessAsync(_principal);
             return await _commercialOffersStore.AddPriceListAsync(id, priceList, accessRight);
         }
 
         public async Task ModifyPriceListAsync(int id, int listId, PriceList priceList)
         {
-            var accessRight = await _rightsFilter.GetReadAccessAsync(_principal);
+            var accessRight = await _rightsFilter.GetWriteAccessAsync(_principal);
             await _commercialOffersStore.ModifyPriceListAsync(id, listId, priceList, accessRight);
         }
 
         public async Task DeletePriceListAsync(int id, int listId)
         {
-            var accessRight = await _rightsFilter.GetReadAccessAsync(_principal);
+            var accessRight = await _rightsFilter.GetWriteAccessAsync(_principal);
             await _commercialOffersStore.DeletePriceListAsync(id, listId, accessRight);
         }
 
