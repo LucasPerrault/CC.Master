@@ -1,5 +1,13 @@
 import { ChangeDetectionStrategy, Component, forwardRef, Input, OnDestroy, OnInit } from '@angular/core';
-import { ControlValueAccessor, FormControl, NG_VALUE_ACCESSOR } from '@angular/forms';
+import {
+  AbstractControl,
+  ControlValueAccessor,
+  FormControl,
+  NG_VALIDATORS,
+  NG_VALUE_ACCESSOR,
+  ValidationErrors,
+  Validator,
+} from '@angular/forms';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
@@ -14,10 +22,16 @@ import { takeUntil } from 'rxjs/operators';
       useExisting: forwardRef(() => OfferTagApiSelectComponent),
       multi: true,
     },
+    {
+      provide: NG_VALIDATORS,
+      multi: true,
+      useExisting: OfferTagApiSelectComponent,
+    },
   ],
 })
-export class OfferTagApiSelectComponent implements OnInit, OnDestroy, ControlValueAccessor {
+export class OfferTagApiSelectComponent implements OnInit, OnDestroy, ControlValueAccessor, Validator {
   @Input() public required = false;
+  @Input() public hideClearer = false;
   @Input() public placeholder: string;
   @Input() public multiple: string;
 
@@ -53,6 +67,12 @@ export class OfferTagApiSelectComponent implements OnInit, OnDestroy, ControlVal
   public writeValue(tag: string): void {
     if (!!tag && this.formControl.value !== tag) {
       this.formControl.setValue(tag);
+    }
+  }
+
+  public validate(control: AbstractControl): ValidationErrors | null {
+    if (this.formControl.invalid) {
+      return { invalid: true };
     }
   }
 

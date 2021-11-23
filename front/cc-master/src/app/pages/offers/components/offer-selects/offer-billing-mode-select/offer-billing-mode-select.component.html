@@ -8,6 +8,6 @@
     <lu-option *luForOptions="let billingMode; trackBy: trackBy" [value]="billingMode">{{ billingMode.name }}</lu-option>
   </lu-option-picker-advanced>
 
-  <lu-input-clearer></lu-input-clearer>
+  <lu-input-clearer *ngIf="!hideClearer"></lu-input-clearer>
 
 </lu-select>

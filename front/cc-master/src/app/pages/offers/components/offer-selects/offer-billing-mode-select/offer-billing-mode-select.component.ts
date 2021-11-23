@@ -1,5 +1,13 @@
 import { ChangeDetectionStrategy, Component, forwardRef, Input, OnDestroy, OnInit } from '@angular/core';
-import { ControlValueAccessor, FormControl, NG_VALUE_ACCESSOR } from '@angular/forms';
+import {
+  AbstractControl,
+  ControlValueAccessor,
+  FormControl,
+  NG_VALIDATORS,
+  NG_VALUE_ACCESSOR,
+  ValidationErrors,
+  Validator,
+} from '@angular/forms';
 import { TranslatePipe } from '@cc/aspects/translate';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
@@ -17,12 +25,18 @@ import { billingModes, IBillingMode } from '../../../enums/billing-mode.enum';
       useExisting: forwardRef(() => OfferBillingModeSelectComponent),
       multi: true,
     },
+    {
+      provide: NG_VALIDATORS,
+      multi: true,
+      useExisting: OfferBillingModeSelectComponent,
+    },
   ],
 })
-export class OfferBillingModeSelectComponent implements OnInit, OnDestroy, ControlValueAccessor {
+export class OfferBillingModeSelectComponent implements OnInit, OnDestroy, ControlValueAccessor, Validator {
   @Input() public required = false;
   @Input() public placeholder: string;
   @Input() public multiple = false;
+  @Input() public hideClearer = false;
   @Input() public set disabled(isDisabled: boolean) { this.setDisabledState(isDisabled); }
 
   public billingModes: IBillingMode[];
@@ -59,6 +73,12 @@ export class OfferBillingModeSelectComponent implements OnInit, OnDestroy, Contr
   public writeValue(billingMode: IBillingMode): void {
     if (!!billingMode && this.formControl.value !== billingMode) {
       this.formControl.setValue(this.getTranslatedBillingMode(billingMode));
+    }
+  }
+
+  public validate(control: AbstractControl): ValidationErrors | null {
+    if (this.formControl.invalid) {
+      return { invalid: true };
     }
   }
 

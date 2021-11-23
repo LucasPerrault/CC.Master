@@ -18,6 +18,7 @@ import { IProduct } from '@cc/domain/billing/offers';
 export class ProductApiSelectComponent implements ControlValueAccessor {
   @Input() required = false;
   @Input() multiple = false;
+  @Input() hideClearer = false;
   @Input() placeholder: string;
 
   @Input()

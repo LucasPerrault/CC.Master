@@ -1,5 +1,13 @@
 import { ChangeDetectionStrategy, Component, forwardRef, Input, OnDestroy, OnInit } from '@angular/core';
-import { ControlValueAccessor, FormControl, NG_VALUE_ACCESSOR } from '@angular/forms';
+import {
+  AbstractControl,
+  ControlValueAccessor,
+  FormControl,
+  NG_VALIDATORS,
+  NG_VALUE_ACCESSOR,
+  ValidationErrors,
+  Validator,
+} from '@angular/forms';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
@@ -16,12 +24,18 @@ import { currencies, IOfferCurrency } from '../../../models/offer-currency.inter
       useExisting: forwardRef(() => OfferCurrencySelectComponent),
       multi: true,
     },
+    {
+      provide: NG_VALIDATORS,
+      multi: true,
+      useExisting: OfferCurrencySelectComponent,
+    },
   ],
 })
-export class OfferCurrencySelectComponent implements OnInit, OnDestroy, ControlValueAccessor {
+export class OfferCurrencySelectComponent implements OnInit, OnDestroy, ControlValueAccessor, Validator {
   @Input() public placeholder: string;
   @Input() public multiple = false;
   @Input() public required = false;
+  @Input() public hideClearer = false;
   @Input() public set disabled(isDisabled: boolean) { this.setDisabledState(isDisabled); }
 
   public formControl: FormControl = new FormControl();
@@ -67,6 +81,12 @@ export class OfferCurrencySelectComponent implements OnInit, OnDestroy, ControlV
       return;
     }
     this.formControl.enable();
+  }
+
+  public validate(control: AbstractControl): ValidationErrors | null {
+    if (this.formControl.invalid) {
+      return { invalid: true };
+    }
   }
 
   public trackBy(index: number, currency: IOfferCurrency): number {
