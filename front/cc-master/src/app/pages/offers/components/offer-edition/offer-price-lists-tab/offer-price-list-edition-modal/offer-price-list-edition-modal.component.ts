@@ -78,7 +78,7 @@ export class OfferPriceListEditionModalComponent implements OnInit, OnDestroy, I
     const form = this.formGroup.getRawValue();
 
     const offerId = this.data.offer.id;
-    const priceListId = this.data.priceListToEdit.id;
-    return this.storeService.editPriceList$(offerId, priceListId, form);
+    const priceList = this.data.priceListToEdit;
+    return this.storeService.editPriceList$(offerId, priceList, form);
   }
 }

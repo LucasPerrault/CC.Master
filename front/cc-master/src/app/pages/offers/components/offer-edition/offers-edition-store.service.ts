@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { SubmissionState, toSubmissionState } from '@cc/common/forms';
+import { IPriceList } from '@cc/domain/billing/offers';
 import { BehaviorSubject, combineLatest, forkJoin, Observable, of, ReplaySubject } from 'rxjs';
 import { finalize, map, switchMapTo, take, tap } from 'rxjs/operators';
 
@@ -43,17 +44,17 @@ export class OffersEditionStoreService {
     this.refresh(offerId);
   }
 
-  public editOfferAndPriceList$(offerId: number, priceListId: number, form: IOfferEditionForm): Observable<void> {
+  public editOffer$(offer: IDetailedOffer, priceList: IPriceList, form: IOfferEditionForm): Observable<void> {
     const requests$ = [
-      this.offersDataService.edit$(offerId, form),
-      this.listsDataService.edit$(offerId, priceListId, form.priceList),
+      this.offersDataService.edit$(offer, form),
+      this.listsDataService.edit$(offer.id, priceList, form.priceList),
     ];
 
     return forkJoin(requests$).pipe(
       switchMapTo(of<void>()),
       finalize(() => {
         this.offerListService.refresh();
-        this.refresh(offerId);
+        this.refresh(offer.id);
       }),
     );
   }
@@ -63,8 +64,8 @@ export class OffersEditionStoreService {
       .pipe(finalize(() => this.refresh(offerId)));
   }
 
-  public editPriceList$(offerId: number, priceListId: number, form: IPriceListForm): Observable<void> {
-    return this.listsDataService.edit$(offerId, priceListId, form)
+  public editPriceList$(offerId: number, priceList: IPriceList, form: IPriceListForm): Observable<void> {
+    return this.listsDataService.edit$(offerId, priceList, form)
       .pipe(finalize(() => this.refresh(offerId)));
   }
 

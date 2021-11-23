@@ -24,8 +24,8 @@ import { IOfferEditionForm } from './offer-edition-form/offer-edition-form.inter
 })
 export class OfferEditionTabComponent implements OnInit {
 
-  public offerToEdit$: ReplaySubject<IDetailedOffer> = new ReplaySubject<IDetailedOffer>(1);
-  public priceListId$: BehaviorSubject<number> = new BehaviorSubject<number>(null);
+  public offerToEdit$: BehaviorSubject<IDetailedOffer> = new BehaviorSubject<IDetailedOffer>(null);
+  public priceListToEdit$: BehaviorSubject<IPriceList> = new BehaviorSubject<IPriceList>(null);
 
   public formControl: FormControl = new FormControl();
   public editionButtonState$: ReplaySubject<string> = new ReplaySubject<string>(1);
@@ -41,16 +41,15 @@ export class OfferEditionTabComponent implements OnInit {
       .pipe(take(1))
       .subscribe(offer => {
         this.formControl.patchValue(this.toOfferForm(offer));
-        this.priceListId$.next(PriceListsTimelineService.getCurrent(offer.priceLists)?.id);
+        this.priceListToEdit$.next(PriceListsTimelineService.getCurrent(offer.priceLists));
         this.offerToEdit$.next(offer);
       });
   }
 
   public edit(): void {
     const form: IOfferEditionForm = this.formControl.value;
-    const offerId = parseInt(this.activatedRoute.parent.snapshot.paramMap.get('id'), 10);
 
-    this.storeService.editOfferAndPriceList$(offerId, this.priceListId$.value, form)
+    this.storeService.editOffer$(this.offerToEdit$.value, this.priceListToEdit$.value, form)
       .pipe(
         take(1),
         toSubmissionState(),

@@ -5,8 +5,8 @@ import {
   ApiV3DateService,
   IHttpApiV4CollectionCountResponse,
 } from '@cc/common/queries';
+import { IPriceList } from '@cc/domain/billing/offers';
 import { Observable, of } from 'rxjs';
-import { map } from 'rxjs/operators';
 
 import { IOfferCreationForm } from '../components/offer-creation/offer-creation-form/offer-creation-form.interface';
 import { IOfferEditionForm } from '../components/offer-edition/offer-edition-tab/offer-edition-form/offer-edition-form.interface';
@@ -14,6 +14,7 @@ import { IDetailedOffer, IDetailedOfferWithoutUsage } from '../models/detailed-o
 import { IOfferCreationDto } from '../models/offer-creation-dto.interface';
 import { IOfferEditionDto } from '../models/offer-edition-dto.interface';
 import { IOfferUsage } from '../models/offer-usage.interface';
+import { IPriceListEditionDto } from '../models/price-list-edition-dto.interface';
 import { PriceListsDataService } from './price-lists-data.service';
 
 class OfferApiEndpoint {
@@ -62,9 +63,9 @@ export class OffersDataService {
     return this.httpClient.post<void>(url, body);
   }
 
-  public edit$(offerId: number, form: IOfferEditionForm): Observable<void> {
-    const url = OfferApiEndpoint.id(offerId);
-    const body = this.toEditionDto(form);
+  public edit$(offer: IDetailedOffer, form: IOfferEditionForm): Observable<void> {
+    const url = OfferApiEndpoint.id(offer.id);
+    const body = this.toEditionDto(offer, form);
     return this.httpClient.put<void>(url, body);
   }
 
@@ -82,8 +83,12 @@ export class OffersDataService {
     };
   }
 
-  private toEditionDto(form: IOfferEditionForm): IOfferEditionDto {
+  private toEditionDto(offerToEdit: IDetailedOffer, form: IOfferEditionForm): IOfferEditionDto {
+    const id = offerToEdit.id;
+    const isArchived = offerToEdit.isArchived;
+
     return {
+      id,
       name: form.name,
       productId: form.product.id,
       currencyID: form.currency.code,
@@ -92,6 +97,7 @@ export class OffersDataService {
       forecastMethod: form.forecastMethod,
       billingMode: form.billingMode.id,
       unit: form.billingUnit.id,
+      isArchived,
     };
   }
 }
