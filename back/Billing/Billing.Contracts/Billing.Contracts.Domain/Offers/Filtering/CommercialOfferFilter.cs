@@ -14,5 +14,7 @@ namespace Billing.Contracts.Domain.Offers.Filtering
         public CompareBoolean IsArchived { get; set; } = CompareBoolean.Bypass;
 
         public static CommercialOfferFilter All => new CommercialOfferFilter();
+
+        public static CommercialOfferFilter ForId(int id) => new CommercialOfferFilter { Ids = new HashSet<int> { id } };
     }
 }

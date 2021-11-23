@@ -33,7 +33,8 @@ namespace Billing.Contracts.Application.Offers
         public async Task<CommercialOffer> GetByIdAsync(int id)
         {
             var accessRight = await _rightsFilter.GetReadAccessAsync(_principal);
-            return await _commercialOffersStore.GetByIdAsync(id, accessRight);
+            var filter = new CommercialOfferFilter { Ids = new HashSet<int> { id } };
+            return await _commercialOffersStore.GetSingleOfDefaultAsync(filter, accessRight);
         }
 
         public async Task<Page<string>> GetTagsAsync()

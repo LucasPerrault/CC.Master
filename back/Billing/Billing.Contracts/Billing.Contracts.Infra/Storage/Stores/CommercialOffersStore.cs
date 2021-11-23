@@ -42,9 +42,8 @@ namespace Billing.Contracts.Infra.Storage.Stores
             return _queryPager.ToPageAsync(queryable, pageToken);
         }
 
-        public Task<CommercialOffer> GetByIdAsync(int id, AccessRight accessRight)
+        public Task<CommercialOffer> GetSingleOfDefaultAsync(CommercialOfferFilter filter, AccessRight accessRight)
         {
-            var filter = new CommercialOfferFilter { Ids = new HashSet<int> { id } };
             return GetQueryable(accessRight, filter).SingleOrDefaultAsync();
         }
 
@@ -84,7 +83,7 @@ namespace Billing.Contracts.Infra.Storage.Stores
 
         public async Task PutAsync(int id, CommercialOffer offer, AccessRight accessRight)
         {
-            var oldOffer = await GetByIdAsync(id, accessRight);
+            var oldOffer = await GetSingleOfDefaultAsync(CommercialOfferFilter.ForId(id), accessRight);
             var usage = await GetOfferUsage(id);
 
             _validation.ThrowIfCannotModifyOffer(oldOffer, offer, usage);
@@ -95,7 +94,7 @@ namespace Billing.Contracts.Infra.Storage.Stores
 
         public async Task DeleteAsync(int id, AccessRight accessRight)
         {
-            var offer = await GetByIdAsync(id, accessRight);
+            var offer = await GetSingleOfDefaultAsync(CommercialOfferFilter.ForId(id), accessRight);
             var usage = await GetOfferUsage(id);
 
             _validation.ThrowIfCannotDeleteOffer(offer, usage);
@@ -107,7 +106,7 @@ namespace Billing.Contracts.Infra.Storage.Stores
 
         public async Task<CommercialOffer> AddPriceListAsync(int id, PriceList priceList, AccessRight accessRight)
         {
-            var offer = await GetByIdAsync(id, accessRight);
+            var offer = await GetSingleOfDefaultAsync(CommercialOfferFilter.ForId(id), accessRight);
 
             _validation.ThrowIfCannotAddPriceList(offer, priceList);
 
@@ -120,7 +119,7 @@ namespace Billing.Contracts.Infra.Storage.Stores
 
         public async Task ModifyPriceListAsync(int id, int listId, PriceList priceList, AccessRight accessRight)
         {
-            var offer = await GetByIdAsync(id, accessRight);
+            var offer = await GetSingleOfDefaultAsync(CommercialOfferFilter.ForId(id), accessRight);
             var oldPriceList = offer.PriceLists.Single(pl => pl.Id == listId);
             var usage = await GetOfferUsage(id);
 
@@ -134,7 +133,7 @@ namespace Billing.Contracts.Infra.Storage.Stores
 
         public async Task DeletePriceListAsync(int id, int listId, AccessRight accessRight)
         {
-            var offer = await GetByIdAsync(id, accessRight);
+            var offer = await GetSingleOfDefaultAsync(CommercialOfferFilter.ForId(id), accessRight);
             var priceList = offer.PriceLists.Single(pl => pl.Id == listId);
 
             _validation.ThrowIfCannotDeletePriceList(offer, priceList);
