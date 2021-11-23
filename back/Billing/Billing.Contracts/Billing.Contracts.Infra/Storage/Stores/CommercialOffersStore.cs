@@ -49,7 +49,10 @@ namespace Billing.Contracts.Infra.Storage.Stores
 
         public Task<Page<string>> GetTagsAsync(AccessRight accessRight)
         {
-            var tags = Offers.Select(o => o.Tag).Distinct().ToList();
+            var tags = GetQueryable(accessRight, CommercialOfferFilter.All)
+                .Select(o => o.Tag)
+                .Distinct()
+                .ToList();
 
             return Task.FromResult(new Page<string>
             {
