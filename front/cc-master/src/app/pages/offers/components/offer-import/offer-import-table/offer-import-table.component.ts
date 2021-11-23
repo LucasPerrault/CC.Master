@@ -7,6 +7,7 @@ import {
   FormGroup, NG_VALIDATORS,
   NG_VALUE_ACCESSOR,
   ValidationErrors,
+  Validator,
   Validators,
 } from '@angular/forms';
 import { LuModal } from '@lucca-front/ng/modal';
@@ -53,7 +54,7 @@ enum ImportedOfferFormKey {
     },
   ],
 })
-export class OfferImportTableComponent implements OnInit, OnDestroy, ControlValueAccessor, Validators {
+export class OfferImportTableComponent implements OnInit, OnDestroy, ControlValueAccessor, Validator {
   @Input() public readonly = true;
 
   public formArrayKey = 'importedOffers';
@@ -135,14 +136,14 @@ export class OfferImportTableComponent implements OnInit, OnDestroy, ControlValu
   private getFormGroup(offer: IUploadedOffer): FormGroup {
     return new FormGroup(
       {
-        [ImportedOfferFormKey.Name]: new FormControl(offer?.name),
-        [ImportedOfferFormKey.Product]: new FormControl(offer?.product),
-        [ImportedOfferFormKey.BillingUnit]: new FormControl(getBillingUnit(offer?.billingUnit)),
-        [ImportedOfferFormKey.Tag]: new FormControl(offer?.category),
-        [ImportedOfferFormKey.BillingMode]: new FormControl(getBillingMode(offer?.billingMode)),
-        [ImportedOfferFormKey.PricingMethod]: new FormControl(offer?.pricingMethod),
-        [ImportedOfferFormKey.ForecastMethod]: new FormControl(offer?.forecastMethod),
-        [ImportedOfferFormKey.Currency]: new FormControl(getCurrency(offer?.currencyID)),
+        [ImportedOfferFormKey.Name]: new FormControl(offer?.name, [Validators.required]),
+        [ImportedOfferFormKey.Product]: new FormControl(offer?.product, [Validators.required]),
+        [ImportedOfferFormKey.BillingUnit]: new FormControl(getBillingUnit(offer?.billingUnit), [Validators.required]),
+        [ImportedOfferFormKey.Tag]: new FormControl(offer?.category, [Validators.required]),
+        [ImportedOfferFormKey.BillingMode]: new FormControl(getBillingMode(offer?.billingMode), [Validators.required]),
+        [ImportedOfferFormKey.PricingMethod]: new FormControl(offer?.pricingMethod, [Validators.required]),
+        [ImportedOfferFormKey.ForecastMethod]: new FormControl(offer?.forecastMethod, [Validators.required]),
+        [ImportedOfferFormKey.Currency]: new FormControl(getCurrency(offer?.currencyID), [Validators.required]),
         [ImportedOfferFormKey.PriceLists]: new FormControl(offer?.priceLists, [
           PriceListsValidators.uniqStartsOnRange,
           PriceListsValidators.boundsContinuityRange,
