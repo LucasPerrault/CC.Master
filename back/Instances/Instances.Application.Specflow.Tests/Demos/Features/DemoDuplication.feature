@@ -1,3 +1,4 @@
+@demo
 Feature: Demo duplication
 
 Scenario: Create a demo from virgin as a user with scope "AllDepartments"

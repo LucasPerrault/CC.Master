@@ -21,7 +21,7 @@ namespace Instances.Application.Specflow.Tests.Demos.Steps
             _objectContainer = objectContainer;
         }
 
-        [BeforeScenario]
+        [BeforeScenario("demo")]
         public void InitializeScenario()
         {
             var context = new SpecflowTestContext();

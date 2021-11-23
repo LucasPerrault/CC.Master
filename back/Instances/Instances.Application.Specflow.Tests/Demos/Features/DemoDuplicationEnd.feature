@@ -1,3 +1,4 @@
+@demo
 Feature: Demo duplication end
 
     Scenario: Notify demo duplication has ended
