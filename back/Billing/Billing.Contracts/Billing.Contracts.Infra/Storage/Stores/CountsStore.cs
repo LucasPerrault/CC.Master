@@ -21,6 +21,7 @@ namespace Billing.Contracts.Infra.Storage.Stores
         public async Task<IReadOnlyCollection<Count>> GetAsync(CountFilter filter)
         {
             return await Counts
+                .AsNoTracking()
                 .WhereMatches(filter)
                 .ToListAsync();
         }

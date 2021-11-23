@@ -42,7 +42,9 @@ namespace Billing.Contracts.Infra.Storage.Stores
 
         public Task<List<Contract>> GetAsync(AccessRight accessRight, ContractFilter filter)
         {
-            return Set(accessRight, filter).ToListAsync();
+            return Set(accessRight, filter)
+                .AsNoTracking()
+                .ToListAsync();
         }
 
         public Task<ContractComment> GetCommentAsync(AccessRight accessRight, int contractId)

@@ -38,7 +38,7 @@ namespace Billing.Contracts.Infra.Storage.Stores
 
         public Task<Page<CommercialOffer>> GetPageAsync(AccessRight accessRight, CommercialOfferFilter filter, IPageToken pageToken)
         {
-            var queryable = GetQueryable(accessRight, filter);
+            var queryable = GetQueryable(accessRight, filter).AsNoTracking();
             return _queryPager.ToPageAsync(queryable, pageToken);
         }
 
@@ -50,6 +50,7 @@ namespace Billing.Contracts.Infra.Storage.Stores
         public Task<Page<string>> GetTagsAsync(AccessRight accessRight)
         {
             var tags = GetQueryable(accessRight, CommercialOfferFilter.All)
+                .AsNoTracking()
                 .Select(o => o.Tag)
                 .Distinct()
                 .ToList();
@@ -86,7 +87,9 @@ namespace Billing.Contracts.Infra.Storage.Stores
 
         public async Task PutAsync(int id, CommercialOffer offer, AccessRight accessRight)
         {
-            var oldOffer = await GetSingleOfDefaultAsync(CommercialOfferFilter.ForId(id), accessRight);
+            var oldOffer = await GetQueryable(accessRight, CommercialOfferFilter.ForId(id))
+                .AsNoTracking()
+                .SingleOrDefaultAsync();
             var usage = await GetOfferUsage(id);
 
             _validation.ThrowIfCannotModifyOffer(oldOffer, offer, usage);
