@@ -128,8 +128,8 @@ namespace Billing.Contracts.Web
             return new ImportedOffersDto { Items = await _importedOfferService.UploadAsync(ms) };
         }
 
-        [Route("upload-csv")]
-        [HttpGet, ForbidIfMissing(Operation.CreateCommercialOffers)]
+        [Route("upload-csv/template")]
+        [HttpPost, ForbidIfMissing(Operation.CreateCommercialOffers)]
         public async Task<FileStreamResult> GetTemplateAsync()
         {
             var ms = await _importedOfferService.GetTemplateStreamAsync();
