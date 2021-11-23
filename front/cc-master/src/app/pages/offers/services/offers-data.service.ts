@@ -69,7 +69,7 @@ export class OffersDataService {
   }
 
   public createRange$(form: IUploadedOffer[]): Observable<void> {
-    const url = OfferApiEndpoint.base;
+    const url = OfferApiEndpoint.createRange;
     const body = this.toMultipleCreationDto(form);
     return this.httpClient.post<void>(url, body);
   }
