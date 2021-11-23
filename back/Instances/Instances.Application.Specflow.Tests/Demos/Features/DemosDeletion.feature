@@ -1,3 +1,4 @@
+@demo
 Feature: Demos deletion
 
 Scenario: Delete regular demo

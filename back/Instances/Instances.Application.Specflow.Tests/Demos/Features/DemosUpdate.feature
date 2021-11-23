@@ -1,3 +1,4 @@
+@demo
 Feature: Demos update
 
 Scenario: Update comment regular demo
