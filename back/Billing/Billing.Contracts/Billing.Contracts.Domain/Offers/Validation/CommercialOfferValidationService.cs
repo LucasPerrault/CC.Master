@@ -37,7 +37,7 @@ namespace Billing.Contracts.Domain.Offers.Validation
             {
                 throw new OfferValidationException(GetModifyOfferMessage(oldOffer.Id, _translations.OfferChangedDespiteCount()));
             }
-            if (HasAnyOfferPriceListChanged(oldOffer, newOffer))
+            if (HasAnyPriceListLoaded(newOffer))
             {
                 throw new OfferValidationException(GetModifyOfferMessage(oldOffer.Id, _translations.PriceListChanged()));
             }
@@ -132,15 +132,9 @@ namespace Billing.Contracts.Domain.Offers.Validation
             return oldOfferComparison != newOfferComparison;
         }
 
-        private bool HasAnyOfferPriceListChanged(CommercialOffer oldOffer, CommercialOffer newOffer)
+        private bool HasAnyPriceListLoaded(CommercialOffer newOffer)
         {
-            var oldPriceListsById = oldOffer.PriceLists.ToDictionary(pl => pl.Id, pl => pl);
-            var newPriceListsById = newOffer.PriceLists.ToDictionary(pl => pl.Id, pl => pl);
-
-            return oldPriceListsById.Keys.Any(id =>
-                !newPriceListsById.ContainsKey(id)
-                || HasPriceListChanged(oldPriceListsById[id], newPriceListsById[id], allowNewHigherRows: false)
-            );
+            return newOffer.PriceLists != null;
         }
 
         private bool HasPriceListChanged(PriceList oldList, PriceList newList, bool allowNewHigherRows)

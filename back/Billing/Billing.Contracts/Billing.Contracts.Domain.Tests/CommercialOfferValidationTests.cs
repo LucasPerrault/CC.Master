@@ -135,6 +135,23 @@ namespace Billing.Contracts.Domain.Tests
         }
 
         [Fact]
+        public void ModifyOffer_Validation_ShouldThrowWhen_PayloadPriceListIsNotNull()
+        {
+            var oldOffer = new CommercialOffer().Build()
+                .WithPriceList();
+            var payload = new CommercialOffer().Build(oldOffer.Id)
+                .WithPriceList();
+            var usageWithoutCount = new CommercialOfferUsage().BuildFor(oldOffer);
+
+            ShouldThrowWhenModify(oldOffer, payload, usageWithoutCount, t => t.PriceListChanged());
+
+            Reset();
+
+            payload.PriceLists = null;
+            ShouldNotThrowWhenModify(oldOffer, payload, usageWithoutCount);
+        }
+
+        [Fact]
         public void ModifyOffer_Validation_ShouldNotThrowWhen_NameChanged_EvenWithCount()
         {
             var oldOffer = new CommercialOffer().Build()
@@ -144,9 +161,7 @@ namespace Billing.Contracts.Domain.Tests
             var usageWithCount = new CommercialOfferUsage().BuildFor(oldOffer)
                 .WithCountedContractsNumber(1);
 
-            Action throwIfFn = () => Validation.ThrowIfCannotModifyOffer(oldOffer, newOffer, usageWithCount);
-
-            throwIfFn.Should().NotThrow<OfferValidationException>();
+            ShouldNotThrowWhenModify(oldOffer, newOffer, usageWithCount);
         }
 
         [Fact]
@@ -164,22 +179,16 @@ namespace Billing.Contracts.Domain.Tests
                     name: "forty two",
                     tag: "forty two"
                 );
+
             var usageWithCount = new CommercialOfferUsage().BuildFor(oldOffer)
                 .WithCountedContractsNumber(1);
-
-            Action throwIfFn = () => Validation.ThrowIfCannotModifyOffer(oldOffer, newOffer, usageWithCount);
-
-            throwIfFn.Should().ThrowExactly<OfferValidationException>();
-            _translations.Verify(t => t.OfferChangedDespiteCount(), Times.Once);
+            ShouldThrowWhenModify(oldOffer, newOffer, usageWithCount, t => t.OfferChangedDespiteCount());
 
             Reset();
 
             var usageWithoutCount = new CommercialOfferUsage().BuildFor(oldOffer)
                 .WithCountedContractsNumber(0);
-
-            Action throwIfFn2 = () => Validation.ThrowIfCannotModifyOffer(oldOffer, newOffer, usageWithoutCount);
-
-            throwIfFn2.Should().NotThrow<OfferValidationException>();
+            ShouldNotThrowWhenModify(oldOffer, newOffer, usageWithoutCount);
         }
 
         [Fact]
@@ -418,6 +427,21 @@ namespace Billing.Contracts.Domain.Tests
             throwIfFn.Should().NotThrow<OfferValidationException>();
         }
 
+        private void ShouldThrowWhenModify(CommercialOffer oldOffer, CommercialOffer newOffer, CommercialOfferUsage usage, Expression<Func<ITranslations, string>> reasonFn)
+        {
+            Action throwIfFn = () => Validation.ThrowIfCannotModifyOffer(oldOffer, newOffer, usage);
+
+            throwIfFn.Should().ThrowExactly<OfferValidationException>();
+            _translations.Verify(reasonFn, Times.Once);
+        }
+
+        private void ShouldNotThrowWhenModify(CommercialOffer oldOffer, CommercialOffer newOffer, CommercialOfferUsage usage)
+        {
+            Action throwIfFn = () => Validation.ThrowIfCannotModifyOffer(oldOffer, newOffer, usage);
+
+            throwIfFn.Should().NotThrow<OfferValidationException>();
+        }
+
         private void ShouldThrowWhenDelete(CommercialOffer offer, CommercialOfferUsage usage, Expression<Func<ITranslations, string>> reasonFn)
         {
             Action throwIfFn = () => Validation.ThrowIfCannotDeleteOffer(offer, usage);
@@ -488,7 +512,6 @@ namespace Billing.Contracts.Domain.Tests
         public static CommercialOffer Build(this CommercialOffer offer, int? id = null)
         {
             offer.Id = id ?? _offerNewId++;
-            offer.PriceLists = new List<PriceList>();
             return offer;
         }
 
@@ -521,6 +544,7 @@ namespace Billing.Contracts.Domain.Tests
         {
             var pl = new PriceList().BuildFor(offer).StartingOn(startingOn);
 
+            offer.PriceLists ??= new List<PriceList>();
             offer.PriceLists.Add(pl);
             return offer;
         }
