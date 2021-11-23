@@ -57,8 +57,8 @@ namespace Billing.Contracts.Domain.Offers.Services
                 {
                     OfferId = kvp.Key,
                     NumberOfContracts = kvp.Count(),
-                    NumberOfActiveContracts = kvp.Where(c => c.Status == ContractStatus.InProgress).Count(),
-                    NumberOfNotStartedContracts = kvp.Where(c => c.Status == ContractStatus.NotStarted).Count(),
+                    NumberOfActiveContracts = kvp.Count(c => c.Status == ContractStatus.InProgress),
+                    NumberOfNotStartedContracts = kvp.Count(c => c.Status == ContractStatus.NotStarted),
                     NumberOfCountedContracts = nbCountedContractsByOfferId.ContainsKey(kvp.Key) ? nbCountedContractsByOfferId[kvp.Key] : 0
                 })
                 .ToList();
@@ -80,7 +80,7 @@ namespace Billing.Contracts.Domain.Offers.Services
             return filter;
         }
 
-        private bool HasRight(AccessRight accessRight)
+        private static bool HasRight(AccessRight accessRight)
         {
             return accessRight switch
             {

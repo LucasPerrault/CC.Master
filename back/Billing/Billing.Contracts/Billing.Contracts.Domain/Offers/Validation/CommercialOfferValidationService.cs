@@ -110,29 +110,40 @@ namespace Billing.Contracts.Domain.Offers.Validation
             }
         }
 
-        private bool HasNoRow(PriceList pl)
+        private bool HasStarted(PriceList priceList)
+        {
+            return priceList.StartsOn < _time.Today();
+        }
+
+        private bool IsStartDateInThePast(PriceList priceList)
+        {
+            var today = _time.Today();
+            return priceList.StartsOn < today;
+        }
+
+        private static bool HasNoRow(PriceList pl)
         {
             return pl.Rows == null;
         }
 
-        private bool IsStartDateNotOnFirstDayOfTheMonth(PriceList priceList)
+        private static bool IsStartDateNotOnFirstDayOfTheMonth(PriceList priceList)
         {
             return priceList.StartsOn.Day != 1;
         }
 
-        private bool HasSameStartDateOnSeveralPriceLists(IEnumerable<PriceList> lists)
+        private static bool HasSameStartDateOnSeveralPriceLists(IEnumerable<PriceList> lists)
         {
             return lists
                 .GroupBy(pl => new { pl.StartsOn.Year, pl.StartsOn.Month })
                 .Any(g => g.Select(pl => pl.Id).Distinct().Count() > 1);
         }
 
-        private bool HasContractWithCount(CommercialOfferUsage usage)
+        private static bool HasContractWithCount(CommercialOfferUsage usage)
         {
             return usage != null && usage.NumberOfCountedContracts > 0;
         }
 
-        private bool HasAnyOfferPropertyChangedBesidesName(CommercialOffer oldOffer, CommercialOffer newOffer)
+        private static bool HasAnyOfferPropertyChangedBesidesName(CommercialOffer oldOffer, CommercialOffer newOffer)
         {
             var oldOfferComparison = new CommercialOfferComparisonObject(oldOffer);
             var newOfferComparison = new CommercialOfferComparisonObject(newOffer);
@@ -140,18 +151,18 @@ namespace Billing.Contracts.Domain.Offers.Validation
             return oldOfferComparison != newOfferComparison;
         }
 
-        private bool HasAnyPriceListLoaded(CommercialOffer newOffer)
+        private static bool HasAnyPriceListLoaded(CommercialOffer newOffer)
         {
             return newOffer.PriceLists != null;
         }
 
-        private bool HasPriceListChanged(PriceList oldList, PriceList newList, bool allowNewHigherRows)
+        private static bool HasPriceListChanged(PriceList oldList, PriceList newList, bool allowNewHigherRows)
         {
             return HasAnyPriceListPropertyChanged(oldList, newList)
                 || HasAnyRowChanged(oldList, newList, allowNewHigherRows);
         }
 
-        private bool HasAnyPriceListPropertyChanged(PriceList oldList, PriceList newList)
+        private static bool HasAnyPriceListPropertyChanged(PriceList oldList, PriceList newList)
         {
             var oldListComparison = new PriceListComparisonObject(oldList);
             var newListComparison = new PriceListComparisonObject(newList);
@@ -159,7 +170,7 @@ namespace Billing.Contracts.Domain.Offers.Validation
             return oldListComparison != newListComparison;
         }
 
-        private bool HasAnyRowChanged(PriceList oldPriceList, PriceList newPriceList, bool allowNewHigherRows)
+        private static bool HasAnyRowChanged(PriceList oldPriceList, PriceList newPriceList, bool allowNewHigherRows)
         {
             if (oldPriceList.Rows.Count > newPriceList.Rows.Count)
             {
@@ -189,7 +200,7 @@ namespace Billing.Contracts.Domain.Offers.Validation
             return newRowOnTop != null && oldLastRow.MaxIncludedCount > newRowOnTop.MaxIncludedCount;
         }
 
-        private bool AreEqual(PriceRow r1, PriceRow r2)
+        private static bool AreEqual(PriceRow r1, PriceRow r2)
         {
             var r1Comparison = new PriceRowComparisonObject(r1);
             var r2Comparison = new PriceRowComparisonObject(r2);
@@ -197,13 +208,7 @@ namespace Billing.Contracts.Domain.Offers.Validation
             return r1Comparison == r2Comparison;
         }
 
-        private bool IsStartDateInThePast(PriceList priceList)
-        {
-            var today = _time.Today();
-            return priceList.StartsOn < today;
-        }
-
-        private bool HasStartDateChangedOnOldestPriceList(CommercialOffer offer, PriceList targetPriceList, PriceList newPriceList)
+        private static bool HasStartDateChangedOnOldestPriceList(CommercialOffer offer, PriceList targetPriceList, PriceList newPriceList)
         {
             if (offer.PriceLists.Count == 0)
             {
@@ -213,12 +218,12 @@ namespace Billing.Contracts.Domain.Offers.Validation
                 && targetPriceList.StartsOn != newPriceList.StartsOn;
         }
 
-        private bool HasOfferIdChanged(PriceList oldPriceList, PriceList newPriceList)
+        private static bool HasOfferIdChanged(PriceList oldPriceList, PriceList newPriceList)
         {
             return oldPriceList.OfferId != newPriceList.OfferId;
         }
 
-        private bool HasAnyPriceListIdChanged(PriceList oldPriceList, PriceList newPriceList)
+        private static bool HasAnyPriceListIdChanged(PriceList oldPriceList, PriceList newPriceList)
         {
             var oldListIdsByRowId = oldPriceList.Rows
                 .ToDictionary(pr => pr.Id, pr => pr.ListId);
@@ -232,12 +237,7 @@ namespace Billing.Contracts.Domain.Offers.Validation
                 );
         }
 
-        private bool HasStarted(PriceList priceList)
-        {
-            return priceList.StartsOn < _time.Today();
-        }
-
-        private bool HasActiveContract(CommercialOfferUsage usage)
+        private static bool HasActiveContract(CommercialOfferUsage usage)
         {
             return usage != null && usage.NumberOfActiveContracts > 0;
         }

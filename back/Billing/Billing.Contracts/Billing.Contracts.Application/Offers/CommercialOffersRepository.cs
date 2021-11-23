@@ -77,7 +77,7 @@ namespace Billing.Contracts.Application.Offers
             var accessRight = await _rightsFilter.GetWriteAccessAsync(_principal);
 
             var oldOffer = await GetReadOnlyByIdWithoutRightAsync(id);
-            var usage = await GetOfferUsage(id);
+            var usage = await GetOfferUsageAsync(id);
             _validation.ThrowIfCannotModifyOffer(oldOffer, offer, usage);
 
             await _store.PutAsync(id, offer, accessRight);
@@ -88,7 +88,7 @@ namespace Billing.Contracts.Application.Offers
             var accessRight = await _rightsFilter.GetWriteAccessAsync(_principal);
 
             var offer = await GetReadOnlyByIdWithoutRightAsync(id);
-            var usage = await GetOfferUsage(id);
+            var usage = await GetOfferUsageAsync(id);
             _validation.ThrowIfCannotDeleteOffer(offer, usage);
 
             await _store.ArchiveAsync(id, accessRight);
@@ -110,7 +110,7 @@ namespace Billing.Contracts.Application.Offers
 
             var offer = await GetReadOnlyByIdWithoutRightAsync(id);
             var oldPriceList = offer.PriceLists.Single(pl => pl.Id == listId);
-            var usage = await GetOfferUsage(id);
+            var usage = await GetOfferUsageAsync(id);
             _validation.ThrowIfCannotModifyPriceList(offer, oldPriceList, priceList, usage);
 
             await _store.ModifyPriceListAsync(id, listId, priceList, accessRight);
@@ -138,7 +138,7 @@ namespace Billing.Contracts.Application.Offers
             return _store.GetReadOnlySingleOfDefaultAsync(CommercialOfferFilter.ForId(id), AccessRight.All);
         }
 
-        private Task<CommercialOfferUsage> GetOfferUsage(int id)
+        private Task<CommercialOfferUsage> GetOfferUsageAsync(int id)
         {
             return _usageService.BuildAsync(id);
         }

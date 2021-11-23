@@ -6,7 +6,7 @@ namespace Billing.Contracts.Domain.Offers.Interfaces
 {
     public interface ICommercialOfferUsageService
     {
-        Task<CommercialOfferUsage> BuildAsync(int offerId);
+        Task<CommercialOfferUsage> BuildAsync(int offerIds);
         Task<IReadOnlyCollection<CommercialOfferUsage>> BuildAsync(HashSet<int> offerId, AccessRight accessRight);
     }
 }
