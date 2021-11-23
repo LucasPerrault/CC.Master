@@ -13,8 +13,8 @@ import {
   OfferBillingModeSelectModule,
   OfferBillingUnitSelectModule,
   OfferCurrencySelectModule,
-  OfferForecastMethodApiSelectModule,
-  OfferPricingMethodApiSelectModule,
+  OfferForecastMethodSelectModule,
+  OfferPricingMethodSelectModule,
   OfferTagApiSelectModule,
 } from '../offer-selects';
 import { ImportedPriceListsModalComponent } from './imported-price-lists-modal/imported-price-lists-modal.component';
@@ -38,8 +38,8 @@ import { OfferUploadComponent } from './offer-upload/offer-upload.component';
     OfferBillingUnitSelectModule,
     OfferTagApiSelectModule,
     OfferBillingModeSelectModule,
-    OfferPricingMethodApiSelectModule,
-    OfferForecastMethodApiSelectModule,
+    OfferPricingMethodSelectModule,
+    OfferForecastMethodSelectModule,
     OfferCurrencySelectModule,
     LuModalModule,
     LuDateSelectInputModule,

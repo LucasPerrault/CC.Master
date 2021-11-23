@@ -3,14 +3,15 @@ import { Injectable } from '@angular/core';
 import { BYPASS_INTERCEPTOR } from '@cc/aspects/errors';
 import {
   ApiV3DateService,
-  IHttpApiV4CollectionCountResponse,
+  IHttpApiV4CollectionCountResponse, IHttpApiV4CollectionResponse,
 } from '@cc/common/queries';
 import { Observable, of } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 import { IOfferCreationForm } from '../components/offer-creation/offer-creation-form/offer-creation-form.interface';
 import { IOfferEditionForm } from '../components/offer-edition/offer-edition-tab/offer-edition-form/offer-edition-form.interface';
-import { IDetailedOffer, IDetailedOfferWithoutUsage } from '../models/detailed-offer.interface';
 import { IUploadedOffer } from '../components/offer-import/uploaded-offer-dto.interface';
+import { IDetailedOffer, IDetailedOfferWithoutUsage } from '../models/detailed-offer.interface';
 import { IOfferCreationDto } from '../models/offer-creation-dto.interface';
 import { IOfferEditionDto } from '../models/offer-edition-dto.interface';
 import { IOfferUsage } from '../models/offer-usage.interface';
@@ -61,6 +62,12 @@ export class OffersDataService {
   public create$(form: IOfferCreationForm): Observable<void> {
     const url = OfferApiEndpoint.base;
     const body = this.toCreationDto(form);
+    return this.httpClient.post<void>(url, body);
+  }
+
+  public createRange$(form: IUploadedOffer[]): Observable<void> {
+    const url = OfferApiEndpoint.base;
+    const body = this.toMultipleCreationDto(form);
     return this.httpClient.post<void>(url, body);
   }
 
