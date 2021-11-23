@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { defaultPagingParams } from '@cc/common/paging';
-import { IHttpApiV3CollectionResponse, IHttpApiV4CollectionCountResponse } from '@cc/common/queries';
+import { IHttpApiV4CollectionCountResponse } from '@cc/common/queries';
 import { Observable } from 'rxjs';
 import { map, mergeMap, reduce, tap } from 'rxjs/operators';
 

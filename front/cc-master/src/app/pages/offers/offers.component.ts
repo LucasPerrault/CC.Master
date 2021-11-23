@@ -7,16 +7,16 @@ import { ISortParams, SortOrder } from '@cc/common/sort';
 import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
 import { debounceTime, map, switchMap, takeUntil } from 'rxjs/operators';
 
+import { OfferState } from './components/offer-filters/offer-state-filter';
 import { OfferSortParamKey } from './enums/offer-sort-param-key.enum';
 import { IDetailedOffer, IDetailedOfferWithoutUsage } from './models/detailed-offer.interface';
+import { OfferFilterKey } from './models/offer-filters-form.interface';
 import { IOfferUsage } from './models/offer-usage.interface';
 import { OfferListService } from './services/offer-list.service';
 import { OfferRestrictionsService } from './services/offer-restrictions.service';
 import { OfferUsageStoreService } from './services/offer-usage-store.service';
 import { OffersApiMappingService } from './services/offers-api-mapping.service';
 import { OffersDataService } from './services/offers-data.service';
-import { OfferFilterKey } from './models/offer-filters-form.interface';
-import { OfferState } from './components/offer-filters/offer-state-filter';
 
 // It is defined in the offer model in the back project.
 // It is used for the default selection.

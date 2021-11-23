@@ -5,7 +5,6 @@ import {
   ApiV3DateService,
   IHttpApiV4CollectionCountResponse,
 } from '@cc/common/queries';
-import { IPriceList } from '@cc/domain/billing/offers';
 import { Observable, of } from 'rxjs';
 
 import { IOfferCreationForm } from '../components/offer-creation/offer-creation-form/offer-creation-form.interface';
@@ -14,7 +13,6 @@ import { IDetailedOffer, IDetailedOfferWithoutUsage } from '../models/detailed-o
 import { IOfferCreationDto } from '../models/offer-creation-dto.interface';
 import { IOfferEditionDto } from '../models/offer-edition-dto.interface';
 import { IOfferUsage } from '../models/offer-usage.interface';
-import { IPriceListEditionDto } from '../models/price-list-edition-dto.interface';
 import { PriceListsDataService } from './price-lists-data.service';
 
 class OfferApiEndpoint {

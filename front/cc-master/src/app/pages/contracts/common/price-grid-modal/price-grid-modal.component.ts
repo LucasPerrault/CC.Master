@@ -5,10 +5,10 @@ import { ILuModalContent, LU_MODAL_DATA } from '@lucca-front/ng/modal';
 import { BehaviorSubject } from 'rxjs';
 import { finalize } from 'rxjs/operators';
 
+import { CurrencyCode, getCurrency } from '../../../offers/models/offer-currency.interface';
 import { IPriceGridModalData } from './price-grid-modal-data.interface';
 import { PriceGridModalDataService } from './price-grid-modal-data.service';
 import { IPriceListOffer } from './price-grid-offer.interface';
-import { CurrencyCode, getCurrency } from '../../../offers/models/offer-currency.interface';
 
 @Component({
   selector: 'cc-price-grid-modal',
