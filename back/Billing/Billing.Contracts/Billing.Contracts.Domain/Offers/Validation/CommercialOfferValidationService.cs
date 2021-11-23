@@ -69,6 +69,10 @@ namespace Billing.Contracts.Domain.Offers.Validation
 
         public void ThrowIfCannotModifyPriceList(CommercialOffer offer, PriceList oldPriceList, PriceList newPriceList, CommercialOfferUsage oldUsage)
         {
+            if (HasNoRow(newPriceList))
+            {
+                throw new OfferValidationException(GetModifyPriceListMessage(oldPriceList.Id, offer.Id, _translations.PriceListShouldHaveRows()));
+            }
             if (IsStartDateNotOnFirstDayOfTheMonth(newPriceList))
             {
                 throw new OfferValidationException(GetModifyPriceListMessage(oldPriceList.Id, offer.Id, _translations.PriceListStartsOnFirstOfMonth()));
@@ -107,6 +111,11 @@ namespace Billing.Contracts.Domain.Offers.Validation
             }
         }
 
+        private bool HasNoRow(PriceList pl)
+        {
+            return pl.Rows == null;
+        }
+
         private bool IsStartDateNotOnFirstDayOfTheMonth(PriceList priceList)
         {
             return priceList.StartsOn.Day != 1;
@@ -121,7 +130,7 @@ namespace Billing.Contracts.Domain.Offers.Validation
 
         private bool HasContractWithCount(CommercialOfferUsage usage)
         {
-            return usage.NumberOfCountedContracts > 0;
+            return usage != null && usage.NumberOfCountedContracts > 0;
         }
 
         private bool HasAnyOfferPropertyChangedBesidesName(CommercialOffer oldOffer, CommercialOffer newOffer)
@@ -214,13 +223,14 @@ namespace Billing.Contracts.Domain.Offers.Validation
         {
             var oldListIdsByRowId = oldPriceList.Rows
                 .ToDictionary(pr => pr.Id, pr => pr.ListId);
-            var newListIdsByRowId = newPriceList.Rows
+            var newListIdsByExistingRowId = newPriceList.Rows
                 .Where(r => oldListIdsByRowId.Keys.Contains(r.Id))
                 .ToDictionary(pr => pr.Id, pr => pr.ListId);
 
-            return oldListIdsByRowId.Keys.Any(rowId =>
-                oldListIdsByRowId[rowId] != newListIdsByRowId[rowId]
-            );
+            return oldListIdsByRowId.Count > newListIdsByExistingRowId.Count
+                || oldListIdsByRowId.Keys.Any(rowId =>
+                    oldListIdsByRowId[rowId] != newListIdsByExistingRowId[rowId]
+                );
         }
 
         private bool HasStarted(PriceList priceList)
@@ -230,7 +240,7 @@ namespace Billing.Contracts.Domain.Offers.Validation
 
         private bool HasActiveContract(CommercialOfferUsage usage)
         {
-            return usage.NumberOfActiveContracts > 0;
+            return usage != null && usage.NumberOfActiveContracts > 0;
         }
 
         private string GetCreateOfferMessage(string reason)

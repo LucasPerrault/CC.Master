@@ -192,6 +192,26 @@ namespace Billing.Contracts.Domain.Tests
         }
 
         [Fact]
+        public void ModifyPriceList_Validation_ShouldThrowWhen_PayloadPriceRowsIsNull()
+        {
+            var offer = new CommercialOffer().Build()
+                .WithPriceList()
+                .WithPriceList(startingOn: new DateTime(2020, 01, 01));
+            var oldPriceList = offer.PriceLists.Last();
+            var usageWithoutCount = new CommercialOfferUsage().BuildFor(offer);
+
+            var payload = new PriceList().BuildFor(offer, oldPriceList.Id)
+                .StartingOn(new DateTime(2020, 01, 01))
+                .WithoutPriceRow();
+            ShouldThrowWhenModify(oldPriceList, payload, offer, usageWithoutCount, t => t.PriceListShouldHaveRows());
+
+            Reset();
+
+            payload.WithNewPriceRow();
+            ShouldNotThrowWhenModify(oldPriceList, payload, offer, usageWithoutCount);
+        }
+
+        [Fact]
         public void ModifyPriceList_Validation_ShouldThrowOnlyIf_FutureStartDateChanged_HavingACount()
         {
             var offer = new CommercialOffer().Build()
@@ -588,6 +608,12 @@ namespace Billing.Contracts.Domain.Tests
             return pl;
         }
 
+        public static PriceList WithoutPriceRow(this PriceList pl)
+        {
+            pl.Rows = null;
+            return pl;
+        }
+
         public static PriceList WithPriceRow(this PriceList pl, int? id = null, int maxExcludedCount = default, decimal unitPrice = default, decimal fixedPrice = default)
         {
             var pr = new PriceRow
@@ -599,6 +625,7 @@ namespace Billing.Contracts.Domain.Tests
                 FixedPrice = fixedPrice
             };
 
+            pl.Rows ??= new List<PriceRow>();
             pl.Rows.Add(pr);
             return pl;
         }
