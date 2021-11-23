@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { defaultPagingParams } from '@cc/common/paging';
 import { IHttpApiV4CollectionCountResponse } from '@cc/common/queries';
 import { Observable } from 'rxjs';
-import { map, mergeMap, reduce, tap } from 'rxjs/operators';
+import { map, mergeMap, reduce } from 'rxjs/operators';
 
 import { IDetailedOfferWithoutUsage } from '../../../models/detailed-offer.interface';
 import { IPriceListOfferSelectOption } from './offer-price-list-selection.interface';
@@ -42,7 +42,6 @@ export class OfferPriceListApiSelectService {
   private get(url): Observable<IPriceListOfferSelectOption[]> {
     return this.http.get<IHttpApiV4CollectionCountResponse<IDetailedOfferWithoutUsage>>(url).pipe(
       map(response => response.items),
-      tap(items => console.log(items)),
       map(offers => offers.map(offer => this.toSelection(offer))),
       mergeMap(x => x),
       reduce((acc, x) => [...acc, ...x]),

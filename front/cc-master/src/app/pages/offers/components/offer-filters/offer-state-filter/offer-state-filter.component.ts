@@ -52,7 +52,6 @@ export class OfferStateFilterComponent implements OnInit, OnDestroy, ControlValu
 
   public writeValue(state: OfferState): void {
     if (!!state && this.formControl.value !== state) {
-      console.log('state', state);
       this.formControl.setValue(state);
     }
   }
