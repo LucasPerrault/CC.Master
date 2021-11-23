@@ -117,7 +117,7 @@ namespace Billing.Contracts.Web
         [HttpPost, ForbidIfMissing(Operation.CreateCommercialOffers)]
         public async Task<ImportedOffersDto> UploadAsync([FromForm] FileDto file)
         {
-            if(file is null || file.File is null)
+            if (file is null || file.File is null)
                 throw new ArgumentNullException(nameof(file));
 
             using var ms = new MemoryStream();
@@ -132,7 +132,7 @@ namespace Billing.Contracts.Web
         [HttpGet, ForbidIfMissing(Operation.CreateCommercialOffers)]
         public async Task<FileStreamResult> GetTemplateAsync()
         {
-            var ms =  await _importedOfferService.GetTemplateStreamAsync();
+            var ms = await _importedOfferService.GetTemplateStreamAsync();
             return new FileStreamResult(ms, "text/csv")
             {
                 FileDownloadName = "offers-template.csv"
@@ -183,6 +183,11 @@ namespace Billing.Contracts.Web
                 OfferIds = OfferId
             };
         }
+    }
+
+    public class ImportedOffersDto
+    {
+        public IEnumerable<ParsedOffer> Items { get; set; }
     }
 
     public class FileDto

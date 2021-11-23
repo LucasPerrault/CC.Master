@@ -1,4 +1,4 @@
-﻿using Billing.Contracts.Application;
+using Billing.Contracts.Application;
 using Billing.Contracts.Application.Clients;
 using Billing.Contracts.Application.Offers;
 using Billing.Contracts.Domain.Clients;
@@ -10,6 +10,7 @@ using Billing.Contracts.Domain.Counts.Interfaces;
 using Billing.Contracts.Domain.Offers;
 using Billing.Contracts.Domain.Offers.Filtering;
 using Billing.Contracts.Domain.Offers.Interfaces;
+using Billing.Contracts.Domain.Offers.Parsing;
 using Billing.Contracts.Domain.Offers.Services;
 using Billing.Contracts.Domain.Offers.Validation;
 using Billing.Contracts.Domain.Offers.Parsing;
@@ -57,6 +58,9 @@ namespace Billing.Contracts.Web
             services.AddScoped<IOfferRowsService, OfferRowsService>();
             services.AddSingleton<ParsedOffersService>();
 
+
+            services.AddScoped<IOfferRowsService, OfferRowsService>();
+            services.AddSingleton<ParsedOffersService>();
 
             services.AddHttpClient<ILegacyClientsRemoteService, LegacyClientsRemoteService>((provider, client) =>
             {
