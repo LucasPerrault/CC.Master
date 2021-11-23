@@ -1,5 +1,4 @@
 using Billing.Contracts.Domain.Offers.Comparisons;
-using Billing.Contracts.Domain.Offers.Interfaces;
 using Billing.Contracts.Domain.Offers.Validation.Exceptions;
 using Resources.Translations;
 using System.Collections.Generic;
@@ -8,7 +7,7 @@ using Tools;
 
 namespace Billing.Contracts.Domain.Offers.Validation
 {
-    public class CommercialOfferValidationService : ICommercialOfferValidationService
+    public class CommercialOfferValidationService
     {
         private readonly ITimeProvider _time;
         private readonly ITranslations _translations;

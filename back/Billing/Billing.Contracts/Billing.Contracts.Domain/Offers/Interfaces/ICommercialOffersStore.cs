@@ -10,6 +10,7 @@ namespace Billing.Contracts.Domain.Offers.Interfaces
     {
         Task<Page<CommercialOffer>> GetPageAsync(AccessRight accessRight, CommercialOfferFilter filter, IPageToken pageToken);
         Task<CommercialOffer> GetSingleOfDefaultAsync(CommercialOfferFilter filter, AccessRight accessRight);
+        Task<CommercialOffer> GetReadOnlySingleOfDefaultAsync(CommercialOfferFilter filter, AccessRight accessRight);
         Task<Page<string>> GetTagsAsync(AccessRight accessRight);
         Task<CommercialOffer> CreateAsync(CommercialOffer offer, AccessRight accessRight);
         Task<IReadOnlyCollection<CommercialOffer>> CreateManyAsync(IReadOnlyCollection<CommercialOffer> offers, AccessRight accessRight);

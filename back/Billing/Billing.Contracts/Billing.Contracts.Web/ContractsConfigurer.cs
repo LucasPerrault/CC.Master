@@ -43,7 +43,7 @@ namespace Billing.Contracts.Web
             services.AddScoped<ContractHealthHelper>();
 
             services.AddScoped<ICommercialOfferUsageService, CommercialOfferUsageService>();
-            services.AddScoped<ICommercialOfferValidationService, CommercialOfferValidationService>();
+            services.AddScoped<CommercialOfferValidationService>();
             services.AddScoped<ICommercialOffersStore, CommercialOffersStore>();
             services.AddScoped<CommercialOffersRepository>();
             services.AddScoped<ITranslations, Translations>();

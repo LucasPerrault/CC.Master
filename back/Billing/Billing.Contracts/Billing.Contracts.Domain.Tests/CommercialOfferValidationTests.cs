@@ -1,5 +1,4 @@
 using Billing.Contracts.Domain.Offers;
-using Billing.Contracts.Domain.Offers.Interfaces;
 using Billing.Contracts.Domain.Offers.Validation;
 using Billing.Contracts.Domain.Offers.Validation.Exceptions;
 using FluentAssertions;
@@ -19,7 +18,7 @@ namespace Billing.Contracts.Domain.Tests
         private readonly Mock<ITimeProvider> _time;
         private readonly Mock<ITranslations> _translations;
 
-        private ICommercialOfferValidationService Validation => new CommercialOfferValidationService(_time.Object, _translations.Object);
+        private CommercialOfferValidationService Validation => new CommercialOfferValidationService(_time.Object, _translations.Object);
 
         public CommercialOfferValidationTests()
         {

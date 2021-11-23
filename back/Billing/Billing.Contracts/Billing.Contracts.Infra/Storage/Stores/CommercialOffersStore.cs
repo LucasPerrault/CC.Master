@@ -19,21 +19,15 @@ namespace Billing.Contracts.Infra.Storage.Stores
     {
         private readonly ContractsDbContext _dbContext;
         private readonly IQueryPager _queryPager;
-        private readonly ICommercialOfferValidationService _validation;
-        private readonly ICommercialOfferUsageService _usageService;
 
         public CommercialOffersStore
         (
             ContractsDbContext dbContext,
-            IQueryPager queryPager,
-            ICommercialOfferValidationService validation,
-            ICommercialOfferUsageService usageService
+            IQueryPager queryPager
         )
         {
             _dbContext = dbContext;
             _queryPager = queryPager;
-            _validation = validation;
-            _usageService = usageService;
         }
 
         public Task<Page<CommercialOffer>> GetPageAsync(AccessRight accessRight, CommercialOfferFilter filter, IPageToken pageToken)
@@ -45,6 +39,11 @@ namespace Billing.Contracts.Infra.Storage.Stores
         public Task<CommercialOffer> GetSingleOfDefaultAsync(CommercialOfferFilter filter, AccessRight accessRight)
         {
             return GetQueryable(accessRight, filter).SingleOrDefaultAsync();
+        }
+
+        public Task<CommercialOffer> GetReadOnlySingleOfDefaultAsync(CommercialOfferFilter filter, AccessRight accessRight)
+        {
+            return GetQueryable(accessRight, filter).AsNoTracking().SingleOrDefaultAsync();
         }
 
         public Task<Page<string>> GetTagsAsync(AccessRight accessRight)
@@ -64,8 +63,6 @@ namespace Billing.Contracts.Infra.Storage.Stores
 
         public async Task<CommercialOffer> CreateAsync(CommercialOffer offer, AccessRight accessRight)
         {
-            _validation.ThrowIfCannotCreateOffer(offer);
-
             _dbContext.Add(offer);
             await _dbContext.SaveChangesAsync();
 
@@ -74,11 +71,6 @@ namespace Billing.Contracts.Infra.Storage.Stores
 
         public async Task<IReadOnlyCollection<CommercialOffer>> CreateManyAsync(IReadOnlyCollection<CommercialOffer> offers, AccessRight accessRight)
         {
-            foreach (var offer in offers)
-            {
-                _validation.ThrowIfCannotCreateOffer(offer);
-            }
-
             _dbContext.AddRange(offers);
             await _dbContext.SaveChangesAsync();
 
@@ -87,13 +79,6 @@ namespace Billing.Contracts.Infra.Storage.Stores
 
         public async Task PutAsync(int id, CommercialOffer offer, AccessRight accessRight)
         {
-            var oldOffer = await GetQueryable(accessRight, CommercialOfferFilter.ForId(id))
-                .AsNoTracking()
-                .SingleOrDefaultAsync();
-            var usage = await GetOfferUsage(id);
-
-            _validation.ThrowIfCannotModifyOffer(oldOffer, offer, usage);
-
             _dbContext.Update(offer);
             await _dbContext.SaveChangesAsync();
         }
@@ -101,9 +86,6 @@ namespace Billing.Contracts.Infra.Storage.Stores
         public async Task ArchiveAsync(int id, AccessRight accessRight)
         {
             var offer = await GetSingleOfDefaultAsync(CommercialOfferFilter.ForId(id), accessRight);
-            var usage = await GetOfferUsage(id);
-
-            _validation.ThrowIfCannotDeleteOffer(offer, usage);
 
             offer.IsArchived = true;
 
@@ -113,8 +95,6 @@ namespace Billing.Contracts.Infra.Storage.Stores
         public async Task<CommercialOffer> AddPriceListAsync(int id, PriceList priceList, AccessRight accessRight)
         {
             var offer = await GetSingleOfDefaultAsync(CommercialOfferFilter.ForId(id), accessRight);
-
-            _validation.ThrowIfCannotAddPriceList(offer, priceList);
 
             offer.PriceLists.Add(priceList);
 
@@ -127,9 +107,6 @@ namespace Billing.Contracts.Infra.Storage.Stores
         {
             var offer = await GetSingleOfDefaultAsync(CommercialOfferFilter.ForId(id), accessRight);
             var oldPriceList = offer.PriceLists.Single(pl => pl.Id == listId);
-            var usage = await GetOfferUsage(id);
-
-            _validation.ThrowIfCannotModifyPriceList(offer, oldPriceList, priceList, usage);
 
             offer.PriceLists.Remove(oldPriceList);
             offer.PriceLists.Add(priceList);
@@ -142,16 +119,9 @@ namespace Billing.Contracts.Infra.Storage.Stores
             var offer = await GetSingleOfDefaultAsync(CommercialOfferFilter.ForId(id), accessRight);
             var priceList = offer.PriceLists.Single(pl => pl.Id == listId);
 
-            _validation.ThrowIfCannotDeletePriceList(offer, priceList);
-
             offer.PriceLists.Remove(priceList);
 
             await _dbContext.SaveChangesAsync();
-        }
-
-        private Task<CommercialOfferUsage> GetOfferUsage(int id)
-        {
-            return _usageService.BuildAsync(id);
         }
 
         private IQueryable<CommercialOffer> GetQueryable(AccessRight accessRight, CommercialOfferFilter filter)
