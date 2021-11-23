@@ -2,7 +2,6 @@
            (ngModelChange)="update($event)"
            class="textfield-input"
            [placeholder]="placeholder"
-           (onOpen)="setOffersDisplayed()"
            [disabled]="disabled"
            [multiple]="multiple"
            [required]="required">
@@ -21,15 +20,10 @@
 
   <lu-option-picker-advanced>
     <header class="lu-picker-header">
-      <lu-api-paged-searcher [api]="apiUrl" [filters]="filters"></lu-api-paged-searcher>
+      <lu-api-paged-searcher [api]="api" [filters]="filters" [standard]="standard.V4"></lu-api-paged-searcher>
     </header>
 
     <lu-option-pager *ngIf="multiple"></lu-option-pager>
-    <ng-container *ngIf="multiple">
-      <lu-option *ngFor="let offerSelected of offersSelected" [value]="offerSelected" selected>
-        {{ offerSelected.name }}
-      </lu-option>
-    </ng-container>
 
     <lu-option *luForOptions="let offer; trackBy: trackBy" [value]="offer">
       {{offer.name}}

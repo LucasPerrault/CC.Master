@@ -1,6 +1,4 @@
-import { currencyFields, ICurrency } from '@cc/domain/billing/offers';
-
-export const offerCurrencyFields = `${ currencyFields },symbol,code`;
+import { ICurrency } from '@cc/domain/billing/offers';
 
 export interface IOfferCurrency extends ICurrency {
   symbol: string;
