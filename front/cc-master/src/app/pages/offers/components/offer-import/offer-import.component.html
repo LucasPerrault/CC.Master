@@ -2,7 +2,7 @@
 
   <div class="page-content u-paddingReset">
     <div class="u-paddingStandard mod-stickyLeft">
-      <button class="link">{{ 'offers_link_import_template' | translate }}</button>
+      <button class="link" (click)="download()">{{ 'offers_link_import_template' | translate }}</button>
 			<cc-offer-upload (upload)="upload($event)"></cc-offer-upload>
 		</div>
 

@@ -1,6 +1,7 @@
 import { HttpClient, HttpContext, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BYPASS_INTERCEPTOR } from '@cc/aspects/errors';
+import { DownloadService } from '@cc/common/download';
 import {
   ApiV3DateService,
   IHttpApiV4CollectionCountResponse, IHttpApiV4CollectionResponse,
@@ -22,6 +23,7 @@ class OfferApiEndpoint {
   public static usages = `${ OfferApiEndpoint.base }/usages`;
   public static createRange = `${ OfferApiEndpoint.base }/creation`;
   public static upload = `${ OfferApiEndpoint.base }/upload-csv`;
+  public static download = `${ OfferApiEndpoint.base }/upload-csv/template`;
   public static id = (offerId: number) => `${ OfferApiEndpoint.base }/${ offerId }`;
 }
 
@@ -31,6 +33,7 @@ export class OffersDataService {
     private httpClient: HttpClient,
     private apiDateService: ApiV3DateService,
     private listsDataService: PriceListsDataService,
+    private downloadService: DownloadService,
   ) {
   }
 
@@ -83,6 +86,11 @@ export class OffersDataService {
     formData.append('file', file);
     return this.httpClient.post<IHttpApiV4CollectionResponse<IUploadedOffer>>(url, formData)
       .pipe(map(res => res.items));
+  }
+
+  public download$(): Observable<void> {
+    const url = OfferApiEndpoint.download;
+    return this.downloadService.download$(url);
   }
 
   private toMultipleCreationDto(uploadedOffers: IUploadedOffer[]): IOfferCreationDto[] {

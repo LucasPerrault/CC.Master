@@ -31,6 +31,12 @@ export class OfferImportComponent implements OnInit {
   ngOnInit(): void {
   }
 
+  public download(): void {
+    this.dataService.download$()
+      .pipe(take(1))
+      .subscribe();
+  }
+
   public upload(offers: IUploadedOffer[]): void {
     this.formControl.setValue(offers);
   }
