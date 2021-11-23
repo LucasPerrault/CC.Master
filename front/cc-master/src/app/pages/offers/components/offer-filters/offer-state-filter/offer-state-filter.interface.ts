@@ -12,15 +12,15 @@ export interface IOfferState {
 export const offerStates: IOfferState[] = [
   {
     id: OfferState.All,
-    name: 'Tous',
+    name: 'offers_filters_state_all',
   },
   {
     id: OfferState.Archived,
-    name: 'Archivé',
+    name: 'offers_filters_state_archived',
   },
   {
     id: OfferState.NoArchived,
-    name: 'Non archivé',
+    name: 'offers_filters_state_noarchived',
   },
 ];
 
