@@ -16,6 +16,7 @@ import { EnvironmentTabModule } from './tabs/environment-tab/environment-tab.mod
 import { ErrorNotFoundTabModule } from './tabs/error-not-found-tab/error-not-found-tab.module';
 import { EstablishmentTabModule } from './tabs/establishment-tab/establishment-tab.module';
 import { HistoryTabModule } from './tabs/history-tab/history-tab.module';
+import { OfferTabModule } from './tabs/offer-tab/offer-tab.module';
 import { ValidationContextDataService } from './validation-context-store.data';
 import { ValidationContextStoreService } from './validation-context-store.service';
 import { ValidationRestrictionsService } from './validation-restrictions.service';
@@ -31,6 +32,7 @@ import { ValidationRestrictionsService } from './validation-restrictions.service
     HistoryTabModule,
     CloseTabModule,
     EnvironmentTabModule,
+    OfferTabModule,
     CountTabModule,
     AccountingTabModule,
     EstablishmentTabModule,
