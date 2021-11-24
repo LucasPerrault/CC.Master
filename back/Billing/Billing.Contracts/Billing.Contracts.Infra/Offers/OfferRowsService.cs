@@ -37,7 +37,6 @@ namespace Billing.Contracts.Infra.Offers
 
             return importedOffers;
         }
-        // TODO ajouter une méthode pour récupérer le fichier template qu'on créera avec CSV Writer
 
         public async Task<MemoryStream> GetTemplateStreamAsync()
         {

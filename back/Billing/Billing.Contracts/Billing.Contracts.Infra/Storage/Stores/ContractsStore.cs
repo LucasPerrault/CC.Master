@@ -1,4 +1,4 @@
-﻿using Billing.Contracts.Domain.Contracts;
+using Billing.Contracts.Domain.Contracts;
 using Billing.Contracts.Domain.Contracts.Interfaces;
 using Billing.Contracts.Domain.Offers.Services;
 using Lucca.Core.Api.Abstractions.Paging;
