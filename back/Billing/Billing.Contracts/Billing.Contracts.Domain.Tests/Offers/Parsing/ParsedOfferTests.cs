@@ -18,7 +18,7 @@ namespace Billing.Contracts.Domain.Tests.Offers.Parsing
                 BillingUnit = ParsedBillingUnit.ActiveUsers,
                 ForecastMethod = ParsedForecastMethod.AnnualCommitment,
                 Category = "category",
-                CurrencyId = 978,
+                Currency = ParsedCurrency.EUR,
                 Name = "offer",
                 ProductId = 1,
             };
@@ -29,7 +29,7 @@ namespace Billing.Contracts.Domain.Tests.Offers.Parsing
 
             parsedOffer.Should().NotBeNull();
             parsedOffer.Category.Should().Be(row.Category);
-            parsedOffer.CurrencyId.Should().Be(row.CurrencyId);
+            parsedOffer.CurrencyId.Should().Be((int)row.Currency);
             parsedOffer.Name.Should().Be(row.Name);
             parsedOffer.Product.Should().Be(product);
         }
@@ -49,7 +49,7 @@ namespace Billing.Contracts.Domain.Tests.Offers.Parsing
                 BillingUnit = ParsedBillingUnit.ActiveUsers,
                 ForecastMethod = ParsedForecastMethod.AnnualCommitment,
                 Category = "category",
-                CurrencyId = 978,
+                Currency = ParsedCurrency.EUR,
                 Name = "offer",
                 ProductId = 1,
             };
@@ -78,7 +78,7 @@ namespace Billing.Contracts.Domain.Tests.Offers.Parsing
                 BillingUnit = ParsedBillingUnit.ActiveUsers,
                 ForecastMethod = ParsedForecastMethod.AnnualCommitment,
                 Category = "category",
-                CurrencyId = 978,
+                Currency = ParsedCurrency.EUR,
                 Name = "offer",
                 ProductId = 1,
             };
@@ -111,7 +111,7 @@ namespace Billing.Contracts.Domain.Tests.Offers.Parsing
                 BillingUnit = parsedBillingUnit,
                 ForecastMethod = ParsedForecastMethod.AnnualCommitment,
                 Category = "category",
-                CurrencyId = 978,
+                Currency = ParsedCurrency.EUR,
                 Name = "offer",
                 ProductId = 1,
             };
@@ -138,7 +138,7 @@ namespace Billing.Contracts.Domain.Tests.Offers.Parsing
                 BillingUnit = ParsedBillingUnit.Users,
                 ForecastMethod = parsedForecastMethod,
                 Category = "category",
-                CurrencyId = 978,
+                Currency = ParsedCurrency.EUR,
                 Name = "offer",
                 ProductId = 1,
             };

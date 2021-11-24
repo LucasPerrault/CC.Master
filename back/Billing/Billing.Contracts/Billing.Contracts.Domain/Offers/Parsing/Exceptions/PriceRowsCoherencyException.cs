@@ -10,4 +10,13 @@ namespace Billing.Contracts.Domain.Offers.Parsing.Exceptions
 
         }
     }
+
+    public class OfferRowStartsOnException : BadRequestException
+    {
+        public OfferRowStartsOnException(int lineNumber)
+            : base($"Line {lineNumber}, startOn must be specified")
+        {
+
+        }
+    }
 }

@@ -79,7 +79,7 @@ namespace Billing.Contracts.Domain.Offers.Parsing
     public class ParsedPriceRow
     {
         public int? MaxIncludedCount { get; set; }
-        public double? UnitPrice { get; set; }
-        public double? FixedPrice { get; set; }
+        public decimal? UnitPrice { get; set; }
+        public decimal? FixedPrice { get; set; }
     }
 }

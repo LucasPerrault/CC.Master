@@ -5,6 +5,7 @@ using Billing.Products.Domain.Interfaces;
 using CsvHelper;
 using CsvHelper.Configuration;
 using CsvHelper.TypeConversion;
+using Lucca.Core.Shared.Domain.Exceptions;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -51,7 +52,7 @@ namespace Billing.Contracts.Infra.Offers
 
             s.AppendLine("Id produit,Produit,Unite de decompte,Devise,Mode Decompte,Methode de pricing,Algorithme previsionnel");
 
-            for (var i = 0;  i < products.Count;  i++)
+            for (var i = 0; i < products.Count; i++)
             {
                 s.Append($"{products[i].Id},{products[i].Name},");
                 s.Append(billingUnit.Length > i + 1 ? billingUnit[i + 1] : string.Empty);
@@ -138,12 +139,13 @@ namespace Billing.Contracts.Infra.Offers
                 .TypeConverterOption.Format("dd/MM/yyyy")
                 .TypeConverterOption.Format("d/MM/yyyy")
                 .TypeConverterOption.Format("dd/M/yyyy")
-                .TypeConverterOption.Format("d/M/yyyy");
+                .TypeConverterOption.Format("d/M/yyyy")
+                .TypeConverter(new NullableDateTimeConverter());
 
-            Map(o => o.MinIncludedCount).Name("borne inferieure", "borne inférieure");
-            Map(o => o.MaxIncludedCount).Name("borne superieure", "borne supérieure");
-            Map(o => o.UnitPrice).Name("prix unitaire");
-            Map(o => o.FixedPrice).Name("prix forfaitaire");
+            Map(o => o.MinIncludedCount).Name("borne inferieure", "borne inférieure").TypeConverter<MandatoryInt32Converter>();
+            Map(o => o.MaxIncludedCount).Name("borne superieure", "borne supérieure").TypeConverter<MandatoryInt32Converter>();
+            Map(o => o.UnitPrice).Name("prix unitaire").TypeConverter<MandatoryDecimalConverter>();
+            Map(o => o.FixedPrice).Name("prix forfaitaire").TypeConverter<MandatoryDecimalConverter>();
         }
     }
 
@@ -166,6 +168,40 @@ namespace Billing.Contracts.Infra.Offers
             {
                 return null;
             }
+        }
+    }
+
+    internal class NullableDateTimeConverter : DateTimeConverter
+    {
+        public override object ConvertFromString(string text, IReaderRow row, MemberMapData memberMapData)
+        {
+            if (string.IsNullOrEmpty(text))
+                return null;
+
+            return base.ConvertFromString(text, row, memberMapData);
+        }
+    }
+
+
+    internal class MandatoryInt32Converter : Int32Converter
+    {
+        public override object ConvertFromString(string text, IReaderRow row, MemberMapData memberMapData)
+        {
+            if (string.IsNullOrEmpty(text))
+                throw new BadRequestException($"The field '{memberMapData.Names.First()}' is mandatory. Raw line : {row.Parser.RawRecord}");
+
+            return base.ConvertFromString(text, row, memberMapData);
+        }
+    }
+
+    internal class MandatoryDecimalConverter : DecimalConverter
+    {
+        public override object ConvertFromString(string text, IReaderRow row, MemberMapData memberMapData)
+        {
+            if (string.IsNullOrEmpty(text))
+                throw new BadRequestException($"The field '{memberMapData.Names.First()}' is mandatory. Raw line : {row.Parser.RawRecord}");
+
+            return base.ConvertFromString(text, row, memberMapData);
         }
     }
 }

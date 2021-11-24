@@ -21,8 +21,8 @@ namespace Billing.Contracts.Infra.Tests
         public async Task ShouldUpload()
         {
             var s = new StringBuilder();
-            s.AppendLine("Nom,Id produit,Unite de decompte,Id devise,Categorisation,Mode Decompte,Methode de pricing,Algorithme previsionnel,Date de debut de la grille,Borne inferieure,Borne superieure,Prix unitaire,Prix forfaitaire");
-            s.AppendLine("Cleemy template 2021,2,1,978,catalogues,3,Linear,LastRealMonth,15/12/2021,0,10,0,50");
+            s.AppendLine("Nom,Id produit,Unite de decompte,devise,Categorisation,Mode Decompte,Methode de pricing,Algorithme previsionnel,Date de debut de la grille,Borne inferieure,Borne superieure,Prix unitaire,Prix forfaitaire");
+            s.AppendLine("Cleemy template 2021,2,1,EUR,catalogues,3,Linear,LastRealMonth,15/12/2021,0,10,0,50");
             s.AppendLine(",,,,,,,,,11,20,2,0");
             s.AppendLine(",,,,,,,,,21,50,1.9,0");
             s.AppendLine(",,,,,,,,,51,100,1.5,0");
@@ -74,7 +74,7 @@ namespace Billing.Contracts.Infra.Tests
 
             Func<Task<List<ParsedOffer>>> func = () => sut.UploadAsync(ms);
 
-            func.Should().Throw<MissingFieldException>().WithMessage("*unité de décompte*");
+            func.Should().Throw<MissingFieldException>().WithMessage("*unitÃ© de dÃ©compte*");
         }
 
         [Fact]
@@ -110,7 +110,7 @@ namespace Billing.Contracts.Infra.Tests
             stringTemplate = stringTemplate.Replace("unite de decompte", "unite de decompd", StringComparison.CurrentCultureIgnoreCase);
             Func<Task<List<ParsedOffer>>> func = () => sut.UploadAsync(new MemoryStream(Encoding.UTF8.GetBytes(stringTemplate)));
 
-            func.Should().Throw<MissingFieldException>().WithMessage("*unité de décompte*");
+            func.Should().Throw<MissingFieldException>().WithMessage("*unitÃ© de dÃ©compte*");
         }
     }
 }

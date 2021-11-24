@@ -22,6 +22,8 @@ namespace Billing.Contracts.Domain.Offers.Parsing
                 {
                     currentOffer = new ParsedOffer(offerRow, products.SingleOrDefault(p => p.Id == offerRow.ProductId));
                     parsedOffers.Add(currentOffer);
+                    if (!offerRow.StartsOn.HasValue)
+                        throw new OfferRowStartsOnException(currentLine);
                 }
 
                 var isNewPriceList = offerRow.StartsOn.HasValue;
