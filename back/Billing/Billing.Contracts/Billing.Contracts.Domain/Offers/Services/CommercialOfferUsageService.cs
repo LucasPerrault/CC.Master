@@ -12,6 +12,12 @@ using Tools;
 
 namespace Billing.Contracts.Domain.Offers.Services
 {
+    public class OfferUsageContract
+    {
+        public int CommercialOfferId { get; set; }
+        public ContractStatus Status { get; set; }
+    }
+
     public class CommercialOfferUsageService : ICommercialOfferUsageService
     {
         private readonly IContractsStore _contractsStore;
@@ -43,8 +49,7 @@ namespace Billing.Contracts.Domain.Offers.Services
         private async Task<IReadOnlyCollection<CommercialOfferUsage>> BuildAsync(HashSet<int> offerIds)
         {
             var contractsByOfferId = (await _contractsStore
-                .GetAsync(AccessRight.All, GetContractFilter(offerIds)))
-                .Select(c => new { c.Id, c.CommercialOfferId, c.Status })
+                .GetOfferUsageContractAsync(AccessRight.All, GetContractFilter(offerIds)))
                 .GroupBy(c => c.CommercialOfferId);
 
             var nbCountedContractsByOfferId = (await _countsStore
