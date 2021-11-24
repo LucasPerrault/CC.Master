@@ -48,7 +48,7 @@
   <label class="textfield palette-grey mod-longest u-marginTopStandard is-required">
     <cc-product-api-select [formControlName]="formGroupKey.Product" [required]="true">
     </cc-product-api-select>
-    <span class="textfield-label">{{ 'front_select_product_label' | translate }}</span>
+    <span class="textfield-label">{{ 'select_product_label' | translate }}</span>
     <span class="textfield-messages" *ngIf="hasRequiredError(formGroupKey.Product)">
       <span class="textfield-messages-error">
         {{ "front_select_products_errorMessage_required" | translate }}
