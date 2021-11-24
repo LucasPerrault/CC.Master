@@ -147,6 +147,7 @@ export class OfferImportTableComponent implements OnInit, OnDestroy, ControlValu
         [ImportedOfferFormKey.PriceLists]: new FormControl(offer?.priceLists, [
           PriceListsValidators.uniqStartsOnRange,
           PriceListsValidators.boundsContinuityRange,
+          PriceListsValidators.startsOnFirstDayOfTheMonthRange,
           Validators.required,
         ]),
       },

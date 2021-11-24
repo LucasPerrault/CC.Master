@@ -56,7 +56,7 @@ export class ImportedPriceListsModalComponent implements OnInit, OnDestroy, ILuM
 
   public hasErrors(control: AbstractControl): boolean {
     return this.formArray.hasError(PriceListValidationError.UniqStartsOn)
-      || control.hasError(PriceListValidationError.IsStartedOnFirstDayOfTheMonth);
+      || control.hasError(PriceListValidationError.StartsOnFirstDayOfTheMonth);
   }
 
   public trackBy(index: number, list: AbstractControl): AbstractControl {
@@ -82,6 +82,6 @@ export class ImportedPriceListsModalComponent implements OnInit, OnDestroy, ILuM
         [ImportedListFormKey.StartsOn]: new FormControl(new Date(list?.startsOn)),
         [ImportedListFormKey.PriceRows]: new FormControl(list?.rows),
       },
-      [PriceListsValidators.isStartedOnFirstDayOfTheMonth]);
+      [PriceListsValidators.startsOnFirstDayOfTheMonth]);
   }
 }

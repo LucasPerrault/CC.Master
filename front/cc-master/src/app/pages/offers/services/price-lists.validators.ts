@@ -6,7 +6,7 @@ import { IPriceListForm, IPriceRowForm } from '../models/price-list-form.interfa
 export enum PriceListValidationError {
   UniqStartsOn = 'uniqStartsOn',
   BoundsContinuity = 'boundsContinuity',
-  IsStartedOnFirstDayOfTheMonth = 'IsStartedOnFirstDayOfTheMonth',
+  StartsOnFirstDayOfTheMonth = 'startsOnFirstDayOfTheMonth',
   Required = 'required',
 }
 
@@ -48,13 +48,27 @@ export class PriceListsValidators {
     return !allHaveUniqStartDate ? { [PriceListValidationError.UniqStartsOn]: true } : null;
   }
 
-  public static isStartedOnFirstDayOfTheMonth(control: FormControl): ValidationErrors {
-    const priceList: IPriceListForm = control.value;
-    const startDate = !!priceList.startsOn ? new Date(priceList.startsOn) : null;
+  public static startsOnFirstDayOfTheMonthRange(control: FormControl): ValidationErrors {
+    const priceLists: IPriceListForm[] = control.value;
 
-    return !!startDate && !isFirstDayOfMonth(startDate)
-      ? { [PriceListValidationError.IsStartedOnFirstDayOfTheMonth]: true }
+    const allStartedOnFirstDay = priceLists.every(priceList => PriceListsValidators.isStartedOnFirstDayOfTheMonth(priceList));
+
+    return !allStartedOnFirstDay
+      ? { [PriceListValidationError.StartsOnFirstDayOfTheMonth]: true }
       : null;
+  }
+
+  public static startsOnFirstDayOfTheMonth(control: FormControl): ValidationErrors {
+    const priceList: IPriceListForm = control.value;
+
+    return !PriceListsValidators.isStartedOnFirstDayOfTheMonth(priceList)
+      ? { [PriceListValidationError.StartsOnFirstDayOfTheMonth]: true }
+      : null;
+  }
+
+  private static isStartedOnFirstDayOfTheMonth(priceList: IPriceListForm): boolean {
+    const startDate = !!priceList.startsOn ? new Date(priceList.startsOn) : null;
+    return !!startDate && isFirstDayOfMonth(startDate);
   }
 
   private static areContinuousBounds(priceRows: IPriceRowForm[]): boolean {
