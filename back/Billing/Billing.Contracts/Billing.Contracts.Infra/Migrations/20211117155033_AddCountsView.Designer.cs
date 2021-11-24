@@ -4,14 +4,16 @@ using Billing.Contracts.Infra.Storage;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Billing.Contracts.Infra.Migrations
 {
     [DbContext(typeof(ContractsDbContext))]
-    partial class ContractsDbContextModelSnapshot : ModelSnapshot
+    [Migration("20211117155033_AddCountsView")]
+    partial class AddCountsView
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -357,7 +359,6 @@ namespace Billing.Contracts.Infra.Migrations
                         .HasColumnName("IsArchived");
 
                     b.Property<string>("Name")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)")
                         .HasColumnName("Name");
 
@@ -372,10 +373,6 @@ namespace Billing.Contracts.Infra.Migrations
                     b.Property<string>("Tag")
                         .HasColumnType("nvarchar(max)")
                         .HasColumnName("Tag");
-
-                    b.Property<int>("Unit")
-                        .HasColumnType("int")
-                        .HasColumnName("Unit");
 
                     b.HasKey("Id");
 
@@ -413,8 +410,8 @@ namespace Billing.Contracts.Infra.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<decimal>("FixedPrice")
-                        .HasColumnType("decimal(18,2)")
+                    b.Property<double>("FixedPrice")
+                        .HasColumnType("float")
                         .HasColumnName("FixedPrice");
 
                     b.Property<int>("ListId")
@@ -425,8 +422,8 @@ namespace Billing.Contracts.Infra.Migrations
                         .HasColumnType("int")
                         .HasColumnName("MaxIncludedCount");
 
-                    b.Property<decimal>("UnitPrice")
-                        .HasColumnType("decimal(18,2)")
+                    b.Property<double>("UnitPrice")
+                        .HasColumnType("float")
                         .HasColumnName("UnitPrice");
 
                     b.HasKey("Id");

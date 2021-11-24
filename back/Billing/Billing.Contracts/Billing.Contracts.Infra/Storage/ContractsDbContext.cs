@@ -20,6 +20,8 @@ namespace Billing.Contracts.Infra.Storage
             modelBuilder.ApplyConfiguration(new ContractCommentConfiguration());
             modelBuilder.ApplyConfiguration(new EstablishmentAttachmentConfiguration());
 
+            modelBuilder.ApplyConfiguration(new CountConfiguration());
+
             modelBuilder.ApplyConfiguration(new ContractEnvironmentConfiguration());
             modelBuilder.ApplyConfiguration(new EstablishmentConfiguration());
             modelBuilder.ApplyConfiguration(new EstablishmentExclusionConfiguration());

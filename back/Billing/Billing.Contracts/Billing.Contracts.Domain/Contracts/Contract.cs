@@ -83,11 +83,11 @@ namespace Billing.Contracts.Domain.Contracts
             && ( a.EndsOn == null || a.EndsOn > period )
         );
 
-        public static Expression<Func<Contract, bool>> IsNotStarted => c => c.TheoreticalStartOn > DateTime.Today;
-        public static Func<Contract, bool> IsNotStartedCompiled => IsNotStarted.Compile();
+        public static readonly Expression<Func<Contract, bool>> IsNotStarted = c => c.TheoreticalStartOn > DateTime.Today;
+        public static readonly Func<Contract, bool> IsNotStartedCompiled = IsNotStarted.Compile();
 
-        public static Expression<Func<Contract, bool>> IsEnded => c => c.TheoreticalEndOn < DateTime.Today;
-        public static Func<Contract, bool> IsEndedCompiled => IsEnded.Compile();
+        public static readonly Expression<Func<Contract, bool>> IsEnded = c => c.TheoreticalEndOn < DateTime.Today;
+        public static readonly Func<Contract, bool> IsEndedCompiled = IsEnded.Compile();
 
         public static Expression<Func<Contract, bool>> IsInProgress =>
             IsNotStarted.Inverse().SmartAndAlso(
