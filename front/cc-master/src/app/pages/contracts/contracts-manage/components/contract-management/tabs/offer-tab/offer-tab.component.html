@@ -2,6 +2,16 @@
 
 <ng-template #isNotLoading>
   <div class="page-content">
+    <div class="callout">
+      {{ 'front_contractPage_offerTab_similar_offers_info' | translate }}
+      <ul class="u-paddingLeftStandard u-marginTopSmall">
+        <li>{{ 'front_contractPage_offerTab_similar_offers_info_priceList_condition' | translate }}</li>
+        <li>{{ 'front_contractPage_offerTab_similar_offers_info_currency_condition' | translate }}</li>
+        <li>{{ 'front_contractPage_offerTab_similar_offers_info_billingMode_condition' | translate }}</li>
+        <li>{{ 'front_contractPage_offerTab_similar_offers_info_pricingMethod_condition' | translate }}</li>
+      </ul>
+    </div>
+
     <label class="textfield palette-grey mod-longer is-required u-marginTopStandard">
       <cc-similar-offer-api-select [formControl]="formControl" [context]="context$ | async" [required]="true"></cc-similar-offer-api-select>
       <span class="textfield-label">
