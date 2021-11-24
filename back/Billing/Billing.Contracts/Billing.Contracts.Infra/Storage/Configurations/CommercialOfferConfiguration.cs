@@ -10,7 +10,7 @@ namespace Billing.Contracts.Infra.Storage.Configurations
         {
             builder.ToTable("CommercialOffers");
             builder.HasKey(d => d.Id);
-            builder.Property(d => d.Name).HasColumnName("Name");
+            builder.Property(d => d.Name).HasColumnName("Name").IsRequired();
             builder.Property(d => d.Tag).HasColumnName("Tag");
             builder.Property(d => d.BillingMode).HasColumnName("BillingMode");
             builder.Property(d => d.Unit).HasColumnName("Unit");
