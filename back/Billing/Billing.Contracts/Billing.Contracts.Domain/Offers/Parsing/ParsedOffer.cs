@@ -21,7 +21,7 @@ namespace Billing.Contracts.Domain.Offers.Parsing
             Name = row.Name;
             Product = product;
             BillingMode = GetBillingMode(row.BillingMode);
-            CurrencyId = row.CurrencyId;
+            CurrencyId = (int?)row.Currency;
             BillingUnit = GetBillingUnit(row.BillingUnit);
             PricingMethod = GetPricingMethod(row.PricingMethod);
             Category = row.Category;

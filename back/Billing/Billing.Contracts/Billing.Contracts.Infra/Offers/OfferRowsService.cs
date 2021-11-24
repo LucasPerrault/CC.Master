@@ -45,19 +45,18 @@ namespace Billing.Contracts.Infra.Offers
             var billingMode = Enum.GetNames(typeof(ParsedBillingMode));
             var forecastMethod = Enum.GetNames(typeof(ParsedForecastMethod));
             var pricingMethod = Enum.GetNames(typeof(ParsedPricingMethod));
+            var currency = Enum.GetNames(typeof(ParsedCurrency));
 
             var s = new StringBuilder();
 
-            s.AppendLine("Id produit,Produit,Unite de decompte,Id devise,Devise,Mode Decompte,Methode de pricing,Algorithme previsionnel");
+            s.AppendLine("Id produit,Produit,Unite de decompte,Devise,Mode Decompte,Methode de pricing,Algorithme previsionnel");
 
             for (var i = 0;  i < products.Count;  i++)
             {
                 s.Append($"{products[i].Id},{products[i].Name},");
                 s.Append(billingUnit.Length > i + 1 ? billingUnit[i + 1] : string.Empty);
                 s.Append(',');
-                // currencyId
-                s.Append(',');
-                // currencyName
+                s.Append(currency.Length > i + 1 ? currency[i + 1] : string.Empty);
                 s.Append(',');
                 s.Append(billingMode.Length > i + 1 ? billingMode[i + 1] : string.Empty);
                 s.Append(',');
@@ -71,8 +70,8 @@ namespace Billing.Contracts.Infra.Offers
             s.AppendLine("xxxxx Ne rien écrire au-dessus de cette ligne");
             s.AppendLine();
 
-            s.AppendLine("Nom,Id produit,Unite de decompte,Id devise,Categorisation,Mode Decompte,Methode de pricing,Algorithme previsionnel,Date de debut de la grille,Borne inferieure,Borne superieure,Prix unitaire,Prix forfaitaire");
-            s.AppendLine("Cleemy template 2021,2,1,978,catalogues,3,Linear,LastRealMonth,15/12/2021,0,10,0,50");
+            s.AppendLine("Nom,Id produit,Unite de decompte,devise,Categorisation,Mode Decompte,Methode de pricing,Algorithme previsionnel,Date de debut de la grille,Borne inferieure,Borne superieure,Prix unitaire,Prix forfaitaire");
+            s.AppendLine("Cleemy template 2021,2,1,EUR,catalogues,3,Linear,LastRealMonth,01/12/2021,0,10,0,50");
             s.AppendLine(",,,,,,,,,11,20,2,0");
             s.AppendLine(",,,,,,,,,21,50,1.9,0");
             s.AppendLine(",,,,,,,,,51,100,1.5,0");
@@ -83,7 +82,7 @@ namespace Billing.Contracts.Infra.Offers
             s.AppendLine(",,,,,,,,,51,100,1,0");
             s.AppendLine(",,,,,,,,,101,1000,0.5,0");
 
-            s.AppendLine("Figgo template 2021,1,1,978,catalogues,3,Linear,LastRealMonth,15/12/2021,0,10,0,50");
+            s.AppendLine("Figgo template 2021,1,1,CHF,catalogues,3,Linear,LastRealMonth,01/12/2021,0,10,0,50");
             s.AppendLine(",,,,,,,,,11,20,2,0");
             s.AppendLine(",,,,,,,,,21,50,1.9,0");
             s.AppendLine(",,,,,,,,,51,100,1.5,0");
@@ -130,7 +129,7 @@ namespace Billing.Contracts.Infra.Offers
             Map(o => o.Name).Name("nom");
             Map(o => o.ProductId).Name("id produit");
             Map(o => o.BillingUnit).Name("unite de decompte", "unité de décompte").TypeConverter(new NullableEnumConverter<ParsedBillingUnit>());
-            Map(o => o.CurrencyId).Name("id devise");
+            Map(o => o.Currency).Name("devise").TypeConverter(new NullableEnumConverter<ParsedCurrency>());
             Map(o => o.Category).Name("categorisation");
             Map(o => o.BillingMode).Name("mode decompte", "mode décompte").TypeConverter(new NullableEnumConverter<ParsedBillingMode>());
             Map(o => o.PricingMethod).Name("methode de pricing", "méthode de pricing").TypeConverter(new NullableEnumConverter<ParsedPricingMethod>());

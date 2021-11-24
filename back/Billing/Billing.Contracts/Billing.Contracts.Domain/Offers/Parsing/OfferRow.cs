@@ -7,7 +7,7 @@ namespace Billing.Contracts.Domain.Offers.Parsing
         public string Name { get; set; }
         public int? ProductId { set; get; }
         public ParsedBillingUnit? BillingUnit { get; set; }
-        public int? CurrencyId { get; set; }
+        public ParsedCurrency? Currency { get; set; }
         public string Category { get; set; }
         public ParsedBillingMode? BillingMode { get; set; }
         public ParsedPricingMethod? PricingMethod { get; set; }
@@ -57,5 +57,12 @@ namespace Billing.Contracts.Domain.Offers.Parsing
         AllUsers = 2,
         UsersWithAccess = 3,
         ActiveUsers = 4,
+    }
+
+    public enum ParsedCurrency
+    {
+        Unknown = 0,
+        EUR = 978,
+        CHF = 756
     }
 }
