@@ -143,7 +143,7 @@ export class OfferImportTableComponent implements OnInit, OnDestroy, ControlValu
         [ImportedOfferFormKey.BillingMode]: new FormControl(getBillingMode(offer?.billingMode), [Validators.required]),
         [ImportedOfferFormKey.PricingMethod]: new FormControl(offer?.pricingMethod, [Validators.required]),
         [ImportedOfferFormKey.ForecastMethod]: new FormControl(offer?.forecastMethod, [Validators.required]),
-        [ImportedOfferFormKey.Currency]: new FormControl(getCurrency(offer?.currencyID), [Validators.required]),
+        [ImportedOfferFormKey.Currency]: new FormControl(getCurrency(offer?.currencyId), [Validators.required]),
         [ImportedOfferFormKey.PriceLists]: new FormControl(offer?.priceLists, [
           PriceListsValidators.uniqStartsOnRange,
           PriceListsValidators.boundsContinuityRange,
@@ -161,7 +161,7 @@ export class OfferImportTableComponent implements OnInit, OnDestroy, ControlValu
       pricingMethod: offer.pricingMethod,
       category: offer.category,
       product: offer.product,
-      currencyID: offer.currency?.code,
+      currencyId: offer.currency?.code,
       billingMode: offer.billingMode?.id,
       billingUnit: offer.billingUnit?.id,
     }));

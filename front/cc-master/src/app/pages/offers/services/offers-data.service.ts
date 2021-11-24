@@ -97,7 +97,7 @@ export class OffersDataService {
     return uploadedOffers.map(o => ({
       name: o.name,
       productId: o.product.id,
-      currencyID: o.currencyID,
+      currencyID: o.currencyId,
       tag: o.category,
       pricingMethod: o.pricingMethod,
       forecastMethod: o.forecastMethod,

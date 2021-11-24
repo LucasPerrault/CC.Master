@@ -9,7 +9,7 @@ import { IPriceListForm } from '../../models/price-list-form.interface';
 
 export interface IUploadedOffer {
   billingMode: BillingMode;
-  currencyID: CurrencyCode;
+  currencyId: CurrencyCode;
   forecastMethod: ForecastMethod;
   name: string;
   priceLists: IPriceListForm[];
