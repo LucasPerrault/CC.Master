@@ -70,7 +70,7 @@ namespace Billing.Contracts.Infra.Offers
 
         private static void AddTemplateWithExamples(CsvBuilder csvBuilder)
         {
-            csvBuilder.NewLine()
+            csvBuilder
                 .AddCell(HeaderRow.Name)
                 .AddCell(HeaderRow.Product)
                 .AddCell(HeaderRow.BillingUnit)
@@ -198,29 +198,12 @@ namespace Billing.Contracts.Infra.Offers
             csv.Context.RegisterClassMap<OfferRowMap>();
 
             csv.Read();
-            csv.ReadHeader();
-
-
-            if (csv[0].ToLower() == HeaderRow.Product.ToLower())
+            while (!string.Equals(csv[0], HeaderRow.LimitWarning, StringComparison.CurrentCultureIgnoreCase))
             {
-                var billingUnit = GetAllEnumValuesExcept(ParsedBillingUnit.Unknown).ToCells();
-                var billingMode = GetAllEnumValuesExcept(ParsedBillingMode.Unknown).ToCells();
-                var forecastMethod = GetAllEnumValuesExcept(ParsedForecastMethod.Unknown).ToCells();
-                var pricingMethod = GetAllEnumValuesExcept(ParsedPricingMethod.Unknown).ToCells();
-                var currency = GetAllEnumValuesExcept(ParsedCurrency.Unknown).ToCells();
-
-                var maxLength = products.Count
-                    .MaxLength(billingUnit)
-                    .MaxLength(billingMode)
-                    .MaxLength(forecastMethod)
-                    .MaxLength(pricingMethod)
-                    .MaxLength(currency);
-
-                for (var i = 0; i < maxLength + RowGapBetweenMetadataAndTemplate - 1; i++)
-                    csv.Read();
-                csv.ReadHeader();
+                csv.Read();
             }
-
+            csv.Read();
+            csv.ReadHeader();
             csv.ValidateHeader<OfferRow>();
 
             return csv.GetRecords<OfferRow>().ToList();
