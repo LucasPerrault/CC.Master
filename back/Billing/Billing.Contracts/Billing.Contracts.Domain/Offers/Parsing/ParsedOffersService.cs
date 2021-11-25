@@ -1,5 +1,6 @@
 using Billing.Contracts.Domain.Offers.Parsing.Exceptions;
 using Billing.Products.Domain;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -9,56 +10,99 @@ namespace Billing.Contracts.Domain.Offers.Parsing
     {
         public List<ParsedOffer> ConvertToParsedOffers(List<OfferRow> offerRows, List<Product> products)
         {
-            var parsedOffers = new List<ParsedOffer>();
+            return ConvertToParsedOffersEnumerable(offerRows, products).ToList();
+        }
 
-            ParsedOffer currentOffer = null;
-            ParsedPriceList currentPriceList = null;
-            var lastMaxIncludedCount = -1;
-            var currentLine = 1;
-            foreach (var offerRow in offerRows)
+        private IEnumerable<ParsedOffer> ConvertToParsedOffersEnumerable(List<OfferRow> offerRows, List<Product> products)
+        {
+            var builder = new ParsedOfferIterator(offerRows);
+            while (builder.TryGetNext(out var row, _ => true))
             {
-                var isNewOffer = !string.IsNullOrEmpty(offerRow.Name);
-                if (isNewOffer)
+                if (string.IsNullOrEmpty(row.Name))
                 {
-                    currentOffer = new ParsedOffer(offerRow, products.SingleOrDefault(p => p.Name == offerRow.ProductName));
-                    parsedOffers.Add(currentOffer);
-                    if (!offerRow.StartsOn.HasValue)
-                        throw new OfferRowStartsOnException(currentLine);
+                    throw new OfferRowStartsOnException(builder.Index);
                 }
-
-                var isNewPriceList = offerRow.StartsOn.HasValue;
-
-                var priceRow = new ParsedPriceRow
+                yield return new ParsedOffer(row, products.SingleOrDefault(p => p.Name == row.ProductName))
                 {
-                    MaxIncludedCount = offerRow.MaxIncludedCount,
-                    FixedPrice = offerRow.FixedPrice,
-                    UnitPrice = offerRow.UnitPrice
+                    PriceLists = GetPriceLists(row, builder).ToList(),
                 };
-
-                if (isNewPriceList)
-                {
-                    lastMaxIncludedCount = -1;
-                    currentPriceList = new ParsedPriceList
-                    {
-                        StartsOn = offerRow.StartsOn,
-                        Rows = new List<ParsedPriceRow> { priceRow }
-                    };
-
-
-                    currentOffer.PriceLists.Add(currentPriceList);
-                }
-                else
-                    currentPriceList.Rows.Add(priceRow);
-
-                if (offerRow.MinIncludedCount != lastMaxIncludedCount + 1)
-                    throw new PriceRowsCoherencyException(currentLine, lastMaxIncludedCount, offerRow.MinIncludedCount);
-
-                lastMaxIncludedCount = offerRow.MaxIncludedCount;
-
-                currentLine++;
             }
+        }
 
-            return parsedOffers;
+        private IEnumerable<ParsedPriceList> GetPriceLists(OfferRow firstRow, ParsedOfferIterator iterator)
+        {
+            yield return new ParsedPriceList
+            {
+                StartsOn = firstRow.StartsOn.Value,
+                Rows = GetPriceRows(firstRow, iterator).ToList(),
+            };
+            while (iterator.TryGetNext(out var row, r => string.IsNullOrEmpty(r.Name)))
+            {
+                if (!row.StartsOn.HasValue)
+                {
+                    throw new OfferRowStartsOnException(iterator.Index);
+                }
+                yield return new ParsedPriceList
+                {
+                    StartsOn = row.StartsOn,
+                    Rows = GetPriceRows(row, iterator).ToList(),
+                };
+            }
+        }
+
+        private IEnumerable<ParsedPriceRow> GetPriceRows(OfferRow firstRow, ParsedOfferIterator iterator)
+        {
+            if (firstRow.MinIncludedCount != 0)
+            {
+                throw new PriceRowsCoherencyException(iterator.Index, -1, firstRow.MinIncludedCount);
+            }
+            yield return new ParsedPriceRow
+            {
+                MaxIncludedCount = firstRow.MaxIncludedCount,
+                FixedPrice = firstRow.FixedPrice,
+                UnitPrice = firstRow.UnitPrice,
+            };
+
+            var lastMaxIncludedCount = firstRow.MaxIncludedCount;
+            while (iterator.TryGetNext(out var row, r => !r.StartsOn.HasValue))
+            {
+                if (row.MinIncludedCount != lastMaxIncludedCount + 1)
+                {
+                    throw new PriceRowsCoherencyException(iterator.Index, lastMaxIncludedCount, row.MinIncludedCount);
+                }
+                yield return new ParsedPriceRow
+                {
+                    MaxIncludedCount = row.MaxIncludedCount,
+                    FixedPrice = row.FixedPrice,
+                    UnitPrice = row.UnitPrice,
+                };
+                lastMaxIncludedCount = row.MaxIncludedCount;
+            }
+        }
+
+        public class ParsedOfferIterator
+        {
+            public int Index { get; private set; }
+            private readonly List<OfferRow> _rows;
+
+            public ParsedOfferIterator(List<OfferRow> rows) => _rows = rows;
+
+            public bool TryGetNext(out OfferRow row, Func<OfferRow, bool> condition)
+            {
+                if (Index < _rows.Count)
+                {
+                    var candidateRow = _rows[Index];
+                    if (condition(candidateRow))
+                    {
+                        row = candidateRow;
+                        Index++;
+                        return true;
+                    }
+                }
+
+                row = null;
+                return false;
+            }
         }
     }
 }
