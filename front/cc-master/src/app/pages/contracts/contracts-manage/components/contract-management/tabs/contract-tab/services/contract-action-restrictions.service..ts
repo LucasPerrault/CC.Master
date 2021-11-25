@@ -52,27 +52,27 @@ export class ContractActionRestrictionsService {
       && !this.hasActiveEstablishments(context);
   }
 
-  public hasActiveEstablishments(context: IValidationContext): boolean {
+  public canEditContract(): boolean {
+    return this.restrictionsService.canEditContract();
+  }
+
+  private hasActiveEstablishments(context: IValidationContext): boolean {
     return this.restrictionsService.hasActiveEstablishments(context);
   }
 
-  public hasRealCounts(context: IValidationContext): boolean {
+  private hasRealCounts(context: IValidationContext): boolean {
     return this.restrictionsService.hasRealCounts(context);
   }
 
-  public hasContractEntries(context: IValidationContext): boolean {
+  private hasContractEntries(context: IValidationContext): boolean {
     return !!context?.contractEntries?.length;
   }
 
-  public hasUnletteredContractEntries(context: IValidationContext): boolean {
+  private hasUnletteredContractEntries(context: IValidationContext): boolean {
     return this.restrictionsService.hasUnletteredContractEntries(context);
   }
 
-  public hasLetteredContractEntries(context: IValidationContext): boolean {
+  private hasLetteredContractEntries(context: IValidationContext): boolean {
     return !!context?.contractEntries?.filter(ce => ce.letter !== null).length;
-  }
-
-  public canEditContract(): boolean {
-    return this.restrictionsService.canEditContract();
   }
 }

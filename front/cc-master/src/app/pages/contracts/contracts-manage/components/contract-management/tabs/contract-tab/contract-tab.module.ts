@@ -17,6 +17,7 @@ import { ContractTabFormComponent } from './components/contract-tab-form/contrac
 import { ContractTabComponent } from './contract-tab.component';
 import { ContractActionRestrictionsService } from './services/contract-action-restrictions.service.';
 import { ContractTabService } from './services/contract-tab.service';
+import { LuTooltipTriggerModule } from '@lucca-front/ng/tooltip';
 
 @NgModule({
   declarations: [ContractTabComponent, ContractTabFormComponent],
@@ -37,6 +38,7 @@ import { ContractTabService } from './services/contract-tab.service';
     CommentModule,
     LuModalModule,
     ClientInfoModalModule,
+    LuTooltipTriggerModule,
   ],
   providers: [
     ContractTabService,
