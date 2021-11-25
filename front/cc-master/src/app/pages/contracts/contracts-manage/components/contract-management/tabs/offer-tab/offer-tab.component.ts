@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
+import { getButtonState, toSubmissionState } from '@cc/common/forms';
 import { TimelineCountsService } from '@cc/domain/billing/counts/timeline-counts-service';
 import { forkJoin, Observable, ReplaySubject, Subject } from 'rxjs';
 import { finalize, map, take } from 'rxjs/operators';
@@ -9,7 +10,6 @@ import { ContractManagementService } from '../../contract-management.service';
 import { IOfferContract } from './models/offer-contract.interface';
 import { ISimilarOfferContext } from './models/similar-offer-context.interface';
 import { OfferTabDataService } from './services/offer-tab-data.service';
-import { getButtonState, toSubmissionState } from '@cc/common/forms';
 
 @Component({
   selector: 'cc-offer-tab',
