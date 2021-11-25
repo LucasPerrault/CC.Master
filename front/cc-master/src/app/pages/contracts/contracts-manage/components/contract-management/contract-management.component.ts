@@ -4,13 +4,14 @@ import { RightsService } from '@cc/aspects/rights';
 import { TranslatePipe } from '@cc/aspects/translate';
 import { INavigationTab, NavigationPath } from '@cc/common/navigation';
 import { IContract } from '@cc/domain/billing/contracts';
-import { BehaviorSubject, from, ReplaySubject, Subject } from 'rxjs';
-import { catchError, finalize, takeUntil } from 'rxjs/operators';
+import { BehaviorSubject, combineLatest, from, Observable, ReplaySubject, Subject } from 'rxjs';
+import { catchError, finalize, map, takeUntil } from 'rxjs/operators';
 
 import { ContractsModalTabPath } from './constants/contracts-modal-tab-path.enum';
 import { contractsModalTabs } from './constants/contracts-modal-tabs.const';
 import { ContractManagementService } from './contract-management.service';
 import { ContractManagementDataService } from './contract-management-data.service';
+import { ValidationContextStoreService } from './validation-context-store.service';
 
 @Component({
   selector: 'cc-contracts-manage-modal',
@@ -19,8 +20,13 @@ import { ContractManagementDataService } from './contract-management-data.servic
 })
 export class ContractManagementComponent implements OnInit, OnDestroy {
   public title: string;
-  public isLoading$: ReplaySubject<boolean> = new ReplaySubject<boolean>(1);
+  public isContractLoading$: ReplaySubject<boolean> = new ReplaySubject<boolean>(1);
   public isNotFound$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+
+  public get isLoading$(): Observable<boolean> {
+    return combineLatest([this.isContractLoading$, this.contextStoreService.isLoading$])
+      .pipe(map(loadings => loadings.every(isLoading => !!isLoading)));
+  }
 
   private readonly contractId: number;
   private destroy$: Subject<void> = new Subject<void>();
@@ -38,11 +44,14 @@ export class ContractManagementComponent implements OnInit, OnDestroy {
     private translatePipe: TranslatePipe,
     private router: Router,
     private contractsManageModalService: ContractManagementService,
+    private contextStoreService: ValidationContextStoreService,
   ) {
     this.contractId = parseInt(this.activatedRoute.snapshot.paramMap.get('id'), 10);
   }
 
   public ngOnInit(): void {
+    this.contextStoreService.init(this.contractId);
+
     this.updateContractTitle();
 
     this.contractsManageModalService.onRefresh$
@@ -73,12 +82,12 @@ export class ContractManagementComponent implements OnInit, OnDestroy {
   }
 
   private updateContractTitle(): void {
-    this.isLoading$.next(true);
+    this.isContractLoading$.next(true);
 
     this.manageModalDataService.getContractById$(this.contractId)
       .pipe(
         takeUntil(this.destroy$),
-        finalize(() => this.isLoading$.next(false)),
+        finalize(() => this.isContractLoading$.next(false)),
         catchError(() => from(this.redirectToNotFoundPage())),
       )
       .subscribe(contract => this.setTitle(contract?.name));
