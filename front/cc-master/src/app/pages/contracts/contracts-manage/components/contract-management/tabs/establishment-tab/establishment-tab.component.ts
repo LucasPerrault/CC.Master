@@ -4,6 +4,7 @@ import { getButtonState, toSubmissionState } from '@cc/common/forms';
 import { Observable, ReplaySubject, Subject } from 'rxjs';
 import { finalize, map, switchMap, take, takeUntil } from 'rxjs/operators';
 
+import { ValidationContextStoreService } from '../../validation-context-store.service';
 import { establishmentDocUrl } from './constants/establishment-doc-url.const';
 import { EstablishmentType } from './constants/establishment-type.enum';
 import { IContractCount } from './models/contract-count.interface';
@@ -47,6 +48,7 @@ export class EstablishmentTabComponent implements OnInit, OnDestroy {
     private contractService: EstablishmentContractDataService,
     private establishmentsService: EstablishmentsDataService,
     private actionsService: EstablishmentListActionsService,
+    private contextStoreService: ValidationContextStoreService,
   ) {
   }
 
@@ -55,7 +57,10 @@ export class EstablishmentTabComponent implements OnInit, OnDestroy {
 
     this.actionsService.refreshList$
       .pipe(takeUntil(this.destroy$))
-      .subscribe(() => this.refresh());
+      .subscribe(() => {
+        this.refresh();
+        this.contextStoreService.refreshAll(this.contractId);
+      });
   }
 
   public ngOnDestroy(): void {
@@ -72,7 +77,10 @@ export class EstablishmentTabComponent implements OnInit, OnDestroy {
       .pipe(
         toSubmissionState(),
         map(state => getButtonState(state)),
-        finalize(() => this.refresh()),
+        finalize(() => {
+          this.refresh();
+          this.contextStoreService.refreshAll(this.contractId);
+        }),
       )
       .subscribe(buttonClass => this.synchronizeButtonClass$.next(buttonClass));
   }

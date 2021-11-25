@@ -18,6 +18,7 @@ import { IDetailedCount } from './models/detailed-count.interface';
 import { CountContractsDataService } from './services/count-contracts-data.service';
 import { CountContractsListService } from './services/count-contracts-list.service';
 import { CountContractsRestrictionsService } from './services/count-contracts-restrictions.service';
+import { ValidationContextStoreService } from '../../validation-context-store.service';
 
 @Component({
   selector: 'cc-count-tab',
@@ -72,6 +73,7 @@ export class CountTabComponent implements OnInit, OnDestroy {
     private restrictionsService: CountContractsRestrictionsService,
     private luModal: LuModal,
     private manageModalService: ContractManagementService,
+    private contextStoreService: ValidationContextStoreService,
   ) { }
 
   public ngOnInit(): void {
@@ -95,6 +97,7 @@ export class CountTabComponent implements OnInit, OnDestroy {
 
         if (entries.every(e => !e.buttonStateClass)) {
           this.refresh(this.contractId);
+          this.contextStoreService.refreshAll(this.contractId);
         }
       });
   }
@@ -103,6 +106,7 @@ export class CountTabComponent implements OnInit, OnDestroy {
     this.countContractsService.deleteRange$(counts)
       .pipe(this.toButtonState, finalize(() => {
           this.refresh(this.contractId);
+          this.contextStoreService.refreshAll(this.contractId);
           this.countsSelected = [];
         }),
       )
