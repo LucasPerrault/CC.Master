@@ -5,7 +5,7 @@ namespace Billing.Contracts.Domain.Offers.Parsing
     public class OfferRow
     {
         public string Name { get; set; }
-        public int? ProductId { set; get; }
+        public string ProductName { set; get; }
         public ParsedBillingUnit? BillingUnit { get; set; }
         public ParsedCurrency? Currency { get; set; }
         public string Category { get; set; }

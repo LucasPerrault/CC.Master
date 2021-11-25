@@ -19,7 +19,7 @@ namespace Billing.Contracts.Domain.Tests.Offers.Parsing
                 new OfferRow
                 {
                     Name = "newOffer",
-                    ProductId = 1,
+                    ProductName = "cleemy",
                     Category = "category",
                     Currency = ParsedCurrency.EUR,
                     BillingMode = ParsedBillingMode.AllUsers,
@@ -67,7 +67,8 @@ namespace Billing.Contracts.Domain.Tests.Offers.Parsing
             {
                 new Product
                 {
-                    Id = 1
+                    Id = 1,
+                    Name = "cleemy"
                 }
             };
 
@@ -93,7 +94,7 @@ namespace Billing.Contracts.Domain.Tests.Offers.Parsing
                 new OfferRow
                 {
                     Name = "newOffer",
-                    ProductId = 1,
+                    ProductName = "cleemy",
                     Category = "category",
                     Currency = ParsedCurrency.EUR,
                     BillingMode = ParsedBillingMode.AllUsers,
@@ -116,7 +117,7 @@ namespace Billing.Contracts.Domain.Tests.Offers.Parsing
                 new OfferRow
                 {
                     Name = "newOffer2",
-                    ProductId = 1,
+                    ProductName = "cleemy",
                     Category = "category2",
                     Currency = ParsedCurrency.EUR,
                     BillingMode = ParsedBillingMode.FlatFee,
@@ -142,7 +143,8 @@ namespace Billing.Contracts.Domain.Tests.Offers.Parsing
             {
                 new Product
                 {
-                    Id = 1
+                    Id = 1,
+                    Name = "cleemy"
                 }
             };
 
@@ -161,7 +163,7 @@ namespace Billing.Contracts.Domain.Tests.Offers.Parsing
                 new OfferRow
                 {
                     Name = "newOffer",
-                    ProductId = 1,
+                    ProductName = "cleemy",
                     Category = "category",
                     Currency = ParsedCurrency.EUR,
                     BillingMode = ParsedBillingMode.AllUsers,
@@ -187,7 +189,8 @@ namespace Billing.Contracts.Domain.Tests.Offers.Parsing
             {
                 new Product
                 {
-                    Id = 1
+                    Id = 1,
+                    Name = "cleemy"
                 }
             };
 

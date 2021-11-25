@@ -21,7 +21,7 @@ namespace Billing.Contracts.Infra.Tests
         public async Task ShouldUpload()
         {
             var s = new StringBuilder();
-            s.AppendLine("Nom,Id produit,Unite de decompte,devise,Categorisation,Mode Decompte,Methode de pricing,Algorithme previsionnel,Date de debut de la grille,Borne inferieure,Borne superieure,Prix unitaire,Prix forfaitaire");
+            s.AppendLine($"{HeaderRow.Name},{HeaderRow.Product},{HeaderRow.CountUnit},{HeaderRow.Currency},{HeaderRow.Tag},{HeaderRow.BillingMode},{HeaderRow.PricingMethod},{HeaderRow.ForecastMethod},{HeaderRow.ListStartsOn},{HeaderRow.RowMin},{HeaderRow.RowMax},{HeaderRow.RowUnitPrice},{HeaderRow.RowFixedPrice}");
             s.AppendLine("Cleemy template 2021,2,1,EUR,catalogues,3,Linear,LastRealMonth,15/12/2021,0,10,0,50");
             s.AppendLine(",,,,,,,,,11,20,2,0");
             s.AppendLine(",,,,,,,,,21,50,1.9,0");
@@ -53,7 +53,7 @@ namespace Billing.Contracts.Infra.Tests
         public void ShouldThrowWhenUploadWithBadHeader()
         {
             var s = new StringBuilder();
-            s.AppendLine("Nom,Id produit,Unite de decomd,Id devise,Categorisation,Mode Decompte,Methode de pricing,Algorithme previsionnel,Date de debut de la grille,Borne inferieure,Borne superieure,Prix unitaire,Prix forfaitaire");
+            s.AppendLine($"{HeaderRow.Name},{HeaderRow.Product},toto,{HeaderRow.Currency},{HeaderRow.Tag},{HeaderRow.BillingMode},{HeaderRow.PricingMethod},{HeaderRow.ForecastMethod},{HeaderRow.ListStartsOn},{HeaderRow.RowMin},{HeaderRow.RowMax},{HeaderRow.RowUnitPrice},{HeaderRow.RowFixedPrice}");
             s.AppendLine("Cleemy template 2021,2,1,978,catalogues,3,Linear,LastRealMonth,15/12/2021,0,10,0,50");
             s.AppendLine(",,,,,,,,,11,20,2,0");
             s.AppendLine(",,,,,,,,,21,50,1.9,0");
@@ -107,7 +107,7 @@ namespace Billing.Contracts.Infra.Tests
             using var reader = new StreamReader(template);
             var stringTemplate = reader.ReadToEnd();
 
-            stringTemplate = stringTemplate.Replace("unite de decompte", "unite de decompd", StringComparison.CurrentCultureIgnoreCase);
+            stringTemplate = stringTemplate.Replace(HeaderRow.CountUnit, "unite de decompd", StringComparison.CurrentCultureIgnoreCase);
             Func<Task<List<ParsedOffer>>> func = () => sut.UploadAsync(new MemoryStream(Encoding.UTF8.GetBytes(stringTemplate)));
 
             func.Should().Throw<MissingFieldException>().WithMessage("*unité de décompte*");

@@ -20,7 +20,7 @@ namespace Billing.Contracts.Domain.Offers.Parsing
                 var isNewOffer = !string.IsNullOrEmpty(offerRow.Name);
                 if (isNewOffer)
                 {
-                    currentOffer = new ParsedOffer(offerRow, products.SingleOrDefault(p => p.Id == offerRow.ProductId));
+                    currentOffer = new ParsedOffer(offerRow, products.SingleOrDefault(p => p.Name == offerRow.ProductName));
                     parsedOffers.Add(currentOffer);
                     if (!offerRow.StartsOn.HasValue)
                         throw new OfferRowStartsOnException(currentLine);

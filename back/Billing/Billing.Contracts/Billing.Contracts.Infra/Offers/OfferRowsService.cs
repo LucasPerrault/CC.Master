@@ -16,9 +16,29 @@ using System.Threading.Tasks;
 
 namespace Billing.Contracts.Infra.Offers
 {
+    public static class HeaderRow
+    {
+        public const string Name = "Nom";
+        public const string Product = "Produit";
+        public const string CountUnit = "Unité de décompte";
+        public const string Currency = "Devise";
+        public const string Tag = "Catégorisation";
+        public const string BillingMode = "Mode de décompte";
+        public const string PricingMethod = "Méthode de calcul";
+        public const string ForecastMethod = "Méthode prévisionnelle";
+
+        public const string ListStartsOn = "Date de début de la grille";
+        public const string RowMin = "Borne inférieure";
+        public const string RowMax = "Borne supérieure";
+        public const string RowUnitPrice = "Prix unitaire";
+        public const string RowFixedPrice = "Prix fixe";
+
+        public const string LimitWarning = "xxxxx Ne rien écrire au-dessus de cette ligne";
+    }
 
     public class OfferRowsService : IOfferRowsService
     {
+
         private readonly IProductsStore _productsStore;
         private readonly ParsedOffersService _parsedOffersService;
 
@@ -41,59 +61,120 @@ namespace Billing.Contracts.Infra.Offers
 
         public async Task<MemoryStream> GetTemplateStreamAsync()
         {
-            var products = await _productsStore.GetAsync(ProductsFilter.All, ProductsIncludes.All);
-            var billingUnit = Enum.GetNames(typeof(ParsedBillingUnit));
-            var billingMode = Enum.GetNames(typeof(ParsedBillingMode));
-            var forecastMethod = Enum.GetNames(typeof(ParsedForecastMethod));
-            var pricingMethod = Enum.GetNames(typeof(ParsedPricingMethod));
-            var currency = Enum.GetNames(typeof(ParsedCurrency));
+            var products = (await _productsStore.GetAsync(ProductsFilter.All, ProductsIncludes.All)).Select(p => p.Name).ToArray().ToCells();
+            var billingUnit = GetAllEnumValuesExcept(ParsedBillingUnit.Unknown).ToCells();
+            var billingMode = GetAllEnumValuesExcept(ParsedBillingMode.Unknown).ToCells();
+            var forecastMethod = GetAllEnumValuesExcept(ParsedForecastMethod.Unknown).ToCells();
+            var pricingMethod = GetAllEnumValuesExcept(ParsedPricingMethod.Unknown).ToCells();
+            var currency = GetAllEnumValuesExcept(ParsedCurrency.Unknown).ToCells();
 
-            var s = new StringBuilder();
+            var maxLength = products.Length
+                .MaxLength(billingUnit)
+                .MaxLength(billingMode)
+                .MaxLength(forecastMethod)
+                .MaxLength(pricingMethod)
+                .MaxLength(currency);
 
-            s.AppendLine("Id produit,Produit,Unite de decompte,Devise,Mode Decompte,Methode de pricing,Algorithme previsionnel");
+            var csvBuilder = new CsvBuilder();
 
-            for (var i = 0; i < products.Count; i++)
+            csvBuilder.AddCell(HeaderRow.Product)
+                .AddCell(HeaderRow.CountUnit)
+                .AddCell(HeaderRow.Currency)
+                .AddCell(HeaderRow.BillingMode)
+                .AddCell(HeaderRow.PricingMethod)
+                .AddCell(HeaderRow.ForecastMethod)
+                .NewLine();
+
+
+            for (var i = 0; i < maxLength; i++)
             {
-                s.Append($"{products[i].Id},{products[i].Name},");
-                s.Append(billingUnit.Length > i + 1 ? billingUnit[i + 1] : string.Empty);
-                s.Append(',');
-                s.Append(currency.Length > i + 1 ? currency[i + 1] : string.Empty);
-                s.Append(',');
-                s.Append(billingMode.Length > i + 1 ? billingMode[i + 1] : string.Empty);
-                s.Append(',');
-                s.Append(pricingMethod.Length > i + 1 ? pricingMethod[i + 1] : string.Empty);
-                s.Append(',');
-                s.AppendLine(forecastMethod.Length > i + 1 ? forecastMethod[i + 1] : string.Empty);
+                csvBuilder.AddCell(products.Get(i))
+                .AddCell(billingUnit.Get(i))
+                .AddCell(currency.Get(i))
+                .AddCell(billingMode.Get(i))
+                .AddCell(pricingMethod.Get(i))
+                .AddCell(forecastMethod.Get(i))
+                .NewLine();
             }
 
             // If you modify the number of lines writted by the following section, change RowGapBetweenMetadataAndTemplate value
-            s.AppendLine();
-            s.AppendLine("xxxxx Ne rien écrire au-dessus de cette ligne");
-            s.AppendLine();
+            csvBuilder.NewLine();
+            csvBuilder.AddCell(HeaderRow.LimitWarning).NewLine();
+            csvBuilder.NewLine();
 
-            s.AppendLine("Nom,Id produit,Unite de decompte,devise,Categorisation,Mode Decompte,Methode de pricing,Algorithme previsionnel,Date de debut de la grille,Borne inferieure,Borne superieure,Prix unitaire,Prix forfaitaire");
-            s.AppendLine("Cleemy template 2021,2,1,EUR,catalogues,3,Linear,LastRealMonth,01/12/2021,0,10,0,50");
-            s.AppendLine(",,,,,,,,,11,20,2,0");
-            s.AppendLine(",,,,,,,,,21,50,1.9,0");
-            s.AppendLine(",,,,,,,,,51,100,1.5,0");
-            s.AppendLine(",,,,,,,,,101,1000,1,0");
-            s.AppendLine(",,,,,,,,01/08/2020,0,10,0,30");
-            s.AppendLine(",,,,,,,,,11,20,1.5,0");
-            s.AppendLine(",,,,,,,,,21,50,1.4,0");
-            s.AppendLine(",,,,,,,,,51,100,1,0");
-            s.AppendLine(",,,,,,,,,101,1000,0.5,0");
+            csvBuilder.AddCell(HeaderRow.Name)
+                .AddCell(HeaderRow.Product)
+                .AddCell(HeaderRow.CountUnit)
+                .AddCell(HeaderRow.Currency)
+                .AddCell(HeaderRow.Tag)
+                .AddCell(HeaderRow.BillingMode)
+                .AddCell(HeaderRow.PricingMethod)
+                .AddCell(HeaderRow.ForecastMethod)
+                .AddCell(HeaderRow.ListStartsOn)
+                .AddCell(HeaderRow.RowMin)
+                .AddCell(HeaderRow.RowMax)
+                .AddCell(HeaderRow.RowUnitPrice)
+                .AddCell(HeaderRow.RowFixedPrice)
+                .NewLine();
+            csvBuilder.AddCell("Cleemy template 2021,Cleemy,ActiveUsers,EUR,catalogues,UsersWithAccess,Linear,LastRealMonth,01/12/2021,0,10,0,50").NewLine();
+            csvBuilder.AddCell(",,,,,,,,,11,20,2,0").NewLine();
+            csvBuilder.AddCell(",,,,,,,,,21,50,1.9,0").NewLine();
+            csvBuilder.AddCell(",,,,,,,,,51,100,1.5,0").NewLine();
+            csvBuilder.AddCell(",,,,,,,,,101,1000,1,0").NewLine();
+            csvBuilder.AddCell(",,,,,,,,01/08/2020,0,10,0,30").NewLine();
+            csvBuilder.AddCell(",,,,,,,,,11,20,1.5,0").NewLine();
+            csvBuilder.AddCell(",,,,,,,,,21,50,1.4,0").NewLine();
+            csvBuilder.AddCell(",,,,,,,,,51,100,1,0").NewLine();
+            csvBuilder.AddCell(",,,,,,,,,101,1000,0.5,0").NewLine();
 
-            s.AppendLine("Figgo template 2021,1,1,CHF,catalogues,3,Linear,LastRealMonth,01/12/2021,0,10,0,50");
-            s.AppendLine(",,,,,,,,,11,20,2,0");
-            s.AppendLine(",,,,,,,,,21,50,1.9,0");
-            s.AppendLine(",,,,,,,,,51,100,1.5,0");
-            s.AppendLine(",,,,,,,,,101,1000,1,0");
-            s.AppendLine(",,,,,,,,01/08/2020,0,10,0,30");
-            s.AppendLine(",,,,,,,,,11,20,1.5,0");
-            s.AppendLine(",,,,,,,,,21,50,1.4,0");
-            s.AppendLine(",,,,,,,,,51,100,1,0");
-            s.AppendLine(",,,,,,,,,101,1000,0.5,0");
-            return new MemoryStream(Encoding.UTF8.GetBytes(s.ToString()));
+            csvBuilder.AddCell("Figgo template 2021,Figgo,Users,CHF,catalogues,UsersWithAccess,Linear,LastRealMonth,01/12/2021,0,10,0,50").NewLine();
+            csvBuilder.AddCell(",,,,,,,,,11,20,2,0").NewLine();
+            csvBuilder.AddCell(",,,,,,,,,21,50,1.9,0").NewLine();
+            csvBuilder.AddCell(",,,,,,,,,51,100,1.5,0").NewLine();
+            csvBuilder.AddCell(",,,,,,,,,101,1000,1,0").NewLine();
+            csvBuilder.AddCell(",,,,,,,,01/08/2020,0,10,0,30").NewLine();
+            csvBuilder.AddCell(",,,,,,,,,11,20,1.5,0").NewLine();
+            csvBuilder.AddCell(",,,,,,,,,21,50,1.4,0").NewLine();
+            csvBuilder.AddCell(",,,,,,,,,51,100,1,0").NewLine();
+            csvBuilder.AddCell(",,,,,,,,,101,1000,0.5,0").NewLine();
+
+            return new MemoryStream(Encoding.UTF8.GetBytes(csvBuilder.ToString()));
+        }
+        private static string[] GetAllEnumValuesExcept<T>(params T[] exception) where T : Enum
+        {
+            return Enum.GetValues(typeof(T)).Cast<T>().Except(exception).Select(value => $"{value}").ToArray();
+        }
+
+        private class CsvBuilder
+        {
+            private readonly StringBuilder _stringBuilder = new StringBuilder();
+
+            private bool _isCurrentLineEmpty = true;
+
+            public CsvBuilder NewLine()
+            {
+                _stringBuilder.AppendLine();
+                _isCurrentLineEmpty = true;
+
+                return this;
+            }
+
+            public CsvBuilder AddCell(string value)
+            {
+                if (!_isCurrentLineEmpty)
+                {
+                    _stringBuilder.Append(',');
+                }
+                _stringBuilder.Append(value);
+                _isCurrentLineEmpty = false;
+
+                return this;
+            }
+
+            public override string ToString()
+            {
+                return _stringBuilder.ToString();
+            }
         }
         private List<OfferRow> GetOfferRows(Stream stream, List<Product> products)
         {
@@ -110,9 +191,24 @@ namespace Billing.Contracts.Infra.Offers
 
             csv.Read();
             csv.ReadHeader();
-            if (csv[0].ToLower() == "id produit")
+
+
+            if (csv[0].ToLower() == HeaderRow.Product.ToLower())
             {
-                for (var i = 0; i < products.Count + RowGapBetweenMetadataAndTemplate - 1; i++)
+                var billingUnit = GetAllEnumValuesExcept(ParsedBillingUnit.Unknown).ToCells();
+                var billingMode = GetAllEnumValuesExcept(ParsedBillingMode.Unknown).ToCells();
+                var forecastMethod = GetAllEnumValuesExcept(ParsedForecastMethod.Unknown).ToCells();
+                var pricingMethod = GetAllEnumValuesExcept(ParsedPricingMethod.Unknown).ToCells();
+                var currency = GetAllEnumValuesExcept(ParsedCurrency.Unknown).ToCells();
+
+                var maxLength = products.Count
+                    .MaxLength(billingUnit)
+                    .MaxLength(billingMode)
+                    .MaxLength(forecastMethod)
+                    .MaxLength(pricingMethod)
+                    .MaxLength(currency);
+
+                for (var i = 0; i < maxLength + RowGapBetweenMetadataAndTemplate - 1; i++)
                     csv.Read();
                 csv.ReadHeader();
             }
@@ -123,29 +219,59 @@ namespace Billing.Contracts.Infra.Offers
         }
     }
 
+    internal static class OfferRowExtension
+    {
+        public static Cells ToCells(this string[] values) => new Cells(values);
+
+        public static int MaxLength(this int max, Cells cells)
+        {
+            return Math.Max(cells.Length, max);
+        }
+
+        internal class Cells
+        {
+            private readonly string[] _values;
+
+            public Cells(string[] values)
+            {
+                _values = values;
+            }
+
+            public string Get(int index)
+            {
+                if (_values.Length > index)
+                {
+                    return _values[index];
+                }
+                return string.Empty;
+            }
+
+            public int Length => _values.Length;
+        }
+    }
     public class OfferRowMap : ClassMap<OfferRow>
     {
         public OfferRowMap()
         {
-            Map(o => o.Name).Name("nom");
-            Map(o => o.ProductId).Name("id produit");
-            Map(o => o.BillingUnit).Name("unite de decompte", "unité de décompte").TypeConverter(new NullableEnumConverter<ParsedBillingUnit>());
-            Map(o => o.Currency).Name("devise").TypeConverter(new NullableEnumConverter<ParsedCurrency>());
-            Map(o => o.Category).Name("categorisation");
-            Map(o => o.BillingMode).Name("mode decompte", "mode décompte").TypeConverter(new NullableEnumConverter<ParsedBillingMode>());
-            Map(o => o.PricingMethod).Name("methode de pricing", "méthode de pricing").TypeConverter(new NullableEnumConverter<ParsedPricingMethod>());
-            Map(o => o.ForecastMethod).Name("algorithme previsionnel", "algorithme prévisionnel").TypeConverter(new NullableEnumConverter<ParsedForecastMethod>());
-            Map(o => o.StartsOn).Name("date de début de la grille", "date de debut de la grille")
+            Map(o => o.Name).Name(HeaderRow.Name);
+            Map(o => o.ProductName).Name(HeaderRow.Product);
+            Map(o => o.BillingUnit).Name(HeaderRow.CountUnit).TypeConverter(new NullableEnumConverter<ParsedBillingUnit>());
+            Map(o => o.Currency).Name(HeaderRow.Currency).TypeConverter(new NullableEnumConverter<ParsedCurrency>());
+            Map(o => o.Category).Name(HeaderRow.Tag);
+            Map(o => o.BillingMode).Name(HeaderRow.BillingMode).TypeConverter(new NullableEnumConverter<ParsedBillingMode>());
+            Map(o => o.PricingMethod).Name(HeaderRow.PricingMethod).TypeConverter(new NullableEnumConverter<ParsedPricingMethod>());
+            Map(o => o.ForecastMethod).Name(HeaderRow.ForecastMethod).TypeConverter(new NullableEnumConverter<ParsedForecastMethod>());
+            Map(o => o.StartsOn).Name(HeaderRow.ListStartsOn)
                 .TypeConverterOption.Format("dd/MM/yyyy")
                 .TypeConverterOption.Format("d/MM/yyyy")
                 .TypeConverterOption.Format("dd/M/yyyy")
                 .TypeConverterOption.Format("d/M/yyyy")
                 .TypeConverter(new NullableDateTimeConverter());
 
-            Map(o => o.MinIncludedCount).Name("borne inferieure", "borne inférieure").TypeConverter<MandatoryInt32Converter>();
-            Map(o => o.MaxIncludedCount).Name("borne superieure", "borne supérieure").TypeConverter<MandatoryInt32Converter>();
-            Map(o => o.UnitPrice).Name("prix unitaire").TypeConverter<MandatoryDecimalConverter>();
-            Map(o => o.FixedPrice).Name("prix forfaitaire").TypeConverter<MandatoryDecimalConverter>();
+            Map(o => o.MinIncludedCount).Name(HeaderRow.RowMin).TypeConverter<MandatoryInt32Converter>();
+            Map(o => o.MaxIncludedCount).Name(HeaderRow.RowMax).TypeConverter<MandatoryInt32Converter>();
+            Map(o => o.UnitPrice).Name(HeaderRow.RowUnitPrice).TypeConverter<MandatoryDecimalConverter>();
+            Map(o => o.FixedPrice).Name(HeaderRow.RowFixedPrice).TypeConverter<MandatoryDecimalConverter>();
         }
     }
 

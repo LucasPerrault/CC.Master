@@ -20,7 +20,7 @@ namespace Billing.Contracts.Domain.Tests.Offers.Parsing
                 Category = "category",
                 Currency = ParsedCurrency.EUR,
                 Name = "offer",
-                ProductId = 1,
+                ProductName = "cleemy",
             };
 
             var product = new Product { Id = 1 };
@@ -51,7 +51,7 @@ namespace Billing.Contracts.Domain.Tests.Offers.Parsing
                 Category = "category",
                 Currency = ParsedCurrency.EUR,
                 Name = "offer",
-                ProductId = 1,
+                ProductName = "cleemy",
             };
 
             var product = new Product { Id = 1 };
@@ -80,7 +80,7 @@ namespace Billing.Contracts.Domain.Tests.Offers.Parsing
                 Category = "category",
                 Currency = ParsedCurrency.EUR,
                 Name = "offer",
-                ProductId = 1,
+                ProductName = "cleemy",
             };
 
             var product = new Product { Id = 1 };
@@ -113,7 +113,7 @@ namespace Billing.Contracts.Domain.Tests.Offers.Parsing
                 Category = "category",
                 Currency = ParsedCurrency.EUR,
                 Name = "offer",
-                ProductId = 1,
+                ProductName = "cleemy",
             };
 
             var product = new Product { Id = 1 };
@@ -140,7 +140,7 @@ namespace Billing.Contracts.Domain.Tests.Offers.Parsing
                 Category = "category",
                 Currency = ParsedCurrency.EUR,
                 Name = "offer",
-                ProductId = 1,
+                ProductName = "cleemy",
             };
 
             var product = new Product { Id = 1 };
