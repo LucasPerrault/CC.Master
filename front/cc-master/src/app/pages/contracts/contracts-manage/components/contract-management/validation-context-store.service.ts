@@ -11,6 +11,10 @@ export class ValidationContextStoreService {
     return combineLatest(context$).pipe(this.mapToValidationContext);
   }
 
+  public get activeEtsNumber$(): Observable<number> {
+    return this.activeEtsNumber.asObservable();
+  }
+
   public get isLoading$(): Observable<boolean> {
     return this.isLoading.asObservable();
   }
