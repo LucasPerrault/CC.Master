@@ -42,7 +42,6 @@ namespace Billing.Contracts.Infra.Offers
         private readonly IProductsStore _productsStore;
         private readonly ParsedOffersService _parsedOffersService;
 
-        private const int RowGapBetweenMetadataAndTemplate = 3;
         public OfferRowsService(IProductsStore productsStore, ParsedOffersService parsedOffersService)
         {
             _productsStore = productsStore;
@@ -193,20 +192,53 @@ namespace Billing.Contracts.Infra.Offers
                 PrepareHeaderForMatch = args => args.Header.ToLower(),
             };
 
+            using var templateHelpDetector = new TemplateHelpDetector(stream);
+            var containsTemplateHelp = templateHelpDetector.ContainsTemplateHelp();
+            templateHelpDetector.RewindStream();
+
             using var reader = new StreamReader(stream);
             using var csv = new CsvReader(reader, config);
             csv.Context.RegisterClassMap<OfferRowMap>();
 
             csv.Read();
-            while (!string.Equals(csv[0], HeaderRow.LimitWarning, StringComparison.CurrentCultureIgnoreCase))
+            if (containsTemplateHelp)
             {
+                while (!string.Equals(csv[0], HeaderRow.LimitWarning, StringComparison.CurrentCultureIgnoreCase))
+                {
+                    csv.Read();
+                }
                 csv.Read();
             }
-            csv.Read();
             csv.ReadHeader();
             csv.ValidateHeader<OfferRow>();
 
             return csv.GetRecords<OfferRow>().ToList();
+        }
+
+        private class TemplateHelpDetector : StreamReader
+        {
+            public TemplateHelpDetector(Stream stream) : base(stream)
+            {
+
+            }
+
+            public bool ContainsTemplateHelp()
+            {
+                string line;
+                while (( line = ReadLine() ) is not null)
+                {
+                    if (line.StartsWith(HeaderRow.LimitWarning, StringComparison.OrdinalIgnoreCase))
+                    {
+                        return true;
+                    }
+                }
+                return false;
+            }
+
+            public void RewindStream()
+            {
+                BaseStream.Seek(0, SeekOrigin.Begin);
+            }
         }
     }
 
