@@ -17,29 +17,7 @@
     </cc-counts-detail-download-form>
 
     <header class="u-displayFlex u-marginStandard">
-      <div class="u-displayFlex u-flexDirectionColumn u-justifyContentSpaceBetween">
-      <span>
-        {{ 'front_contractPage_counts_group_title_action' | translate }}
-        <span class="label mod-number">{{ (realCounts$ | async)?.length }}</span>
-      </span>
-        <div>
-          <button *ngIf="canChargeCount()"
-                  class="button"
-                  (click)="openReplayModal()">
-            {{ 'front_contractPage_counts_replay_action_label' | translate }}
-          </button>
-          <button *ngIf="canDeleteCount()"
-                  class="button mod-link"
-                  [disabled]="!countsSelected.length"
-                  [ngClass]="deleteButtonState$ | async"
-                  (click)="delete(countsSelected)">
-            {{ 'front_contractPage_counts_delete_action_label' | translate }}
-          </button>
-        </div>
-
-      </div>
-      <cc-draft-actions-button-group class="u-marginLeftAuto"
-                                     [draftCounts]="draftCounts$ | async"
+      <cc-draft-actions-button-group [draftCounts]="draftCounts$ | async"
                                      [showDraftCounts]="showDraftCounts"
                                      (toggleDraftDisplay)="toggleDraftCountsDisplay()"
                                      (chargeDraft)="chargeDraftCounts()"
@@ -54,5 +32,22 @@
                     [showDraftCounts]="showDraftCounts"
                     [(ngModel)]="countsSelected"
                     (charge)="charge($event)"></cc-counts-list>
+  </div>
+
+  <div class="page-footer">
+    <div class="page-footer-right">
+      <button *ngIf="canChargeCount()"
+              class="button"
+              (click)="openReplayModal()">
+        {{ 'front_contractPage_counts_replay_action_label' | translate }}
+      </button>
+      <button *ngIf="canDeleteCount()"
+              class="button mod-link"
+              [disabled]="!countsSelected.length"
+              [ngClass]="deleteButtonState$ | async"
+              (click)="delete(countsSelected)">
+        {{ 'front_contractPage_counts_delete_action_label' | translate }}
+      </button>
+    </div>
   </div>
 </ng-template>
