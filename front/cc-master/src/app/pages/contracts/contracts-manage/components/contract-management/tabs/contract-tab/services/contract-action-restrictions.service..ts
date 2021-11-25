@@ -64,7 +64,7 @@ export class ContractActionRestrictionsService {
   }
 
   public hasRealCounts(context: IValidationContext): boolean {
-    return !!context?.realCountNumber;
+    return !!context?.realCounts?.length;
   }
 
   public hasContractEntries(context: IValidationContext): boolean {

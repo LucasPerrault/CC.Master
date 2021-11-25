@@ -1,11 +1,11 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { IHttpApiV3CollectionResponse } from '@cc/common/queries';
-import { CountsService } from '@cc/domain/billing/counts';
 import { ICount } from '@cc/domain/billing/counts/count.interface';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
+import { ValidationContextStoreService } from '../../../validation-context-store.service';
 import { attachmentEndedFields, IAttachmentEnded } from '../models/attachment-ended.interface';
 import { IClosureFormValidationContext } from '../models/closure-form-validation-context.interface';
 
@@ -14,7 +14,7 @@ export class CloseContractFormService {
 
   private readonly attachmentsEndpoint = '/api/v3/contractentities';
 
-  constructor(private httpClient: HttpClient, private countsService: CountsService) {}
+  constructor(private httpClient: HttpClient, private contextStoreService: ValidationContextStoreService) {}
 
   public getMaxContractClosedDate(context: IClosureFormValidationContext): Date {
     if (!!context.lastAttachmentEndedDate) {
@@ -36,14 +36,18 @@ export class CloseContractFormService {
       ));
   }
 
-  public getLastCountPeriod$(contractId: number): Observable<Date | null> {
-    return this.countsService.getRealCounts$(contractId).pipe(
+  public getLastCountPeriod$(): Observable<Date | null> {
+    return this.getRealCounts$().pipe(
       map(counts => !!counts.length
         ? counts.reduce((a, b) => (new Date(a.countPeriod) > new Date(b.countPeriod) ? a : b))
         : null,
       ),
       map((lastCount: ICount) => lastCount?.countPeriod),
     );
+  }
+
+  private getRealCounts$(): Observable<ICount[]> {
+    return this.contextStoreService.realCounts$;
   }
 
   private getAttachmentsEnded$(contractId: number): Observable<IAttachmentEnded[]> {

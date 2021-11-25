@@ -1,7 +1,7 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { IHttpApiV3CollectionResponse, IHttpApiV3CountResponse } from '@cc/common/queries';
-import { CountCode } from '@cc/domain/billing/counts';
+import { CountsService, ICount } from '@cc/domain/billing/counts';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
@@ -21,14 +21,14 @@ export interface IContractEntry {
 
 export interface IValidationContext {
   activeEstablishmentNumber: number;
-  realCountNumber: number;
+  realCounts: ICount[];
   contractEntries: IContractEntry[];
 }
 
 @Injectable()
 export class ValidationContextDataService {
 
-  constructor(private httpClient: HttpClient) {}
+  constructor(private httpClient: HttpClient, private countsService: CountsService) {}
 
   public getActiveEstablishmentNumber$(contractId: number): Observable<number> {
     const url = ValidationContextRoute.attachments;
@@ -41,15 +41,8 @@ export class ValidationContextDataService {
       .pipe(map(response => response.data.count));
   }
 
-  public getRealCountNumber$(contractId: number): Observable<number> {
-    const url = ValidationContextRoute.counts;
-    const params = new HttpParams()
-      .set('fields', 'collection.count')
-      .set('contractId', String(contractId))
-      .set('code', CountCode.Count);
-
-    return this.httpClient.get<IHttpApiV3CountResponse>(url, { params })
-      .pipe(map(response => response.data.count));
+  public getRealCounts$(contractId: number): Observable<ICount[]> {
+    return this.countsService.getRealCounts$(contractId);
   }
 
   public getContractEntries$(contractId: number): Observable<IContractEntry[]> {
