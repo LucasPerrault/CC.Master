@@ -36,6 +36,26 @@ namespace Billing.Contracts.Infra.Storage.Stores
             return _queryPager.ToPageAsync(queryable, pageToken);
         }
 
+        public async Task<Page<CommercialOffer>> GetSimilarOffersAsync(AccessRight accessRight, int id, DateTime until)
+        {
+            var referenceOffer = await GetReadOnlySingleOfDefaultAsync(CommercialOfferFilter.ForId(id), accessRight);
+
+            var filter = CommercialOfferFilter.SimilarTo(referenceOffer);
+            var similarOffers = await GetQueryable(accessRight, filter)
+                .AsNoTracking()
+                .ToListAsync();
+
+            var rowsFilteredSimilarOffers = similarOffers
+                .Where(o => o.IsSimilarUntil(referenceOffer, until))
+                .ToList();
+
+            return new Page<CommercialOffer>
+            {
+                Items = rowsFilteredSimilarOffers,
+                Count = rowsFilteredSimilarOffers.Count,
+            };
+        }
+
         public Task<CommercialOffer> GetSingleOfDefaultAsync(CommercialOfferFilter filter, AccessRight accessRight)
         {
             return GetQueryable(accessRight, filter).SingleOrDefaultAsync();

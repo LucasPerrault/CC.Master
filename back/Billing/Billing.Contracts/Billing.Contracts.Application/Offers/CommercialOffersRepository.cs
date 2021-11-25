@@ -4,6 +4,7 @@ using Billing.Contracts.Domain.Offers.Interfaces;
 using Billing.Contracts.Domain.Offers.Validation;
 using Lucca.Core.Api.Abstractions.Paging;
 using Rights.Domain.Filtering;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
@@ -39,6 +40,13 @@ namespace Billing.Contracts.Application.Offers
         {
             var accessRight = await _rightsFilter.GetReadAccessAsync(_principal);
             return await _store.GetPageAsync(accessRight, commercialOfferFilter, pageToken);
+        }
+
+        public async Task<Page<CommercialOffer>> GetSimilarOffersAsync(int id, DateTime until)
+        {
+            var accessRight = await _rightsFilter.GetReadAccessAsync(_principal);
+
+            return await _store.GetSimilarOffersAsync(accessRight, id, until);
         }
 
         public async Task<CommercialOffer> GetByIdAsync(int id)

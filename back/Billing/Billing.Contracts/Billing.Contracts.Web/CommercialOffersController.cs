@@ -38,6 +38,13 @@ namespace Billing.Contracts.Web
             return _commercialOffersRepository.GetPageAsync(query.PageToken, query.ToFilter());
         }
 
+        [HttpGet("{id:int}/similar")]
+        [ForbidIfMissing(Operation.ReadCommercialOffers)]
+        public Task<Page<CommercialOffer>> GetSimilarOffersAsync([FromRoute] int id, [FromQuery] DateTime until)
+        {
+            return _commercialOffersRepository.GetSimilarOffersAsync(id, until);
+        }
+
         [HttpGet("{id:int}")]
         [ForbidIfMissing(Operation.ReadCommercialOffers)]
         public Task<CommercialOffer> GetByIdAsync([FromRoute] int id)
