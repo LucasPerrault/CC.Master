@@ -149,7 +149,7 @@ export class ContractTabComponent implements OnInit, OnDestroy {
       && contract.nbMonthTheorical === form.theoreticalMonthRebate
       && contract.minimalBillingPercentage === form.minimalBillingPercentage
       && contract.unityNumberTheorical === form.theoreticalDraftCount
-      && contract.comment === form.comment;
+      && (contract.comment ?? '') === form.comment;
   }
 
   private toFormInformation$(contract: IContractDetailed): Observable<IContractFormInformation> {
