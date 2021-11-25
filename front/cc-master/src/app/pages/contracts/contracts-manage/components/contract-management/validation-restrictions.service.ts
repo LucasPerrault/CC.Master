@@ -9,6 +9,7 @@ export class ValidationRestrictionsService {
 
   public canDeleteContracts(context: IValidationContext): boolean {
     return this.canEditContract()
+      && !!context
       && !this.hasRealCounts(context)
       && !this.hasActiveEstablishments(context)
       && !this.hasUnletteredContractEntries(context);

@@ -10,6 +10,7 @@ export class ContractActionRestrictionsService {
 
   public canEditDistributor(context: IValidationContext): boolean {
     return this.canEditContract()
+      && !!context
       && !this.hasRealCounts(context)
       && !this.hasActiveEstablishments(context)
       && !this.hasContractEntries(context);
@@ -17,6 +18,7 @@ export class ContractActionRestrictionsService {
 
   public canEditClient(context: IValidationContext): boolean {
     return this.canEditContract()
+      && !!context
       && !this.hasRealCounts(context)
       && !this.hasActiveEstablishments(context)
       && !this.hasContractEntries(context);
@@ -24,18 +26,21 @@ export class ContractActionRestrictionsService {
 
   public canEditTheoreticalStartOn(context: IValidationContext): boolean {
     return this.canEditContract()
+      && !!context
       && !this.hasRealCounts(context)
       && !this.hasActiveEstablishments(context);
   }
 
   public canEditOffer(context: IValidationContext): boolean {
     return this.canEditContract()
+      && !!context
       && !this.hasRealCounts(context)
       && !this.hasUnletteredContractEntries(context);
   }
 
   public canEditProduct(context: IValidationContext): boolean {
     return this.canEditContract()
+      && !!context
       && !this.hasRealCounts(context)
       && !this.hasUnletteredContractEntries(context)
       && !this.hasActiveEstablishments(context);
@@ -43,11 +48,13 @@ export class ContractActionRestrictionsService {
 
   public canEditMinimalBilling(context: IValidationContext): boolean {
     return this.canEditContract()
+      && !!context
       && !this.hasRealCounts(context);
   }
 
   public canEditBillingFrequency(context: IValidationContext): boolean {
     return this.canEditContract()
+      && !!context
       && !this.hasRealCounts(context)
       && !this.hasActiveEstablishments(context);
   }
