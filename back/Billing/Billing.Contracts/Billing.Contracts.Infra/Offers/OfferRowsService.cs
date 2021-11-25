@@ -38,6 +38,12 @@ namespace Billing.Contracts.Infra.Offers
 
     public class OfferRowsService : IOfferRowsService
     {
+        private static readonly CsvConfiguration _config = new CsvConfiguration(new CultureInfo("en-US", false)) // Culture set on en-US to get . as decimal separator
+        {
+            Delimiter = ",",
+            HeaderValidated = null,
+            PrepareHeaderForMatch = args => args.Header.ToLower(),
+        };
 
         private readonly IProductsStore _productsStore;
         private readonly ParsedOffersService _parsedOffersService;
@@ -47,6 +53,7 @@ namespace Billing.Contracts.Infra.Offers
             _productsStore = productsStore;
             _parsedOffersService = parsedOffersService;
         }
+
         public async Task<List<ParsedOffer>> UploadAsync(Stream stream)
         {
             var products = await _productsStore.GetAsync(ProductsFilter.All, new ProductsIncludes());
@@ -63,48 +70,72 @@ namespace Billing.Contracts.Infra.Offers
             var csvBuilder = new CsvBuilder();
             await AddTemplateHelpAsync(csvBuilder);
             csvBuilder.AddCell(HeaderRow.LimitWarning).NewLine();
-            AddTemplateWithExamples(csvBuilder);
+            AddTemplateWithExamples(csvBuilder.StringBuilder);
             return new MemoryStream(Encoding.UTF8.GetBytes(csvBuilder.ToString()));
         }
 
-        private static void AddTemplateWithExamples(CsvBuilder csvBuilder)
+        private static void AddTemplateWithExamples(StringBuilder stringBuilder)
         {
-            csvBuilder
-                .AddCell(HeaderRow.Name)
-                .AddCell(HeaderRow.Product)
-                .AddCell(HeaderRow.BillingUnit)
-                .AddCell(HeaderRow.Currency)
-                .AddCell(HeaderRow.Tag)
-                .AddCell(HeaderRow.BillingMode)
-                .AddCell(HeaderRow.PricingMethod)
-                .AddCell(HeaderRow.ForecastMethod)
-                .AddCell(HeaderRow.ListStartsOn)
-                .AddCell(HeaderRow.RowMin)
-                .AddCell(HeaderRow.RowMax)
-                .AddCell(HeaderRow.RowUnitPrice)
-                .AddCell(HeaderRow.RowFixedPrice)
-                .NewLine();
-            csvBuilder.AddCell("Cleemy template 2021,Cleemy,ActiveUsers,EUR,catalogues,UsersWithAccess,Linear,LastRealMonth,01/12/2021,0,10,0,50").NewLine();
-            csvBuilder.AddCell(",,,,,,,,,11,20,2,0").NewLine();
-            csvBuilder.AddCell(",,,,,,,,,21,50,1.9,0").NewLine();
-            csvBuilder.AddCell(",,,,,,,,,51,100,1.5,0").NewLine();
-            csvBuilder.AddCell(",,,,,,,,,101,1000,1,0").NewLine();
-            csvBuilder.AddCell(",,,,,,,,01/08/2020,0,10,0,30").NewLine();
-            csvBuilder.AddCell(",,,,,,,,,11,20,1.5,0").NewLine();
-            csvBuilder.AddCell(",,,,,,,,,21,50,1.4,0").NewLine();
-            csvBuilder.AddCell(",,,,,,,,,51,100,1,0").NewLine();
-            csvBuilder.AddCell(",,,,,,,,,101,1000,0.5,0").NewLine();
+            var writer = new CsvWriter(new StringWriter(stringBuilder), _config);
+            writer.Context.RegisterClassMap<OfferRowMap>();
+            writer.WriteHeader<OfferRow>();
 
-            csvBuilder.AddCell("Figgo template 2021,Figgo,Users,CHF,catalogues,UsersWithAccess,Linear,LastRealMonth,01/12/2021,0,10,0,50").NewLine();
-            csvBuilder.AddCell(",,,,,,,,,11,20,2,0").NewLine();
-            csvBuilder.AddCell(",,,,,,,,,21,50,1.9,0").NewLine();
-            csvBuilder.AddCell(",,,,,,,,,51,100,1.5,0").NewLine();
-            csvBuilder.AddCell(",,,,,,,,,101,1000,1,0").NewLine();
-            csvBuilder.AddCell(",,,,,,,,01/08/2020,0,10,0,30").NewLine();
-            csvBuilder.AddCell(",,,,,,,,,11,20,1.5,0").NewLine();
-            csvBuilder.AddCell(",,,,,,,,,21,50,1.4,0").NewLine();
-            csvBuilder.AddCell(",,,,,,,,,51,100,1,0").NewLine();
-            csvBuilder.AddCell(",,,,,,,,,101,1000,0.5,0").NewLine();
+            var cleemy = new OfferRow
+            {
+                Name = "Cleemy template 2021",
+                ProductName = "Cleemy",
+                BillingUnit = ParsedBillingUnit.ActiveUsers,
+                Currency = ParsedCurrency.EUR,
+                Category = "Catalogue",
+                BillingMode = ParsedBillingMode.ActiveUsers,
+                PricingMethod = ParsedPricingMethod.Linear,
+                ForecastMethod = ParsedForecastMethod.LastRealMonth,
+                StartsOn = new DateTime(2002, 01, 01),
+                MinIncludedCount = 0,
+                MaxIncludedCount = 10,
+                UnitPrice = 0,
+                FixedPrice = 50,
+            };
+
+            var figgo = new OfferRow
+            {
+                Name = "Figgo template 2021",
+                ProductName = "Figgo",
+                BillingUnit = ParsedBillingUnit.Users,
+                Currency = ParsedCurrency.CHF,
+                Category = "Catalogue",
+                BillingMode = ParsedBillingMode.UsersWithAccess,
+                PricingMethod = ParsedPricingMethod.Linear,
+                ForecastMethod = ParsedForecastMethod.LastRealMonth,
+                StartsOn = new DateTime(2002, 01, 01),
+                MinIncludedCount = 0,
+                MaxIncludedCount = 10,
+                UnitPrice = 0,
+                FixedPrice = 50,
+            };
+
+            writer.NextRecord();
+            writer.WriteRecords(new List<OfferRow>
+            {
+                cleemy,
+                TemplateExample.PriceRow(11, 20, 2, 0),
+                TemplateExample.PriceRow(21, 50, 1.9m, 0),
+                TemplateExample.PriceRow(51, 100, 1.5m, 0),
+                TemplateExample.PriceRow(101, 1000, 1, 0),
+                TemplateExample.PriceListStart(new DateTime(2024, 05, 01), 0, 10, 0, 30),
+                TemplateExample.PriceRow(11, 20, 1.5m, 0),
+                TemplateExample.PriceRow(21, 50, 1.4m, 0),
+                TemplateExample.PriceRow(51, 100, 1, 0),
+                TemplateExample.PriceRow(101, 1000, 0.5m, 0),
+                figgo,
+                TemplateExample.PriceRow(11, 20, 2, 0),
+                TemplateExample.PriceRow(21, 50, 1.85m, 0),
+                TemplateExample.PriceRow(51, 1000, 1.25m, 0),
+                TemplateExample.PriceListStart(new DateTime(2025, 01, 01), 0, 10, 0, 30),
+                TemplateExample.PriceRow(11, 20, 1.5m, 0),
+                TemplateExample.PriceRow(21, 50, 1.4m, 0),
+                TemplateExample.PriceRow(51, 1000, 1.2m, 0),
+            });
         }
 
         private async Task AddTemplateHelpAsync(CsvBuilder csvBuilder)
@@ -154,13 +185,13 @@ namespace Billing.Contracts.Infra.Offers
 
         private class CsvBuilder
         {
-            private readonly StringBuilder _stringBuilder = new StringBuilder();
+            public StringBuilder StringBuilder { get; } = new StringBuilder();
 
             private bool _isCurrentLineEmpty = true;
 
             public CsvBuilder NewLine()
             {
-                _stringBuilder.AppendLine();
+                StringBuilder.AppendLine();
                 _isCurrentLineEmpty = true;
 
                 return this;
@@ -170,9 +201,9 @@ namespace Billing.Contracts.Infra.Offers
             {
                 if (!_isCurrentLineEmpty)
                 {
-                    _stringBuilder.Append(',');
+                    StringBuilder.Append(',');
                 }
-                _stringBuilder.Append(value);
+                StringBuilder.Append(value);
                 _isCurrentLineEmpty = false;
 
                 return this;
@@ -180,24 +211,17 @@ namespace Billing.Contracts.Infra.Offers
 
             public override string ToString()
             {
-                return _stringBuilder.ToString();
+                return StringBuilder.ToString();
             }
         }
         private List<OfferRow> GetOfferRows(Stream stream, List<Product> products)
         {
-            var config = new CsvConfiguration(new CultureInfo("en-US", false)) // Culture set on en-US to get . as decimal separator
-            {
-                Delimiter = ",",
-                HeaderValidated = null,
-                PrepareHeaderForMatch = args => args.Header.ToLower(),
-            };
-
             using var templateHelpDetector = new TemplateHelpDetector(stream);
             var containsTemplateHelp = templateHelpDetector.ContainsTemplateHelp();
             templateHelpDetector.RewindStream();
 
             using var reader = new StreamReader(stream);
-            using var csv = new CsvReader(reader, config);
+            using var csv = new CsvReader(reader, _config);
             csv.Context.RegisterClassMap<OfferRowMap>();
 
             csv.Read();
@@ -240,6 +264,25 @@ namespace Billing.Contracts.Infra.Offers
                 BaseStream.Seek(0, SeekOrigin.Begin);
             }
         }
+    }
+
+    internal static class TemplateExample
+    {
+        public static OfferRow PriceRow(int min, int max, decimal unitPrice, decimal fixedPrice) => new OfferRow
+        {
+            MinIncludedCount = min,
+            MaxIncludedCount = max,
+            UnitPrice = unitPrice,
+            FixedPrice = fixedPrice,
+        };
+        public static OfferRow PriceListStart(DateTime startsOn, int min, int max, decimal unitPrice, decimal fixedPrice) => new OfferRow
+        {
+            StartsOn = startsOn,
+            MinIncludedCount = min,
+            MaxIncludedCount = max,
+            UnitPrice = unitPrice,
+            FixedPrice = fixedPrice,
+        };
     }
 
     internal static class OfferRowExtension
