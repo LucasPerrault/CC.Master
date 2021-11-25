@@ -2,7 +2,9 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RightsService } from '@cc/aspects/rights';
 import { TranslatePipe } from '@cc/aspects/translate';
+import { getButtonState, SubmissionState, toSubmissionState } from '@cc/common/forms';
 import { INavigationTab, NavigationPath } from '@cc/common/navigation';
+import { ToastsService, ToastType } from '@cc/common/toasts';
 import { IContract } from '@cc/domain/billing/contracts';
 import { BehaviorSubject, combineLatest, from, Observable, ReplaySubject, Subject } from 'rxjs';
 import { catchError, finalize, map, startWith, take, takeUntil } from 'rxjs/operators';
@@ -12,7 +14,6 @@ import { contractsModalTabs } from './constants/contracts-modal-tabs.const';
 import { ContractManagementService } from './contract-management.service';
 import { ContractManagementDataService } from './contract-management-data.service';
 import { ValidationContextStoreService } from './validation-context-store.service';
-import { getButtonState, toSubmissionState } from '@cc/common/forms';
 import { ValidationRestrictionsService } from './validation-restrictions.service';
 
 @Component({
@@ -55,6 +56,7 @@ export class ContractManagementComponent implements OnInit, OnDestroy {
     private contractsManageModalService: ContractManagementService,
     private contextStoreService: ValidationContextStoreService,
     private restrictionsService: ValidationRestrictionsService,
+    private toastsService: ToastsService,
   ) {
     this.contractId = parseInt(this.activatedRoute.snapshot.paramMap.get('id'), 10);
   }
@@ -80,13 +82,11 @@ export class ContractManagementComponent implements OnInit, OnDestroy {
 
   public delete(): void {
     this.dataService.deleteContract$(this.contractId)
-      .pipe(
-        take(1),
-        toSubmissionState(),
-        map(state => getButtonState(state)),
-        finalize(() => this.redirectToContracts()),
-      )
-      .subscribe(state => this.deleteButtonClass$.next(state));
+      .pipe(take(1), toSubmissionState())
+      .subscribe(state => {
+        this.deleteButtonClass$.next(getButtonState(state));
+        this.notifyAndRedirect(state);
+      });
   }
 
   public redirectToContracts(): void {
@@ -121,5 +121,17 @@ export class ContractManagementComponent implements OnInit, OnDestroy {
     return this.router
       .navigate(route, { queryParamsHandling: 'preserve', relativeTo: this.activatedRoute })
       .then(() => null);
+  }
+
+  private notifyAndRedirect(state: SubmissionState): void {
+    if (state !== SubmissionState.Success) {
+      return;
+    }
+
+    this.redirectToContracts();
+    this.toastsService.addToast({
+      type: ToastType.Success,
+      message: this.translatePipe.transform('front_contractPage_deletion_successMessage', { id: this.contractId }),
+    });
   }
 }
