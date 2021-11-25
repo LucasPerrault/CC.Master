@@ -1,12 +1,17 @@
 using Billing.Contracts.Application.Offers;
 using Billing.Contracts.Domain.Offers;
 using Billing.Contracts.Domain.Offers.Filtering;
+using Billing.Contracts.Domain.Offers.Interfaces;
+using Billing.Contracts.Domain.Offers.Parsing;
 using Lucca.Core.Api.Abstractions.Paging;
 using Lucca.Core.Api.Web.ModelBinding.Sorting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Rights.Domain;
 using Rights.Web.Attributes;
+using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Threading.Tasks;
 using Tools.Web;
 
@@ -17,11 +22,14 @@ namespace Billing.Contracts.Web
     public class CommercialOffersController
     {
         private readonly CommercialOffersRepository _commercialOffersRepository;
+        private readonly IOfferRowsService _importedOfferService;
 
-        public CommercialOffersController(CommercialOffersRepository commercialOffersRepository)
+        public CommercialOffersController(CommercialOffersRepository commercialOffersRepository, IOfferRowsService importedOfferService)
         {
             _commercialOffersRepository = commercialOffersRepository;
+            _importedOfferService = importedOfferService;
         }
+
 
         [HttpGet]
         [ForbidIfMissing(Operation.ReadCommercialOffers)]
@@ -99,6 +107,32 @@ namespace Billing.Contracts.Web
         {
             return _commercialOffersRepository.GetUsagesAsync(query.ToFilter());
         }
+
+        [Route("upload-csv")]
+        [HttpPost, ForbidIfMissing(Operation.CreateCommercialOffers)]
+        public async Task<ImportedOffersDto> UploadAsync([FromForm] FileDto file)
+        {
+            if (file is null || file.File is null)
+                throw new ArgumentNullException(nameof(file));
+
+            using var ms = new MemoryStream();
+
+            await file.File.CopyToAsync(ms);
+            ms.Position = 0;
+
+            return new ImportedOffersDto { Items = await _importedOfferService.UploadAsync(ms) };
+        }
+
+        [Route("upload-csv/template")]
+        [HttpPost, ForbidIfMissing(Operation.CreateCommercialOffers)]
+        public async Task<FileStreamResult> GetTemplateAsync()
+        {
+            var ms = await _importedOfferService.GetTemplateStreamAsync();
+            return new FileStreamResult(ms, "text/csv")
+            {
+                FileDownloadName = "offers-template.csv"
+            };
+        }
     }
 
     public class CommercialOfferQuery
@@ -139,5 +173,15 @@ namespace Billing.Contracts.Web
                 OfferIds = OfferId
             };
         }
+    }
+
+    public class ImportedOffersDto
+    {
+        public IEnumerable<ParsedOffer> Items { get; set; }
+    }
+
+    public class FileDto
+    {
+        public IFormFile File { get; set; }
     }
 }

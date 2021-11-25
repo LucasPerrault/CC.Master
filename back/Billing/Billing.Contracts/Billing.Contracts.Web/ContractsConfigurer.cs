@@ -10,10 +10,12 @@ using Billing.Contracts.Domain.Counts.Interfaces;
 using Billing.Contracts.Domain.Offers;
 using Billing.Contracts.Domain.Offers.Filtering;
 using Billing.Contracts.Domain.Offers.Interfaces;
+using Billing.Contracts.Domain.Offers.Parsing;
 using Billing.Contracts.Domain.Offers.Services;
 using Billing.Contracts.Domain.Offers.Validation;
 using Billing.Contracts.Infra.Configurations;
 using Billing.Contracts.Infra.Legacy;
+using Billing.Contracts.Infra.Offers;
 using Billing.Contracts.Infra.Storage.Stores;
 using Core.Proxy.Infra.Configuration;
 using Lucca.Core.Api.Abstractions;
@@ -48,6 +50,14 @@ namespace Billing.Contracts.Web
             services.AddScoped<CommercialOffersRepository>();
             services.AddScoped<ITranslations, Translations>();
             services.AddScoped<CommercialOfferRightsFilter>();
+            services.AddScoped<CommercialOfferRightsFilter>();
+
+            services.AddScoped<IOfferRowsService, OfferRowsService>();
+            services.AddSingleton<ParsedOffersService>();
+
+
+            services.AddScoped<IOfferRowsService, OfferRowsService>();
+            services.AddSingleton<ParsedOffersService>();
 
             services.AddHttpClient<ILegacyClientsRemoteService, LegacyClientsRemoteService>((provider, client) =>
             {

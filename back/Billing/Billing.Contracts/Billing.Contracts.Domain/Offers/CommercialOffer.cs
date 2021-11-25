@@ -1,4 +1,4 @@
-﻿using Billing.Products.Domain;
+using Billing.Products.Domain;
 using System;
 using System.Collections.Generic;
 

@@ -1,4 +1,4 @@
-﻿using Billing.Contracts.Domain.Offers;
+using Billing.Contracts.Domain.Offers;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
