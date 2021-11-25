@@ -1,4 +1,4 @@
-﻿using Billing.Contracts.Domain.Offers.Parsing;
+using Billing.Contracts.Domain.Offers.Parsing;
 using Billing.Products.Domain;
 using System;
 using System.Collections.Generic;
@@ -51,7 +51,7 @@ namespace Billing.Contracts.Infra.Offers
 
         private class CsvBuilder
         {
-            private StringBuilder _stringBuilder;
+            private readonly StringBuilder _stringBuilder;
             private bool _isCurrentLineEmpty = true;
 
             public CsvBuilder(StringBuilder stringBuilder)

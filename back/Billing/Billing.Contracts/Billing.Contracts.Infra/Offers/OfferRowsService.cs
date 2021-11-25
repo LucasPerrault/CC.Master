@@ -41,7 +41,7 @@ namespace Billing.Contracts.Infra.Offers
         {
             Delimiter = ",",
             HeaderValidated = null,
-            PrepareHeaderForMatch = args => args.Header.ToLower(),
+            PrepareHeaderForMatch = args => args.Header.ToLower(CultureInfo.InvariantCulture),
         };
 
         private readonly IProductsStore _productsStore;
@@ -81,7 +81,7 @@ namespace Billing.Contracts.Infra.Offers
             writer.WriteRecords(TemplateHelper.GetExamples());
         }
 
-        private List<OfferRow> GetOfferRows(Stream stream)
+        private static List<OfferRow> GetOfferRows(Stream stream)
         {
             using var templateHelpDetector = new TemplateHelpDetector(stream);
             var containsTemplateHelp = templateHelpDetector.ContainsTemplateHelp();

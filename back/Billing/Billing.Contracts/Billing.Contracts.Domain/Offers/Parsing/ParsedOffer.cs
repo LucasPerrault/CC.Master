@@ -29,7 +29,7 @@ namespace Billing.Contracts.Domain.Offers.Parsing
         }
 
 
-        private BillingMode? GetBillingMode(ParsedBillingMode? billingMode) => billingMode switch
+        private static BillingMode? GetBillingMode(ParsedBillingMode? billingMode) => billingMode switch
         {
             ParsedBillingMode.ActiveUsers => Offers.BillingMode.ActiveUsers,
             ParsedBillingMode.AllUsers => Offers.BillingMode.AllUsers,
@@ -38,7 +38,7 @@ namespace Billing.Contracts.Domain.Offers.Parsing
             _ => null,
         };
 
-        private BillingUnit? GetBillingUnit(ParsedBillingUnit? billingMode) => billingMode switch
+        private static BillingUnit? GetBillingUnit(ParsedBillingUnit? billingMode) => billingMode switch
         {
             ParsedBillingUnit.ActiveUsers => Offers.BillingUnit.ActiveUsers,
             ParsedBillingUnit.Cards => Offers.BillingUnit.Cards,
@@ -52,7 +52,7 @@ namespace Billing.Contracts.Domain.Offers.Parsing
             _ => null,
         };
 
-        private ForecastMethod? GetForecastMethod(ParsedForecastMethod? forecastMethod) => forecastMethod switch
+        private static ForecastMethod? GetForecastMethod(ParsedForecastMethod? forecastMethod) => forecastMethod switch
         {
             ParsedForecastMethod.AnnualCommitment => Offers.ForecastMethod.AnnualCommitment,
             ParsedForecastMethod.LastRealMonth => Offers.ForecastMethod.LastRealMonth,
@@ -60,7 +60,7 @@ namespace Billing.Contracts.Domain.Offers.Parsing
             _ => null,
         };
 
-        private PricingMethod? GetPricingMethod(ParsedPricingMethod? pricingMethod) => pricingMethod switch
+        private static PricingMethod? GetPricingMethod(ParsedPricingMethod? pricingMethod) => pricingMethod switch
         {
             ParsedPricingMethod.AnnualCommitment => Offers.PricingMethod.AnnualCommitment,
             ParsedPricingMethod.Constant => Offers.PricingMethod.Constant,

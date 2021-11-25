@@ -50,7 +50,7 @@ namespace Billing.Contracts.Domain.Offers.Parsing
             }
         }
 
-        private IEnumerable<ParsedPriceRow> GetPriceRows(OfferRow firstRow, ParsedOfferIterator iterator)
+        private static IEnumerable<ParsedPriceRow> GetPriceRows(OfferRow firstRow, ParsedOfferIterator iterator)
         {
             if (firstRow.MinIncludedCount != 0)
             {
