@@ -14,11 +14,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 using Tools.Web;
-using Billing.Contracts.Application.Offers.Dtos;
-using Billing.Contracts.Domain.Offers.Interfaces;
-using Billing.Contracts.Domain.Offers.Filtering;
-using Lucca.Core.Api.Abstractions.Paging;
-using Microsoft.AspNetCore.Http;
 
 namespace Billing.Contracts.Web
 {
@@ -138,11 +133,6 @@ namespace Billing.Contracts.Web
                 FileDownloadName = "offers-template.csv"
             };
         }
-    }
-
-    public class ImportedOffersDto
-    {
-        public IEnumerable<ParsedOffer> Items { get; set; }
     }
 
     public class CommercialOfferQuery
