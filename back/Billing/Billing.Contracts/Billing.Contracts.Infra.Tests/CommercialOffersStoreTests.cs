@@ -26,7 +26,7 @@ namespace Billing.Contracts.Infra.Tests
         public CommercialOffersStoreTests()
         {
             var options = new DbContextOptionsBuilder<ContractsDbContext>()
-                               .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
+                               .UseInMemoryDatabase(databaseName: "CommercialOfferStoreTestsDb")
                                .Options;
 
             _dbContext = new ContractsDbContext(options);
