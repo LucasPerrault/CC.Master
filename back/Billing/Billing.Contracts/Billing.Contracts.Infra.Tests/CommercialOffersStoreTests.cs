@@ -56,7 +56,7 @@ namespace Billing.Contracts.Infra.Tests
             await _dbContext.AddAsync(referenceOffer);
             await _dbContext.SaveChangesAsync();
 
-            var similarOffers = await _store.GetSimilarOffersAsync(AccessRight.All, referenceOffer.Id, It.IsAny<DateTime>());
+            var similarOffers = await _store.GetSimilarOffersAsync(AccessRight.All, referenceOffer, It.IsAny<DateTime>());
 
             similarOffers.Items.Should().BeEmpty();
         }
@@ -85,7 +85,7 @@ namespace Billing.Contracts.Infra.Tests
             await _dbContext.AddAsync(otherOffer);
             await _dbContext.SaveChangesAsync();
 
-            var similarOffers = await _store.GetSimilarOffersAsync(AccessRight.All, referenceOffer.Id, new DateTime(2022, 01, 01));
+            var similarOffers = await _store.GetSimilarOffersAsync(AccessRight.All, referenceOffer, new DateTime(2022, 01, 01));
 
             similarOffers.Items.Should().ContainSingle(o => o.Id == targetOffer.Id);
         }
@@ -109,7 +109,7 @@ namespace Billing.Contracts.Infra.Tests
             await _dbContext.AddAsync(targetOffer);
             await _dbContext.SaveChangesAsync();
 
-            var similarOffers = await _store.GetSimilarOffersAsync(AccessRight.All, referenceOffer.Id, new DateTime(2022, 01, 01));
+            var similarOffers = await _store.GetSimilarOffersAsync(AccessRight.All, referenceOffer, new DateTime(2022, 01, 01));
 
             similarOffers.Items.Should().BeEmpty();
         }
@@ -133,7 +133,7 @@ namespace Billing.Contracts.Infra.Tests
             await _dbContext.AddAsync(targetOffer);
             await _dbContext.SaveChangesAsync();
 
-            var similarOffers = await _store.GetSimilarOffersAsync(AccessRight.All, referenceOffer.Id, new DateTime(2022, 01, 01));
+            var similarOffers = await _store.GetSimilarOffersAsync(AccessRight.All, referenceOffer, new DateTime(2022, 01, 01));
 
             similarOffers.Items.Should().BeEmpty();
         }
@@ -156,7 +156,7 @@ namespace Billing.Contracts.Infra.Tests
             await _dbContext.AddAsync(targetOffer);
             await _dbContext.SaveChangesAsync();
 
-            var similarOffers = await _store.GetSimilarOffersAsync(AccessRight.All, referenceOffer.Id, new DateTime(2022, 01, 01));
+            var similarOffers = await _store.GetSimilarOffersAsync(AccessRight.All, referenceOffer, new DateTime(2022, 01, 01));
 
             similarOffers.Items.Should().ContainSingle(o => o.Id == targetOffer.Id);
         }
@@ -183,7 +183,7 @@ namespace Billing.Contracts.Infra.Tests
             await _dbContext.AddAsync(targetOffer);
             await _dbContext.SaveChangesAsync();
 
-            var similarOffers = await _store.GetSimilarOffersAsync(AccessRight.All, referenceOffer.Id, new DateTime(2022, 01, 01));
+            var similarOffers = await _store.GetSimilarOffersAsync(AccessRight.All, referenceOffer, new DateTime(2022, 01, 01));
 
             similarOffers.Items.Should().ContainSingle(o => o.Id == targetOffer.Id);
         }
@@ -208,7 +208,7 @@ namespace Billing.Contracts.Infra.Tests
             await _dbContext.AddAsync(targetOffer);
             await _dbContext.SaveChangesAsync();
 
-            var similarOffers = await _store.GetSimilarOffersAsync(AccessRight.All, referenceOffer.Id, new DateTime(2022, 01, 01));
+            var similarOffers = await _store.GetSimilarOffersAsync(AccessRight.All, referenceOffer, new DateTime(2022, 01, 01));
 
             similarOffers.Items.Should().BeEmpty();
         }
@@ -248,7 +248,7 @@ namespace Billing.Contracts.Infra.Tests
             await _dbContext.AddAsync(targetOffer);
             await _dbContext.SaveChangesAsync();
 
-            var similarOffers = await _store.GetSimilarOffersAsync(AccessRight.All, referenceOffer.Id, new DateTime(2022, 01, 01));
+            var similarOffers = await _store.GetSimilarOffersAsync(AccessRight.All, referenceOffer, new DateTime(2022, 01, 01));
 
             similarOffers.Items.Should().BeEmpty();
         }

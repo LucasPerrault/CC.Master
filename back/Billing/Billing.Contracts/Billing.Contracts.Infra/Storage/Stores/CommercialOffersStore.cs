@@ -36,10 +36,8 @@ namespace Billing.Contracts.Infra.Storage.Stores
             return _queryPager.ToPageAsync(queryable, pageToken);
         }
 
-        public async Task<Page<CommercialOffer>> GetSimilarOffersAsync(AccessRight accessRight, int id, DateTime until)
+        public async Task<Page<CommercialOffer>> GetSimilarOffersAsync(AccessRight accessRight, CommercialOffer referenceOffer, DateTime until)
         {
-            var referenceOffer = await GetReadOnlySingleOfDefaultAsync(CommercialOfferFilter.ForId(id), accessRight);
-
             var filter = CommercialOfferFilter.SimilarTo(referenceOffer);
             var similarOffers = await GetQueryable(accessRight, filter)
                 .AsNoTracking()

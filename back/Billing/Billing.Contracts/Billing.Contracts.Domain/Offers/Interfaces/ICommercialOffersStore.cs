@@ -10,7 +10,7 @@ namespace Billing.Contracts.Domain.Offers.Interfaces
     public interface ICommercialOffersStore
     {
         Task<Page<CommercialOffer>> GetPageAsync(AccessRight accessRight, CommercialOfferFilter filter, IPageToken pageToken);
-        Task<Page<CommercialOffer>> GetSimilarOffersAsync(AccessRight accessRight, int id, DateTime until);
+        Task<Page<CommercialOffer>> GetSimilarOffersAsync(AccessRight accessRight, CommercialOffer referenceOffer, DateTime until);
         Task<CommercialOffer> GetSingleOfDefaultAsync(CommercialOfferFilter filter, AccessRight accessRight);
         Task<CommercialOffer> GetReadOnlySingleOfDefaultAsync(CommercialOfferFilter filter, AccessRight accessRight);
         Task<Page<string>> GetTagsAsync(AccessRight accessRight);
