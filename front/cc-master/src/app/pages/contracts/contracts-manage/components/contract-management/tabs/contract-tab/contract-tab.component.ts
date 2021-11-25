@@ -10,12 +10,11 @@ import { finalize, map, startWith, switchMap, take } from 'rxjs/operators';
 
 import { ContractsListService } from '../../../../services/contracts-list.service';
 import { ContractManagementService } from '../../contract-management.service';
+import { IValidationContext } from '../../validation-context-store.data';
+import { ValidationContextStoreService } from '../../validation-context-store.service';
 import { IContractDetailed } from './models/contract-detailed.interface';
-import { IContractFormInformation } from './models/contract-form-information.interface';
-import { IContractValidationContext } from './models/contract-validation-context.interface';
 import { ContractActionRestrictionsService } from './services/contract-action-restrictions.service.';
 import { ContractTabService } from './services/contract-tab.service';
-import { ContractValidationContextService } from './services/contract-validation-context.service';
 
 @Component({
   selector: 'cc-contract-tab',
@@ -26,7 +25,7 @@ import { ContractValidationContextService } from './services/contract-validation
 export class ContractTabComponent implements OnInit {
 
   public contractForm: FormControl = new FormControl();
-  public validationContext$: ReplaySubject<IContractValidationContext> = new ReplaySubject(1);
+  public validationContext$: ReplaySubject<IValidationContext> = new ReplaySubject(1);
   public formInformation$: ReplaySubject<IContractFormInformation> = new ReplaySubject(1);
   public showDeletionCallout = true;
 
@@ -56,26 +55,15 @@ export class ContractTabComponent implements OnInit {
     private activatedRoute: ActivatedRoute,
     private contractTabService: ContractTabService,
     private contractFormValidationService: ContractActionRestrictionsService,
-    private contractValidationContextService: ContractValidationContextService,
     private contractsManageModalService: ContractManagementService,
     private contractsListService: ContractsListService,
-    private distributorsService: DistributorsService,
+    private contextStoreService: ValidationContextStoreService,
   ) {}
 
   public ngOnInit(): void {
     this.isLoading$.next(true);
 
-    combineLatest([
-      this.contractValidationContextService.getValidationContext$(this.contractId),
-      this.contractTabService.getContractDetailed$(this.contractId),
-    ])
-      .pipe(take(1), finalize(() => this.isLoading$.next(false)))
-      .subscribe(([context, contract]) => {
-        this.validationContext$.next(context);
-        this.detailedContract$.next(contract);
-      });
-
-    this.detailedContract$
+    this.contextStoreService.context$
       .pipe(take(1))
       .subscribe(contract => this.contractForm.setValue(this.toContractForm(contract)));
 

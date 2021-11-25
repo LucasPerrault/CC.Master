@@ -14,8 +14,8 @@ import { LuModal } from '@lucca-front/ng/modal';
 import { ReplaySubject, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
+import { IValidationContext } from '../../../../validation-context-store.data';
 import { IContractFormInformation } from '../../models/contract-form-information.interface';
-import { IContractValidationContext } from '../../models/contract-validation-context.interface';
 import { ContractActionRestrictionsService } from '../../services/contract-action-restrictions.service.';
 import { ClientInfoModalComponent } from './client-info-modal/client-info-modal.component';
 import { IClientInfoModalData } from './client-info-modal/client-info-modal-data.interface';
@@ -52,7 +52,7 @@ enum ContractFormKey {
   ],
 })
 export class ContractTabFormComponent implements OnInit, OnDestroy, ControlValueAccessor {
-  @Input() public validationContext: IContractValidationContext;
+  @Input() public validationContext: IValidationContext;
   @Input() public formInformation: IContractFormInformation;
 
   public onChange: (contractForm: IContractForm) => void;

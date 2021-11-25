@@ -1,80 +1,81 @@
 import { Injectable } from '@angular/core';
 import { Operation, RightsService } from '@cc/aspects/rights';
 
-import { IContractValidationContext } from '../models/contract-validation-context.interface';
+import { IValidationContext } from '../../../validation-context-store.data';
+
 
 @Injectable()
 export class ContractActionRestrictionsService {
   constructor(private rightsService: RightsService) {}
 
-  public canDeleteContracts(context: IContractValidationContext): boolean {
+  public canDeleteContracts(context: IValidationContext): boolean {
     return this.canEditContract()
       && !this.hasRealCounts(context)
       && !this.hasActiveEstablishments(context)
       && !this.hasUnletteredContractEntries(context);
   }
 
-  public canEditDistributor(context: IContractValidationContext): boolean {
+  public canEditDistributor(context: IValidationContext): boolean {
     return this.canEditContract()
       && !this.hasRealCounts(context)
       && !this.hasActiveEstablishments(context)
       && !this.hasContractEntries(context);
   }
 
-  public canEditClient(context: IContractValidationContext): boolean {
+  public canEditClient(context: IValidationContext): boolean {
     return this.canEditContract()
       && !this.hasRealCounts(context)
       && !this.hasActiveEstablishments(context)
       && !this.hasContractEntries(context);
   }
 
-  public canEditTheoreticalStartOn(context: IContractValidationContext): boolean {
+  public canEditTheoreticalStartOn(context: IValidationContext): boolean {
     return this.canEditContract()
       && !this.hasRealCounts(context)
       && !this.hasActiveEstablishments(context);
   }
 
-  public canEditOffer(context: IContractValidationContext): boolean {
+  public canEditOffer(context: IValidationContext): boolean {
     return this.canEditContract()
       && !this.hasRealCounts(context)
       && !this.hasUnletteredContractEntries(context);
   }
 
-  public canEditProduct(context: IContractValidationContext): boolean {
+  public canEditProduct(context: IValidationContext): boolean {
     return this.canEditContract()
       && !this.hasRealCounts(context)
       && !this.hasUnletteredContractEntries(context)
       && !this.hasActiveEstablishments(context);
   }
 
-  public canEditMinimalBilling(context: IContractValidationContext): boolean {
+  public canEditMinimalBilling(context: IValidationContext): boolean {
     return this.canEditContract()
       && !this.hasRealCounts(context);
   }
 
-  public canEditBillingFrequency(context: IContractValidationContext): boolean {
+  public canEditBillingFrequency(context: IValidationContext): boolean {
     return this.canEditContract()
       && !this.hasRealCounts(context)
       && !this.hasActiveEstablishments(context);
   }
 
-  public hasActiveEstablishments(context: IContractValidationContext): boolean {
-    return !!context?.activeEstablishmentsNumber;
+  public hasActiveEstablishments(context: IValidationContext): boolean {
+    return !!context?.activeEstablishmentNumber;
   }
 
-  public hasRealCounts(context: IContractValidationContext): boolean {
+  public hasRealCounts(context: IValidationContext): boolean {
     return !!context?.realCountNumber;
   }
 
-  public hasContractEntries(context: IContractValidationContext): boolean {
+  public hasContractEntries(context: IValidationContext): boolean {
     return !!context?.contractEntries?.length;
   }
 
-  public hasUnletteredContractEntries(context: IContractValidationContext): boolean {
+  public hasUnletteredContractEntries(context: IValidationContext): boolean {
     return !!context?.contractEntries?.filter(ce => ce.letter === null).length;
   }
 
-  public hasLetteredContractEntries(context: IContractValidationContext): boolean {
+  public hasLetteredContractEntries(context: IValidationContext): boolean {
     return !!context?.contractEntries?.filter(ce => ce.letter !== null).length;
   }
 

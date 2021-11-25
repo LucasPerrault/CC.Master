@@ -17,7 +17,6 @@ import { ContractTabFormComponent } from './components/contract-tab-form/contrac
 import { ContractTabComponent } from './contract-tab.component';
 import { ContractActionRestrictionsService } from './services/contract-action-restrictions.service.';
 import { ContractTabService } from './services/contract-tab.service';
-import { ContractValidationContextService } from './services/contract-validation-context.service';
 
 @NgModule({
   declarations: [ContractTabComponent, ContractTabFormComponent],
@@ -41,7 +40,6 @@ import { ContractValidationContextService } from './services/contract-validation
   ],
   providers: [
     ContractTabService,
-    ContractValidationContextService,
     ContractActionRestrictionsService,
   ],
 })
