@@ -6,14 +6,16 @@ import { getButtonState, toSubmissionState } from '@cc/common/forms';
 import { IContractForm } from '@cc/domain/billing/contracts';
 import { ILuPopupRef, LuPopup } from '@lucca-front/ng/popup';
 import { isEqual as isDateEqual } from 'date-fns';
-import { BehaviorSubject, Observable, ReplaySubject, Subject } from 'rxjs';
+import { BehaviorSubject, ReplaySubject, Subject } from 'rxjs';
 import { filter, finalize, map, take, takeUntil } from 'rxjs/operators';
 
 import { ContractsListService } from '../../../../services/contracts-list.service';
 import { ContractManagementService } from '../../contract-management.service';
 import { IValidationContext } from '../../validation-context-store.data';
 import { ValidationContextStoreService } from '../../validation-context-store.service';
-import { ContractLeavingConfirmationPopupComponent } from './components/contract-leaving-confirmation-popup/contract-leaving-confirmation-popup.component';
+import {
+  ContractLeavingConfirmationPopupComponent,
+} from './components/contract-leaving-confirmation-popup/contract-leaving-confirmation-popup.component';
 import { IContractDetailed } from './models/contract-detailed.interface';
 import { ContractTabService } from './services/contract-tab.service';
 

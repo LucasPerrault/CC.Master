@@ -8,6 +8,7 @@ import { BehaviorSubject, combineLatest, Observable, pipe, ReplaySubject, Subjec
 import { debounceTime, finalize, map, take, takeUntil } from 'rxjs/operators';
 
 import { ContractManagementService } from '../../contract-management.service';
+import { ValidationContextStoreService } from '../../validation-context-store.service';
 import { CountsDetailDownloadModalComponent } from './components/counts-detail-download-modal/counts-detail-download-modal.component';
 import { ICountsDetailDownloadModalData } from './components/counts-detail-download-modal/counts-detail-download-modal-data.interface';
 import { CountsReplayModalComponent } from './components/counts-replay-modal/counts-replay-modal.component';
@@ -18,7 +19,6 @@ import { IDetailedCount } from './models/detailed-count.interface';
 import { CountContractsDataService } from './services/count-contracts-data.service';
 import { CountContractsListService } from './services/count-contracts-list.service';
 import { CountContractsRestrictionsService } from './services/count-contracts-restrictions.service';
-import { ValidationContextStoreService } from '../../validation-context-store.service';
 
 @Component({
   selector: 'cc-count-tab',

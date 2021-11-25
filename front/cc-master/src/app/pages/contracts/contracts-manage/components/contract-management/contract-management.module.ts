@@ -3,6 +3,7 @@ import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { RightsModule } from '@cc/aspects/rights';
 import { TranslateModule } from '@cc/aspects/translate';
+import { LuTooltipTriggerModule } from '@lucca-front/ng/tooltip';
 
 import { ContractManagementComponent } from './contract-management.component';
 import { ContractManagementService } from './contract-management.service';
@@ -17,7 +18,6 @@ import { EstablishmentTabModule } from './tabs/establishment-tab/establishment-t
 import { HistoryTabModule } from './tabs/history-tab/history-tab.module';
 import { ValidationContextDataService } from './validation-context-store.data';
 import { ValidationContextStoreService } from './validation-context-store.service';
-import { LuTooltipTriggerModule } from '@lucca-front/ng/tooltip';
 import { ValidationRestrictionsService } from './validation-restrictions.service';
 
 @NgModule({
