@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
+import { ICount } from '@cc/domain/billing/counts';
 import { isAfter, isBefore, isEqual } from 'date-fns';
 
-import { IContractCount } from '../models/contract-count.interface';
 import { IEstablishmentAttachment } from '../models/establishment-attachment.interface';
 import { AttachmentsTimelineService } from './attachments-timeline.service';
 
@@ -10,11 +10,11 @@ export class AttachmentsActionRestrictionsService {
   constructor(private timelineService: AttachmentsTimelineService) {
   }
 
-  public canDeleteRange(attachments: IEstablishmentAttachment[], realCounts: IContractCount[]): boolean {
+  public canDeleteRange(attachments: IEstablishmentAttachment[], realCounts: ICount[]): boolean {
     return attachments.every(ce => this.canDelete(ce, realCounts));
   }
 
-  public canDelete(attachment: IEstablishmentAttachment, realCounts: IContractCount[]): boolean {
+  public canDelete(attachment: IEstablishmentAttachment, realCounts: ICount[]): boolean {
     if (!attachment) {
       return false;
     }
@@ -23,7 +23,7 @@ export class AttachmentsActionRestrictionsService {
     return !this.hasRealCountsBetween(new Date(attachment.start), maxDate, realCounts);
   }
 
-  public canCancelUnlinking(attachment: IEstablishmentAttachment, realCounts: IContractCount[]): boolean {
+  public canCancelUnlinking(attachment: IEstablishmentAttachment, realCounts: ICount[]): boolean {
     if (!!attachment && !this.timelineService.shouldBeEndedInFuture(attachment)) {
       return false;
     }
@@ -47,19 +47,19 @@ export class AttachmentsActionRestrictionsService {
     return !attachment || this.timelineService.isFinished(attachment) || this.timelineService.shouldBeEndedInFuture(attachment);
   }
 
-  public canEditFutureStartRange(attachments: IEstablishmentAttachment[], realCounts: IContractCount[]): boolean {
+  public canEditFutureStartRange(attachments: IEstablishmentAttachment[], realCounts: ICount[]): boolean {
     return attachments.every(ce => this.canEditFutureStart(ce, realCounts));
   }
 
-  public canEditFutureStart(attachment: IEstablishmentAttachment, realCounts: IContractCount[]): boolean {
+  public canEditFutureStart(attachment: IEstablishmentAttachment, realCounts: ICount[]): boolean {
     return !!attachment && !!attachment.start && this.timelineService.shouldBeStartedInFuture(attachment);
   }
 
-  public canEditFutureEndRange(attachments: IEstablishmentAttachment[], realCounts: IContractCount[]): boolean {
+  public canEditFutureEndRange(attachments: IEstablishmentAttachment[], realCounts: ICount[]): boolean {
     return attachments.every(ce => this.canEditFutureEnd(ce, realCounts));
   }
 
-  public canEditFutureEnd(attachment: IEstablishmentAttachment, realCounts: IContractCount[]): boolean {
+  public canEditFutureEnd(attachment: IEstablishmentAttachment, realCounts: ICount[]): boolean {
     if (!attachment || !attachment.end) {
       return false;
     }
@@ -67,7 +67,7 @@ export class AttachmentsActionRestrictionsService {
     return !this.hasRealCountsSince(new Date(attachment.end), realCounts);
   }
 
-  private hasRealCountsBetween(from: Date, to: Date, realCounts: IContractCount[]): boolean {
+  private hasRealCountsBetween(from: Date, to: Date, realCounts: ICount[]): boolean {
     const realCountsBetween = realCounts.filter(count =>
       this.isAfterOrEquals(new Date(count.countPeriod), from)
       && this.isBeforeOrEquals(new Date(count.countPeriod), to),
@@ -76,7 +76,7 @@ export class AttachmentsActionRestrictionsService {
     return !!realCountsBetween.length;
   }
 
-  private hasRealCountsSince(since: Date, realCounts: IContractCount[]): boolean {
+  private hasRealCountsSince(since: Date, realCounts: ICount[]): boolean {
     return this.hasRealCountsBetween(since, new Date(), realCounts);
   }
 

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
+import { ICount } from '@cc/domain/billing/counts';
 
 import { EstablishmentType } from '../constants/establishment-type.enum';
-import { IContractCount } from '../models/contract-count.interface';
 import { IEstablishmentActionsContext } from '../models/establishment-actions-context.interface';
 import { IEstablishmentContract } from '../models/establishment-contract.interface';
 
@@ -9,14 +9,14 @@ import { IEstablishmentContract } from '../models/establishment-contract.interfa
 export class EstablishmentActionContextService {
   public getActionContext(
     contract: IEstablishmentContract,
-    realCounts: IContractCount[],
+    realCounts: ICount[],
     establishmentType: EstablishmentType,
   ): IEstablishmentActionsContext {
     const lastCountPeriod = this.getLastCountPeriod(realCounts);
     return { contract, realCounts, lastCountPeriod, establishmentType };
   }
 
-  private getLastCountPeriod(realCounts: IContractCount[]): Date | null {
+  private getLastCountPeriod(realCounts: ICount[]): Date | null {
     if (!realCounts?.length) {
       return null;
     }
