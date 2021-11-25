@@ -9,6 +9,6 @@ namespace Billing.Contracts.Domain.Offers.Interfaces
     {
         Task<List<ParsedOffer>> UploadAsync(Stream stream);
 
-        Task<MemoryStream> GetTemplateStreamAsync();
+        Task<Stream> GetTemplateStreamAsync();
     }
 }

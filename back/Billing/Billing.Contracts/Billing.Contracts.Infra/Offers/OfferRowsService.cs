@@ -20,7 +20,7 @@ namespace Billing.Contracts.Infra.Offers
     {
         public const string Name = "Nom";
         public const string Product = "Produit";
-        public const string CountUnit = "Unité de décompte";
+        public const string BillingUnit = "Unité de décompte";
         public const string Currency = "Devise";
         public const string Tag = "Catégorisation";
         public const string BillingMode = "Mode de décompte";
@@ -59,52 +59,21 @@ namespace Billing.Contracts.Infra.Offers
             return importedOffers;
         }
 
-        public async Task<MemoryStream> GetTemplateStreamAsync()
+        public async Task<Stream> GetTemplateStreamAsync()
         {
-            var products = (await _productsStore.GetAsync(ProductsFilter.All, ProductsIncludes.All)).Select(p => p.Name).ToArray().ToCells();
-            var billingUnit = GetAllEnumValuesExcept(ParsedBillingUnit.Unknown).ToCells();
-            var billingMode = GetAllEnumValuesExcept(ParsedBillingMode.Unknown).ToCells();
-            var forecastMethod = GetAllEnumValuesExcept(ParsedForecastMethod.Unknown).ToCells();
-            var pricingMethod = GetAllEnumValuesExcept(ParsedPricingMethod.Unknown).ToCells();
-            var currency = GetAllEnumValuesExcept(ParsedCurrency.Unknown).ToCells();
-
-            var maxLength = products.Length
-                .MaxLength(billingUnit)
-                .MaxLength(billingMode)
-                .MaxLength(forecastMethod)
-                .MaxLength(pricingMethod)
-                .MaxLength(currency);
-
             var csvBuilder = new CsvBuilder();
-
-            csvBuilder.AddCell(HeaderRow.Product)
-                .AddCell(HeaderRow.CountUnit)
-                .AddCell(HeaderRow.Currency)
-                .AddCell(HeaderRow.BillingMode)
-                .AddCell(HeaderRow.PricingMethod)
-                .AddCell(HeaderRow.ForecastMethod)
-                .NewLine();
-
-
-            for (var i = 0; i < maxLength; i++)
-            {
-                csvBuilder.AddCell(products.Get(i))
-                .AddCell(billingUnit.Get(i))
-                .AddCell(currency.Get(i))
-                .AddCell(billingMode.Get(i))
-                .AddCell(pricingMethod.Get(i))
-                .AddCell(forecastMethod.Get(i))
-                .NewLine();
-            }
-
-            // If you modify the number of lines writted by the following section, change RowGapBetweenMetadataAndTemplate value
-            csvBuilder.NewLine();
+            await AddTemplateHelpAsync(csvBuilder);
             csvBuilder.AddCell(HeaderRow.LimitWarning).NewLine();
-            csvBuilder.NewLine();
+            AddTemplateWithExamples(csvBuilder);
+            return new MemoryStream(Encoding.UTF8.GetBytes(csvBuilder.ToString()));
+        }
 
-            csvBuilder.AddCell(HeaderRow.Name)
+        private static void AddTemplateWithExamples(CsvBuilder csvBuilder)
+        {
+            csvBuilder.NewLine()
+                .AddCell(HeaderRow.Name)
                 .AddCell(HeaderRow.Product)
-                .AddCell(HeaderRow.CountUnit)
+                .AddCell(HeaderRow.BillingUnit)
                 .AddCell(HeaderRow.Currency)
                 .AddCell(HeaderRow.Tag)
                 .AddCell(HeaderRow.BillingMode)
@@ -137,9 +106,48 @@ namespace Billing.Contracts.Infra.Offers
             csvBuilder.AddCell(",,,,,,,,,21,50,1.4,0").NewLine();
             csvBuilder.AddCell(",,,,,,,,,51,100,1,0").NewLine();
             csvBuilder.AddCell(",,,,,,,,,101,1000,0.5,0").NewLine();
-
-            return new MemoryStream(Encoding.UTF8.GetBytes(csvBuilder.ToString()));
         }
+
+        private async Task AddTemplateHelpAsync(CsvBuilder csvBuilder)
+        {
+            var products = (await _productsStore.GetAsync(ProductsFilter.All, ProductsIncludes.All)).Select(p => p.Name).ToArray().ToCells();
+            var billingUnit = GetAllEnumValuesExcept(ParsedBillingUnit.Unknown).ToCells();
+            var billingMode = GetAllEnumValuesExcept(ParsedBillingMode.Unknown).ToCells();
+            var forecastMethod = GetAllEnumValuesExcept(ParsedForecastMethod.Unknown).ToCells();
+            var pricingMethod = GetAllEnumValuesExcept(ParsedPricingMethod.Unknown).ToCells();
+            var currency = GetAllEnumValuesExcept(ParsedCurrency.Unknown).ToCells();
+
+            var maxLength = products.Length
+                .MaxLength(billingUnit)
+                .MaxLength(billingMode)
+                .MaxLength(forecastMethod)
+                .MaxLength(pricingMethod)
+                .MaxLength(currency);
+
+            csvBuilder.AddCell(HeaderRow.Product)
+                .AddCell(HeaderRow.BillingUnit)
+                .AddCell(HeaderRow.Currency)
+                .AddCell(HeaderRow.BillingMode)
+                .AddCell(HeaderRow.PricingMethod)
+                .AddCell(HeaderRow.ForecastMethod)
+                .NewLine();
+
+
+            for (var i = 0; i < maxLength; i++)
+            {
+                csvBuilder.AddCell(products.Get(i))
+                    .AddCell(billingUnit.Get(i))
+                    .AddCell(currency.Get(i))
+                    .AddCell(billingMode.Get(i))
+                    .AddCell(pricingMethod.Get(i))
+                    .AddCell(forecastMethod.Get(i))
+                    .NewLine();
+            }
+
+            // If you modify the number of lines writted by the following section, change RowGapBetweenMetadataAndTemplate value
+            csvBuilder.NewLine();
+        }
+
         private static string[] GetAllEnumValuesExcept<T>(params T[] exception) where T : Enum
         {
             return Enum.GetValues(typeof(T)).Cast<T>().Except(exception).Select(value => $"{value}").ToArray();
@@ -255,7 +263,7 @@ namespace Billing.Contracts.Infra.Offers
         {
             Map(o => o.Name).Name(HeaderRow.Name);
             Map(o => o.ProductName).Name(HeaderRow.Product);
-            Map(o => o.BillingUnit).Name(HeaderRow.CountUnit).TypeConverter(new NullableEnumConverter<ParsedBillingUnit>());
+            Map(o => o.BillingUnit).Name(HeaderRow.BillingUnit).TypeConverter(new NullableEnumConverter<ParsedBillingUnit>());
             Map(o => o.Currency).Name(HeaderRow.Currency).TypeConverter(new NullableEnumConverter<ParsedCurrency>());
             Map(o => o.Category).Name(HeaderRow.Tag);
             Map(o => o.BillingMode).Name(HeaderRow.BillingMode).TypeConverter(new NullableEnumConverter<ParsedBillingMode>());
