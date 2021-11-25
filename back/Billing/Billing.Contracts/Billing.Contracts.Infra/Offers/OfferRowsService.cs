@@ -1,6 +1,5 @@
 using Billing.Contracts.Domain.Offers.Interfaces;
 using Billing.Contracts.Domain.Offers.Parsing;
-using Billing.Products.Domain;
 using Billing.Products.Domain.Interfaces;
 using CsvHelper;
 using CsvHelper.Configuration;
@@ -57,21 +56,20 @@ namespace Billing.Contracts.Infra.Offers
         public async Task<List<ParsedOffer>> UploadAsync(Stream stream)
         {
             var products = await _productsStore.GetAsync(ProductsFilter.All, new ProductsIncludes());
-
-            var offerRows = GetOfferRows(stream, products);
-
+            var offerRows = GetOfferRows(stream);
             var importedOffers = _parsedOffersService.ConvertToParsedOffers(offerRows, products);
-
             return importedOffers;
         }
 
         public async Task<Stream> GetTemplateStreamAsync()
         {
-            var csvBuilder = new CsvBuilder();
-            await AddTemplateHelpAsync(csvBuilder);
-            csvBuilder.AddCell(HeaderRow.LimitWarning).NewLine();
-            AddTemplateWithExamples(csvBuilder.StringBuilder);
-            return new MemoryStream(Encoding.UTF8.GetBytes(csvBuilder.ToString()));
+            var builder = new StringBuilder();
+            var products = await _productsStore.GetAsync(ProductsFilter.All, ProductsIncludes.All);
+            TemplateHelper.AddTemplateHelp(builder, products);
+            builder.AppendLine();
+            builder.AppendLine(HeaderRow.LimitWarning);
+            AddTemplateWithExamples(builder);
+            return new MemoryStream(Encoding.UTF8.GetBytes(builder.ToString()));
         }
 
         private static void AddTemplateWithExamples(StringBuilder stringBuilder)
@@ -79,142 +77,11 @@ namespace Billing.Contracts.Infra.Offers
             var writer = new CsvWriter(new StringWriter(stringBuilder), _config);
             writer.Context.RegisterClassMap<OfferRowMap>();
             writer.WriteHeader<OfferRow>();
-
-            var cleemy = new OfferRow
-            {
-                Name = "Cleemy template 2021",
-                ProductName = "Cleemy",
-                BillingUnit = ParsedBillingUnit.ActiveUsers,
-                Currency = ParsedCurrency.EUR,
-                Category = "Catalogue",
-                BillingMode = ParsedBillingMode.ActiveUsers,
-                PricingMethod = ParsedPricingMethod.Linear,
-                ForecastMethod = ParsedForecastMethod.LastRealMonth,
-                StartsOn = new DateTime(2002, 01, 01),
-                MinIncludedCount = 0,
-                MaxIncludedCount = 10,
-                UnitPrice = 0,
-                FixedPrice = 50,
-            };
-
-            var figgo = new OfferRow
-            {
-                Name = "Figgo template 2021",
-                ProductName = "Figgo",
-                BillingUnit = ParsedBillingUnit.Users,
-                Currency = ParsedCurrency.CHF,
-                Category = "Catalogue",
-                BillingMode = ParsedBillingMode.UsersWithAccess,
-                PricingMethod = ParsedPricingMethod.Linear,
-                ForecastMethod = ParsedForecastMethod.LastRealMonth,
-                StartsOn = new DateTime(2002, 01, 01),
-                MinIncludedCount = 0,
-                MaxIncludedCount = 10,
-                UnitPrice = 0,
-                FixedPrice = 50,
-            };
-
             writer.NextRecord();
-            writer.WriteRecords(new List<OfferRow>
-            {
-                cleemy,
-                TemplateExample.PriceRow(11, 20, 2, 0),
-                TemplateExample.PriceRow(21, 50, 1.9m, 0),
-                TemplateExample.PriceRow(51, 100, 1.5m, 0),
-                TemplateExample.PriceRow(101, 1000, 1, 0),
-                TemplateExample.PriceListStart(new DateTime(2024, 05, 01), 0, 10, 0, 30),
-                TemplateExample.PriceRow(11, 20, 1.5m, 0),
-                TemplateExample.PriceRow(21, 50, 1.4m, 0),
-                TemplateExample.PriceRow(51, 100, 1, 0),
-                TemplateExample.PriceRow(101, 1000, 0.5m, 0),
-                figgo,
-                TemplateExample.PriceRow(11, 20, 2, 0),
-                TemplateExample.PriceRow(21, 50, 1.85m, 0),
-                TemplateExample.PriceRow(51, 1000, 1.25m, 0),
-                TemplateExample.PriceListStart(new DateTime(2025, 01, 01), 0, 10, 0, 30),
-                TemplateExample.PriceRow(11, 20, 1.5m, 0),
-                TemplateExample.PriceRow(21, 50, 1.4m, 0),
-                TemplateExample.PriceRow(51, 1000, 1.2m, 0),
-            });
+            writer.WriteRecords(TemplateHelper.GetExamples());
         }
 
-        private async Task AddTemplateHelpAsync(CsvBuilder csvBuilder)
-        {
-            var products = (await _productsStore.GetAsync(ProductsFilter.All, ProductsIncludes.All)).Select(p => p.Name).ToArray().ToCells();
-            var billingUnit = GetAllEnumValuesExcept(ParsedBillingUnit.Unknown).ToCells();
-            var billingMode = GetAllEnumValuesExcept(ParsedBillingMode.Unknown).ToCells();
-            var forecastMethod = GetAllEnumValuesExcept(ParsedForecastMethod.Unknown).ToCells();
-            var pricingMethod = GetAllEnumValuesExcept(ParsedPricingMethod.Unknown).ToCells();
-            var currency = GetAllEnumValuesExcept(ParsedCurrency.Unknown).ToCells();
-
-            var maxLength = products.Length
-                .MaxLength(billingUnit)
-                .MaxLength(billingMode)
-                .MaxLength(forecastMethod)
-                .MaxLength(pricingMethod)
-                .MaxLength(currency);
-
-            csvBuilder.AddCell(HeaderRow.Product)
-                .AddCell(HeaderRow.BillingUnit)
-                .AddCell(HeaderRow.Currency)
-                .AddCell(HeaderRow.BillingMode)
-                .AddCell(HeaderRow.PricingMethod)
-                .AddCell(HeaderRow.ForecastMethod)
-                .NewLine();
-
-
-            for (var i = 0; i < maxLength; i++)
-            {
-                csvBuilder.AddCell(products.Get(i))
-                    .AddCell(billingUnit.Get(i))
-                    .AddCell(currency.Get(i))
-                    .AddCell(billingMode.Get(i))
-                    .AddCell(pricingMethod.Get(i))
-                    .AddCell(forecastMethod.Get(i))
-                    .NewLine();
-            }
-
-            // If you modify the number of lines writted by the following section, change RowGapBetweenMetadataAndTemplate value
-            csvBuilder.NewLine();
-        }
-
-        private static string[] GetAllEnumValuesExcept<T>(params T[] exception) where T : Enum
-        {
-            return Enum.GetValues(typeof(T)).Cast<T>().Except(exception).Select(value => $"{value}").ToArray();
-        }
-
-        private class CsvBuilder
-        {
-            public StringBuilder StringBuilder { get; } = new StringBuilder();
-
-            private bool _isCurrentLineEmpty = true;
-
-            public CsvBuilder NewLine()
-            {
-                StringBuilder.AppendLine();
-                _isCurrentLineEmpty = true;
-
-                return this;
-            }
-
-            public CsvBuilder AddCell(string value)
-            {
-                if (!_isCurrentLineEmpty)
-                {
-                    StringBuilder.Append(',');
-                }
-                StringBuilder.Append(value);
-                _isCurrentLineEmpty = false;
-
-                return this;
-            }
-
-            public override string ToString()
-            {
-                return StringBuilder.ToString();
-            }
-        }
-        private List<OfferRow> GetOfferRows(Stream stream, List<Product> products)
+        private List<OfferRow> GetOfferRows(Stream stream)
         {
             using var templateHelpDetector = new TemplateHelpDetector(stream);
             var containsTemplateHelp = templateHelpDetector.ContainsTemplateHelp();
