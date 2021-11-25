@@ -1,0 +1,6 @@
+@import "theming.import";
+
+.mod-outlined {
+  box-shadow: inset 0 0 0 1px _color("grey", "500");
+  color: _color('text.default');
+}

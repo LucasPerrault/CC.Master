@@ -5,13 +5,15 @@ import { TranslatePipe } from '@cc/aspects/translate';
 import { INavigationTab, NavigationPath } from '@cc/common/navigation';
 import { IContract } from '@cc/domain/billing/contracts';
 import { BehaviorSubject, combineLatest, from, Observable, ReplaySubject, Subject } from 'rxjs';
-import { catchError, finalize, map, takeUntil } from 'rxjs/operators';
+import { catchError, finalize, map, startWith, take, takeUntil } from 'rxjs/operators';
 
 import { ContractsModalTabPath } from './constants/contracts-modal-tab-path.enum';
 import { contractsModalTabs } from './constants/contracts-modal-tabs.const';
 import { ContractManagementService } from './contract-management.service';
 import { ContractManagementDataService } from './contract-management-data.service';
 import { ValidationContextStoreService } from './validation-context-store.service';
+import { getButtonState, toSubmissionState } from '@cc/common/forms';
+import { ValidationRestrictionsService } from './validation-restrictions.service';
 
 @Component({
   selector: 'cc-contracts-manage-modal',
@@ -23,9 +25,16 @@ export class ContractManagementComponent implements OnInit, OnDestroy {
   public isContractLoading$: ReplaySubject<boolean> = new ReplaySubject<boolean>(1);
   public isNotFound$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
+  public deleteButtonClass$: Subject<string> = new Subject<string>();
+
   public get isLoading$(): Observable<boolean> {
     return combineLatest([this.isContractLoading$, this.contextStoreService.isLoading$])
       .pipe(map(loadings => loadings.every(isLoading => !!isLoading)));
+  }
+
+  public get canDeleteContract$(): Observable<boolean> {
+    return this.contextStoreService.context$
+      .pipe(map(c => this.restrictionsService.canDeleteContracts(c)), startWith(false));
   }
 
   private readonly contractId: number;
@@ -40,11 +49,12 @@ export class ContractManagementComponent implements OnInit, OnDestroy {
   constructor(
     private rightsService: RightsService,
     private activatedRoute: ActivatedRoute,
-    private manageModalDataService: ContractManagementDataService,
+    private dataService: ContractManagementDataService,
     private translatePipe: TranslatePipe,
     private router: Router,
     private contractsManageModalService: ContractManagementService,
     private contextStoreService: ValidationContextStoreService,
+    private restrictionsService: ValidationRestrictionsService,
   ) {
     this.contractId = parseInt(this.activatedRoute.snapshot.paramMap.get('id'), 10);
   }
@@ -68,6 +78,17 @@ export class ContractManagementComponent implements OnInit, OnDestroy {
     this.destroy$.complete();
   }
 
+  public delete(): void {
+    this.dataService.deleteContract$(this.contractId)
+      .pipe(
+        take(1),
+        toSubmissionState(),
+        map(state => getButtonState(state)),
+        finalize(() => this.redirectToContracts()),
+      )
+      .subscribe(state => this.deleteButtonClass$.next(state));
+  }
+
   public redirectToContracts(): void {
     const route = `${ NavigationPath.Contracts }/${ NavigationPath.ContractsManage }`;
     this.router.navigate([route], {
@@ -84,7 +105,7 @@ export class ContractManagementComponent implements OnInit, OnDestroy {
   private updateContractTitle(): void {
     this.isContractLoading$.next(true);
 
-    this.manageModalDataService.getContractById$(this.contractId)
+    this.dataService.getContractById$(this.contractId)
       .pipe(
         takeUntil(this.destroy$),
         finalize(() => this.isContractLoading$.next(false)),

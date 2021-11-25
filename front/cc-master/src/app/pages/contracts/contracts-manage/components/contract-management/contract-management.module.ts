@@ -17,6 +17,8 @@ import { EstablishmentTabModule } from './tabs/establishment-tab/establishment-t
 import { HistoryTabModule } from './tabs/history-tab/history-tab.module';
 import { ValidationContextDataService } from './validation-context-store.data';
 import { ValidationContextStoreService } from './validation-context-store.service';
+import { LuTooltipTriggerModule } from '@lucca-front/ng/tooltip';
+import { ValidationRestrictionsService } from './validation-restrictions.service';
 
 @NgModule({
   declarations: [ContractManagementComponent],
@@ -33,12 +35,14 @@ import { ValidationContextStoreService } from './validation-context-store.servic
     AccountingTabModule,
     EstablishmentTabModule,
     ErrorNotFoundTabModule,
+    LuTooltipTriggerModule,
   ],
   providers: [
     ContractManagementService,
     ContractManagementDataService,
     ValidationContextStoreService,
     ValidationContextDataService,
+    ValidationRestrictionsService,
   ],
 })
 export class ContractManagementModule { }

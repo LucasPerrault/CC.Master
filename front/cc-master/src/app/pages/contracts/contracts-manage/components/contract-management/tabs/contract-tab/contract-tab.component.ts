@@ -4,16 +4,14 @@ import { ActivatedRoute } from '@angular/router';
 import { Operation, RightsService } from '@cc/aspects/rights';
 import { getButtonState, toSubmissionState } from '@cc/common/forms';
 import { IContractForm } from '@cc/domain/billing/contracts';
-import { DistributorsService } from '@cc/domain/billing/distributors';
-import { combineLatest, Observable, ReplaySubject, Subject } from 'rxjs';
-import { finalize, map, startWith, switchMap, take } from 'rxjs/operators';
+import { ReplaySubject, Subject } from 'rxjs';
+import { finalize, map, take } from 'rxjs/operators';
 
 import { ContractsListService } from '../../../../services/contracts-list.service';
 import { ContractManagementService } from '../../contract-management.service';
 import { IValidationContext } from '../../validation-context-store.data';
 import { ValidationContextStoreService } from '../../validation-context-store.service';
 import { IContractDetailed } from './models/contract-detailed.interface';
-import { ContractActionRestrictionsService } from './services/contract-action-restrictions.service.';
 import { ContractTabService } from './services/contract-tab.service';
 
 @Component({
@@ -27,18 +25,9 @@ export class ContractTabComponent implements OnInit {
   public contractForm: FormControl = new FormControl();
   public validationContext$: ReplaySubject<IValidationContext> = new ReplaySubject(1);
   public formInformation$: ReplaySubject<IContractFormInformation> = new ReplaySubject(1);
-  public showDeletionCallout = true;
 
   public isLoading$: ReplaySubject<boolean> = new ReplaySubject<boolean>(1);
   public editButtonState$: Subject<string> = new Subject<string>();
-  public deleteState$: Subject<string> = new Subject<string>();
-
-  public get canDeleteContract$(): Observable<boolean> {
-    return this.validationContext$.pipe(
-      map(c => this.contractFormValidationService.canDeleteContracts(c)),
-      startWith(false),
-    );
-  }
 
   public get canEditContract(): boolean {
     return this.rightsService.hasOperation(Operation.EditContracts);
@@ -54,7 +43,6 @@ export class ContractTabComponent implements OnInit {
     private rightsService: RightsService,
     private activatedRoute: ActivatedRoute,
     private contractTabService: ContractTabService,
-    private contractFormValidationService: ContractActionRestrictionsService,
     private contractsManageModalService: ContractManagementService,
     private contractsListService: ContractsListService,
     private contextStoreService: ValidationContextStoreService,
@@ -86,26 +74,8 @@ export class ContractTabComponent implements OnInit {
       .subscribe(buttonState => this.editButtonState$.next(buttonState));
   }
 
-  public delete(): void {
-    this.contractTabService.deleteContract$(this.contractId)
-      .pipe(
-        take(1),
-        toSubmissionState(),
-        map(state => getButtonState(state)),
-        finalize(() => {
-          this.contractsListService.refresh();
-          this.contractsManageModalService.close();
-        }),
-      )
-      .subscribe(state => this.deleteState$.next(state));
-  }
-
   public close(): void {
     this.contractsManageModalService.close();
-  }
-
-  public hideDeletionCallout(): void {
-    this.showDeletionCallout = false;
   }
 
   private toContractForm(contractDetailed: IContractDetailed): IContractForm {

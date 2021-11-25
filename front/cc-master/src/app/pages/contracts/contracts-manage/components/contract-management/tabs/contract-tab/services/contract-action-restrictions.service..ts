@@ -1,19 +1,12 @@
 import { Injectable } from '@angular/core';
-import { Operation, RightsService } from '@cc/aspects/rights';
 
 import { IValidationContext } from '../../../validation-context-store.data';
+import { ValidationRestrictionsService } from '../../../validation-restrictions.service';
 
 
 @Injectable()
 export class ContractActionRestrictionsService {
-  constructor(private rightsService: RightsService) {}
-
-  public canDeleteContracts(context: IValidationContext): boolean {
-    return this.canEditContract()
-      && !this.hasRealCounts(context)
-      && !this.hasActiveEstablishments(context)
-      && !this.hasUnletteredContractEntries(context);
-  }
+  constructor(private restrictionsService: ValidationRestrictionsService) {}
 
   public canEditDistributor(context: IValidationContext): boolean {
     return this.canEditContract()
@@ -60,11 +53,11 @@ export class ContractActionRestrictionsService {
   }
 
   public hasActiveEstablishments(context: IValidationContext): boolean {
-    return !!context?.activeEstablishmentNumber;
+    return this.restrictionsService.hasActiveEstablishments(context);
   }
 
   public hasRealCounts(context: IValidationContext): boolean {
-    return !!context?.realCounts?.length;
+    return this.restrictionsService.hasRealCounts(context);
   }
 
   public hasContractEntries(context: IValidationContext): boolean {
@@ -72,7 +65,7 @@ export class ContractActionRestrictionsService {
   }
 
   public hasUnletteredContractEntries(context: IValidationContext): boolean {
-    return !!context?.contractEntries?.filter(ce => ce.letter === null).length;
+    return this.restrictionsService.hasUnletteredContractEntries(context);
   }
 
   public hasLetteredContractEntries(context: IValidationContext): boolean {
@@ -80,6 +73,6 @@ export class ContractActionRestrictionsService {
   }
 
   public canEditContract(): boolean {
-    return this.rightsService.hasOperation(Operation.EditContracts);
+    return this.restrictionsService.canEditContract();
   }
 }
