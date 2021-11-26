@@ -2,12 +2,14 @@ import { Component, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { TimelineCountsService } from '@cc/domain/billing/counts/timeline-counts-service';
-import { forkJoin, Observable, ReplaySubject } from 'rxjs';
+import { forkJoin, Observable, ReplaySubject, Subject } from 'rxjs';
 import { finalize, map, take } from 'rxjs/operators';
 
+import { ContractManagementService } from '../../contract-management.service';
 import { IOfferContract } from './models/offer-contract.interface';
 import { ISimilarOfferContext } from './models/similar-offer-context.interface';
 import { OfferTabDataService } from './services/offer-tab-data.service';
+import { getButtonState, toSubmissionState } from '@cc/common/forms';
 
 @Component({
   selector: 'cc-offer-tab',
@@ -20,11 +22,17 @@ export class OfferTabComponent implements OnInit {
   public formControl: FormControl = new FormControl();
   public context$: ReplaySubject<ISimilarOfferContext> = new ReplaySubject<ISimilarOfferContext>(1);
 
+  public editButtonClass$: Subject<string> = new Subject<string>();
+
   public get contractId(): number {
     return parseInt(this.activatedRoute.parent.snapshot.paramMap.get('id'), 10);
   }
 
-  constructor(private activatedRoute: ActivatedRoute, private dataService: OfferTabDataService) { }
+  constructor(
+    private activatedRoute: ActivatedRoute,
+    private dataService: OfferTabDataService,
+    private pageService: ContractManagementService,
+  ) { }
 
   public ngOnInit(): void {
     this.isLoading$.next(true);
@@ -37,6 +45,17 @@ export class OfferTabComponent implements OnInit {
     forkJoin(requests$)
       .pipe(take(1), finalize(() => this.isLoading$.next(false)))
       .subscribe(([contract, lastCountPeriod]: [IOfferContract, Date]) => this.setSimilarOfferContext(contract, lastCountPeriod));
+  }
+
+  public edit() {
+    const offerId = this.formControl.value?.id;
+    this.dataService.editContract$(this.contractId, offerId)
+      .pipe(take(1), toSubmissionState(), map(state => getButtonState(state)))
+      .subscribe(this.editButtonClass$);
+  }
+
+  public close(): void {
+    this.pageService.close();
   }
 
   private getLastCountPeriod$(contractId: number): Observable<Date> {

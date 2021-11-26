@@ -18,4 +18,10 @@ export class OfferTabDataService {
     const url = `/api/contracts/${ contractId }`;
     return this.httpClient.get<IOfferContract>(url);
   }
+
+  public editContract$(contractId: number, offerId: number): Observable<void> {
+    const url = `/api/v3/newcontracts/${ contractId }/offer`;
+    const body = { offerId };
+    return this.httpClient.put<void>(url, body);
+  }
 }

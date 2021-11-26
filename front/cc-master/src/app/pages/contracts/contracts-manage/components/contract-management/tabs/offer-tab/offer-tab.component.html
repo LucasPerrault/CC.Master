@@ -19,4 +19,17 @@
       </span>
     </label>
   </div>
+
+  <footer class="page-footer">
+    <div class="page-footer-right">
+      <button class="button"
+              [disabled]="!formControl.dirty || formControl.invalid"
+              [ngClass]="editButtonClass$ | async"
+              (click)="edit()">
+        {{ 'front_contractPage_offerTab_edit_button_label' | translate }}
+      </button>
+      <button class="button mod-link" (click)="close()">
+        {{ 'front_contractPage_modal_cancel_button_label' | translate }}
+      </button>    </div>
+  </footer>
 </ng-template>
