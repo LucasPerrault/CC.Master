@@ -1,4 +1,5 @@
-﻿using TechTalk.SpecFlow;
+using Lucca.Core.Shared.Domain.Exceptions;
+using TechTalk.SpecFlow;
 using Xunit;
 
 namespace Testing.Specflow
@@ -18,6 +19,13 @@ namespace Testing.Specflow
         {
             Assert.NotNull(_testContext.ThrownException);
             Assert.Contains(errorMessageExtract, _testContext.ThrownException.Message);
+        }
+
+        [Then(@"user should get a not found exception")]
+        public void ThenUserShouldGetANotFoundException()
+        {
+            Assert.NotNull(_testContext.ThrownException);
+            Assert.IsType<NotFoundException>(_testContext.ThrownException);
         }
 
         [Then(@"user should not get an error")]
