@@ -15,3 +15,8 @@
 .mod-hidden {
   display: none;
 }
+
+.mod-error {
+  color: _color('error', 600);
+  background-color: _color('error', 50);
+}

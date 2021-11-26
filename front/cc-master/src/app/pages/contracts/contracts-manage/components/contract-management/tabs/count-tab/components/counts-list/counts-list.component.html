@@ -1,7 +1,7 @@
 <table class="table">
   <thead class="table-head">
     <tr class="table-head-row">
-      <th class="table-head-row-cell">
+      <th class="table-head-row-cell size-smallest">
         <label class="checkbox" *ngIf="canDeleteAtLeastOneCount(entries)">
           <input class="checkbox-input" type="checkbox" name="countSelection" [checked]="isAllSelected(entries)" (click)="selectAll(entries)">
           <span class="checkbox-label"></span>
@@ -11,25 +11,25 @@
       <th class="table-head-row-cell mod-alignRight">
         {{ 'front_contractPage_countsList_column_number' | translate }}
       </th>
-      <th class="table-head-row-cell mod-alignRight" *ngIf="!areAccountingNumberEqual">
+      <th class="table-head-row-cell" *ngIf="!areAccountingNumberEqual">
         {{ 'front_contractPage_countsList_column_accountingNumber' | translate }}
       </th>
-      <th class="table-head-row-cell mod-alignRight">
+      <th class="table-head-row-cell">
         {{ 'front_contractPage_countsList_column_fixedPrice' | translate }}
       </th>
-      <th class="table-head-row-cell mod-alignRight">
+      <th class="table-head-row-cell">
         {{ 'front_contractPage_countsList_column_unitPrice' | translate }}
       </th>
-      <th class="table-head-row-cell mod-alignRight" *ngIf="!contract?.isDirectSales">
+      <th class="table-head-row-cell" *ngIf="!contract?.isDirectSales">
         {{ 'front_contractPage_countsList_column_distributorRebate' | translate }}
       </th>
-      <th class="table-head-row-cell mod-alignRight">
+      <th class="table-head-row-cell">
         {{ 'front_contractPage_countsList_column_additionalRebate' | translate }}
       </th>
-      <th class="table-head-row-cell mod-alignRight" *ngIf="!contract?.isDirectSales">
+      <th class="table-head-row-cell" *ngIf="!contract?.isDirectSales">
         {{ 'front_contractPage_countsList_column_totalBillableInEuro' | translate }}
       </th>
-      <th class="table-head-row-cell mod-alignRight">
+      <th class="table-head-row-cell">
         {{ 'front_contractPage_countsList_column_totalLuccaInEuro' | translate }}
       </th>
       <th class="table-head-row-cell">
@@ -40,15 +40,11 @@
     </tr>
   </thead>
   <tbody class="table-body">
-    <tr class="table-body-row palette-error"
+    <tr class="table-body-row"
         *ngFor="let entry of entries"
-        [ngClass]="{ 'mod-draft': isCountDraft(entry), 'mod-hidden': isCountDraft(entry) && !showDraftCounts }">
-      <td class="table-body-row-cell">
-        <span *ngIf="!entry.count"
-              class="lucca-icon icon-error u-textError"
-              [luTooltip]="'front_contractPage_countList_missingPeriod_text' | translate">
-        </span>
-        <label class="checkbox"
+        [ngClass]="{ 'mod-draft': isCountDraft(entry), 'mod-hidden': isCountDraft(entry) && !showDraftCounts, 'mod-error': !entry?.count }">
+      <td class="table-body-row-cell size-smallest">
+        <label *ngIf="!!entry.count; else isMissingCountPeriod" class="checkbox"
                [luTooltip]="getDeleteRightsInfoTooltip(entry)"
                [luTooltipDisabled]="!!entry.count && canDeleteCount(entry)">
           <input class="checkbox-input" type="checkbox" name="countSelection"
@@ -56,6 +52,12 @@
                  [checked]="isSelected(entry.count)" (click)="select(entry.count)">
           <span class="checkbox-label"></span>
         </label>
+
+        <ng-template #isMissingCountPeriod>
+          <span class="lucca-icon icon-error u-textError"
+                [luTooltip]="'front_contractPage_countList_missingPeriod_text' | translate">
+        </span>
+        </ng-template>
       </td>
       <td class="table-body-row-cell">
         {{ entry.month | date: 'MM/y' }}
