@@ -2,21 +2,7 @@
 
 <ng-template #isNotLoading>
   <div class="page-content u-paddingReset">
-    <cc-counts-detail-download-callout class="u-displayBlock u-marginStandard"
-                                       *ngIf="!isDownloadFormDisplay"
-                                       [firstCountWithDetails]="firstCountWithDetails$ | async"
-                                       (download)="toggleDownloadFormDisplay()">
-    </cc-counts-detail-download-callout>
-    <cc-counts-detail-download-form class="u-marginStandard"
-                                    *ngIf="isDownloadFormDisplay"
-                                    (downloadCountsDetail)="download($event)"
-                                    (cancel)="toggleDownloadFormDisplay()"
-                                    [downloadButtonState]="downloadButtonState$ | async"
-                                    [firstCountWithDetails]="firstCountWithDetails$ | async"
-                                    [contract]="contract$ | async">
-    </cc-counts-detail-download-form>
-
-    <header class="u-displayFlex u-marginStandard">
+    <header class="u-displayFlex u-flexGrow1 u-marginStandard">
       <cc-draft-actions-button-group [draftCounts]="draftCounts$ | async"
                                      [showDraftCounts]="showDraftCounts"
                                      (toggleDraftDisplay)="toggleDraftCountsDisplay()"
@@ -25,6 +11,15 @@
                                      (deleteDraft)="deleteDraftCount()"
                                      [deleteButtonState]="deleteDraftButtonState$ | async">
       </cc-draft-actions-button-group>
+
+      <span [luTooltip]="'front_contractPage_counts_details_downloadButton_info' | translate"
+            [luTooltipDisabled]="hasDetails$ | async" luTooltipPosition="below">
+        <button [disabled]="(hasDetails$ | async) === false"
+                (click)="openDownloadModal()"
+                class="button palette-grey">
+          {{ 'front_contractPage_counts_details_downloadButton_label' | translate }}
+        </button>
+      </span>
     </header>
 
     <cc-counts-list [countListEntries]="countListEntries$ | async"
@@ -39,7 +34,7 @@
       <button *ngIf="canChargeCount()"
               class="button"
               (click)="openReplayModal()">
-        {{ 'front_contractPage_counts_replay_action_label' | translate }}
+        {{ 'contracts_count_replayReal_label' | translate }}
       </button>
       <button *ngIf="canDeleteCount()"
               class="button mod-link"

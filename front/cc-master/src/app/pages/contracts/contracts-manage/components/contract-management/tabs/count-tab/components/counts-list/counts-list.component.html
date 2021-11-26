@@ -48,8 +48,12 @@
               class="lucca-icon icon-error u-textError"
               [luTooltip]="'front_contractPage_countList_missingPeriod_text' | translate">
         </span>
-        <label class="checkbox" *ngIf="!!entry.count && canDeleteCount(entry)">
-          <input class="checkbox-input" type="checkbox" name="countSelection" [checked]="isSelected(entry.count)" (click)="select(entry.count)">
+        <label class="checkbox"
+               [luTooltip]="getDeleteRightsInfoTooltip(entry)"
+               [luTooltipDisabled]="!!entry.count && canDeleteCount(entry)">
+          <input class="checkbox-input" type="checkbox" name="countSelection"
+                 [disabled]="isCountDraft(entry) || (!!entry.count && !canDeleteCount(entry))"
+                 [checked]="isSelected(entry.count)" (click)="select(entry.count)">
           <span class="checkbox-label"></span>
         </label>
       </td>

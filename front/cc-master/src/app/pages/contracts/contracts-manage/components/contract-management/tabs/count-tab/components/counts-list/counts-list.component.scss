@@ -1,3 +1,5 @@
+@import "theming.import";
+
 .table .table-head-row-cell {
   position: sticky;
   top: 0;
@@ -6,8 +8,8 @@
 }
 
 .mod-draft {
-  opacity: .5;
-  font-style: italic;
+  opacity: .7;
+  background-color: _color('secondary', 100);
 }
 
 .mod-hidden {

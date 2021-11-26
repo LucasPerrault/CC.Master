@@ -1,5 +1,6 @@
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
+import { TranslatePipe } from '@cc/aspects/translate';
 import { CountCode } from '@cc/domain/billing/counts';
 import { BehaviorSubject, Subject } from 'rxjs';
 import { skip, takeUntil } from 'rxjs/operators';
@@ -42,7 +43,7 @@ export class CountsListComponent implements OnInit, OnDestroy, ControlValueAcces
     = new BehaviorSubject<IDetailedCount[]>([]);
   private destroy$: Subject<void> = new Subject<void>();
 
-  constructor(private restrictionsService: CountContractsRestrictionsService) { }
+  constructor(private restrictionsService: CountContractsRestrictionsService, private translatePipe: TranslatePipe) { }
 
   public ngOnInit(): void {
     this.countsSelected$
@@ -118,6 +119,18 @@ export class CountsListComponent implements OnInit, OnDestroy, ControlValueAcces
 
   public canDeleteCount(entry: ICountListEntry): boolean {
     return this.restrictionsService.canDeleteCount(entry);
+  }
+
+  public getDeleteRightsInfoTooltip(entry: ICountListEntry): string {
+    if (this.isCountDraft(entry)) {
+      return this.translatePipe.transform('contracts_count_cannotDelete_draftCount_info');
+    }
+
+    if (!!entry.count && !this.canDeleteCount(entry)) {
+      return this.translatePipe.transform('contracts_count_cannotDelete_realCount_info');
+    }
+
+    return '';
   }
 
   private setAreCountsNumberEqual(entries: ICountListEntry[]): void {
