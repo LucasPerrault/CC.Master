@@ -1,4 +1,5 @@
 using Authentication.Domain;
+using Environments.Domain;
 using Lucca.Core.Rights.Abstractions;
 using Rights.Domain;
 using Rights.Domain.Abstractions;
@@ -6,6 +7,7 @@ using System;
 using System.Linq;
 using TechTalk.SpecFlow;
 using Testing.Infra;
+using Xunit;
 
 namespace Testing.Specflow
 {
@@ -30,6 +32,19 @@ namespace Testing.Specflow
         public void GivenAUserWithOperationAndScope(Operation op, AccessRightScope scope)
         {
             _context.TestPermissionsStore.AddUserPermission(( (CloudControlUserClaimsPrincipal)_context.Principal ).User.Id, op, GetScope(scope));
+        }
+
+        [Given("user has operation '(.*)' with scope '(.*)' for purpose '(.*)'")]
+        public void GivenAUserWithOperationAndScope(Operation op, AccessRightScope scope, EnvironmentPurpose purpose)
+        {
+            _context.TestPermissionsStore.AddUserPermission(((CloudControlUserClaimsPrincipal)_context.Principal).User.Id, op, GetScope(scope), purpose);
+        }
+
+        [Given(@"a user with no operation '(.*)'")]
+        public void GivenAUserWithNoOperation(Operation op)
+        {
+            _context.Principal = TestPrincipal.NewUser();
+            Assert.True(_context.TestPermissionsStore.HasNotAnyOperation(((CloudControlUserClaimsPrincipal)_context.Principal).User.Id, op));
         }
 
         private Scope GetScope(AccessRightScope scope)
