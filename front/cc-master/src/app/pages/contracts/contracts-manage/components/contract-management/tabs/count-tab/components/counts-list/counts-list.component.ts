@@ -121,7 +121,7 @@ export class CountsListComponent implements OnInit, OnDestroy, ControlValueAcces
     return this.restrictionsService.canDeleteCount(entry);
   }
 
-  public getDeleteRightsInfoTooltip(entry: ICountListEntry): string {
+  public getDeletionInfoTooltip(entry: ICountListEntry): string {
     if (this.isCountDraft(entry)) {
       return this.translatePipe.transform('contracts_count_cannotDelete_draftCount_info');
     }
@@ -129,8 +129,6 @@ export class CountsListComponent implements OnInit, OnDestroy, ControlValueAcces
     if (!!entry.count && !this.canDeleteCount(entry)) {
       return this.translatePipe.transform('contracts_count_cannotDelete_realCount_info');
     }
-
-    return '';
   }
 
   private setAreCountsNumberEqual(entries: ICountListEntry[]): void {

@@ -45,8 +45,8 @@
         [ngClass]="{ 'mod-draft': isCountDraft(entry), 'mod-hidden': isCountDraft(entry) && !showDraftCounts, 'mod-error': !entry?.count }">
       <td class="table-body-row-cell size-smallest">
         <label *ngIf="!!entry.count; else isMissingCountPeriod" class="checkbox"
-               [luTooltip]="getDeleteRightsInfoTooltip(entry)"
-               [luTooltipDisabled]="!!entry.count && canDeleteCount(entry)">
+               [luTooltip]="getDeletionInfoTooltip(entry)"
+               [luTooltipDisabled]="!getDeletionInfoTooltip(entry) || (!!entry.count && canDeleteCount(entry))">
           <input class="checkbox-input" type="checkbox" name="countSelection"
                  [disabled]="isCountDraft(entry) || (!!entry.count && !canDeleteCount(entry))"
                  [checked]="isSelected(entry.count)" (click)="select(entry.count)">
