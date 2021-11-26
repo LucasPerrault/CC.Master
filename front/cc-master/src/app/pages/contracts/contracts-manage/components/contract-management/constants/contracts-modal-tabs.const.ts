@@ -27,7 +27,7 @@ export const contractsModalTabs: INavigationTab[] = [
   {
     name: 'front_contractPage_offerTab',
     url: ContractsModalTabPath.Offer,
-    restriction: { operations: [Operation.ReadContracts, Operation.CreateCommercialOffers] },
+    restriction: { operations: [Operation.ReadContracts, Operation.CloseContracts] },
   },
   {
     name: 'front_contractPage_establishmentsTab',
