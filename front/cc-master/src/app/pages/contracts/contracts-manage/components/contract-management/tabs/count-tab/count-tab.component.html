@@ -36,13 +36,18 @@
               (click)="openReplayModal()">
         {{ 'contracts_count_replayReal_label' | translate }}
       </button>
-      <button *ngIf="canDeleteCount()"
-              class="button mod-link"
-              [disabled]="!countsSelected.length"
-              [ngClass]="deleteButtonState$ | async"
-              (click)="delete(countsSelected)">
+      <span class="u-marginLeftSmaller"
+            [luTooltip]="'contracts_count_delete_action_disabled_info' | translate"
+            [luTooltipDisabled]="!!countsSelected.length">
+        <button *ngIf="canDeleteCount()"
+                class="button mod-outline mod-counter"
+                [disabled]="!countsSelected.length"
+                [ngClass]="deleteButtonState$ | async"
+                (click)="delete(countsSelected)">
         {{ 'front_contractPage_counts_delete_action_label' | translate }}
+          <span class="button-counter">{{ countsSelected.length }}</span>
       </button>
+      </span>
     </div>
   </div>
 </ng-template>
