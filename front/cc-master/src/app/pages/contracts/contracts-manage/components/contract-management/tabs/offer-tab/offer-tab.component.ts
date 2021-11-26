@@ -24,15 +24,15 @@ export class OfferTabComponent implements OnInit {
 
   public editButtonClass$: Subject<string> = new Subject<string>();
 
-  public get contractId(): number {
-    return parseInt(this.activatedRoute.parent.snapshot.paramMap.get('id'), 10);
-  }
+  private readonly contractId: number;
 
   constructor(
     private activatedRoute: ActivatedRoute,
     private dataService: OfferTabDataService,
     private pageService: ContractManagementService,
-  ) { }
+  ) {
+    this.contractId = parseInt(this.activatedRoute.parent.snapshot.paramMap.get('id'), 10);
+  }
 
   public ngOnInit(): void {
     this.isLoading$.next(true);
