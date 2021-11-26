@@ -1,1 +1,12 @@
-<p>offer-tab works!</p>
+<div class="loading mod-fullPage" *ngIf="isLoading$ | async; else isNotLoading"></div>
+
+<ng-template #isNotLoading>
+  <div class="page-content">
+    <label class="textfield palette-grey mod-longer is-required u-marginTopStandard">
+      <cc-similar-offer-api-select [formControl]="formControl" [context]="context$ | async" [required]="true"></cc-similar-offer-api-select>
+      <span class="textfield-label">
+        {{ 'front_contractPage_offerTab_similar_offers_label' | translate }}
+      </span>
+    </label>
+  </div>
+</ng-template>
