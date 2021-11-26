@@ -1,0 +1,21 @@
+<lu-select [formControl]="formControl"
+           class="textfield-input"
+           [required]="required"
+           (blur)="onTouch()">
+
+  <ng-container *luDisplayer="let value">{{ value.name }}</ng-container>
+
+  <lu-option-picker-advanced>
+    <header class="lu-picker-header">
+      <lu-api-feeder [api]="api" [filters]="filters" standard="v4"></lu-api-feeder>
+    </header>
+
+    <lu-option *luForOptions="let offer; trackBy: trackBy" [value]="offer">
+        {{ offer.name }}
+    </lu-option>
+
+  </lu-option-picker-advanced>
+
+  <lu-input-clearer></lu-input-clearer>
+</lu-select>
+
