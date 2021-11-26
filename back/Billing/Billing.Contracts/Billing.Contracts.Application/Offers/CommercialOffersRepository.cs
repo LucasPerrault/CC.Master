@@ -3,7 +3,9 @@ using Billing.Contracts.Domain.Offers.Filtering;
 using Billing.Contracts.Domain.Offers.Interfaces;
 using Billing.Contracts.Domain.Offers.Validation;
 using Lucca.Core.Api.Abstractions.Paging;
+using Lucca.Core.Shared.Domain.Exceptions;
 using Rights.Domain.Filtering;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
@@ -41,15 +43,26 @@ namespace Billing.Contracts.Application.Offers
             return await _store.GetPageAsync(accessRight, commercialOfferFilter, pageToken);
         }
 
+        public async Task<Page<CommercialOffer>> GetSimilarOffersAsync(int id, DateTime until)
+        {
+            var accessRight = await _rightsFilter.GetReadAccessAsync(_principal);
+
+            var referenceOffer = await GetReadOnlyByIdAsync(id, accessRight);
+
+            return await _store.GetSimilarOffersAsync(accessRight, referenceOffer, until);
+        }
+
         public async Task<CommercialOffer> GetByIdAsync(int id)
         {
             var accessRight = await _rightsFilter.GetReadAccessAsync(_principal);
-            return await _store.GetReadOnlySingleOfDefaultAsync(CommercialOfferFilter.ForId(id), accessRight);
+
+            return await GetReadOnlyByIdAsync(id, accessRight);
         }
 
         public async Task<Page<string>> GetTagsAsync()
         {
             var accessRight = await _rightsFilter.GetReadAccessAsync(_principal);
+
             return await _store.GetTagsAsync(accessRight);
         }
 
@@ -135,7 +148,13 @@ namespace Billing.Contracts.Application.Offers
 
         private Task<CommercialOffer> GetReadOnlyByIdWithoutRightAsync(int id)
         {
-            return _store.GetReadOnlySingleOfDefaultAsync(CommercialOfferFilter.ForId(id), AccessRight.All);
+            return GetReadOnlyByIdAsync(id, AccessRight.All);
+        }
+
+        private async Task<CommercialOffer> GetReadOnlyByIdAsync(int id, AccessRight accessRight)
+        {
+            return await _store.GetReadOnlySingleOrDefaultAsync(CommercialOfferFilter.ForId(id), accessRight)
+                ?? throw new NotFoundException();
         }
 
         private Task<CommercialOfferUsage> GetOfferUsageAsync(int id)
