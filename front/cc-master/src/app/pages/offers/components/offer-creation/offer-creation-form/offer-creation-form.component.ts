@@ -74,7 +74,7 @@ export class OfferCreationFormComponent implements OnInit, OnDestroy, ControlVal
       [OfferFormKey.PricingMethod]: new FormControl(),
       [OfferFormKey.ForecastMethod]: new FormControl(),
       [OfferFormKey.PriceList]: new FormGroup({
-        [PriceListFormKey.StartsOn]: new FormControl({ value: PriceListsTimelineService.defaultStartsOn, disabled: true }),
+        [PriceListFormKey.StartsOn]: new FormControl(PriceListsTimelineService.defaultStartsOn),
         [PriceListFormKey.Rows]: new FormControl(),
       }),
     });
