@@ -125,7 +125,7 @@ export class CountTabComponent implements OnInit, OnDestroy {
     this.countContractsService.charge$(this.contractId, startOfMonth(countPeriodToCharge), endOfMonth(countPeriodToCharge))
       .pipe(this.toButtonState, finalize(() => {
         this.refresh(this.contractId);
-        this.toggleDraftCountsDisplay();
+        this.showDraftCounts = true;
       }))
       .subscribe(state => this.chargeDraftButtonState$.next(state));
   }
