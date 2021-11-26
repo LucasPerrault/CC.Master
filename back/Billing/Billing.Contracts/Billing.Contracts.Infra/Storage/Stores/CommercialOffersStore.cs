@@ -54,12 +54,12 @@ namespace Billing.Contracts.Infra.Storage.Stores
             };
         }
 
-        public Task<CommercialOffer> GetSingleOfDefaultAsync(CommercialOfferFilter filter, AccessRight accessRight)
+        public Task<CommercialOffer> GetSingleOrDefaultAsync(CommercialOfferFilter filter, AccessRight accessRight)
         {
             return GetQueryable(accessRight, filter).SingleOrDefaultAsync();
         }
 
-        public Task<CommercialOffer> GetReadOnlySingleOfDefaultAsync(CommercialOfferFilter filter, AccessRight accessRight)
+        public Task<CommercialOffer> GetReadOnlySingleOrDefaultAsync(CommercialOfferFilter filter, AccessRight accessRight)
         {
             return GetQueryable(accessRight, filter).AsNoTracking().SingleOrDefaultAsync();
         }
@@ -103,7 +103,7 @@ namespace Billing.Contracts.Infra.Storage.Stores
 
         public async Task ArchiveAsync(int id, AccessRight accessRight)
         {
-            var offer = await GetSingleOfDefaultAsync(CommercialOfferFilter.ForId(id), accessRight);
+            var offer = await GetSingleOrDefaultAsync(CommercialOfferFilter.ForId(id), accessRight);
 
             offer.IsArchived = true;
 
@@ -112,7 +112,7 @@ namespace Billing.Contracts.Infra.Storage.Stores
 
         public async Task<CommercialOffer> AddPriceListAsync(int id, PriceList priceList, AccessRight accessRight)
         {
-            var offer = await GetSingleOfDefaultAsync(CommercialOfferFilter.ForId(id), accessRight);
+            var offer = await GetSingleOrDefaultAsync(CommercialOfferFilter.ForId(id), accessRight);
 
             offer.PriceLists.Add(priceList);
 
@@ -123,7 +123,7 @@ namespace Billing.Contracts.Infra.Storage.Stores
 
         public async Task ModifyPriceListAsync(int id, int listId, PriceList priceList, AccessRight accessRight)
         {
-            var offer = await GetSingleOfDefaultAsync(CommercialOfferFilter.ForId(id), accessRight);
+            var offer = await GetSingleOrDefaultAsync(CommercialOfferFilter.ForId(id), accessRight);
             var oldPriceList = offer.PriceLists.Single(pl => pl.Id == listId);
 
             offer.PriceLists.Remove(oldPriceList);
@@ -134,7 +134,7 @@ namespace Billing.Contracts.Infra.Storage.Stores
 
         public async Task DeletePriceListAsync(int id, int listId, AccessRight accessRight)
         {
-            var offer = await GetSingleOfDefaultAsync(CommercialOfferFilter.ForId(id), accessRight);
+            var offer = await GetSingleOrDefaultAsync(CommercialOfferFilter.ForId(id), accessRight);
             var priceList = offer.PriceLists.Single(pl => pl.Id == listId);
 
             offer.PriceLists.Remove(priceList);

@@ -153,7 +153,7 @@ namespace Billing.Contracts.Application.Offers
 
         private async Task<CommercialOffer> GetReadOnlyByIdAsync(int id, AccessRight accessRight)
         {
-            return await _store.GetReadOnlySingleOfDefaultAsync(CommercialOfferFilter.ForId(id), accessRight)
+            return await _store.GetReadOnlySingleOrDefaultAsync(CommercialOfferFilter.ForId(id), accessRight)
                 ?? throw new NotFoundException();
         }
 

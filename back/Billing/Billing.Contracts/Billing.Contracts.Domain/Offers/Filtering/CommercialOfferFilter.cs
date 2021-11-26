@@ -8,7 +8,7 @@ namespace Billing.Contracts.Domain.Offers.Filtering
         public HashSet<string> Search { get; set; } = new HashSet<string>();
         public HashSet<int> Ids { get; set; } = new HashSet<int>();
         public HashSet<BillingMode> BillingModes { get; set; } = new HashSet<BillingMode>();
-        public HashSet<PricingMethod> PriceMethods { get; set; } = new HashSet<PricingMethod>();
+        public HashSet<PricingMethod> PricingMethods { get; set; } = new HashSet<PricingMethod>();
         public HashSet<ForecastMethod> ForecastMethods { get; set; } = new HashSet<ForecastMethod>();
         public HashSet<string> Tags { get; set; } = new HashSet<string>();
         public HashSet<int> ProductIds { get; set; } = new HashSet<int>();
@@ -21,7 +21,7 @@ namespace Billing.Contracts.Domain.Offers.Filtering
         {
             ProductIds = new HashSet<int> { offer.ProductId },
             BillingModes = new HashSet<BillingMode> { offer.BillingMode },
-            PriceMethods = new HashSet<PricingMethod> { offer.PricingMethod },
+            PricingMethods = new HashSet<PricingMethod> { offer.PricingMethod },
             ForecastMethods = new HashSet<ForecastMethod> { offer.ForecastMethod },
             CurrencyIds = new HashSet<int> { offer.CurrencyId },
         };

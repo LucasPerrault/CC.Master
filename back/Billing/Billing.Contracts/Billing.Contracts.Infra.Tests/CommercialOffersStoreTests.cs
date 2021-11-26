@@ -13,6 +13,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Testing.Infra;
 using Xunit;
 
 namespace Billing.Contracts.Infra.Tests
@@ -25,11 +26,8 @@ namespace Billing.Contracts.Infra.Tests
 
         public CommercialOffersStoreTests()
         {
-            var options = new DbContextOptionsBuilder<ContractsDbContext>()
-                               .UseInMemoryDatabase(databaseName: "CommercialOfferStoreTestsDb")
-                               .Options;
+            _dbContext = InMemoryDbHelper.InitialiseDb<ContractsDbContext>("offers", o => new ContractsDbContext(o));
 
-            _dbContext = new ContractsDbContext(options);
             _queryPagerMock = new Mock<IQueryPager>();
             _queryPagerMock
                 .Setup(p => p.ToPageAsync(It.IsAny<IQueryable<CommercialOffer>>(), It.IsAny<IPageToken>()))
