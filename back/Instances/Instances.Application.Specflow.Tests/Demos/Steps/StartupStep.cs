@@ -38,7 +38,6 @@ namespace Instances.Application.Specflow.Tests.Demos.Steps
                 Name = "Lucca",
                 IsLucca = true,
             };
-            dbContext.Add(luccaDistributor);
             var otherDistributor = new Distributor()
             {
                 Id = 2,
