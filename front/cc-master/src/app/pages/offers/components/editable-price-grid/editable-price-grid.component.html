@@ -59,7 +59,7 @@
     <span *ngIf="formGroup.hasError(validationError.ValidPrices)" class="textfield-messages-error">
       {{ 'offers_forms_validationError_validPrices' | translate }}
     </span>
-    <span *ngIf="hasRequiredError" class="textfield-messages-error">
+    <span *ngIf="formGroup.dirty && formGroup.hasError(validationError.Required)" class="textfield-messages-error">
       {{ 'offers_forms_validationError_required' | translate }}
     </span>
   </div>

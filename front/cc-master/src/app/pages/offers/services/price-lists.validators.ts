@@ -83,6 +83,20 @@ export class PriceListsValidators {
     return !hasListsWithValidPrices ? { [PriceListValidationError.ValidPrices]: true } : null;
   }
 
+  public static required(control: FormControl): ValidationErrors {
+    const priceList: IPriceListForm = control.value;
+    return PriceListsValidators.hasRowsWithNullValue(priceList)
+      ? { [PriceListValidationError.Required]: true }
+      : null;
+  }
+
+  public static requiredRange(control: FormControl): ValidationErrors {
+    const priceLists: IPriceListForm[] = control.value;
+    const hasRowsWithNullValue = priceLists.every(list => PriceListsValidators.hasRowsWithNullValue(list));
+
+    return hasRowsWithNullValue ? { [PriceListValidationError.Required]: true } : null;
+  }
+
   private static isStartedOnFirstDayOfTheMonth(priceList: IPriceListForm): boolean {
     const startDate = !!priceList.startsOn ? new Date(priceList.startsOn) : null;
     return !!startDate && isFirstDayOfMonth(startDate);
@@ -105,5 +119,10 @@ export class PriceListsValidators {
 
   private static hasValidPrices(unitPrice: number, fixedPrice: number): boolean {
     return unitPrice !== 0 || fixedPrice !== 0;
+  }
+
+  private static hasRowsWithNullValue(priceList: IPriceListForm): boolean {
+    return priceList.rows.every(row =>
+      row.maxIncludedCount === null || row.fixedPrice === null || row.unitPrice === null);
   }
 }
