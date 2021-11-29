@@ -43,10 +43,6 @@ export class ContractTabComponent implements OnInit, OnDestroy {
     return parseInt(this.activatedRoute.parent.snapshot.paramMap.get('id'), 10);
   }
 
-  public get hasFormChanged(): boolean {
-    return !this.isEqual(this.contractToEdit$.value, this.contractForm.value);
-  }
-
   private contractToEdit$: BehaviorSubject<IContractDetailed> = new BehaviorSubject<IContractDetailed>(null);
   private destroy$: Subject<void> = new Subject<void>();
 
@@ -104,7 +100,7 @@ export class ContractTabComponent implements OnInit, OnDestroy {
   }
 
   public close(): void {
-    if (!this.hasFormChanged) {
+    if (!this.hasFormChanged()) {
       this.contractsManageModalService.close();
       return;
     }
@@ -116,6 +112,10 @@ export class ContractTabComponent implements OnInit, OnDestroy {
 
   public openCloseConfirmationPopup(): ILuPopupRef<ContractLeavingConfirmationPopupComponent> {
     return this.luPopup.open(ContractLeavingConfirmationPopupComponent);
+  }
+
+  public hasFormChanged(): boolean {
+    return !this.isEqual(this.contractToEdit$.value, this.contractForm.value);
   }
 
   private toContractForm(contractDetailed: IContractDetailed): IContractForm {

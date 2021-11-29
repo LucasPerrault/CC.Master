@@ -12,7 +12,7 @@ export class CanDeactivateAfterEditingForm implements CanDeactivate<ContractTabC
     currentState: RouterStateSnapshot,
     nextState: RouterStateSnapshot,
   ): Observable<boolean|UrlTree>|Promise<boolean|UrlTree>|boolean|UrlTree {
-    if (!component.hasFormChanged || component.isClosePopupConfirmed$.value) {
+    if (!component.hasFormChanged() || component.isClosePopupConfirmed$.value) {
       return of(true);
     }
 
