@@ -77,6 +77,32 @@ namespace Billing.Contracts.Domain.Tests
         }
 
         [Fact]
+        public void ModifyPriceList_Validation_ShouldThrowOnlyIf_PriceListRows_AreNotOrdered()
+        {
+            var usage = new CommercialOfferUsage { OfferId = 1 };
+            var offer = new CommercialOffer()
+                .Build()
+                .WithPriceList(new DateTime(2002, 01, 01))
+                .AndPriceRow(maxIncludedCount: 10, fixedPrice: 1, unitPrice: 0)
+                .AndPriceRow(maxIncludedCount: 20, fixedPrice: 1, unitPrice: 0)
+                .AndPriceRow(maxIncludedCount: 30, fixedPrice: 1, unitPrice: 0);
+
+            var updatedList = new PriceList().BuildFor(offer, offer.PriceLists.First().Id)
+                .StartingOn(new DateTime(2002, 01, 01))
+                .WithPriceRow(maxIncludedCount: 10, fixedPrice: 1, unitPrice: 0)
+                .WithPriceRow(maxIncludedCount: 25, fixedPrice: 1, unitPrice: 0)
+                .WithPriceRow(maxIncludedCount: 30, fixedPrice: 1, unitPrice: 0);
+            ShouldNotThrowWhenModify(offer.PriceLists.First(), updatedList, offer, usage);
+
+            var unorderedList = new PriceList().BuildFor(offer, offer.PriceLists.First().Id)
+                .StartingOn(new DateTime(2002, 01, 01))
+                .WithPriceRow(maxIncludedCount: 10, fixedPrice: 1, unitPrice: 0)
+                .WithPriceRow(maxIncludedCount: 30, fixedPrice: 1, unitPrice: 0)
+                .WithPriceRow(maxIncludedCount: 25, fixedPrice: 1, unitPrice: 0);
+            ShouldThrowWhenModify(offer.PriceLists.First(), unorderedList, offer, usage, t => t.PriceRowsNotOrdered());
+        }
+
+        [Fact]
         public void CreateOffer_Validation_ShouldThrowIf_PriceLists_HaveSame_StartDate()
         {
             var startDate = new DateTime(2020, 01, 01);
@@ -206,7 +232,7 @@ namespace Billing.Contracts.Domain.Tests
 
             Reset();
 
-            payload.WithNewPriceRow();
+            payload.WithNewPriceRow(maxExcludedCount:10);
             ShouldNotThrowWhenModify(oldPriceList, payload, offer, usageWithoutCount);
         }
 

@@ -100,6 +100,10 @@ namespace Billing.Contracts.Domain.Offers.Validation
             {
                 throw new OfferValidationException(GetModifyPriceListMessage(oldPriceList.Id, offer.Id, _translations.PriceRowDetached()));
             }
+            if (!IsOrdered(newPriceList))
+            {
+                throw new OfferValidationException(GetModifyPriceListMessage(oldPriceList.Id, offer.Id, _translations.PriceRowsNotOrdered()));
+            }
         }
 
         public void ThrowIfCannotDeletePriceList(CommercialOffer offer, PriceList priceList)
@@ -235,6 +239,22 @@ namespace Billing.Contracts.Domain.Offers.Validation
                 || oldListIdsByRowId.Keys.Any(rowId =>
                     oldListIdsByRowId[rowId] != newListIdsByExistingRowId[rowId]
                 );
+        }
+
+        private bool IsOrdered(PriceList priceList)
+        {
+            var previousMax = 0;
+            foreach (var priceRow in priceList.Rows)
+            {
+                if (previousMax >= priceRow.MaxIncludedCount)
+                {
+                    return false;
+                }
+
+                previousMax = priceRow.MaxIncludedCount;
+            }
+
+            return true;
         }
 
         private static bool HasActiveContract(CommercialOfferUsage usage)
