@@ -77,6 +77,28 @@ namespace Billing.Contracts.Domain.Tests
         }
 
         [Fact]
+        public void AddPriceList_Validation_ShouldThrowOnlyIf_PriceListRows_AreNotOrdered()
+        {
+            var offer = new CommercialOffer()
+                .Build()
+                .WithPriceList(new DateTime(2002, 01, 01));
+
+            var updatedList = new PriceList().BuildFor(offer)
+                .StartingOn(new DateTime(2003, 01, 01))
+                .WithPriceRow(maxIncludedCount: 10, fixedPrice: 1, unitPrice: 0)
+                .WithPriceRow(maxIncludedCount: 25, fixedPrice: 1, unitPrice: 0)
+                .WithPriceRow(maxIncludedCount: 30, fixedPrice: 1, unitPrice: 0);
+            ShouldNotThrowWhenAdd(updatedList, offer);
+
+             var unorderedList = new PriceList().BuildFor(offer)
+                 .StartingOn(new DateTime(2004, 01, 01))
+                 .WithPriceRow(maxIncludedCount: 10, fixedPrice: 1, unitPrice: 0)
+                 .WithPriceRow(maxIncludedCount: 30, fixedPrice: 1, unitPrice: 0)
+                 .WithPriceRow(maxIncludedCount: 25, fixedPrice: 1, unitPrice: 0);
+             ShouldThrowWhenAdd(unorderedList, offer, t => t.PriceRowsNotOrdered());
+        }
+
+        [Fact]
         public void ModifyPriceList_Validation_ShouldThrowOnlyIf_PriceListRows_AreNotOrdered()
         {
             var usage = new CommercialOfferUsage { OfferId = 1 };

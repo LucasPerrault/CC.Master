@@ -64,6 +64,10 @@ namespace Billing.Contracts.Domain.Offers.Validation
             {
                 throw new OfferValidationException(GetCreatePriceListMessage(offer.Id, _translations.PriceListsStartsOnSameDay()));
             }
+            if (!IsOrdered(priceList))
+            {
+                throw new OfferValidationException(GetCreatePriceListMessage(offer.Id, _translations.PriceRowsNotOrdered()));
+            }
         }
 
         public void ThrowIfCannotModifyPriceList(CommercialOffer offer, PriceList oldPriceList, PriceList newPriceList, CommercialOfferUsage oldUsage)
