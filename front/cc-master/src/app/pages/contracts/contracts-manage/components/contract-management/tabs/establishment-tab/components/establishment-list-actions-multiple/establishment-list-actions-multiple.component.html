@@ -2,25 +2,25 @@
 
   <ng-container *ngSwitchCase="etsType.LinkedToContract">
     <button [disabled]="isDisabled || !canDelete"
-            type="button" class="button palette-grey mod-outline"
+            type="button" class="button palette-grey mod-outline mod-small"
             (click)="openAttachmentDeletion()">
       {{ 'front_contractPage_establishments_delete_button_label' | translate }}
     </button>
 
     <button [disabled]="isDisabled || !canEditFutureStart"
-            type="button" class="button palette-grey mod-outline"
+            type="button" class="button palette-grey mod-outline mod-small"
             (click)="openAttachmentFutureActivationEdition()">
       {{ 'front_contractPage_establishments_startEdition_button_label' | translate }}
     </button>
 
     <button [disabled]="isDisabled || !canEditFutureEnd"
-            type="button" class="button palette-grey mod-outline"
+            type="button" class="button palette-grey mod-outline mod-small"
             (click)="openAttachmentFutureDeactivationEdition()">
       {{ 'front_contractPage_establishments_endEdition_button_label' | translate }}
     </button>
 
     <button [disabled]="isDisabled || !canUnlink"
-            type="button" class="button palette-grey mod-outline"
+            type="button" class="button palette-grey mod-outline mod-small"
             (click)="openAttachmentUnlinking()">
       {{ 'front_contractPage_establishments_unlink_button_label' | translate }}
     </button>
@@ -28,7 +28,7 @@
 
   <ng-container *ngSwitchCase="etsType.LinkedToAnotherContract">
     <button [disabled]="isDisabled || !canLink"
-            type="button" class="button palette-grey mod-outline"
+            type="button" class="button palette-grey mod-outline mod-small"
             (click)="openAttachmentLinking()">
       {{ 'front_contractPage_establishments_link_button_label' | translate }}
     </button>
@@ -37,7 +37,7 @@
   <ng-container *ngSwitchCase="etsType.Excluded">
     <button type="button"
             [disabled]="isDisabled || !canLink"
-            class="button palette-grey mod-outline" (click)="openAttachmentLinking()">
+            class="button palette-grey mod-outline mod-small" (click)="openAttachmentLinking()">
       {{ 'front_contractPage_establishments_link_button_label' | translate }}
     </button>
   </ng-container>
@@ -45,12 +45,12 @@
   <ng-container *ngSwitchCase="etsType.WithError">
     <button type="button"
             [disabled]="isDisabled || !canLink"
-            class="button palette-grey mod-outline" (click)="openAttachmentLinking()">
+            class="button palette-grey mod-outline mod-small" (click)="openAttachmentLinking()">
       {{ 'front_contractPage_establishments_link_button_label' | translate }}
     </button>
     <button type="button"
             [disabled]="isDisabled"
-            class="button palette-grey mod-outline" (click)="openAttachmentExclusion()">
+            class="button palette-grey mod-outline mod-small" (click)="openAttachmentExclusion()">
       {{ 'front_contractPage_establishments_exclude_button_label' | translate }}
     </button>
   </ng-container>
