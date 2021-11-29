@@ -56,6 +56,9 @@
     <span *ngIf="formGroup.hasError(validationError.BoundsContinuity)" class="textfield-messages-error">
       {{ 'offers_forms_validationError_boundsContinuity' | translate }}
     </span>
+    <span *ngIf="formGroup.hasError(validationError.ValidPrices)" class="textfield-messages-error">
+      {{ 'offers_forms_validationError_validPrices' | translate }}
+    </span>
     <span *ngIf="hasRequiredError" class="textfield-messages-error">
       {{ 'offers_forms_validationError_required' | translate }}
     </span>

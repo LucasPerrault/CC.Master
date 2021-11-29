@@ -148,6 +148,7 @@ export class OfferImportTableComponent implements OnInit, OnDestroy, ControlValu
           PriceListsValidators.uniqStartsOnRange,
           PriceListsValidators.boundsContinuityRange,
           PriceListsValidators.startsOnFirstDayOfTheMonthRange,
+          PriceListsValidators.validPricesRange,
           Validators.required,
         ]),
       },

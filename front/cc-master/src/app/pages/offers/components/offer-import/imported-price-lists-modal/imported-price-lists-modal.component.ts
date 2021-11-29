@@ -82,6 +82,6 @@ export class ImportedPriceListsModalComponent implements OnInit, OnDestroy, ILuM
         [ImportedListFormKey.StartsOn]: new FormControl(new Date(list?.startsOn)),
         [ImportedListFormKey.PriceRows]: new FormControl(list?.rows),
       },
-      [PriceListsValidators.startsOnFirstDayOfTheMonth]);
+      [PriceListsValidators.startsOnFirstDayOfTheMonth, PriceListsValidators.validPrices]);
   }
 }

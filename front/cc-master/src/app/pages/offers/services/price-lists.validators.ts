@@ -7,6 +7,7 @@ export enum PriceListValidationError {
   UniqStartsOn = 'uniqStartsOn',
   BoundsContinuity = 'boundsContinuity',
   StartsOnFirstDayOfTheMonth = 'startsOnFirstDayOfTheMonth',
+  ValidPrices = 'validPrices',
   Required = 'required',
 }
 
@@ -66,6 +67,22 @@ export class PriceListsValidators {
       : null;
   }
 
+  public static validPrices(control: FormControl): ValidationErrors {
+    const priceList: IPriceListForm = control.value;
+
+    return !PriceListsValidators.hasRowsWithValidPrices(priceList)
+      ? { [PriceListValidationError.ValidPrices]: true }
+      : null;
+  }
+
+  public static validPricesRange(control: FormControl): ValidationErrors {
+    const priceLists: IPriceListForm[] = control.value;
+
+    const hasListsWithValidPrices = priceLists.every(list => PriceListsValidators.hasRowsWithValidPrices(list));
+
+    return !hasListsWithValidPrices ? { [PriceListValidationError.ValidPrices]: true } : null;
+  }
+
   private static isStartedOnFirstDayOfTheMonth(priceList: IPriceListForm): boolean {
     const startDate = !!priceList.startsOn ? new Date(priceList.startsOn) : null;
     return !!startDate && isFirstDayOfMonth(startDate);
@@ -78,7 +95,15 @@ export class PriceListsValidators {
     });
   }
 
+  private static hasRowsWithValidPrices(priceList: IPriceListForm): boolean {
+    return priceList.rows.every(row => this.hasValidPrices(row.unitPrice, row.fixedPrice));
+  }
+
   private static hasUniqStartDate(startDates: Date[], startDate: Date): boolean {
     return startDates.every(date => !isEqual(date, startDate));
+  }
+
+  private static hasValidPrices(unitPrice: number, fixedPrice: number): boolean {
+    return unitPrice !== 0 || fixedPrice !== 0;
   }
 }
