@@ -139,7 +139,7 @@ export class EditablePriceGridComponent implements OnInit, OnDestroy, ControlVal
     const lastIndex = this.formArray.length - 1;
     const priceRow: IPriceRowForm = this.formArray.at(lastIndex).value;
     const nextUpperBound = priceRow.maxIncludedCount + 1;
-    const formGroup = this.getFormGroup(nextUpperBound, 0, 0);
+    const formGroup = this.getFormGroup(nextUpperBound);
 
     this.formArray.insert(lastIndex + 1, formGroup);
   }
