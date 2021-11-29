@@ -1,6 +1,6 @@
 import { IPriceRow } from '@cc/domain/billing/offers';
 
-import { IPriceRowForm } from './price-list-form.interface';
+import { IPriceRowCreationDto } from './price-list-creation-dto.interface';
 
 export interface IPriceListEditionDto {
   id: number;
@@ -9,4 +9,4 @@ export interface IPriceListEditionDto {
   rows: IPriceRowEditionDto[];
 }
 
-export type IPriceRowEditionDto = IPriceRow | IPriceRowForm;
+export type IPriceRowEditionDto = IPriceRow | IPriceRowCreationDto;

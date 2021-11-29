@@ -18,6 +18,7 @@ import { PriceListsValidators, PriceListValidationError } from '../../services/p
 import { IPriceListOfferSelectOption } from '../offer-selects/offer-price-list-api-select/offer-price-list-selection.interface';
 
 enum PriceRowFormKey {
+  Id = 'id',
   MaxIncludedCount = 'maxIncludedCount',
   UnitPrice = 'unitPrice',
   FixedPrice = 'fixedPrice',
@@ -209,13 +210,14 @@ export class EditablePriceGridComponent implements OnInit, OnDestroy, ControlVal
   }
 
   private add(priceRow?: IPriceRowForm): void {
-    const formGroup = this.getFormGroup(priceRow?.maxIncludedCount, priceRow?.unitPrice, priceRow?.fixedPrice);
+    const formGroup = this.getFormGroup(priceRow?.maxIncludedCount, priceRow?.unitPrice, priceRow?.fixedPrice, priceRow.id);
     this.formArray.push(formGroup);
   }
 
-  private getFormGroup(maxIncludedCount: number, unitPrice?: number, fixedPrice?: number): FormGroup {
+  private getFormGroup(maxIncludedCount: number, unitPrice?: number, fixedPrice?: number, id?: number): FormGroup {
     return new FormGroup(
       {
+        [PriceRowFormKey.Id]: new FormControl(id),
         [PriceRowFormKey.MaxIncludedCount]: new FormControl(maxIncludedCount),
         [PriceRowFormKey.UnitPrice]: new FormControl(unitPrice),
         [PriceRowFormKey.FixedPrice]: new FormControl(fixedPrice),
