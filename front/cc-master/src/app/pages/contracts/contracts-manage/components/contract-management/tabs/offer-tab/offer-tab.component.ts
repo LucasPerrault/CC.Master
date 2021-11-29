@@ -3,16 +3,16 @@ import { FormControl } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { getButtonState, toSubmissionState } from '@cc/common/forms';
 import { TimelineCountsService } from '@cc/domain/billing/counts/timeline-counts-service';
+import { LuModal } from '@lucca-front/ng/modal';
 import { BehaviorSubject, forkJoin, Observable, ReplaySubject, Subject } from 'rxjs';
 import { finalize, map, take } from 'rxjs/operators';
 
+import { PriceGridModalComponent } from '../../../../../common/price-grid-modal/price-grid-modal.component';
+import { IPriceGridModalData } from '../../../../../common/price-grid-modal/price-grid-modal-data.interface';
 import { ContractManagementService } from '../../contract-management.service';
 import { IOfferContract } from './models/offer-contract.interface';
 import { ISimilarOfferContext } from './models/similar-offer-context.interface';
 import { OfferTabDataService } from './services/offer-tab-data.service';
-import { LuModal } from '@lucca-front/ng/modal';
-import { PriceGridModalComponent } from '../../../../../common/price-grid-modal/price-grid-modal.component';
-import { IPriceGridModalData } from '../../../../../common/price-grid-modal/price-grid-modal-data.interface';
 
 @Component({
   selector: 'cc-offer-tab',
