@@ -24,7 +24,7 @@ export class EstablishmentListComponent {
   @Input() public realCounts: IContractCount[];
 
   public get areAllSelected(): boolean {
-    return this.selectedEntries.length === this.entries.length;
+    return this.selectedEntries.length === this.entries.length && this.entries.length !== 0;
   }
 
   public get actionsContext(): IEstablishmentActionsContext {
