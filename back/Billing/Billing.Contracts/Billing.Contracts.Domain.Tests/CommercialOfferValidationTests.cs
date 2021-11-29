@@ -232,7 +232,7 @@ namespace Billing.Contracts.Domain.Tests
 
             Reset();
 
-            payload.WithNewPriceRow(maxExcludedCount:10);
+            payload.WithNewPriceRow(maxIncludedCount:10);
             ShouldNotThrowWhenModify(oldPriceList, payload, offer, usageWithoutCount);
         }
 
@@ -262,13 +262,13 @@ namespace Billing.Contracts.Domain.Tests
         {
             var offer = new CommercialOffer().Build()
                 .WithPriceList()
-                .AndPriceRow(maxExcludedCount: 42);
+                .AndPriceRow(maxIncludedCount: 42);
             var oldPriceList = offer.PriceLists.First();
             var newPriceList = new PriceList().BuildFor(offer, oldPriceList.Id)
                 .WithPriceRow
                 (
                     id: oldPriceList.Rows.First().Id,
-                    maxExcludedCount: 24
+                    maxIncludedCount: 24
                 );
 
             var usageWithCount = new CommercialOfferUsage().BuildFor(offer)
@@ -287,21 +287,21 @@ namespace Billing.Contracts.Domain.Tests
         {
             var offer = new CommercialOffer().Build()
                 .WithPriceList()
-                .AndPriceRow(maxExcludedCount: 42);
+                .AndPriceRow(maxIncludedCount: 42);
             var oldPriceList = offer.PriceLists.First();
             var usageWithCount = new CommercialOfferUsage().BuildFor(offer)
                 .WithCountedContractsNumber(1);
 
             var newPriceList = new PriceList().BuildFor(offer, oldPriceList.Id)
-                .WithPriceRow(id: oldPriceList.Rows.First().Id, maxExcludedCount: 42)
-                .WithNewPriceRow(maxExcludedCount: 9001);
+                .WithPriceRow(id: oldPriceList.Rows.First().Id, maxIncludedCount: 42)
+                .WithNewPriceRow(maxIncludedCount: 9001);
             ShouldNotThrowWhenModify(oldPriceList, newPriceList, offer, usageWithCount);
 
             Reset();
 
             var newPriceList2 = new PriceList().BuildFor(offer, oldPriceList.Id)
-                .WithPriceRow(id: oldPriceList.Rows.First().Id, maxExcludedCount: 42)
-                .WithNewPriceRow(maxExcludedCount: 28);
+                .WithPriceRow(id: oldPriceList.Rows.First().Id, maxIncludedCount: 42)
+                .WithNewPriceRow(maxIncludedCount: 28);
             ShouldThrowWhenModify(oldPriceList, newPriceList2, offer, usageWithCount, t => t.PriceListChangedDespiteCount());
         }
 
@@ -310,15 +310,15 @@ namespace Billing.Contracts.Domain.Tests
         {
             var offer = new CommercialOffer().Build()
                 .WithPriceList()
-                .AndPriceRow(maxExcludedCount: 42);
+                .AndPriceRow(maxIncludedCount: 42);
             var oldPriceList = offer.PriceLists.First();
             var usageWithCount = new CommercialOfferUsage().BuildFor(offer)
                 .WithCountedContractsNumber(1);
 
             var newPriceList = new PriceList().BuildFor(offer, oldPriceList.Id)
-                .WithPriceRow(id: oldPriceList.Rows.First().Id, maxExcludedCount: 42)
-                .WithNewPriceRow(maxExcludedCount: 9001)
-                .WithNewPriceRow(maxExcludedCount: 9003);
+                .WithPriceRow(id: oldPriceList.Rows.First().Id, maxIncludedCount: 42)
+                .WithNewPriceRow(maxIncludedCount: 9001)
+                .WithNewPriceRow(maxIncludedCount: 9003);
             ShouldNotThrowWhenModify(oldPriceList, newPriceList, offer, usageWithCount);
         }
 
@@ -382,7 +382,7 @@ namespace Billing.Contracts.Domain.Tests
 
             var newPriceList2 = new PriceList().BuildFor(offer, secondOldestPriceList.Id)
                 .StartingOn(new DateTime(2010, 01, 01));
-            ShouldNotThrowWhenModify(secondOldestPriceList, newPriceList, offer, usage);
+                ShouldNotThrowWhenModify(secondOldestPriceList, newPriceList, offer, usage);
         }
 
         [Fact]
