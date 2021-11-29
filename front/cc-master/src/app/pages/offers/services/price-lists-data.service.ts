@@ -6,7 +6,7 @@ import { startOfMonth } from 'date-fns';
 import { Observable } from 'rxjs';
 
 import { IPriceListCreationDto, IPriceRowCreationDto } from '../models/price-list-creation-dto.interface';
-import { IPriceListEditionDto, IPriceRowEditionDto } from '../models/price-list-edition-dto.interface';
+import { IPriceListEditionDto, IPriceRowCreationDtoDuringEdition, IPriceRowEditionDto } from '../models/price-list-edition-dto.interface';
 import { IPriceListForm, IPriceRowForm } from '../models/price-list-form.interface';
 
 class PriceListApiEndpoint {
@@ -64,7 +64,12 @@ export class PriceListsDataService {
     const createdRows = rows.filter(row => !row.id);
     const editedRows = rows.filter(row => !!row.id).map(row => ({ ...row, listId }));
 
-    const allRows = [...editedRows, ...this.toRowsCreationDto(createdRows)];
+    const allRows = [...editedRows, ...this.toRowsCreationDtoDuringEdition(listId, createdRows)];
     return allRows.sort((a, b) => a.maxIncludedCount - b.maxIncludedCount);
+  }
+
+  private toRowsCreationDtoDuringEdition(listId: number, rows: IPriceRowForm[]): IPriceRowCreationDtoDuringEdition[] {
+    const rowsCreationDto = this.toRowsCreationDto(rows);
+    return rowsCreationDto.map(row => ({ ...row, listId }));
   }
 }

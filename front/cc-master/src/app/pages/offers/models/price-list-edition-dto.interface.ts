@@ -9,4 +9,9 @@ export interface IPriceListEditionDto {
   rows: IPriceRowEditionDto[];
 }
 
-export type IPriceRowEditionDto = IPriceRow | IPriceRowCreationDto;
+export interface IPriceRowCreationDtoDuringEdition extends IPriceRowCreationDto {
+  listId: number;
+}
+
+
+export type IPriceRowEditionDto = IPriceRow | IPriceRowCreationDtoDuringEdition;
