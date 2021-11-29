@@ -122,7 +122,7 @@ export class PriceListsValidators {
   }
 
   private static hasRowsWithNullValue(priceList: IPriceListForm): boolean {
-    return priceList.rows.every(row =>
+    return priceList.rows.some(row =>
       row.maxIncludedCount === null || row.fixedPrice === null || row.unitPrice === null);
   }
 }
