@@ -229,16 +229,7 @@ namespace Billing.Contracts.Domain.Offers.Validation
 
         private static bool HasAnyPriceListIdChanged(PriceList oldPriceList, PriceList newPriceList)
         {
-            var oldListIdsByRowId = oldPriceList.Rows
-                .ToDictionary(pr => pr.Id, pr => pr.ListId);
-            var newListIdsByExistingRowId = newPriceList.Rows
-                .Where(r => oldListIdsByRowId.Keys.Contains(r.Id))
-                .ToDictionary(pr => pr.Id, pr => pr.ListId);
-
-            return oldListIdsByRowId.Count > newListIdsByExistingRowId.Count
-                || oldListIdsByRowId.Keys.Any(rowId =>
-                    oldListIdsByRowId[rowId] != newListIdsByExistingRowId[rowId]
-                );
+            return newPriceList.Rows.Any(r => r.ListId != oldPriceList.Id);
         }
 
         private bool IsOrdered(PriceList priceList)
