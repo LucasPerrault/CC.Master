@@ -17,6 +17,11 @@
       <span class="textfield-label">
         {{ 'front_contractPage_offerTab_similar_offers_label' | translate }}
       </span>
+      <span class="textfield-messages" *ngIf="!!formControl.value">
+        <a class="textfield-messages-helper u-marginRightStandard u-textDefault" (click)="openPriceGridModal()">
+          {{ "front_priceGrid_openModal_link" | translate }}
+        </a>
+      </span>
     </label>
   </div>
 

@@ -3,13 +3,16 @@ import { FormControl } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { getButtonState, toSubmissionState } from '@cc/common/forms';
 import { TimelineCountsService } from '@cc/domain/billing/counts/timeline-counts-service';
-import { forkJoin, Observable, ReplaySubject, Subject } from 'rxjs';
+import { BehaviorSubject, forkJoin, Observable, ReplaySubject, Subject } from 'rxjs';
 import { finalize, map, take } from 'rxjs/operators';
 
 import { ContractManagementService } from '../../contract-management.service';
 import { IOfferContract } from './models/offer-contract.interface';
 import { ISimilarOfferContext } from './models/similar-offer-context.interface';
 import { OfferTabDataService } from './services/offer-tab-data.service';
+import { LuModal } from '@lucca-front/ng/modal';
+import { PriceGridModalComponent } from '../../../../../common/price-grid-modal/price-grid-modal.component';
+import { IPriceGridModalData } from '../../../../../common/price-grid-modal/price-grid-modal-data.interface';
 
 @Component({
   selector: 'cc-offer-tab',
@@ -24,12 +27,15 @@ export class OfferTabComponent implements OnInit {
 
   public editButtonClass$: Subject<string> = new Subject<string>();
 
+  private contract$: BehaviorSubject<IOfferContract> = new BehaviorSubject<IOfferContract>(null);
+  private lastCountPeriod$: BehaviorSubject<Date> = new BehaviorSubject<Date>(null);
   private readonly contractId: number;
 
   constructor(
     private activatedRoute: ActivatedRoute,
     private dataService: OfferTabDataService,
     private pageService: ContractManagementService,
+    private luModal: LuModal,
   ) {
     this.contractId = parseInt(this.activatedRoute.parent.snapshot.paramMap.get('id'), 10);
   }
@@ -44,7 +50,7 @@ export class OfferTabComponent implements OnInit {
 
     forkJoin(requests$)
       .pipe(take(1), finalize(() => this.isLoading$.next(false)))
-      .subscribe(([contract, lastCountPeriod]: [IOfferContract, Date]) => this.setSimilarOfferContext(contract, lastCountPeriod));
+      .subscribe(([contract, lastCountPeriod]: [IOfferContract, Date]) => this.set(contract, lastCountPeriod));
   }
 
   public edit() {
@@ -58,15 +64,27 @@ export class OfferTabComponent implements OnInit {
     this.pageService.close();
   }
 
+  public openPriceGridModal(): void {
+    const contract = this.contract$.value;
+    const offerId = this.formControl.value?.id;
+    const contractStartOn = contract.theoreticalStartOn;
+    const lastCountPeriod = this.lastCountPeriod$.value;
+
+    const data: IPriceGridModalData = { offerId, contractStartOn, lastCountPeriod };
+    this.luModal.open(PriceGridModalComponent, data);
+  }
+
   private getLastCountPeriod$(contractId: number): Observable<Date> {
     return this.dataService.getRealCounts$(contractId)
       .pipe(map(counts => TimelineCountsService.getLastCountPeriod(counts)));
   }
 
-  private setSimilarOfferContext(contract: IOfferContract, lastCountPeriod: Date): void {
+  private set(contract: IOfferContract, lastCountPeriod: Date): void {
+    this.contract$.next(contract);
+    this.lastCountPeriod$.next(lastCountPeriod);
+
     const offerId = contract.commercialOfferId;
     const maxPeriod = lastCountPeriod ?? new Date(contract.theoreticalStartOn);
-
     this.context$.next({ offerId, maxPeriod });
   }
 }

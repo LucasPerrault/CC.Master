@@ -8,11 +8,10 @@ import { LuTooltipTriggerModule } from '@lucca-front/ng/tooltip';
 import { SimilarOfferApiSelectModule } from './components/similar-offer-api-select/similar-offer-api-select.module';
 import { OfferTabComponent } from './offer-tab.component';
 import { OfferTabDataService } from './services/offer-tab-data.service';
+import { LuModalModule } from '@lucca-front/ng/modal';
 
 @NgModule({
-  declarations: [
-    OfferTabComponent,
-  ],
+  declarations: [OfferTabComponent],
   imports: [
     CommonModule,
     LuApiSelectInputModule,
@@ -20,6 +19,7 @@ import { OfferTabDataService } from './services/offer-tab-data.service';
     LuTooltipTriggerModule,
     TranslateModule,
     SimilarOfferApiSelectModule,
+    LuModalModule,
   ],
   providers: [OfferTabDataService],
 })
