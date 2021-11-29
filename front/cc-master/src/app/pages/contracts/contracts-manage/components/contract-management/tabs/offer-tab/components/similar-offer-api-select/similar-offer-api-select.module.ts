@@ -14,10 +14,11 @@ import {
 import { LuSelectInputModule } from '@lucca-front/ng/select';
 import { FormlyModule } from '@ngx-formly/core';
 
+import { ApiSelectEmptyStateComponent } from './api-select-empty-state/api-select-empty-state.component';
 import { SimilarOfferApiSelectComponent } from './similar-offer-api-select.component';
 
 @NgModule({
-  declarations: [SimilarOfferApiSelectComponent],
+  declarations: [SimilarOfferApiSelectComponent, ApiSelectEmptyStateComponent],
   imports: [
     FormsModule,
     LuSelectInputModule,
