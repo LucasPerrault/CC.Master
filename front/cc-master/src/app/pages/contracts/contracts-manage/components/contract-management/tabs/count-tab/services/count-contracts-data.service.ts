@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { IDateRange } from '@cc/common/date';
 import { DownloadService } from '@cc/common/download';
 import { ApiV3DateService, IHttpApiV3CollectionResponse, IHttpApiV3Response } from '@cc/common/queries';
+import { endOfMonth, startOfMonth } from 'date-fns';
 import { forkJoin, Observable, of } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
 
@@ -39,8 +40,8 @@ export class CountContractsDataService {
   }
 
   public download$(contractId: number, period: IDateRange): Observable<void> {
-    const from = this.apiV3DateService.toApiV3DateFormat(period.startDate);
-    const to = this.apiV3DateService.toApiV3DateFormat(period.endDate);
+    const from = this.apiV3DateService.toApiV3DateFormat(startOfMonth(period.startDate));
+    const to = this.apiV3DateService.toApiV3DateFormat(endOfMonth(period.endDate));
 
     const url = `${ this.countsEndpoint }/exportdetails`;
     const body = { contractId, from, to };

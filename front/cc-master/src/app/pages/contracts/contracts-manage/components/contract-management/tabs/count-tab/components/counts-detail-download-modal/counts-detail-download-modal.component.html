@@ -1,0 +1,8 @@
+<div class="callout palette-grey">
+  {{ 'front_contractPage_counts_details_info' | translate : { period: data.firstCountPeriod | date : 'MMMM yyyy' } }}
+</div>
+
+<cc-date-range-select [required]="true"
+                      [configuration]="dateRangeConfig"
+                      [formControl]="formControl">
+</cc-date-range-select>
