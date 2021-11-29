@@ -1,25 +1,51 @@
 @import "theming.import";
 
+section.mod-view.mod-error {
+  .section-header {
+    background-color: _color('error', 700);
+  }
+}
+
+section.mod-view {
+  border: solid 1px _color('grey', 100);
+  border-radius: 4px 4px 0 0;
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    border-radius: 4px 4px 0 0;
+    background-color: _color('grey', 500);
+    color: _color('primary', 'text');
+    padding: _theme('spacings.smaller');
+    cursor: pointer;
+
+    .section-label {
+      background-color: _color('grey', 'dark');
+      color: white;
+    }
+
+    .section-title {
+      margin: 0;
+      padding-left: _theme('spacings.smaller');
+      color: _color('primary', 'text');
+    }
+  }
+
+  .section-content {
+    .section-filters {
+      background-color: _color('grey', 50);
+    }
+  }
+
+}
+
 .mod-accordion {
   display: flex;
   flex-direction: column;
   text-align: center;
+  margin-left: auto;
   & i {
-    line-height: .6rem;
+    font-size: 1rem;
+    line-height: .5rem;
   }
-}
-
-.section-header {
-  display: flex;
-  align-items: center;
-  background-color: _color('primary', 700);
-  color: _color('primary', 'text');
-  padding: _theme('spacings.smaller');
-  cursor: pointer;
-}
-
-.section-title {
-  margin: 0;
-  padding-left: _theme('spacings.smaller');
-  color: _color('primary', 'text');
 }

@@ -8,44 +8,27 @@
    <ng-template #hasEnvironment>
      <ng-container *ngIf="establishments$ | async; let establishments">
 
-       <cc-establishment-type-section [title]="'front_contractPage_establishments_type_linkedToContract' | translate"
+       <cc-establishment-type-section [title]="'front_contractPage_establishments_section_info' | translate"
                                       [totalCount]="establishments.linkedToContract.length"
                                       [isExpandedByDefault]="true">
-         <div class="u-paddingTopSmaller u-paddingBottomSmall">
-           <cc-establishment-list class="u-displayBlock u-paddingTopSmaller"
-                                  [type]="establishmentType.LinkedToContract"
-                                  [realCounts]="realCounts$ | async"
-                                  [contract]="contract$ | async"
-                                  [entries]="establishments.linkedToContract">
-           </cc-establishment-list>
+         <div class="u-paddingSmaller" filters>
+           <cc-establishment-type-filter [formControl]="typeFilter"
+                                         [establishmentsByType]="establishments"></cc-establishment-type-filter>
          </div>
-       </cc-establishment-type-section>
-
-       <cc-establishment-type-section [title]="'front_contractPage_establishments_type_linkedToAnotherContract' | translate"
-                                      [totalCount]="establishments.linkedToAnotherContract.length">
-         <div class="u-paddingTopSmaller u-paddingBottomSmall">
-           <cc-establishment-list class="u-displayBlock u-paddingTopSmaller"
-                                  [type]="establishmentType.LinkedToAnotherContract"
-                                  [realCounts]="realCounts$ | async"
-                                  [contract]="contract$ | async"
-                                  [entries]="establishments.linkedToAnotherContract">
-           </cc-establishment-list>
-         </div>
-       </cc-establishment-type-section>
-
-       <cc-establishment-type-section [title]="'front_contractPage_establishments_type_excluded' | translate"
-                                      [totalCount]="establishments.excluded.length">
-         <cc-establishment-list class="u-displayBlock u-paddingTopSmaller"
-                                [type]="establishmentType.Excluded"
+         <cc-establishment-list content
+                                [type]="typeFilter.value"
                                 [realCounts]="realCounts$ | async"
                                 [contract]="contract$ | async"
-                                [entries]="establishments.excluded">
+                                [entries]="getFilteredEntries(establishments, typeFilter.value)">
          </cc-establishment-list>
        </cc-establishment-type-section>
 
-       <cc-establishment-type-section [title]="'front_contractPage_establishments_type_withError' | translate"
-                                      [totalCount]="establishments.withError.length">
-         <cc-establishment-list class="u-displayBlock u-paddingTopSmaller"
+       <cc-establishment-type-section class="mod-error"
+                                      [title]="'front_contractPage_establishments_section_error' | translate"
+                                      [totalCount]="establishments.withError.length"
+                                      [isExpandedByDefault]="true">
+         <cc-establishment-list content
+                                class="u-displayBlock u-paddingTopSmaller"
                                 [type]="establishmentType.WithError"
                                 [realCounts]="realCounts$ | async"
                                 [contract]="contract$ | async"

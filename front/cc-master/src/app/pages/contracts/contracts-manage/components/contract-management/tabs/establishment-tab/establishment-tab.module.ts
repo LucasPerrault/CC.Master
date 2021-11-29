@@ -25,6 +25,7 @@ import { EstablishmentListActionsService } from './services/establishment-list-a
 import { EstablishmentTypeService } from './services/establishment-type.service';
 import { EstablishmentsDataService } from './services/establishments-data.service';
 import { EstablishmentsWithAttachmentsService } from './services/establishments-with-attachments.service';
+import { EstablishmentTypeFilterModule } from './components/establiment-type-filter/establishment-type-filter.module';
 
 @NgModule({
   declarations: [
@@ -35,14 +36,15 @@ import { EstablishmentsWithAttachmentsService } from './services/establishments-
     ContractWithoutEnvironmentCalloutComponent,
     EstablishmentListActionsMultipleComponent,
   ],
-  imports: [
-    CommonModule,
-    ReactiveFormsModule,
-    FormsModule,
-    TranslateModule,
-    LuTooltipTriggerModule,
-    EstablishmentActionModalsModule,
-  ],
+    imports: [
+        CommonModule,
+        ReactiveFormsModule,
+        FormsModule,
+        TranslateModule,
+        LuTooltipTriggerModule,
+        EstablishmentActionModalsModule,
+        EstablishmentTypeFilterModule,
+    ],
   providers: [
     EstablishmentsDataService,
     EstablishmentsWithAttachmentsService,
