@@ -40,17 +40,15 @@
    </ng-template>
 
    <div class="u-displayFlex u-alignFlexItemsCenter u-justifyContentSpaceBetween u-marginTopStandard">
-     <button class="button mod-icon mod-link" (click)="openEstablishmentsDoc()">
-       <span aria-hidden="true" class="button-icon lucca-icon icon-outside"></span>
-       {{ 'front_contractPage_establishments_doc' | translate  }}
+     <button class="link" (click)="openEstablishmentsDoc()">
+       {{ 'contracts_establishments_doc' | translate  }}
      </button>
 
      <ng-container *ngIf="hasEnvironment$ | async">
        <button *ngIf="contract$ | async; let contract"
-               class="button mod-icon palette-grey mod-outline"
+               class="button palette-grey"
                [ngClass]="synchronizeButtonClass$ | async"
                (click)="synchronize(contract.environmentId)">
-         <span aria-hidden="true" class="button-icon lucca-icon icon-refresh"></span>
          {{ 'front_contractPage_establishments_synchronize_button_label' | translate  }}
        </button>
      </ng-container>
