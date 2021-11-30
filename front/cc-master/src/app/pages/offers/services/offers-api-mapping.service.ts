@@ -17,7 +17,7 @@ interface HttpParamsAttributes {
 enum OfferQueryParamKey {
   Search = 'search',
   Tag = 'tag',
-  ProductId = 'product.id',
+  ProductId = 'productId',
   Currency = 'currencyId',
   BillingMode = 'billingMode',
   IsArchived = 'isArchived',
