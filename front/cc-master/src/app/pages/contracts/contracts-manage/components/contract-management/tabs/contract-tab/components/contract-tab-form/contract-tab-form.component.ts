@@ -13,6 +13,7 @@ import { ContractBillingMonth, IContractForm } from '@cc/domain/billing/contract
 import { ReplaySubject, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
+import { IContractFormInformation } from '../../models/contract-form-information.interface';
 import { IContractValidationContext } from '../../models/contract-validation-context.interface';
 import { ContractActionRestrictionsService } from '../../services/contract-action-restrictions.service.';
 
@@ -49,6 +50,7 @@ enum ContractFormKey {
 })
 export class ContractTabFormComponent implements OnInit, OnDestroy, ControlValueAccessor {
   @Input() public validationContext: IContractValidationContext;
+  @Input() public formInformation: IContractFormInformation;
 
   public onChange: (contractForm: IContractForm) => void;
   public onTouch: () => void;
@@ -170,6 +172,11 @@ export class ContractTabFormComponent implements OnInit, OnDestroy, ControlValue
     if (!this.formGroup || this.formGroup.invalid) {
       return { invalid: true };
     }
+  }
+
+  public redirectToClientSalesforceUrl(clientSalesforceId: string): void {
+    const salesforceUrl = 'https://eu4.salesforce.com';
+    window.open(`${ salesforceUrl }/${ clientSalesforceId }`);
   }
 
   private setBillingMonthDisabled(billingMonth: ContractBillingMonth): void {

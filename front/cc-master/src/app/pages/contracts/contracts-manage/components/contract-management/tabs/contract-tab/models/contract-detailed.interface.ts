@@ -7,7 +7,7 @@ export const contractDetailedFields = [
   contractFields,
   'billingMonth',
   `distributor[${distributorFields}]`,
-  `client[${clientFields}]`,
+  `client[${clientFields},salesforceId]`,
   `offer[${offerFields}]`,
   `product[${productFields}]`,
   'unityNumberTheorical',
@@ -19,10 +19,14 @@ export const contractDetailedFields = [
   'comment',
 ].join(',');
 
+interface IClientWithSalesforceInformation extends IClient {
+  salesforceId: string;
+}
+
 export interface IContractDetailed extends IContract {
   billingMonth: ContractBillingMonth;
   distributor: IDistributor;
-  client: IClient;
+  client: IClientWithSalesforceInformation;
   offer: IOffer;
   product: IProduct;
   unityNumberTheorical: number;

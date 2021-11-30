@@ -26,12 +26,24 @@
                                [required]="true"
                                textfieldClass="mod-longest palette-grey u-marginTopStandard palette-grey">
     </cc-distributor-api-select>
+    <div class="textfield-messages">
+      <span class="textfield-messages-helper u-textSmaller u-right" *ngIf="!!formInformation?.distributorRebate">
+        {{ "contracts_distributorRebate_info" | translate }} {{ formInformation?.distributorRebate }}%
+      </span>
+    </div>
 
     <cc-client-api-select [formControlName]="formGroupKey.Client"
                           [displayMode]="selectDisplayMode.Form"
                           [required]="true"
                           textfieldClass="mod-longest u-marginTopStandard palette-grey">
     </cc-client-api-select>
+    <div class="textfield-messages">
+      <a *ngIf="!!formInformation?.clientSalesforceId"
+         class="textfield-messages-helper u-textSmaller u-right"
+         (click)="redirectToClientSalesforceUrl(formInformation?.clientSalesforceId)">
+        {{ 'contracts_clientSalesforce_link' | translate }}
+      </a>
+    </div>
 
     <cc-product-api-select [formControlName]="formGroupKey.Product"
                            [displayMode]="selectDisplayMode.Form"
