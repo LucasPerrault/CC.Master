@@ -32,7 +32,7 @@ export class AttachmentLinkingModalComponent implements OnInit, OnDestroy, ILuMo
   public get min(): Date {
     const lastAttachmentEndDate = this.getLastAttachmentEndDate();
     if (!!lastAttachmentEndDate) {
-      return addMonths(lastAttachmentEndDate, 1);
+      return addMonths(startOfMonth(lastAttachmentEndDate), 1);
     }
 
     const start = this.modalData.contract.theoricalStartOn;
