@@ -31,12 +31,11 @@ export class AttachmentLinkingModalComponent implements OnInit, OnDestroy, ILuMo
 
   public get min(): Date {
     const lastAttachmentEndDate = this.getLastAttachmentEndDate();
-    if (!!lastAttachmentEndDate) {
-      return addMonths(startOfMonth(lastAttachmentEndDate), 1);
-    }
+    const min = !!lastAttachmentEndDate
+      ? addMonths(lastAttachmentEndDate, 1)
+      : this.getContractStartDate();
 
-    const start = this.modalData.contract.theoricalStartOn;
-    return !!start ? new Date(start) : null;
+    return startOfMonth(min);
   }
 
   private destroy$: Subject<void> = new Subject();
@@ -102,5 +101,10 @@ export class AttachmentLinkingModalComponent implements OnInit, OnDestroy, ILuMo
 
     const sortedEndDates = attachmentEndDates.sort((a, b) => new Date(b).getTime() - new Date(a).getTime());
     return sortedEndDates[0];
+  }
+
+  private getContractStartDate(): Date | null {
+    const start = this.modalData.contract.theoricalStartOn;
+    return !!start ? new Date(start) : null;
   }
 }
