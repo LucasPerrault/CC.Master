@@ -34,9 +34,9 @@ export class OfferPriceListApiSelectService {
     return this.get(url);
   }
 
-  private clueFilter(clue) {
-    const urlSafeClue = encodeURIComponent(clue);
-    return `search=${ urlSafeClue }`;
+  private clueFilter(clue: string = ''): string {
+    const urlSafeClues = clue.split(' ').map(c => encodeURIComponent(c));
+    return `search=${ urlSafeClues }`;
   }
 
   private get(url): Observable<IPriceListOfferSelectOption[]> {
