@@ -54,9 +54,9 @@ namespace Billing.Contracts.Web
 
         [HttpGet("tags")]
         [ForbidIfMissing(Operation.ReadCommercialOffers)]
-        public Task<Page<string>> GetTagsAsync()
+        public Task<Page<string>> GetTagsAsync([FromQuery] CommercialOfferTagQuery query)
         {
-            return _commercialOffersRepository.GetTagsAsync();
+            return _commercialOffersRepository.GetTagsAsync(query.ToFilter());
         }
 
         [HttpPost]
@@ -165,6 +165,19 @@ namespace Billing.Contracts.Web
                 ProductIds = ProductId,
                 CurrencyIds = CurrencyId,
                 IsArchived = IsArchived.ToCompareBoolean(),
+            };
+        }
+    }
+
+    public class CommercialOfferTagQuery
+    {
+        public HashSet<string> Search { get; set; } = new HashSet<string>();
+
+        internal CommercialOfferTagFilter ToFilter()
+        {
+            return new CommercialOfferTagFilter
+            {
+                Search = Search
             };
         }
     }

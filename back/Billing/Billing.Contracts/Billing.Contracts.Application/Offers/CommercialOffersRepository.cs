@@ -59,11 +59,11 @@ namespace Billing.Contracts.Application.Offers
             return await GetReadOnlyByIdAsync(id, accessRight);
         }
 
-        public async Task<Page<string>> GetTagsAsync()
+        public async Task<Page<string>> GetTagsAsync(CommercialOfferTagFilter filter)
         {
             var accessRight = await _rightsFilter.GetReadAccessAsync(_principal);
-
-            return await _store.GetTagsAsync(accessRight);
+            
+            return await _store.GetTagsAsync(filter, accessRight);
         }
 
         public async Task<CommercialOffer> CreateAsync(CommercialOffer offer)

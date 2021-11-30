@@ -13,7 +13,7 @@ namespace Billing.Contracts.Domain.Offers.Interfaces
         Task<Page<CommercialOffer>> GetSimilarOffersAsync(AccessRight accessRight, CommercialOffer referenceOffer, DateTime until);
         Task<CommercialOffer> GetSingleOrDefaultAsync(CommercialOfferFilter filter, AccessRight accessRight);
         Task<CommercialOffer> GetReadOnlySingleOrDefaultAsync(CommercialOfferFilter filter, AccessRight accessRight);
-        Task<Page<string>> GetTagsAsync(AccessRight accessRight);
+        Task<Page<string>> GetTagsAsync(CommercialOfferTagFilter filter, AccessRight accessRight);
         Task<CommercialOffer> CreateAsync(CommercialOffer offer, AccessRight accessRight);
         Task<IReadOnlyCollection<CommercialOffer>> CreateManyAsync(IReadOnlyCollection<CommercialOffer> offers, AccessRight accessRight);
         Task PutAsync(int id, CommercialOffer offer, AccessRight accessRight);
