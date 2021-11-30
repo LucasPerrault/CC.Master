@@ -1,0 +1,22 @@
+<label class="file mod-small u-marginTopSmaller mod-maxWidthReset">
+  <ng-container *ngIf="(isLoading$ | async) === false; else isLoading">
+    <input class="file-input" [ngClass]="fileClass$ | async" type="file" (change)="fileChange($event)"
+           accept=".csv" [attr.aria-invalid]="isError$ | async" />
+      <span role="text" class="file-content">
+      <span aria-hidden="true" class="file-icon lucca-icon icon-success u-textSuccess"></span>
+      <span aria-hidden="true" class="file-icon lucca-icon icon-error u-textError u-marginBottomReset"></span>
+      <span class="file-titleName">
+        <span class="file-title u-marginBottomReset">{{ title$ | async }}</span>
+        <span class="file-name" *ngIf="fileName$ | async; let fileName">{{ fileName }}</span>
+      </span>
+      <span class="file-button button mod-outline palette-grey">{{ buttonTitle$ | async }}</span>
+    </span>
+  </ng-container>
+
+  <ng-template #isLoading>
+    <div class="file-title">{{ 'offers_import_file_loading' | translate }}</div>
+    <div class="file-progress progress mod-indeterminate">
+      <div class="progress-bar"></div>
+    </div>
+  </ng-template>
+</label>

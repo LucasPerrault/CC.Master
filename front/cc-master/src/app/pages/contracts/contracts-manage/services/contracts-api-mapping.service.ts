@@ -1,6 +1,6 @@
 import { HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { ApiV3DateService, apiV3SortToHttpParams, toApiV3SortParams } from '@cc/common/queries';
+import { ApiSortHelper, ApiV3DateService } from '@cc/common/queries';
 import { ISortParams } from '@cc/common/sort';
 import { IClient } from '@cc/domain/billing/clients';
 import { IDistributor } from '@cc/domain/billing/distributors';
@@ -53,8 +53,7 @@ export class ContractsApiMappingService {
       return params;
     }
 
-    const apiV3SortParams = toApiV3SortParams(sortParams);
-    return apiV3SortToHttpParams(params, apiV3SortParams);
+    return ApiSortHelper.toV3HttpParams(params, sortParams);
   }
 
   private setFilters(params: HttpParams, filters: IContractsFilter): HttpParams {

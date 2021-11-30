@@ -2,7 +2,7 @@ import { clientFields, IClient } from '@cc/domain/billing/clients';
 import { contractFields, IContract } from '@cc/domain/billing/contracts/models/contract.interface';
 import { distributorFields, IDistributor } from '@cc/domain/billing/distributors';
 import { establishmentFields, IEstablishment } from '@cc/domain/billing/establishments';
-import { IOffer, IProduct, offerFields, productFields } from '@cc/domain/billing/offers';
+import { IOffer, IProduct, productFields } from '@cc/domain/billing/offers';
 
 const productCodeFields = `${ productFields },code`;
 interface IProductCode extends IProduct {
@@ -20,7 +20,7 @@ export const contractListEntryFields = [
   'environmentId',
   `activeLegalEntities[${ establishmentFields }]`,
   `product[${ productCodeFields }]`,
-  `offer[${ offerFields }]`,
+  `offer[id,name]`,
   `client[${ clientFields }]`,
   `distributor[${ distributorFields }]`,
 ].join(',');

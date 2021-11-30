@@ -1,12 +1,14 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { TranslatePipe } from '@cc/aspects/translate';
-import { IPriceList, IPriceListOffer, IPriceRow } from '@cc/domain/billing/offers';
+import { ICurrency, IPriceList, IPriceRow } from '@cc/domain/billing/offers';
 import { ILuModalContent, LU_MODAL_DATA } from '@lucca-front/ng/modal';
 import { BehaviorSubject } from 'rxjs';
 import { finalize } from 'rxjs/operators';
 
+import { CurrencyCode, getCurrency } from '../../../offers/models/offer-currency.interface';
 import { IPriceGridModalData } from './price-grid-modal-data.interface';
 import { PriceGridModalDataService } from './price-grid-modal-data.service';
+import { IPriceListOffer } from './price-grid-offer.interface';
 
 @Component({
   selector: 'cc-price-grid-modal',
@@ -40,6 +42,10 @@ export class PriceGridModalComponent implements ILuModalContent, OnInit {
 
   public getPriceRows(): IPriceRow[] {
     return this.getPriceList()?.rows ?? [];
+  }
+
+  public getCurrency(code: CurrencyCode): ICurrency {
+    return getCurrency(code);
   }
 }
 

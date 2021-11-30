@@ -1,0 +1,68 @@
+<div class="u-displayFlex u-alignItemsCenter">
+  <label class="textfield palette-grey mod-longer" *ngIf="(readonly$ | async) === false">
+    <cc-offer-price-list-api-select [formControl]="duplicatedOffer"></cc-offer-price-list-api-select>
+    <span class="textfield-label">{{ "offers_form_pricegrid_offer_label" | translate }}</span>
+  </label>
+</div>
+
+
+<form [formGroup]="formGroup">
+  <table class="table" [ngClass]="{ 'mod-error': hasFormErrors }" #tableElement>
+    <thead class="table-head">
+    <tr class="table-head-row">
+      <th class="table-head-row-cell mod-alignRight">{{ 'front_priceGrid_column_lowerBound' | translate }}</th>
+      <th class="table-head-row-cell mod-alignRight">{{ 'front_priceGrid_column_upperBound' | translate }}</th>
+      <th class="table-head-row-cell mod-alignRight">{{ 'front_priceGrid_column_unitPrice' | translate }}</th>
+      <th class="table-head-row-cell mod-alignRight">{{ 'front_priceGrid_column_fixedPrice' | translate }}</th>
+      <th class="table-head-row-cell"></th>
+    </tr>
+    </thead>
+    <tbody class="table-body" [formArrayName]="formArrayKey">
+      <tr class="table-body-row" *ngFor="let control of formArray.controls; let i = index" [formGroupName]="i">
+        <td class="table-body-row-cell mod-alignRight u-paddingReset">
+          {{ getLowerBound(control.get(formKey.MaxIncludedCount).value) }}
+        </td>
+        <td class="table-body-row-cell mod-alignRight u-paddingReset" [tabindex]="2">
+          <cc-editable-price-cell (keydownChange)="updateFocus($event, i, 1)"
+                                  (pasteChange)="paste($event)"
+                                  [formControlName]="formKey.MaxIncludedCount"
+                                  [readonly]="isReadonly(control)">
+          </cc-editable-price-cell>
+        </td>
+        <td class="table-body-row-cell mod-alignRight u-paddingReset" [tabindex]="3">
+          <cc-editable-price-cell (keydownChange)="updateFocus($event, i, 2)"
+                                  (pasteChange)="paste($event)"
+                                  [formControlName]="formKey.UnitPrice"
+                                  [readonly]="isReadonly(control)">
+          </cc-editable-price-cell>
+        </td>
+        <td class="table-body-row-cell mod-alignRight u-paddingReset" [tabindex]="4">
+          <cc-editable-price-cell (keydownChange)="updateFocus($event, i, 3)"
+                                  (pasteChange)="paste($event)"
+                                  [formControlName]="formKey.FixedPrice"
+                                  [readonly]="isReadonly(control)">
+          </cc-editable-price-cell>
+        </td>
+        <td class="table-body-row-cell u-paddingReset">
+          <button class="actionIcon" (click)="remove(i)" *ngIf="canRemove && !isReadonly(control)">
+            <span aria-hidden="true" class="lucca-icon icon-cross"></span>
+          </button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="u-displayFlex u-flexDirectionColumn textfield-messages">
+    <span *ngIf="formGroup.hasError(validationError.BoundsContinuity)" class="textfield-messages-error">
+      {{ 'offers_forms_validationError_boundsContinuity' | translate }}
+    </span>
+    <span *ngIf="hasRequiredError" class="textfield-messages-error">
+      {{ 'offers_forms_validationError_required' | translate }}
+    </span>
+  </div>
+
+  <button class="button mod-small mod-outline palette-grey u-right" (click)="insert()"
+          *ngIf="(readonly$ | async) === false || withAddPriceRowButton">
+    {{ 'offers_forms_add_button_label' | translate }}
+  </button>
+</form>

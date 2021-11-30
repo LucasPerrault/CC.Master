@@ -1,6 +1,6 @@
 import { HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { apiV3SortKey, apiV3SortOrderDescendingKey, IHttpApiV3CollectionCount } from '@cc/common/queries';
+import { ApiSortHelper, IHttpApiV3CollectionCount } from '@cc/common/queries';
 import { Observable, pipe, UnaryFunction } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
 
@@ -32,7 +32,7 @@ export class AccountingEntryListService {
       .set('contractId', `${ contractId }`)
       .set('accountNumber', `like,${ accountNumber }`)
       .set('journalCode', `notequal,${ AccountingEntryJournalCodes.Draft }`)
-      .set(apiV3SortKey, `periodOn,${ apiV3SortOrderDescendingKey }`);
+      .set(ApiSortHelper.v3SortKey, `periodOn,${ ApiSortHelper.v3DscKey }`);
 
     return this.accountingDataService.getAccountingEntries$(params);
   }

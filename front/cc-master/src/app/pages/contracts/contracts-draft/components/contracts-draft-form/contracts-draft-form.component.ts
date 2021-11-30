@@ -163,6 +163,11 @@ export class ContractsDraftFormComponent implements ControlValueAccessor, Valida
     }
   }
 
+  public hasRequiredError(formKey: DraftFormKey): boolean {
+    const ctrl = this.formGroup.get(formKey);
+    return ctrl.touched && ctrl.hasError('required');
+  }
+
   private updateMinimalBillingEligibility(): void {
     const contractMinimalBillable = this.getContractMinimalBillable(this.formGroup);
 

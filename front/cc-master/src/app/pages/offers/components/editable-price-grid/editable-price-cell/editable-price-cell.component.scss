@@ -1,0 +1,17 @@
+@import "theming.import";
+
+.mod-editableCell {
+  display: contents;
+
+  .textfield-input {
+    text-align: right;
+    border-radius: 0;
+    box-shadow: none;
+  }
+}
+
+.mod-readonly .textfield-input {
+  pointer-events: none;
+  background-color: white;
+  color: _color('grey', 800);
+}

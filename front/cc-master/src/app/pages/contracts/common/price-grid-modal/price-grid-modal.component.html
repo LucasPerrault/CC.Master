@@ -1,5 +1,5 @@
 <div class="loading mod-dialog" *ngIf="isLoading$ | async; else isNotLoading"></div>
 
 <ng-template #isNotLoading>
-  <cc-price-grid-list [priceRows]="getPriceRows()" [currency]="offer.currency"></cc-price-grid-list>
+  <cc-price-list [priceRows]="getPriceRows()" [currency]="getCurrency(offer.currencyId)"></cc-price-list>
 </ng-template>

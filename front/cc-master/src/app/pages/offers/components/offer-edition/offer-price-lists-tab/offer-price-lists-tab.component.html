@@ -1,0 +1,28 @@
+<div class="page-content u-paddingReset">
+  <ng-container *ngIf="offer$ | async; let offer">
+    <div class="header">
+      <button class="button u-marginLeftAuto" (click)="openCreationModal(offer.id, offer.priceLists)">
+        {{ 'offers_priceList_tab_creation_button' | translate }}
+      </button>
+    </div>
+
+    <div class="u-marginTopStandard" *ngFor="let priceList of offer.priceLists; trackBy: trackBy">
+      <div class="u-marginLeftStandard u-marginRightStandard u-displayFlex u-alignItemsCenter u-justifyContentSpaceBetween">
+        <span class="label palette-grey">
+          {{ getPriceListStatus(priceList, offer.priceLists) }}
+        </span>
+        <div>
+          <button class="button palette-grey mod-outline mod-small"
+                  (click)="openEditionModal(offer, priceList, offer.priceLists)">
+            {{ 'offers_priceList_tab_edition_button' | translate }}
+          </button>
+          <button [disabled]="!canDelete(priceList)" class="button palette-grey mod-outline mod-small"
+                  (click)="openDeletionModal(offer.id, priceList.id, priceList.startsOn)">
+            {{ 'offers_priceList_tab_deletion_button' | translate }}
+          </button>
+        </div>
+      </div>
+      <cc-price-list [priceRows]="priceList.rows" [currency]="getCurrency(offer.currencyId)"></cc-price-list>
+    </div>
+  </ng-container>
+</div>

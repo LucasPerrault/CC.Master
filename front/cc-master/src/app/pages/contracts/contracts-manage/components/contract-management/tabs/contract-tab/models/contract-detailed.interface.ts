@@ -1,14 +1,14 @@
 import { clientFields, IClient } from '@cc/domain/billing/clients';
 import { ContractBillingMonth, contractFields, IContract } from '@cc/domain/billing/contracts';
 import { distributorFields, IDistributor } from '@cc/domain/billing/distributors';
-import { IOffer, IProduct, offerFields, productFields } from '@cc/domain/billing/offers';
+import { IOffer, IProduct, productFields } from '@cc/domain/billing/offers';
 
 export const contractDetailedFields = [
   contractFields,
   'billingMonth',
   `distributor[${distributorFields}]`,
   `client[${clientFields}]`,
-  `offer[${offerFields}]`,
+  `offer[id,name]`,
   `product[${productFields}]`,
   'unityNumberTheorical',
   'clientRebate',
