@@ -7,6 +7,7 @@ import { LuTooltipTriggerModule } from '@lucca-front/ng/tooltip';
 import {
   ContractWithoutEnvironmentCalloutComponent,
 } from './components/contract-without-environment-callout/contract-without-environment-callout.component';
+import { EstablishmentTypeFilterModule } from './components/establiment-type-filter/establishment-type-filter.module';
 import { EstablishmentListComponent } from './components/establishment-list/establishment-list.component';
 import {
   EstablishmentListActionsMultipleComponent,
@@ -25,7 +26,6 @@ import { EstablishmentListActionsService } from './services/establishment-list-a
 import { EstablishmentTypeService } from './services/establishment-type.service';
 import { EstablishmentsDataService } from './services/establishments-data.service';
 import { EstablishmentsWithAttachmentsService } from './services/establishments-with-attachments.service';
-import { EstablishmentTypeFilterModule } from './components/establiment-type-filter/establishment-type-filter.module';
 
 @NgModule({
   declarations: [
