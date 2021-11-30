@@ -36,7 +36,7 @@ export class AttachmentLinkingModalComponent implements OnInit, OnDestroy, ILuMo
     }
 
     const start = this.modalData.contract.theoricalStartOn;
-    return !!start ? new Date(start) : null;
+    return !!start ? startOfMonth(new Date(start)) : null;
   }
 
   private destroy$: Subject<void> = new Subject();
