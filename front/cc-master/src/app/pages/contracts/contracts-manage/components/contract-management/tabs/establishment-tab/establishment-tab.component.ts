@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { getButtonState, toSubmissionState } from '@cc/common/forms';
-import { Observable, ReplaySubject, Subject } from 'rxjs';
+import { combineLatest, Observable, ReplaySubject, Subject } from 'rxjs';
 import { finalize, map, switchMap, take, takeUntil } from 'rxjs/operators';
 
 import { establishmentDocUrl } from './constants/establishment-doc-url.const';
@@ -82,18 +82,19 @@ export class EstablishmentTabComponent implements OnInit, OnDestroy {
 
     this.contractService.getContract$(this.contractId)
       .pipe(take(1))
-      .subscribe(contract => this.contract$.next(contract));
+      .subscribe(contract => this.set(contract));
+  }
 
-    this.contractService.getRealCounts$(this.contractId)
-      .pipe(take(1))
-      .subscribe(realCounts => this.realCounts$.next(realCounts));
-
-    this.contract$
-      .pipe(
-        take(1),
-        switchMap(contract => this.establishmentsListService.getEstablishments$(contract)
-          .pipe(finalize(() => this.isLoading$.next(false)))),
-      )
-      .subscribe(establishments => this.establishments$.next(establishments));
+  private set(contract: IEstablishmentContract): void {
+    combineLatest([
+      this.contractService.getRealCounts$(this.contractId),
+      this.establishmentsListService.getEstablishments$(contract),
+    ])
+      .pipe(take(1), finalize(() => this.isLoading$.next(false)))
+      .subscribe(([realCounts, establishments]) => {
+        this.contract$.next(contract);
+        this.realCounts$.next(realCounts);
+        this.establishments$.next(establishments);
+      });
   }
 }
