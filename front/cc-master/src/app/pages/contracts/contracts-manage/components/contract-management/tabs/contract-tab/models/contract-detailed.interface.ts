@@ -19,7 +19,7 @@ export const contractDetailedFields = [
   'comment',
 ].join(',');
 
-interface IClientWithExternalInformation extends IClient {
+export interface IClientWithExternalInformation extends IClient {
   salesforceId: string;
   commercialManagementId: string;
 }

@@ -142,8 +142,7 @@ export class ContractTabComponent implements OnInit {
   private toFormInformation$(contract: IContractDetailed): Observable<IContractFormInformation> {
     return this.distributorsService.getActiveRebate$(contract.distributor?.id, contract.product?.id).pipe(
         map(distributorRebate => ({
-          clientSalesforceId: contract.client.salesforceId,
-          clientCommercialManagementId: contract.client.commercialManagementId,
+          client: contract.client,
           distributorRebate,
         })),
     );
