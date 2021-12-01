@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/
 import { ActivatedRoute } from '@angular/router';
 import { getButtonState, toSubmissionState } from '@cc/common/forms';
 import { combineLatest, Observable, ReplaySubject, Subject } from 'rxjs';
-import { finalize, map, switchMap, take, takeUntil } from 'rxjs/operators';
+import { finalize, map, take, takeUntil } from 'rxjs/operators';
 
 import { establishmentDocUrl } from './constants/establishment-doc-url.const';
 import { EstablishmentType } from './constants/establishment-type.enum';
@@ -13,6 +13,7 @@ import { EstablishmentContractDataService } from './services/establishment-contr
 import { EstablishmentListActionsService } from './services/establishment-list-actions.service';
 import { EstablishmentsDataService } from './services/establishments-data.service';
 import { EstablishmentsWithAttachmentsService } from './services/establishments-with-attachments.service';
+import { EstablishmentTypeService } from './services/establishment-type.service';
 
 @Component({
   selector: 'cc-establishment-tab',
@@ -47,6 +48,7 @@ export class EstablishmentTabComponent implements OnInit, OnDestroy {
     private contractService: EstablishmentContractDataService,
     private establishmentsService: EstablishmentsDataService,
     private actionsService: EstablishmentListActionsService,
+    private typeService: EstablishmentTypeService,
   ) {
   }
 
@@ -88,7 +90,7 @@ export class EstablishmentTabComponent implements OnInit, OnDestroy {
   private set(contract: IEstablishmentContract): void {
     combineLatest([
       this.contractService.getRealCounts$(this.contractId),
-      this.establishmentsListService.getEstablishments$(contract),
+      this.getEstablishmentsByType$(contract),
     ])
       .pipe(take(1), finalize(() => this.isLoading$.next(false)))
       .subscribe(([realCounts, establishments]) => {
@@ -96,5 +98,10 @@ export class EstablishmentTabComponent implements OnInit, OnDestroy {
         this.realCounts$.next(realCounts);
         this.establishments$.next(establishments);
       });
+  }
+
+  private getEstablishmentsByType$(contract: IEstablishmentContract): Observable<IEstablishmentsWithAttachmentsByType> {
+    return this.establishmentsListService.getEstablishments$(contract)
+      .pipe(map(ets => this.typeService.getEstablishmentsByType(ets, contract)));
   }
 }

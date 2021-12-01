@@ -9,7 +9,7 @@ import { IEstablishmentsWithAttachmentsByType } from '../models/establishments-b
 @Injectable()
 export class EstablishmentTypeService {
 
-  public getEstablishmentListEntriesByType(
+  public getEstablishmentsByType(
     entries: IEstablishmentWithAttachments[],
     contract: IEstablishmentContract,
   ): IEstablishmentsWithAttachmentsByType {

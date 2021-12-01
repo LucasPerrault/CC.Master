@@ -68,7 +68,7 @@ describe('EstablishmentTypeService', () => {
     const excludedEstablishment = fakeEstablishment([excludedEntityWithSameProduct]);
     const excludedEntry = fakeEtsEntry(excludedEstablishment, null, null);
 
-    const result = spectator.service.getEstablishmentListEntriesByType([excludedEntry], contract);
+    const result = spectator.service.getEstablishmentsByType([excludedEntry], contract);
 
     expect(result.excluded).toEqual([excludedEntry]);
     expect(result.linkedToAnotherContract).toEqual([]);
@@ -85,7 +85,7 @@ describe('EstablishmentTypeService', () => {
       fakeEtsEntry(fakeEstablishment(), null, nextAttachmentToAnotherContract),
     ];
 
-    const result = spectator.service.getEstablishmentListEntriesByType(entriesLinkedToAnotherContract, contract);
+    const result = spectator.service.getEstablishmentsByType(entriesLinkedToAnotherContract, contract);
 
     expect(result.excluded).toEqual([]);
     expect(result.linkedToAnotherContract).toEqual(entriesLinkedToAnotherContract);
@@ -101,7 +101,7 @@ describe('EstablishmentTypeService', () => {
       fakeEtsEntry(fakeEstablishment(), null, nextAttachment),
     ];
 
-    const result = spectator.service.getEstablishmentListEntriesByType(entriesLinkedToContract, contract);
+    const result = spectator.service.getEstablishmentsByType(entriesLinkedToContract, contract);
 
     expect(result.excluded).toEqual([]);
     expect(result.linkedToAnotherContract).toEqual([]);
@@ -112,7 +112,7 @@ describe('EstablishmentTypeService', () => {
   it('should get error establishments because it does not have attachments', () => {
     const errorEntries = [fakeEtsEntry(fakeEstablishment(), null, null)];
 
-    const result = spectator.service.getEstablishmentListEntriesByType(errorEntries, contract);
+    const result = spectator.service.getEstablishmentsByType(errorEntries, contract);
 
     expect(result.excluded).toEqual([]);
     expect(result.linkedToAnotherContract).toEqual([]);
@@ -125,7 +125,7 @@ describe('EstablishmentTypeService', () => {
     const inactiveEstablishment = fakeEstablishment([], false);
     const errorEntries = [fakeEtsEntry(inactiveEstablishment, currentAttachment, null)];
 
-    const result = spectator.service.getEstablishmentListEntriesByType(errorEntries, contract);
+    const result = spectator.service.getEstablishmentsByType(errorEntries, contract);
 
     expect(result.excluded).toEqual([]);
     expect(result.linkedToAnotherContract).toEqual([]);

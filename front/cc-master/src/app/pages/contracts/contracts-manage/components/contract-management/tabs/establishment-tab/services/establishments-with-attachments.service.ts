@@ -7,27 +7,18 @@ import { IEstablishmentAttachment } from '../models/establishment-attachment.int
 import { IEstablishmentContract } from '../models/establishment-contract.interface';
 import { IEstablishmentContractProduct } from '../models/establishment-contract-product.interface';
 import { IEstablishmentWithAttachments } from '../models/establishment-with-attachments.interface';
-import { IEstablishmentsWithAttachmentsByType } from '../models/establishments-by-type.interface';
 import { AttachmentsTimelineService } from './attachments-timeline.service';
-import { EstablishmentTypeService } from './establishment-type.service';
 import { EstablishmentsDataService } from './establishments-data.service';
 
 @Injectable()
 export class EstablishmentsWithAttachmentsService {
   constructor(
     private dataService: EstablishmentsDataService,
-    private typeService: EstablishmentTypeService,
     private timelineService: AttachmentsTimelineService,
   ) {
   }
 
-  public getEstablishments$(contract: IEstablishmentContract): Observable<IEstablishmentsWithAttachmentsByType> {
-    return this.getEstablishmentsWithAttachments$(contract).pipe(
-      map(ets => this.typeService.getEstablishmentListEntriesByType(ets, contract)),
-    );
-  }
-
-  private getEstablishmentsWithAttachments$(contract: IEstablishmentContract): Observable<IEstablishmentWithAttachments[]> {
+  public getEstablishments$(contract: IEstablishmentContract): Observable<IEstablishmentWithAttachments[]> {
     if (!contract.environmentId) {
       return of([]);
     }
