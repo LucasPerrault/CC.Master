@@ -143,6 +143,7 @@ export class ContractTabComponent implements OnInit {
     return this.distributorsService.getActiveRebate$(contract.distributor?.id, contract.product?.id).pipe(
         map(distributorRebate => ({
           clientSalesforceId: contract.client.salesforceId,
+          clientCommercialManagementId: contract.client.commercialManagementId,
           distributorRebate,
         })),
     );
