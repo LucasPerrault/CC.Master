@@ -10,13 +10,13 @@ import {
 } from '@angular/forms';
 import { SelectDisplayMode } from '@cc/common/forms';
 import { ContractBillingMonth, IContractForm } from '@cc/domain/billing/contracts';
+import { LuModal } from '@lucca-front/ng/modal';
 import { ReplaySubject, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
 import { IContractFormInformation } from '../../models/contract-form-information.interface';
 import { IContractValidationContext } from '../../models/contract-validation-context.interface';
 import { ContractActionRestrictionsService } from '../../services/contract-action-restrictions.service.';
-import { LuModal } from '@lucca-front/ng/modal';
 import { ClientInfoModalComponent } from './client-info-modal/client-info-modal.component';
 import { IClientInfoModalData } from './client-info-modal/client-info-modal-data.interface';
 
