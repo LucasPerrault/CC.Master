@@ -42,7 +42,7 @@ export class EstablishmentTypeService {
     contractId: number,
     productId: number,
   ): IEstablishmentWithAttachments[] {
-    return entries.filter(e => this.isLinkedToAnotherContract(e, contractId, productId));
+    return entries.filter(e => this.isLinkedToAnotherContract(e, contractId) && !this.isExcluded(e.establishment, productId));
   }
 
   private isExcluded(establishment: IContractEstablishment, productId: number): boolean {
@@ -57,12 +57,8 @@ export class EstablishmentTypeService {
     return this.isLinked(ets) && this.getReferencedCovering(ets).contractID === contractId;
   }
 
-  private isLinkedToAnotherContract(ets: IEstablishmentWithAttachments, contractId: number, productId: number): boolean {
-    if (this.isExcluded(ets.establishment, productId) || !this.isLinked(ets)) {
-      return false;
-    }
-
-    return this.getReferencedCovering(ets).contractID !== contractId;
+  private isLinkedToAnotherContract(ets: IEstablishmentWithAttachments, contractId: number): boolean {
+    return this.isLinked(ets) && this.getReferencedCovering(ets).contractID !== contractId;
   }
 
   private isLinked(ets: IEstablishmentWithAttachments): boolean {
