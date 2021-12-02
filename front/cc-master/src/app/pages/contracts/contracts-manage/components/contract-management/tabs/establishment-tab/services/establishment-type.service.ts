@@ -14,7 +14,7 @@ export class EstablishmentTypeService {
     contract: IEstablishmentContract,
   ): IEstablishmentsWithAttachmentsByType {
     return ({
-      excluded: this.getExcludedEts(entries, contract.productId),
+      excluded: this.getExcludedEts(entries, contract.id, contract.productId),
       withError: this.getEtsWithError(entries, contract.productId),
       linkedToContract: this.getEtsLinkedToContract(entries, contract.id, contract.productId),
       linkedToAnotherContract: this.getEtsLinkedToAnotherContract(entries, contract.id, contract.productId),
@@ -23,9 +23,10 @@ export class EstablishmentTypeService {
 
   private getExcludedEts(
     entries: IEstablishmentWithAttachments[],
+    contractId: number,
     productId: number,
   ): IEstablishmentWithAttachments[] {
-    return entries.filter(e => this.isExcluded(e.establishment, productId));
+    return entries.filter(e => this.isExcluded(e.establishment, productId) && !this.isLinkedToContract(e, contractId, productId));
   }
 
   private getEtsWithError(entries: IEstablishmentWithAttachments[], productId: number): IEstablishmentWithAttachments[] {
@@ -62,7 +63,7 @@ export class EstablishmentTypeService {
   }
 
   private isLinkedToContract(ets: IEstablishmentWithAttachments, contractId: number, productId: number): boolean {
-    if (this.isExcluded(ets.establishment, productId) || this.isConsideredAsError(ets, productId) || !this.isLinked(ets)) {
+    if (this.isConsideredAsError(ets, productId) || !this.isLinked(ets)) {
       return false;
     }
 
