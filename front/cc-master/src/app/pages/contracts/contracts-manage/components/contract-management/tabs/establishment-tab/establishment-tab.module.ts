@@ -25,6 +25,8 @@ import { EstablishmentListActionsService } from './services/establishment-list-a
 import { EstablishmentTypeService } from './services/establishment-type.service';
 import { EstablishmentsDataService } from './services/establishments-data.service';
 import { EstablishmentsWithAttachmentsService } from './services/establishments-with-attachments.service';
+import { EstablishmentProductStoreService } from './services/establishment-product-store.service';
+import { EstablishmentProductStoreDataService } from './services/establishment-product-store-data.service';
 
 @NgModule({
   declarations: [
@@ -52,6 +54,8 @@ import { EstablishmentsWithAttachmentsService } from './services/establishments-
     EstablishmentContractDataService,
     EstablishmentListActionsService,
     EstablishmentActionContextService,
+    EstablishmentProductStoreService,
+    EstablishmentProductStoreDataService,
   ],
 })
 export class EstablishmentTabModule { }
