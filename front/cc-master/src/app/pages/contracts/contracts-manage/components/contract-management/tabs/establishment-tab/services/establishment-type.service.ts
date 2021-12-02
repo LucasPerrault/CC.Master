@@ -50,7 +50,7 @@ export class EstablishmentTypeService {
   }
 
   private isConsideredAsError(ets: IEstablishmentWithAttachments): boolean {
-    return !this.isLinked(ets) || !ets.establishment.isActive;
+    return !this.isLinked(ets);
   }
 
   private isLinkedToContract(ets: IEstablishmentWithAttachments, contractId: number): boolean {
