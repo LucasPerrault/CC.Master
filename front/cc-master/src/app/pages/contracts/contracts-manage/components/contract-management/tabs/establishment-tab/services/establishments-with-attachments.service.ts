@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { ISolution } from '@cc/domain/billing/offers';
-import { from, Observable, of } from 'rxjs';
+import { from, Observable, of, pipe, UnaryFunction } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
 
 import { IContractEstablishment } from '../models/contract-establishment.interface';
@@ -26,18 +26,19 @@ export class EstablishmentsWithAttachmentsService {
       return of([]);
     }
 
-    return this.dataService.getEstablishments$(contract.environmentId).pipe(
-      switchMap((ets: IContractEstablishment[]) => from(this.getEtsWithFilteredAttachmentsAsync(ets, contract.product.solutions))),
-      map((ets: IContractEstablishment[]) => this.getEstablishmentsWithAttachments(ets)),
-      map((ets: IEstablishmentWithAttachments[]) => this.getSortedgetEstablishmentsWithAttachments(ets)),
-    );
+    const allEstablishments$ = this.dataService.getEstablishments$(contract.environmentId);
+
+    const etsWithFilteredAttachments$ = allEstablishments$.pipe(
+      switchMap(ets => from(this.getEtsWithFilteredAttachmentsAsync(ets, contract.product.solutions))));
+
+    return etsWithFilteredAttachments$.pipe(this.toTimelineAttachmentsEts);
   }
 
   private async getEtsWithFilteredAttachmentsAsync(
     establishments: IContractEstablishment[],
     solutions: ISolution[],
   ): Promise<IContractEstablishment[]> {
-    const productIds = this.getProductIds(establishments);
+    const productIds = this.getProductIdsByEts(establishments);
     const allProducts = await this.productsStoreService.getProducts$(productIds).toPromise();
 
     for (const establishment of establishments) {
@@ -67,19 +68,21 @@ export class EstablishmentsWithAttachmentsService {
     return filteredAttachments;
   }
 
-  private getProductIds(establishments: IContractEstablishment[]): number[] {
+  private getProductIdsByEts(establishments: IContractEstablishment[]): number[] {
     return establishments
-      .map(establishment => establishment.contractEntities)
-      .map(attachments => attachments.map(a => a.contract.productId))
-      .reduce((acc, productIds) => [...acc, ...productIds])
+      .map(establishment => establishment.contractEntities.map(a => a.contract.productId))
+      .reduce((flattened, productIds) => [...flattened, ...productIds])
       .filter((value, index, self) => self.indexOf(value) === index);
   }
 
-  private getEstablishmentsWithAttachments(ets: IContractEstablishment[]): IEstablishmentWithAttachments[] {
-    return ets.map(establishment => this.getEstablishmentWithAttachments(establishment));
+  private get toTimelineAttachmentsEts(): UnaryFunction<Observable<IContractEstablishment[]>, Observable<IEstablishmentWithAttachments[]>> {
+    return pipe(
+      map(establishments => establishments.map(e => this.toTimelineAttachment(e))),
+      map(establishments => this.sort(establishments)),
+    );
   }
 
-  private getEstablishmentWithAttachments(establishment: IContractEstablishment): IEstablishmentWithAttachments {
+  private toTimelineAttachment(establishment: IContractEstablishment): IEstablishmentWithAttachments {
     return {
       establishment,
       currentAttachment: this.timelineService.getCurrentAttachment(establishment.contractEntities),
@@ -88,13 +91,11 @@ export class EstablishmentsWithAttachmentsService {
     };
   }
 
-  private getSortedgetEstablishmentsWithAttachments(ets: IEstablishmentWithAttachments[]): IEstablishmentWithAttachments[] {
-    return ets.sort((a, b) =>
-      this.getAttachmentStartDate(a).getTime() - this.getAttachmentStartDate(b).getTime(),
-    );
+  private sort(establishments: IEstablishmentWithAttachments[]): IEstablishmentWithAttachments[] {
+    return establishments.sort((a, b) => this.getStartDate(a).getTime() - this.getStartDate(b).getTime());
   }
 
-  private getAttachmentStartDate(establishmentWithAttachments: IEstablishmentWithAttachments): Date {
+  private getStartDate(establishmentWithAttachments: IEstablishmentWithAttachments): Date {
     const attachment = establishmentWithAttachments.currentAttachment || establishmentWithAttachments.nextAttachment;
     return new Date(attachment?.start);
   }
