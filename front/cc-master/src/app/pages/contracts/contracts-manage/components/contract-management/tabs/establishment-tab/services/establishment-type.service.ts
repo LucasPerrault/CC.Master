@@ -30,7 +30,7 @@ export class EstablishmentTypeService {
   }
 
   private getEtsWithError(entries: IEstablishmentWithAttachments[], productId: number): IEstablishmentWithAttachments[] {
-    return entries.filter(e => this.isConsideredAsError(e, productId));
+    return entries.filter(e => this.isConsideredAsError(e) && !this.isExcluded(e.establishment, productId));
   }
 
   private getEtsLinkedToContract(
@@ -53,17 +53,12 @@ export class EstablishmentTypeService {
     return !!establishment.excludedEntities.find(e => e.productId === productId);
   }
 
-  private isConsideredAsError(ets: IEstablishmentWithAttachments, productId: number): boolean {
-    if (this.isExcluded(ets.establishment, productId)) {
-      return false;
-    }
-
-    const hasAttachments = !!ets.currentAttachment || !!ets.nextAttachment;
-    return !hasAttachments || !ets.establishment.isActive;
+  private isConsideredAsError(ets: IEstablishmentWithAttachments): boolean {
+    return !this.isLinked(ets) || !ets.establishment.isActive;
   }
 
   private isLinkedToContract(ets: IEstablishmentWithAttachments, contractId: number, productId: number): boolean {
-    if (this.isConsideredAsError(ets, productId) || !this.isLinked(ets)) {
+    if (this.isConsideredAsError(ets) || !this.isLinked(ets)) {
       return false;
     }
 
