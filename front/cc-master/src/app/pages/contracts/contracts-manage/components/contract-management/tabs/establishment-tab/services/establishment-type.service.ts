@@ -16,7 +16,7 @@ export class EstablishmentTypeService {
     return ({
       excluded: this.getExcludedEts(entries, contract.id, contract.productId),
       withError: this.getEtsWithError(entries, contract.productId),
-      linkedToContract: this.getEtsLinkedToContract(entries, contract.id, contract.productId),
+      linkedToContract: this.getEtsLinkedToContract(entries, contract.id),
       linkedToAnotherContract: this.getEtsLinkedToAnotherContract(entries, contract.id, contract.productId),
     });
   }
@@ -26,19 +26,15 @@ export class EstablishmentTypeService {
     contractId: number,
     productId: number,
   ): IEstablishmentWithAttachments[] {
-    return entries.filter(e => this.isExcluded(e.establishment, productId) && !this.isLinkedToContract(e, contractId, productId));
+    return entries.filter(e => this.isExcluded(e.establishment, productId) && !this.isLinkedToContract(e, contractId));
   }
 
   private getEtsWithError(entries: IEstablishmentWithAttachments[], productId: number): IEstablishmentWithAttachments[] {
     return entries.filter(e => this.isConsideredAsError(e) && !this.isExcluded(e.establishment, productId));
   }
 
-  private getEtsLinkedToContract(
-    entries: IEstablishmentWithAttachments[],
-    contractId: number,
-    productId: number,
-  ): IEstablishmentWithAttachments[] {
-    return entries.filter(e => this.isLinkedToContract(e, contractId, productId));
+  private getEtsLinkedToContract(entries: IEstablishmentWithAttachments[], contractId: number): IEstablishmentWithAttachments[] {
+    return entries.filter(e => this.isLinkedToContract(e, contractId));
   }
 
   private getEtsLinkedToAnotherContract(
@@ -57,12 +53,8 @@ export class EstablishmentTypeService {
     return !this.isLinked(ets) || !ets.establishment.isActive;
   }
 
-  private isLinkedToContract(ets: IEstablishmentWithAttachments, contractId: number, productId: number): boolean {
-    if (this.isConsideredAsError(ets) || !this.isLinked(ets)) {
-      return false;
-    }
-
-    return this.getReferencedCovering(ets).contractID === contractId;
+  private isLinkedToContract(ets: IEstablishmentWithAttachments, contractId: number): boolean {
+    return this.isLinked(ets) && this.getReferencedCovering(ets).contractID === contractId;
   }
 
   private isLinkedToAnotherContract(ets: IEstablishmentWithAttachments, contractId: number, productId: number): boolean {
@@ -74,7 +66,8 @@ export class EstablishmentTypeService {
   }
 
   private isLinked(ets: IEstablishmentWithAttachments): boolean {
-    return !!ets.currentAttachment || !!ets.nextAttachment;
+    const hasAttachments = !!ets.currentAttachment || !!ets.nextAttachment;
+    return hasAttachments && ets.establishment.isActive;
   }
 
   private getReferencedCovering(ets: IEstablishmentWithAttachments): IEstablishmentAttachment {
