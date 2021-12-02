@@ -11,9 +11,9 @@ import { IEstablishmentContract } from './models/establishment-contract.interfac
 import { IEstablishmentsWithAttachmentsByType } from './models/establishments-by-type.interface';
 import { EstablishmentContractDataService } from './services/establishment-contract-data.service';
 import { EstablishmentListActionsService } from './services/establishment-list-actions.service';
+import { EstablishmentTypeService } from './services/establishment-type.service';
 import { EstablishmentsDataService } from './services/establishments-data.service';
 import { EstablishmentsWithAttachmentsService } from './services/establishments-with-attachments.service';
-import { EstablishmentTypeService } from './services/establishment-type.service';
 
 @Component({
   selector: 'cc-establishment-tab',

@@ -22,11 +22,11 @@ import { AttachmentsTimelineService } from './services/attachments-timeline.serv
 import { EstablishmentActionContextService } from './services/establishment-action-context.service';
 import { EstablishmentContractDataService } from './services/establishment-contract-data.service';
 import { EstablishmentListActionsService } from './services/establishment-list-actions.service';
+import { EstablishmentProductStoreService } from './services/establishment-product-store.service';
+import { EstablishmentProductStoreDataService } from './services/establishment-product-store-data.service';
 import { EstablishmentTypeService } from './services/establishment-type.service';
 import { EstablishmentsDataService } from './services/establishments-data.service';
 import { EstablishmentsWithAttachmentsService } from './services/establishments-with-attachments.service';
-import { EstablishmentProductStoreService } from './services/establishment-product-store.service';
-import { EstablishmentProductStoreDataService } from './services/establishment-product-store-data.service';
 
 @NgModule({
   declarations: [
