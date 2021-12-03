@@ -478,6 +478,19 @@ namespace Billing.Contracts.Domain.Tests
             ShouldNotThrowWhenDelete(priceList, offer);
         }
 
+        [Fact]
+        public void AddPriceList_ShouldThrowOnlyIf_ContainsNegativeAmount()
+        {
+            var offer = new CommercialOffer().Build();
+            offer.PriceLists = new List<PriceList>();
+
+            var list = new PriceList().StartingOn(new DateTime(2040, 01, 01)).WithPriceRow(0, 10, 0, 0);
+
+            ShouldNotThrowWhenAdd(list, offer);
+            list.Rows.First().FixedPrice = -0.01m;
+            ShouldThrowWhenAdd(list, offer, t => t.PriceListHasNegativeAmounts());
+        }
+
         private void Reset()
         {
             _translations.Reset();

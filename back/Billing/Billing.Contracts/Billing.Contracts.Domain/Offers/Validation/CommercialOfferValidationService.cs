@@ -25,6 +25,10 @@ namespace Billing.Contracts.Domain.Offers.Validation
             {
                 throw new OfferValidationException(GetCreateOfferMessage(_translations.PriceListStartsOnFirstOfMonth()));
             }
+            if (newOffer.PriceLists.Any(HasNegativeAmount))
+            {
+                throw new OfferValidationException(GetCreateOfferMessage(_translations.PriceListHasNegativeAmounts()));
+            }
             if (HasSameStartDateOnSeveralPriceLists(newOffer.PriceLists))
             {
                 throw new OfferValidationException(GetCreateOfferMessage(_translations.PriceListsStartsOnSameDay()));
@@ -60,6 +64,10 @@ namespace Billing.Contracts.Domain.Offers.Validation
             if (!IsOrdered(priceList))
             {
                 throw new OfferValidationException(GetCreatePriceListMessage(offer.Id, _translations.PriceRowsNotOrdered()));
+            }
+            if (HasNegativeAmount(priceList))
+            {
+                throw new OfferValidationException(GetCreateOfferMessage(_translations.PriceListHasNegativeAmounts()));
             }
         }
 
@@ -100,6 +108,10 @@ namespace Billing.Contracts.Domain.Offers.Validation
             if (!IsOrdered(newPriceList))
             {
                 throw new OfferValidationException(GetModifyPriceListMessage(oldPriceList.Id, offer.Id, _translations.PriceRowsNotOrdered()));
+            }
+            if (HasNegativeAmount(newPriceList))
+            {
+                throw new OfferValidationException(GetCreateOfferMessage(_translations.PriceListHasNegativeAmounts()));
             }
         }
 
@@ -229,6 +241,8 @@ namespace Billing.Contracts.Domain.Offers.Validation
         {
             return newPriceList.Rows.Any(r => r.ListId != oldPriceList.Id);
         }
+
+        private static bool HasNegativeAmount(PriceList priceList) => priceList.Rows.Any(r => r.FixedPrice < 0 || r.UnitPrice < 0);
 
         private bool IsOrdered(PriceList priceList)
         {
