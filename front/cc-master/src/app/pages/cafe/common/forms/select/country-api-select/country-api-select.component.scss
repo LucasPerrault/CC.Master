@@ -1,1 +1,15 @@
+@import "theming.import";
+
 :host { display: contents; }
+
+.lu-picker-header {
+  .option-selector {
+    display: none;
+  }
+  &.mod-multiple {
+    .option-selector {
+      display: inherit;
+      padding: _theme("spacings.smaller");
+    }
+  }
+}
