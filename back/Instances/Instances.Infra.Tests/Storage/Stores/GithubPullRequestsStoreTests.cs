@@ -74,7 +74,7 @@ namespace Instances.Infra.Tests.Storage.Stores
 
             third.Should().NotBeNull();
             third.IsOpened.Should().BeFalse();
-            third.MergedAt.Should().BeCloseTo(DateTime.Now);
+            third.MergedAt.Should().BeCloseTo(DateTime.Now, TimeSpan.FromMilliseconds(500));
         }
     }
 }

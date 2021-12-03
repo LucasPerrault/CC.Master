@@ -54,7 +54,7 @@ namespace Rights.Infra.Tests.Services
                     {
                         Id = 1,
                         DepartmentId = 1,
-                        LegalEntityId = 1,
+                        EstablishmentId = 1,
                         ManagerId = 0,
                     }
                 }),
@@ -62,19 +62,22 @@ namespace Rights.Infra.Tests.Services
 
             var scopedPermissions = await rightsService.GetScopedPermissionsAsync(Operation.Demo);
 
-            scopedPermissions.Should().BeEquivalentTo
+            scopedPermissions.Should().BeEquivalentTo<ScopedPermission>
             (
-                new ScopedPermission
+                new List<ScopedPermission>
                 {
-                    Operation = Operation.Demo,
-                    Scope = AccessRightScope.AllDistributors,
-                    EnvironmentPurposes = new HashSet<int> { 2 }
-                },
-                new ScopedPermission
-                {
-                    Operation = Operation.Demo,
-                    Scope = AccessRightScope.OwnDistributorOnly,
-                    EnvironmentPurposes = new HashSet<int> { 2 }
+                    new ScopedPermission
+                    {
+                        Operation = Operation.Demo,
+                        Scope = AccessRightScope.AllDistributors,
+                        EnvironmentPurposes = new HashSet<int> { 2 }
+                    },
+                    new ScopedPermission
+                    {
+                        Operation = Operation.Demo,
+                        Scope = AccessRightScope.OwnDistributorOnly,
+                        EnvironmentPurposes = new HashSet<int> { 2 }
+                    }
                 }
             );
         }
@@ -111,7 +114,7 @@ namespace Rights.Infra.Tests.Services
                     {
                         Id = 1,
                         DepartmentId = 1,
-                        LegalEntityId = 1,
+                        EstablishmentId = 1,
                         ManagerId = 0,
                     }
                 }),
@@ -152,7 +155,7 @@ namespace Rights.Infra.Tests.Services
                     {
                         Id = 1,
                         DepartmentId = 1,
-                        LegalEntityId = 1,
+                        EstablishmentId = 1,
                         ManagerId = 0,
                     }
                 }),
@@ -185,7 +188,7 @@ namespace Rights.Infra.Tests.Services
                     {
                         Id = 1,
                         DepartmentId = 1,
-                        LegalEntityId = 1,
+                        EstablishmentId = 1,
                         ManagerId = 0,
                     }
                 }),
@@ -225,7 +228,7 @@ namespace Rights.Infra.Tests.Services
                     {
                         Id = 1,
                         DepartmentId = 1,
-                        LegalEntityId = 1,
+                        EstablishmentId = 1,
                         ManagerId = 0,
                     }
                 }),
@@ -239,7 +242,7 @@ namespace Rights.Infra.Tests.Services
         {
             public int OperationId { get; set; }
 
-            public int? LegalEntityId => throw new NotImplementedException();
+            public int? EstablishmentId => throw new NotImplementedException();
 
             public int ExternalEntityId => throw new NotImplementedException();
 
@@ -249,7 +252,7 @@ namespace Rights.Infra.Tests.Services
 
             public int? SpecificUserId => throw new NotImplementedException();
 
-            public bool HasContextualLegalEntityAssociation => throw new NotImplementedException();
+            public bool HasContextualEstablishmentAssociation => throw new NotImplementedException();
         }
 
 
@@ -257,7 +260,7 @@ namespace Rights.Infra.Tests.Services
         {
             public int OperationId { get; set; }
 
-            public int? LegalEntityId => throw new NotImplementedException();
+            public int? EstablishmentId => throw new NotImplementedException();
 
             public int ExternalEntityId { get; set; }
 
@@ -267,7 +270,7 @@ namespace Rights.Infra.Tests.Services
 
             public int? SpecificUserId => throw new NotImplementedException();
 
-            public bool HasContextualLegalEntityAssociation => throw new NotImplementedException();
+            public bool HasContextualEstablishmentAssociation => throw new NotImplementedException();
         }
     }
 }

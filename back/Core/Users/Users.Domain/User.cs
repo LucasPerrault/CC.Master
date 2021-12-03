@@ -15,6 +15,6 @@ namespace Users.Domain
         public int DistributorId { get; set; }
         public int? ManagerId { get; set; }
         public int DepartmentId { get; set; }
-        public int LegalEntityId { get; set; }
+        public int EstablishmentId { get; set; }
     }
 }

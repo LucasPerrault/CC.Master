@@ -243,7 +243,7 @@ namespace Instances.Application.Tests.Webhooks.Github
             _githubPullRequestRepositoryMock.Verify(p => p.UpdateAsync(pullRequest));
 
             pullRequest.IsOpened.Should().BeFalse();
-            pullRequest.MergedAt.Should().BeCloseTo(new DateTime(2019, 05, 15, 15, 20, 33));
+            pullRequest.MergedAt.Should().BeCloseTo(new DateTime(2019, 05, 15, 15, 20, 33), TimeSpan.FromSeconds(1));
             pullRequest.ClosedAt.Should().BeNull();
         }
 
@@ -275,7 +275,7 @@ namespace Instances.Application.Tests.Webhooks.Github
             _githubPullRequestRepositoryMock.Verify(p => p.UpdateAsync(pullRequest));
 
             pullRequest.IsOpened.Should().BeFalse();
-            pullRequest.ClosedAt.Should().BeCloseTo(new DateTime(2019, 05, 15, 15, 20, 33));
+            pullRequest.ClosedAt.Should().BeCloseTo(new DateTime(2019, 05, 15, 15, 20, 33), TimeSpan.FromSeconds(1));
             pullRequest.MergedAt.Should().BeNull();
         }
         #endregion

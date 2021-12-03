@@ -50,7 +50,7 @@ namespace Billing.Contracts.Infra.Tests
         }
 
         [Fact]
-        public void ShouldThrowWhenUploadWithBadHeader()
+        public async Task ShouldThrowWhenUploadWithBadHeader()
         {
             var s = new StringBuilder();
             s.AppendLine($"{HeaderRow.Name},{HeaderRow.Product},toto,{HeaderRow.Currency},{HeaderRow.Tag},{HeaderRow.BillingMode},{HeaderRow.PricingMethod},{HeaderRow.ForecastMethod},{HeaderRow.ListStartsOn},{HeaderRow.RowMin},{HeaderRow.RowMax},{HeaderRow.RowUnitPrice},{HeaderRow.RowFixedPrice}");
@@ -74,7 +74,7 @@ namespace Billing.Contracts.Infra.Tests
 
             Func<Task<List<ParsedOffer>>> func = () => sut.UploadAsync(ms);
 
-            func.Should().Throw<MissingFieldException>().WithMessage("*unité de décompte*");
+            await func.Should().ThrowAsync<MissingFieldException>().WithMessage("*unité de décompte*");
         }
 
         [Fact]
@@ -110,7 +110,7 @@ namespace Billing.Contracts.Infra.Tests
             stringTemplate = stringTemplate.Replace(HeaderRow.BillingUnit, "unite de decompd", StringComparison.CurrentCultureIgnoreCase);
             Func<Task<List<ParsedOffer>>> func = () => sut.UploadAsync(new MemoryStream(Encoding.UTF8.GetBytes(stringTemplate)));
 
-            func.Should().Throw<MissingFieldException>().WithMessage("*unité de décompte*");
+            await func.Should().ThrowAsync<MissingFieldException>().WithMessage("*unité de décompte*");
         }
     }
 }

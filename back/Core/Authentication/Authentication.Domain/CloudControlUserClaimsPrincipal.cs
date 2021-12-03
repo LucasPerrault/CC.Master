@@ -22,7 +22,7 @@ namespace Authentication.Domain
                     new Claim(nameof(Principal.UserId), principal.UserId.ToString()),
                     new Claim(nameof(IUser.Id), principal.UserId.ToString()),
                     new Claim(nameof(IUser.DepartmentId), principal.User.DepartmentId.ToString()),
-                    new Claim(nameof(IUser.LegalEntityId), principal.User.LegalEntityId.ToString()),
+                    new Claim(nameof(IUser.EstablishmentId), principal.User.EstablishmentId.ToString()),
                     new Claim(nameof(IUser.ManagerId), principal.User.ManagerId.ToString())
                 }, AuthenticationExtensions.LuccaScheme)) // TODO CcScheme ?
         {

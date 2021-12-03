@@ -43,7 +43,7 @@ namespace Users.Infra
                 DistributorId = distributor.Id,
                 ManagerId = user.ManagerId,
                 DepartmentId = user.DepartmentId,
-                LegalEntityId = user.LegalEntityId,
+                EstablishmentId = user.LegalEntityId,
             };
         }
     }

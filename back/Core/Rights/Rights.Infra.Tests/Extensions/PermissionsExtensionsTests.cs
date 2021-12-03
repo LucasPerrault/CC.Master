@@ -72,7 +72,7 @@ namespace Rights.Infra.Tests.Extensions
                 Scope = Scope.AllDepartments,
                 OperationId = 3,
                 ExternalEntityId = 25,
-                LegalEntityId = 1,
+                EstablishmentId = 1,
             },
             new Permission
             {
@@ -93,7 +93,7 @@ namespace Rights.Infra.Tests.Extensions
                 Scope = Scope.AllDepartments,
                 OperationId = 3,
                 ExternalEntityId = 25,
-                HasContextualLegalEntityAssociation = true,
+                HasContextualEstablishmentAssociation = true,
             }
         };
 
@@ -115,7 +115,7 @@ namespace Rights.Infra.Tests.Extensions
             {
                 OperationId = 3,
                 ExternalEntityId = 25,
-                LegalEntityId = 1,
+                EstablishmentId = 1,
             }
         };
 
