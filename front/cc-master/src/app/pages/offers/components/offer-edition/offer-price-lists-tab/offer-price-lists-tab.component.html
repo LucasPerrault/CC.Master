@@ -6,7 +6,7 @@
       </button>
     </div>
 
-    <div class="u-marginTopStandard" *ngFor="let priceList of offer.priceLists; trackBy: trackBy">
+    <div class="u-marginTopStandard" *ngFor="let priceList of getSortedDescLists(offer.priceLists); trackBy: trackBy">
       <div class="u-marginLeftStandard u-marginRightStandard u-displayFlex u-alignItemsCenter u-justifyContentSpaceBetween">
         <span class="label palette-grey">
           {{ getPriceListStatus(priceList, offer.priceLists) }}
