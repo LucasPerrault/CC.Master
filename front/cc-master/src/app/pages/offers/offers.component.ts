@@ -122,7 +122,7 @@ export class OffersComponent implements OnInit {
     this.sortParams$.next({ field: OfferSortParamKey.Name, order: SortOrder.Asc });
     this.filters.patchValue({
       [OfferFilterKey.Tag]: offerPrincipalTag,
-      [OfferFilterKey.State]: OfferState.All,
+      [OfferFilterKey.State]: OfferState.NoArchived,
     });
   }
 }
