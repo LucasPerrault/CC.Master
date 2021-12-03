@@ -10,7 +10,7 @@
     <ng-container *ngIf="multiple; else notMultiple">
       <span *ngIf="value?.length !== 1; else: singleView">
       <span class="label">{{ value.length }}</span>
-        {{ 'front_filterSelection_subdomain' | translate: { count: value.length } }}
+        {{ 'front_select_distributors_selection' | translate: { count: value.length } }}
     </span>
       <ng-template #singleView>{{ value[0].name }}</ng-template>
     </ng-container>
