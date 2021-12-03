@@ -73,15 +73,13 @@ export class EditablePriceGridComponent implements OnInit, OnDestroy, ControlVal
   public formKey = PriceRowFormKey;
   public formGroup: FormGroup = new FormGroup(
     { [this.formArrayKey]: this.formArray },
-    [PriceListsValidators.boundsContinuity, PriceListsValidators.validPrices, PriceListsValidators.required],
+    [PriceListsValidators.boundsContinuity, PriceListsValidators.required],
   );
 
   public validationError = PriceListValidationError;
   public get hasFormErrors(): boolean {
     const hasRequiredError = this.formGroup.dirty && this.formGroup.hasError(PriceListValidationError.Required);
-    return hasRequiredError
-      || this.formGroup.hasError(PriceListValidationError.BoundsContinuity)
-      || this.formGroup.hasError(PriceListValidationError.ValidPrices);
+    return hasRequiredError || this.formGroup.hasError(PriceListValidationError.BoundsContinuity);
   }
 
   private destroy$: Subject<void> = new Subject<void>();
