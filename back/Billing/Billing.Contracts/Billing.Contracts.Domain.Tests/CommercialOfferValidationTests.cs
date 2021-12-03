@@ -353,12 +353,18 @@ namespace Billing.Contracts.Domain.Tests
 
             _time.Setup(time => time.Today())
                 .Returns(new DateTime(2021, 01, 01));
-            ShouldThrowWhenAdd(priceList, offer, t => t.PriceListStartDefinedInThePast());
+            ShouldThrowWhenAdd(priceList, offer, t => t.PriceListStartDefinedBeforeThisMonth());
 
             Reset();
 
             _time.Setup(time => time.Today())
                 .Returns(new DateTime(2009, 01, 01));
+            ShouldNotThrowWhenAdd(priceList, offer);
+
+            Reset();
+
+            _time.Setup(time => time.Today())
+                .Returns(new DateTime(2010, 01, 05));
             ShouldNotThrowWhenAdd(priceList, offer);
         }
 
@@ -375,12 +381,18 @@ namespace Billing.Contracts.Domain.Tests
 
             _time.Setup(time => time.Today())
                 .Returns(new DateTime(2021, 01, 01));
-            ShouldThrowWhenModify(oldPriceList, newPriceList, offer, usage, t => t.PriceListStartDefinedInThePast());
+            ShouldThrowWhenModify(oldPriceList, newPriceList, offer, usage, t => t.PriceListStartDefinedBeforeThisMonth());
 
             Reset();
 
             _time.Setup(time => time.Today())
                 .Returns(new DateTime(2009, 01, 01));
+            ShouldNotThrowWhenModify(oldPriceList, newPriceList, offer, usage);
+
+            Reset();
+
+            _time.Setup(time => time.Today())
+                .Returns(new DateTime(2010, 01, 05));
             ShouldNotThrowWhenModify(oldPriceList, newPriceList, offer, usage);
         }
 

@@ -1,6 +1,7 @@
 using Billing.Contracts.Domain.Offers.Comparisons;
 using Billing.Contracts.Domain.Offers.Validation.Exceptions;
 using Resources.Translations;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Tools;
@@ -56,9 +57,9 @@ namespace Billing.Contracts.Domain.Offers.Validation
             {
                 throw new OfferValidationException(GetCreatePriceListMessage(offer.Id, _translations.PriceListStartsOnFirstOfMonth()));
             }
-            if (IsStartDateInThePast(priceList))
+            if (IsStartDateBeforeThisMonth(priceList))
             {
-                throw new OfferValidationException(GetCreatePriceListMessage(offer.Id, _translations.PriceListStartDefinedInThePast()));
+                throw new OfferValidationException(GetCreatePriceListMessage(offer.Id, _translations.PriceListStartDefinedBeforeThisMonth()));
             }
             if (HasSameStartDateOnSeveralPriceLists(offer.PriceLists.Union(new List<PriceList> { priceList })))
             {
@@ -80,9 +81,9 @@ namespace Billing.Contracts.Domain.Offers.Validation
             {
                 throw new OfferValidationException(GetModifyPriceListMessage(oldPriceList.Id, offer.Id, _translations.PriceListStartsOnFirstOfMonth()));
             }
-            if (oldPriceList.StartsOn != newPriceList.StartsOn && IsStartDateInThePast(newPriceList))
+            if (oldPriceList.StartsOn != newPriceList.StartsOn && IsStartDateBeforeThisMonth(newPriceList))
             {
-                throw new OfferValidationException(GetModifyPriceListMessage(oldPriceList.Id, offer.Id, _translations.PriceListStartDefinedInThePast()));
+                throw new OfferValidationException(GetModifyPriceListMessage(oldPriceList.Id, offer.Id, _translations.PriceListStartDefinedBeforeThisMonth()));
             }
             if (HasStartDateChangedOnOldestPriceList(offer, oldPriceList, newPriceList))
             {
@@ -123,10 +124,11 @@ namespace Billing.Contracts.Domain.Offers.Validation
             return priceList.StartsOn < _time.Today();
         }
 
-        private bool IsStartDateInThePast(PriceList priceList)
+        private bool IsStartDateBeforeThisMonth(PriceList priceList)
         {
             var today = _time.Today();
-            return priceList.StartsOn < today;
+            var startOfThisMonth = today.AddDays(1 - today.Day);
+            return priceList.StartsOn < startOfThisMonth;
         }
 
         private static bool HasNoRow(PriceList pl)
