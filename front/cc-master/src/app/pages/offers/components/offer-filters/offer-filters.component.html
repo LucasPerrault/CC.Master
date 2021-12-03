@@ -23,8 +23,8 @@
   </div>
 
 
-  <div class="u-displayFlex u-flexWrapWrap u-alignItemsFlexStart u-animatedFadeIn u-marginTopSmallest"
-       *ngIf="showAdditionalFilters">
+  <div class="u-flexWrapWrap u-alignItemsFlexStart u-animatedFadeIn u-marginTopSmallest"
+       [ngClass]="{ 'mod-hidden': !showAdditionalFilters, 'u-displayFlex': showAdditionalFilters }">
     <label class="textfield palette-grey mod-outlined mod-inline">
       <cc-product-api-select [formControlName]="formKey.Product" [placeholder]="'select_product_label' | translate"></cc-product-api-select>
     </label>

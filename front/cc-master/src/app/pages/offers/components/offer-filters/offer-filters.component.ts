@@ -8,6 +8,7 @@ import { IOfferFiltersForm, OfferFilterKey } from '../../models/offer-filters-fo
 @Component({
   selector: 'cc-offer-filters',
   templateUrl: './offer-filters.component.html',
+  styleUrls: ['./offer-filters.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [
     {
