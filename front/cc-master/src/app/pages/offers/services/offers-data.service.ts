@@ -61,9 +61,18 @@ export class OffersDataService {
     return this.httpClient.get<IOfferUsage[]>(OfferApiEndpoint.usages, { params });
   }
 
-  public delete$(offerId: number): Observable<void> {
-    const url = OfferApiEndpoint.id(offerId);
-    return this.httpClient.delete<void>(url);
+  public archive$(offerToEdit: IDetailedOffer): Observable<void> {
+    const isArchived = true;
+    const url = OfferApiEndpoint.id(offerToEdit.id);
+    const body = { ...offerToEdit, isArchived };
+    return this.httpClient.put<void>(url, body);
+  }
+
+  public unarchive$(offerToEdit: IDetailedOffer): Observable<void> {
+    const isArchived = false;
+    const url = OfferApiEndpoint.id(offerToEdit.id);
+    const body = { ...offerToEdit, isArchived };
+    return this.httpClient.put<void>(url, body);
   }
 
   public create$(form: IOfferCreationForm): Observable<void> {

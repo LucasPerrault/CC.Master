@@ -56,12 +56,20 @@
       <ng-template #noActiveContract>0</ng-template>
     </td>
     <td class="table-body-row-cell mod-actions" (click)="$event.stopPropagation()">
-      <button class="actionIcon"
-              *ngIf="canBeDeleted(offer)"
-              (click)="openDeletionModal(offer)"
-              [luTooltip]="'offers_list_actions_delete' | translate">
-        <span aria-hidden="true" class="lucca-icon icon-close"></span>
+      <button *ngIf="!offer.isArchived; else isEnable" class="actionIcon"
+              (click)="archive(offer)"
+              [luTooltip]="'offers_list_actions_archive' | translate">
+        <span aria-hidden="true" class="lucca-icon icon-archive"></span>
       </button>
+
+      <ng-template #isEnable>
+        <button class="actionIcon"
+                (click)="unarchive(offer)"
+                [luTooltip]="'offers_list_actions_unarchive' | translate">
+          <span aria-hidden="true" class="lucca-icon icon-formatUndo"></span>
+        </button>
+      </ng-template>
+
       <button class="actionIcon" [luTooltip]="'offers_list_actions_edit' | translate" [routerLink]="[offer.id, 'edit']">
         <span aria-hidden="true" class="lucca-icon icon-edit"></span>
       </button>

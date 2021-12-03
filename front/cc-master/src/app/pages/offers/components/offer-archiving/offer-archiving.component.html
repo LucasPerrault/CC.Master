@@ -1,0 +1,7 @@
+<ng-container *ngIf="data.isArchived; else unArchive">
+  {{ 'offers_archive_description' | translate : { name: data.offer?.name } }}
+</ng-container>
+
+<ng-template #unArchive>
+  {{ 'offers_unArchive_description' | translate : { name: data.offer?.name } }}
+</ng-template>
