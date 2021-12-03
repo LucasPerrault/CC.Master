@@ -33,7 +33,7 @@ namespace Billing.Contracts.Domain.Offers.Validation
 
         public void ThrowIfCannotModifyOffer(CommercialOffer oldOffer, CommercialOffer newOffer, CommercialOfferUsage oldUsage)
         {
-            if (HasContractWithCount(oldUsage) && HasAnyOfferPropertyChangedBesidesName(oldOffer, newOffer))
+            if (HasContractWithCount(oldUsage) && HasAnyOfferPropertyChangedBesidesNameAndTag(oldOffer, newOffer))
             {
                 throw new OfferValidationException(GetModifyOfferMessage(oldOffer.Id, _translations.OfferChangedDespiteCount()));
             }
@@ -153,7 +153,7 @@ namespace Billing.Contracts.Domain.Offers.Validation
             return usage != null && usage.NumberOfCountedContracts > 0;
         }
 
-        private static bool HasAnyOfferPropertyChangedBesidesName(CommercialOffer oldOffer, CommercialOffer newOffer)
+        private static bool HasAnyOfferPropertyChangedBesidesNameAndTag(CommercialOffer oldOffer, CommercialOffer newOffer)
         {
             var oldOfferComparison = new CommercialOfferComparisonObject(oldOffer);
             var newOfferComparison = new CommercialOfferComparisonObject(newOffer);

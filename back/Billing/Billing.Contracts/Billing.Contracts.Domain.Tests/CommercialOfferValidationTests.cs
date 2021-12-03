@@ -199,15 +199,21 @@ namespace Billing.Contracts.Domain.Tests
         }
 
         [Fact]
-        public void ModifyOffer_Validation_ShouldNotThrowWhen_NameChanged_EvenWithCount()
+        public void ModifyOffer_Validation_ShouldNotThrowWhen_NameOrTagChanged_EvenWithCount()
         {
             var oldOffer = new CommercialOffer().Build()
-                .With(name: "miaou");
+                .With(name: "miaou", tag: "miaou");
             var newOffer = new CommercialOffer().Build(oldOffer.Id)
-                .With(name: "forty two");
+                .With(name: "forty two", tag: "miaou");
             var usageWithCount = new CommercialOfferUsage().BuildFor(oldOffer)
                 .WithCountedContractsNumber(1);
 
+            ShouldNotThrowWhenModify(oldOffer, newOffer, usageWithCount);
+
+            Reset();
+
+            newOffer.Name = "miaou";
+            newOffer.Tag = "forty two";
             ShouldNotThrowWhenModify(oldOffer, newOffer, usageWithCount);
         }
 
@@ -218,13 +224,15 @@ namespace Billing.Contracts.Domain.Tests
                 .With
                 (
                     name: "miaou",
-                    tag: "miaou"
+                    tag: "miaou",
+                    billingMode: BillingMode.AllUsers
                 );
             var newOffer = new CommercialOffer().Build(oldOffer.Id)
                 .With
                 (
                     name: "forty two",
-                    tag: "forty two"
+                    tag: "forty two",
+                    billingMode: BillingMode.FlatFee
                 );
 
             var usageWithCount = new CommercialOfferUsage().BuildFor(oldOffer)
