@@ -103,15 +103,6 @@ namespace Billing.Contracts.Infra.Storage.Stores
             await _dbContext.SaveChangesAsync();
         }
 
-        public async Task ArchiveAsync(int id, AccessRight accessRight)
-        {
-            var offer = await GetSingleOrDefaultAsync(CommercialOfferFilter.ForId(id), accessRight);
-
-            offer.IsArchived = true;
-
-            await _dbContext.SaveChangesAsync();
-        }
-
         public async Task<CommercialOffer> AddPriceListAsync(int id, PriceList priceList, AccessRight accessRight)
         {
             var offer = await GetSingleOrDefaultAsync(CommercialOfferFilter.ForId(id), accessRight);

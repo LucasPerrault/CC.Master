@@ -43,18 +43,6 @@ namespace Billing.Contracts.Domain.Offers.Validation
             }
         }
 
-        public void ThrowIfCannotDeleteOffer(CommercialOffer offer, CommercialOfferUsage usage)
-        {
-            if (HasActiveContract(usage))
-            {
-                throw new OfferValidationException(GetDeleteOfferMessage(offer.Id, _translations.OfferWithActiveContractDeleted()));
-            }
-            if (IsArchived(offer))
-            {
-                throw new OfferValidationException(GetDeleteOfferMessage(offer.Id, _translations.ArchivedOfferDeleted()));
-            }
-        }
-
         public void ThrowIfCannotAddPriceList(CommercialOffer offer, PriceList priceList)
         {
             if (IsStartDateNotOnFirstDayOfTheMonth(priceList))
@@ -121,11 +109,6 @@ namespace Billing.Contracts.Domain.Offers.Validation
             {
                 throw new OfferValidationException(GetDeletePriceListMessage(priceList.Id, offer.Id, _translations.StartedPriceListDeleted()));
             }
-        }
-
-        private bool IsArchived(CommercialOffer offer)
-        {
-            return offer.IsArchived;
         }
 
         private bool HasStarted(PriceList priceList)
@@ -261,11 +244,6 @@ namespace Billing.Contracts.Domain.Offers.Validation
             }
 
             return true;
-        }
-
-        private static bool HasActiveContract(CommercialOfferUsage usage)
-        {
-            return usage != null && usage.NumberOfActiveContracts > 0;
         }
 
         private string GetCreateOfferMessage(string reason)

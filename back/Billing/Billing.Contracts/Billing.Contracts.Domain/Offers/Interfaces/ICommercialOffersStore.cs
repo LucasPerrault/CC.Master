@@ -17,7 +17,6 @@ namespace Billing.Contracts.Domain.Offers.Interfaces
         Task<CommercialOffer> CreateAsync(CommercialOffer offer, AccessRight accessRight);
         Task<IReadOnlyCollection<CommercialOffer>> CreateManyAsync(IReadOnlyCollection<CommercialOffer> offers, AccessRight accessRight);
         Task PutAsync(int id, CommercialOffer offer, AccessRight accessRight);
-        Task ArchiveAsync(int id, AccessRight accessRight);
         Task<CommercialOffer> AddPriceListAsync(int id, PriceList priceList, AccessRight accessRight);
         Task ModifyPriceListAsync(int id, int listId, PriceList priceList, AccessRight accessRight);
         Task DeletePriceListAsync(int id, int listId, AccessRight accessRight);

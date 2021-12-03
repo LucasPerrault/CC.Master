@@ -80,13 +80,6 @@ namespace Billing.Contracts.Web
             return _commercialOffersRepository.PutAsync(id, body);
         }
 
-        [HttpDelete("{id:int}")]
-        [ForbidIfMissing(Operation.CreateCommercialOffers)]
-        public Task DeleteAsync([FromRoute] int id)
-        {
-            return _commercialOffersRepository.DeleteAsync(id);
-        }
-
         [HttpPost("{id:int}/price-lists")]
         [ForbidIfMissing(Operation.CreateCommercialOffers)]
         public Task<CommercialOffer> AddPriceListAsync([FromRoute] int id, [FromBody] PriceList body)

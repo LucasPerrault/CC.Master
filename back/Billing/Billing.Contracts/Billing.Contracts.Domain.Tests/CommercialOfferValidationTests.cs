@@ -478,38 +478,6 @@ namespace Billing.Contracts.Domain.Tests
             ShouldNotThrowWhenDelete(priceList, offer);
         }
 
-        [Fact]
-        public void DeleteOffer_Validation_ShouldThrowOnlyIf_HasActiveContract()
-        {
-            var offer = new CommercialOffer().Build();
-
-            var usageWithActiveContract = new CommercialOfferUsage().BuildFor(offer)
-                .WithActiveContractsNumber(1);
-            ShouldThrowWhenDelete(offer, usageWithActiveContract, t => t.OfferWithActiveContractDeleted());
-
-            Reset();
-
-            var usageWithoutActiveContract = new CommercialOfferUsage().BuildFor(offer)
-                .WithActiveContractsNumber(0);
-            ShouldNotThrowWhenDelete(offer, usageWithoutActiveContract);
-        }
-
-        [Fact]
-        public void DeleteOffer_Validation_ShouldThrowOnlyIf_IsAlreadyArchived()
-        {
-            var offer = new CommercialOffer().Build()
-                .With(isArchived: true);
-            var usage = new CommercialOfferUsage().BuildFor(offer)
-                .WithActiveContractsNumber(0);
-
-            ShouldThrowWhenDelete(offer, usage, t => t.ArchivedOfferDeleted());
-
-            Reset();
-
-            offer.IsArchived = false;
-            ShouldNotThrowWhenDelete(offer, usage);
-        }
-
         private void Reset()
         {
             _translations.Reset();
@@ -541,21 +509,6 @@ namespace Billing.Contracts.Domain.Tests
         private void ShouldNotThrowWhenModify(CommercialOffer oldOffer, CommercialOffer newOffer, CommercialOfferUsage usage)
         {
             Action throwIfFn = () => Validation.ThrowIfCannotModifyOffer(oldOffer, newOffer, usage);
-
-            throwIfFn.Should().NotThrow<OfferValidationException>();
-        }
-
-        private void ShouldThrowWhenDelete(CommercialOffer offer, CommercialOfferUsage usage, Expression<Func<ITranslations, string>> reasonFn)
-        {
-            Action throwIfFn = () => Validation.ThrowIfCannotDeleteOffer(offer, usage);
-
-            throwIfFn.Should().ThrowExactly<OfferValidationException>();
-            _translations.Verify(reasonFn, Times.Once);
-        }
-
-        private void ShouldNotThrowWhenDelete(CommercialOffer offer, CommercialOfferUsage usage)
-        {
-            Action throwIfFn = () => Validation.ThrowIfCannotDeleteOffer(offer, usage);
 
             throwIfFn.Should().NotThrow<OfferValidationException>();
         }

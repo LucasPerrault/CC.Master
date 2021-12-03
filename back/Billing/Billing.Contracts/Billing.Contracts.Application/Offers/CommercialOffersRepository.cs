@@ -96,17 +96,6 @@ namespace Billing.Contracts.Application.Offers
             await _store.PutAsync(id, offer, accessRight);
         }
 
-        public async Task DeleteAsync(int id)
-        {
-            var accessRight = await _rightsFilter.GetWriteAccessAsync(_principal);
-
-            var offer = await GetReadOnlyByIdWithoutRightAsync(id);
-            var usage = await GetOfferUsageAsync(id);
-            _validation.ThrowIfCannotDeleteOffer(offer, usage);
-
-            await _store.ArchiveAsync(id, accessRight);
-        }
-
         public async Task<CommercialOffer> AddPriceListAsync(int id, PriceList priceList)
         {
             var accessRight = await _rightsFilter.GetWriteAccessAsync(_principal);
