@@ -9,7 +9,7 @@ export interface IOfferEditionDto {
   billingMode: BillingMode;
   unit: BillingUnit;
   tag: string;
-  currencyID: number;
+  currencyId: number;
   forecastMethod: string;
   isArchived: boolean;
 }

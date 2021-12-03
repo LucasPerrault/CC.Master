@@ -64,14 +64,14 @@ export class OffersDataService {
   public archive$(offerToEdit: IDetailedOffer): Observable<void> {
     const isArchived = true;
     const url = OfferApiEndpoint.id(offerToEdit.id);
-    const body = { ...offerToEdit, isArchived };
+    const body = this.toArchiveEditionDto(offerToEdit, isArchived);
     return this.httpClient.put<void>(url, body);
   }
 
   public unarchive$(offerToEdit: IDetailedOffer): Observable<void> {
     const isArchived = false;
     const url = OfferApiEndpoint.id(offerToEdit.id);
-    const body = { ...offerToEdit, isArchived };
+    const body = this.toArchiveEditionDto(offerToEdit, isArchived);
     return this.httpClient.put<void>(url, body);
   }
 
@@ -153,12 +153,27 @@ export class OffersDataService {
       id,
       name: form.name,
       productId: form.product.id,
-      currencyID: form.currency.code,
+      currencyId: form.currency.code,
       tag: form.tag,
       pricingMethod: form.pricingMethod,
       forecastMethod: form.forecastMethod,
       billingMode: form.billingMode.id,
       unit: form.billingUnit.id,
+      isArchived,
+    };
+  }
+
+  private toArchiveEditionDto(offerToEdit: IDetailedOffer, isArchived: boolean): IOfferEditionDto {
+    return {
+      id: offerToEdit.id,
+      name: offerToEdit.name,
+      productId: offerToEdit.product.id,
+      currencyId: offerToEdit.currencyId,
+      tag: offerToEdit.tag,
+      pricingMethod: offerToEdit.pricingMethod,
+      forecastMethod: offerToEdit.forecastMethod,
+      billingMode: offerToEdit.billingMode,
+      unit: offerToEdit.unit,
       isArchived,
     };
   }
