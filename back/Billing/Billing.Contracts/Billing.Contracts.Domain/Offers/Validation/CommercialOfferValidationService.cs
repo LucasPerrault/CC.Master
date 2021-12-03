@@ -49,6 +49,10 @@ namespace Billing.Contracts.Domain.Offers.Validation
             {
                 throw new OfferValidationException(GetDeleteOfferMessage(offer.Id, _translations.OfferWithActiveContractDeleted()));
             }
+            if (IsArchived(offer))
+            {
+                throw new OfferValidationException(GetDeleteOfferMessage(offer.Id, _translations.ArchivedOfferDeleted()));
+            }
         }
 
         public void ThrowIfCannotAddPriceList(CommercialOffer offer, PriceList priceList)
@@ -117,6 +121,11 @@ namespace Billing.Contracts.Domain.Offers.Validation
             {
                 throw new OfferValidationException(GetDeletePriceListMessage(priceList.Id, offer.Id, _translations.StartedPriceListDeleted()));
             }
+        }
+
+        private bool IsArchived(CommercialOffer offer)
+        {
+            return offer.IsArchived;
         }
 
         private bool HasStarted(PriceList priceList)

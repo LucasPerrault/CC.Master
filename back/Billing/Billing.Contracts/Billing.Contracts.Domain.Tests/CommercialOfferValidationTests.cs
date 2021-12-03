@@ -494,6 +494,22 @@ namespace Billing.Contracts.Domain.Tests
             ShouldNotThrowWhenDelete(offer, usageWithoutActiveContract);
         }
 
+        [Fact]
+        public void DeleteOffer_Validation_ShouldThrowOnlyIf_IsAlreadyArchived()
+        {
+            var offer = new CommercialOffer().Build()
+                .With(isArchived: true);
+            var usage = new CommercialOfferUsage().BuildFor(offer)
+                .WithActiveContractsNumber(0);
+
+            ShouldThrowWhenDelete(offer, usage, t => t.ArchivedOfferDeleted());
+
+            Reset();
+
+            offer.IsArchived = false;
+            ShouldNotThrowWhenDelete(offer, usage);
+        }
+
         private void Reset()
         {
             _translations.Reset();
