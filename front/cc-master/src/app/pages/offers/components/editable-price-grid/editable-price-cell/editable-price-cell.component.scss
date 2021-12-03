@@ -22,4 +22,9 @@
   pointer-events: none;
   background-color: white;
   color: _color('grey', 800);
+
+  /* Firefox - hidden input number arrow */
+  &[type=number] {
+    -moz-appearance: textfield;
+  }
 }
