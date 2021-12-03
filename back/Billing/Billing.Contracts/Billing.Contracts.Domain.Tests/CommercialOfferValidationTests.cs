@@ -202,9 +202,9 @@ namespace Billing.Contracts.Domain.Tests
         public void ModifyOffer_Validation_ShouldNotThrowWhen_NameOrTagChanged_EvenWithCount()
         {
             var oldOffer = new CommercialOffer().Build()
-                .With(name: "miaou", tag: "miaou");
+                .With(name: "miaou", tag: "miaou", isArchived: false);
             var newOffer = new CommercialOffer().Build(oldOffer.Id)
-                .With(name: "forty two", tag: "miaou");
+                .With(name: "forty two", tag: "miaou", isArchived: false);
             var usageWithCount = new CommercialOfferUsage().BuildFor(oldOffer)
                 .WithCountedContractsNumber(1);
 
@@ -214,6 +214,14 @@ namespace Billing.Contracts.Domain.Tests
 
             newOffer.Name = "miaou";
             newOffer.Tag = "forty two";
+            newOffer.IsArchived = false;
+            ShouldNotThrowWhenModify(oldOffer, newOffer, usageWithCount);
+
+            Reset();
+
+            newOffer.Name = "miaou";
+            newOffer.Tag = "miaou";
+            newOffer.IsArchived = true;
             ShouldNotThrowWhenModify(oldOffer, newOffer, usageWithCount);
         }
 

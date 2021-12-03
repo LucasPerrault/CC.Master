@@ -11,7 +11,6 @@ namespace Billing.Contracts.Domain.Offers.Comparisons
         public PricingMethod PricingMethod { get; }
         public ForecastMethod ForecastMethod { get; }
         public int CurrencyId { get; }
-        public bool IsArchived { get; }
 
         protected override IEnumerable<object> EqualityComponents
         {
@@ -23,7 +22,6 @@ namespace Billing.Contracts.Domain.Offers.Comparisons
                 yield return PricingMethod;
                 yield return ForecastMethod;
                 yield return CurrencyId;
-                yield return IsArchived;
             }
         }
 
@@ -35,7 +33,6 @@ namespace Billing.Contracts.Domain.Offers.Comparisons
             PricingMethod = offer.PricingMethod;
             ForecastMethod = offer.ForecastMethod;
             CurrencyId = offer.CurrencyId;
-            IsArchived = offer.IsArchived;
         }
     }
 }
