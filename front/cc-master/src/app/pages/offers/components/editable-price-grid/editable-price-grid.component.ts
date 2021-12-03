@@ -78,8 +78,7 @@ export class EditablePriceGridComponent implements OnInit, OnDestroy, ControlVal
 
   public validationError = PriceListValidationError;
   public get hasFormErrors(): boolean {
-    const hasRequiredError = this.formGroup.dirty && this.formGroup.hasError(PriceListValidationError.Required);
-    return hasRequiredError || this.formGroup.hasError(PriceListValidationError.BoundsContinuity);
+    return this.formGroup.hasError(PriceListValidationError.BoundsContinuity);
   }
 
   private destroy$: Subject<void> = new Subject<void>();

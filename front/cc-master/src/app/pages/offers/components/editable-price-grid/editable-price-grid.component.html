@@ -56,9 +56,6 @@
     <span *ngIf="formGroup.hasError(validationError.BoundsContinuity)" class="textfield-messages-error">
       {{ 'offers_forms_validationError_boundsContinuity' | translate }}
     </span>
-    <span *ngIf="formGroup.dirty && formGroup.hasError(validationError.Required)" class="textfield-messages-error">
-      {{ 'offers_forms_validationError_required' | translate }}
-    </span>
   </div>
 
   <button class="button mod-small mod-outline palette-grey u-right" (click)="insert()"
