@@ -37,7 +37,7 @@ export class OfferUsageStoreService {
 
   private getUsages(offerIds: number[]): IOfferUsage[] {
     const offers = this.offersStored.value?.filter(s => offerIds.includes(s.offerId)) ?? [];
-    return offers.map(o => o.usage);
+    return offers.map(o => o.usage ?? this.getDefaultUsage(o.offerId));
   }
 
   private add(offerIds: number[], usages: IOfferUsage[]): void {
@@ -48,5 +48,15 @@ export class OfferUsageStoreService {
   private toOfferStored(offerId: number, usages: IOfferUsage[]): IOfferStored {
     const usage = usages.find(u => u.offerId === offerId);
     return { offerId, usage };
+  }
+
+  private getDefaultUsage(offerId: number): IOfferUsage {
+    return {
+      offerId,
+      numberOfCountedContracts: 0,
+      numberOfActiveContracts: 0,
+      numberOfContracts: 0,
+      numberOfStartedContracts: 0,
+    };
   }
 }
