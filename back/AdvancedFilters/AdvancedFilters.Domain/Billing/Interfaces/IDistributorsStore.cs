@@ -7,6 +7,6 @@ namespace AdvancedFilters.Domain.Billing.Interfaces
 {
     public interface IDistributorsStore
     {
-        Task<Page<Distributor>> GetAsync(IPageToken pageToken, DistributorFilter filter);
+        Task<Page<Distributor>> GetAsync(DistributorFilter filter);
     }
 }

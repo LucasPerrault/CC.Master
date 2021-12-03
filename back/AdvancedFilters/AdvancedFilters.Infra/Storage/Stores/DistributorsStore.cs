@@ -2,7 +2,6 @@ using AdvancedFilters.Domain.Billing.Filters;
 using AdvancedFilters.Domain.Billing.Interfaces;
 using AdvancedFilters.Domain.Billing.Models;
 using Lucca.Core.Api.Abstractions.Paging;
-using Lucca.Core.Api.Queryable.Paging;
 using Microsoft.EntityFrameworkCore;
 using Storage.Infra.Extensions;
 using System.Linq;
@@ -13,18 +12,21 @@ namespace AdvancedFilters.Infra.Storage.Stores
     public class DistributorsStore : IDistributorsStore
     {
         private readonly AdvancedFiltersDbContext _dbContext;
-        private readonly IQueryPager _queryPager;
 
-        public DistributorsStore(AdvancedFiltersDbContext dbContext, IQueryPager queryPager)
+        public DistributorsStore(AdvancedFiltersDbContext dbContext)
         {
             _dbContext = dbContext;
-            _queryPager = queryPager;
         }
 
-        public Task<Page<Distributor>> GetAsync(IPageToken pageToken, DistributorFilter filter)
+        public Task<Page<Distributor>> GetAsync(DistributorFilter filter)
         {
-            var clients = Get(filter);
-            return _queryPager.ToPageAsync(clients, pageToken);
+            var distributors = Get(filter).ToList();
+
+            return Task.FromResult(new Page<Distributor>
+            {
+                Count = distributors.Count,
+                Items = distributors
+            });
         }
 
         private IQueryable<Distributor> Get(DistributorFilter filter)
