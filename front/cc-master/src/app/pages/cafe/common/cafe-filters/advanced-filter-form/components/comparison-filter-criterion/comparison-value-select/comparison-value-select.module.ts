@@ -1,10 +1,10 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
-import { CCFormlyModule } from '@cc/common/forms/formly';
 import { LuFormlyModule } from '@lucca-front/ng/formly';
 import { FormlyModule } from '@ngx-formly/core';
 
+import { CCFormlyModule } from '../../../../../forms/formly';
 import { ComparisonValueSelectComponent } from './comparison-value-select.component';
 
 @NgModule({
