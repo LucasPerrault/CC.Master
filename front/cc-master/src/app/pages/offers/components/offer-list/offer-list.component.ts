@@ -66,7 +66,7 @@ export class OfferListComponent implements OnInit {
   }
 
   public canBeDeleted(offer: IDetailedOffer): boolean {
-    return this.restrictionsService.canDeleteOffer(offer.usage?.numberOfActiveContracts);
+    return this.restrictionsService.canDeleteOffer(offer.usage?.numberOfActiveContracts, offer.isArchived);
   }
 
   public openDeletionModal(offer: IDetailedOffer): void {
