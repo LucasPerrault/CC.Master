@@ -43,7 +43,7 @@ export class OfferPriceListsTabComponent implements OnInit {
   }
 
   public getSortedDescLists(lists: IPriceList[]): IPriceList[] {
-    return lists.sort((a, b) => new Date(a.startsOn).getTime() - new Date(b.startsOn).getTime());
+    return lists.sort((a, b) => new Date(b.startsOn).getTime() - new Date(a.startsOn).getTime());
   }
 
   public getCurrency(currencyId: number): IOfferCurrency {
