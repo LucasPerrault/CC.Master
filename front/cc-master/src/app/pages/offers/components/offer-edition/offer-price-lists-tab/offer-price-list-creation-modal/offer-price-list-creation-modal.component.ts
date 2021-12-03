@@ -33,7 +33,7 @@ export class OfferPriceListCreationModalComponent implements OnInit, OnDestroy, 
   public granularity = ELuDateGranularity;
 
   public get min(): Date {
-    return addMonths(startOfMonth(Date.now()), 1);
+    return startOfMonth(Date.now());
   }
 
   private destroy$: Subject<void> = new Subject<void>();
