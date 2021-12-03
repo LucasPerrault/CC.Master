@@ -6,8 +6,9 @@ import {
   ApiV3DateService,
   IHttpApiV4CollectionCountResponse, IHttpApiV4CollectionResponse,
 } from '@cc/common/queries';
+import { IPriceList } from '@cc/domain/billing/offers';
 import { Observable, of } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { map as rxMap, tap } from 'rxjs/operators';
 
 import { IOfferCreationForm } from '../components/offer-creation/offer-creation-form/offer-creation-form.interface';
 import { IOfferEditionForm } from '../components/offer-edition/offer-edition-tab/offer-edition-form/offer-edition-form.interface';
@@ -39,13 +40,16 @@ export class OffersDataService {
 
   public getOffersWithoutUsage$(params: HttpParams): Observable<IHttpApiV4CollectionCountResponse<IDetailedOfferWithoutUsage>> {
     params = params.set('fields.root', 'count');
-    return this.httpClient.get<IHttpApiV4CollectionCountResponse<IDetailedOfferWithoutUsage>>(OfferApiEndpoint.base, { params });
+    return this.httpClient
+        .get<IHttpApiV4CollectionCountResponse<IDetailedOfferWithoutUsage>>(OfferApiEndpoint.base, { params })
+        .pipe(tap(response => this.ensureRowOrder(this.flatMapLists(response.items.map(i => i.priceLists)))));
   }
 
   public getById$(offerId: number): Observable<IDetailedOfferWithoutUsage> {
     const url = OfferApiEndpoint.id(offerId);
     const context = new HttpContext().set(BYPASS_INTERCEPTOR, true);
-    return this.httpClient.get<IDetailedOffer>(url, { context });
+    return this.httpClient.get<IDetailedOffer>(url, { context })
+        .pipe(tap(o => this.ensureRowOrder(o.priceLists)));
   }
 
   public getUsages$(offerIds: number[]): Observable<IOfferUsage[]> {
@@ -85,12 +89,22 @@ export class OffersDataService {
     const formData = new FormData();
     formData.append('file', file);
     return this.httpClient.post<IHttpApiV4CollectionResponse<IUploadedOffer>>(url, formData)
-      .pipe(map(res => res.items));
+      .pipe(rxMap(res => res.items));
   }
 
   public download$(): Observable<void> {
     const url = OfferApiEndpoint.download;
     return this.downloadService.download$(url);
+  }
+
+  private flatMapLists(listsOfLists: IPriceList[][]) {
+    return listsOfLists.reduce((l1, l2) => [...l1, ...l2], []);
+  }
+
+  private ensureRowOrder(lists: IPriceList[]): void {
+    for (const list of lists) {
+      list.rows = list.rows.sort((r1, r2) => r1.maxIncludedCount - r2.maxIncludedCount);
+    }
   }
 
   private toMultipleCreationDto(uploadedOffers: IUploadedOffer[]): IOfferCreationDto[] {
