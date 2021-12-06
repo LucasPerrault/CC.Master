@@ -64,7 +64,7 @@ describe('EstablishmentTypeService', () => {
   beforeEach(() => spectator = createService());
 
   it('should get excluded establishments', () => {
-    const excludedEntityWithSameProduct: IEstablishmentExcludedEntity = ({ id: 1, productId });
+    const excludedEntityWithSameProduct: IEstablishmentExcludedEntity = ({ id: 1, productId, legalEntityID: 1 });
     const excludedEstablishment = fakeEstablishment([excludedEntityWithSameProduct]);
     const excludedEntry = fakeEtsEntry(excludedEstablishment, null, null);
 
@@ -77,7 +77,7 @@ describe('EstablishmentTypeService', () => {
   });
 
   it('should get excluded establishments with attachments linked to contract', () => {
-    const excludedEntityWithSameProduct: IEstablishmentExcludedEntity = ({ id: 1, productId });
+    const excludedEntityWithSameProduct: IEstablishmentExcludedEntity = ({ id: 1, productId, legalEntityID: 1 });
     const excludedEstablishment = fakeEstablishment([excludedEntityWithSameProduct]);
     const excludedEntry = fakeEtsEntry(excludedEstablishment, null, null);
     const currentAttachment = fakeAttachment(startOfMonth(lastMonth), null, contract.id);
@@ -93,7 +93,7 @@ describe('EstablishmentTypeService', () => {
   });
 
   it('should get excluded establishments with attachments linked to another contract', () => {
-    const excludedEntityWithSameProduct: IEstablishmentExcludedEntity = ({ id: 1, productId });
+    const excludedEntityWithSameProduct: IEstablishmentExcludedEntity = ({ id: 1, productId, legalEntityID: 1 });
     const excludedEstablishment = fakeEstablishment([excludedEntityWithSameProduct]);
     const excludedEntry = fakeEtsEntry(excludedEstablishment, null, null);
     const anotherContract = fakeContract(2, productId);
@@ -143,7 +143,7 @@ describe('EstablishmentTypeService', () => {
   });
 
   it('should get linked to this contract establishments with excluded entities', () => {
-    const excludedEntityWithSameProduct: IEstablishmentExcludedEntity = ({ id: 1, productId });
+    const excludedEntityWithSameProduct: IEstablishmentExcludedEntity = ({ id: 1, productId, legalEntityID: 1 });
     const currentAttachment = fakeAttachment(startOfMonth(lastMonth), null, contract.id);
     const nextAttachment = fakeAttachment(startOfMonth(nextMonth), null, contract.id);
     const entriesLinkedToContract = [
