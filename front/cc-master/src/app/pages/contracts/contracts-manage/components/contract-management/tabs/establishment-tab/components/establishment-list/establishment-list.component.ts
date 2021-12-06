@@ -6,12 +6,11 @@ import { TranslatePipe } from '@cc/aspects/translate';
 import { getAttachmentEndReason } from '../../constants/attachment-end-reason.const';
 import { EstablishmentType } from '../../constants/establishment-type.enum';
 import { IContractCount } from '../../models/contract-count.interface';
-import { IContractEstablishment } from '../../models/contract-establishment.interface';
 import { IEstablishmentActionsContext } from '../../models/establishment-actions-context.interface';
 import { IEstablishmentAttachment } from '../../models/establishment-attachment.interface';
 import { IEstablishmentContract } from '../../models/establishment-contract.interface';
 import { IEstablishmentWithAttachments } from '../../models/establishment-with-attachments.interface';
-import { AttachmentsTimelineService } from '../../services/attachments-timeline.service';
+import { EstablishmentActionContextService } from '../../services/establishment-action-context.service';
 
 @Component({
   selector: 'cc-establishment-list',
@@ -24,40 +23,15 @@ export class EstablishmentListComponent {
   @Input() public contract: IEstablishmentContract;
   @Input() public realCounts: IContractCount[];
 
-  public get selectedEstablishments(): IContractEstablishment[] {
-    return this.selectedEntries.map(e => e.establishment);
-  }
-
-  public get selectedAttachments(): IEstablishmentAttachment[] {
-    return this.selectedEntries.map(e => e.currentAttachment || e.nextAttachment);
-  }
-
   public get areAllSelected(): boolean {
     return this.selectedEntries.length === this.entries.length;
   }
 
   public get actionsContext(): IEstablishmentActionsContext {
-    return {
-      contract: this.contract,
-      realCounts: this.realCounts,
-      lastCountPeriod: this.lastCountPeriod,
-      establishmentType: this.type,
-    };
+    return this.actionContextService.getActionContext(this.contract, this.realCounts, this.type);
   }
 
   public selectedEntries: IEstablishmentWithAttachments[] = [];
-
-  public get lastCountPeriod(): Date {
-    if (!this.realCounts?.length) {
-      return null;
-    }
-
-    const countsAscSorted = this.realCounts.sort((a, b) =>
-      new Date(a.countPeriod).getTime() - new Date(b.countPeriod).getTime());
-
-    const lastCountPeriod = countsAscSorted[0]?.countPeriod;
-    return !!lastCountPeriod ? new Date(lastCountPeriod) : null;
-  }
 
   public get isLinked(): boolean {
     return [EstablishmentType.LinkedToAnotherContract, EstablishmentType.LinkedToContract].includes(this.type);
@@ -73,7 +47,7 @@ export class EstablishmentListComponent {
     private translatePipe: TranslatePipe,
     private datePipe: DatePipe,
     private rightsService: RightsService,
-    private timelineService: AttachmentsTimelineService,
+    private actionContextService: EstablishmentActionContextService,
   ) { }
 
   public isType(type: EstablishmentType): boolean {

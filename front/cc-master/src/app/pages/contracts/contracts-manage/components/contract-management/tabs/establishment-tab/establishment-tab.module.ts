@@ -19,6 +19,7 @@ import { EstablishmentActionModalsModule } from './components/modals/establishme
 import { EstablishmentTabComponent } from './establishment-tab.component';
 import { AttachmentsActionRestrictionsService } from './services/attachments-action-restrictions.service';
 import { AttachmentsTimelineService } from './services/attachments-timeline.service';
+import { EstablishmentActionContextService } from './services/establishment-action-context.service';
 import { EstablishmentContractDataService } from './services/establishment-contract-data.service';
 import { EstablishmentListActionsService } from './services/establishment-list-actions.service';
 import { EstablishmentTypeService } from './services/establishment-type.service';
@@ -50,6 +51,7 @@ import { EstablishmentsWithAttachmentsService } from './services/establishments-
     AttachmentsActionRestrictionsService,
     EstablishmentContractDataService,
     EstablishmentListActionsService,
+    EstablishmentActionContextService,
   ],
 })
 export class EstablishmentTabModule { }

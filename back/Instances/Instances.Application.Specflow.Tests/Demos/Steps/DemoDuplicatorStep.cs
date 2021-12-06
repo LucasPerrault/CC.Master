@@ -16,17 +16,17 @@ using Instances.Domain.Shared;
 using Instances.Infra.DataDuplication;
 using Instances.Infra.Demos;
 using Instances.Infra.Instances.Services;
+using Instances.Infra.Storage;
 using Instances.Infra.Storage.Stores;
 using Lucca.Core.Shared.Domain.Exceptions;
 using Microsoft.Extensions.Logging;
 using Moq;
-using Rights.Domain;
-using Rights.Domain.Abstractions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using TechTalk.SpecFlow;
+using Testing.Specflow;
 using Tools;
 using Xunit;
 using Environment = Environments.Domain.Environment;
@@ -36,11 +36,15 @@ namespace Instances.Application.Specflow.Tests.Demos.Steps
     [Binding]
     public class DemoDuplicatorStep
     {
-        private readonly DemosContext _demosContext;
+        private readonly SpecflowTestContext _testContext;
+        private readonly InstancesDbContext _dbContext;
+        private readonly DemoTestResults _results;
 
-        public DemoDuplicatorStep(DemosContext demosContext)
+        public DemoDuplicatorStep(SpecflowTestContext testContext, InstancesDbContext dbContext, DemoTestResults results)
         {
-            _demosContext = demosContext;
+            _testContext = testContext;
+            _dbContext = dbContext;
+            _results = results;
         }
 
         [Given(@"a (.*) duplication for demo '(.*)' of id '(.*)'")]
@@ -51,8 +55,8 @@ namespace Instances.Application.Specflow.Tests.Demos.Steps
             Guid duplicationId
         )
         {
-            var distributor = _demosContext.DbContext.Set<Distributor>().First();
-            var demoDuplicationsStore = new DemoDuplicationsStore(_demosContext.DbContext);
+            var distributor = _dbContext.Set<Distributor>().First();
+            var demoDuplicationsStore = new DemoDuplicationsStore(_dbContext);
             var duplication = new DemoDuplication
             {
                 Password = "test",
@@ -71,7 +75,7 @@ namespace Instances.Application.Specflow.Tests.Demos.Steps
         [Given(@"an existing demo '(.*)'")]
         public async Task GivenAnExistingDemo(string subdomain)
         {
-            var demosStore = new DemosStore(_demosContext.DbContext, new DummyQueryPager());
+            var demosStore = new DemosStore(_dbContext, new DummyQueryPager());
 
             var demo = new Demo
             {
@@ -90,7 +94,7 @@ namespace Instances.Application.Specflow.Tests.Demos.Steps
         [When("I request creation of demo '(.*)' by duplicating demo '(.*)' (.*)")]
         public async Task WhenICreateANewDemoByDuplicationForDistributor(string subdomain, string sourceSubdomain, DistributorSelection selection)
         {
-            var source = _demosContext.DbContext.Set<Demo>().Single(d => d.Subdomain == sourceSubdomain);
+            var source = _dbContext.Set<Demo>().Single(d => d.Subdomain == sourceSubdomain);
             var duplicator = GetDuplicator();
             var duplication = new DemoDuplicationRequest
             {
@@ -106,19 +110,19 @@ namespace Instances.Application.Specflow.Tests.Demos.Steps
             }
             catch (ForbiddenException e)
             {
-                _demosContext.Results.ExceptionResult.Exception = e;
+                _testContext.ThrownException = e;
             }
             catch (BadRequestException e)
             {
-                _demosContext.Results.ExceptionResult.Exception = e;
+                _testContext.ThrownException = e;
             }
         }
 
         [Then(@"demo duplication should exist (.*)")]
         public void ThenDemoDuplicationShouldExist(DistributorSelection selection)
         {
-            var distributor = _demosContext.DbContext.Set<Distributor>().Single(d => d.Code == selection.Code);
-            Assert.Equal(distributor.Id, _demosContext.DbContext.Set<DemoDuplication>().Single().DistributorId);
+            var distributor = _dbContext.Set<Distributor>().Single(d => d.Code == selection.Code);
+            Assert.Equal(distributor.Id, _dbContext.Set<DemoDuplication>().Single().DistributorId);
         }
 
         [When(@"I get notification that duplication '(.*)' has ended")]
@@ -137,11 +141,11 @@ namespace Instances.Application.Specflow.Tests.Demos.Steps
 
         private DemoDuplicator GetDuplicator()
         {
-            var demosStore = new DemosStore(_demosContext.DbContext, new DummyQueryPager());
-            var demoDuplicationsStore = new DemoDuplicationsStore(_demosContext.DbContext);
+            var demosStore = new DemosStore(_dbContext, new DummyQueryPager());
+            var demoDuplicationsStore = new DemoDuplicationsStore(_dbContext);
             var instanceDuplicationsStore = new InstanceDuplicationsStore
             (
-                _demosContext.DbContext,
+                _dbContext,
                 new Mock<ITimeProvider>().Object
             );
             var envStoreMock = new Mock<IEnvironmentsStore>();
@@ -153,18 +157,16 @@ namespace Instances.Application.Specflow.Tests.Demos.Steps
 
             distributorsStoreMock
                 .Setup(s => s.GetActiveByCodeAsync(It.IsAny<string>()))
-                .Returns<string>(distributor => Task.FromResult(_demosContext.DbContext.Set<Distributor>().Single(d => d.Code == distributor)));
+                .Returns<string>(distributor => Task.FromResult(_dbContext.Set<Distributor>().Single(d => d.Code == distributor)));
 
-            var rightsServiceMock = new Mock<IRightsService>();
-            rightsServiceMock.Setup(rs => rs.GetUserOperationHighestScopeAsync(It.IsAny<Operation>()))
-                .ReturnsAsync((Operation op) => _demosContext.TestPrincipal.OperationsWithScope[op]);
+            var rightsService = _testContext.GetRightsService();
             var ccDataServiceMock = new Mock<ICcDataService>();
             var clusterSelectorMock = new Mock<IClusterSelector>();
             var dnsMock = new Mock<IDnsService>();
             dnsMock.Setup(d => d.CreateAsync(It.IsAny<DnsEntry>()))
                 .Returns<DnsEntry>(entry =>
                 {
-                    _demosContext.Results.SubdomainPropagations.Add(entry);
+                    _results.SubdomainPropagations.Add(entry);
                     return Task.CompletedTask;
                 });
 
@@ -173,7 +175,7 @@ namespace Instances.Application.Specflow.Tests.Demos.Steps
 
             return new DemoDuplicator
                 (
-                    _demosContext.TestPrincipal.Principal,
+                    _testContext.Principal,
                     new InstancesDuplicator(new SqlScriptPicker(
                         new SqlScriptPickerConfiguration
                         {
@@ -184,7 +186,7 @@ namespace Instances.Application.Specflow.Tests.Demos.Steps
                     ),
                     demosStore,
                     demoDuplicationsStore,
-                    rightsServiceMock.Object,
+                    rightsService,
                     distributorsStoreMock.Object,
                     new SubdomainGenerator(subdomainValidator),
                     clusterSelectorMock.Object,
@@ -195,11 +197,11 @@ namespace Instances.Application.Specflow.Tests.Demos.Steps
 
         private DemoDuplicationCompleter GetCompleter(DemoCompleterSetup setup)
         {
-            var demosStore = new DemosStore(_demosContext.DbContext, new DummyQueryPager());
-            var demoDuplicationsStore = new DemoDuplicationsStore(_demosContext.DbContext);
+            var demosStore = new DemosStore(_dbContext, new DummyQueryPager());
+            var demoDuplicationsStore = new DemoDuplicationsStore(_dbContext);
             var instanceDuplicationsStore = new InstanceDuplicationsStore
             (
-                _demosContext.DbContext,
+                _dbContext,
                 new Mock<ITimeProvider>().Object
             );
 
@@ -210,7 +212,7 @@ namespace Instances.Application.Specflow.Tests.Demos.Steps
                 .Callback<string>(
                     password =>
                     {
-                        _demosContext.Results.CreatedInstances
+                        _results.CreatedInstances
                             .Add(new Instance { AllUsersImposedPassword = password });
                     })
                 .Returns(Task.FromResult(new Instance { Id = 1 }));
@@ -220,14 +222,10 @@ namespace Instances.Application.Specflow.Tests.Demos.Steps
                 .Callback<Instance>(
                     instance =>
                     {
-                        _demosContext.Results.DeleteInstances
+                        _results.DeleteInstances
                             .Add(instance);
                     })
                 .Returns(Task.FromResult(new Instance { Id = 1}));
-
-            var rightsServiceMock = new Mock<IRightsService>();
-            rightsServiceMock.Setup(rs => rs.GetUserOperationHighestScopeAsync(It.IsAny<Operation>()))
-                .ReturnsAsync((Operation op) => _demosContext.TestPrincipal.OperationsWithScope[op]);
 
             var passwordResetServiceMock = new Mock<IDemoUsersPasswordResetService>();
             if (setup.WillPasswordResetFail)
@@ -255,19 +253,19 @@ namespace Instances.Application.Specflow.Tests.Demos.Steps
         [Then(@"duplication '(.*)' should result in instance creation")]
         public void ThenDuplicationShouldResultInInstanceCreation(Guid duplicationId)
         {
-            Assert.Single(_demosContext.Results.CreatedInstances);
+            Assert.Single(_results.CreatedInstances);
         }
 
         [Then(@"duplication '(.*)' should result in instance deletion")]
         public void ThenDuplicationShouldResultInInstanceDeletion(Guid duplicationId)
         {
-            Assert.Single(_demosContext.Results.DeleteInstances);
+            Assert.Single(_results.DeleteInstances);
         }
 
         [Then(@"dns propagation should start (.*)")]
         public void ThenShouldPropagateOnDns(SubdomainSelection selection)
         {
-            _demosContext.Results.SubdomainPropagations
+            _results.SubdomainPropagations
                 .Where(p => p.Subdomain == selection.Subdomain && p.Zone == DnsEntryZone.Demos)
                 .Should().NotBeEmpty();
         }
@@ -275,13 +273,13 @@ namespace Instances.Application.Specflow.Tests.Demos.Steps
         [Then(@"duplication '(.*)' should be marked as (.*)")]
         public void ThenDuplicationShouldResultInInstanceDeletion(Guid duplicationId, InstanceDuplicationProgress progress)
         {
-            _demosContext.DbContext.Set<InstanceDuplication>().Single(i => i.Id == duplicationId).Progress.Should().Be(progress);
+            _dbContext.Set<InstanceDuplication>().Single(i => i.Id == duplicationId).Progress.Should().Be(progress);
         }
 
         [Then(@"(no|one) demo '(.*)' should be active")]
         public void ThenDuplicationShouldResultInInstanceDeletion(string demoExistenceKeyword, string subdomain)
         {
-            var demos = _demosContext.DbContext.Set<Demo>().Where(d => d.Subdomain == subdomain && d.IsActive);
+            var demos = _dbContext.Set<Demo>().Where(d => d.Subdomain == subdomain && d.IsActive);
 
             switch (demoExistenceKeyword)
             {
@@ -297,7 +295,7 @@ namespace Instances.Application.Specflow.Tests.Demos.Steps
         [Then(@"duplication '(.*)' should not result in instance deletion")]
         public void ThenDuplicationShouldNotResultInInstanceDeletion(Guid duplicationId)
         {
-            Assert.Empty(_demosContext.Results.DeleteInstances);
+            Assert.Empty(_results.DeleteInstances);
         }
 
         [Then(@"(no|one) duplication should be found as pending (.*)")]
@@ -305,7 +303,7 @@ namespace Instances.Application.Specflow.Tests.Demos.Steps
         {
             var instanceDuplicationsStore = new InstanceDuplicationsStore
             (
-                _demosContext.DbContext,
+                _dbContext,
                 new Mock<ITimeProvider>().Object
             );
             var pendingSubdomainDuplications = await instanceDuplicationsStore.GetPendingForSubdomainAsync(selection.Subdomain);

@@ -62,10 +62,12 @@ export class EnvironmentListComponent {
 
   public getDistributorTypeTranslation(environment: IEnvironment): string {
     switch (environment.distributorType) {
-      case DistributorType.Direct:
-        return this.translatePipe.transform('cafe_environments_list_direct');
-      case DistributorType.Indirect:
-        return this.translatePipe.transform('cafe_environments_list_indirect');
+      case DistributorType.DirectOnly:
+        return this.translatePipe.transform('cafe_environments_list_direct_only');
+      case DistributorType.IndirectOnly:
+        return this.translatePipe.transform('cafe_environments_list_indirect_only');
+      case DistributorType.DirectAndIndirect:
+        return this.translatePipe.transform('cafe_environments_list_direct_and_indirect');
     }
   }
 

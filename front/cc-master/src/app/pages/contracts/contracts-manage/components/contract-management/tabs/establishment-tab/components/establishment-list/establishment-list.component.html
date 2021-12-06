@@ -1,6 +1,5 @@
 <cc-establishment-list-actions-multiple *ngIf="canEditAttachments()"
-                                        [establishments]="selectedEstablishments"
-                                        [attachments]="selectedAttachments"
+                                        [entries]="selectedEntries"
                                         [context]="actionsContext">
 </cc-establishment-list-actions-multiple>
 
@@ -70,8 +69,7 @@
         </td>
         <td class="table-body-row-cell mod-actions">
           <cc-establishment-list-actions-single *ngIf="canEditAttachments()"
-                                                [establishment]="entry.establishment"
-                                                [attachment]="getAttachment(entry)"
+                                                [entry]="entry"
                                                 [context]="actionsContext">
           </cc-establishment-list-actions-single>
         </td>

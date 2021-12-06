@@ -1,3 +1,5 @@
+@import "theming.import";
+
 .textfield.mod-outlined {
   & .lu-select-placeholder {
     color: _color('grey', 600)
@@ -35,5 +37,19 @@
   &.is-loading, &.is-success, &.is-error {
     .button-counter { visibility: hidden; }
     color: _color('primary', 600);
+  }
+}
+
+.button, .button.palette-grey {
+  &.is-disabled, &[disabled] {
+    cursor: default;
+    opacity: 0.4;
+    pointer-events: none;
+    color: white;
+  }
+
+  &.mod-outline {
+    color: _color('grey', 700);
+    background-color: white;
   }
 }

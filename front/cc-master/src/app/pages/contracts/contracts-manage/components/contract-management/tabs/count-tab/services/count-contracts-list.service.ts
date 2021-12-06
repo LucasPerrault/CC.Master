@@ -9,11 +9,8 @@ import { IDetailedCount } from '../models/detailed-count.interface';
 export class CountContractsListService {
 
   public toCountListEntries(counts: IDetailedCount[], contract: ICountContract): ICountListEntry[] {
-    const startPeriod = min([startOfMonth(new Date(contract.theoricalStartOn)), this.getFirstCountPeriod(counts)]);
-    const lastCountPeriod = this.getLastCountPeriod(counts);
-    const previousMonth = subMonths(new Date(), 1);
-    const startOfThisMonth = startOfMonth(new Date());
-    const endPeriod = lastCountPeriod.getTime() >= startOfThisMonth.getTime() ? lastCountPeriod : previousMonth;
+    const startPeriod = this.getStartPeriod(counts, contract.theoricalStartOn);
+    const endPeriod = this.getEndPeriod(counts, contract.closeOn);
 
     const entries = this.getCountListEntries(startPeriod, endPeriod, counts);
     return entries.sort((a, b) => b.month.getTime() - a.month.getTime());
@@ -34,9 +31,30 @@ export class CountContractsListService {
     return ({ month: countPeriod, count });
   }
 
+  private getStartPeriod(counts: IDetailedCount[], theoreticalStartOn: string): Date {
+    const firstCountPeriod = this.getFirstCountPeriod(counts);
+    const contractStartDate = startOfMonth(new Date(theoreticalStartOn));
+    return min([contractStartDate, firstCountPeriod]);
+  }
+
   private getFirstCountPeriod(counts: IDetailedCount[]): Date {
+    if (!counts?.length) {
+      return null;
+    }
     const countsAscSorted = counts.sort((a, b) => new Date(a?.countPeriod).getTime() - new Date(b?.countPeriod).getTime());
-    return new Date(countsAscSorted[0]?.countPeriod);
+    return new Date(countsAscSorted[0].countPeriod);
+  }
+
+  private getEndPeriod(counts: IDetailedCount[], closeOn: string): Date {
+    const closeDate = !!closeOn ? new Date(closeOn) : null;
+    if (!!closeDate) {
+      return startOfMonth(closeDate);
+    }
+
+    const lastCountPeriod = this.getLastCountPeriod(counts);
+    const previousMonth = subMonths(new Date(), 1);
+    const startOfThisMonth = startOfMonth(new Date());
+    return lastCountPeriod.getTime() >= startOfThisMonth.getTime() ? lastCountPeriod : previousMonth;
   }
 
   private getLastCountPeriod(counts: IDetailedCount[]): Date {

@@ -1,7 +1,4 @@
 ﻿using Authentication.Domain;
-using Rights.Domain;
-using Rights.Domain.Abstractions;
-using System.Collections.Generic;
 using System.Security.Claims;
 using Users.Domain;
 
@@ -11,37 +8,17 @@ namespace Testing.Infra
     {
         private const int DefaultTestDepartmentId = 1;
 
-        public ClaimsPrincipal Principal { get; }
-        public Dictionary<Operation, AccessRightScope> OperationsWithScope { get; }
+        public static ClaimsPrincipal NewUser() => NewUser(DefaultTestDepartmentId);
 
-        public TestPrincipal(int departmentId)
-            : this(departmentId, new Dictionary<Operation, AccessRightScope>())
-        { }
-
-        public TestPrincipal()
-            : this(DefaultTestDepartmentId, new Dictionary<Operation, AccessRightScope>())
-        { }
-
-        public TestPrincipal(int departmentId, Dictionary<Operation , AccessRightScope> operationsWithScope)
+        public static ClaimsPrincipal NewUser(int departmentId) => new CloudControlUserClaimsPrincipal(new Principal
         {
-            Principal = new CloudControlUserClaimsPrincipal(new Principal
+            UserId = 1,
+            User = new User
             {
-                UserId = 1,
-                User = new User
-                {
-                    DistributorId = departmentId,
-                    FirstName = "Jean",
-                    LastName = "Bombeur",
-                }
-            });
-
-            OperationsWithScope = operationsWithScope;
-        }
-
-        public TestPrincipal Add(Operation operation, AccessRightScope scope)
-        {
-            OperationsWithScope[operation] = scope;
-            return this;
-        }
+                DistributorId = departmentId,
+                FirstName = "Jean",
+                LastName = "Bombeur",
+            }
+        });
     }
 }

@@ -30,7 +30,7 @@ namespace Authentication.Web.Tests.Controllers
                 .ReturnsAsync(new HttpResponseMessage());
 
 
-            var logoutService = new LogoutService(config, new TestPrincipal().Principal, new HttpClient(handlerMock.Object));
+            var logoutService = new LogoutService(config, TestPrincipal.NewUser(), new HttpClient(handlerMock.Object));
             var authRemoteService = new AuthRedirectionRemoteService(config);
 
             var webApplicationFactory = new MockedWebApplicationFactory();

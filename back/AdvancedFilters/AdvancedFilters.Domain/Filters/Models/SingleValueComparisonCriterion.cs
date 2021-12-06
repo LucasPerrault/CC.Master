@@ -34,5 +34,5 @@ namespace AdvancedFilters.Domain.Filters.Models
             ComparisonOperators.NotEquals => GetExpression(ComparisonOperators.Equals).Inverse(),
             _ => throw new InvalidEnumArgumentException(nameof(Operator), (int) Operator, typeof(ComparisonOperators)),
         };
-}
+    }
 }

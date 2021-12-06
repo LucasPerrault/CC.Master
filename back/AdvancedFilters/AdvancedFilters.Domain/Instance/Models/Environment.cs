@@ -1,4 +1,5 @@
 using AdvancedFilters.Domain.Billing.Models;
+using AdvancedFilters.Domain.Core.Collections;
 using AdvancedFilters.Domain.Core.Models;
 using AdvancedFilters.Domain.Filters.Builders;
 using AdvancedFilters.Domain.Filters.Models;
@@ -51,19 +52,23 @@ namespace AdvancedFilters.Domain.Instance.Models
 
     public enum DistributorType
     {
-        Direct,
-        Indirect
+        DirectOnly = 1,
+        IndirectOnly = 2,
+        DirectAndIndirect = 3,
     }
+
 
     public static class EnvironmentExpressions
     {
         public static Expression<Func<Environment, DistributorType>> DistributorTypeFn
-            => e => e.Accesses
-                .Where(a => a.Type == EnvironmentAccessType.Contract)
-                .All(a => a.DistributorId == Environment.LuccaDistributorId)
-                ? DistributorType.Direct
-                : DistributorType.Indirect;
+            => e => e.Accesses.Where(a => a.Type == EnvironmentAccessType.Contract).Any(a => a.DistributorId == Environment.LuccaDistributorId)
+                ? e.Accesses.Where(a => a.Type == EnvironmentAccessType.Contract).Any(a => a.DistributorId != Environment.LuccaDistributorId)
+                    ? DistributorType.DirectAndIndirect
+                    : DistributorType.DirectOnly
+                : DistributorType.IndirectOnly;
 
+        public static Expression<Func<Environment, IEnumerable<AppInstance>>> AppInstancesAvailableForSelection =>
+            e => e.AppInstances.Where(e => !ApplicationsCollection.SystemApplicationIds.Contains(e.ApplicationId));
         public static Func<Environment, DistributorType> CompiledDistributorTypeFn
             => DistributorTypeFn.Compile();
     }

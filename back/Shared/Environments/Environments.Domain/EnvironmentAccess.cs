@@ -1,4 +1,4 @@
-﻿using Distributors.Domain.Models;
+using Distributors.Domain.Models;
 using System;
 
 namespace Environments.Domain
@@ -10,7 +10,8 @@ namespace Environments.Domain
     {
         Manual = 0,
         EnvironmentCreation = 1,
-        Contract = 2
+        Contract = 2,
+        Subcontracting = 3,
     }
 
     public enum EnvironmentAccessLifecycleStep

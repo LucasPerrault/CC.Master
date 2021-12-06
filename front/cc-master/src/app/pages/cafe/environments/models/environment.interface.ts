@@ -18,6 +18,7 @@ export interface IEnvironment {
 }
 
 export enum DistributorType {
-  Direct = 'Direct',
-  Indirect = 'Indirect'
+  DirectOnly = 'DirectOnly',
+  IndirectOnly = 'IndirectOnly',
+  DirectAndIndirect = 'DirectAndIndirect',
 }
