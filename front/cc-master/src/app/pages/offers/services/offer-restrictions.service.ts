@@ -11,10 +11,6 @@ export class OfferRestrictionsService {
   constructor(private rightsService: RightsService) {
   }
 
-  public canDeleteOffer(activeContractNumber: number): boolean {
-    return activeContractNumber === 0 && this.hasRightToCreateOffers();
-  }
-
   public canDeletePriceList(list: IPriceList): boolean {
     const today = Date.now();
     const startDate = new Date(list.startsOn);

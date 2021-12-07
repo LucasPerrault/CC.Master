@@ -51,7 +51,7 @@ namespace Billing.Contracts.Domain.Tests
             return offer;
         }
 
-        public static CommercialOffer AndPriceRow(this CommercialOffer offer, int maxExcludedCount = default, decimal unitPrice = default, decimal fixedPrice = default)
+        public static CommercialOffer AndPriceRow(this CommercialOffer offer, int maxIncludedCount = default, decimal unitPrice = default, decimal fixedPrice = default)
         {
             var pl = offer.PriceLists.Last();
 
@@ -59,7 +59,7 @@ namespace Billing.Contracts.Domain.Tests
             {
                 Id = _priceRowNewId++,
                 ListId = pl.Id,
-                MaxIncludedCount = maxExcludedCount,
+                MaxIncludedCount = maxIncludedCount,
                 UnitPrice = unitPrice,
                 FixedPrice = fixedPrice,
             };
@@ -96,13 +96,13 @@ namespace Billing.Contracts.Domain.Tests
             return pl;
         }
 
-        public static PriceList WithPriceRow(this PriceList pl, int? id = null, int maxExcludedCount = default, decimal unitPrice = default, decimal fixedPrice = default)
+        public static PriceList WithPriceRow(this PriceList pl, int? id = null, int maxIncludedCount = default, decimal unitPrice = default, decimal fixedPrice = default)
         {
             var pr = new PriceRow
             {
                 Id = id ?? _priceRowNewId++,
                 ListId = pl.Id,
-                MaxIncludedCount = maxExcludedCount,
+                MaxIncludedCount = maxIncludedCount,
                 UnitPrice = unitPrice,
                 FixedPrice = fixedPrice
             };
@@ -112,9 +112,9 @@ namespace Billing.Contracts.Domain.Tests
             return pl;
         }
 
-        public static PriceList WithNewPriceRow(this PriceList pl, int maxExcludedCount = default, decimal unitPrice = default, decimal fixedPrice = default)
+        public static PriceList WithNewPriceRow(this PriceList pl, int maxIncludedCount = default, decimal unitPrice = default, decimal fixedPrice = default)
         {
-            var modifiedPl = pl.WithPriceRow(maxExcludedCount: maxExcludedCount, unitPrice: unitPrice, fixedPrice: fixedPrice);
+            var modifiedPl = pl.WithPriceRow(maxIncludedCount: maxIncludedCount, unitPrice: unitPrice, fixedPrice: fixedPrice);
             modifiedPl.Rows.Last().Id = 0;
 
             return modifiedPl;

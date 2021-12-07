@@ -18,6 +18,7 @@ import { PriceListsValidators, PriceListValidationError } from '../../services/p
 import { IPriceListOfferSelectOption } from '../offer-selects/offer-price-list-api-select/offer-price-list-selection.interface';
 
 enum PriceRowFormKey {
+  Id = 'id',
   MaxIncludedCount = 'maxIncludedCount',
   UnitPrice = 'unitPrice',
   FixedPrice = 'fixedPrice',
@@ -72,19 +73,12 @@ export class EditablePriceGridComponent implements OnInit, OnDestroy, ControlVal
   public formKey = PriceRowFormKey;
   public formGroup: FormGroup = new FormGroup(
     { [this.formArrayKey]: this.formArray },
-    [PriceListsValidators.boundsContinuity],
+    [PriceListsValidators.boundsContinuity, PriceListsValidators.required],
   );
 
   public validationError = PriceListValidationError;
   public get hasFormErrors(): boolean {
-    return this.hasRequiredError || this.formGroup.hasError(PriceListValidationError.BoundsContinuity);
-  }
-
-  public get hasRequiredError(): boolean {
-    return !!this.formArray.controls.find((c: FormGroup) => {
-      const priceRowKeys = Object.keys(c.controls);
-      return !!priceRowKeys.find(key => c.get(key).hasError(PriceListValidationError.Required));
-    });
+    return this.formGroup.hasError(PriceListValidationError.BoundsContinuity);
   }
 
   private destroy$: Subject<void> = new Subject<void>();
@@ -142,7 +136,7 @@ export class EditablePriceGridComponent implements OnInit, OnDestroy, ControlVal
     const lastIndex = this.formArray.length - 1;
     const priceRow: IPriceRowForm = this.formArray.at(lastIndex).value;
     const nextUpperBound = priceRow.maxIncludedCount + 1;
-    const formGroup = this.getFormGroup(nextUpperBound, 0, 0);
+    const formGroup = this.getFormGroup(nextUpperBound);
 
     this.formArray.insert(lastIndex + 1, formGroup);
   }
@@ -208,19 +202,19 @@ export class EditablePriceGridComponent implements OnInit, OnDestroy, ControlVal
   }
 
   private init(): void {
-    const defaultPriceRow: IPriceRowForm = { maxIncludedCount: 0, unitPrice: 0, fixedPrice: 0 };
-    this.add(defaultPriceRow);
+    this.add();
     this.updateReadonlyState();
   }
 
-  private add(priceRow: IPriceRowForm): void {
-    const formGroup = this.getFormGroup(priceRow.maxIncludedCount, priceRow.unitPrice, priceRow.fixedPrice);
+  private add(priceRow?: IPriceRowForm): void {
+    const formGroup = this.getFormGroup(priceRow?.maxIncludedCount, priceRow?.unitPrice, priceRow?.fixedPrice, priceRow?.id);
     this.formArray.push(formGroup);
   }
 
-  private getFormGroup(maxIncludedCount: number, unitPrice?: number, fixedPrice?: number): FormGroup {
+  private getFormGroup(maxIncludedCount: number, unitPrice?: number, fixedPrice?: number, id?: number): FormGroup {
     return new FormGroup(
       {
+        [PriceRowFormKey.Id]: new FormControl(id),
         [PriceRowFormKey.MaxIncludedCount]: new FormControl(maxIncludedCount),
         [PriceRowFormKey.UnitPrice]: new FormControl(unitPrice),
         [PriceRowFormKey.FixedPrice]: new FormControl(fixedPrice),

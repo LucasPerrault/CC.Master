@@ -6,7 +6,7 @@ import { PagingModule } from '@cc/common/paging';
 import { LuDropdownItemModule, LuDropdownPanelModule, LuDropdownTriggerModule } from '@lucca-front/ng/dropdown';
 import { LuTooltipTriggerModule } from '@lucca-front/ng/tooltip';
 
-import { OfferDeletionModule } from './components/offer-deletion/offer-deletion.module';
+import { OfferArchivingModule } from './components/offer-archiving/offer-archiving.module';
 import { OfferFiltersModule } from './components/offer-filters/offer-filters.module';
 import { OfferListComponent } from './components/offer-list/offer-list.component';
 import { OffersComponent } from './offers.component';
@@ -30,7 +30,7 @@ import { PriceListsDataService } from './services/price-lists-data.service';
     LuTooltipTriggerModule,
     ReactiveFormsModule,
     OfferFiltersModule,
-    OfferDeletionModule,
+    OfferArchivingModule,
     OffersRoutingModule,
     LuDropdownPanelModule,
     LuDropdownTriggerModule,

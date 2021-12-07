@@ -77,6 +77,54 @@ namespace Billing.Contracts.Domain.Tests
         }
 
         [Fact]
+        public void AddPriceList_Validation_ShouldThrowOnlyIf_PriceListRows_AreNotOrdered()
+        {
+            var offer = new CommercialOffer()
+                .Build()
+                .WithPriceList(new DateTime(2002, 01, 01));
+
+            var updatedList = new PriceList().BuildFor(offer)
+                .StartingOn(new DateTime(2003, 01, 01))
+                .WithPriceRow(maxIncludedCount: 10, fixedPrice: 1, unitPrice: 0)
+                .WithPriceRow(maxIncludedCount: 25, fixedPrice: 1, unitPrice: 0)
+                .WithPriceRow(maxIncludedCount: 30, fixedPrice: 1, unitPrice: 0);
+            ShouldNotThrowWhenAdd(updatedList, offer);
+
+             var unorderedList = new PriceList().BuildFor(offer)
+                 .StartingOn(new DateTime(2004, 01, 01))
+                 .WithPriceRow(maxIncludedCount: 10, fixedPrice: 1, unitPrice: 0)
+                 .WithPriceRow(maxIncludedCount: 30, fixedPrice: 1, unitPrice: 0)
+                 .WithPriceRow(maxIncludedCount: 25, fixedPrice: 1, unitPrice: 0);
+             ShouldThrowWhenAdd(unorderedList, offer, t => t.PriceRowsNotOrdered());
+        }
+
+        [Fact]
+        public void ModifyPriceList_Validation_ShouldThrowOnlyIf_PriceListRows_AreNotOrdered()
+        {
+            var usage = new CommercialOfferUsage { OfferId = 1 };
+            var offer = new CommercialOffer()
+                .Build()
+                .WithPriceList(new DateTime(2002, 01, 01))
+                .AndPriceRow(maxIncludedCount: 10, fixedPrice: 1, unitPrice: 0)
+                .AndPriceRow(maxIncludedCount: 20, fixedPrice: 1, unitPrice: 0)
+                .AndPriceRow(maxIncludedCount: 30, fixedPrice: 1, unitPrice: 0);
+
+            var updatedList = new PriceList().BuildFor(offer, offer.PriceLists.First().Id)
+                .StartingOn(new DateTime(2002, 01, 01))
+                .WithPriceRow(maxIncludedCount: 10, fixedPrice: 1, unitPrice: 0)
+                .WithPriceRow(maxIncludedCount: 25, fixedPrice: 1, unitPrice: 0)
+                .WithPriceRow(maxIncludedCount: 30, fixedPrice: 1, unitPrice: 0);
+            ShouldNotThrowWhenModify(offer.PriceLists.First(), updatedList, offer, usage);
+
+            var unorderedList = new PriceList().BuildFor(offer, offer.PriceLists.First().Id)
+                .StartingOn(new DateTime(2002, 01, 01))
+                .WithPriceRow(maxIncludedCount: 10, fixedPrice: 1, unitPrice: 0)
+                .WithPriceRow(maxIncludedCount: 30, fixedPrice: 1, unitPrice: 0)
+                .WithPriceRow(maxIncludedCount: 25, fixedPrice: 1, unitPrice: 0);
+            ShouldThrowWhenModify(offer.PriceLists.First(), unorderedList, offer, usage, t => t.PriceRowsNotOrdered());
+        }
+
+        [Fact]
         public void CreateOffer_Validation_ShouldThrowIf_PriceLists_HaveSame_StartDate()
         {
             var startDate = new DateTime(2020, 01, 01);
@@ -151,15 +199,29 @@ namespace Billing.Contracts.Domain.Tests
         }
 
         [Fact]
-        public void ModifyOffer_Validation_ShouldNotThrowWhen_NameChanged_EvenWithCount()
+        public void ModifyOffer_Validation_ShouldNotThrowWhen_NameOrTagChanged_EvenWithCount()
         {
             var oldOffer = new CommercialOffer().Build()
-                .With(name: "miaou");
+                .With(name: "miaou", tag: "miaou", isArchived: false);
             var newOffer = new CommercialOffer().Build(oldOffer.Id)
-                .With(name: "forty two");
+                .With(name: "forty two", tag: "miaou", isArchived: false);
             var usageWithCount = new CommercialOfferUsage().BuildFor(oldOffer)
                 .WithCountedContractsNumber(1);
 
+            ShouldNotThrowWhenModify(oldOffer, newOffer, usageWithCount);
+
+            Reset();
+
+            newOffer.Name = "miaou";
+            newOffer.Tag = "forty two";
+            newOffer.IsArchived = false;
+            ShouldNotThrowWhenModify(oldOffer, newOffer, usageWithCount);
+
+            Reset();
+
+            newOffer.Name = "miaou";
+            newOffer.Tag = "miaou";
+            newOffer.IsArchived = true;
             ShouldNotThrowWhenModify(oldOffer, newOffer, usageWithCount);
         }
 
@@ -170,13 +232,15 @@ namespace Billing.Contracts.Domain.Tests
                 .With
                 (
                     name: "miaou",
-                    tag: "miaou"
+                    tag: "miaou",
+                    billingMode: BillingMode.AllUsers
                 );
             var newOffer = new CommercialOffer().Build(oldOffer.Id)
                 .With
                 (
                     name: "forty two",
-                    tag: "forty two"
+                    tag: "forty two",
+                    billingMode: BillingMode.FlatFee
                 );
 
             var usageWithCount = new CommercialOfferUsage().BuildFor(oldOffer)
@@ -206,7 +270,7 @@ namespace Billing.Contracts.Domain.Tests
 
             Reset();
 
-            payload.WithNewPriceRow();
+            payload.WithNewPriceRow(maxIncludedCount:10);
             ShouldNotThrowWhenModify(oldPriceList, payload, offer, usageWithoutCount);
         }
 
@@ -236,13 +300,13 @@ namespace Billing.Contracts.Domain.Tests
         {
             var offer = new CommercialOffer().Build()
                 .WithPriceList()
-                .AndPriceRow(maxExcludedCount: 42);
+                .AndPriceRow(maxIncludedCount: 42);
             var oldPriceList = offer.PriceLists.First();
             var newPriceList = new PriceList().BuildFor(offer, oldPriceList.Id)
                 .WithPriceRow
                 (
                     id: oldPriceList.Rows.First().Id,
-                    maxExcludedCount: 24
+                    maxIncludedCount: 24
                 );
 
             var usageWithCount = new CommercialOfferUsage().BuildFor(offer)
@@ -261,21 +325,21 @@ namespace Billing.Contracts.Domain.Tests
         {
             var offer = new CommercialOffer().Build()
                 .WithPriceList()
-                .AndPriceRow(maxExcludedCount: 42);
+                .AndPriceRow(maxIncludedCount: 42);
             var oldPriceList = offer.PriceLists.First();
             var usageWithCount = new CommercialOfferUsage().BuildFor(offer)
                 .WithCountedContractsNumber(1);
 
             var newPriceList = new PriceList().BuildFor(offer, oldPriceList.Id)
-                .WithPriceRow(id: oldPriceList.Rows.First().Id, maxExcludedCount: 42)
-                .WithNewPriceRow(maxExcludedCount: 9001);
+                .WithPriceRow(id: oldPriceList.Rows.First().Id, maxIncludedCount: 42)
+                .WithNewPriceRow(maxIncludedCount: 9001);
             ShouldNotThrowWhenModify(oldPriceList, newPriceList, offer, usageWithCount);
 
             Reset();
 
             var newPriceList2 = new PriceList().BuildFor(offer, oldPriceList.Id)
-                .WithPriceRow(id: oldPriceList.Rows.First().Id, maxExcludedCount: 42)
-                .WithNewPriceRow(maxExcludedCount: 28);
+                .WithPriceRow(id: oldPriceList.Rows.First().Id, maxIncludedCount: 42)
+                .WithNewPriceRow(maxIncludedCount: 28);
             ShouldThrowWhenModify(oldPriceList, newPriceList2, offer, usageWithCount, t => t.PriceListChangedDespiteCount());
         }
 
@@ -284,15 +348,15 @@ namespace Billing.Contracts.Domain.Tests
         {
             var offer = new CommercialOffer().Build()
                 .WithPriceList()
-                .AndPriceRow(maxExcludedCount: 42);
+                .AndPriceRow(maxIncludedCount: 42);
             var oldPriceList = offer.PriceLists.First();
             var usageWithCount = new CommercialOfferUsage().BuildFor(offer)
                 .WithCountedContractsNumber(1);
 
             var newPriceList = new PriceList().BuildFor(offer, oldPriceList.Id)
-                .WithPriceRow(id: oldPriceList.Rows.First().Id, maxExcludedCount: 42)
-                .WithNewPriceRow(maxExcludedCount: 9001)
-                .WithNewPriceRow(maxExcludedCount: 9003);
+                .WithPriceRow(id: oldPriceList.Rows.First().Id, maxIncludedCount: 42)
+                .WithNewPriceRow(maxIncludedCount: 9001)
+                .WithNewPriceRow(maxIncludedCount: 9003);
             ShouldNotThrowWhenModify(oldPriceList, newPriceList, offer, usageWithCount);
         }
 
@@ -305,12 +369,18 @@ namespace Billing.Contracts.Domain.Tests
 
             _time.Setup(time => time.Today())
                 .Returns(new DateTime(2021, 01, 01));
-            ShouldThrowWhenAdd(priceList, offer, t => t.PriceListStartDefinedInThePast());
+            ShouldThrowWhenAdd(priceList, offer, t => t.PriceListStartDefinedBeforeThisMonth());
 
             Reset();
 
             _time.Setup(time => time.Today())
                 .Returns(new DateTime(2009, 01, 01));
+            ShouldNotThrowWhenAdd(priceList, offer);
+
+            Reset();
+
+            _time.Setup(time => time.Today())
+                .Returns(new DateTime(2010, 01, 05));
             ShouldNotThrowWhenAdd(priceList, offer);
         }
 
@@ -327,12 +397,18 @@ namespace Billing.Contracts.Domain.Tests
 
             _time.Setup(time => time.Today())
                 .Returns(new DateTime(2021, 01, 01));
-            ShouldThrowWhenModify(oldPriceList, newPriceList, offer, usage, t => t.PriceListStartDefinedInThePast());
+            ShouldThrowWhenModify(oldPriceList, newPriceList, offer, usage, t => t.PriceListStartDefinedBeforeThisMonth());
 
             Reset();
 
             _time.Setup(time => time.Today())
                 .Returns(new DateTime(2009, 01, 01));
+            ShouldNotThrowWhenModify(oldPriceList, newPriceList, offer, usage);
+
+            Reset();
+
+            _time.Setup(time => time.Today())
+                .Returns(new DateTime(2010, 01, 05));
             ShouldNotThrowWhenModify(oldPriceList, newPriceList, offer, usage);
         }
 
@@ -356,7 +432,7 @@ namespace Billing.Contracts.Domain.Tests
 
             var newPriceList2 = new PriceList().BuildFor(offer, secondOldestPriceList.Id)
                 .StartingOn(new DateTime(2010, 01, 01));
-            ShouldNotThrowWhenModify(secondOldestPriceList, newPriceList, offer, usage);
+                ShouldNotThrowWhenModify(secondOldestPriceList, newPriceList, offer, usage);
         }
 
         [Fact]
@@ -411,19 +487,16 @@ namespace Billing.Contracts.Domain.Tests
         }
 
         [Fact]
-        public void DeleteOffer_Validation_ShouldThrowOnlyIf_HasActiveContract()
+        public void AddPriceList_ShouldThrowOnlyIf_ContainsNegativeAmount()
         {
             var offer = new CommercialOffer().Build();
+            offer.PriceLists = new List<PriceList>();
 
-            var usageWithActiveContract = new CommercialOfferUsage().BuildFor(offer)
-                .WithActiveContractsNumber(1);
-            ShouldThrowWhenDelete(offer, usageWithActiveContract, t => t.OfferWithActiveContractDeleted());
+            var list = new PriceList().StartingOn(new DateTime(2040, 01, 01)).WithPriceRow(0, 10, 0, 0);
 
-            Reset();
-
-            var usageWithoutActiveContract = new CommercialOfferUsage().BuildFor(offer)
-                .WithActiveContractsNumber(0);
-            ShouldNotThrowWhenDelete(offer, usageWithoutActiveContract);
+            ShouldNotThrowWhenAdd(list, offer);
+            list.Rows.First().FixedPrice = -0.01m;
+            ShouldThrowWhenAdd(list, offer, t => t.PriceListHasNegativeAmounts());
         }
 
         private void Reset()
@@ -457,21 +530,6 @@ namespace Billing.Contracts.Domain.Tests
         private void ShouldNotThrowWhenModify(CommercialOffer oldOffer, CommercialOffer newOffer, CommercialOfferUsage usage)
         {
             Action throwIfFn = () => Validation.ThrowIfCannotModifyOffer(oldOffer, newOffer, usage);
-
-            throwIfFn.Should().NotThrow<OfferValidationException>();
-        }
-
-        private void ShouldThrowWhenDelete(CommercialOffer offer, CommercialOfferUsage usage, Expression<Func<ITranslations, string>> reasonFn)
-        {
-            Action throwIfFn = () => Validation.ThrowIfCannotDeleteOffer(offer, usage);
-
-            throwIfFn.Should().ThrowExactly<OfferValidationException>();
-            _translations.Verify(reasonFn, Times.Once);
-        }
-
-        private void ShouldNotThrowWhenDelete(CommercialOffer offer, CommercialOfferUsage usage)
-        {
-            Action throwIfFn = () => Validation.ThrowIfCannotDeleteOffer(offer, usage);
 
             throwIfFn.Should().NotThrow<OfferValidationException>();
         }

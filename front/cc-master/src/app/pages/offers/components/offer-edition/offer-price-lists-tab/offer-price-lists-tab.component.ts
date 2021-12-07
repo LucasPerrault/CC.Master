@@ -42,6 +42,10 @@ export class OfferPriceListsTabComponent implements OnInit {
   public ngOnInit(): void {
   }
 
+  public getSortedDescLists(lists: IPriceList[]): IPriceList[] {
+    return lists.sort((a, b) => new Date(b.startsOn).getTime() - new Date(a.startsOn).getTime());
+  }
+
   public getCurrency(currencyId: number): IOfferCurrency {
     return getCurrency(currencyId);
   }

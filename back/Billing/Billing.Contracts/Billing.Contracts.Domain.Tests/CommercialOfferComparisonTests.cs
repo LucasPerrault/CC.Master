@@ -18,9 +18,11 @@ namespace Billing.Contracts.Domain.Tests
             {
                 nameof(CommercialOffer.Id),
                 nameof(CommercialOffer.Name),
+                nameof(CommercialOffer.Tag),
                 nameof(CommercialOffer.IsCatalog),
                 nameof(CommercialOffer.PriceLists),
                 nameof(CommercialOffer.Product),
+                nameof(CommercialOffer.IsArchived),
             };
 
             var diff = offerProps

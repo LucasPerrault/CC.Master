@@ -3,7 +3,7 @@ import { FormControl, FormGroup } from '@angular/forms';
 import { TranslatePipe } from '@cc/aspects/translate';
 import { ELuDateGranularity } from '@lucca-front/ng/core';
 import { ILuModalContent, LU_MODAL_DATA } from '@lucca-front/ng/modal';
-import { addMonths, startOfMonth } from 'date-fns';
+import { startOfMonth } from 'date-fns';
 import { Observable, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
@@ -33,7 +33,7 @@ export class OfferPriceListCreationModalComponent implements OnInit, OnDestroy, 
   public granularity = ELuDateGranularity;
 
   public get min(): Date {
-    return addMonths(startOfMonth(Date.now()), 1);
+    return startOfMonth(Date.now());
   }
 
   private destroy$: Subject<void> = new Subject<void>();

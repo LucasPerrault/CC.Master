@@ -59,11 +59,11 @@ namespace Billing.Contracts.Application.Offers
             return await GetReadOnlyByIdAsync(id, accessRight);
         }
 
-        public async Task<Page<string>> GetTagsAsync()
+        public async Task<Page<string>> GetTagsAsync(CommercialOfferTagFilter filter)
         {
             var accessRight = await _rightsFilter.GetReadAccessAsync(_principal);
-
-            return await _store.GetTagsAsync(accessRight);
+            
+            return await _store.GetTagsAsync(filter, accessRight);
         }
 
         public async Task<CommercialOffer> CreateAsync(CommercialOffer offer)
@@ -94,17 +94,6 @@ namespace Billing.Contracts.Application.Offers
             _validation.ThrowIfCannotModifyOffer(oldOffer, offer, usage);
 
             await _store.PutAsync(id, offer, accessRight);
-        }
-
-        public async Task DeleteAsync(int id)
-        {
-            var accessRight = await _rightsFilter.GetWriteAccessAsync(_principal);
-
-            var offer = await GetReadOnlyByIdWithoutRightAsync(id);
-            var usage = await GetOfferUsageAsync(id);
-            _validation.ThrowIfCannotDeleteOffer(offer, usage);
-
-            await _store.ArchiveAsync(id, accessRight);
         }
 
         public async Task<CommercialOffer> AddPriceListAsync(int id, PriceList priceList)

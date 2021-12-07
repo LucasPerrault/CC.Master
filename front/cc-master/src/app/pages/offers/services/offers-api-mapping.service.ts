@@ -17,7 +17,7 @@ interface HttpParamsAttributes {
 enum OfferQueryParamKey {
   Search = 'search',
   Tag = 'tag',
-  ProductId = 'product.id',
+  ProductId = 'productId',
   Currency = 'currencyId',
   BillingMode = 'billingMode',
   IsArchived = 'isArchived',
@@ -44,7 +44,7 @@ export class OffersApiMappingService {
       return params;
     }
 
-    params = this.getNameHttpParams(params, filters.search);
+    params = this.getSearchHttpParams(params, filters.search);
     params = this.getTagHttpParams(params, filters.tag);
     params = this.getProductHttpParams(params, filters.product);
     params = this.getCurrencyHttpParams(params, filters.currencies);
@@ -53,10 +53,13 @@ export class OffersApiMappingService {
     return params;
   }
 
-  private getNameHttpParams(params: HttpParams, search: string): HttpParams {
-    return !!search
-      ? params.set(OfferQueryParamKey.Search, encodeURIComponent(search))
-      : params.delete(OfferQueryParamKey.Search);
+  private getSearchHttpParams(params: HttpParams, search: string): HttpParams {
+    if (!search) {
+      return params.delete(OfferQueryParamKey.Search);
+    }
+
+    const urlSafeClues = search.split(' ').map(c => encodeURIComponent(c));
+    return params.set(OfferQueryParamKey.Search, `${ urlSafeClues }`);
   }
 
   private getTagHttpParams(params: HttpParams, tag: string): HttpParams {

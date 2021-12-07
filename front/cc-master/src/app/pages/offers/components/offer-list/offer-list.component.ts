@@ -10,7 +10,8 @@ import { OfferSortParamKey } from '../../enums/offer-sort-param-key.enum';
 import { IDetailedOffer } from '../../models/detailed-offer.interface';
 import { getCurrency } from '../../models/offer-currency.interface';
 import { OfferRestrictionsService } from '../../services/offer-restrictions.service';
-import { OfferDeletionComponent } from '../offer-deletion/offer-deletion.component';
+import { OfferArchivingComponent } from '../offer-archiving/offer-archiving.component';
+import { IOfferArchivingModalData } from '../offer-archiving/offer-archiving.interface';
 
 @Component({
   selector: 'cc-offer-list',
@@ -65,11 +66,16 @@ export class OfferListComponent implements OnInit {
     window.open(url);
   }
 
-  public canBeDeleted(offer: IDetailedOffer): boolean {
-    return this.restrictionsService.canDeleteOffer(offer.usage?.numberOfActiveContracts);
+  public archive(offer: IDetailedOffer): void {
+    this.openArchivingModal(offer, true);
   }
 
-  public openDeletionModal(offer: IDetailedOffer): void {
-    this.luModal.open(OfferDeletionComponent, offer);
+  public unarchive(offer: IDetailedOffer): void {
+    this.openArchivingModal(offer, false);
+  }
+
+  private openArchivingModal(offer: IDetailedOffer, isArchived: boolean): void {
+    const data: IOfferArchivingModalData = { offer, isArchived };
+    this.luModal.open(OfferArchivingComponent, data);
   }
 }

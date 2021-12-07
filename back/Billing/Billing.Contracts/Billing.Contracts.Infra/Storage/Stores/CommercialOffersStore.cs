@@ -64,7 +64,7 @@ namespace Billing.Contracts.Infra.Storage.Stores
             return GetQueryable(accessRight, filter).AsNoTracking().SingleOrDefaultAsync();
         }
 
-        public Task<Page<string>> GetTagsAsync(AccessRight accessRight)
+        public Task<Page<string>> GetTagsAsync(CommercialOfferTagFilter filter, AccessRight accessRight)
         {
             var tags = GetQueryable(accessRight, CommercialOfferFilter.All)
                 .AsNoTracking()
@@ -72,10 +72,12 @@ namespace Billing.Contracts.Infra.Storage.Stores
                 .Distinct()
                 .ToList();
 
+            var filteredTags = tags.WhereMatches(filter).ToList();
+
             return Task.FromResult(new Page<string>
             {
-                Count = tags.Count,
-                Items = tags
+                Count = filteredTags.Count,
+                Items = filteredTags
             });
         }
 
@@ -98,15 +100,6 @@ namespace Billing.Contracts.Infra.Storage.Stores
         public async Task PutAsync(int id, CommercialOffer offer, AccessRight accessRight)
         {
             _dbContext.Update(offer);
-            await _dbContext.SaveChangesAsync();
-        }
-
-        public async Task ArchiveAsync(int id, AccessRight accessRight)
-        {
-            var offer = await GetSingleOrDefaultAsync(CommercialOfferFilter.ForId(id), accessRight);
-
-            offer.IsArchived = true;
-
             await _dbContext.SaveChangesAsync();
         }
 
@@ -195,6 +188,32 @@ namespace Billing.Contracts.Infra.Storage.Stores
                 AllAccessRight _ => _ => true,
                 _ => throw new ApplicationException($"Unknown type of offer filter right {accessRight}")
             };
+        }
+    }
+
+    public static class CommercialOfferTagsExtensions
+    {
+        public static IEnumerable<string> WhereMatches(this IEnumerable<string> tags, CommercialOfferTagFilter filter)
+        {
+            return tags.Search(filter.Search);
+        }
+
+        private static IEnumerable<string> Search(this IEnumerable<string> tags, HashSet<string> words)
+        {
+            var usableWords = words.Sanitize();
+            if (!usableWords.Any())
+            {
+                return tags;
+            }
+
+            return tags.Where(tag => tag.IsMatchingSearch(words));
+        }
+
+        private static bool IsMatchingSearch(this string tag, HashSet<string> words)
+        {
+            var tagWords = tag.Split(' ');
+
+            return words.All(w => tagWords.Any(t => t.StartsWith(w)));
         }
     }
 }

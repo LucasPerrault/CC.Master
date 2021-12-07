@@ -1,12 +1,12 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { ApiV3DateService } from '@cc/common/queries';
-import { IPriceList, IPriceRow } from '@cc/domain/billing/offers';
+import { IPriceList } from '@cc/domain/billing/offers';
 import { startOfMonth } from 'date-fns';
 import { Observable } from 'rxjs';
 
-import { IPriceListCreationDto } from '../models/price-list-creation-dto.interface';
-import { IPriceListEditionDto, IPriceRowEditionDto } from '../models/price-list-edition-dto.interface';
+import { IPriceListCreationDto, IPriceRowCreationDto } from '../models/price-list-creation-dto.interface';
+import { IPriceListEditionDto, IPriceRowCreationDtoDuringEdition, IPriceRowEditionDto } from '../models/price-list-edition-dto.interface';
 import { IPriceListForm, IPriceRowForm } from '../models/price-list-form.interface';
 
 class PriceListApiEndpoint {
@@ -40,30 +40,36 @@ export class PriceListsDataService {
   public toCreationDto(priceList: IPriceListForm): IPriceListCreationDto {
     return {
       startsOn: this.apiDateService.toApiV3DateFormat(startOfMonth(new Date(priceList.startsOn))),
-      rows: priceList.rows,
+      rows: this.toRowsCreationDto(priceList.rows),
     };
   }
 
   public toEditionDto(offerId: number, priceListToEdit: IPriceList, form: IPriceListForm): IPriceListEditionDto {
     const id = priceListToEdit.id;
     const startsOn = this.apiDateService.toApiV3DateFormat(startOfMonth(new Date(form.startsOn)));
-    const rows = this.toRowEditionDto(priceListToEdit, form.rows);
+    const rows = this.toRowsEditionDto(id, form.rows);
 
     return { id, offerId, startsOn, rows };
   }
 
-  private toRowEditionDto(priceListToEdit: IPriceList, rows: IPriceRowForm[]): IPriceRowEditionDto[] {
-    const createdRows = rows.filter(row => !this.include(priceListToEdit.rows, row));
-    return [...priceListToEdit.rows, ...createdRows];
+  private toRowsCreationDto(rows: IPriceRowForm[]): IPriceRowCreationDto[] {
+    return rows.map(row => ({
+      maxIncludedCount: row.maxIncludedCount,
+      unitPrice: row.unitPrice,
+      fixedPrice: row.fixedPrice,
+    }));
   }
 
-  private include(rows: IPriceRow[], rowToCompare: IPriceRowForm): boolean {
-    return rows.some(row => this.isEqual(row, rowToCompare));
+  private toRowsEditionDto(listId: number, rows: IPriceRowForm[]): IPriceRowEditionDto[] {
+    const createdRows = rows.filter(row => !row.id);
+    const editedRows = rows.filter(row => !!row.id).map(row => ({ ...row, listId }));
+
+    const allRows = [...editedRows, ...this.toRowsCreationDtoDuringEdition(listId, createdRows)];
+    return allRows.sort((a, b) => a.maxIncludedCount - b.maxIncludedCount);
   }
 
-  private isEqual(row: IPriceRow, rowToCompare: IPriceRowForm): boolean {
-    return row.fixedPrice === rowToCompare.fixedPrice
-      && row.unitPrice === rowToCompare.unitPrice
-      && row.maxIncludedCount === rowToCompare.maxIncludedCount;
+  private toRowsCreationDtoDuringEdition(listId: number, rows: IPriceRowForm[]): IPriceRowCreationDtoDuringEdition[] {
+    const rowsCreationDto = this.toRowsCreationDto(rows);
+    return rowsCreationDto.map(row => ({ ...row, listId }));
   }
 }

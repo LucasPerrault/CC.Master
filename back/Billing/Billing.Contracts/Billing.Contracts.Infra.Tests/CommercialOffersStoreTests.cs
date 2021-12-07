@@ -48,8 +48,8 @@ namespace Billing.Contracts.Infra.Tests
             var referenceOffer = new CommercialOffer().Build()
                 .With(name: "miaou", tag: "miaou", productId: 42, currencyId: 42)
                 .WithPriceList(startingOn: new DateTime(2021, 01, 01))
-                .AndPriceRow(maxExcludedCount: 5, unitPrice: 1, fixedPrice: 1)
-                .AndPriceRow(maxExcludedCount: 10, unitPrice: 1, fixedPrice: 1);
+                .AndPriceRow(maxIncludedCount: 5, unitPrice: 1, fixedPrice: 1)
+                .AndPriceRow(maxIncludedCount: 10, unitPrice: 1, fixedPrice: 1);
 
             await _dbContext.AddAsync(referenceOffer);
             await _dbContext.SaveChangesAsync();
@@ -65,18 +65,18 @@ namespace Billing.Contracts.Infra.Tests
             var referenceOffer = new CommercialOffer().Build()
                 .With(name: "miaou1", tag: "miaou1", productId: 42, currencyId: 42)
                 .WithPriceList(startingOn: new DateTime(2021, 01, 01))
-                .AndPriceRow(maxExcludedCount: 5, unitPrice: 1, fixedPrice: 1)
-                .AndPriceRow(maxExcludedCount: 10, unitPrice: 1, fixedPrice: 1);
+                .AndPriceRow(maxIncludedCount: 5, unitPrice: 1, fixedPrice: 1)
+                .AndPriceRow(maxIncludedCount: 10, unitPrice: 1, fixedPrice: 1);
             var targetOffer = new CommercialOffer().Build()
                 .With(name: "miaou2", tag: "miaou2", productId: 42, currencyId: 42)
                 .WithPriceList(startingOn: new DateTime(2021, 01, 01))
-                .AndPriceRow(maxExcludedCount: 5, unitPrice: 1, fixedPrice: 1)
-                .AndPriceRow(maxExcludedCount: 10, unitPrice: 1, fixedPrice: 1);
+                .AndPriceRow(maxIncludedCount: 5, unitPrice: 1, fixedPrice: 1)
+                .AndPriceRow(maxIncludedCount: 10, unitPrice: 1, fixedPrice: 1);
             var otherOffer = new CommercialOffer().Build()
                 .With(productId: 1)
                 .WithPriceList(startingOn: new DateTime(2021, 01, 01))
-                .AndPriceRow(maxExcludedCount: 5, unitPrice: 1, fixedPrice: 1)
-                .AndPriceRow(maxExcludedCount: 10, unitPrice: 1, fixedPrice: 1);
+                .AndPriceRow(maxIncludedCount: 5, unitPrice: 1, fixedPrice: 1)
+                .AndPriceRow(maxIncludedCount: 10, unitPrice: 1, fixedPrice: 1);
 
             await _dbContext.AddAsync(referenceOffer);
             await _dbContext.AddAsync(targetOffer);
@@ -118,14 +118,14 @@ namespace Billing.Contracts.Infra.Tests
             var referenceOffer = new CommercialOffer().Build()
                 .With(productId: 1)
                 .WithPriceList(startingOn: new DateTime(2021, 01, 01))
-                .AndPriceRow(maxExcludedCount: 5, unitPrice: 1, fixedPrice: 1)
-                .AndPriceRow(maxExcludedCount: 10, unitPrice: 1, fixedPrice: 1)
-                .AndPriceRow(maxExcludedCount: 20, unitPrice: 1, fixedPrice: 1);
+                .AndPriceRow(maxIncludedCount: 5, unitPrice: 1, fixedPrice: 1)
+                .AndPriceRow(maxIncludedCount: 10, unitPrice: 1, fixedPrice: 1)
+                .AndPriceRow(maxIncludedCount: 20, unitPrice: 1, fixedPrice: 1);
             var targetOffer = new CommercialOffer().Build()
                 .With(productId: 1)
                 .WithPriceList(startingOn: new DateTime(2021, 01, 01))
-                .AndPriceRow(maxExcludedCount: 5, unitPrice: 1, fixedPrice: 1)
-                .AndPriceRow(maxExcludedCount: 10, unitPrice: 1, fixedPrice: 1);
+                .AndPriceRow(maxIncludedCount: 5, unitPrice: 1, fixedPrice: 1)
+                .AndPriceRow(maxIncludedCount: 10, unitPrice: 1, fixedPrice: 1);
 
             await _dbContext.AddAsync(referenceOffer);
             await _dbContext.AddAsync(targetOffer);
@@ -142,13 +142,13 @@ namespace Billing.Contracts.Infra.Tests
             var referenceOffer = new CommercialOffer().Build()
                 .With(productId: 1)
                 .WithPriceList(startingOn: new DateTime(2021, 01, 01))
-                .AndPriceRow(maxExcludedCount: 5, unitPrice: 1, fixedPrice: 1)
-                .AndPriceRow(maxExcludedCount: 10, unitPrice: 1, fixedPrice: 1);
+                .AndPriceRow(maxIncludedCount: 5, unitPrice: 1, fixedPrice: 1)
+                .AndPriceRow(maxIncludedCount: 10, unitPrice: 1, fixedPrice: 1);
             var targetOffer = new CommercialOffer().Build()
                 .With(productId: 1)
                 .WithPriceList(startingOn: new DateTime(2021, 01, 01))
-                .AndPriceRow(maxExcludedCount: 5, unitPrice: 1, fixedPrice: 1)
-                .AndPriceRow(maxExcludedCount: 10, unitPrice: 1, fixedPrice: 1);
+                .AndPriceRow(maxIncludedCount: 5, unitPrice: 1, fixedPrice: 1)
+                .AndPriceRow(maxIncludedCount: 10, unitPrice: 1, fixedPrice: 1);
 
             await _dbContext.AddAsync(referenceOffer);
             await _dbContext.AddAsync(targetOffer);
@@ -165,17 +165,17 @@ namespace Billing.Contracts.Infra.Tests
             var referenceOffer = new CommercialOffer().Build()
                 .With(productId: 1)
                 .WithPriceList(startingOn: new DateTime(2021, 01, 01))
-                .AndPriceRow(maxExcludedCount: 5, unitPrice: 1, fixedPrice: 1)
-                .AndPriceRow(maxExcludedCount: 10, unitPrice: 1, fixedPrice: 1)
-                .AndPriceRow(maxExcludedCount: 20, unitPrice: 1, fixedPrice: 1);
+                .AndPriceRow(maxIncludedCount: 5, unitPrice: 1, fixedPrice: 1)
+                .AndPriceRow(maxIncludedCount: 10, unitPrice: 1, fixedPrice: 1)
+                .AndPriceRow(maxIncludedCount: 20, unitPrice: 1, fixedPrice: 1);
             var targetOffer = new CommercialOffer().Build()
                 .With(productId: 1)
                 .WithPriceList(startingOn: new DateTime(2021, 01, 01))
-                .AndPriceRow(maxExcludedCount: 5, unitPrice: 1, fixedPrice: 1)
-                .AndPriceRow(maxExcludedCount: 10, unitPrice: 1, fixedPrice: 1)
-                .AndPriceRow(maxExcludedCount: 20, unitPrice: 1, fixedPrice: 1)
+                .AndPriceRow(maxIncludedCount: 5, unitPrice: 1, fixedPrice: 1)
+                .AndPriceRow(maxIncludedCount: 10, unitPrice: 1, fixedPrice: 1)
+                .AndPriceRow(maxIncludedCount: 20, unitPrice: 1, fixedPrice: 1)
                 .WithPriceList(startingOn: new DateTime(2023, 01, 01))
-                .AndPriceRow(maxExcludedCount: 5, unitPrice: 1, fixedPrice: 1);
+                .AndPriceRow(maxIncludedCount: 5, unitPrice: 1, fixedPrice: 1);
 
             await _dbContext.AddAsync(referenceOffer);
             await _dbContext.AddAsync(targetOffer);
@@ -192,15 +192,15 @@ namespace Billing.Contracts.Infra.Tests
             var referenceOffer = new CommercialOffer().Build()
                 .With(productId: 1)
                 .WithPriceList(startingOn: new DateTime(2021, 01, 01))
-                .AndPriceRow(maxExcludedCount: 5, unitPrice: 1, fixedPrice: 1)
-                .AndPriceRow(maxExcludedCount: 10, unitPrice: 1, fixedPrice: 1)
-                .AndPriceRow(maxExcludedCount: 20, unitPrice: 1, fixedPrice: 1);
+                .AndPriceRow(maxIncludedCount: 5, unitPrice: 1, fixedPrice: 1)
+                .AndPriceRow(maxIncludedCount: 10, unitPrice: 1, fixedPrice: 1)
+                .AndPriceRow(maxIncludedCount: 20, unitPrice: 1, fixedPrice: 1);
             var targetOffer = new CommercialOffer().Build()
                 .With(productId: 1)
                 .WithPriceList(startingOn: new DateTime(2021, 11, 01))
-                .AndPriceRow(maxExcludedCount: 5, unitPrice: 1, fixedPrice: 1)
-                .AndPriceRow(maxExcludedCount: 10, unitPrice: 1, fixedPrice: 1)
-                .AndPriceRow(maxExcludedCount: 20, unitPrice: 1, fixedPrice: 1);
+                .AndPriceRow(maxIncludedCount: 5, unitPrice: 1, fixedPrice: 1)
+                .AndPriceRow(maxIncludedCount: 10, unitPrice: 1, fixedPrice: 1)
+                .AndPriceRow(maxIncludedCount: 20, unitPrice: 1, fixedPrice: 1);
 
             await _dbContext.AddAsync(referenceOffer);
             await _dbContext.AddAsync(targetOffer);
@@ -216,20 +216,20 @@ namespace Billing.Contracts.Infra.Tests
             yield return new object[] { new CommercialOffer().Build()
                 .With(productId: 1)
                 .WithPriceList(startingOn: new DateTime(2021, 01, 01))
-                .AndPriceRow(maxExcludedCount: 5, unitPrice: 1, fixedPrice: 1)
-                .AndPriceRow(maxExcludedCount: 42, unitPrice: 1, fixedPrice: 1)
+                .AndPriceRow(maxIncludedCount: 5, unitPrice: 1, fixedPrice: 1)
+                .AndPriceRow(maxIncludedCount: 42, unitPrice: 1, fixedPrice: 1)
             };
             yield return new object[] { new CommercialOffer().Build()
                 .With(productId: 1)
                 .WithPriceList(startingOn: new DateTime(2021, 01, 01))
-                .AndPriceRow(maxExcludedCount: 5, unitPrice: 1, fixedPrice: 1)
-                .AndPriceRow(maxExcludedCount: 10, unitPrice: 42, fixedPrice: 1)
+                .AndPriceRow(maxIncludedCount: 5, unitPrice: 1, fixedPrice: 1)
+                .AndPriceRow(maxIncludedCount: 10, unitPrice: 42, fixedPrice: 1)
             };
             yield return new object[] { new CommercialOffer().Build()
                 .With(productId: 1)
                 .WithPriceList(startingOn: new DateTime(2021, 01, 01))
-                .AndPriceRow(maxExcludedCount: 5, unitPrice: 1, fixedPrice: 1)
-                .AndPriceRow(maxExcludedCount: 10, unitPrice: 1, fixedPrice: 42)
+                .AndPriceRow(maxIncludedCount: 5, unitPrice: 1, fixedPrice: 1)
+                .AndPriceRow(maxIncludedCount: 10, unitPrice: 1, fixedPrice: 42)
             };
         }
         [Theory]
@@ -239,8 +239,8 @@ namespace Billing.Contracts.Infra.Tests
             var referenceOffer = new CommercialOffer().Build()
                 .With(productId: 1)
                 .WithPriceList(startingOn: new DateTime(2021, 01, 01))
-                .AndPriceRow(maxExcludedCount: 5, unitPrice: 1, fixedPrice: 1)
-                .AndPriceRow(maxExcludedCount: 10, unitPrice: 1, fixedPrice: 1);
+                .AndPriceRow(maxIncludedCount: 5, unitPrice: 1, fixedPrice: 1)
+                .AndPriceRow(maxIncludedCount: 10, unitPrice: 1, fixedPrice: 1);
 
             await _dbContext.AddAsync(referenceOffer);
             await _dbContext.AddAsync(targetOffer);

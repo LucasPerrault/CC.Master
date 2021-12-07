@@ -52,8 +52,16 @@ namespace Billing.Contracts.Domain.Offers.Services
                 .GetOfferUsageContractAsync(AccessRight.All, GetContractFilter(offerIds)))
                 .GroupBy(c => c.CommercialOfferId);
 
-            var nbCountedContractsByOfferId = (await _countsStore
-                .GetAsync(new CountFilter { CommercialOfferIds = offerIds }))
+            var counts = await _countsStore
+                .GetAsync(new CountFilter { CommercialOfferIds = offerIds });
+
+            var mostRecentCountPeriod = counts
+                .Select(c => c.CountPeriod)
+                .Distinct()
+                .OrderByDescending(period => period)
+                .FirstOrDefault();
+
+            var nbCountedContractsByOfferId = counts
                 .GroupBy(c => c.CommercialOfferId)
                 .ToDictionary(g => g.Key, g => g.Select(c => c.ContractId).Distinct().Count());
 
@@ -64,7 +72,8 @@ namespace Billing.Contracts.Domain.Offers.Services
                     NumberOfContracts = kvp.Count(),
                     NumberOfActiveContracts = kvp.Count(c => c.Status == ContractStatus.InProgress),
                     NumberOfNotStartedContracts = kvp.Count(c => c.Status == ContractStatus.NotStarted),
-                    NumberOfCountedContracts = nbCountedContractsByOfferId.ContainsKey(kvp.Key) ? nbCountedContractsByOfferId[kvp.Key] : 0
+                    NumberOfCountedContracts = nbCountedContractsByOfferId.ContainsKey(kvp.Key) ? nbCountedContractsByOfferId[kvp.Key] : 0,
+                    MostRecentCountPeriod = mostRecentCountPeriod,
                 })
                 .ToList();
         }

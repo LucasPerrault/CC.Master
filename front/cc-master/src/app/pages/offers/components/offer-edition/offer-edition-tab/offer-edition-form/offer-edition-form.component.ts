@@ -125,11 +125,17 @@ export class OfferEditionFormComponent implements OnInit, OnDestroy, ControlValu
     if (!this.restrictionsService.canEdit(offer)) {
       this.formGroup.disable();
       this.formGroup.get(OfferFormKey.Name).enable();
-      this.isPriceRowsReadonly = true;
+      this.formGroup.get(OfferFormKey.Tag).enable();
+      this.setPriceListReadonly();
     }
 
     if (!this.restrictionsService.canEditPriceListStartsOn(offer)) {
       this.formGroup.get(OfferFormKey.PriceList).get(PriceListFormKey.StartsOn).disable();
     }
+  }
+
+  private setPriceListReadonly(): void {
+    this.formGroup.get(OfferFormKey.PriceList).enable();
+    this.isPriceRowsReadonly = true;
   }
 }

@@ -1,6 +1,7 @@
 using Billing.Contracts.Domain.Offers.Comparisons;
 using Billing.Contracts.Domain.Offers.Validation.Exceptions;
 using Resources.Translations;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Tools;
@@ -24,6 +25,10 @@ namespace Billing.Contracts.Domain.Offers.Validation
             {
                 throw new OfferValidationException(GetCreateOfferMessage(_translations.PriceListStartsOnFirstOfMonth()));
             }
+            if (newOffer.PriceLists.Any(HasNegativeAmount))
+            {
+                throw new OfferValidationException(GetCreateOfferMessage(_translations.PriceListHasNegativeAmounts()));
+            }
             if (HasSameStartDateOnSeveralPriceLists(newOffer.PriceLists))
             {
                 throw new OfferValidationException(GetCreateOfferMessage(_translations.PriceListsStartsOnSameDay()));
@@ -32,7 +37,7 @@ namespace Billing.Contracts.Domain.Offers.Validation
 
         public void ThrowIfCannotModifyOffer(CommercialOffer oldOffer, CommercialOffer newOffer, CommercialOfferUsage oldUsage)
         {
-            if (HasContractWithCount(oldUsage) && HasAnyOfferPropertyChangedBesidesName(oldOffer, newOffer))
+            if (HasContractWithCount(oldUsage) && HasAnyOfferPropertyChangedBesidesNameAndTag(oldOffer, newOffer))
             {
                 throw new OfferValidationException(GetModifyOfferMessage(oldOffer.Id, _translations.OfferChangedDespiteCount()));
             }
@@ -42,27 +47,27 @@ namespace Billing.Contracts.Domain.Offers.Validation
             }
         }
 
-        public void ThrowIfCannotDeleteOffer(CommercialOffer offer, CommercialOfferUsage usage)
-        {
-            if (HasActiveContract(usage))
-            {
-                throw new OfferValidationException(GetDeleteOfferMessage(offer.Id, _translations.OfferWithActiveContractDeleted()));
-            }
-        }
-
         public void ThrowIfCannotAddPriceList(CommercialOffer offer, PriceList priceList)
         {
             if (IsStartDateNotOnFirstDayOfTheMonth(priceList))
             {
                 throw new OfferValidationException(GetCreatePriceListMessage(offer.Id, _translations.PriceListStartsOnFirstOfMonth()));
             }
-            if (IsStartDateInThePast(priceList))
+            if (IsStartDateBeforeThisMonth(priceList))
             {
-                throw new OfferValidationException(GetCreatePriceListMessage(offer.Id, _translations.PriceListStartDefinedInThePast()));
+                throw new OfferValidationException(GetCreatePriceListMessage(offer.Id, _translations.PriceListStartDefinedBeforeThisMonth()));
             }
             if (HasSameStartDateOnSeveralPriceLists(offer.PriceLists.Union(new List<PriceList> { priceList })))
             {
                 throw new OfferValidationException(GetCreatePriceListMessage(offer.Id, _translations.PriceListsStartsOnSameDay()));
+            }
+            if (!IsOrdered(priceList))
+            {
+                throw new OfferValidationException(GetCreatePriceListMessage(offer.Id, _translations.PriceRowsNotOrdered()));
+            }
+            if (HasNegativeAmount(priceList))
+            {
+                throw new OfferValidationException(GetCreateOfferMessage(_translations.PriceListHasNegativeAmounts()));
             }
         }
 
@@ -76,9 +81,9 @@ namespace Billing.Contracts.Domain.Offers.Validation
             {
                 throw new OfferValidationException(GetModifyPriceListMessage(oldPriceList.Id, offer.Id, _translations.PriceListStartsOnFirstOfMonth()));
             }
-            if (oldPriceList.StartsOn != newPriceList.StartsOn && IsStartDateInThePast(newPriceList))
+            if (oldPriceList.StartsOn != newPriceList.StartsOn && IsStartDateBeforeThisMonth(newPriceList))
             {
-                throw new OfferValidationException(GetModifyPriceListMessage(oldPriceList.Id, offer.Id, _translations.PriceListStartDefinedInThePast()));
+                throw new OfferValidationException(GetModifyPriceListMessage(oldPriceList.Id, offer.Id, _translations.PriceListStartDefinedBeforeThisMonth()));
             }
             if (HasStartDateChangedOnOldestPriceList(offer, oldPriceList, newPriceList))
             {
@@ -100,6 +105,14 @@ namespace Billing.Contracts.Domain.Offers.Validation
             {
                 throw new OfferValidationException(GetModifyPriceListMessage(oldPriceList.Id, offer.Id, _translations.PriceRowDetached()));
             }
+            if (!IsOrdered(newPriceList))
+            {
+                throw new OfferValidationException(GetModifyPriceListMessage(oldPriceList.Id, offer.Id, _translations.PriceRowsNotOrdered()));
+            }
+            if (HasNegativeAmount(newPriceList))
+            {
+                throw new OfferValidationException(GetCreateOfferMessage(_translations.PriceListHasNegativeAmounts()));
+            }
         }
 
         public void ThrowIfCannotDeletePriceList(CommercialOffer offer, PriceList priceList)
@@ -115,10 +128,11 @@ namespace Billing.Contracts.Domain.Offers.Validation
             return priceList.StartsOn < _time.Today();
         }
 
-        private bool IsStartDateInThePast(PriceList priceList)
+        private bool IsStartDateBeforeThisMonth(PriceList priceList)
         {
             var today = _time.Today();
-            return priceList.StartsOn < today;
+            var startOfThisMonth = today.AddDays(1 - today.Day);
+            return priceList.StartsOn < startOfThisMonth;
         }
 
         private static bool HasNoRow(PriceList pl)
@@ -143,7 +157,7 @@ namespace Billing.Contracts.Domain.Offers.Validation
             return usage != null && usage.NumberOfCountedContracts > 0;
         }
 
-        private static bool HasAnyOfferPropertyChangedBesidesName(CommercialOffer oldOffer, CommercialOffer newOffer)
+        private static bool HasAnyOfferPropertyChangedBesidesNameAndTag(CommercialOffer oldOffer, CommercialOffer newOffer)
         {
             var oldOfferComparison = new CommercialOfferComparisonObject(oldOffer);
             var newOfferComparison = new CommercialOfferComparisonObject(newOffer);
@@ -225,21 +239,25 @@ namespace Billing.Contracts.Domain.Offers.Validation
 
         private static bool HasAnyPriceListIdChanged(PriceList oldPriceList, PriceList newPriceList)
         {
-            var oldListIdsByRowId = oldPriceList.Rows
-                .ToDictionary(pr => pr.Id, pr => pr.ListId);
-            var newListIdsByExistingRowId = newPriceList.Rows
-                .Where(r => oldListIdsByRowId.Keys.Contains(r.Id))
-                .ToDictionary(pr => pr.Id, pr => pr.ListId);
-
-            return oldListIdsByRowId.Count > newListIdsByExistingRowId.Count
-                || oldListIdsByRowId.Keys.Any(rowId =>
-                    oldListIdsByRowId[rowId] != newListIdsByExistingRowId[rowId]
-                );
+            return newPriceList.Rows.Any(r => r.ListId != oldPriceList.Id);
         }
 
-        private static bool HasActiveContract(CommercialOfferUsage usage)
+        private static bool HasNegativeAmount(PriceList priceList) => priceList.Rows.Any(r => r.FixedPrice < 0 || r.UnitPrice < 0);
+
+        private bool IsOrdered(PriceList priceList)
         {
-            return usage != null && usage.NumberOfActiveContracts > 0;
+            var previousMax = 0;
+            foreach (var priceRow in priceList.Rows)
+            {
+                if (previousMax >= priceRow.MaxIncludedCount)
+                {
+                    return false;
+                }
+
+                previousMax = priceRow.MaxIncludedCount;
+            }
+
+            return true;
         }
 
         private string GetCreateOfferMessage(string reason)

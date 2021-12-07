@@ -2,15 +2,15 @@ import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { TranslateModule } from '@cc/aspects/translate';
 
-import { OfferDeletionComponent } from './offer-deletion.component';
+import { OfferArchivingComponent } from './offer-archiving.component';
 
 @NgModule({
   declarations: [
-    OfferDeletionComponent,
+    OfferArchivingComponent,
   ],
   imports: [
     CommonModule,
     TranslateModule,
   ],
 })
-export class OfferDeletionModule { }
+export class OfferArchivingModule { }

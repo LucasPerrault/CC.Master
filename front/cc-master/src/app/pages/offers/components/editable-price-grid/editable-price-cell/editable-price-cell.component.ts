@@ -29,6 +29,10 @@ export class EditablePriceCellComponent implements OnInit, OnDestroy, ControlVal
 
   public formControl: FormControl = new FormControl();
 
+  public get invalid(): boolean {
+    return this.formControl.invalid && this.formControl.touched;
+  }
+
   private destroy$: Subject<void> = new Subject();
 
   private readonly isEventPropagated = false;

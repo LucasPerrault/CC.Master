@@ -1,3 +1,5 @@
+using Billing.Contracts.Domain.Common;
+
 namespace Billing.Contracts.Domain.Offers
 {
     public class CommercialOfferUsage
@@ -7,5 +9,6 @@ namespace Billing.Contracts.Domain.Offers
         public int NumberOfActiveContracts { get; set; }
         public int NumberOfNotStartedContracts { get; set; }
         public int NumberOfCountedContracts { get; set; }
+        public AccountingPeriod MostRecentCountPeriod { get; set; }
     }
 }
