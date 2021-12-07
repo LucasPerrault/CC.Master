@@ -62,17 +62,11 @@ export class OffersDataService {
   }
 
   public archive$(offerToEdit: IDetailedOffer): Observable<void> {
-    const isArchived = true;
-    const url = OfferApiEndpoint.id(offerToEdit.id);
-    const body = this.toArchiveEditionDto(offerToEdit, isArchived);
-    return this.httpClient.put<void>(url, body);
+    return this.editArchivingState$(offerToEdit, true);
   }
 
   public unarchive$(offerToEdit: IDetailedOffer): Observable<void> {
-    const isArchived = false;
-    const url = OfferApiEndpoint.id(offerToEdit.id);
-    const body = this.toArchiveEditionDto(offerToEdit, isArchived);
-    return this.httpClient.put<void>(url, body);
+    return this.editArchivingState$(offerToEdit, false);
   }
 
   public create$(form: IOfferCreationForm): Observable<void> {
@@ -104,6 +98,12 @@ export class OffersDataService {
   public download$(): Observable<void> {
     const url = OfferApiEndpoint.download;
     return this.downloadService.download$(url);
+  }
+
+  private editArchivingState$(offerToEdit: IDetailedOffer, isArchived: boolean): Observable<void> {
+    const url = OfferApiEndpoint.id(offerToEdit.id);
+    const body = this.toArchiveEditionDto(offerToEdit, isArchived);
+    return this.httpClient.put<void>(url, body);
   }
 
   private flatMapLists(listsOfLists: IPriceList[][]) {

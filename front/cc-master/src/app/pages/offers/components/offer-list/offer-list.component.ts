@@ -67,12 +67,15 @@ export class OfferListComponent implements OnInit {
   }
 
   public archive(offer: IDetailedOffer): void {
-    const data: IOfferArchivingModalData = { offer, isArchived: true };
-    this.luModal.open(OfferArchivingComponent, data);
+    this.openArchivingModal(offer, true);
   }
 
   public unarchive(offer: IDetailedOffer): void {
-    const data: IOfferArchivingModalData = { offer, isArchived: false };
+    this.openArchivingModal(offer, false);
+  }
+
+  private openArchivingModal(offer: IDetailedOffer, isArchived: boolean): void {
+    const data: IOfferArchivingModalData = { offer, isArchived };
     this.luModal.open(OfferArchivingComponent, data);
   }
 }
