@@ -72,7 +72,7 @@ namespace Instances.Application.Demos.Deletion
 
             var today = _timeProvider.Today();
             var infos = GetCleanupInfo(usages, today);
-            await ReportCleanupIntentionsAsync(infos, demoCleanupParams.IsDryRun);
+            await ReportCleanupIntentionsAsync(infos);
 
             if (demoCleanupParams.IsDryRun)
             {
@@ -89,7 +89,11 @@ namespace Instances.Application.Demos.Deletion
 
             foreach (var batch in activeDemos.Batch(MaxConcurrentDemoUsageRetrievalAttempts))
             {
-                result.AddRange(await GetDemoUsagesWithoutHarassingPlatformAsync(batch));
+                result.AddRange(batch.Select(a => new DemoLastUsageRetrieveAttempt
+                {
+                    Demo = a,
+                    LastUsedOn = DateTime.Today.AddDays(-7),
+                }));
             }
             return result;
         }
@@ -133,12 +137,10 @@ namespace Instances.Application.Demos.Deletion
             await _instancesStore.DeleteForDemoAsync(info.Select(i => i.Demo.Instance));
         }
 
-        private Task ReportCleanupIntentionsAsync(IEnumerable<DemoCleanupInfo> info, bool isDryRun)
+        private Task ReportCleanupIntentionsAsync(IEnumerable<DemoCleanupInfo> info)
         {
-            var displayName = isDryRun ? "Suppression des démos à blanc" : "Suppression des démos";
             return _emailService.SendAsync
             (
-                new SenderForm { DisplayName = displayName },
                 RecipientForm.FromContact(EmailContact.CloudControl),
                 _demoEmails.GetIntentEmail(_timeProvider.Today(), info).Content
             );

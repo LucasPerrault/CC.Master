@@ -1,4 +1,4 @@
-using Email.Domain;
+﻿using Email.Domain;
 using Lucca.Emails.Client;
 using Lucca.Emails.Client.Contracts;
 using System.Net.Mail;
@@ -8,7 +8,6 @@ namespace Email.Infra
 {
     public class EmailService : IEmailService
     {
-        private const string NoReplyEmail = "no-reply@lucca.fr";
         private const string AppName = "Cloud Control";
         private readonly ILuccaEmailsClient _luccaEmails;
 
@@ -17,14 +16,14 @@ namespace Email.Infra
             _luccaEmails = luccaEmails;
         }
 
-        public Task SendAsync(SenderForm senderForm, RecipientForm recipientForm, EmailContent content)
+        public Task SendAsync(RecipientForm recipientForm, EmailContent content)
         {
             return _luccaEmails.SendAsync
             (
                 new NewEmail(ApplicationId.WEXTERNE, AppName, content)
                 {
                     RecipientId = GetRecipientId(recipientForm),
-                    RecipientEmail = GetRecipientEmail(recipientForm)
+                    RecipientEmail = GetRecipientEmail(recipientForm),
                 }
             );
         }
