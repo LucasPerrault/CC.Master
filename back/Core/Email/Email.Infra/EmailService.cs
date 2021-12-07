@@ -1,4 +1,4 @@
-﻿using Email.Domain;
+using Email.Domain;
 using Lucca.Emails.Client;
 using Lucca.Emails.Client.Contracts;
 using System.Net.Mail;
@@ -21,12 +21,10 @@ namespace Email.Infra
         {
             return _luccaEmails.SendAsync
             (
-                new NewEmail(ApplicationId.WEXTERNE, AppName)
+                new NewEmail(ApplicationId.WEXTERNE, AppName, content)
                 {
-                    Content = content,
                     RecipientId = GetRecipientId(recipientForm),
-                    RecipientEmail = GetRecipientEmail(recipientForm),
-                    SenderEmail = GetSenderEmail(senderForm)
+                    RecipientEmail = GetRecipientEmail(recipientForm)
                 }
             );
         }
@@ -34,11 +32,6 @@ namespace Email.Infra
         private int? GetRecipientId(RecipientForm form)
         {
             return form.UserId;
-        }
-
-        private MailAddress GetSenderEmail(SenderForm form)
-        {
-            return new MailAddress(NoReplyEmail, form.DisplayName);
         }
 
         private MailAddress GetRecipientEmail(RecipientForm recipientForm)
