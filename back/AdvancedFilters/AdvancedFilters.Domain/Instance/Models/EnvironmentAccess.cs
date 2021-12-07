@@ -25,5 +25,6 @@ namespace AdvancedFilters.Domain.Instance.Models
         Manual = 0,
         EnvironmentCreation = 1,
         Contract = 2,
+        Subcontracting = 3,
     }
 }

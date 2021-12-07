@@ -40,12 +40,11 @@ namespace Core.Proxy.Infra.Extensions
             "/sources",
             "/reports",
             "/offers",
+            "/contracts",
         };
 
         private static readonly HashSet<string> BetaNonRedirectableSegments = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
-        {
-            "/contracts",
-        };
+        { };
 
         public static IApplicationBuilder UseLegacyCloudControlHttpProxy(this IApplicationBuilder app)
         {

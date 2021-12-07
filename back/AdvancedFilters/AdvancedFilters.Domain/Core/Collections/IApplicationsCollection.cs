@@ -1,4 +1,5 @@
 using AdvancedFilters.Domain.Core.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -12,7 +13,12 @@ namespace AdvancedFilters.Domain.Core.Collections
 
     public class ApplicationsCollection : IApplicationsCollection
     {
-        private static readonly Dictionary<string, string> MainApplicationNamesById = new Dictionary<string, string>
+        public static HashSet<string> SystemApplicationIds => new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+        {
+            "LUCCA", "DIRECTORY", "CLIENT-CENTER", "WEXTERNE"
+        };
+
+        private static readonly Dictionary<string, string> ApplicationNamesById = new Dictionary<string, string>
         {
             { "WEXPENSES", "Cleemy" },
             { "DIRECTORY", "Collaborateurs" },
@@ -32,11 +38,8 @@ namespace AdvancedFilters.Domain.Core.Collections
             { "TALENTTRAINING", "Talent Training" },
             { "MEALVOUCHER", "Titres-restaurant" },
             { "PAYMONITOR", "PayMonitor" },
-        };
-
-        private static readonly Dictionary<string, string> SecondaryApplicationNamesById = new Dictionary<string, string>
-        {
             { "GUI", "GUI" },
+            { "LUCCA", "Lucca" },
             { "WCALENDAR", "Calendar" },
             { "WEXTERNE", "Externe" },
             { "WGEDSIMPLE", "Gedsimple" },
@@ -51,8 +54,9 @@ namespace AdvancedFilters.Domain.Core.Collections
 
         public Task<IReadOnlyCollection<Application>> GetAsync(string search)
         {
-            var applications = MainApplicationNamesById
+            var applications = ApplicationNamesById
                 .Select(kvp => new Application { Id = kvp.Key, Name = kvp.Value })
+                .Where(e => !SystemApplicationIds.Contains(e.Id))
                 .Where(a => string.IsNullOrEmpty(search) || a.Name.ToLowerInvariant().StartsWith(search.ToLowerInvariant()))
                 .OrderBy(a => a.Name)
                 .ToList();
@@ -62,9 +66,7 @@ namespace AdvancedFilters.Domain.Core.Collections
 
         public static string GetName(string applicationId)
         {
-            if (applicationId is null
-                || !(MainApplicationNamesById.TryGetValue(applicationId, out var name)
-                     || SecondaryApplicationNamesById.TryGetValue(applicationId, out name)))
+            if (applicationId is null || !ApplicationNamesById.TryGetValue(applicationId, out var name))
             {
                 return null;
             }
