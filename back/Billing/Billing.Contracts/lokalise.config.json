@@ -1,0 +1,10 @@
+{
+  "config": [
+    {
+      "generator": "asp_net_core_resx",
+      "local_directory": "Billing.Contracts.Domain/Resources/Translations",
+      "remote_directory": "back/Billing/Billing.Contracts",
+      "project_id": "355064325fdcc500c72789.45020379"
+    }
+  ]
+}

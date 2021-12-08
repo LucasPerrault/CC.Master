@@ -1,4 +1,4 @@
-﻿using Billing.Products.Domain.Interfaces;
+using Billing.Products.Domain.Interfaces;
 using Billing.Products.Infra.Storage.Stores;
 using Microsoft.Extensions.DependencyInjection;
 

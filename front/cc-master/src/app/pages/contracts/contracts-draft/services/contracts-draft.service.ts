@@ -2,8 +2,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { TranslatePipe } from '@cc/aspects/translate';
 import {
-  apiV3SortKey,
-  apiV3SortOrderAscendingKey,
+  ApiSortHelper,
   IHttpApiV3CollectionCount,
   IHttpApiV3CollectionResponse,
   IHttpApiV3Response,
@@ -106,7 +105,7 @@ export class ContractsDraftService {
 
   private getOpportunities$<T extends IContractDraft>(httpParams: HttpParams, draftFields: string): Observable<IOpportunity<T>[]> {
     const params = httpParams.set('fields', opportunityFields(draftFields))
-      .set(apiV3SortKey, `name,${apiV3SortOrderAscendingKey}`);
+      .set(ApiSortHelper.v3SortKey, `name,${ApiSortHelper.v3AscKey}`);
 
     return this.httpClient.get<IHttpApiV3CollectionResponse<IOpportunity<T>>>(this.opportunitiesEndPoint, { params })
       .pipe(map(response => response.data.items));

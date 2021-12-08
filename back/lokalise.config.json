@@ -1,6 +1,7 @@
 {
     "includes": [
       "Instances",
-      "AdvancedFilters"
+      "AdvancedFilters",
+      "Billing/Billing.Contracts"
     ]
   }

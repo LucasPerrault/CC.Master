@@ -148,6 +148,7 @@ namespace CloudControl.Web
                 {
                     o.JsonSerializerOptions.Converters.Add(new DomainEnumJsonConverter());
                     o.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+                    o.JsonSerializerOptions.Converters.Add(new AccountingPeriodJsonConverter());
                 });
 
             services.AddLuccaApi(luccaApiBuilder =>
@@ -156,7 +157,8 @@ namespace CloudControl.Web
                     .SetPagingDefaultLimit(100)
                     .AddModelBinding()
                     .AddEntityFrameworkQuerying()
-                    .ConfigureLuccaApiForInstances();
+                    .ConfigureLuccaApiForInstances()
+                    .ConfigureLuccaApiForContracts();
             });
 
             services.AddMvc().AddLuccaApi(o =>

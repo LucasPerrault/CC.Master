@@ -3,11 +3,11 @@ import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { TranslatePipe } from '@cc/aspects/translate';
 import { IProduct } from '@cc/domain/billing/offers';
 
-import { SelectDisplayMode } from '../select-display-mode.enum';
-
 @Component({
   selector: 'cc-product-api-select',
-  templateUrl: './product-api-select.component.html',providers: [
+  templateUrl: './product-api-select.component.html',
+  styleUrls: ['./product-api-select.component.scss'],
+  providers: [
     {
       provide: NG_VALUE_ACCESSOR,
       useExisting: forwardRef(() => ProductApiSelectComponent),
@@ -17,9 +17,9 @@ import { SelectDisplayMode } from '../select-display-mode.enum';
 })
 export class ProductApiSelectComponent implements ControlValueAccessor {
   @Input() required = false;
-  @Input() displayMode = SelectDisplayMode.Filter;
-  @Input() textfieldClass?: string;
   @Input() multiple = false;
+  @Input() hideClearer = false;
+  @Input() placeholder: string;
 
   @Input()
   public get disabled(): boolean { return this.isDisabled; }
@@ -82,25 +82,5 @@ export class ProductApiSelectComponent implements ControlValueAccessor {
 
   public trackBy(index: number, product: IProduct): number {
     return product.id;
-  }
-
-  public get label(): string {
-    const pluralCaseCount = 2;
-    const singleCaseCount = 1;
-    return this.translatePipe.transform('front_select_products_label', {
-      count: this.multiple ? pluralCaseCount : singleCaseCount,
-    });
-  }
-
-  public get placeholder(): string {
-    if (this.isFormDisplayMode) {
-      return;
-    }
-
-    return this.label;
-  }
-
-  public get isFormDisplayMode(): boolean {
-    return this.displayMode === SelectDisplayMode.Form;
   }
 }

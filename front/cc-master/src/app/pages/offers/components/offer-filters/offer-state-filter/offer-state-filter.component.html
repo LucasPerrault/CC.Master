@@ -1,0 +1,23 @@
+<div class="radioButtons palette-grey mod-outlined">
+  <label class="radioButtons-item">
+    <input type="radio" name="radioButtonsID"
+           class="radioButtons-item-input"
+           [value]="state.All"
+           [formControl]="formControl">
+    <span class="radioButtons-item-label">{{ getStateName(state.All) }}</span>
+  </label>
+  <label class="radioButtons-item">
+    <input type="radio" name="radioButtonsID"
+           class="radioButtons-item-input"
+           [value]="state.Archived"
+           [formControl]="formControl">
+    <span class="radioButtons-item-label">{{ getStateName(state.Archived) }}</span>
+  </label>
+  <label class="radioButtons-item">
+    <input type="radio" name="radioButtonsID"
+           class="radioButtons-item-input"
+           [value]="state.NoArchived"
+           [formControl]="formControl">
+    <span class="radioButtons-item-label">{{ getStateName(state.NoArchived) }}</span>
+  </label>
+</div>

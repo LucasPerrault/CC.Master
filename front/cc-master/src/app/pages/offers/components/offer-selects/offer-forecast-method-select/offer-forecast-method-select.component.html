@@ -1,0 +1,20 @@
+<lu-select [formControl]="formControl"
+           [placeholder]="placeholder"
+           class="textfield-input"
+           [required]="required"
+           (blur)="onTouch()">
+
+  <ng-container *luDisplayer="let forecastMethod">{{ forecastMethod }}</ng-container>
+
+  <lu-option-picker-advanced>
+    <header class="lu-picker-header">
+      <lu-option-feeder [options]="forecastMethods"></lu-option-feeder>
+    </header>
+
+    <lu-option *luForOptions="let forecastMethod; trackBy: trackBy" [value]="forecastMethod">{{ forecastMethod }}</lu-option>
+
+  </lu-option-picker-advanced>
+
+  <lu-input-clearer [class.u-displayNone]="hideClearer" [attr.aria-hidden]="hideClearer"></lu-input-clearer>
+
+</lu-select>

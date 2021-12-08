@@ -1,0 +1,36 @@
+<div class="page mod-fullWidth mod-withFullwidthTable">
+  <header class="page-header blockWithFixedSizeInFlex">
+    <h1>{{ "offers_page_title" | translate }}</h1>
+    <div class="button-group" *ngIf="canCreateOffer">
+      <button class="button" routerLink="create">
+        {{ "offers_page_button_create" | translate }}
+      </button>
+      <button class="button mod-more" [luDropdown]="offerActions"></button>
+    </div>
+  </header>
+
+  <lu-dropdown #offerActions>
+    <li class="lu-dropdown-options-item">
+      <a [routerLink]="['import']" class="lu-dropdown-options-item-action" luDropdownItem>
+        {{ 'offers_page_button_import' | translate }}
+      </a>
+    </li>
+  </lu-dropdown>
+
+  <cc-offer-filters class="header blockWithFixedSizeInFlex" [formControl]="filters"></cc-offer-filters>
+
+  <div class="loading mod-fullPage" *ngIf="isLoading$ | async; else isNotLoading"></div>
+
+  <ng-template #isNotLoading>
+    <h4 class="page-content page-resultsCount u-displayFlex u-alignItemsCenter u-justifyContentSpaceBetween">
+      {{ 'offers_count' | translate : { count: totalCounts$ | async } }}
+    </h4>
+
+    <cc-offer-list ccInfiniteScroll
+                   (bottomReached)="nextPage()"
+                   (sort)="updateSort($event)"
+                   [offers]="offers$ | async"
+                   [sortParams]="sortParams$ | async">
+    </cc-offer-list>
+  </ng-template>
+</div>

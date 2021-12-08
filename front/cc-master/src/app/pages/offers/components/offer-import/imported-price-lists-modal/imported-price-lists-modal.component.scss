@@ -1,0 +1,25 @@
+@import "theming.import";
+
+.textfield.mod-readonly {
+  cursor: help;
+
+  .textfield-label .lucca-icon {
+    font-size: 1rem;
+    color: _color('grey', 800);
+  }
+  .textfield-input {
+    background-color: _color('grey', 50);
+    pointer-events: none;
+  }
+  .textfield-input::after { color: _color('grey', 300); }
+}
+
+.textfield .textfield-input {
+  &.is-error {
+    background-color: _color('error', 50);
+
+    &::after {
+      color: _color('error', 700);
+    }
+  }
+}

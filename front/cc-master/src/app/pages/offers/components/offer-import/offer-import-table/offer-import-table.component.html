@@ -1,0 +1,88 @@
+<form [formGroup]="formGroup">
+  <table class="table">
+	<thead class="table-head">
+		<tr class="table-head-row">
+			<th class="table-head-row-cell"></th>
+			<th class="table-head-row-cell">{{ 'offers_import_table_name' | translate }}</th>
+			<th class="table-head-row-cell">{{ 'offers_import_table_product' | translate }}</th>
+			<th class="table-head-row-cell">{{ 'offers_import_table_billing_unit' | translate }}</th>
+			<th class="table-head-row-cell">{{ 'offers_import_table_tag' | translate }}</th>
+			<th class="table-head-row-cell">{{ 'offers_import_table_billing_mode' | translate }}</th>
+			<th class="table-head-row-cell">{{ 'offers_import_table_pricing_method' | translate }}</th>
+			<th class="table-head-row-cell">{{ 'offers_import_table_forecast_method' | translate }}</th>
+			<th class="table-head-row-cell">{{ 'offers_import_table_currency' | translate }}</th>
+			<th class="table-head-row-cell">{{ 'offers_import_table_price_list' | translate }}</th>
+		</tr>
+	</thead>
+	<tbody class="table-body" [formArrayName]="formArrayKey">
+		<tr class="table-body-row"
+        [ngClass]="{ 'mod-error': control.invalid }"
+        *ngFor="let control of formArray.controls; let i = index; trackBy: trackBy" [formGroupName]="i">
+      <td class="table-body-row-cell">
+        <span *ngIf="control.invalid" aria-hidden="true" class="lucca-icon icon-error u-textError"></span>
+      </td>
+			<td class="table-body-row-cell">
+        <label class="textfield palette-grey mod-outlined" [ngClass]="{ 'mod-readonly': readonly }">
+          <input class="textfield-input" type="text" [formControlName]="formKey.Name" [required]="true">
+        </label>
+      </td>
+			<td class="table-body-row-cell">
+        <label class="textfield palette-grey mod-outlined mod-readonly is-required" [ngClass]="{ 'mod-readonly': readonly }">
+          <cc-product-api-select [hideClearer]="true" [formControlName]="formKey.Product" [required]="true">
+          </cc-product-api-select>
+        </label>
+      </td>
+			<td class="table-body-row-cell">
+        <label class="textfield palette-grey mod-outlined mod-short" [ngClass]="{ 'mod-readonly': readonly }">
+          <cc-offer-billing-unit-select [hideClearer]="true" [formControlName]="formKey.BillingUnit" [required]="true">
+          </cc-offer-billing-unit-select>
+        </label>
+      </td>
+			<td class="table-body-row-cell">
+        <label class="textfield palette-grey mod-outlined mod-short" [ngClass]="{ 'mod-readonly': readonly }">
+          <cc-offer-tag-api-select [hideClearer]="true" [formControlName]="formKey.Tag" [required]="true"></cc-offer-tag-api-select>
+        </label>
+      </td>
+			<td class="table-body-row-cell">
+        <label class="textfield palette-grey mod-outlined" [ngClass]="{ 'mod-readonly': readonly }">
+          <cc-offer-billing-mode-select [hideClearer]="true" [formControlName]="formKey.BillingMode" [required]="true"></cc-offer-billing-mode-select>
+        </label>
+      </td>
+			<td class="table-body-row-cell">
+        <label class="textfield palette-grey mod-outlined mod-short" [ngClass]="{ 'mod-readonly': readonly }">
+          <cc-offer-pricing-method-select [hideClearer]="true" [formControlName]="formKey.PricingMethod" [required]="true">
+          </cc-offer-pricing-method-select>
+        </label>
+      </td>
+			<td class="table-body-row-cell">
+        <label class="textfield palette-grey mod-outlined" [ngClass]="{ 'mod-readonly': readonly }">
+          <cc-offer-forecast-method-select [hideClearer]="true" [formControlName]="formKey.ForecastMethod" [required]="true">
+          </cc-offer-forecast-method-select>
+        </label>
+      </td>
+			<td class="table-body-row-cell">
+        <label class="textfield palette-grey mod-outlined mod-shorter" [ngClass]="{ 'mod-readonly': readonly }">
+          <cc-offer-currency-api-select [hideClearer]="true" [formControlName]="formKey.Currency" [required]="true"></cc-offer-currency-api-select>
+        </label>
+      </td>
+			<td class="table-body-row-cell u-textRight">
+        <ng-container *ngIf="getPriceLists(control); let priceLists; else noPriceList">
+          <button class="link"
+                  [ngClass]="{ 'u-textError': control.get(formKey.PriceLists).invalid }"
+                  (click)="openPriceListsDetails(priceLists, control)">
+            {{ priceLists.length }}
+          </button>
+        </ng-container>
+        <ng-template #noPriceList><span class="u-textError">0</span></ng-template>
+      </td>
+		</tr>
+	</tbody>
+</table>
+</form>
+
+<section *ngIf="!formArray?.length" class="emptyState">
+  <h3 class="emptyState-title">{{ 'offers_import_table_emptyState_title' | translate }}</h3>
+  <p class="emptyState-description">{{ 'offers_import_table_emptyState_information' | translate }}</p>
+</section>
+
+

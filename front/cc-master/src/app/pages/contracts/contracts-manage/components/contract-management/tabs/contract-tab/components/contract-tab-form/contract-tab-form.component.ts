@@ -172,6 +172,11 @@ export class ContractTabFormComponent implements OnInit, OnDestroy, ControlValue
     }
   }
 
+  public hasRequiredError(formKey: ContractFormKey): boolean {
+    const ctrl = this.formGroup.get(formKey);
+    return ctrl.touched && ctrl.hasError('required');
+  }
+
   private setBillingMonthDisabled(billingMonth: ContractBillingMonth): void {
     const billingFrequencyAndMonth = this.formGroup.get(ContractFormKey.BillingMonth);
     if (this.canEditBillingFrequency) {
