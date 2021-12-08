@@ -250,9 +250,13 @@ export class EditablePriceGridComponent implements OnInit, OnDestroy, ControlVal
     const columns = row.split('\t');
 
     return {
-      maxIncludedCount: parseInt(columns[1], 10),
-      unitPrice: parseInt(columns[2], 10),
-      fixedPrice: parseInt(columns[3], 10),
+      maxIncludedCount: this.parseFloatWithSeparator(columns[1], ','),
+      unitPrice: this.parseFloatWithSeparator(columns[2], ','),
+      fixedPrice: this.parseFloatWithSeparator(columns[3], ','),
     };
+  }
+
+  private parseFloatWithSeparator(value: string, separator: string) {
+    return parseFloat(value.replace(separator, '.'));
   }
 }
