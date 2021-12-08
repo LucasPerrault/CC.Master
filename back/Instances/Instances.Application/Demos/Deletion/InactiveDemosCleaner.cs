@@ -87,13 +87,10 @@ namespace Instances.Application.Demos.Deletion
             var result = new List<DemoLastUsageRetrieveAttempt>();
             var activeDemos = await _demosStore.GetAsync(filter, AccessRight.All);
 
+            var random = new Random();
             foreach (var batch in activeDemos.Batch(MaxConcurrentDemoUsageRetrievalAttempts))
             {
-                result.AddRange(batch.Select(a => new DemoLastUsageRetrieveAttempt
-                {
-                    Demo = a,
-                    LastUsedOn = DateTime.Today.AddDays(-7),
-                }));
+                result.AddRange(await GetDemoUsagesWithoutHarassingPlatformAsync(batch));
             }
             return result;
         }
@@ -142,7 +139,7 @@ namespace Instances.Application.Demos.Deletion
             return _emailService.SendAsync
             (
                 RecipientForm.FromContact(EmailContact.CloudControl),
-                _demoEmails.GetIntentEmail(_timeProvider.Today(), info).Content
+                _demoEmails.GetIntentEmail(_timeProvider.Today(), info)
             );
         }
 

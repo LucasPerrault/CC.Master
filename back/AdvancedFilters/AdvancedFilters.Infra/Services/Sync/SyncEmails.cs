@@ -1,4 +1,5 @@
 ﻿using Email.Domain;
+using Lucca.Emails.Client.Contracts;
 using Lucca.Emails.Client.Contracts.Fragments;
 using Resources.Translations;
 using System;
@@ -9,7 +10,7 @@ namespace AdvancedFilters.Infra.Services.Sync
 {
     public interface ISyncEmails
     {
-        EmailContentBuilder GetSyncReportEmail(List<Exception> exceptions);
+        EmailContent GetSyncReportEmail(List<Exception> exceptions);
     }
 
     public class SyncEmails : ISyncEmails
@@ -20,14 +21,14 @@ namespace AdvancedFilters.Infra.Services.Sync
         {
             _translations = translations;
         }
-        public EmailContentBuilder GetSyncReportEmail(List<Exception> exceptions)
+        public EmailContent GetSyncReportEmail(List<Exception> exceptions)
         {
             var builder = new EmailContentBuilder(_translations.EmailSyncReportTitle())
                 .Add(new Paragraph(_translations.EmailSyncReportErrorCount(exceptions.Count)));
 
             builder.AddList(exceptions.Select(d => d.Message));
 
-            return builder;
+            return builder.Build();
         }
     }
 }
