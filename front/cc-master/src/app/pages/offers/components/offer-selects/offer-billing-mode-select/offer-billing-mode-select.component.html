@@ -1,0 +1,26 @@
+<lu-select [formControl]="formControl" [placeholder]="placeholder" class="textfield-input"
+           [required]="required" [multiple]="multiple" (blur)="onTouch()">
+
+  <ng-container *luDisplayer="let value; multiple: multiple">
+    <ng-container *ngIf="multiple; else notMultiple">
+
+      <ng-container *ngIf="value?.length !== 1; else: singleView">
+        <span class="label">{{ value.length }}</span>
+        {{ 'select_billingModes_label' | translate }}
+      </ng-container>
+
+      <ng-template #singleView>{{ value[0].name }}</ng-template>
+    </ng-container>
+
+    <ng-template #notMultiple>{{ value.name }}</ng-template>
+  </ng-container>
+
+
+  <lu-option-picker-advanced>
+    <lu-option-feeder [options]="billingModes"></lu-option-feeder>
+    <lu-option *luForOptions="let billingMode; trackBy: trackBy" [value]="billingMode">{{ billingMode.name }}</lu-option>
+  </lu-option-picker-advanced>
+
+  <lu-input-clearer [class.u-displayNone]="hideClearer" [attr.aria-hidden]="hideClearer"></lu-input-clearer>
+
+</lu-select>

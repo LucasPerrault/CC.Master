@@ -15,6 +15,8 @@ import { ContractsComponent } from './pages/contracts/contracts.component';
 import { ContractsModule } from './pages/contracts/contracts.module';
 import { LogsComponent } from './pages/logs/logs.component';
 import { LogsModule } from './pages/logs/logs.module';
+import { OffersComponent } from './pages/offers/offers.component';
+import { OffersModule } from './pages/offers/offers.module';
 
 const pageRoutes: Routes = [
   {
@@ -32,6 +34,10 @@ const pageRoutes: Routes = [
   {
     path: NavigationPath.Accounting,
     component: AccountingComponent,
+  },
+  {
+    path: NavigationPath.Offers,
+    component: OffersComponent,
   },
   {
     path: NavigationPath.Cafe,
@@ -53,6 +59,7 @@ const routes: Routes = [
     CodeSourcesModule,
     ContractsModule,
     AccountingModule,
+    OffersModule,
     CafeModule,
   ],
   exports: [RouterModule],

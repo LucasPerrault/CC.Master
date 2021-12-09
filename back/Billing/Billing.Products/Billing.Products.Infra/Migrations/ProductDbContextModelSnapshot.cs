@@ -16,8 +16,8 @@ namespace Billing.Products.Infra.Migrations
 #pragma warning disable 612, 618
             modelBuilder
                 .HasDefaultSchema("billing")
-                .HasAnnotation("ProductVersion", "3.1.16")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
+                .HasAnnotation("ProductVersion", "5.0.10")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
             modelBuilder.Entity("Billing.Products.Domain.BusinessUnit", b =>
@@ -38,28 +38,6 @@ namespace Billing.Products.Infra.Migrations
                     b.ToTable("BusinessUnit");
                 });
 
-            modelBuilder.Entity("Billing.Products.Domain.CommercialOffer", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("Name")
-                        .HasColumnName("Name")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("ProductId")
-                        .HasColumnName("ProductId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ProductId");
-
-                    b.ToTable("CommercialOffers");
-                });
-
             modelBuilder.Entity("Billing.Products.Domain.Product", b =>
                 {
                     b.Property<int>("Id")
@@ -68,48 +46,48 @@ namespace Billing.Products.Infra.Migrations
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("ApplicationCode")
-                        .HasColumnName("ApplicationCode")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("ApplicationCode");
 
                     b.Property<string>("Code")
-                        .HasColumnName("Code")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("Code");
 
                     b.Property<string>("DeployRoute")
-                        .HasColumnName("DeployRoute")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("DeployRoute");
 
                     b.Property<int>("FamilyId")
-                        .HasColumnName("FamilyId")
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasColumnName("FamilyId");
 
                     b.Property<bool>("IsEligibleToMinimalBilling")
-                        .HasColumnName("IsEligibleToMinimalBilling")
-                        .HasColumnType("bit");
+                        .HasColumnType("bit")
+                        .HasColumnName("IsEligibleToMinimalBilling");
 
                     b.Property<bool>("IsFreeUse")
-                        .HasColumnName("IsFreeUse")
-                        .HasColumnType("bit");
+                        .HasColumnType("bit")
+                        .HasColumnName("IsFreeUse");
 
                     b.Property<bool>("IsMultiSuite")
-                        .HasColumnName("IsMultiSuite")
-                        .HasColumnType("bit");
+                        .HasColumnType("bit")
+                        .HasColumnName("IsMultiSuite");
 
                     b.Property<bool>("IsPromoted")
-                        .HasColumnName("IsPromoted")
-                        .HasColumnType("bit");
+                        .HasColumnType("bit")
+                        .HasColumnName("IsPromoted");
 
                     b.Property<string>("Name")
-                        .HasColumnName("Name")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("Name");
 
                     b.Property<int?>("ParentId")
-                        .HasColumnName("ParentId")
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasColumnName("ParentId");
 
                     b.Property<string>("SalesForceCode")
-                        .HasColumnName("SalesForceCode")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("SalesForceCode");
 
                     b.HasKey("Id");
 
@@ -126,12 +104,12 @@ namespace Billing.Products.Infra.Migrations
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<int>("DisplayOrder")
-                        .HasColumnName("DisplayOrder")
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasColumnName("DisplayOrder");
 
                     b.Property<string>("Name")
-                        .HasColumnName("Name")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("Name");
 
                     b.HasKey("Id");
 
@@ -147,8 +125,8 @@ namespace Billing.Products.Infra.Migrations
                         .HasColumnType("int");
 
                     b.Property<int>("Share")
-                        .HasColumnName("share")
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasColumnName("share");
 
                     b.HasKey("ProductId", "SolutionId");
 
@@ -168,39 +146,30 @@ namespace Billing.Products.Infra.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("Code")
-                        .HasColumnName("Code")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("Code");
 
                     b.Property<int>("DefaultBreakdownShare")
-                        .HasColumnName("defaultBreakdownShare")
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasColumnName("defaultBreakdownShare");
 
                     b.Property<bool>("IsContactNeeded")
-                        .HasColumnName("IsContactNeeded")
-                        .HasColumnType("bit");
+                        .HasColumnType("bit")
+                        .HasColumnName("IsContactNeeded");
 
                     b.Property<string>("Name")
-                        .HasColumnName("Name")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("Name");
 
                     b.Property<int?>("ParentId")
-                        .HasColumnName("ParentId")
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasColumnName("ParentId");
 
                     b.HasKey("Id");
 
                     b.HasIndex("BusinessUnitId");
 
                     b.ToTable("Solutions");
-                });
-
-            modelBuilder.Entity("Billing.Products.Domain.CommercialOffer", b =>
-                {
-                    b.HasOne("Billing.Products.Domain.Product", "Product")
-                        .WithMany()
-                        .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
                 });
 
             modelBuilder.Entity("Billing.Products.Domain.Product", b =>
@@ -210,6 +179,8 @@ namespace Billing.Products.Infra.Migrations
                         .HasForeignKey("FamilyId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Family");
                 });
 
             modelBuilder.Entity("Billing.Products.Domain.ProductSolution", b =>
@@ -225,6 +196,10 @@ namespace Billing.Products.Infra.Migrations
                         .HasForeignKey("SolutionId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Product");
+
+                    b.Navigation("Solution");
                 });
 
             modelBuilder.Entity("Billing.Products.Domain.Solution", b =>
@@ -234,6 +209,23 @@ namespace Billing.Products.Infra.Migrations
                         .HasForeignKey("BusinessUnitId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("BusinessUnit");
+                });
+
+            modelBuilder.Entity("Billing.Products.Domain.BusinessUnit", b =>
+                {
+                    b.Navigation("Solutions");
+                });
+
+            modelBuilder.Entity("Billing.Products.Domain.Product", b =>
+                {
+                    b.Navigation("ProductSolutions");
+                });
+
+            modelBuilder.Entity("Billing.Products.Domain.Solution", b =>
+                {
+                    b.Navigation("ProductSolutions");
                 });
 #pragma warning restore 612, 618
         }

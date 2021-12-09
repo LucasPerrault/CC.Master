@@ -1,0 +1,13 @@
+<label class="textfield palette-grey mod-outlined"
+       [ngClass]="{ 'mod-readonly': readonly, 'mod-error': invalid, 'mod-tableCell': formControl.valid || formControl.untouched }">
+  <input class="textfield-input"
+         type="number"
+         [min]="0"
+         [required]="true"
+         [formControl]="formControl"
+         (keydown.control.arrowLeft)="keydownLeft()"
+         (keydown.control.arrowRight)="keydownRight()"
+         (keydown.control.arrowDown)="keydownDown()"
+         (keydown.control.arrowUp)="keydownUp()"
+         (paste)="paste($event)"/>
+</label>

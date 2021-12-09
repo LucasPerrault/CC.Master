@@ -86,7 +86,7 @@ namespace Rights.Infra.Services
                     throw new ApplicationException("ApiKeys don't have scopes");
                 default:
                     throw new ApplicationException("Unhandled ClaimsPrincipal type");
-            };
+            }
         }
 
         public async Task<ISet<int>> GetEnvironmentPurposesAsync(params Operation[] operations)

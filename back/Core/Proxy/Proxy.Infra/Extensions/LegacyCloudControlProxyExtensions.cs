@@ -40,6 +40,7 @@ namespace Core.Proxy.Infra.Extensions
             "/sources",
             "/accounting",
             "/reports",
+            "/offers",
             "/contracts",
         };
 
