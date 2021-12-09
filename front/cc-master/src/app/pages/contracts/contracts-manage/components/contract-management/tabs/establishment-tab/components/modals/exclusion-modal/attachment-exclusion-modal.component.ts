@@ -35,7 +35,8 @@ export class AttachmentExclusionModalComponent implements ILuModalContent {
   }
 
   private getTitle(): string {
-    return this.translatePipe.transform('front_contractPage_establishments_exclude_modal_title', {
+    return this.translatePipe.transform('front_contractPage_establishments_exclude_modal_title',{
+      name: this.modalData.establishments.length === 1 ? this.modalData.establishments[0].name : '',
       count: this.modalData.establishments.length,
     });
   }
