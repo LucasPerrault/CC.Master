@@ -5,6 +5,6 @@ namespace Email.Domain
 {
     public interface IEmailService
     {
-        Task SendAsync(SenderForm senderForm, RecipientForm form, EmailContent content);
+        Task SendAsync(RecipientForm form, EmailContent content);
     }
 }
