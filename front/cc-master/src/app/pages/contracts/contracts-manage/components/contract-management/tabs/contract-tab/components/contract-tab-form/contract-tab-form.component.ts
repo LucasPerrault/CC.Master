@@ -185,7 +185,7 @@ export class ContractTabFormComponent implements OnInit, OnDestroy, ControlValue
     };
     this.luModal.open(ClientInfoModalComponent, data);
   }
-  
+
   public hasRequiredError(formKey: ContractFormKey): boolean {
     const ctrl = this.formGroup.get(formKey);
     return ctrl.touched && ctrl.hasError('required');
