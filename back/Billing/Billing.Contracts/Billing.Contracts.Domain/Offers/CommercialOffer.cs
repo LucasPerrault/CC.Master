@@ -42,7 +42,6 @@ namespace Billing.Contracts.Domain.Offers
 
     public class CommercialOffer
     {
-        public const string CatalogTag = "Catalogue";
         public int Id { get; set; }
         public string Name { get; set; }
 
@@ -55,7 +54,6 @@ namespace Billing.Contracts.Domain.Offers
         public ForecastMethod ForecastMethod { get; set; }
 
         public string Tag { get; set; }
-        public bool IsCatalog => Tag == CatalogTag;
 
         public int CurrencyId { get; set; }
 

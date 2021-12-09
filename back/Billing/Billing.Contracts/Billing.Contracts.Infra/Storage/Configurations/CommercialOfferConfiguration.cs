@@ -23,8 +23,6 @@ namespace Billing.Contracts.Infra.Storage.Configurations
             builder.HasOne(d => d.Product).WithMany().HasForeignKey(d => d.ProductId);
 
             builder.HasMany(d => d.PriceLists).WithOne().HasForeignKey(d => d.OfferId);
-
-            builder.Ignore(d => d.IsCatalog);
         }
     }
 

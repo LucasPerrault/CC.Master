@@ -16,7 +16,6 @@ export interface IDetailedOffer extends IOffer {
   pricingMethod: PricingMethod;
   forecastMethod: ForecastMethod;
   tag: string;
-  isCatalog: boolean;
   currencyId: number;
   isArchived: boolean;
   unit: BillingUnit;
