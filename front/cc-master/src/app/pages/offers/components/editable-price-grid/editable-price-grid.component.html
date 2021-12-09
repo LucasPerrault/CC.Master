@@ -20,7 +20,7 @@
     <tbody class="table-body" [formArrayName]="formArrayKey">
       <tr class="table-body-row" *ngFor="let control of formArray.controls; let i = index" [formGroupName]="i">
         <td class="table-body-row-cell mod-alignRight u-paddingReset">
-          {{ getLowerBound(control.get(formKey.MaxIncludedCount).value) }}
+          {{ getLowerBound(control.get(formKey.MaxIncludedCount).value) | number }}
         </td>
         <td class="table-body-row-cell mod-alignRight u-paddingReset" [tabindex]="2">
           <cc-editable-price-cell (keydownChange)="updateFocus($event, i, 1)"
