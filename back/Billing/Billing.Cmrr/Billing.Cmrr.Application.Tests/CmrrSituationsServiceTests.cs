@@ -5,7 +5,6 @@ using Billing.Products.Domain;
 using Billing.Products.Infra.Storage;
 using Billing.Products.Infra.Storage.Stores;
 using FluentAssertions;
-using Microsoft.EntityFrameworkCore;
 using Moq;
 using Rights.Domain.Filtering;
 using System;
@@ -13,6 +12,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using Testing.Infra;
 using Xunit;
 
 namespace Billing.Cmrr.Application.Tests
@@ -23,11 +23,7 @@ namespace Billing.Cmrr.Application.Tests
 
         public CmrrSituationsServiceTests()
         {
-            var options = new DbContextOptionsBuilder<ProductDbContext>()
-                               .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
-                               .Options;
-
-            _dbContext = new ProductDbContext(options);
+            _dbContext = InMemoryDbHelper.InitialiseDb<ProductDbContext>("cmrr", o => new ProductDbContext(o));
         }
 
         [Fact]

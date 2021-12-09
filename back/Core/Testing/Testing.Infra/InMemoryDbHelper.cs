@@ -13,14 +13,21 @@ namespace Testing.Infra
         public static TDbContext InitialiseDb<TDbContext>(string name, Func<DbContextOptions<TDbContext>, TDbContext> newDbContext)
             where TDbContext : DbContext
         {
-            var options = new DbContextOptionsBuilder<TDbContext>()
-                .UseInMemoryDatabase(GetNameUniqueForTestContext(name))
-                .Options;
+            try
+            {
+                var options = new DbContextOptionsBuilder<TDbContext>()
+                    .UseInMemoryDatabase(GetNameUniqueForTestContext(name))
+                    .Options;
 
-            var context = newDbContext(options);
-            context.Database.EnsureDeleted();
-            context.Database.EnsureCreated();
-            return context;
+                var context = newDbContext(options);
+                context.Database.EnsureDeleted();
+                context.Database.EnsureCreated();
+                return context;
+            }
+            catch (Exception e)
+            {
+                throw new Exception($"{nameof(InMemoryDbHelper)} failed to initialise in memory db context", e);
+            }
         }
     }
 }

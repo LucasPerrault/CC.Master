@@ -22,6 +22,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\..\Core\Testing\Testing.Infra\Testing.Infra.csproj" />
     <ProjectReference Include="..\Billing.Cmrr.Infra\Billing.Cmrr.Infra.csproj" />
   </ItemGroup>
 

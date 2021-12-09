@@ -94,10 +94,10 @@ namespace Testing.Specflow
             public Scope Scope { get; init; }
 
             public int ExternalEntityId => throw new NotImplementedException();
-            public int? LegalEntityId => throw new NotImplementedException();
+            public int? EstablishmentId => throw new NotImplementedException();
             public int? SpecificDepartmentId => throw new NotImplementedException();
             public int? SpecificUserId => throw new NotImplementedException();
-            public bool HasContextualLegalEntityAssociation => throw new NotImplementedException();
+            public bool HasContextualEstablishmentAssociation => throw new NotImplementedException();
         }
     }
 }
