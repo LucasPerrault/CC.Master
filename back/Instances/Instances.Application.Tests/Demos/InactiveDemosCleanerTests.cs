@@ -7,6 +7,7 @@ using Instances.Domain.Demos.Filtering;
 using Instances.Domain.Instances;
 using Instances.Domain.Instances.Models;
 using Instances.Domain.Shared;
+using Lucca.Emails.Client.Contracts;
 using Moq;
 using Rights.Domain.Filtering;
 using System;
@@ -42,8 +43,7 @@ namespace Instances.Application.Tests.Demos
             _deletionCalculatorMock = new Mock<IDemoDeletionCalculator>();
             _dnsServiceMock = new Mock<IDnsService>();
 
-            _emailsMock.Setup(e => e.GetIntentEmail(It.IsAny<DateTime>(), It.IsAny<IEnumerable<DemoCleanupInfo>>()))
-                .Returns(new EmailContentBuilder("mocked"));
+            _emailsMock.Setup(e => e.GetIntentEmail(It.IsAny<DateTime>(), It.IsAny<IEnumerable<DemoCleanupInfo>>()));
         }
 
         [Fact]

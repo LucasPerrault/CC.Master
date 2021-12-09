@@ -13,6 +13,8 @@ import { ContractsComponent } from './pages/contracts/contracts.component';
 import { ContractsModule } from './pages/contracts/contracts.module';
 import { LogsComponent } from './pages/logs/logs.component';
 import { LogsModule } from './pages/logs/logs.module';
+import { OffersComponent } from './pages/offers/offers.component';
+import { OffersModule } from './pages/offers/offers.module';
 
 const pageRoutes: Routes = [
   {
@@ -26,6 +28,10 @@ const pageRoutes: Routes = [
   {
     path: NavigationPath.Contracts,
     component: ContractsComponent,
+  },
+  {
+    path: NavigationPath.Offers,
+    component: OffersComponent,
   },
   {
     path: NavigationPath.Cafe,
@@ -46,6 +52,7 @@ const routes: Routes = [
     LogsModule,
     CodeSourcesModule,
     ContractsModule,
+    OffersModule,
     CafeModule,
   ],
   exports: [RouterModule],

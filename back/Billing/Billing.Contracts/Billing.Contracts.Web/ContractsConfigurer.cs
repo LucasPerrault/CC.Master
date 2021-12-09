@@ -1,16 +1,28 @@
 ﻿using Billing.Contracts.Application;
 using Billing.Contracts.Application.Clients;
+using Billing.Contracts.Application.Offers;
 using Billing.Contracts.Domain.Clients;
 using Billing.Contracts.Domain.Clients.Interfaces;
 using Billing.Contracts.Domain.Contracts;
 using Billing.Contracts.Domain.Contracts.Health;
 using Billing.Contracts.Domain.Contracts.Interfaces;
+using Billing.Contracts.Domain.Counts.Interfaces;
+using Billing.Contracts.Domain.Offers;
+using Billing.Contracts.Domain.Offers.Filtering;
+using Billing.Contracts.Domain.Offers.Interfaces;
+using Billing.Contracts.Domain.Offers.Parsing;
+using Billing.Contracts.Domain.Offers.Services;
+using Billing.Contracts.Domain.Offers.Validation;
 using Billing.Contracts.Infra.Configurations;
 using Billing.Contracts.Infra.Legacy;
+using Billing.Contracts.Infra.Offers;
 using Billing.Contracts.Infra.Storage.Stores;
 using Core.Proxy.Infra.Configuration;
+using Lucca.Core.Api.Abstractions;
+using Lucca.Core.Api.Web;
 using Microsoft.Extensions.DependencyInjection;
 using Remote.Infra.Extensions;
+using Resources.Translations;
 
 namespace Billing.Contracts.Web
 {
@@ -25,10 +37,27 @@ namespace Billing.Contracts.Web
             services.AddScoped<ContractsRightsFilter>();
             services.AddScoped<ContractsRepository>();
 
+            services.AddScoped<ICountsStore, CountsStore>();
+
             services.AddScoped<IClientsStore, ClientsStore>();
             services.AddScoped<ClientRightFilter>();
             services.AddScoped<ClientsRepository>();
             services.AddScoped<ContractHealthHelper>();
+
+            services.AddScoped<ICommercialOfferUsageService, CommercialOfferUsageService>();
+            services.AddScoped<CommercialOfferValidationService>();
+            services.AddScoped<ICommercialOffersStore, CommercialOffersStore>();
+            services.AddScoped<CommercialOffersRepository>();
+            services.AddScoped<ITranslations, Translations>();
+            services.AddScoped<CommercialOfferRightsFilter>();
+            services.AddScoped<CommercialOfferRightsFilter>();
+
+            services.AddScoped<IOfferRowsService, OfferRowsService>();
+            services.AddSingleton<ParsedOffersService>();
+
+
+            services.AddScoped<IOfferRowsService, OfferRowsService>();
+            services.AddSingleton<ParsedOffersService>();
 
             services.AddHttpClient<ILegacyClientsRemoteService, LegacyClientsRemoteService>((provider, client) =>
             {
@@ -36,6 +65,21 @@ namespace Billing.Contracts.Web
                     .WithBaseAddress(legacyConfig.Uri, config.LegacyClientsEndpointPath)
                     .WithAuthScheme("CloudControl").AuthenticateCurrentPrincipal(provider);
             });
+        }
+
+        public static LuccaApiBuilder ConfigureLuccaApiForContracts(this LuccaApiBuilder luccaApiBuilder)
+        {
+            luccaApiBuilder
+                .ConfigureSorting<CommercialOffer>()
+                .Allow(o => o.Id)
+                .Allow(o => o.Name)
+                .Allow(o => o.ProductId)
+                .Allow(o => o.BillingMode)
+                .Allow(o => o.ForecastMethod)
+                .Allow(o => o.PricingMethod)
+                .Allow(o => o.CurrencyId);
+
+            return luccaApiBuilder;
         }
     }
 }

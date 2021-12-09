@@ -1,0 +1,21 @@
+<cc-offer-template [title]="'offers_creation_title' | translate">
+
+  <div class="page-content">
+    <cc-offer-creation-form [formControl]="formControl"></cc-offer-creation-form>
+  </div>
+
+  <footer class="page-footer">
+    <div class="page-footer-right u-flexGrow1">
+      <button class="button"
+              [ngClass]="creationButtonState$ | async"
+              [disabled]="!formControl.dirty || formControl.invalid"
+              (click)="create()">
+        {{ 'offers_forms_create' | translate }}
+      </button>
+      <button class="button mod-link" (click)="cancel()">
+        {{ 'offers_forms_cancel' | translate }}
+      </button>
+    </div>
+  </footer>
+
+</cc-offer-template>

@@ -1,25 +1,8 @@
-import { currencyFields, ICurrency } from './currency.interface';
-
-export const offerPriceListFields = [
-  `currency[${currencyFields}]`,
-  'priceLists[id,startsOn,rows[id,maxIncludedCount,unitPrice,fixedPrice,listId]]',
-].join(',');
-
-export interface IPriceListOffer {
-  currency: ICurrency;
-  priceLists: IPriceList[];
-}
+import { IPriceRow } from './offer-price-row.interface';
 
 export interface IPriceList {
   id: number;
-  rows: IPriceRow[];
+  offerId: number;
   startsOn: string;
-}
-
-export interface IPriceRow {
-  id: number;
-  maxIncludedCount: number;
-  unitPrice: number;
-  fixedPrice: number;
-  listId: number;
+  rows: IPriceRow[];
 }

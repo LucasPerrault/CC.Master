@@ -1,5 +1,6 @@
 ﻿using Email.Domain;
 using Instances.Domain.Demos.Cleanup;
+using Lucca.Emails.Client.Contracts;
 using Lucca.Emails.Client.Contracts.Fragments;
 using Resources.Translations;
 using System;
@@ -10,7 +11,7 @@ namespace Instances.Application.Demos.Emails
 {
     public interface IDemoEmails
     {
-        EmailContentBuilder GetIntentEmail(DateTime deletionDate, IEnumerable<DemoCleanupInfo> infos);
+        EmailContent GetIntentEmail(DateTime deletionDate, IEnumerable<DemoCleanupInfo> infos);
     }
 
     public class DemoEmails : IDemoEmails
@@ -22,7 +23,7 @@ namespace Instances.Application.Demos.Emails
             _translations = translations;
         }
 
-        public EmailContentBuilder GetIntentEmail(DateTime deletionDate, IEnumerable<DemoCleanupInfo> infos)
+        public EmailContent GetIntentEmail(DateTime deletionDate, IEnumerable<DemoCleanupInfo> infos)
         {
             var infoPerState = infos.GroupBy(i => i.State).ToDictionary(i => i.Key, i => i.ToList());
 
@@ -68,7 +69,7 @@ namespace Instances.Application.Demos.Emails
                 builder.Add(new Paragraph(_translations.EmailsDemoCleanupIntentNoneToBeScheduled()));
             }
 
-            return builder;
+            return builder.Build();
         }
     }
 }

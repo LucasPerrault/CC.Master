@@ -1,0 +1,32 @@
+<cc-offer-template [title]="'offers_page_import' | translate">
+
+  <div class="page-content u-paddingReset">
+    <div class="u-paddingStandard mod-stickyLeft">
+      <button class="link" (click)="download()">{{ 'offers_link_import_template' | translate }}</button>
+			<cc-offer-upload (upload)="upload($event)"></cc-offer-upload>
+		</div>
+
+		<h4 class="u-marginLeftStandard u-marginRightStandard u-displayFlex u-justifyContentSpaceBetween mod-stickyLeftStandard">
+      {{ 'offers_import_table_count' | translate : { count: totalCount } }}
+      <label class="switch">
+        <input class="switch-input" type="checkbox" name="switchList1" [formControl]="isReadonly">
+        <span class="switch-label">{{ 'offers_import_readonly_mode' | translate }}</span>
+      </label>
+    </h4>
+		<cc-offer-import-table [formControl]="formControl" [readonly]="isReadonly.value"></cc-offer-import-table>
+  </div>
+
+  <div class="page-footer">
+    <div class="page-footer-right u-flexGrow1">
+      <button class="button" (click)="create()"
+              [ngClass]="buttonClass$ | async"
+              [disabled]="!formControl.dirty || formControl.invalid">
+        {{ 'offers_forms_create' | translate }}
+      </button>
+      <button class="button mod-link" (click)="cancel()">
+        {{ 'offers_forms_cancel' | translate }}
+      </button>
+    </div>
+  </div>
+
+</cc-offer-template>

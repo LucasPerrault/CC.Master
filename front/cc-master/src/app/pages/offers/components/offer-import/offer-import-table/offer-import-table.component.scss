@@ -1,0 +1,35 @@
+@import "theming.import";
+
+.table .table-head-row-cell {
+  position: sticky;
+  top: 0;
+  background-color: white;
+  z-index: 30;
+}
+
+.table-body-row.mod-error .table-body-row-cell {
+  background-color: _color('error', 50);
+}
+
+.table-body-row .table-body-row-cell .textfield.mod-readonly {
+  pointer-events: none;
+  width: auto;
+
+  .textfield-input {
+    width: auto;
+    border-radius: 0;
+    padding: 0;
+    box-shadow: none!important;
+    background-color: transparent!important;
+  }
+
+  lu-select {
+    .lu-select-value { padding: 0; min-height: auto }
+    .lu-select-suffix { display: none; }
+    &::after { display: none; }
+  }
+}
+
+.mod-widthAuto {
+  width: auto;
+}

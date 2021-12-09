@@ -1,0 +1,16 @@
+<lu-select [formControl]="formControl" [placeholder]="placeholder" class="textfield-input" [required]="required" (blur)="onTouch()">
+
+  <ng-container *luDisplayer="let tag">{{ tag }}</ng-container>
+
+  <lu-option-picker-advanced>
+    <header class="lu-picker-header">
+      <lu-api-searcher [api]="api" standard="v4"></lu-api-searcher>
+    </header>
+
+    <lu-option *luForOptions="let tag; trackBy: trackBy" [value]="tag">{{ capitalize(tag) }}</lu-option>
+
+  </lu-option-picker-advanced>
+
+  <lu-input-clearer [class.u-displayNone]="hideClearer" [attr.aria-hidden]="hideClearer"></lu-input-clearer>
+
+</lu-select>
