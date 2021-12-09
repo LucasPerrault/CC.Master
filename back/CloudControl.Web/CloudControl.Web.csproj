@@ -9,10 +9,10 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="Lucca.Core.Api.Web" Version="0.3.4" />
-      <PackageReference Include="Lucca.Core.AspNetCore.Healthz" Version="3.2.6" />
-      <PackageReference Include="Lucca.Core.Shared.Domain" Version="2.0.13" />
-      <PackageReference Include="Lucca.Logs.AspnetCore" Version="0.7.0" />
+      <PackageReference Include="Lucca.Core.Api.Web" Version="1.0.1" />
+      <PackageReference Include="Lucca.Core.AspNetCore.Healthz" Version="4.0.1" />
+      <PackageReference Include="Lucca.Core.Shared.Domain" Version="2.1.0" />
+      <PackageReference Include="Lucca.Logs.AspnetCore" Version="0.7.3" />
       <PackageReference Include="Microsoft.AspNetCore.SpaServices" Version="3.1.21" />
       <PackageReference Include="Microsoft.AspNetCore.SpaServices.Extensions" Version="6.0.0" />
       <PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks.EntityFrameworkCore" Version="6.0.0" />

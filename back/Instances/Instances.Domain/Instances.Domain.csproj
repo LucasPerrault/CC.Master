@@ -5,7 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Lucca.Core.Api.Queryable" Version="0.3.4" />
+    <PackageReference Include="Lucca.Core.Api.Queryable" Version="1.0.1" />
     <PackageReference Include="Microsoft.Extensions.Localization.Abstractions" Version="6.0.0" />
   </ItemGroup>
 

@@ -5,7 +5,7 @@
     </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Lucca.Core.Api.Web" Version="0.3.4" />
+    <PackageReference Include="Lucca.Core.Api.Web" Version="1.0.1" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="6.0.0" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="6.0.0" />
   </ItemGroup>

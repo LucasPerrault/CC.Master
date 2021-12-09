@@ -5,11 +5,11 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="Lucca.Core.AspNetCore.Abstractions" Version="3.2.6" />
+      <PackageReference Include="Lucca.Core.AspNetCore.Abstractions" Version="4.0.1" />
       <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="6.0.0" />
       <PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks" Version="6.0.0" />
       <PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks.Abstractions" Version="6.0.0" />
-      <PackageReference Include="StackExchange.Redis" Version="2.2.4" />
+      <PackageReference Include="StackExchange.Redis" Version="2.2.88" />
     </ItemGroup>
 
     <ItemGroup>

@@ -5,8 +5,8 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="Lucca.Core.Api.Queryable" Version="0.3.4" />
-      <PackageReference Include="Lucca.Core.Rights.Abstractions" Version="6.1.1" />
+      <PackageReference Include="Lucca.Core.Api.Queryable" Version="1.0.1" />
+      <PackageReference Include="Lucca.Core.Rights.Abstractions" Version="7.1.0" />
     </ItemGroup>
 
     <ItemGroup>
