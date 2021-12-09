@@ -6,6 +6,8 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
+#nullable disable
+
 namespace Billing.Cmrr.Infra.Migrations
 {
     [DbContext(typeof(CmrrDbContext))]
@@ -16,9 +18,94 @@ namespace Billing.Cmrr.Infra.Migrations
 #pragma warning disable 612, 618
             modelBuilder
                 .HasDefaultSchema("billing")
-                .HasAnnotation("ProductVersion", "3.1.16")
-                .HasAnnotation("Relational:MaxIdentifierLength", 128)
-                .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                .HasAnnotation("ProductVersion", "6.0.0")
+                .HasAnnotation("Relational:MaxIdentifierLength", 128);
+
+            SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
+
+            modelBuilder.Entity("Billing.Cmrr.Domain.CmrrContract", b =>
+                {
+                    b.Property<int>("Id")
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<int>("ClientId")
+                        .HasColumnType("int")
+                        .HasColumnName("ClientId");
+
+                    b.Property<string>("ClientName")
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("ClientName");
+
+                    b.Property<byte>("CreationCause")
+                        .HasColumnType("tinyint")
+                        .HasColumnName("CreationCause");
+
+                    b.Property<int>("DistributorId")
+                        .HasColumnType("int")
+                        .HasColumnName("DistributorId");
+
+                    b.Property<DateTime?>("EndDate")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("EndDate");
+
+                    b.Property<int>("EndReason")
+                        .HasColumnType("int")
+                        .HasColumnName("EndReason");
+
+                    b.Property<DateTime>("EnvironmentCreatedAt")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("EnvironmentCreatedAt");
+
+                    b.Property<bool>("IsArchived")
+                        .HasColumnType("bit")
+                        .HasColumnName("IsArchived");
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int")
+                        .HasColumnName("ProductId");
+
+                    b.Property<DateTime>("StartDate")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("StartDate");
+
+                    b.HasKey("Id");
+
+                    b.ToView("CmrrContracts");
+                });
+
+            modelBuilder.Entity("Billing.Cmrr.Domain.CmrrCount", b =>
+                {
+                    b.Property<int>("Id")
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<int>("AccountingNumber")
+                        .HasColumnType("int")
+                        .HasColumnName("AccountingNumber");
+
+                    b.Property<int>("BillingStrategy")
+                        .HasColumnType("int")
+                        .HasColumnName("BillingStrategy");
+
+                    b.Property<int>("ContractId")
+                        .HasColumnType("int")
+                        .HasColumnName("ContractId");
+
+                    b.Property<DateTime>("CountPeriod")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("CountPeriod");
+
+                    b.Property<decimal>("EuroTotal")
+                        .HasColumnType("decimal(18,2)")
+                        .HasColumnName("EuroTotal");
+
+                    b.HasKey("Id");
+
+                    b.ToView("CmrrCounts");
+                });
 #pragma warning restore 612, 618
         }
     }

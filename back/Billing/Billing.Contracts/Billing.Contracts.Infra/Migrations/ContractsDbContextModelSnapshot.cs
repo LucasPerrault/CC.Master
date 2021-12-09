@@ -6,6 +6,8 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
+#nullable disable
+
 namespace Billing.Contracts.Infra.Migrations
 {
     [DbContext(typeof(ContractsDbContext))]
@@ -16,16 +18,18 @@ namespace Billing.Contracts.Infra.Migrations
 #pragma warning disable 612, 618
             modelBuilder
                 .HasDefaultSchema("billing")
-                .HasAnnotation("Relational:MaxIdentifierLength", 128)
-                .HasAnnotation("ProductVersion", "5.0.10")
-                .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                .HasAnnotation("ProductVersion", "6.0.0")
+                .HasAnnotation("Relational:MaxIdentifierLength", 128);
+
+            SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
 
             modelBuilder.Entity("Billing.Contracts.Domain.Clients.Client", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<string>("BillingCity")
                         .HasColumnType("nvarchar(max)")
@@ -73,15 +77,16 @@ namespace Billing.Contracts.Infra.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Clients");
+                    b.ToTable("Clients", "billing");
                 });
 
             modelBuilder.Entity("Billing.Contracts.Domain.Contracts.Contract", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<DateTime?>("ArchivedAt")
                         .HasColumnType("datetime2")
@@ -161,15 +166,16 @@ namespace Billing.Contracts.Infra.Migrations
 
                     b.HasIndex("EnvironmentId");
 
-                    b.ToTable("Contracts");
+                    b.ToTable("Contracts", "billing");
                 });
 
             modelBuilder.Entity("Billing.Contracts.Domain.Contracts.ContractComment", b =>
                 {
                     b.Property<int>("ContractId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ContractId"), 1L, 1);
 
                     b.Property<string>("Comment")
                         .HasColumnType("nvarchar(max)")
@@ -181,15 +187,16 @@ namespace Billing.Contracts.Infra.Migrations
 
                     b.HasKey("ContractId");
 
-                    b.ToTable("ContractComments");
+                    b.ToTable("ContractComments", "billing");
                 });
 
             modelBuilder.Entity("Billing.Contracts.Domain.Counts.Count", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<int>("CommercialOfferId")
                         .HasColumnType("int")
@@ -205,15 +212,16 @@ namespace Billing.Contracts.Infra.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Counts");
+                    b.ToTable("Counts", "billing");
                 });
 
             modelBuilder.Entity("Billing.Contracts.Domain.Environments.ContractEnvironment", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<string>("Subdomain")
                         .HasColumnType("nvarchar(max)")
@@ -221,15 +229,16 @@ namespace Billing.Contracts.Infra.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("ContractEnvironments");
+                    b.ToTable("ContractEnvironments", "billing");
                 });
 
             modelBuilder.Entity("Billing.Contracts.Domain.Environments.Establishment", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<int>("EnvironmentId")
                         .HasColumnType("int")
@@ -255,15 +264,16 @@ namespace Billing.Contracts.Infra.Migrations
 
                     b.HasIndex("EnvironmentId");
 
-                    b.ToTable("Establishments");
+                    b.ToTable("Establishments", "billing");
                 });
 
             modelBuilder.Entity("Billing.Contracts.Domain.Environments.EstablishmentAttachment", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<int>("ContractId")
                         .HasColumnType("int")
@@ -304,15 +314,16 @@ namespace Billing.Contracts.Infra.Migrations
 
                     b.HasIndex("EstablishmentId");
 
-                    b.ToTable("EstablishmentAttachments");
+                    b.ToTable("EstablishmentAttachments", "billing");
                 });
 
             modelBuilder.Entity("Billing.Contracts.Domain.Environments.EstablishmentExclusion", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<int>("AuthorId")
                         .HasColumnType("int")
@@ -334,15 +345,16 @@ namespace Billing.Contracts.Infra.Migrations
 
                     b.HasIndex("EstablishmentId");
 
-                    b.ToTable("EstablishmentExclusions");
+                    b.ToTable("EstablishmentExclusions", "billing");
                 });
 
             modelBuilder.Entity("Billing.Contracts.Domain.Offers.CommercialOffer", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<int>("BillingMode")
                         .HasColumnType("int")
@@ -385,15 +397,16 @@ namespace Billing.Contracts.Infra.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("CommercialOffers");
+                    b.ToTable("CommercialOffers", "billing");
                 });
 
             modelBuilder.Entity("Billing.Contracts.Domain.Offers.PriceList", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<int>("OfferId")
                         .HasColumnType("int")
@@ -407,15 +420,16 @@ namespace Billing.Contracts.Infra.Migrations
 
                     b.HasIndex("OfferId");
 
-                    b.ToTable("PriceLists");
+                    b.ToTable("PriceLists", "billing");
                 });
 
             modelBuilder.Entity("Billing.Contracts.Domain.Offers.PriceRow", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<decimal>("FixedPrice")
                         .HasColumnType("decimal(18,2)")
@@ -437,15 +451,16 @@ namespace Billing.Contracts.Infra.Migrations
 
                     b.HasIndex("ListId");
 
-                    b.ToTable("PriceRows");
+                    b.ToTable("PriceRows", "billing");
                 });
 
             modelBuilder.Entity("Billing.Products.Domain.BusinessUnit", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<int>("DisplayOrder")
                         .HasColumnType("int");
@@ -455,15 +470,16 @@ namespace Billing.Contracts.Infra.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("BusinessUnit");
+                    b.ToTable("BusinessUnit", "billing");
                 });
 
             modelBuilder.Entity("Billing.Products.Domain.Product", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<string>("ApplicationCode")
                         .HasColumnType("nvarchar(max)")
@@ -513,15 +529,16 @@ namespace Billing.Contracts.Infra.Migrations
 
                     b.HasIndex("FamilyId");
 
-                    b.ToTable("Products");
+                    b.ToTable("Products", "billing");
                 });
 
             modelBuilder.Entity("Billing.Products.Domain.ProductFamily", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<int>("DisplayOrder")
                         .HasColumnType("int");
@@ -531,7 +548,7 @@ namespace Billing.Contracts.Infra.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("ProductFamily");
+                    b.ToTable("ProductFamily", "billing");
                 });
 
             modelBuilder.Entity("Billing.Products.Domain.ProductSolution", b =>
@@ -550,15 +567,16 @@ namespace Billing.Contracts.Infra.Migrations
 
                     b.HasIndex("SolutionId");
 
-                    b.ToTable("ProductsSolutions");
+                    b.ToTable("ProductsSolutions", "billing");
                 });
 
             modelBuilder.Entity("Billing.Products.Domain.Solution", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<int>("BusinessUnitId")
                         .HasColumnType("int");
@@ -587,15 +605,16 @@ namespace Billing.Contracts.Infra.Migrations
 
                     b.HasIndex("BusinessUnitId");
 
-                    b.ToTable("Solutions");
+                    b.ToTable("Solutions", "billing");
                 });
 
             modelBuilder.Entity("Distributors.Domain.Models.Distributor", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<string>("Code")
                         .HasColumnType("nvarchar(max)")

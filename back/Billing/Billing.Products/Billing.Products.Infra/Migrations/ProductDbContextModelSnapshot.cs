@@ -6,6 +6,8 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
+#nullable disable
+
 namespace Billing.Products.Infra.Migrations
 {
     [DbContext(typeof(ProductDbContext))]
@@ -16,16 +18,18 @@ namespace Billing.Products.Infra.Migrations
 #pragma warning disable 612, 618
             modelBuilder
                 .HasDefaultSchema("billing")
-                .HasAnnotation("Relational:MaxIdentifierLength", 128)
-                .HasAnnotation("ProductVersion", "5.0.10")
-                .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                .HasAnnotation("ProductVersion", "6.0.0")
+                .HasAnnotation("Relational:MaxIdentifierLength", 128);
+
+            SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
 
             modelBuilder.Entity("Billing.Products.Domain.BusinessUnit", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<int>("DisplayOrder")
                         .HasColumnType("int");
@@ -35,15 +39,16 @@ namespace Billing.Products.Infra.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("BusinessUnit");
+                    b.ToTable("BusinessUnit", "billing");
                 });
 
             modelBuilder.Entity("Billing.Products.Domain.Product", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<string>("ApplicationCode")
                         .HasColumnType("nvarchar(max)")
@@ -93,15 +98,16 @@ namespace Billing.Products.Infra.Migrations
 
                     b.HasIndex("FamilyId");
 
-                    b.ToTable("Products");
+                    b.ToTable("Products", "billing");
                 });
 
             modelBuilder.Entity("Billing.Products.Domain.ProductFamily", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<int>("DisplayOrder")
                         .HasColumnType("int")
@@ -113,7 +119,7 @@ namespace Billing.Products.Infra.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("ProductFamilies");
+                    b.ToTable("ProductFamilies", "billing");
                 });
 
             modelBuilder.Entity("Billing.Products.Domain.ProductSolution", b =>
@@ -132,15 +138,16 @@ namespace Billing.Products.Infra.Migrations
 
                     b.HasIndex("SolutionId");
 
-                    b.ToTable("ProductsSolutions");
+                    b.ToTable("ProductsSolutions", "billing");
                 });
 
             modelBuilder.Entity("Billing.Products.Domain.Solution", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<int>("BusinessUnitId")
                         .HasColumnType("int");
@@ -169,7 +176,7 @@ namespace Billing.Products.Infra.Migrations
 
                     b.HasIndex("BusinessUnitId");
 
-                    b.ToTable("Solutions");
+                    b.ToTable("Solutions", "billing");
                 });
 
             modelBuilder.Entity("Billing.Products.Domain.Product", b =>

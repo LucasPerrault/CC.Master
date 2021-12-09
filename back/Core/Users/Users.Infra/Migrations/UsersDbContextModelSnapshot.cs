@@ -5,6 +5,8 @@ using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Users.Infra.Storage;
 
+#nullable disable
+
 namespace Users.Infra.Migrations
 {
     [DbContext(typeof(UsersDbContext))]
@@ -15,44 +17,45 @@ namespace Users.Infra.Migrations
 #pragma warning disable 612, 618
             modelBuilder
                 .HasDefaultSchema("shared")
-                .HasAnnotation("ProductVersion", "3.1.16")
-                .HasAnnotation("Relational:MaxIdentifierLength", 128)
-                .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                .HasAnnotation("ProductVersion", "6.0.0")
+                .HasAnnotation("Relational:MaxIdentifierLength", 128);
+
+            SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
 
             modelBuilder.Entity("Users.Domain.SimpleUser", b =>
                 {
                     b.Property<int>("Id")
-                        .HasColumnName("PartenairesId")
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasColumnName("PartenairesId");
 
                     b.Property<int>("DepartmentId")
-                        .HasColumnName("DepartmentId")
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasColumnName("DepartmentId");
 
                     b.Property<int>("DistributorId")
-                        .HasColumnName("DistributorId")
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasColumnName("DistributorId");
 
                     b.Property<string>("FirstName")
-                        .HasColumnName("FirstName")
+                        .HasMaxLength(300)
                         .HasColumnType("nvarchar(300)")
-                        .HasMaxLength(300);
+                        .HasColumnName("FirstName");
 
                     b.Property<bool>("IsActive")
-                        .HasColumnName("IsActive")
-                        .HasColumnType("bit");
+                        .HasColumnType("bit")
+                        .HasColumnName("IsActive");
 
                     b.Property<string>("LastName")
-                        .HasColumnName("LastName")
+                        .HasMaxLength(300)
                         .HasColumnType("nvarchar(300)")
-                        .HasMaxLength(300);
+                        .HasColumnName("LastName");
 
                     b.HasKey("Id");
 
                     b.HasIndex("Id")
                         .IsUnique();
 
-                    b.ToTable("Users","shared");
+                    b.ToTable("Users", "shared");
                 });
 #pragma warning restore 612, 618
         }
