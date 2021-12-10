@@ -75,10 +75,12 @@ namespace Instances.Application.Instances
                 HasHelmChart = true,
                 Name = gitRef
             });
+
+            var productionBranches = await _githubBranchesStore.GetProductionBranchesAsync(codeSources);
+
             if (stable)
             {
-                var stableBranches = (await _githubBranchesStore
-                    .GetProductionBranchesAsync(codeSources))
+                var stableBranches = productionBranches
                     .Select(d =>
                     {
                         d.Value.CodeSources = new List<CodeSource>
@@ -96,11 +98,20 @@ namespace Instances.Application.Instances
             return branches
                 .GroupBy(h => h.CodeSources.First().GithubRepo)
                 .Select(kvp => kvp.OrderByDescending(v => v.Id).First())
-                .Select(b => new HelmRelease
+                .Select(b =>
                 {
-                    GitRef = b.Name,
-                    HelmChart = b.HelmChart,
-                    ReleaseName = b.CodeSources.First().GithubRepo.Substring(GithubOrganisationUrl.Length)
+                    var isProductionVersion = false;
+                    if (productionBranches.TryGetValue(b.CodeSources.First(), out var productionBranch))
+                    {
+                        isProductionVersion = b.HelmChart == productionBranch.HelmChart;
+                    }
+                    return new HelmRelease
+                    {
+                        GitRef = b.Name,
+                        HelmChart = b.HelmChart,
+                        ReleaseName = b.CodeSources.First().GithubRepo.Substring(GithubOrganisationUrl.Length),
+                        IsProductionVersion = isProductionVersion
+                    };
                 }).ToList();
         }
     }

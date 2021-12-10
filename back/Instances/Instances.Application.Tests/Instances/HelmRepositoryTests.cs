@@ -130,6 +130,8 @@ namespace Instances.Application.Tests.Instances
             var result = await _helmRepository.GetAllReleasesAsync(null, null, true);
 
             result.Should().HaveCount(3);
+            result.Where(r => r.IsProductionVersion).Should().HaveCount(2);
+            result.Where(r => !r.IsProductionVersion).Should().HaveCount(1);
 
             result.First().GitRef.Should().Be(githubBranchEmailWorker.Name);
 
@@ -195,6 +197,10 @@ namespace Instances.Application.Tests.Instances
 
             GithubBranchFilter githubBranchFilterCaptured = null;
             _githubBranchesStoreMock
+                .Setup(g => g.GetProductionBranchesAsync(It.IsAny<IEnumerable<CodeSource>>()))
+                .ReturnsAsync(new Dictionary<CodeSource, GithubBranch>());
+
+            _githubBranchesStoreMock
                 .Setup(g => g.GetAsync(It.IsAny<GithubBranchFilter>()))
                 .Returns<GithubBranchFilter>(b =>
                 {
@@ -214,6 +220,7 @@ namespace Instances.Application.Tests.Instances
             var result = await _helmRepository.GetAllReleasesAsync(null, "myBranch", false);
 
             result.Should().HaveCount(1);
+            result.First().IsProductionVersion.Should().BeFalse();
 
             githubBranchFilterCaptured.Should().NotBeNull();
             githubBranchFilterCaptured.HasHelmChart.Should().BeTrue();
