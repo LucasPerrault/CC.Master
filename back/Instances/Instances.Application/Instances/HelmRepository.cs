@@ -4,6 +4,7 @@ using Instances.Domain.CodeSources.Filtering;
 using Instances.Domain.Github;
 using Instances.Domain.Github.Models;
 using Lucca.Core.Shared.Domain.Exceptions;
+using MoreLinq;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
@@ -67,11 +68,19 @@ namespace Instances.Application.Instances
                 }
             }
 
-            IEnumerable<GithubBranch> branches = null;
+            IEnumerable<GithubBranch> branches = await _githubBranchesStore.GetAsync(new GithubBranchFilter
+            {
+                IsDeleted = false,
+                CodeSourceIds = codeSources?.Select(c => c.Id)?.ToList(),
+                HasHelmChart = true,
+                Name = gitRef
+            });
+
+            var productionBranches = await _githubBranchesStore.GetProductionBranchesAsync(codeSources);
+
             if (stable)
             {
-                branches = (await _githubBranchesStore
-                    .GetProductionBranchesAsync(codeSources))
+                var stableBranches = productionBranches
                     .Select(d =>
                     {
                         d.Value.CodeSources = new List<CodeSource>
@@ -81,25 +90,28 @@ namespace Instances.Application.Instances
                         return d.Value;
                     })
                     .Where(b => b.HelmChart != null);
+
+                branches = stableBranches
+                    .Concat(branches.ExceptBy(stableBranches, b => b.CodeSources.First().Id));
             }
-            else
-            {
-                branches = await _githubBranchesStore.GetAsync(new GithubBranchFilter
-                {
-                    IsDeleted = false,
-                    CodeSourceIds = codeSources?.Select(c => c.Id)?.ToList(),
-                    HasHelmChart = true,
-                    Name = gitRef
-                });
-            }
+
             return branches
                 .GroupBy(h => h.CodeSources.First().GithubRepo)
                 .Select(kvp => kvp.OrderByDescending(v => v.Id).First())
-                .Select(b => new HelmRelease
+                .Select(b =>
                 {
-                    GitRef = b.Name,
-                    HelmChart = b.HelmChart,
-                    ReleaseName = b.CodeSources.First().GithubRepo.Substring(GithubOrganisationUrl.Length)
+                    var isProductionVersion = false;
+                    if (productionBranches.TryGetValue(b.CodeSources.First(), out var productionBranch))
+                    {
+                        isProductionVersion = b.HelmChart == productionBranch.HelmChart;
+                    }
+                    return new HelmRelease
+                    {
+                        GitRef = b.Name,
+                        HelmChart = b.HelmChart,
+                        ReleaseName = b.CodeSources.First().GithubRepo.Substring(GithubOrganisationUrl.Length),
+                        IsProductionVersion = isProductionVersion
+                    };
                 }).ToList();
         }
     }
