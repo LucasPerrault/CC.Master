@@ -101,12 +101,14 @@ namespace Instances.Application.Tests.Instances
         [Fact]
         public async Task StableWithoutCodeSource_GetAllReleaseAsync()
         {
-            var codeSourceEmailApi = new CodeSource { Code = "EmailApi", GithubRepo = "https://github.com/LuccaSA/Lucca.Emails" };
-            var codeSourceEmailWorker = new CodeSource { Code = "EmailWorker", GithubRepo = "https://github.com/LuccaSA/Lucca.Emails" };
-            var codeSourceFiggo = new CodeSource { Code = "Figgo", GithubRepo = "https://github.com/LuccaSA/Figgo" };
-            var githubBranchEmailApi = new GithubBranch { Id = 1, HelmChart = "http://myHelmEmail", Name = "myProductionBranch" };
-            var githubBranchEmailWorker = new GithubBranch { Id = 2, HelmChart = "http://myHelmEmail", Name = "myProductionBranch2" };
-            var githubBranchFiggo = new GithubBranch { Id = 3, HelmChart = "http://myFiggo", Name = "figgoTempBranch" };
+            var codeSourceEmailApi = new CodeSource { Id = 1, Code = "EmailApi", GithubRepo = "https://github.com/LuccaSA/Lucca.Emails" };
+            var codeSourceEmailWorker = new CodeSource { Id = 2, Code = "EmailWorker", GithubRepo = "https://github.com/LuccaSA/Lucca.Emails" };
+            var codeSourceFiggo = new CodeSource { Id = 3, Code = "Figgo", GithubRepo = "https://github.com/LuccaSA/Figgo" };
+            var codeSourceCleemy = new CodeSource { Id = 4, Code = "Cleemy", GithubRepo = "https://github.com/LuccaSA/Cleemy.Expenses" };
+            var githubBranchEmailApi = new GithubBranch { Id = 1, HelmChart = "http://myHelmEmail", Name = "myProductionBranch", CodeSources = new List<CodeSource> { codeSourceEmailApi } };
+            var githubBranchEmailWorker = new GithubBranch { Id = 2, HelmChart = "http://myHelmEmail", Name = "myProductionBranch2",CodeSources = new List<CodeSource> { codeSourceEmailWorker } };
+            var githubBranchFiggo = new GithubBranch { Id = 3, HelmChart = "http://myFiggo", Name = "figgoTempBranch", CodeSources = new List<CodeSource> { codeSourceFiggo } };
+            var githubBranchCleemy = new GithubBranch { Id = 4, HelmChart = "http://cleemy", Name = "cleemyBranch", CodeSources = new List<CodeSource> { codeSourceCleemy } };
 
             _githubBranchesStoreMock
                 .Setup(g => g.GetProductionBranchesAsync(It.IsAny<IEnumerable<CodeSource>>()))
@@ -116,10 +118,18 @@ namespace Instances.Application.Tests.Instances
                     { codeSourceEmailWorker, githubBranchEmailWorker },
                     { codeSourceFiggo, githubBranchFiggo },
                 });
+            _githubBranchesStoreMock
+                .Setup(g => g.GetAsync(It.IsAny<GithubBranchFilter>()))
+                .ReturnsAsync(new List<GithubBranch>()
+                {
+                    githubBranchFiggo,
+                    githubBranchEmailWorker,
+                    githubBranchCleemy
+                });
 
             var result = await _helmRepository.GetAllReleasesAsync(null, null, true);
 
-            result.Should().HaveCount(2);
+            result.Should().HaveCount(3);
 
             result.First().GitRef.Should().Be(githubBranchEmailWorker.Name);
 
@@ -156,6 +166,9 @@ namespace Instances.Application.Tests.Instances
                     { codeSourceEmailApi, githubBranchEmailApi },
                     { codeSourceEmailWorker, githubBranchEmailWorker }
                 });
+            _githubBranchesStoreMock
+                .Setup(g => g.GetAsync(It.IsAny<GithubBranchFilter>()))
+                .ReturnsAsync(new List<GithubBranch>());
 
             var result = await _helmRepository.GetAllReleasesAsync("Lucca.Emails", null, true);
 
@@ -167,6 +180,9 @@ namespace Instances.Application.Tests.Instances
             _githubBranchesStoreMock.Verify(
                 g => g.GetProductionBranchesAsync(It.Is<IEnumerable<CodeSource>>(c => c.Contains(codeSourceEmailApi) && c.Contains(codeSourceEmailWorker)))
             );
+            _githubBranchesStoreMock.Verify(g => g.GetAsync(It.Is<GithubBranchFilter>(
+                g => g.IsDeleted == false && g.Name == null && g.HasHelmChart == true
+            )));
         }
 
         [Fact]
