@@ -1,10 +1,8 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import {
+  ApiSortHelper,
   ApiV3DateService,
-  apiV3SortKey,
-  apiV3SortOrderAscendingKey,
-  apiV3SortOrderDescendingKey,
   IHttpApiV3CollectionResponse,
   IHttpApiV3Response,
 } from '@cc/common/queries';
@@ -36,7 +34,7 @@ export class MiscellaneousTransactionsService {
   public getMiscellaneousTransactions$(contractIds: number[]): Observable<IMiscellaneousTransaction[]> {
     let params = new HttpParams()
       .set('fields', miscTransactionFields)
-      .set(apiV3SortKey, `periodOn,${ apiV3SortOrderDescendingKey },contract.Id,${ apiV3SortOrderAscendingKey }`);
+      .set(ApiSortHelper.v3SortKey, `periodOn,${ ApiSortHelper.v3DscKey },contract.Id,${ ApiSortHelper.v3AscKey }`);
 
     if (!!contractIds?.length) {
       params = params.set('contractId', contractIds.join(','));
