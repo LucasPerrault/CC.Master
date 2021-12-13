@@ -65,12 +65,13 @@ export class ContractTabFormComponent implements OnInit, OnDestroy, ControlValue
   public isFrequencyDisabled$: ReplaySubject<boolean> = new ReplaySubject<boolean>();
 
   public get offerApiFilters(): string[] {
+    const filters = [`isArchived=false`];
     const product = this.formGroup.get(ContractFormKey.Product).value;
-    if (!product) {
-      return [];
+    if (!!product) {
+      filters.push(`productId=${product.id}`);
     }
 
-    return [`productId=${product.id}`];
+    return filters;
   }
 
   public get canEditTheoreticalStartOn(): boolean {
