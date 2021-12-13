@@ -1,5 +1,5 @@
 <header class="u-paddingLeftSmall u-paddingRightSmall u-paddingTopSmaller u-paddingBottomSmaller u-displayFlex u-justifyContentSpaceBetween">
-  <label class="checkbox">
+  <label class="checkbox" *ngIf="canReadValidationContext">
     <input class="checkbox-input" type="checkbox" name="checkboxEtsList" [checked]="areAllSelected" (click)="selectAll()">
     <span class="checkbox-label">
       {{ 'front_contractPage_establishments_selectAll_label' | translate }}
@@ -35,12 +35,12 @@
         <th class="table-head-row-cell" *ngIf="isLinked">
           {{ 'front_contractPage_establishments_column_monthFree' | translate }}
         </th>
-        <th class="table-head-row-cell mod-actions"></th>
+        <th class="table-head-row-cell mod-actions" *ngIf="canReadValidationContext"></th>
       </tr>
     </thead>
     <tbody class="table-body">
       <tr class="table-body-row" *ngFor="let entry of entries; trackBy: trackBy">
-        <td class="table-body-row-cell">
+        <td class="table-body-row-cell" *ngIf="canReadValidationContext">
           <label class="checkbox">
             <input class="checkbox-input" type="checkbox" name="checkboxEtsList"
                    [checked]="isSelected(entry)" (click)="select(entry)">
@@ -66,7 +66,7 @@
         <td class="table-body-row-cell" *ngIf="isLinked">
           {{ getAttachment(entry)?.nbMonthFree }}
         </td>
-        <td class="table-body-row-cell mod-actions">
+        <td class="table-body-row-cell mod-actions" *ngIf="canReadValidationContext">
           <cc-establishment-list-actions-single *ngIf="canEditAttachments()"
                                                 [entry]="entry"
                                                 [context]="actionsContext">
@@ -88,7 +88,7 @@
 </div>
 
 <cc-establishment-list-actions-multiple class="u-displayBlock u-textRight u-paddingSmall"
-                                        *ngIf="canEditAttachments()"
+                                        *ngIf="canEditAttachments() && canReadValidationContext"
                                         [entries]="selectedEntries"
                                         [context]="actionsContext">
 </cc-establishment-list-actions-multiple>
