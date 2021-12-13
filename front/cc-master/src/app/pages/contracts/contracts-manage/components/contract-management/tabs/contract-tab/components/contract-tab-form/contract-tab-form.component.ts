@@ -18,7 +18,7 @@ import { takeUntil } from 'rxjs/operators';
 import { ContractsModalTabPath } from '../../../../constants/contracts-modal-tab-path.enum';
 import { IValidationContext } from '../../../../validation-context-store.data';
 import { IContractFormInformation } from '../../models/contract-form-information.interface';
-import { ContractActionRestrictionsService } from '../../services/contract-action-restrictions.service';
+import { ContractActionRestrictionsService } from '../../services/contract-action-restrictions.service.';
 import { ClientInfoModalComponent } from './client-info-modal/client-info-modal.component';
 import { IClientInfoModalData } from './client-info-modal/client-info-modal-data.interface';
 
@@ -77,35 +77,35 @@ export class ContractTabFormComponent implements OnInit, OnDestroy, ControlValue
   }
 
   public get canEditTheoreticalStartOn(): boolean {
-    return this.formValidationService.canEditTheoreticalStartOn(this.validationContext);
-  }
-
-  public get canEditDistributor(): boolean {
-    return this.formValidationService.canEditDistributor(this.validationContext);
-  }
-
-  public get canEditClient(): boolean {
-    return this.formValidationService.canEditClient(this.validationContext);
-  }
-
-  public get canEditOffer(): boolean {
-    return this.formValidationService.canEditOffer(this.validationContext);
-  }
-
-  public get canEditProduct(): boolean {
-    return this.formValidationService.canEditProduct(this.validationContext);
-  }
-
-  public get canEditMinimalBilling(): boolean {
-    return this.formValidationService.canEditMinimalBilling(this.validationContext);
-  }
-
-  public get canEditBillingFrequency(): boolean {
-    return this.formValidationService.canEditBillingFrequency(this.validationContext);
+    return this.restrictionsService.canEditTheoreticalStartOn(this.validationContext);
   }
 
   private get canEditContract(): boolean {
-    return this.formValidationService.canEditContract();
+    return this.restrictionsService.canEditContract(this.validationContext);
+  }
+
+  public get canEditDistributor(): boolean {
+    return this.restrictionsService.canEditDistributor(this.validationContext);
+  }
+
+  public get canEditClient(): boolean {
+    return this.restrictionsService.canEditClient(this.validationContext);
+  }
+
+  public get canEditOffer(): boolean {
+    return this.restrictionsService.canEditOffer(this.validationContext);
+  }
+
+  public get canEditProduct(): boolean {
+    return this.restrictionsService.canEditProduct(this.validationContext);
+  }
+
+  public get canEditMinimalBilling(): boolean {
+    return this.restrictionsService.canEditMinimalBilling(this.validationContext);
+  }
+
+  public get canEditBillingFrequency(): boolean {
+    return this.restrictionsService.canEditBillingFrequency(this.validationContext);
   }
 
   private destroy$: Subject<void> = new Subject<void>();
@@ -114,13 +114,13 @@ export class ContractTabFormComponent implements OnInit, OnDestroy, ControlValue
     private router: Router,
     private luModal: LuModal,
     private activatedRoute: ActivatedRoute,
-    private formValidationService: ContractActionRestrictionsService,
+    private restrictionsService: ContractActionRestrictionsService,
   ) {
   }
 
   public ngOnInit(): void {
     this.formGroup = new FormGroup({
-      [ContractFormKey.BillingMonth]: new FormControl({ value: null }),
+      [ContractFormKey.BillingMonth]: new FormControl({ value: null, disabled: !this.canEditContract }),
       [ContractFormKey.Distributor]: new FormControl({ value: null, disabled: !this.canEditDistributor }),
       [ContractFormKey.Client]: new FormControl({ value: null, disabled: !this.canEditClient }),
       [ContractFormKey.Offer]: new FormControl({ value: null, disabled: !this.canEditOffer }),
@@ -130,7 +130,7 @@ export class ContractTabFormComponent implements OnInit, OnDestroy, ControlValue
         value: { count: null, endAt: null },
         disabled: !this.canEditContract,
       }),
-      [ContractFormKey.TheoreticalMonthRebate]: new FormControl({ value: 0 }),
+      [ContractFormKey.TheoreticalMonthRebate]: new FormControl({ value: 0, disabled: !this.canEditContract }),
       [ContractFormKey.TheoreticalStartOn]: new FormControl({ value: null, disabled: !this.canEditTheoreticalStartOn }),
       [ContractFormKey.MinimalBillingPercentage]: new FormControl({ value: 0, disabled: !this.canEditMinimalBilling }),
       [ContractFormKey.Comment]: new FormControl({ value: '', disabled: !this.canEditContract }),

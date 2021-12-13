@@ -1,7 +1,6 @@
 import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
-import { Operation, RightsService } from '@cc/aspects/rights';
 import { getButtonState, toSubmissionState } from '@cc/common/forms';
 import { IContractForm } from '@cc/domain/billing/contracts';
 import { DistributorsService } from '@cc/domain/billing/distributors';
@@ -14,6 +13,7 @@ import { ContractsListService } from '../../../../services/contracts-list.servic
 import { ContractManagementService } from '../../contract-management.service';
 import { IValidationContext } from '../../validation-context-store.data';
 import { ValidationContextStoreService } from '../../validation-context-store.service';
+import { ValidationRestrictionsService } from '../../validation-restrictions.service';
 import {
   ContractLeavingConfirmationPopupComponent,
 } from './components/contract-leaving-confirmation-popup/contract-leaving-confirmation-popup.component';
@@ -38,7 +38,11 @@ export class ContractTabComponent implements OnInit, OnDestroy {
   public isClosePopupConfirmed$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
   public get canEditContract(): boolean {
-    return this.rightsService.hasOperation(Operation.EditContracts);
+    return this.restrictionsService.hasRightsToEditContracts;
+  }
+
+  public get canReadValidationContext(): boolean {
+    return this.restrictionsService.hasRightsToReadValidationContext;
   }
 
   public get contractId(): number {
@@ -49,12 +53,12 @@ export class ContractTabComponent implements OnInit, OnDestroy {
   private destroy$: Subject<void> = new Subject<void>();
 
   constructor(
-    private rightsService: RightsService,
     private activatedRoute: ActivatedRoute,
     private contractTabService: ContractTabService,
     private contractsManageModalService: ContractManagementService,
     private contractsListService: ContractsListService,
     private contextStoreService: ValidationContextStoreService,
+    private restrictionsService: ValidationRestrictionsService,
     private distributorsService: DistributorsService,
     private luPopup: LuPopup,
   ) {}
@@ -62,9 +66,11 @@ export class ContractTabComponent implements OnInit, OnDestroy {
   public ngOnInit(): void {
     this.isLoading$.next(true);
 
-    this.contextStoreService.context$
-      .pipe(take(1))
-      .subscribe(context => this.validationContext$.next(context));
+    if (this.canReadValidationContext) {
+      this.contextStoreService.context$
+        .pipe(take(1))
+        .subscribe(context => this.validationContext$.next(context));
+    }
 
     this.contractTabService.getContractDetailed$(this.contractId)
       .pipe(take(1), finalize(() => this.isLoading$.next(false)))

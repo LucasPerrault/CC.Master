@@ -18,7 +18,7 @@ import { ClientInfoModalModule } from './components/contract-tab-form/client-inf
 import { ContractTabFormComponent } from './components/contract-tab-form/contract-tab-form.component';
 import { ContractTabComponent } from './contract-tab.component';
 import { CanDeactivateAfterEditingForm } from './guards/can-deactivate-after-editing-form.guard';
-import { ContractActionRestrictionsService } from './services/contract-action-restrictions.service';
+import { ContractActionRestrictionsService } from './services/contract-action-restrictions.service.';
 import { ContractTabService } from './services/contract-tab.service';
 
 @NgModule({
