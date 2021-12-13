@@ -11,13 +11,23 @@
   </ng-container>
 
   <ng-template #isContractOpened>
-    <cc-contract-closure-form [contractClosureDetailed]="contractClosureDetailed$ | async"
-                              [lastAttachmentEnded]="lastAttachmentEnded$ | async"
-                              [formValidationContext]="closureFormValidationContext$ | async"
-                              [maxContractClosedDate]="maxContractClosedDate$ | async"
-                              [closeButtonState]="closeButtonState$ | async"
-                              (closeContract)="closeContract($event)">
-    </cc-contract-closure-form>
+    <ng-container *ngIf="!canReadValidationContext; else canReadContext">
+      <div class="callout mod-icon palette-warning u-marginStandard">
+        <div class="callout-icon"><span aria-hidden="true" class="lucca-icon icon-warning"></span></div>
+        <div>{{ 'contracts_closeTab_cannot_read_validation_context' | translate }}</div>
+      </div>
+    </ng-container>
+
+    <ng-template #canReadContext>
+      <cc-contract-closure-form [contractClosureDetailed]="contractClosureDetailed$ | async"
+                                [lastAttachmentEnded]="lastAttachmentEnded$ | async"
+                                [formValidationContext]="closureFormValidationContext$ | async"
+                                [maxContractClosedDate]="maxContractClosedDate$ | async"
+                                [closeButtonState]="closeButtonState$ | async"
+                                (closeContract)="closeContract($event)">
+      </cc-contract-closure-form>
+    </ng-template>
+
   </ng-template>
 
 </ng-template>
