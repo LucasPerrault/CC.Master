@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { Operation, OperationsGuard } from '@cc/aspects/rights';
+import { Operation, OperationsGuard, OperationsPageGuard } from '@cc/aspects/rights';
 import { NavigationPath } from '@cc/common/navigation';
 
 import { ContractsComponent } from './contracts.component';
@@ -9,6 +9,7 @@ import { ContractsDraftEntryModalComponent } from './contracts-draft/components/
 import { ContractsDraftComponent } from './contracts-draft/contracts-draft.component';
 import { ContractsDraftModule } from './contracts-draft/contracts-draft.module';
 import { ContractsModalTabPath } from './contracts-manage/components/contract-management/constants/contracts-modal-tab-path.enum';
+import { contractsModalTabs } from './contracts-manage/components/contract-management/constants/contracts-modal-tabs.const';
 import { ContractManagementComponent } from './contracts-manage/components/contract-management/contract-management.component';
 import { AccountingTabComponent } from './contracts-manage/components/contract-management/tabs/accounting-tab/accounting-tab.component';
 import { CloseTabComponent } from './contracts-manage/components/contract-management/tabs/close-tab/close-tab.component';
@@ -91,6 +92,8 @@ const routes: Routes = [
       {
         path: `${ NavigationPath.ContractsManage }/:id`,
         component: ContractManagementComponent,
+        canActivate: [OperationsPageGuard],
+        data: { tabs: contractsModalTabs },
         children: contractTabsRoutes,
       },
       {
