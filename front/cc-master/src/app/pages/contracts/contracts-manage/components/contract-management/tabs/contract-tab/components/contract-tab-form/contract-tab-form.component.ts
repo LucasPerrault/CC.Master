@@ -15,8 +15,8 @@ import { ReplaySubject, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
 import { IValidationContext } from '../../../../validation-context-store.data';
+import { ContractActionRestrictionsService } from '../../services/contract-action-restrictions.service';
 import { IContractFormInformation } from '../../models/contract-form-information.interface';
-import { ContractActionRestrictionsService } from '../../services/contract-action-restrictions.service.';
 import { ClientInfoModalComponent } from './client-info-modal/client-info-modal.component';
 import { IClientInfoModalData } from './client-info-modal/client-info-modal-data.interface';
 
