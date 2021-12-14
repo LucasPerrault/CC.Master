@@ -11,6 +11,10 @@ export class EstablishmentTypeSectionComponent {
   @Input() public isExpandedByDefault = false;
   @Input() public class: string;
 
+  public get hasTotalCount(): boolean {
+    return this.totalCount === 0 || !!this.totalCount;
+  }
+
   public toggleEstablishmentSectionDisplay(): void {
     this.isExpandedByDefault = !this.isExpandedByDefault;
   }

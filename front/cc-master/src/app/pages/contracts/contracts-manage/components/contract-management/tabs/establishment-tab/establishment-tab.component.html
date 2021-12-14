@@ -9,7 +9,6 @@
      <ng-container *ngIf="establishments$ | async; let establishments">
 
        <cc-establishment-type-section [title]="'front_contractPage_establishments_section_info' | translate"
-                                      [totalCount]="establishments.linkedToContract.length"
                                       [isExpandedByDefault]="true">
          <div class="u-paddingSmaller" filters>
            <cc-establishment-type-filter [formControl]="typeFilter"

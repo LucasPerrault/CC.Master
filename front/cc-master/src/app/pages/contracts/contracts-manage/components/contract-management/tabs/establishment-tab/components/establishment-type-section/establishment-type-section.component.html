@@ -1,6 +1,6 @@
 <section class="mod-view u-marginBottomSmaller" [ngClass]="class">
   <header class="section-header" (click)="toggleEstablishmentSectionDisplay()">
-    <span class="section-label label mod-number">{{ totalCount }}</span>
+    <span class="section-label label mod-number" *ngIf="hasTotalCount">{{ totalCount }}</span>
     <h4 class="section-title">{{ title }}</h4>
 
     <div class="mod-accordion">
