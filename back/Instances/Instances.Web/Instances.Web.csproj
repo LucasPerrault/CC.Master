@@ -8,7 +8,7 @@
 
   <ItemGroup>
     <PackageReference Include="Lucca.Core.Api.Web" Version="1.0.1" />
-    <PackageReference Include="Microsoft.Extensions.Localization" Version="6.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Localization" Version="6.0.1" />
   </ItemGroup>
 
   <ItemGroup>
