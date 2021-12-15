@@ -21,10 +21,13 @@ export class DistributorApiSelectService extends LuApiV4Service<IDistributor> {
   private get beginWithLucca(): UnaryFunction<Observable<IDistributor[]>, Observable<IDistributor[]>> {
     return pipe(
       map(distributors => {
-        const distributorsWithoutLucca = distributors.filter(d => d.id !== DistributorIds.lucca);
         const luccaDistributor = distributors.find(d => d.id === DistributorIds.lucca);
+        if (!luccaDistributor) {
+          return distributors;
+        }
 
-        return !!luccaDistributor ? [luccaDistributor, ...distributorsWithoutLucca] : distributorsWithoutLucca;
+        const distributorsWithoutLucca = distributors.filter(d => d.id !== DistributorIds.lucca);
+        return [luccaDistributor, ...distributorsWithoutLucca];
       }),
     );
   }
