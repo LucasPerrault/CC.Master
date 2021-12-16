@@ -44,8 +44,8 @@ namespace IpFilter.Web
 
         private EmailHrefBuilder EmailHrefBuilder => new EmailHrefBuilder
         {
-            Accept = guid => new Uri(_configuration.CloudControlBaseAddress, $"/authorize-ip?code={guid}").ToString(),
-            Reject = guid => new Uri(_configuration.CloudControlBaseAddress, $"/ip-filter/reject?code={guid}").ToString(),
+            Accept = guid => new Uri(_configuration.CloudControlBaseAddress, $"/ip/confirm?code={guid}").ToString(),
+            Reject = guid => new Uri(_configuration.CloudControlBaseAddress, $"/ip/reject?code={guid}").ToString(),
         };
     }
 }
