@@ -104,6 +104,7 @@ namespace Billing.Contracts.Infra.Storage.Stores
                 .Apply(filter.ArchivedAt).To(c => c.ArchivedAt)
                 .Apply(filter.StartsOn).To(ContractExpressions.StartsOn)
                 .Apply(filter.EndsOn).To(ContractExpressions.EndsOn)
+                .WhenNotNullOrEmpty(filter.ExcludedIds).ApplyWhere(c => !filter.ExcludedIds.Contains(c.Id))
                 .Apply(filter.CreatedAt).To(c => c.CreatedAt)
                 .Apply(filter.HasEnvironment).To(c => c.EnvironmentId.HasValue)
                 .WhenNotNullOrEmpty(filter.CurrentlyAttachedEstablishmentIds).ApplyWhere(ContractExpressions.IsAttachedToAnyEstablishment(filter.CurrentlyAttachedEstablishmentIds, DateTime.Now))

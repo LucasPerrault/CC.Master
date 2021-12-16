@@ -1,0 +1,31 @@
+<div class="card">
+  <div class="card-content">
+    <h2>{{ 'front_accountingRevenuePage_sync_title_card' | translate }}</h2>
+
+    <div *ngIf="isLoading; else isNotLoading" class="progress mod-indeterminate">
+      <div class="progress-bar"></div>
+    </div>
+
+    <ng-template #isNotLoading>
+      <div class="u-displayFlex u-flexDirectionColumn u-alignItemsFlexEnd">
+        <span>
+          {{ 'front_accountingRevenuePage_sync_amount' | translate }} :
+          <strong>{{ syncRevenueInfo?.amount | currency:"EUR"}}</strong>
+        </span>
+
+          <span>
+            {{ 'front_accountingRevenuePage_sync_lineCount' | translate }}
+            <strong>{{ syncRevenueInfo?.lineCount | number }}</strong>
+          </span>
+      </div>
+    </ng-template>
+
+  </div>
+  <footer class="card-footer">
+    <div class="card-footer-right">
+      <button class="button" [ngClass]="syncButtonState" (click)="synchronise()" [disabled]="isDisabled">
+        {{ 'front_accountingRevenuePage_syncRevenue_button_label' | translate }}
+      </button>
+    </div>
+  </footer>
+</div>

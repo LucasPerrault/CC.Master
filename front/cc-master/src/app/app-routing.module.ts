@@ -5,6 +5,8 @@ import { ForbiddenComponent, NotFoundComponent } from '@cc/common/error-redirect
 import { NavigationPath, navigationTabs } from '@cc/common/navigation';
 import { NoNavPath } from '@cc/common/routing';
 
+import { AccountingComponent } from './pages/accounting/accounting.component';
+import { AccountingModule } from './pages/accounting/accounting.module';
 import { CafeComponent } from './pages/cafe/cafe.component';
 import { CafeModule } from './pages/cafe/cafe.module';
 import { CodeSourcesComponent } from './pages/code-sources/code-sources.component';
@@ -30,6 +32,10 @@ const pageRoutes: Routes = [
     component: ContractsComponent,
   },
   {
+    path: NavigationPath.Accounting,
+    component: AccountingComponent,
+  },
+  {
     path: NavigationPath.Offers,
     component: OffersComponent,
   },
@@ -52,6 +58,7 @@ const routes: Routes = [
     LogsModule,
     CodeSourcesModule,
     ContractsModule,
+    AccountingModule,
     OffersModule,
     CafeModule,
   ],

@@ -8,6 +8,7 @@ namespace Billing.Contracts.Domain.Contracts
     {
         public HashSet<int> Ids { get; set; } = new HashSet<int>();
         public Guid? ClientExternalId { get; set; }
+        public HashSet<int> ExcludedIds { get; set; } = new HashSet<int>();
         public HashSet<string> Search { get; set; } = new HashSet<string>();
         public CompareNullableDateTime ArchivedAt { get; set; } = CompareNullableDateTime.Bypass();
         public HashSet<int> EnvironmentIds { get; set; } = new HashSet<int>();

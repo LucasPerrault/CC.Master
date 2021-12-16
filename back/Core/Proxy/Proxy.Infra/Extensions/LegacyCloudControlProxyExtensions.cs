@@ -38,6 +38,7 @@ namespace Core.Proxy.Infra.Extensions
             "/cc-master",
             "/logs",
             "/sources",
+            "/accounting",
             "/reports",
             "/offers",
             "/contracts",

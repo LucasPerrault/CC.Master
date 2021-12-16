@@ -1,0 +1,36 @@
+<div class="page mod-fullWidth mod-withFullwidthTable">
+  <header class="page-header blockWithFixedSizeInFlex">
+    <h1>{{ "front_miscTransactionsPage_title" | translate }}</h1>
+    <button class="button" (click)="openCreationModal()">
+      {{ "front_miscTransactionsPage_createButton_label" | translate }}
+    </button>
+  </header>
+
+  <div class="header blockWithFixedSizeInFlex">
+    <cc-contract-api-select [placeholder]="'front_miscTransactionsPage_contract_filter_label' | translate"
+                            [multiple]="true"
+                            textfieldClass="palette-grey mod-longest mod-outlined"
+                            [formControl]="formControl">
+    </cc-contract-api-select>
+   
+    <button *ngIf="shouldDisplayBillingAction"
+            class="button u-marginLeftAuto" [ngClass]="billButtonState$ | async"
+            [disabled]="!hasBillingClientIdEquals || !billingCurrencyId"
+            (click)="billTransaction()">
+      {{ 'front_miscTransactionsPage_bill_button_label' | translate }}
+      <span *ngIf="!!billingCurrencyId; else hasBillingCurrencyIdDifferent"
+            [innerHTML]="amountBillable | currency: billingCurrencyId | accountingAmount">
+      </span>
+      <ng-template #hasBillingCurrencyIdDifferent>{{ amountBillable }} ?</ng-template>
+    </button>
+  </div>
+
+  <div class="loading mod-fullPage" *ngIf="isLoading$ | async; else isNotLoading"></div>
+
+  <ng-template #isNotLoading>
+    <cc-misc-transactions-list [transactions]="transactions$ | async"
+                               (cancelTransaction)="cancelTransaction($event)"
+                               (updateSelectedTransactions)="updateSelectedTransactions($event)">
+    </cc-misc-transactions-list>
+  </ng-template>
+</div>

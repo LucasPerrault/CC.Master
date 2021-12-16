@@ -1,0 +1,85 @@
+<table class="table">
+  <thead class="table-head">
+    <tr class="table-head-row">
+      <th class="table-head-row-cell"></th>
+      <th class="table-head-row-cell">
+        {{ 'front_miscTransactionsPage_columnName_contractId' | translate }}
+      </th>
+      <th class="table-head-row-cell">
+        {{ 'front_miscTransactionsPage_columnName_name' | translate }}
+      </th>
+      <th class="table-head-row-cell">
+        {{ 'front_miscTransactionsPage_columnName_amount' | translate }}
+      </th>
+      <th class="table-head-row-cell">
+        {{ 'front_miscTransactionsPage_columnName_accountingDate' | translate }}
+      </th>
+      <th class="table-head-row-cell">
+        {{ 'front_miscTransactionsPage_columnName_period' | translate }}
+      </th>
+      <th class="table-head-row-cell">
+        {{ 'front_miscTransactionsPage_columnName_lettered' | translate }}
+      </th>
+      <th class="table-head-row-cell">
+        {{ 'front_miscTransactionsPage_columnName_author' | translate }}
+      </th>
+      <th class="table-head-row-cell"></th>
+      <th class="table-head-row-cell mod-actions"></th>
+    </tr>
+  </thead>
+  <tbody class="table-body">
+    <tr class="table-body-row"
+        *ngFor="let transaction of transactions"
+        [ngClass] = "{ 'is-canceled' : transaction.isCanceled }">
+      <td class="table-body-row-cell">
+        <label class="checkbox">
+          <input class="checkbox-input"
+                 type="checkbox"
+                 (click)="select(transaction)"
+                 [disabled]="transaction.hasEntryLettered"
+                 [checked]="isSelected(transaction)">
+          <span class="checkbox-label"></span>
+        </label>
+      </td>
+      <td class="table-body-row-cell mod-alignRight">
+        <button class="link" (click)="redirectToContract(transaction)">
+          {{ transaction.contract.id }}
+        </button>
+      </td>
+      <td class="table-body-row-cell">
+        {{ transaction.contract?.name }}
+      </td>
+      <td class="table-body-row-cell mod-alignRight"
+          [innerHTML]="transaction.amount | currency: transaction.currencyId | accountingAmount">
+      </td>
+      <td class="table-body-row-cell">
+        {{ getAccountingDate(transaction) | date:'LLL yyyy' }}
+      </td>
+      <td class="table-body-row-cell">
+        {{ transaction.periodOn | date:'LLL yyyy' }}
+      </td>
+      <td class="table-body-row-cell">
+        <span *ngIf="transaction.hasEntryLettered" aria-hidden="true"
+              class="lucca-icon icon-tick u-textPrimary isLettered">
+        </span>
+      </td>
+      <td class="table-body-row-cell">
+        {{ transaction.author?.name }}
+      </td>
+      <td class="table-body-row-cell">
+        <span class="lucca-icon icon-info"
+              luTooltip="{{ transaction.documentLabel }} &#13; {{ transaction.comment }}">
+        </span>
+      </td>
+      <td class="table-body-row-cell mod-actions">
+        <button class="actionIcon"
+                type="button"
+                [ngClass]="{ 'is-loading': isCancelling(transaction) }"
+                [disabled]="!transaction.isCancelable">
+          <span class="lucca-icon icon-trash" (click)="cancel(transaction)"></span>
+        </button>
+      </td>
+    </tr>
+  </tbody>
+
+</table>

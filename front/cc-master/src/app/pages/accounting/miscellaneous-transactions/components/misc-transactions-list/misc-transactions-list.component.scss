@@ -1,0 +1,18 @@
+@import "theming.import";
+
+.is-canceled .table-body-row-cell,
+.is-canceled .table-body-row-cell .actionIcon,
+.actionIcon:disabled {
+  color: _color('grey', 400);
+}
+
+:host {
+  overflow: auto;
+}
+
+.table .table-head-row-cell {
+  position: sticky;
+  top: 0;
+  background-color: white;
+  z-index: 30;
+}
