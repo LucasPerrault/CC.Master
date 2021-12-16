@@ -4,9 +4,10 @@ import { ActivatedRoute } from '@angular/router';
 import { Operation, RightsService } from '@cc/aspects/rights';
 import { getButtonState, toSubmissionState } from '@cc/common/forms';
 import { IContractForm } from '@cc/domain/billing/contracts';
+import { DistributorsService } from '@cc/domain/billing/distributors';
 import { ILuPopupRef, LuPopup } from '@lucca-front/ng/popup';
 import { isEqual as isDateEqual } from 'date-fns';
-import { BehaviorSubject, ReplaySubject, Subject } from 'rxjs';
+import { BehaviorSubject, Observable, ReplaySubject, Subject } from 'rxjs';
 import { filter, finalize, map, take, takeUntil } from 'rxjs/operators';
 
 import { ContractsListService } from '../../../../services/contracts-list.service';
@@ -17,6 +18,7 @@ import {
   ContractLeavingConfirmationPopupComponent,
 } from './components/contract-leaving-confirmation-popup/contract-leaving-confirmation-popup.component';
 import { IContractDetailed } from './models/contract-detailed.interface';
+import { IContractFormInformation } from './models/contract-form-information.interface';
 import { ContractTabService } from './services/contract-tab.service';
 
 @Component({
@@ -62,17 +64,14 @@ export class ContractTabComponent implements OnInit, OnDestroy {
 
     this.contextStoreService.context$
       .pipe(take(1))
-      .subscribe(contract => this.contractForm.setValue(this.toContractForm(contract)));
-
-    this.contractToEdit$
-      .pipe(take(1), switchMap(contract => this.toFormInformation$(contract)))
-      .subscribe(this.formInformation$);
+      .subscribe(context => this.validationContext$.next(context));
 
     this.contractTabService.getContractDetailed$(this.contractId)
       .pipe(take(1), finalize(() => this.isLoading$.next(false)))
       .subscribe(contract => {
         this.contractForm.setValue(this.toContractForm(contract));
         this.contractToEdit$.next(contract);
+        this.setFormInformation(contract);
       });
 
     this.isClosePopupConfirmed$
@@ -150,6 +149,12 @@ export class ContractTabComponent implements OnInit, OnDestroy {
       && contract.minimalBillingPercentage === form.minimalBillingPercentage
       && contract.unityNumberTheorical === form.theoreticalDraftCount
       && (contract.comment ?? '') === form.comment;
+  }
+
+  private setFormInformation(contract: IContractDetailed): void {
+    this.toFormInformation$(contract)
+      .pipe(take(1))
+      .subscribe(this.formInformation$);
   }
 
   private toFormInformation$(contract: IContractDetailed): Observable<IContractFormInformation> {

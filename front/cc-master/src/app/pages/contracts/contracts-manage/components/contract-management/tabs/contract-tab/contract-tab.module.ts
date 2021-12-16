@@ -4,9 +4,9 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { TranslateModule } from '@cc/aspects/translate';
 import { ClientApiSelectModule, DistributorApiSelectModule, OfferApiSelectModule, ProductApiSelectModule } from '@cc/common/forms';
 import { LuDateSelectInputModule } from '@lucca-front/ng/date';
+import { LuModalModule } from '@lucca-front/ng/modal';
 import { LuPopupModule } from '@lucca-front/ng/popup';
 import { LuTooltipTriggerModule } from '@lucca-front/ng/tooltip';
-import { LuModalModule } from '@lucca-front/ng/modal';
 
 import {
   BillingFrequencySelectModule,
