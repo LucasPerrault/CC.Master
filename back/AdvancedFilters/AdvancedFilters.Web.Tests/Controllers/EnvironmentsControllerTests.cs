@@ -42,7 +42,7 @@ namespace AdvancedFilters.Web.Tests.Controllers
 
             var httpClient = webApplicationFactory.CreateAuthenticatedClient();
 
-            var response = await httpClient.GetAsync(_endpointBase);
+            var response = await httpClient.GetAsync(_endpointBase).CatchApplicationErrorBody();
 
             response.StatusCode.Should().Be(HttpStatusCode.OK);
             var content = await Serializer.DeserializeAsync<Page<Environment>>(await response.Content.ReadAsStreamAsync());
@@ -76,7 +76,7 @@ namespace AdvancedFilters.Web.Tests.Controllers
             var json = Serializer.Serialize(filter);
             var stringContent = new StringContent(json, Encoding.UTF8, MediaTypeNames.Application.Json);
 
-            var response = await httpClient.PostAsync($"{_endpointBase}/search", stringContent);
+            var response = await httpClient.PostAsync($"{_endpointBase}/search", stringContent).CatchApplicationErrorBody();
 
             response.StatusCode.Should().Be(HttpStatusCode.OK);
             var content = await Serializer.DeserializeAsync<Page<Environment>>(await response.Content.ReadAsStreamAsync());

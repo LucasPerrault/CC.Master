@@ -1,22 +1,29 @@
 using Authentication.Infra.Configurations;
 using CloudControl.Web.Configuration;
+using Email.Domain;
 using IpFilter.Domain;
 using IpFilter.Web;
+using Lock;
 using Lucca.Core.AspNetCore.Middlewares;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Moq;
+using Resources.Translations;
 using Rights.Domain.Abstractions;
 using System;
 using System.Collections.Generic;
+using System.Net;
 using System.Net.Http;
+using System.Security.Cryptography;
+using System.Threading.Tasks;
+using TeamNotification.Abstractions;
 using Users.Domain;
+using IConfiguration = Microsoft.Extensions.Configuration.IConfiguration;
 
 namespace CloudControl.Web.Tests.Mocks
 {
@@ -78,9 +85,11 @@ namespace CloudControl.Web.Tests.Mocks
         { }
 
         public override void ConfigureLock(IServiceCollection services, AppConfiguration configuration)
-        { }
+        {
+            services.AddSingleton(new Mock<ILockService>().Object);
+        }
 
-        public override void ConfigureIpFilter(IServiceCollection services)
+        public override void ConfigureIpFilter(IServiceCollection services, AppConfiguration configuration)
         {
             var settings = new LuccaSecuritySettings
             {
@@ -93,17 +102,29 @@ namespace CloudControl.Web.Tests.Mocks
             var options = Options.Create(settings);
             services.AddSingleton(options);
 
-            IpFilterConfigurer.ConfigureServices(services);
+            IpFilterConfigurer.ConfigureServices(services, new IpFilterConfiguration
+            {
+                CloudControlBaseAddress = new Uri("https://cc.ilucca.mocked"),
+            });
 
             var ipFilterAuthorizationMock = new Mock<IIpFilterAuthorizationStore>();
             ipFilterAuthorizationMock
-                .Setup(i => i.GetByUserAsync(It.IsAny<IpFilterUser>()))
+                .Setup(i => i.GetByUserAsync(It.IsAny<IpFilterAuthorizationFilter>()))
                 .ReturnsAsync(new List<IpFilterAuthorization>());
             services.AddSingleton(ipFilterAuthorizationMock.Object);
+
+
+            var authRequestStore = new Mock<IIpFilterAuthorizationRequestStore>();
+            authRequestStore
+                .Setup(s => s.FirstOrDefaultAsync(It.IsAny<IpFilterAuthorizationRequestFilter>()))
+                .ReturnsAsync(new IpFilterAuthorizationRequest());
+            services.AddScoped(_ => authRequestStore.Object);
+            services.AddScoped(_ => new Mock<IIpFilterTranslations>().Object);
         }
 
         public override void ConfigureNotifications(IServiceCollection services, AppConfiguration configuration)
         {
+            services.AddSingleton(new Mock<ITeamNotifier>().Object);
         }
 
         public override void ConfigureStorage(IServiceCollection services)
@@ -134,6 +155,7 @@ namespace CloudControl.Web.Tests.Mocks
 
         public override void ConfigureEmails(IServiceCollection services, AppConfiguration configuration)
         {
+            services.AddScoped(_ => new Mock<IEmailService>().Object);
         }
 
         public override void ConfigureRights(IServiceCollection services, AppConfiguration configuration)
@@ -166,5 +188,20 @@ namespace CloudControl.Web.Tests.Mocks
 
         public override void ConfigureSlack(IServiceCollection services, AppConfiguration configuration)
         { }
+    }
+
+    public static class ApiTestExtensions
+    {
+        public static async Task<HttpResponseMessage> CatchApplicationErrorBody(this Task<HttpResponseMessage> task)
+        {
+            var response = await task;
+            if (response.StatusCode != HttpStatusCode.InternalServerError)
+            {
+                return response;
+            }
+
+            var errorBody = await response.Content.ReadAsStringAsync();
+            throw new Exception(errorBody);
+        }
     }
 }
