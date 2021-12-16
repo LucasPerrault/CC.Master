@@ -1,14 +1,10 @@
-<div class="callout mod-icon palette-grey" *ngIf="showDisabledFormInformation">
-  <div class="callout-icon">
-    <span aria-hidden="true" class="lucca-icon icon-info"></span>
-  </div>
-  {{ 'front_contractPage_contractEdition_disabledForm_info_description' | translate }}
-</div>
-
 <form [formGroup]="formGroup" class="u-displayFlex u-flexGrow1 u-flexWrapWrap u-paddingBottomStandard">
   <div class="u-marginRightBigger">
     <label class="textfield mod-longest u-marginTopStandard is-required palette-grey">
       <lu-date-select [formControlName]="formGroupKey.TheoreticalStartOn"
+                      [luTooltip]="'contracts_form_disabled_info_counts_establishments' | translate"
+                      luTooltipPosition="after"
+                      [luTooltipDisabled]="canEditTheoreticalStartOn"
                       [required]="true"
                       granularity="month"
                       class="textfield-input">
@@ -23,6 +19,9 @@
 
     <cc-distributor-api-select [formControlName]="formGroupKey.Distributor"
                                [displayMode]="selectDisplayMode.Form"
+                               [luTooltip]="'contracts_form_disabled_info_counts_establishments_accountingEntries' | translate"
+                               luTooltipPosition="after"
+                               [luTooltipDisabled]="canEditDistributor"
                                [required]="true"
                                textfieldClass="mod-longest palette-grey u-marginTopStandard palette-grey">
     </cc-distributor-api-select>
@@ -34,6 +33,9 @@
 
     <cc-client-api-select [formControlName]="formGroupKey.Client"
                           [displayMode]="selectDisplayMode.Form"
+                          [luTooltip]="'contracts_form_disabled_info_counts_establishments_accountingEntries' | translate"
+                          luTooltipPosition="after"
+                          [luTooltipDisabled]="canEditClient"
                           [required]="true"
                           textfieldClass="mod-longest u-marginTopStandard palette-grey">
     </cc-client-api-select>
@@ -45,7 +47,11 @@
     </div>
 
     <label class="textfield mod-longest u-marginTopStandard palette-grey is-required">
-      <cc-product-api-select [formControlName]="formGroupKey.Product" [required]="true">
+      <cc-product-api-select [formControlName]="formGroupKey.Product"
+                            [luTooltip]="'contracts_form_disabled_info_counts_establishments_accountingEntries' | translate"
+                            luTooltipPosition="after"
+                            [luTooltipDisabled]="canEditProduct"
+                            [required]="true">
       </cc-product-api-select>
       <span class="textfield-label">{{ 'select_product_label' | translate }}</span>
       <span class="textfield-messages" *ngIf="hasRequiredError(formGroupKey.Product)">
@@ -56,7 +62,12 @@
     </label>
 
     <label class="textfield mod-longest u-marginTopStandard palette-grey is-required">
-      <cc-offer-api-select [formControlName]="formGroupKey.Offer" [required]="true" [filters]="offerApiFilters">
+      <cc-offer-api-select [formControlName]="formGroupKey.Offer"
+                        [required]="true"
+                        [filters]="offerApiFilters"
+                        [luTooltip]="'contracts_form_disabled_info_counts_establishments' | translate"
+                        luTooltipPosition="after"
+                        [luTooltipDisabled]="canEditOffer">
       </cc-offer-api-select>
       <span class="textfield-label">{{ "offer_select_label" | translate }}</span>
       <span class="textfield-messages" *ngIf="hasRequiredError(formGroupKey.Offer)">
@@ -69,13 +80,19 @@
 
   <div class="u-marginTopStandard">
     <cc-billing-frequency-select textfieldClass="palette-grey"
-                                 [formControlName]="formGroupKey.BillingMonth" [required]="true"
+                                 [formControlName]="formGroupKey.BillingMonth"
+                                 [required]="true"
+                                 [luTooltip]="'contracts_form_disabled_info_counts_establishments' | translate"
+                                 luTooltipPosition="after"
+                                 [luTooltipDisabled]="!formGroup.get(formGroupKey.BillingMonth).disabled"
                                  [frequencyDisabled]="isFrequencyDisabled$ | async">
     </cc-billing-frequency-select>
 
     <div class="u-displayFlex u-marginTopStandard">
       <cc-theoretical-draft-count textfieldClass="palette-grey"
-                                  [formControlName]="formGroupKey.TheoreticalDraftCount" [required]="true"></cc-theoretical-draft-count>
+                                  [formControlName]="formGroupKey.TheoreticalDraftCount"
+                                  [required]="true">
+      </cc-theoretical-draft-count>
 
       <cc-theoretical-month-rebate textfieldClass="palette-grey u-marginLeftBig"
                                    [formControlName]="formGroupKey.TheoreticalMonthRebate"
@@ -83,11 +100,15 @@
       </cc-theoretical-month-rebate>
     </div>
 
-    <cc-client-rebate textfieldClass="palette-grey u-marginTopStandard" [formControlName]="formGroupKey.ClientRebate">
+    <cc-client-rebate textfieldClass="palette-grey u-marginTopStandard"
+                      [formControlName]="formGroupKey.ClientRebate">
     </cc-client-rebate>
 
     <cc-minimal-billing-percentage textfieldClass="palette-grey u-marginTopStandard"
                                    [formControlName]="formGroupKey.MinimalBillingPercentage"
+                                   [luTooltip]="'contracts_form_disabled_info_counts' | translate"
+                                   luTooltipPosition="after"
+                                   [luTooltipDisabled]="canEditMinimalBilling"
                                    [required]="true"
                                    [min]="0"
                                    [max]="100">

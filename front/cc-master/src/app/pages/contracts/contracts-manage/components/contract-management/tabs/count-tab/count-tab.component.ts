@@ -8,6 +8,7 @@ import { BehaviorSubject, combineLatest, Observable, pipe, ReplaySubject, Subjec
 import { debounceTime, finalize, map, take, takeUntil } from 'rxjs/operators';
 
 import { ContractManagementService } from '../../contract-management.service';
+import { ValidationContextStoreService } from '../../validation-context-store.service';
 import { CountsDetailDownloadModalComponent } from './components/counts-detail-download-modal/counts-detail-download-modal.component';
 import { ICountsDetailDownloadModalData } from './components/counts-detail-download-modal/counts-detail-download-modal-data.interface';
 import { CountsReplayModalComponent } from './components/counts-replay-modal/counts-replay-modal.component';
@@ -72,6 +73,7 @@ export class CountTabComponent implements OnInit, OnDestroy {
     private restrictionsService: CountContractsRestrictionsService,
     private luModal: LuModal,
     private manageModalService: ContractManagementService,
+    private contextStoreService: ValidationContextStoreService,
   ) { }
 
   public ngOnInit(): void {
@@ -95,6 +97,7 @@ export class CountTabComponent implements OnInit, OnDestroy {
 
         if (entries.every(e => !e.buttonStateClass)) {
           this.refresh(this.contractId);
+          this.contextStoreService.refreshAll(this.contractId);
         }
       });
   }
@@ -103,6 +106,7 @@ export class CountTabComponent implements OnInit, OnDestroy {
     this.countContractsService.deleteRange$(counts)
       .pipe(this.toButtonState, finalize(() => {
           this.refresh(this.contractId);
+          this.contextStoreService.refreshAll(this.contractId);
           this.countsSelected = [];
         }),
       )

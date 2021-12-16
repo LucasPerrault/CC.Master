@@ -5,6 +5,8 @@ import { TranslateModule } from '@cc/aspects/translate';
 import { ClientApiSelectModule, DistributorApiSelectModule, OfferApiSelectModule, ProductApiSelectModule } from '@cc/common/forms';
 import { LuDateSelectInputModule } from '@lucca-front/ng/date';
 import { LuModalModule } from '@lucca-front/ng/modal';
+import { LuPopupModule } from '@lucca-front/ng/popup';
+import { LuTooltipTriggerModule } from '@lucca-front/ng/tooltip';
 
 import {
   BillingFrequencySelectModule,
@@ -15,9 +17,9 @@ import {
 import { ClientInfoModalModule } from './components/contract-tab-form/client-info-modal/client-info-modal.module';
 import { ContractTabFormComponent } from './components/contract-tab-form/contract-tab-form.component';
 import { ContractTabComponent } from './contract-tab.component';
-import { ContractActionRestrictionsService } from './services/contract-action-restrictions.service.';
+import { CanDeactivateAfterEditingForm } from './guards/can-deactivate-after-editing-form.guard';
+import { ContractActionRestrictionsService } from './services/contract-action-restrictions.service';
 import { ContractTabService } from './services/contract-tab.service';
-import { ContractValidationContextService } from './services/contract-validation-context.service';
 
 @NgModule({
   declarations: [ContractTabComponent, ContractTabFormComponent],
@@ -38,11 +40,13 @@ import { ContractValidationContextService } from './services/contract-validation
     CommentModule,
     LuModalModule,
     ClientInfoModalModule,
+    LuTooltipTriggerModule,
+    LuPopupModule,
   ],
   providers: [
     ContractTabService,
-    ContractValidationContextService,
     ContractActionRestrictionsService,
+    CanDeactivateAfterEditingForm,
   ],
 })
 export class ContractTabModule { }

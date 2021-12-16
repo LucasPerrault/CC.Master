@@ -105,7 +105,7 @@ export class CloseTabComponent implements OnInit, OnDestroy {
       .pipe(take(1))
       .subscribe(e => this.lastAttachmentEnded$.next(e));
 
-    this.closeContractFormService.getLastCountPeriod$(this.contractId)
+    this.closeContractFormService.getLastCountPeriod$()
       .pipe(take(1))
       .subscribe(p => this.lastCountPeriod$.next(p));
 

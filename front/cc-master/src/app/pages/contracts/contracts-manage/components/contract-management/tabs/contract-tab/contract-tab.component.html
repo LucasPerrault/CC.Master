@@ -2,18 +2,6 @@
 
 <ng-template #notLoading>
   <div class="page-content">
-    <div class="callout u-animatedSlideInTop palette-grey u-marginBottomStandard u-displayInlineFlex u-alignItemsCenter"
-         *ngIf="(canDeleteContract$ | async) && showDeletionCallout">
-      {{ 'front_contractPage_delete_info_description' | translate }}
-      <div>
-        <button (click)="delete()" class="button palette-grey mod-outline u-marginLeftSmaller u-marginRightStandard"
-                [ngClass]="deleteState$ | async">
-          {{ 'front_contractPage_deleteButton_label' | translate }}
-        </button>
-      </div>
-      <button class="callout-kill" (click)="hideDeletionCallout()"></button>
-    </div>
-
     <cc-contract-tab-form [formControl]="contractForm" [validationContext]="validationContext$ | async"
                           [formInformation]="formInformation$ | async">
     </cc-contract-tab-form>

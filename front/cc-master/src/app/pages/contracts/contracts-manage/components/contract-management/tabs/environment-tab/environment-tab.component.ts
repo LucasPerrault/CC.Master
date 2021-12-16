@@ -7,6 +7,7 @@ import { Observable, of, pipe, ReplaySubject, Subject, UnaryFunction } from 'rxj
 import { distinctUntilChanged, filter, finalize, map, share, shareReplay, startWith, switchMap, take, takeUntil } from 'rxjs/operators';
 
 import { ContractsListService } from '../../../../services/contracts-list.service';
+import { ValidationContextStoreService } from '../../validation-context-store.service';
 import { CreationCause } from './constants/creation-cause.enum';
 import { IContractEnvironmentDetailed } from './models/contract-environment-detailed.interface';
 import { IEnvironmentDetailed } from './models/environment-detailed.interface';
@@ -55,6 +56,7 @@ export class EnvironmentTabComponent implements OnInit, OnDestroy {
     private contractEnvironmentService: ContractEnvironmentService,
     private creationCauseService: EnvironmentCreationCauseService,
     private contractEnvironmentActionRestrictionsService: ContractEnvironmentActionRestrictionsService,
+    private contextStoreService: ValidationContextStoreService,
   ) {
     this.formGroup = new FormGroup({
       [LinkingFormKey.Environment]: new FormControl(null, Validators.required),
@@ -68,7 +70,7 @@ export class EnvironmentTabComponent implements OnInit, OnDestroy {
     this.environmentLinked$ = this.contractEnvironment$
       .pipe(shareReplay(1), map(contract => contract.environment));
 
-    this.canRemoveEnvironmentLinked$ = this.contractEnvironmentService.getAttachmentsNumber$(this.contractId)
+    this.canRemoveEnvironmentLinked$ = this.contextStoreService.activeEtsNumber$
       .pipe(
         map(count => this.contractEnvironmentActionRestrictionsService.canRemoveEnvironmentLinked(count)),
         startWith(false),
