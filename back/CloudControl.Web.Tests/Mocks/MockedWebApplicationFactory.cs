@@ -1,10 +1,10 @@
 using Authentication.Infra.Configurations;
 using CloudControl.Web.Configuration;
+using CloudControl.Web.Tests.Mocks.Overrides;
 using Email.Domain;
 using IpFilter.Domain;
 using IpFilter.Web;
 using Lock;
-using Lucca.Core.AspNetCore.Middlewares;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
@@ -19,7 +19,6 @@ using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
-using System.Security.Cryptography;
 using System.Threading.Tasks;
 using TeamNotification.Abstractions;
 using Users.Domain;
@@ -27,10 +26,15 @@ using IConfiguration = Microsoft.Extensions.Configuration.IConfiguration;
 
 namespace CloudControl.Web.Tests.Mocks
 {
-
     public class MockedWebApplicationFactory : WebApplicationFactory<Startup>
     {
         public MockedWebApplicationMocks Mocks { get; } = new MockedWebApplicationMocks();
+        public MockedWebApplicationConfiguration Config { get; } = new MockedWebApplicationConfiguration();
+
+        public MockedWebApplicationFactory()
+        {
+            Mocks.AddSingleton(new MockMiddlewareConfig());
+        }
 
         protected override IWebHostBuilder CreateWebHostBuilder()
         {
@@ -40,6 +44,7 @@ namespace CloudControl.Web.Tests.Mocks
                 {
                     s.AddSingleton<ServicesConfiguration>(sp => new MockedServicesConfiguration
                     (
+                        Config,
                         sp.GetRequiredService<IConfiguration>(),
                         sp.GetRequiredService<IWebHostEnvironment>()
                     ));
@@ -67,9 +72,13 @@ namespace CloudControl.Web.Tests.Mocks
 
     public class MockedServicesConfiguration : ServicesConfiguration
     {
-        public MockedServicesConfiguration(IConfiguration configuration, IWebHostEnvironment env)
+        private readonly MockedWebApplicationConfiguration _mockedConfig;
+
+        public MockedServicesConfiguration(MockedWebApplicationConfiguration mockedConfig, IConfiguration configuration, IWebHostEnvironment env)
             : base(configuration, env)
-        { }
+        {
+            _mockedConfig = mockedConfig;
+        }
 
         public override AppConfiguration ConfigureConfiguration(IServiceCollection services)
         {
@@ -91,15 +100,7 @@ namespace CloudControl.Web.Tests.Mocks
 
         public override void ConfigureIpFilter(IServiceCollection services, AppConfiguration configuration)
         {
-            var settings = new LuccaSecuritySettings
-            {
-                IpWhiteList = new IpWhiteList
-                {
-                    ResponseStatusCode = 401,
-                    AuthorizedIpAddresses = new List<string> { "127.0.0.1", "::1" }
-                }
-            };
-            var options = Options.Create(settings);
+            var options = Options.Create(_mockedConfig.LuccaSecuritySettings);
             services.AddSingleton(options);
 
             IpFilterConfigurer.ConfigureServices(services, new IpFilterConfiguration
@@ -117,7 +118,7 @@ namespace CloudControl.Web.Tests.Mocks
             var authRequestStore = new Mock<IIpFilterAuthorizationRequestStore>();
             authRequestStore
                 .Setup(s => s.FirstOrDefaultAsync(It.IsAny<IpFilterAuthorizationRequestFilter>()))
-                .ReturnsAsync(new IpFilterAuthorizationRequest());
+                .ReturnsAsync((IpFilterAuthorizationRequest)null);
             services.AddScoped(_ => authRequestStore.Object);
             services.AddScoped(_ => new Mock<IIpFilterTranslations>().Object);
         }
