@@ -14,7 +14,8 @@
       <button class="callout-kill" (click)="hideDeletionCallout()"></button>
     </div>
 
-    <cc-contract-tab-form [formControl]="contractForm" [validationContext]="validationContext$ | async">
+    <cc-contract-tab-form [formControl]="contractForm" [validationContext]="validationContext$ | async"
+                          [formInformation]="formInformation$ | async">
     </cc-contract-tab-form>
   </div>
 

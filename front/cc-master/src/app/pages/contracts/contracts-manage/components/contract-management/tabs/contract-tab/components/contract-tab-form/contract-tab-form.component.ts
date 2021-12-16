@@ -10,11 +10,15 @@ import {
 } from '@angular/forms';
 import { SelectDisplayMode } from '@cc/common/forms';
 import { ContractBillingMonth, IContractForm } from '@cc/domain/billing/contracts';
+import { LuModal } from '@lucca-front/ng/modal';
 import { ReplaySubject, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
+import { IContractFormInformation } from '../../models/contract-form-information.interface';
 import { IContractValidationContext } from '../../models/contract-validation-context.interface';
 import { ContractActionRestrictionsService } from '../../services/contract-action-restrictions.service.';
+import { ClientInfoModalComponent } from './client-info-modal/client-info-modal.component';
+import { IClientInfoModalData } from './client-info-modal/client-info-modal-data.interface';
 
 enum ContractFormKey {
   BillingMonth = 'billingMonth',
@@ -49,6 +53,7 @@ enum ContractFormKey {
 })
 export class ContractTabFormComponent implements OnInit, OnDestroy, ControlValueAccessor {
   @Input() public validationContext: IContractValidationContext;
+  @Input() public formInformation: IContractFormInformation;
 
   public onChange: (contractForm: IContractForm) => void;
   public onTouch: () => void;
@@ -112,7 +117,7 @@ export class ContractTabFormComponent implements OnInit, OnDestroy, ControlValue
 
   private destroy$: Subject<void> = new Subject<void>();
 
-  constructor(private formValidationService: ContractActionRestrictionsService) {
+  constructor(private formValidationService: ContractActionRestrictionsService, private luModal: LuModal) {
   }
 
   public ngOnInit(): void {
@@ -170,6 +175,15 @@ export class ContractTabFormComponent implements OnInit, OnDestroy, ControlValue
     if (!this.formGroup || this.formGroup.invalid) {
       return { invalid: true };
     }
+  }
+
+  public openClientInformationModal(): void {
+    const data: IClientInfoModalData = {
+      salesforceId: this.formInformation.client?.salesforceId,
+      commercialManagementId: this.formInformation.client?.commercialManagementId,
+      name: this.formInformation.client?.name,
+    };
+    this.luModal.open(ClientInfoModalComponent, data);
   }
 
   public hasRequiredError(formKey: ContractFormKey): boolean {

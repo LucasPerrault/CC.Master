@@ -4,12 +4,14 @@ import { ActivatedRoute } from '@angular/router';
 import { Operation, RightsService } from '@cc/aspects/rights';
 import { getButtonState, toSubmissionState } from '@cc/common/forms';
 import { IContractForm } from '@cc/domain/billing/contracts';
-import { Observable, ReplaySubject, Subject } from 'rxjs';
-import { finalize, map, startWith, take } from 'rxjs/operators';
+import { DistributorsService } from '@cc/domain/billing/distributors';
+import { combineLatest, Observable, ReplaySubject, Subject } from 'rxjs';
+import { finalize, map, startWith, switchMap, take } from 'rxjs/operators';
 
 import { ContractsListService } from '../../../../services/contracts-list.service';
 import { ContractManagementService } from '../../contract-management.service';
 import { IContractDetailed } from './models/contract-detailed.interface';
+import { IContractFormInformation } from './models/contract-form-information.interface';
 import { IContractValidationContext } from './models/contract-validation-context.interface';
 import { ContractActionRestrictionsService } from './services/contract-action-restrictions.service.';
 import { ContractTabService } from './services/contract-tab.service';
@@ -24,7 +26,8 @@ import { ContractValidationContextService } from './services/contract-validation
 export class ContractTabComponent implements OnInit {
 
   public contractForm: FormControl = new FormControl();
-  public validationContext$: ReplaySubject<IContractValidationContext> = new ReplaySubject();
+  public validationContext$: ReplaySubject<IContractValidationContext> = new ReplaySubject(1);
+  public formInformation$: ReplaySubject<IContractFormInformation> = new ReplaySubject(1);
   public showDeletionCallout = true;
 
   public isLoading$: ReplaySubject<boolean> = new ReplaySubject<boolean>(1);
@@ -46,6 +49,8 @@ export class ContractTabComponent implements OnInit {
     return parseInt(this.activatedRoute.parent.snapshot.paramMap.get('id'), 10);
   }
 
+  private detailedContract$: ReplaySubject<IContractDetailed> = new ReplaySubject<IContractDetailed>(1);
+
   constructor(
     private rightsService: RightsService,
     private activatedRoute: ActivatedRoute,
@@ -54,18 +59,29 @@ export class ContractTabComponent implements OnInit {
     private contractValidationContextService: ContractValidationContextService,
     private contractsManageModalService: ContractManagementService,
     private contractsListService: ContractsListService,
+    private distributorsService: DistributorsService,
   ) {}
 
   public ngOnInit(): void {
     this.isLoading$.next(true);
 
-    this.contractValidationContextService.getValidationContext$(this.contractId)
-      .pipe(take(1))
-      .subscribe(context => this.validationContext$.next(context));
-
-    this.contractTabService.getContractDetailed$(this.contractId)
+    combineLatest([
+      this.contractValidationContextService.getValidationContext$(this.contractId),
+      this.contractTabService.getContractDetailed$(this.contractId),
+    ])
       .pipe(take(1), finalize(() => this.isLoading$.next(false)))
+      .subscribe(([context, contract]) => {
+        this.validationContext$.next(context);
+        this.detailedContract$.next(contract);
+      });
+
+    this.detailedContract$
+      .pipe(take(1))
       .subscribe(contract => this.contractForm.setValue(this.toContractForm(contract)));
+
+    this.detailedContract$
+      .pipe(take(1), switchMap(contract => this.toFormInformation$(contract)))
+      .subscribe(this.formInformation$);
   }
 
   public edit(): void {
@@ -121,5 +137,14 @@ export class ContractTabComponent implements OnInit {
       minimalBillingPercentage: contractDetailed.minimalBillingPercentage,
       comment: contractDetailed.comment ?? '',
     });
+  }
+
+  private toFormInformation$(contract: IContractDetailed): Observable<IContractFormInformation> {
+    return this.distributorsService.getActiveRebate$(contract.distributor?.id, contract.product?.id).pipe(
+        map(distributorRebate => ({
+          client: contract.client,
+          distributorRebate,
+        })),
+    );
   }
 }

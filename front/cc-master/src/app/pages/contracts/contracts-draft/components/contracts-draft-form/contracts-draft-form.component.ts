@@ -14,7 +14,7 @@ import { IContractForm, IContractMinimalBillable, MinimalBillingService } from '
 import { DistributorsService, IDistributor } from '@cc/domain/billing/distributors';
 import { LuModal } from '@lucca-front/ng/modal';
 import { BehaviorSubject, merge, Subject } from 'rxjs';
-import { filter, map, take, takeUntil } from 'rxjs/operators';
+import { filter, take, takeUntil } from 'rxjs/operators';
 
 import { PriceGridModalComponent } from '../../../common/price-grid-modal/price-grid-modal.component';
 import { IContractDraftFormInformation } from '../../models';
@@ -205,11 +205,7 @@ export class ContractsDraftFormComponent implements ControlValueAccessor, Valida
       return;
     }
 
-    const activeRebateForProduct$ = this.distributorsService.getActiveRebates$(distributorId).pipe(
-      take(1),
-      map(rs => rs.find(r => r.productId === productId)),
-    );
-
-    activeRebateForProduct$.subscribe(r => this.distributorRebate$.next(r?.value));
+    const activeRebateForProduct$ = this.distributorsService.getActiveRebate$(distributorId, productId);
+    activeRebateForProduct$.subscribe(r => this.distributorRebate$.next(r));
   }
 }
