@@ -1,26 +1,37 @@
-<div class="" *ngIf="!!canChargeDraftCount() || hasDraftCounts">
-  <label class="switch palette-secondary">
+<div class="u-displayFlex u-flexGrow1 u-justifyContentSpaceBetween u-alignItemsCenter u-paddingRightSmaller">
+  <label class="switch palette-secondary"
+         [luTooltip]="'contracts_count_showDraftCount_disabled_info' | translate"
+         [luTooltipDisabled]="hasDraftCounts || canChargeDraftCount()" luTooltipPosition="below">
     <input class="switch-input" name="switchInline"
            type="checkbox"
+           [disabled]="!hasDraftCounts && !canChargeDraftCount()"
            (click)="toggleDraftCountsDisplay()" [checked]="showDraftCounts">
     <span class="switch-label">
-      {{ 'front_contractPage_counts_showDraft_action_label' | translate }}
-      <span class="label mod-number palette-grey" *ngIf="hasDraftCounts">{{ draftCounts.length }}</span>
+      {{ 'contracts_count_showDraftCount_label' | translate }}
     </span>
   </label>
 
-  <div [class.mod-hidden]="!showDraftCounts" class="u-paddingTopSmall">
-    <button *ngIf="canChargeDraftCount()"
-            class="button palette-secondary"
-            (click)="chargeDraftCounts()"
-            [ngClass]="chargeButtonState">
-      {{ 'front_contractPage_counts_chargeDraft_action_label' | translate }}
-    </button>
-    <button [disabled]="!hasDraftCounts"
-            class="button palette-secondary mod-link"
-            (click)="deleteDraftCount()"
-            [ngClass]="deleteButtonState">
-      {{ 'front_contractPage_counts_deleteDraft_action_label' | translate }}
-    </button>
+  <div *ngIf="canChargeDraftCount()" [class.mod-hidden]="!showDraftCounts">
+    <div class="button-group palette-grey mod-outline">
+        <button class="button"
+                [ngClass]="chargeButtonState || deleteButtonState"
+                (click)="chargeDraftCounts()">
+        {{ 'contracts_count_chargeDraft_label' | translate }}
+      </button>
+      <button class="button mod-more" [luDropdown]="dropdown"></button>
+    </div>
+    <lu-dropdown #dropdown>
+      <li class="lu-dropdown-options-item">
+        <a class="lu-dropdown-options-item-action"
+           [luTooltip]="'contracts_count_deleteDraft_disabled_info' | translate"
+           [luTooltipDisabled]="hasDraftCounts"
+           luTooltipPosition="below"
+           [ngClass]="{ 'is-disabled': !hasDraftCounts }"
+           (click)="deleteDraftCount()"
+           luDropdownItem>
+          {{ 'contracts_count_deleteDraft_label' | translate }}
+        </a>
+      </li>
+    </lu-dropdown>
   </div>
 </div>

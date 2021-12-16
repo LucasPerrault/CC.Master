@@ -1,14 +1,15 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { IDateRange } from '@cc/common/date';
 import { getButtonState, toSubmissionState } from '@cc/common/forms';
 import { CountCode } from '@cc/domain/billing/counts';
 import { LuModal } from '@lucca-front/ng/modal';
 import { endOfMonth, isEqual, max, min, startOfMonth } from 'date-fns';
 import { BehaviorSubject, combineLatest, Observable, pipe, ReplaySubject, Subject, UnaryFunction } from 'rxjs';
-import { debounceTime, filter, finalize, map, take, takeUntil } from 'rxjs/operators';
+import { debounceTime, finalize, map, take, takeUntil } from 'rxjs/operators';
 
 import { ContractManagementService } from '../../contract-management.service';
+import { CountsDetailDownloadModalComponent } from './components/counts-detail-download-modal/counts-detail-download-modal.component';
+import { ICountsDetailDownloadModalData } from './components/counts-detail-download-modal/counts-detail-download-modal-data.interface';
 import { CountsReplayModalComponent } from './components/counts-replay-modal/counts-replay-modal.component';
 import { ICountContract } from './models/count-contract.interface';
 import { ICountListEntry } from './models/count-list-entry.interface';
@@ -38,14 +39,8 @@ export class CountTabComponent implements OnInit, OnDestroy {
     );
   }
 
-  public get realCounts$(): Observable<ICountListEntry[]> {
-    return this.countListEntries$.pipe(
-      map(entries => entries.filter(entry => !!entry?.count && entry.count.code === CountCode.Count)),
-    );
-  }
-
-  public get firstCountWithDetails$(): Observable<IDetailedCount> {
-    return this.countListEntries$.pipe(this.toFirstCountWithDetails);
+  public get hasDetails$(): Observable<boolean> {
+    return this.countListEntries$.pipe(map(entries => entries.some(e => e.count?.hasDetails)));
   }
 
   public get isLoading$(): Observable<boolean> {
@@ -58,14 +53,12 @@ export class CountTabComponent implements OnInit, OnDestroy {
 
   public showDraftCounts = false;
   public countsSelected: IDetailedCount[] = [];
-  public isDownloadFormDisplay = false;
 
   public deleteButtonState$: Subject<string> = new Subject<string>();
-  public downloadButtonState$: Subject<string> = new Subject<string>();
   public deleteDraftButtonState$: Subject<string> = new Subject<string>();
   public chargeDraftButtonState$: Subject<string> = new Subject<string>();
 
-  private contractSubject$: ReplaySubject<ICountContract> = new ReplaySubject(1);
+  private contractSubject$: BehaviorSubject<ICountContract> = new BehaviorSubject(null);
   private countListEntriesSubject$: BehaviorSubject<ICountListEntry[]> = new BehaviorSubject([]);
   private isLoadingSubject$: ReplaySubject<boolean> = new ReplaySubject<boolean>(1);
 
@@ -116,10 +109,15 @@ export class CountTabComponent implements OnInit, OnDestroy {
       .subscribe(state => this.deleteButtonState$.next(state));
   }
 
-  public download(period: IDateRange): void {
-    this.countContractsService.download$(this.contractId, period)
-      .pipe(this.toButtonState, finalize(() => this.toggleDownloadFormDisplay()))
-      .subscribe(state => this.downloadButtonState$.next(state));
+  public openDownloadModal(): void {
+    const firstCountPeriod = this.getFirstCount(this.countListEntriesSubject$.value)?.countPeriod;
+    const closeOn = this.contractSubject$.value.closeOn;
+    const data: ICountsDetailDownloadModalData = {
+      contractId: this.contractId,
+      firstCountPeriod: !!firstCountPeriod ? new Date(firstCountPeriod) : null,
+      contractCloseOn: !!closeOn ? new Date(closeOn) : null,
+    };
+    this.luModal.open(CountsDetailDownloadModalComponent, data);
   }
 
   public chargeDraftCounts(): void {
@@ -127,7 +125,7 @@ export class CountTabComponent implements OnInit, OnDestroy {
     this.countContractsService.charge$(this.contractId, startOfMonth(countPeriodToCharge), endOfMonth(countPeriodToCharge))
       .pipe(this.toButtonState, finalize(() => {
         this.refresh(this.contractId);
-        this.toggleDraftCountsDisplay();
+        this.showDraftCounts = true;
       }))
       .subscribe(state => this.chargeDraftButtonState$.next(state));
   }
@@ -175,10 +173,6 @@ export class CountTabComponent implements OnInit, OnDestroy {
     this.showDraftCounts = !this.showDraftCounts;
   }
 
-  public toggleDownloadFormDisplay(): void {
-    this.isDownloadFormDisplay = !this.isDownloadFormDisplay;
-  }
-
   private refresh(contractId: number): void {
     this.isLoadingSubject$.next(true);
 
@@ -190,7 +184,8 @@ export class CountTabComponent implements OnInit, OnDestroy {
       .subscribe(
         ([counts, contract]) => {
           this.contractSubject$.next(contract);
-          this.countListEntriesSubject$.next(this.countContractsListService.toCountListEntries(counts, contract));
+          const entries = this.countContractsListService.toCountListEntries(counts, contract);
+          this.countListEntriesSubject$.next(entries);
         },
         err => this.manageModalService.close(),
       );
@@ -204,13 +199,10 @@ export class CountTabComponent implements OnInit, OnDestroy {
     );
   }
 
-  private get toFirstCountWithDetails(): UnaryFunction<Observable<ICountListEntry[]>, Observable<IDetailedCount>> {
-    return pipe(
-      map(entries => entries.map(entry => entry.count)),
-      map(counts => counts.filter(count => count?.hasDetails)),
-      map(counts => counts.sort((a, b) => new Date(a?.countPeriod).getTime() - new Date(b?.countPeriod).getTime())),
-      filter(counts => !!counts?.length),
-      map(counts => counts[0]),
-    );
+  private getFirstCount(entries: ICountListEntry[]): IDetailedCount {
+    const counts = entries.map(e => e.count);
+    const countsWithDetails = counts.filter(count => count?.hasDetails);
+    const sortedAscCounts = countsWithDetails.sort((a, b) => new Date(a?.countPeriod).getTime() - new Date(b?.countPeriod).getTime());
+    return !!sortedAscCounts?.length ? sortedAscCounts[0] : null;
   }
 }

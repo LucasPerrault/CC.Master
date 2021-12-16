@@ -1,3 +1,7 @@
 .mod-hidden {
   visibility: hidden;
 }
+
+:host {
+  display: contents;
+}
