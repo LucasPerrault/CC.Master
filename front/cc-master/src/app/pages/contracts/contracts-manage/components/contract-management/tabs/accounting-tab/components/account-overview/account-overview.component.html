@@ -1,9 +1,4 @@
 <header class="account-header" (click)="toggleAccountDisplay()">
-  <div class="mod-accordion">
-    <i class="lucca-icon">{{ isExpanded ? 'arrow_south': 'arrow_north' }}</i>
-    <i class="lucca-icon">{{ isExpanded ? 'arrow_north': 'arrow_south' }}</i>
-  </div>
-
   <h4 class="account-title">
     {{ 'front_contractPage_account_title' | translate : { type: account.type, name: account.name } }}
   </h4>
@@ -13,16 +8,23 @@
       {{ balance || 0 | currency:'EUR':'symbol':'1.2-2' }}
     </span>
   </div>
+
+  <div class="mod-accordion">
+    <i class="lucca-icon">{{ isExpanded ? 'arrow_south': 'arrow_north' }}</i>
+    <i class="lucca-icon">{{ isExpanded ? 'arrow_north': 'arrow_south' }}</i>
+  </div>
 </header>
 
 <div class="account-content" *ngIf="isExpanded">
-  <label class="checkbox u-marginLeftSmaller">
-    <input class="checkbox-input"
-           type="checkbox"
-           (click)="toggleLetteredAccountingDisplay()"
-           [checked]="showLetteredEntriesDisplay">
-    <span class="checkbox-label">{{ 'front_contractPage_accountingLettered_filter' | translate }}</span>
-  </label>
+  <div class="account-filters">
+    <label class="switch u-marginLeftSmaller">
+      <input class="switch-input"
+             type="checkbox"
+             (click)="toggleLetteredAccountingDisplay()"
+             [checked]="showLetteredEntriesDisplay">
+      <span class="switch-label">{{ 'front_contractPage_accountingLettered_filter' | translate }}</span>
+    </label>
+  </div>
 
   <ng-content></ng-content>
 </div>
