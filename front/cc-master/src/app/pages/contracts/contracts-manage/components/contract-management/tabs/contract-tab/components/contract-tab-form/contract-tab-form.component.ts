@@ -110,7 +110,12 @@ export class ContractTabFormComponent implements OnInit, OnDestroy, ControlValue
 
   private destroy$: Subject<void> = new Subject<void>();
 
-  constructor(private formValidationService: ContractActionRestrictionsService) {
+  constructor(
+    private router: Router,
+    private luModal: LuModal,
+    private activatedRoute: ActivatedRoute,
+    private formValidationService: ContractActionRestrictionsService,
+  ) {
   }
 
   public ngOnInit(): void {
