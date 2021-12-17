@@ -45,7 +45,6 @@ export const navigationTabs: INavigationTab[] = [
       {
         url: NavigationPath.ContractsManage,
         name: 'front_navigation_contractManageTab',
-        isLegacy: true,
       },
     ],
   },
