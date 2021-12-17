@@ -4,6 +4,7 @@ using Billing.Cmrr.Domain;
 using Billing.Cmrr.Domain.Interfaces;
 using Billing.Cmrr.Infra.Storage.Stores;
 using Microsoft.Extensions.DependencyInjection;
+using Resources.Translations;
 
 namespace Billing.Cmrr.Web
 {
@@ -11,6 +12,7 @@ namespace Billing.Cmrr.Web
     {
         public static void ConfigureServices(IServiceCollection services)
         {
+            services.AddSingleton<ITranslations, Translations>();
             services.AddSingleton(new BreakDownInMemoryCache());
 
             services.AddScoped<ICmrrContractsStore, CmrrContractsStore>();
