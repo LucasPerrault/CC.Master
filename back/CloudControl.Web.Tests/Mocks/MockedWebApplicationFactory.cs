@@ -109,7 +109,7 @@ namespace CloudControl.Web.Tests.Mocks
 
             var ipFilterAuthorizationMock = new Mock<IIpFilterAuthorizationStore>();
             ipFilterAuthorizationMock
-                .Setup(i => i.GetByUserAsync(It.IsAny<IpFilterAuthorizationFilter>()))
+                .Setup(i => i.GetAsync(It.IsAny<IpFilterAuthorizationFilter>()))
                 .ReturnsAsync(new List<IpFilterAuthorization>());
             services.AddSingleton(ipFilterAuthorizationMock.Object);
 

@@ -79,14 +79,14 @@ namespace Tools
     public abstract class CompareNullableDateTime
     {
         public static CompareNullableDateTime Bypass() => CompareDateTime.Bypass().OrNull();
-        public static CompareNullableDateTime IsNull() => new IsNullCompareNullableDateTimeQueryBuilder();
+        public static CompareNullableDateTime IsNull() => new IsNullCompareNullableDateTime();
         public static CompareNullableDateTime AnyNotNull() => CompareDateTime.Bypass().AndNotNull();
         public static CompareNullableDateTime MatchesNone() => CompareDateTime.MatchesNone().AndNotNull();
     }
 
-    public class IsNullCompareNullableDateTimeQueryBuilder : CompareNullableDateTime
+    public class IsNullCompareNullableDateTime : CompareNullableDateTime
     {
-        protected internal IsNullCompareNullableDateTimeQueryBuilder()
+        protected internal IsNullCompareNullableDateTime()
         { }
     }
 

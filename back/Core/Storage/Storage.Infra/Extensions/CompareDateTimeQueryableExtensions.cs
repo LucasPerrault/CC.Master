@@ -66,7 +66,7 @@ namespace Storage.Infra.Extensions
             {
                 OrNullCompareNullableDatetime orNull => new OrNullCompareNullableDatetimeQueryableBuilder<T>(query, orNull.CompareDateTime),
                 AndNotNullCompareNullableDateTime hasValue => new AndNotNullCompareNullableDateTimeQueryBuilder<T>(query, hasValue.CompareDateTime),
-                IsNullCompareNullableDateTimeQueryBuilder _ => new IsNullCompareNullableDateTimeQueryBuilder<T>(query),
+                IsNullCompareNullableDateTime _ => new IsNullCompareNullableDateTimeQueryBuilder<T>(query),
                 _ => throw new InvalidEnumArgumentException(nameof(comparison)),
             };
         }

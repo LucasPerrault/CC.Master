@@ -12,6 +12,7 @@
     "SqlInfos": {
         "Default": "Data Source={{ CC.Master:SqlServer }};Initial Catalog=CloudControl;user={{ CC.Master:SqlLogin }};Password={{ CC.Master:SqlPassword }};MultipleActiveResultSets=True;App=CloudControl;Encrypt=False"
     },
+    "Host": "{{ CC.Master:scheme }}://{{ CC.Master:tenant }}.{{ CC.Master:domain }}",
     "Authentication": {
         "ServerUri": "{{ CC.Master:PartenairesUri }}",
         "ApiKeysFetcherToken": "{{ CC.Master:AuthApiKeysFetcherToken }}",
@@ -64,6 +65,7 @@
     "Slack": {
         "Hooks": {
             "CloudControlTeam": "{{ CC.Master:SlackHookCcNotifications }}",
+            "IpFilterRejectionAlert": "{{ CC.Master:SlackHookCcNotifications }}",
             "DemosMaintainers": "{{ CC.Master:SlackHookCcNotifications }}"
         },
         "Token":  "{{ CC.Master:SlackToken }}"
