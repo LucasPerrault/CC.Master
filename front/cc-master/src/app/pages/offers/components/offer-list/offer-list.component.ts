@@ -23,8 +23,8 @@ export class OfferListComponent implements OnInit {
   @Input() public sortParams: ISortParams;
   @Output() public sort: EventEmitter<ISortParams> = new EventEmitter<ISortParams>();
 
-  public get hasRightToEdit(): boolean {
-    return this.restrictionsService.hasRightToCreateOffers();
+  public get hasRightToCreateAndEditOffers(): boolean {
+    return this.restrictionsService.hasRightToCreateAndEditOffers();
   }
 
   public sortParamKey = OfferSortParamKey;

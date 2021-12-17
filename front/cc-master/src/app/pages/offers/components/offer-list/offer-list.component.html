@@ -1,4 +1,4 @@
-<table class="table mod-clickable" [ngClass]="{ 'mod-clickable': hasRightToEdit }">
+<table class="table mod-clickable">
   <thead class="table-head">
   <tr class="table-head-row">
     <th class="table-head-row-cell" [attr.aria-sort]="getSortOrderClass(sortParamKey.Id)">
@@ -35,7 +35,7 @@
     <th class="table-head-row-cell mod-alignRight">
       {{ 'offers_list_column_activeContracts' | translate }}
     </th>
-    <th class="table-head-row-cell mod-actions"></th>
+    <th class="table-head-row-cell mod-actions" *ngIf="hasRightToCreateAndEditOffers"></th>
   </tr>
   </thead>
   <tbody class="table-body">
@@ -55,7 +55,7 @@
 
       <ng-template #noActiveContract>0</ng-template>
     </td>
-    <td class="table-body-row-cell mod-actions" (click)="$event.stopPropagation()">
+    <td class="table-body-row-cell mod-actions" *ngIf="hasRightToCreateAndEditOffers" (click)="$event.stopPropagation()">
       <button *ngIf="!offer.isArchived; else isEnable" class="actionIcon"
               (click)="archive(offer)"
               [luTooltip]="'offers_list_actions_archive' | translate">
