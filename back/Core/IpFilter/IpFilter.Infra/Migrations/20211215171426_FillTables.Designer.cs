@@ -4,6 +4,7 @@ using IpFilter.Infra.Storage;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace IpFilter.Infra.Migrations
 {
     [DbContext(typeof(IpFilterDbContext))]
-    partial class IpFilterDbContextModelSnapshot : ModelSnapshot
+    [Migration("20211215171426_FillTables")]
+    partial class FillTables
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -85,10 +87,6 @@ namespace IpFilter.Infra.Migrations
                     b.Property<DateTime>("ExpiresAt")
                         .HasColumnType("datetime2")
                         .HasColumnName("ExpiresAt");
-
-                    b.Property<DateTime?>("RevokedAt")
-                        .HasColumnType("datetime2")
-                        .HasColumnName("RevokedAt");
 
                     b.Property<int>("UserId")
                         .HasColumnType("int")

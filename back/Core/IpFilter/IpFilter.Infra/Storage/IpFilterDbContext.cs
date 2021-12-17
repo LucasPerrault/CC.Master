@@ -14,6 +14,7 @@ namespace IpFilter.Infra.Storage
         protected override void ApplyConfiguration(ModelBuilder modelBuilder)
         {
             modelBuilder.ApplyConfiguration(new IpFilterAuthorizationConfiguration());
+            modelBuilder.ApplyConfiguration(new IpFilterAuthorizationRequestConfiguration());
         }
     }
 
