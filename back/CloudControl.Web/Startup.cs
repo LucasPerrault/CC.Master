@@ -46,6 +46,8 @@ namespace CloudControl.Web
             app.UseAuthentication();
             app.UseMiddleware<BetaTesterDetectionMiddleware>();
 
+            app.UseIpFilter(env);
+
             app.UseLegacyCloudControlWebSocketProxy();
             app.UseLegacyCloudControlHttpProxy();
 
@@ -53,7 +55,6 @@ namespace CloudControl.Web
             app.UseFileServer();
 
             app.UseMiddleware<UnauthorizedAccessMiddleware>();
-            app.UseIpFilter(env);
 
             app.UseEndpoints(e => e.MapControllers());
 
