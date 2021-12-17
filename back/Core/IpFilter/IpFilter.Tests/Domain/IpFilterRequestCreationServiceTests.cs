@@ -1,4 +1,5 @@
-﻿using Email.Domain;
+﻿using Cache.Abstractions;
+using Email.Domain;
 using IpFilter.Domain;
 using Lock;
 using Lucca.Emails.Client.Contracts;
@@ -19,6 +20,7 @@ public class IpFilterRequestCreationServiceTests
     private readonly Mock<IIpFilterAuthorizationRequestStore> _storeMock = new Mock<IIpFilterAuthorizationRequestStore>(MockBehavior.Strict);
     private readonly Mock<ITimeProvider> _timeMock = new Mock<ITimeProvider>();
     private readonly Mock<IGuidGenerator> _guidMock = new Mock<IGuidGenerator>();
+    private readonly Mock<ICacheService> _cacheServiceMock = new Mock<ICacheService>();
 
     [Fact]
     public async Task ShouldNotifyUserOnIpRejection()
@@ -61,12 +63,12 @@ public class IpFilterRequestCreationServiceTests
             .ReturnsAsync(new List<IpFilterAuthorizationRequest>());
         _storeMock.Setup(s => s.CreateAsync(Matching(42, "123.0.0.0", now, now.AddMinutes(10))))
             .Returns<IpFilterAuthorizationRequest>(Task.FromResult);
+        _cacheServiceMock.Setup(s => s.GetAsync(It.IsAny<CacheKey<bool>>())).ReturnsAsync(true);
 
         var service = NewServiceInstance();
         await service.SendRequestIfNeededAsync(user, new EmailHrefBuilder());
-        await service.SendRequestIfNeededAsync(user, new EmailHrefBuilder());
-        _emailService.Verify(e => e.SendAsync(It.Is<RecipientForm>(f => f.UserId == 42), It.IsAny<EmailContent>()), Times.Once);
-        _ipFilterEmailsMock.Verify(e => e.GetRejectionEmail(It.Is<RejectedUser>(u =>u.FirstName == "Chell" && u.LastName == "XXXXXX"), It.IsAny<IpFilterAuthorizationRequest>(), It.IsAny<EmailHrefBuilder>()), Times.Once);
+        _emailService.Verify(e => e.SendAsync(It.IsAny<RecipientForm>(), It.IsAny<EmailContent>()), Times.Never);
+        _ipFilterEmailsMock.Verify(e => e.GetRejectionEmail(It.IsAny<RejectedUser>(), It.IsAny<IpFilterAuthorizationRequest>(), It.IsAny<EmailHrefBuilder>()), Times.Never);
     }
 
     [Fact]
@@ -95,7 +97,6 @@ public class IpFilterRequestCreationServiceTests
             });
 
         var service = NewServiceInstance();
-        await service.SendRequestIfNeededAsync(user, new EmailHrefBuilder());
         await service.SendRequestIfNeededAsync(user, new EmailHrefBuilder());
         _emailService.Verify(e => e.SendAsync(It.Is<RecipientForm>(f => f.UserId == 42), It.IsAny<EmailContent>()), Times.Once);
     }
@@ -157,7 +158,8 @@ public class IpFilterRequestCreationServiceTests
             _lockMock.Object,
             _storeMock.Object,
             _timeMock.Object,
-            _guidMock.Object
+            _guidMock.Object,
+            _cacheServiceMock.Object
         );
     }
 

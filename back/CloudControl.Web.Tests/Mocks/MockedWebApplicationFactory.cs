@@ -1,4 +1,5 @@
 using Authentication.Infra.Configurations;
+using Cache.Abstractions;
 using CloudControl.Web.Configuration;
 using CloudControl.Web.Tests.Mocks.Overrides;
 using Email.Domain;
@@ -91,7 +92,9 @@ namespace CloudControl.Web.Tests.Mocks
         }
 
         public override void ConfigureCache(IServiceCollection services, AppConfiguration configuration)
-        { }
+        {
+            services.AddScoped(_ => new Mock<ICacheService>().Object);
+        }
 
         public override void ConfigureLock(IServiceCollection services, AppConfiguration configuration)
         {

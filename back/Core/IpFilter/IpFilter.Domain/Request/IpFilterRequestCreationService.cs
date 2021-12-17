@@ -19,13 +19,14 @@ namespace IpFilter.Domain
     public class IpFilterRequestCreationService
     {
         private static readonly TimeSpan AuthorizationRequestValidity = TimeSpan.FromMinutes(10);
-        private static readonly ContactedUserInMemoryCache _cache = new ContactedUserInMemoryCache();
+        private static readonly TimeSpan MinimumDurationBetweenEmails = TimeSpan.FromSeconds(10);
         private const string LockName = "IpRejectionEmail";
 
         private readonly IEmailService _emailService;
         private readonly IIpFilterEmails _ipFilterEmails;
         private readonly ITimeProvider _time;
         private readonly IGuidGenerator _guid;
+        private readonly ICacheService _cacheService;
         private readonly ILockService _lockService;
         private readonly IIpFilterAuthorizationRequestStore _store;
 
@@ -36,7 +37,8 @@ namespace IpFilter.Domain
             ILockService lockService,
             IIpFilterAuthorizationRequestStore store,
             ITimeProvider time,
-            IGuidGenerator guid
+            IGuidGenerator guid,
+            ICacheService cacheService
         )
         {
             _emailService = emailService;
@@ -45,18 +47,19 @@ namespace IpFilter.Domain
             _store = store;
             _time = time;
             _guid = guid;
+            _cacheService = cacheService;
         }
 
         public async Task SendRequestIfNeededAsync(RejectedUser user, EmailHrefBuilder emailHrefBuilder)
         {
-            var contactedUser = new ContactedUser { UserId = user.IpFilterUser.UserId, Address = user.IpFilterUser.IpAddress };
-            if (_cache.Has(contactedUser))
+            var key = new ContactedUserCacheKey(user.IpFilterUser.UserId, user.IpFilterUser.IpAddress);
+            if (await _cacheService.GetAsync(key))
             {
                 return;
             }
             using (await _lockService.TakeLockAsync(LockName, TimeSpan.FromSeconds(10)))
             {
-                if (_cache.Has(contactedUser))
+                if (await _cacheService.GetAsync(key))
                 {
                     return;
                 }
@@ -67,7 +70,7 @@ namespace IpFilter.Domain
                     RecipientForm.FromUserId(user.IpFilterUser.UserId),
                     _ipFilterEmails.GetRejectionEmail(user, request, emailHrefBuilder)
                 );
-                _cache.Cache(contactedUser);
+                await _cacheService.SetAsync(key, true, CacheInvalidation.After(MinimumDurationBetweenEmails));
             }
         }
 
@@ -102,26 +105,18 @@ namespace IpFilter.Domain
             );
         }
 
-
-        private class ContactedUser : ValueObject
+        private class ContactedUserCacheKey : CacheKey<bool>
         {
-            public int UserId { get; set; }
-            public string Address { get; set; }
+            private readonly int _userId;
+            private readonly string _ipAddress;
 
-            protected override IEnumerable<object> EqualityComponents
+            public ContactedUserCacheKey(int userId, string ipAddress)
             {
-                get
-                {
-                    yield return UserId;
-                    yield return Address;
-                }
+                _userId = userId;
+                _ipAddress = ipAddress;
             }
-        }
 
-        private class ContactedUserInMemoryCache : InMemoryValueObjectCache<ContactedUser>
-        {
-            public ContactedUserInMemoryCache() : base(TimeSpan.FromSeconds(10))
-            { }
+            public override string Key => $"ip-filter:contact:{_userId}:{_ipAddress}";
         }
     }
 }
