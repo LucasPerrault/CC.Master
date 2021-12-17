@@ -5,15 +5,15 @@ import { NoNavPath } from './no-nav-path.enum';
 export const noNavTabs: INavigationTab[] = [
   {
     name: 'front_errorPages_authorizeIp_title',
-    url: NoNavPath.AuthorizeIp,
+    url: NoNavPath.IpRequest,
   },
   {
     name: 'front_errorPages_invalidIp_title',
-    url: NoNavPath.InvalidIp,
+    url: NoNavPath.IpReject,
   },
   {
     name: 'front_errorPages_ipAuthorizationRequest_title',
-    url: NoNavPath.IpAuthorizationRequest,
+    url: NoNavPath.IpConfirm,
   },
   {
     name: 'front_errorPages_wrongEmailDomain_title',
