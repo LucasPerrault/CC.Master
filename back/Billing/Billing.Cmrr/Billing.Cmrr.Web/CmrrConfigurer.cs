@@ -2,6 +2,7 @@
 using Billing.Cmrr.Application.Interfaces;
 using Billing.Cmrr.Domain;
 using Billing.Cmrr.Domain.Interfaces;
+using Billing.Cmrr.Infra.Services.Export;
 using Billing.Cmrr.Infra.Storage.Stores;
 using Microsoft.Extensions.DependencyInjection;
 using Resources.Translations;
@@ -23,6 +24,8 @@ namespace Billing.Cmrr.Web
             services.AddScoped<ICmrrSituationsService, CmrrSituationsService>();
             services.AddScoped<ICmrrEvolutionsService, CmrrEvolutionsService>();
             services.AddScoped<IContractAxisSectionSituationsService, ContractAxisSectionSituationsService>();
+
+            services.AddSingleton<IFileExportService, CsvService>();
         }
     }
 }
