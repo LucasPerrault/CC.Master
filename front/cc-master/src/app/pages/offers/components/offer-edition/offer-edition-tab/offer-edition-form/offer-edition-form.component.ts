@@ -63,6 +63,10 @@ export class OfferEditionFormComponent implements OnInit, OnDestroy, ControlValu
   public priceListFormKey = PriceListFormKey;
   public granularity = ELuDateGranularity;
 
+  public get hasRightToCreateAndEditOffers(): boolean {
+    return this.restrictionsService.hasRightToCreateAndEditOffers();
+  }
+
   private destroy$: Subject<void> = new Subject<void>();
 
   constructor(private restrictionsService: OfferRestrictionsService) {
@@ -122,6 +126,11 @@ export class OfferEditionFormComponent implements OnInit, OnDestroy, ControlValu
   }
 
   private setFormGroupValidation(offer: IDetailedOffer) {
+    if (!this.restrictionsService.hasRightToCreateAndEditOffers()) {
+      this.formGroup.disable();
+      return;
+    }
+
     if (!this.restrictionsService.canEdit(offer)) {
       this.formGroup.disable();
       this.formGroup.get(OfferFormKey.Name).enable();
