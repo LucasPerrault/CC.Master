@@ -1,5 +1,5 @@
 <div class="u-displayFlex u-alignItemsCenter">
-  <label class="textfield palette-grey mod-longer" *ngIf="(readonly$ | async) === false">
+  <label class="textfield palette-grey mod-longer" *ngIf="canDuplicateOffer$ | async">
     <cc-offer-price-list-api-select [formControl]="duplicatedOffer"></cc-offer-price-list-api-select>
     <span class="textfield-label">{{ "offers_form_pricegrid_offer_label" | translate }}</span>
   </label>
@@ -44,7 +44,7 @@
           </cc-editable-price-cell>
         </td>
         <td class="table-body-row-cell u-paddingReset">
-          <button class="actionIcon" (click)="remove(i)" *ngIf="canRemove && !isReadonly(control)">
+          <button class="actionIcon" (click)="remove(i)" *ngIf="canRemove(control)">
             <span aria-hidden="true" class="lucca-icon icon-cross"></span>
           </button>
         </td>
@@ -59,7 +59,7 @@
   </div>
 
   <button class="button mod-small mod-outline palette-grey u-right" (click)="insert()"
-          *ngIf="(readonly$ | async) === false || withAddPriceRowButton">
+          *ngIf="showAddPriceRowButton">
     {{ 'offers_forms_add_button_label' | translate }}
   </button>
 </form>

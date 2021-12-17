@@ -10,8 +10,8 @@ import {
   ValidationErrors,
   Validator,
 } from '@angular/forms';
-import { BehaviorSubject, Subject } from 'rxjs';
-import { filter, takeUntil } from 'rxjs/operators';
+import { BehaviorSubject, combineLatest, Observable, ReplaySubject, Subject } from 'rxjs';
+import { filter, map, takeUntil } from 'rxjs/operators';
 
 import { IPriceRowForm } from '../../models/price-list-form.interface';
 import { PriceListsValidators, PriceListValidationError } from '../../services/price-lists.validators';
@@ -56,14 +56,16 @@ export enum ArrowKey {
 })
 export class EditablePriceGridComponent implements OnInit, OnDestroy, ControlValueAccessor, Validator {
   @Input() public withAddPriceRowButton = false;
+  @Input() public set disabled(isDisabled: boolean) { this.disabled$.next(isDisabled); }
   @Input() public set readonly(isReadonly: boolean) { this.readonly$.next(isReadonly); }
   @ViewChild('tableElement') public tableElement: ElementRef<HTMLTableElement>;
 
   public readonly$: BehaviorSubject<boolean> = new BehaviorSubject(false);
+  public disabled$: ReplaySubject<boolean> = new ReplaySubject(1);
   public readonlyFormControls: AbstractControl[] = [];
 
-  public get canRemove(): boolean {
-    return this.formArray.length > 1;
+  public get showAddPriceRowButton(): boolean {
+    return !this.formGroup.disabled && (this.withAddPriceRowButton || !this.readonly$.value);
   }
 
   public duplicatedOffer: FormControl = new FormControl();
@@ -81,6 +83,11 @@ export class EditablePriceGridComponent implements OnInit, OnDestroy, ControlVal
     return this.formGroup.hasError(PriceListValidationError.BoundsContinuity);
   }
 
+  public get canDuplicateOffer$(): Observable<boolean> {
+    return combineLatest([this.readonly$, this.disabled$])
+      .pipe(map(([isReadonly, isDisabled]) => !isReadonly && !isDisabled));
+  }
+
   private destroy$: Subject<void> = new Subject<void>();
 
   constructor() { }
@@ -93,6 +100,10 @@ export class EditablePriceGridComponent implements OnInit, OnDestroy, ControlVal
     this.readonly$
       .pipe(takeUntil(this.destroy$))
       .subscribe(readonly => this.setReadOnlyState(readonly));
+
+    this.disabled$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(isDisabled => this.setDisabledState(isDisabled));
 
     this.duplicatedOffer.valueChanges
       .pipe(takeUntil(this.destroy$), filter(o => !!o))
@@ -124,6 +135,15 @@ export class EditablePriceGridComponent implements OnInit, OnDestroy, ControlVal
     if (!!priceRows) {
       this.reset(priceRows);
     }
+  }
+
+  public setDisabledState(isDisabled: boolean) {
+    if (isDisabled) {
+      this.formGroup.disable();
+      return;
+    }
+
+    this.formGroup.enable();
   }
 
   public validate(control: AbstractControl): ValidationErrors | null {
@@ -183,6 +203,12 @@ export class EditablePriceGridComponent implements OnInit, OnDestroy, ControlVal
     const previousMaxIncludedCount = priceRows[currentRowIndex - 1]?.maxIncludedCount;
 
     return !!previousMaxIncludedCount ? previousMaxIncludedCount + 1 : 0;
+  }
+
+  public canRemove(control: AbstractControl): boolean {
+    return this.formArray.length > 1
+      && !this.isReadonly(control)
+      && !this.formGroup.disabled;
   }
 
   public isReadonly(control: AbstractControl): boolean {
