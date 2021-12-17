@@ -33,6 +33,7 @@ namespace Core.Proxy.Infra.Extensions
             "/health/ready",
             "/health/live",
             "/warmup",
+            "/ip-filter",
 
             // front
             "/cc-master",
@@ -42,6 +43,7 @@ namespace Core.Proxy.Infra.Extensions
             "/reports",
             "/offers",
             "/contracts",
+            "/ip",
         };
 
         private static readonly HashSet<string> BetaNonRedirectableSegments = new HashSet<string>(StringComparer.OrdinalIgnoreCase)

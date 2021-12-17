@@ -23,6 +23,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\..\..\CloudControl.Web.Tests\CloudControl.Web.Tests.csproj" />
       <ProjectReference Include="..\IpFilter.Domain\IpFilter.Domain.csproj" />
     </ItemGroup>
 
