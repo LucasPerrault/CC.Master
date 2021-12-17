@@ -19,7 +19,12 @@ namespace IpFilter.Web
             "/healthz",
             "/health/ready",
             "/health/live",
-            "/warmup"
+            "/warmup",
+            "/maj",
+            "/api/principals",
+
+            // front
+            "/ip",
         };
 
         public static void UseIpFilter(this IApplicationBuilder app, IWebHostEnvironment env)
