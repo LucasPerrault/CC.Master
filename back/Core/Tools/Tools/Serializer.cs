@@ -10,7 +10,7 @@ namespace Tools
 {
     public static class Serializer
     {
-        public static T Deserialize<T>(string content)
+        public static T Deserialize<T>(string content, params JsonConverter[] converters)
         {
             if (string.IsNullOrEmpty(content))
             {
@@ -20,40 +20,27 @@ namespace Tools
             return JsonSerializer.Deserialize<T>
             (
                 content,
-                new JsonSerializerOptions
-                {
-                    PropertyNameCaseInsensitive = true
-                }
+                Options.ForDeserialization(converters ?? Array.Empty<JsonConverter>())
             );
         }
 
-        public static Task<T> DeserializeAsync<T>(Stream content)
-        {
-            return DeserializeAsync<T>(content, new JsonSerializerOptions());
-        }
-
-        public static async Task<T> DeserializeAsync<T>(Stream content, JsonSerializerOptions options)
+        public static async Task<T> DeserializeAsync<T>(Stream content, params JsonConverter[] converters)
         {
             if (!content.CanRead)
             {
                 return default;
             }
 
-            options.PropertyNameCaseInsensitive = true;
+            var options = Options.ForDeserialization(converters ?? Array.Empty<JsonConverter>());
+
             return await JsonSerializer.DeserializeAsync<T>(content, options);
         }
 
-        public static string Serialize(object o)
+        public static string Serialize(object o, params JsonConverter[] converters)
         {
-            return JsonSerializer.Serialize(o, new JsonSerializerOptions
-            {
-                PropertyNamingPolicy = JsonNamingPolicy.CamelCase
-            });
+            var options = Options.ForSerialization(converters ?? Array.Empty<JsonConverter>());
+            return JsonSerializer.Serialize(o, options);
         }
-
-        internal static string Serialize(object o, JsonSerializerOptions options) => JsonSerializer.Serialize(o, options);
-        internal static T Deserialize<T>(string content, JsonSerializerOptions options) => JsonSerializer.Deserialize<T>(content, options);
-
 
         public static IPolymorphicSerializerBuilder<TPolymorphic, TDiscriminator> WithPolymorphism<TPolymorphic, TDiscriminator>(string nameOfProperty)
             where TDiscriminator : Enum
@@ -70,7 +57,7 @@ namespace Tools
                 var options = new JsonSerializerOptions
                 {
                     PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-                    Converters = { new JsonStringEnumConverter() }
+                    Converters = { new JsonStringEnumConverter() },
                 };
                 foreach (var converter in converters)
                 {
@@ -79,9 +66,9 @@ namespace Tools
                 return options;
             }
 
-            public static JsonSerializerOptions ForDeserialization() => ForDeserialization(new List<JsonConverter>());
+            public static JsonSerializerOptions ForDeserialization() => ForDeserialization(Array.Empty<JsonConverter>());
 
-            public static JsonSerializerOptions ForDeserialization(IEnumerable<JsonConverter> converters)
+            public static JsonSerializerOptions ForDeserialization(params JsonConverter[] converters)
             {
                 var options = new JsonSerializerOptions
                 {
@@ -159,12 +146,12 @@ namespace Tools
 
         public T Deserialize<T>(string content)
         {
-            return Serializer.Deserialize<T>(content, Serializer.Options.ForDeserialization(_converters));
+            return Serializer.Deserialize<T>(content, _converters.ToArray());
         }
 
         public Task<T> DeserializeAsync<T>(Stream content)
         {
-            return Serializer.DeserializeAsync<T>(content, Serializer.Options.ForDeserialization(_converters));
+            return Serializer.DeserializeAsync<T>(content, _converters.ToArray());
         }
     }
 
