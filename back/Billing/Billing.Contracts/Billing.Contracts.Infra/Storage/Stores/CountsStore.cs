@@ -2,9 +2,12 @@ using Billing.Contracts.Domain.Counts;
 using Billing.Contracts.Domain.Counts.Filtering;
 using Billing.Contracts.Domain.Counts.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using Rights.Domain.Filtering;
 using Storage.Infra.Extensions;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 
 namespace Billing.Contracts.Infra.Storage.Stores
@@ -18,9 +21,10 @@ namespace Billing.Contracts.Infra.Storage.Stores
             _dbContext = dbContext;
         }
 
-        public async Task<IReadOnlyCollection<Count>> GetAsync(CountFilter filter)
+        public async Task<IReadOnlyCollection<Count>> GetAsync(AccessRight accessRight, CountFilter filter)
         {
             return await Counts
+                .WhereHasAccess(accessRight)
                 .AsNoTracking()
                 .WhereMatches(filter)
                 .ToListAsync();
@@ -31,6 +35,18 @@ namespace Billing.Contracts.Infra.Storage.Stores
 
     internal static class CountsQueryableExtensions
     {
+        public static IQueryable<Count> WhereHasAccess(this IQueryable<Count> counts, AccessRight accessRight)
+        {
+            return counts.Where(AccessExpression(accessRight));
+        }
+
+        private static Expression<Func<Count, bool>> AccessExpression(AccessRight accessRight) => accessRight switch
+        {
+            AllAccessRight _ => _ => true,
+            NoAccessRight _ => _ => false,
+            DistributorAccessRight r => c => c.Contract.DistributorId == r.DistributorId,
+        };
+
         public static IQueryable<Count> WhereMatches(this IQueryable<Count> counts, CountFilter filter)
         {
             return counts

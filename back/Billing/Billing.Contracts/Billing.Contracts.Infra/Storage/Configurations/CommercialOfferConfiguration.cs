@@ -52,4 +52,18 @@ namespace Billing.Contracts.Infra.Storage.Configurations
             builder.Property(d => d.ListId).HasColumnName("ListId");
         }
     }
+
+    public class ContractPricingsConfiguration : IEntityTypeConfiguration<ContractPricing>
+    {
+        public void Configure(EntityTypeBuilder<ContractPricing> builder)
+        {
+            builder.ToTable("ContractPricings");
+            builder.HasNoKey();
+            builder.Property(d => d.ContractId).HasColumnName("ContractId").IsRequired();
+            builder.Property(d => d.PricingMethod).HasColumnName("PricingMethod");
+            builder.Property(d => d.ConstantPrice).HasColumnName("ConstantPrice");
+            builder.Property(d => d.AnnualCommitmentPrice).HasColumnName("AnnualCommitmentPrice");
+            builder.Property(d => d.AnnualCommitmentUnits).HasColumnName("AnnualCommitmentUnits");
+        }
+    }
 }

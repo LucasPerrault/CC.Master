@@ -41,9 +41,39 @@ namespace Billing.Contracts.Infra.Storage.Stores
             return _queryPager.ToPageAsync(Set(accessRight, filter), pageToken);
         }
 
-        public Task<List<Contract>> GetAsync(AccessRight accessRight, ContractFilter filter)
+        public async Task<List<Contract>> GetAsync(AccessRight accessRight, ContractFilter filter)
         {
-            return Set(accessRight, filter)
+            var a = await _dbContext.Set<Contract>()
+                .Include(c => c.Attachments)
+                .Include(c => c.Client)
+                .Include(c => c.Distributor)
+                .Include(c => c.Environment)
+                .Include(c => c.CommercialOffer).ThenInclude(o => o.Product)
+                .WhereHasRight(accessRight)
+                .WhereMatches(filter)
+                .CountAsync();
+
+            var v = await _dbContext.Set<Contract>()
+                .Include(c => c.Attachments)
+                .Include(c => c.Client)
+                .Include(c => c.Distributor)
+                .Include(c => c.Environment)
+                .Include(c => c.CommercialOffer).ThenInclude(o => o.Product)
+                .WhereHasRight(accessRight)
+                .WhereMatches(filter)
+                .AsNoTracking()
+                .CountAsync();
+
+            var b = await Set(accessRight, filter).CountAsync();
+
+            var d = await Set(accessRight, filter).AsNoTracking().CountAsync();
+
+            var e = Set(accessRight, filter).AsNoTracking();
+            var f = await e.CountAsync();
+
+            var l = await e.ToListAsync();
+
+            return await Set(accessRight, filter)
                 .AsNoTracking()
                 .ToListAsync();
         }
