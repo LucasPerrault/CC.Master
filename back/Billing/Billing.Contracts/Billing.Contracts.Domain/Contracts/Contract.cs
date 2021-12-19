@@ -1,4 +1,4 @@
-﻿using Billing.Contracts.Domain.Clients;
+using Billing.Contracts.Domain.Clients;
 using Billing.Contracts.Domain.Environments;
 using Billing.Contracts.Domain.Offers;
 using Distributors.Domain.Models;
@@ -42,7 +42,7 @@ namespace Billing.Contracts.Domain.Contracts
 
         public List<EstablishmentAttachment> Attachments { get; set; }
 
-        public decimal CountEstimation { get; set; }
+        public int CountEstimation { get; set; }
         public int TheoreticalFreeMonths { get; set; }
         public double? RebatePercentage { get; set; }
         public DateTime? RebateEndsOn { get; set; }
@@ -100,7 +100,7 @@ namespace Billing.Contracts.Domain.Contracts
         Unknown = 0,
         Modification = 1,
         Resiliation = 2,
-        Deactivation = 3
+        Deactivation = 3,
     }
 
     public enum BillingPeriodicity

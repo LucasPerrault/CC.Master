@@ -10,6 +10,7 @@ namespace Billing.Contracts.Domain.Environments
         public int Id { get; set; }
         public string Subdomain { get; set; }
         public List<Establishment> Establishments { get; set; }
+        public int GroupId { get; set; }
     }
 
     public class Establishment

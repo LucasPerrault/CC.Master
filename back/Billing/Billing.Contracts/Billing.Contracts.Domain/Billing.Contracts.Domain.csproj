@@ -12,7 +12,9 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\..\Core\Authentication\Authentication.Domain\Authentication.Domain.csproj" />
+    <ProjectReference Include="..\..\..\Core\Lock\Lock\Lock.csproj" />
     <ProjectReference Include="..\..\..\Core\Rights\Rights.Domain\Rights.Domain.csproj" />
+    <ProjectReference Include="..\..\..\Core\TeamNotification\TeamNotification.Abstractions\TeamNotification.Abstractions.csproj" />
     <ProjectReference Include="..\..\..\Shared\Distributors\Distributors.Domain\Distributors.Domain.csproj" />
     <ProjectReference Include="..\..\Billing.Products\Billing.Products.Domain\Billing.Products.Domain.csproj" />
   </ItemGroup>

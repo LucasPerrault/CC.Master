@@ -53,7 +53,7 @@ namespace Billing.Contracts.Domain.Offers.Services
                 .GroupBy(c => c.CommercialOfferId);
 
             var counts = await _countsStore
-                .GetAsync(new CountFilter { CommercialOfferIds = offerIds });
+                .GetAsync(AccessRight.All, new CountFilter { CommercialOfferIds = offerIds });
 
             var mostRecentCountPeriod = counts
                 .Select(c => c.CountPeriod)
