@@ -10,11 +10,15 @@ import {
 } from '@angular/forms';
 import { SelectDisplayMode } from '@cc/common/forms';
 import { ContractBillingMonth, IContractForm } from '@cc/domain/billing/contracts';
+import { LuModal } from '@lucca-front/ng/modal';
 import { ReplaySubject, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { IContractValidationContext } from '../../models/contract-validation-context.interface';
-import { ContractActionRestrictionsService } from '../../services/contract-action-restrictions.service.';
+import { IValidationContext } from '../../../../validation-context-store.data';
+import { IContractFormInformation } from '../../models/contract-form-information.interface';
+import { ContractActionRestrictionsService } from '../../services/contract-action-restrictions.service';
+import { ClientInfoModalComponent } from './client-info-modal/client-info-modal.component';
+import { IClientInfoModalData } from './client-info-modal/client-info-modal-data.interface';
 
 enum ContractFormKey {
   BillingMonth = 'billingMonth',
@@ -48,7 +52,8 @@ enum ContractFormKey {
   ],
 })
 export class ContractTabFormComponent implements OnInit, OnDestroy, ControlValueAccessor {
-  @Input() public validationContext: IContractValidationContext;
+  @Input() public validationContext: IValidationContext;
+  @Input() public formInformation: IContractFormInformation;
 
   public onChange: (contractForm: IContractForm) => void;
   public onTouch: () => void;
@@ -68,41 +73,27 @@ export class ContractTabFormComponent implements OnInit, OnDestroy, ControlValue
     return [`productId=${product.id}`];
   }
 
-  public get showDisabledFormInformation(): boolean {
-    if (!this.canEditContract) {
-      return false;
-    }
-
-    return this.formValidationService.hasRealCounts(this.validationContext)
-      || this.formValidationService.hasActiveEstablishments(this.validationContext)
-      || this.formValidationService.hasUnletteredContractEntries(this.validationContext);
-  }
-
-  private get canEditContract(): boolean {
-    return this.formValidationService.canEditContract();
-  }
-
-  private get canEditTheoreticalStartOn(): boolean {
+  public get canEditTheoreticalStartOn(): boolean {
     return this.formValidationService.canEditTheoreticalStartOn(this.validationContext);
   }
 
-  private get canEditDistributor(): boolean {
+  public get canEditDistributor(): boolean {
     return this.formValidationService.canEditDistributor(this.validationContext);
   }
 
-  private get canEditClient(): boolean {
+  public get canEditClient(): boolean {
     return this.formValidationService.canEditClient(this.validationContext);
   }
 
-  private get canEditOffer(): boolean {
+  public get canEditOffer(): boolean {
     return this.formValidationService.canEditOffer(this.validationContext);
   }
 
-  private get canEditProduct(): boolean {
+  public get canEditProduct(): boolean {
     return this.formValidationService.canEditProduct(this.validationContext);
   }
 
-  private get canEditMinimalBilling(): boolean {
+  public get canEditMinimalBilling(): boolean {
     return this.formValidationService.canEditMinimalBilling(this.validationContext);
   }
 
@@ -110,9 +101,13 @@ export class ContractTabFormComponent implements OnInit, OnDestroy, ControlValue
     return this.formValidationService.canEditBillingFrequency(this.validationContext);
   }
 
+  private get canEditContract(): boolean {
+    return this.formValidationService.canEditContract();
+  }
+
   private destroy$: Subject<void> = new Subject<void>();
 
-  constructor(private formValidationService: ContractActionRestrictionsService) {
+  constructor(private formValidationService: ContractActionRestrictionsService, private luModal: LuModal) {
   }
 
   public ngOnInit(): void {
@@ -170,6 +165,20 @@ export class ContractTabFormComponent implements OnInit, OnDestroy, ControlValue
     if (!this.formGroup || this.formGroup.invalid) {
       return { invalid: true };
     }
+  }
+
+  public openClientInformationModal(): void {
+    const data: IClientInfoModalData = {
+      salesforceId: this.formInformation.client?.salesforceId,
+      commercialManagementId: this.formInformation.client?.commercialManagementId,
+      name: this.formInformation.client?.name,
+    };
+    this.luModal.open(ClientInfoModalComponent, data);
+  }
+
+  public hasRequiredError(formKey: ContractFormKey): boolean {
+    const ctrl = this.formGroup.get(formKey);
+    return ctrl.touched && ctrl.hasError('required');
   }
 
   private setBillingMonthDisabled(billingMonth: ContractBillingMonth): void {

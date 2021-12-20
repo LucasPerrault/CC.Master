@@ -1,9 +1,8 @@
+import { ICount } from '@cc/domain/billing/counts';
 import { createServiceFactory, SpectatorService } from '@ngneat/spectator';
 import { addMonths, endOfMonth, startOfMonth, subMonths } from 'date-fns';
 
-import { CountCode } from '../../../../../../../../domain/billing/counts/count-code.enum';
 import { AttachmentEndReason } from '../constants/attachment-end-reason.const';
-import { IContractCount } from '../models/contract-count.interface';
 import { IEstablishmentAttachment } from '../models/establishment-attachment.interface';
 import { IEstablishmentContract } from '../models/establishment-contract.interface';
 import { AttachmentsActionRestrictionsService } from './attachments-action-restrictions.service';
@@ -20,11 +19,10 @@ const fakeAttachment = (start: Date, end: Date): IEstablishmentAttachment => ({
   contractID: 1,
   contract: {} as IEstablishmentContract,
 });
-const fakeRealCount = (countPeriod: Date): IContractCount => ({
+const fakeRealCount = (countPeriod: Date): ICount => ({
   id: 1,
   countDate: addMonths(countPeriod, 1),
   countPeriod,
-  code: CountCode.Count,
 });
 
 const today = new Date();

@@ -1,5 +1,6 @@
-﻿using Billing.Contracts.Domain.Contracts;
+using Billing.Contracts.Domain.Contracts;
 using Billing.Contracts.Domain.Contracts.Interfaces;
+using Billing.Contracts.Domain.Offers.Services;
 using Lucca.Core.Api.Abstractions.Paging;
 using Lucca.Core.Api.Queryable.Paging;
 using Lucca.Core.Shared.Domain.Expressions;
@@ -42,7 +43,34 @@ namespace Billing.Contracts.Infra.Storage.Stores
 
         public Task<List<Contract>> GetAsync(AccessRight accessRight, ContractFilter filter)
         {
-            return Set(accessRight, filter).ToListAsync();
+            return Set(accessRight, filter)
+                .AsNoTracking()
+                .ToListAsync();
+        }
+
+        public async Task<List<OfferUsageContract>> GetOfferUsageContractAsync(AccessRight accessRight, ContractFilter filter)
+        {
+            var contractsExtract = await Set(accessRight, filter)
+                .AsNoTracking()
+                .Select(c => new { c.CommercialOfferId, c.TheoreticalStartOn, c.TheoreticalEndOn})
+                .ToListAsync();
+
+            return contractsExtract.Select
+            (
+                e => new Contract
+                {
+                    CommercialOfferId = e.CommercialOfferId,
+                    TheoreticalStartOn = e.TheoreticalStartOn,
+                    TheoreticalEndOn = e.TheoreticalEndOn,
+                }
+            ).Select
+            (
+                c => new OfferUsageContract
+                {
+                    Status = c.Status,
+                    CommercialOfferId = c.CommercialOfferId,
+                }
+            ).ToList();
         }
 
         public Task<ContractComment> GetCommentAsync(AccessRight accessRight, int contractId)
@@ -76,6 +104,7 @@ namespace Billing.Contracts.Infra.Storage.Stores
                 .Apply(filter.ArchivedAt).To(c => c.ArchivedAt)
                 .Apply(filter.StartsOn).To(ContractExpressions.StartsOn)
                 .Apply(filter.EndsOn).To(ContractExpressions.EndsOn)
+                .WhenNotNullOrEmpty(filter.ExcludedIds).ApplyWhere(c => !filter.ExcludedIds.Contains(c.Id))
                 .Apply(filter.CreatedAt).To(c => c.CreatedAt)
                 .Apply(filter.HasEnvironment).To(c => c.EnvironmentId.HasValue)
                 .WhenNotNullOrEmpty(filter.CurrentlyAttachedEstablishmentIds).ApplyWhere(ContractExpressions.IsAttachedToAnyEstablishment(filter.CurrentlyAttachedEstablishmentIds, DateTime.Now))

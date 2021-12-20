@@ -19,11 +19,6 @@
         }
     }
 
-    public class SenderForm
-    {
-        public string DisplayName { get; set; }
-    }
-
     public class EmailContact
     {
         public string EmailAddress { get; }

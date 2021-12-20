@@ -44,8 +44,7 @@ namespace AdvancedFilters.Infra.Tests
             _teamNotifierMock = new Mock<ITeamNotifier>();
 
             _syncEmailsMock
-                .Setup(e => e.GetSyncReportEmail(It.IsAny<List<Exception>>()))
-                .Returns(new EmailContentBuilder("Mocked"));
+                .Setup(e => e.GetSyncReportEmail(It.IsAny<List<Exception>>()));
 
             var client = new HttpClient(_httpClientHandlerMock.Object);
             var localDataSourceServiceMock = new Mock<ILocalDataSourceService>();

@@ -10,8 +10,8 @@ namespace Storage.Infra.Tests
 
         [Theory]
         [InlineData(new [] {"aperture", "figgo" }, "\"aperture*\" AND \"figgo*\"")]
-        [InlineData(new [] {"@", "/" }, "\"@*\" AND \"/*\"")]
-        [InlineData(new [] {"\"" }, "\"\"*\"")]
+        [InlineData(new [] {"@", "/" }, "\"\"")]
+        [InlineData(new [] {"\"" }, "\"\"")]
         public void ShouldProperlyConvertToFullTextContainsPredicate(string[] clues, string expected)
         {
             clues.ToHashSet().ToFullTextContainsPredicate().Should().Be(expected);

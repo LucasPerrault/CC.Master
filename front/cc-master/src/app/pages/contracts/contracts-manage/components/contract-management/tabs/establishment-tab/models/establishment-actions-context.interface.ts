@@ -1,10 +1,11 @@
+import { ICount } from '@cc/domain/billing/counts';
+
 import { EstablishmentType } from '../constants/establishment-type.enum';
-import { IContractCount } from './contract-count.interface';
 import { IEstablishmentContract } from './establishment-contract.interface';
 
 export interface IEstablishmentActionsContext {
   establishmentType: EstablishmentType;
   contract: IEstablishmentContract;
-  realCounts: IContractCount[];
+  realCounts: ICount[];
   lastCountPeriod: Date;
 }

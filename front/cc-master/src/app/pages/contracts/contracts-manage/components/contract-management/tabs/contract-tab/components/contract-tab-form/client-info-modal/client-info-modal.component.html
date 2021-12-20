@@ -1,0 +1,21 @@
+<div class="u-displayFlex u-flexDirectionColumn">
+  <div>
+    {{ 'contracts_client_salesforce_info' | translate: { id: data.salesforceId } }}
+    <button type="button" class="actionIcon" (click)="redirectToSalesforceUrl(data.salesforceId)"
+            [luTooltip]="'contracts_client_salesforce_action_info' | translate"
+            luTooltipPosition="after">
+      <span aria-hidden="true" class="lucca-icon icon-outside"></span>
+      <span class="u-mask">{{ 'contracts_client_salesforce_action_info' | translate }}</span>
+    </button>
+  </div>
+
+  <div>
+    {{ 'contracts_client_business_central_info' | translate : { id: data.commercialManagementId } }}
+    <button type="button" class="actionIcon" (click)="copy(data.commercialManagementId)">
+      <span aria-hidden="true" class="lucca-icon icon-copy"
+            [luTooltip]="'contracts_client_business_central_action_info' | translate"
+            luTooltipPosition="after"></span>
+      <span class="u-mask">{{ 'contracts_client_business_central_action_info' | translate }}</span>
+    </button>
+  </div>
+</div>

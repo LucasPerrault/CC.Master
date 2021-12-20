@@ -50,6 +50,7 @@ namespace AdvancedFilters.Domain.Core.Collections
             { "WUCALHEBDO", "Ucalhebdo" },
             { "WURBA", "Urba" },
             { "WUTIMEEXPORT", "Utimeexport" },
+            { "Flex", "Timmi Office" },
         };
 
         public Task<IReadOnlyCollection<Application>> GetAsync(string search)

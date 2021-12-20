@@ -24,6 +24,16 @@
             <h1 class="header-nav-title">{{ title }}</h1>
           </div>
         </div>
+        <div class="header-contentRight">
+          <button *ngIf="canDeleteContract$ | async" type="button"
+                  class="actionIcon palette-grey mod-outlined"
+                  [ngClass]="deleteButtonClass$ | async"
+                  (click)="delete()"
+                  [luTooltip]="'front_contractPage_deleteButton_label' | translate">
+            <span aria-hidden="true" class="lucca-icon icon-trash"></span>
+            <span class="u-mask">{{ 'front_contractPage_deleteButton_label' | translate }}</span>
+          </button>
+        </div>
       </div>
 
       <nav class="menu u-flexWrapWrap">

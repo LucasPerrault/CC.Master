@@ -1,0 +1,87 @@
+<form [formGroup]="formGroup" class="u-displayFlex">
+  <div>
+    <h4>{{ 'offers_forms_title_information' | translate }}</h4>
+
+    <label class="textfield palette-grey is-required u-marginBottomStandard mod-longer">
+      <input class="textfield-input"
+             type="text"
+             [formControlName]="offerFormKey.Name"
+             [required]="true">
+      <span class="textfield-label">{{ 'offers_form_name' | translate }}</span>
+    </label>
+
+    <label class="textfield palette-grey u-marginBottomStandard mod-longer is-required">
+      <cc-product-api-select [formControlName]="offerFormKey.Product" [required]="true">
+      </cc-product-api-select>
+      <span class="textfield-label">{{ 'select_product_label' | translate }}</span>
+      <span class="textfield-messages" *ngIf="hasRequiredError(offerFormKey.Product)">
+        <span class="textfield-messages-error">
+          {{ "front_select_products_errorMessage_required" | translate }}
+        </span>
+      </span>
+    </label>
+
+    <label class="textfield palette-grey is-required u-marginBottomStandard mod-longer">
+      <cc-offer-billing-unit-select [formControlName]="offerFormKey.BillingUnit" [required]="true">
+      </cc-offer-billing-unit-select>
+      <span class="textfield-label">{{ 'offers_form_billingUnit' | translate }}</span>
+    </label>
+
+    <label class="textfield palette-grey is-required u-marginBottomStandard mod-longer">
+      <cc-offer-currency-api-select [formControlName]="offerFormKey.Currency" [required]="true">
+      </cc-offer-currency-api-select>
+      <span class="textfield-label">{{ 'offers_form_currency' | translate }}</span>
+    </label>
+
+    <label class="textfield palette-grey is-required u-marginBottomStandard mod-longer">
+      <cc-offer-tag-autocomplete-select [formControlName]="offerFormKey.Tag" [required]="true"></cc-offer-tag-autocomplete-select>
+      <span class="textfield-label">{{ 'offers_form_tag' | translate }}</span>
+    </label>
+
+    <h4 class="u-marginTopStandard">{{ 'offers_forms_title_billing_mode_algo' | translate }}</h4>
+
+    <label class="textfield palette-grey is-required u-marginBottomStandard mod-longer">
+      <cc-offer-billing-mode-select [formControlName]="offerFormKey.BillingMode" [required]="true">
+      </cc-offer-billing-mode-select>
+      <span class="textfield-label">{{ 'offers_form_billingMode' | translate }}</span>
+    </label>
+
+    <label class="textfield palette-grey is-required u-marginBottomStandard mod-longer">
+      <cc-offer-pricing-method-select [formControlName]="offerFormKey.PricingMethod" [required]="true">
+      </cc-offer-pricing-method-select>
+      <span class="textfield-label">{{ 'offers_form_pricingMethod' | translate }}</span>
+    </label>
+
+    <label class="textfield palette-grey is-required u-marginBottomStandard mod-longer">
+      <cc-offer-forecast-method-select [formControlName]="offerFormKey.ForecastMethod" [required]="true">
+      </cc-offer-forecast-method-select>
+      <span class="textfield-label">{{ 'offers_form_forecast_method' | translate }}</span>
+    </label>
+  </div>
+
+  <div class="u-marginLeftSmall u-displayFlex u-flexDirectionColumn">
+    <h4>{{ 'offers_forms_title_priceGrid' | translate }}
+      <span aria-hidden="true" class="lucca-icon icon-info"
+            [luTooltip]="'offers_forms_title_priceGrid_info' | translate">
+      </span>
+    </h4>
+
+    <div [formGroupName]="offerFormKey.PriceList">
+      <label class="textfield palette-grey mod-outline is-required mod-longer u-marginBottomStandard">
+        <lu-date-select class="textfield-input"
+                        [required]="true"
+                        [hideClearer]="true"
+                        [granularity]="granularity.month"
+                        [formControlName]="priceListFormKey.StartsOn">
+        </lu-date-select>
+        <span class="textfield-label">{{ 'offers_form_pricegrid_startsOn_label' | translate }}</span>
+      </label>
+
+      <cc-editable-price-grid [formControlName]="priceListFormKey.Rows"
+                              [readonly]="isPriceRowsReadonly"
+                              [withAddPriceRowButton]="true">
+      </cc-editable-price-grid>
+    </div>
+
+  </div>
+</form>

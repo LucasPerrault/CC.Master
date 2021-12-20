@@ -1,14 +1,14 @@
 import { clientFields, IClient } from '@cc/domain/billing/clients';
 import { ContractBillingMonth, contractFields, IContract } from '@cc/domain/billing/contracts';
 import { distributorFields, IDistributor } from '@cc/domain/billing/distributors';
-import { IOffer, IProduct, offerFields, productFields } from '@cc/domain/billing/offers';
+import { IOffer, IProduct, productFields } from '@cc/domain/billing/offers';
 
 export const contractDetailedFields = [
   contractFields,
   'billingMonth',
   `distributor[${distributorFields}]`,
-  `client[${clientFields}]`,
-  `offer[${offerFields}]`,
+  `client[${clientFields},salesforceId,commercialManagementId]`,
+  `offer[id,name]`,
   `product[${productFields}]`,
   'unityNumberTheorical',
   'clientRebate',
@@ -19,10 +19,15 @@ export const contractDetailedFields = [
   'comment',
 ].join(',');
 
+export interface IClientWithExternalInformation extends IClient {
+  salesforceId: string;
+  commercialManagementId: string;
+}
+
 export interface IContractDetailed extends IContract {
   billingMonth: ContractBillingMonth;
   distributor: IDistributor;
-  client: IClient;
+  client: IClientWithExternalInformation;
   offer: IOffer;
   product: IProduct;
   unityNumberTheorical: number;

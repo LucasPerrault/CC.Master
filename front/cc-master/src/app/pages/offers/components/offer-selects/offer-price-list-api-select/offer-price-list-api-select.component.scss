@@ -1,0 +1,10 @@
+@import "theming.import";
+
+:host {
+  display: contents;
+}
+
+.mod-textSmall {
+  font-size: .8rem;
+  color: _color('grey', 600);
+}

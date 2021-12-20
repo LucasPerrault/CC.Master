@@ -29,12 +29,12 @@ export class CountsReplayModalComponent implements OnInit, OnDestroy, ILuModalCo
     granularity: ELuDateGranularity.month,
     periodCoverStrategy: EndDateGranularityPolicy.End,
     startDateConfiguration: {
-      class: 'mod-inline mod-long palette-grey',
+      class: 'mod-inline mod-long palette-grey mod-outlined',
       min: this.modalData.min,
       max: this.modalData.max,
     },
     endDateConfiguration: {
-      class: 'mod-inline mod-long palette-grey',
+      class: 'mod-inline mod-long palette-grey mod-outlined',
       min: this.modalData.min,
       max: this.modalData.max,
     },

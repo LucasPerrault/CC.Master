@@ -5,6 +5,8 @@ import { ForbiddenComponent, NotFoundComponent } from '@cc/common/error-redirect
 import { NavigationPath, navigationTabs } from '@cc/common/navigation';
 import { NoNavPath } from '@cc/common/routing';
 
+import { AccountingComponent } from './pages/accounting/accounting.component';
+import { AccountingModule } from './pages/accounting/accounting.module';
 import { CafeComponent } from './pages/cafe/cafe.component';
 import { CafeModule } from './pages/cafe/cafe.module';
 import { CodeSourcesComponent } from './pages/code-sources/code-sources.component';
@@ -13,6 +15,8 @@ import { ContractsComponent } from './pages/contracts/contracts.component';
 import { ContractsModule } from './pages/contracts/contracts.module';
 import { LogsComponent } from './pages/logs/logs.component';
 import { LogsModule } from './pages/logs/logs.module';
+import { OffersComponent } from './pages/offers/offers.component';
+import { OffersModule } from './pages/offers/offers.module';
 
 const pageRoutes: Routes = [
   {
@@ -26,6 +30,14 @@ const pageRoutes: Routes = [
   {
     path: NavigationPath.Contracts,
     component: ContractsComponent,
+  },
+  {
+    path: NavigationPath.Accounting,
+    component: AccountingComponent,
+  },
+  {
+    path: NavigationPath.Offers,
+    component: OffersComponent,
   },
   {
     path: NavigationPath.Cafe,
@@ -46,6 +58,8 @@ const routes: Routes = [
     LogsModule,
     CodeSourcesModule,
     ContractsModule,
+    AccountingModule,
+    OffersModule,
     CafeModule,
   ],
   exports: [RouterModule],

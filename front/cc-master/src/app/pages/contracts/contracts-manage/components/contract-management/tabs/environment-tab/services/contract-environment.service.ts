@@ -1,6 +1,6 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { IHttpApiV3CollectionResponse, IHttpApiV3CountResponse, IHttpApiV3Response } from '@cc/common/queries';
+import { IHttpApiV3CollectionResponse, IHttpApiV3Response } from '@cc/common/queries';
 import { from, Observable, pipe, UnaryFunction } from 'rxjs';
 import { concatMap, distinct, filter, map, reduce, switchMap } from 'rxjs/operators';
 
@@ -11,7 +11,6 @@ import { environmentDetailedFields, IEnvironmentDetailed } from '../models/envir
 @Injectable()
 export class ContractEnvironmentService {
   private readonly contractEndpoint = '/api/v3/newcontracts';
-  private readonly attachmentsEndpoint = '/api/v3/contractentities';
   private readonly environmentsEndpoint = '/api/v3/environments';
 
   constructor(private httpClient: HttpClient) {}
@@ -28,16 +27,6 @@ export class ContractEnvironmentService {
   public linkEnvironment$(contractId: number, environmentId: number, creationCause: CreationCause): Observable<void> {
     const urlById = `${ this.contractEndpoint }/${ contractId }`;
     return this.httpClient.put<void>(urlById, { environmentId, creationCause });
-  }
-
-  public getAttachmentsNumber$(contractId: number): Observable<number> {
-    const params = new HttpParams()
-      .set('fields', 'collection.count')
-      .set('legalEntity.isActive', `${ true }`)
-      .set('contractId', String(contractId));
-
-    return this.httpClient.get<IHttpApiV3CountResponse>(this.attachmentsEndpoint, { params })
-      .pipe(map(response => response.data.count));
   }
 
   public getContractEnvironment$(contractId: number): Observable<IContractEnvironmentDetailed> {

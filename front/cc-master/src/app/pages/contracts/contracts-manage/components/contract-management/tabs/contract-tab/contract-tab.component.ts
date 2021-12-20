@@ -1,19 +1,25 @@
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { Operation, RightsService } from '@cc/aspects/rights';
 import { getButtonState, toSubmissionState } from '@cc/common/forms';
 import { IContractForm } from '@cc/domain/billing/contracts';
-import { Observable, ReplaySubject, Subject } from 'rxjs';
-import { finalize, map, startWith, take } from 'rxjs/operators';
+import { DistributorsService } from '@cc/domain/billing/distributors';
+import { ILuPopupRef, LuPopup } from '@lucca-front/ng/popup';
+import { isEqual as isDateEqual } from 'date-fns';
+import { BehaviorSubject, Observable, ReplaySubject, Subject } from 'rxjs';
+import { filter, finalize, map, take, takeUntil } from 'rxjs/operators';
 
 import { ContractsListService } from '../../../../services/contracts-list.service';
 import { ContractManagementService } from '../../contract-management.service';
+import { IValidationContext } from '../../validation-context-store.data';
+import { ValidationContextStoreService } from '../../validation-context-store.service';
+import {
+  ContractLeavingConfirmationPopupComponent,
+} from './components/contract-leaving-confirmation-popup/contract-leaving-confirmation-popup.component';
 import { IContractDetailed } from './models/contract-detailed.interface';
-import { IContractValidationContext } from './models/contract-validation-context.interface';
-import { ContractActionRestrictionsService } from './services/contract-action-restrictions.service.';
+import { IContractFormInformation } from './models/contract-form-information.interface';
 import { ContractTabService } from './services/contract-tab.service';
-import { ContractValidationContextService } from './services/contract-validation-context.service';
 
 @Component({
   selector: 'cc-contract-tab',
@@ -21,22 +27,15 @@ import { ContractValidationContextService } from './services/contract-validation
   styleUrls: ['./contract-tab.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ContractTabComponent implements OnInit {
+export class ContractTabComponent implements OnInit, OnDestroy {
 
   public contractForm: FormControl = new FormControl();
-  public validationContext$: ReplaySubject<IContractValidationContext> = new ReplaySubject();
-  public showDeletionCallout = true;
+  public validationContext$: ReplaySubject<IValidationContext> = new ReplaySubject(1);
+  public formInformation$: ReplaySubject<IContractFormInformation> = new ReplaySubject(1);
 
   public isLoading$: ReplaySubject<boolean> = new ReplaySubject<boolean>(1);
   public editButtonState$: Subject<string> = new Subject<string>();
-  public deleteState$: Subject<string> = new Subject<string>();
-
-  public get canDeleteContract$(): Observable<boolean> {
-    return this.validationContext$.pipe(
-      map(c => this.contractFormValidationService.canDeleteContracts(c)),
-      startWith(false),
-    );
-  }
+  public isClosePopupConfirmed$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
   public get canEditContract(): boolean {
     return this.rightsService.hasOperation(Operation.EditContracts);
@@ -46,26 +45,43 @@ export class ContractTabComponent implements OnInit {
     return parseInt(this.activatedRoute.parent.snapshot.paramMap.get('id'), 10);
   }
 
+  private contractToEdit$: BehaviorSubject<IContractDetailed> = new BehaviorSubject<IContractDetailed>(null);
+  private destroy$: Subject<void> = new Subject<void>();
+
   constructor(
     private rightsService: RightsService,
     private activatedRoute: ActivatedRoute,
     private contractTabService: ContractTabService,
-    private contractFormValidationService: ContractActionRestrictionsService,
-    private contractValidationContextService: ContractValidationContextService,
     private contractsManageModalService: ContractManagementService,
     private contractsListService: ContractsListService,
+    private contextStoreService: ValidationContextStoreService,
+    private distributorsService: DistributorsService,
+    private luPopup: LuPopup,
   ) {}
 
   public ngOnInit(): void {
     this.isLoading$.next(true);
 
-    this.contractValidationContextService.getValidationContext$(this.contractId)
+    this.contextStoreService.context$
       .pipe(take(1))
       .subscribe(context => this.validationContext$.next(context));
 
     this.contractTabService.getContractDetailed$(this.contractId)
       .pipe(take(1), finalize(() => this.isLoading$.next(false)))
-      .subscribe(contract => this.contractForm.setValue(this.toContractForm(contract)));
+      .subscribe(contract => {
+        this.contractForm.setValue(this.toContractForm(contract));
+        this.contractToEdit$.next(contract);
+        this.setFormInformation(contract);
+      });
+
+    this.isClosePopupConfirmed$
+      .pipe(takeUntil(this.destroy$), filter(isConfirmed => isConfirmed))
+      .subscribe(() => this.contractsManageModalService.close());
+  }
+
+  public ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   public edit(): void {
@@ -82,26 +98,23 @@ export class ContractTabComponent implements OnInit {
       .subscribe(buttonState => this.editButtonState$.next(buttonState));
   }
 
-  public delete(): void {
-    this.contractTabService.deleteContract$(this.contractId)
-      .pipe(
-        take(1),
-        toSubmissionState(),
-        map(state => getButtonState(state)),
-        finalize(() => {
-          this.contractsListService.refresh();
-          this.contractsManageModalService.close();
-        }),
-      )
-      .subscribe(state => this.deleteState$.next(state));
-  }
-
   public close(): void {
-    this.contractsManageModalService.close();
+    if (!this.hasFormChanged()) {
+      this.contractsManageModalService.close();
+      return;
+    }
+
+    const popupRef = this.luPopup.open(ContractLeavingConfirmationPopupComponent);
+    popupRef.onClose.pipe(take(1))
+      .subscribe(this.isClosePopupConfirmed$);
   }
 
-  public hideDeletionCallout(): void {
-    this.showDeletionCallout = false;
+  public openCloseConfirmationPopup(): ILuPopupRef<ContractLeavingConfirmationPopupComponent> {
+    return this.luPopup.open(ContractLeavingConfirmationPopupComponent);
+  }
+
+  public hasFormChanged(): boolean {
+    return !this.isEqual(this.contractToEdit$.value, this.contractForm.value);
   }
 
   private toContractForm(contractDetailed: IContractDetailed): IContractForm {
@@ -121,5 +134,35 @@ export class ContractTabComponent implements OnInit {
       minimalBillingPercentage: contractDetailed.minimalBillingPercentage,
       comment: contractDetailed.comment ?? '',
     });
+  }
+
+  private isEqual(contract: IContractDetailed, form: IContractForm): boolean {
+    return contract.distributor.id === form.distributor.id
+      && contract.client.id === form.client.id
+      && contract.offer.id === form.offer.id
+      && contract.product.id === form.product.id
+      && contract.billingMonth === form.billingMonth
+      && isDateEqual(new Date(contract.theoricalStartOn), new Date(form.theoreticalStartOn))
+      && contract.clientRebate === form.clientRebate.count
+      && isDateEqual(new Date(contract.endClientRebateOn), new Date(form.clientRebate.endAt))
+      && contract.nbMonthTheorical === form.theoreticalMonthRebate
+      && contract.minimalBillingPercentage === form.minimalBillingPercentage
+      && contract.unityNumberTheorical === form.theoreticalDraftCount
+      && (contract.comment ?? '') === form.comment;
+  }
+
+  private setFormInformation(contract: IContractDetailed): void {
+    this.toFormInformation$(contract)
+      .pipe(take(1))
+      .subscribe(this.formInformation$);
+  }
+
+  private toFormInformation$(contract: IContractDetailed): Observable<IContractFormInformation> {
+    return this.distributorsService.getActiveRebate$(contract.distributor?.id, contract.product?.id).pipe(
+        map(distributorRebate => ({
+          client: contract.client,
+          distributorRebate,
+        })),
+    );
   }
 }

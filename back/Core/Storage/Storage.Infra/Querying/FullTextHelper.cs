@@ -19,9 +19,10 @@ namespace Storage.Infra.Querying
         {
             foreach (var word in words ?? new HashSet<string>())
             {
-                yield return ContainsAlphaNumeric(word)
-                    ? EscapeSpecialCharacters(word)
-                    : word;
+                if (ContainsAlphaNumeric(word))
+                {
+                    yield return EscapeSpecialCharacters(word);
+                }
             }
         }
 

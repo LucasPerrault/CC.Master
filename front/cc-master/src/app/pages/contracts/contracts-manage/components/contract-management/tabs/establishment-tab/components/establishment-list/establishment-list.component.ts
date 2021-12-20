@@ -2,10 +2,10 @@ import { DatePipe } from '@angular/common';
 import { Component, Input } from '@angular/core';
 import { Operation, RightsService } from '@cc/aspects/rights';
 import { TranslatePipe } from '@cc/aspects/translate';
+import { ICount } from '@cc/domain/billing/counts';
 
 import { getAttachmentEndReason } from '../../constants/attachment-end-reason.const';
 import { EstablishmentType } from '../../constants/establishment-type.enum';
-import { IContractCount } from '../../models/contract-count.interface';
 import { IEstablishmentActionsContext } from '../../models/establishment-actions-context.interface';
 import { IEstablishmentAttachment } from '../../models/establishment-attachment.interface';
 import { IEstablishmentContract } from '../../models/establishment-contract.interface';
@@ -21,10 +21,10 @@ export class EstablishmentListComponent {
   @Input() public type: EstablishmentType;
   @Input() public entries: IEstablishmentWithAttachments[];
   @Input() public contract: IEstablishmentContract;
-  @Input() public realCounts: IContractCount[];
+  @Input() public realCounts: ICount[];
 
   public get areAllSelected(): boolean {
-    return this.selectedEntries.length === this.entries.length;
+    return this.selectedEntries.length === this.entries.length && this.entries.length !== 0;
   }
 
   public get actionsContext(): IEstablishmentActionsContext {

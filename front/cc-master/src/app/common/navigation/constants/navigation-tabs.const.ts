@@ -45,7 +45,6 @@ export const navigationTabs: INavigationTab[] = [
       {
         url: NavigationPath.ContractsManage,
         name: 'front_navigation_contractManageTab',
-        isLegacy: true,
       },
     ],
   },
@@ -65,12 +64,10 @@ export const navigationTabs: INavigationTab[] = [
       {
         url: NavigationPath.AccountingRevenue,
         name: 'front_navigation_accountingRevenueTab',
-        isLegacy: true,
       },
       {
         url: NavigationPath.AccountingMiscTransactions,
         name: 'front_navigation_accountingMiscTransactionsTab',
-        isLegacy: true,
       },
     ],
   },
@@ -144,7 +141,6 @@ export const navigationTabs: INavigationTab[] = [
     url: NavigationPath.Offers,
     icon: 'pricetag',
     restriction: { operations: [Operation.ReadCommercialOffers] },
-    isLegacy: true,
   },
   {
     name: 'front_navigation_logsTab',

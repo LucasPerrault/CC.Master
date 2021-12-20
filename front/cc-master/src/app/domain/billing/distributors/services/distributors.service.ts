@@ -15,9 +15,9 @@ export class DistributorsService {
 
   constructor(private httpClient: HttpClient) { }
 
-  public getActiveRebates$(distributorId: number): Observable<IRebate[]> {
-    return this.getDistributor$<IDistributorActiveRebate>(distributorId, distributorActiveRebateFields)
-      .pipe(map(d => d.activeRebates));
+  public getActiveRebate$(distributorId: number, productId: number): Observable<number> {
+    return this.getActiveRebates$(distributorId)
+      .pipe(map(rs => rs.find(r => r.productId === productId)?.value));
   }
 
   public getDistributor$<T extends IDistributor>(id: number, fields: string): Observable<T> {
@@ -35,5 +35,10 @@ export class DistributorsService {
       map(response => response.data),
       map(data => data.items),
     );
+  }
+
+  private getActiveRebates$(distributorId: number): Observable<IRebate[]> {
+    return this.getDistributor$<IDistributorActiveRebate>(distributorId, distributorActiveRebateFields)
+      .pipe(map(d => d.activeRebates));
   }
 }

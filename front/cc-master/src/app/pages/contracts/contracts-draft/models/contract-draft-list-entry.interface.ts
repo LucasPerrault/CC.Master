@@ -1,6 +1,6 @@
 import { clientFields, IClient } from '@cc/domain/billing/clients';
 import { distributorFields, IDistributor } from '@cc/domain/billing/distributors';
-import { IOffer, IProduct, offerFields, productFields } from '@cc/domain/billing/offers';
+import { IOffer, IProduct, productFields } from '@cc/domain/billing/offers';
 
 import { draftFields, IContractDraft } from './contract-draft.interface';
 
@@ -11,7 +11,7 @@ export const draftListEntryFields = [
   `product[${productFields}]`,
   `client[${clientFields}]`,
   `distributor[${distributorFields}]`,
-  `offer[${offerFields}]`,
+  `offer[id,name]`,
 ].join(',');
 
 export interface IContractDraftListEntry extends IContractDraft {

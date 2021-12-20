@@ -1,0 +1,86 @@
+<table class="table mod-clickable" [ngClass]="{ 'mod-clickable': hasRightToEdit }">
+  <thead class="table-head">
+  <tr class="table-head-row">
+    <th class="table-head-row-cell" [attr.aria-sort]="getSortOrderClass(sortParamKey.Id)">
+      <button class="table-head-row-cell-sortableButton" (click)="sortBy(sortParamKey.Id)">
+        {{ 'offers_list_column_id' | translate }}
+      </button>
+    </th>
+    <th class="table-head-row-cell" [attr.aria-sort]="getSortOrderClass(sortParamKey.Name)">
+      <button class="table-head-row-cell-sortableButton" (click)="sortBy(sortParamKey.Name)">
+        {{ 'offers_list_column_name' | translate }}
+      </button>
+    </th>
+    <th class="table-head-row-cell">
+      {{ 'offers_list_column_product' | translate }}
+    </th>
+    <th class="table-head-row-cell" [attr.aria-sort]="getSortOrderClass(sortParamKey.BillingMode)">
+      <button class="table-head-row-cell-sortableButton" (click)="sortBy(sortParamKey.BillingMode)">
+        {{ 'offers_list_column_billingMode' | translate }}
+      </button>
+    </th>
+    <th class="table-head-row-cell" [attr.aria-sort]="getSortOrderClass(sortParamKey.PricingMethod)">
+      <button class="table-head-row-cell-sortableButton" (click)="sortBy(sortParamKey.PricingMethod)">
+        {{ 'offers_list_column_pricingMethod' | translate }}
+      </button>
+    </th>
+    <th class="table-head-row-cell" [attr.aria-sort]="getSortOrderClass(sortParamKey.ForecastMethod)">
+      <button class="table-head-row-cell-sortableButton" (click)="sortBy(sortParamKey.ForecastMethod)">
+        {{ 'offers_list_column_forecastMethod' | translate }}
+      </button>
+    </th>
+    <th class="table-head-row-cell">
+      {{ 'offers_list_column_currency' | translate }}
+    </th>
+    <th class="table-head-row-cell mod-alignRight">
+      {{ 'offers_list_column_activeContracts' | translate }}
+    </th>
+    <th class="table-head-row-cell mod-actions"></th>
+  </tr>
+  </thead>
+  <tbody class="table-body">
+  <tr *ngFor="let offer of offers" class="table-body-row" [routerLink]="[offer.id, 'edit']">
+    <td class="table-body-row-cell mod-alignRight">{{ offer.id }}</td>
+    <td class="table-body-row-cell">{{ offer.name }}</td>
+    <td class="table-body-row-cell">{{ offer.product?.name }}</td>
+    <td class="table-body-row-cell">{{ getBillingMode(offer.billingMode) }}</td>
+    <td class="table-body-row-cell">{{ offer.pricingMethod }}</td>
+    <td class="table-body-row-cell">{{ offer.forecastMethod }}</td>
+    <td class="table-body-row-cell">{{ getCurrencyName(offer.currencyId) }}</td>
+    <td class="table-body-row-cell mod-alignRight" (click)="$event.stopPropagation()">
+      <button *ngIf="!!offer.usage?.numberOfActiveContracts; else noActiveContract"
+              class="link" (click)="redirectToContracts(offer.id)">
+        {{ offer.usage?.numberOfActiveContracts }}
+      </button>
+
+      <ng-template #noActiveContract>0</ng-template>
+    </td>
+    <td class="table-body-row-cell mod-actions" (click)="$event.stopPropagation()">
+      <button *ngIf="!offer.isArchived; else isEnable" class="actionIcon"
+              (click)="archive(offer)"
+              [luTooltip]="'offers_list_actions_archive' | translate">
+        <span aria-hidden="true" class="lucca-icon icon-archive"></span>
+      </button>
+
+      <ng-template #isEnable>
+        <button class="actionIcon"
+                (click)="unarchive(offer)"
+                [luTooltip]="'offers_list_actions_unarchive' | translate">
+          <span aria-hidden="true" class="lucca-icon icon-formatUndo"></span>
+        </button>
+      </ng-template>
+
+      <button class="actionIcon" [luTooltip]="'offers_list_actions_edit' | translate" [routerLink]="[offer.id, 'edit']">
+        <span aria-hidden="true" class="lucca-icon icon-edit"></span>
+      </button>
+    </td>
+  </tr>
+  </tbody>
+</table>
+
+<section class="emptyState" *ngIf="!offers?.length">
+  <h3 class="emptyState-title">{{ 'front_contractPage_emptyState_title' | translate }}</h3>
+  <p class="emptyState-description">{{ 'front_contractPage_emptyState_information' | translate }}</p>
+</section>
+
+

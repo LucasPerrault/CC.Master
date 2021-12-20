@@ -91,12 +91,13 @@ namespace Billing.Contracts.Web
         public DateTime? WasStartedOn { get; set; } = null;
         public DateTime? TheoreticalStartOn { get; set; } = null;
         public DateTime? WasNotEndedOn { get; set; } = null;
+        public HashSet<int> ExcludedId { get; set; } = new HashSet<int>();
         public DateTime? TheoreticalEndOn { get; set; } = null;
         public DateTime? CreationMonth { get; set; } = null;
-
         public ContractFilter ToFilter() => new ContractFilter
         {
             Search = Search,
+            ExcludedIds = ExcludedId,
             EnvironmentIds = EnvironmentId,
             HasEnvironment = HasEnvironment.ToCompareBoolean(),
             Ids = Id,

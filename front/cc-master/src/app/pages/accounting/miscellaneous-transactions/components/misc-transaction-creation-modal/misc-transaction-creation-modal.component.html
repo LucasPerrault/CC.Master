@@ -1,0 +1,88 @@
+<form [formGroup]="formGroup">
+  <cc-contract-api-select textfieldClass="palette-grey mod-longest u-marginBottomStandard"
+                          [formControlName]="formGroupKey.Contract"
+                          [required]="true"
+                          [label]="'front_miscTransactionsPage_creationForm_contract_label' | translate">
+    <span class="textfield-messages" textfield-messages *ngIf="!!selectedContractId">
+			<a class="textfield-messages-helper u-textSmaller" (click)="redirectToContract()">
+        {{ 'front_miscTransactionsPage_creationForm_contract_info' | translate }}
+        {{ selectedContractId }}
+      </a>
+		</span>
+  </cc-contract-api-select>
+
+  <label class="textfield is-required palette-grey mod-longest u-marginBottomStandard">
+    <input class="textfield-input" type="text"
+           [formControlName]="formGroupKey.DocumentLabel"
+           [maxLength]="maxCharactersDocumentLabel" required>
+    <span class="textfield-label">
+      {{ 'front_miscTransactionsPage_creationForm_documentLabel_label' | translate }}
+    </span>
+    <span class="textfield-messages">
+			<span class="textfield-messages-helper u-textSmaller">
+        {{ charactersRemainingOfDocumentLabel }}
+        {{ 'front_miscTransactionsPage_creationForm_documentLabel_info' | translate }}
+      </span>
+		</span>
+  </label>
+
+  <div class="u-displayFlex u-alignItemsFlexStart u-marginBottomStandard">
+    <div class="radioButtons palette-grey u-marginRightStandard u-marginTopStandard">
+      <label class="radioButtons-item">
+        <input type="radio" name="invoiceType" class="radioButtons-item-input"
+               [formControlName]="formGroupKey.InvoiceType" [value]="invoiceType.Bill" required>
+        <span class="radioButtons-item-label">
+          {{ 'front_miscTransactionsPage_creationForm_invoiceType_bill_label' | translate }}
+        </span>
+      </label>
+      <label class="radioButtons-item">
+        <input type="radio" name="invoiceType" class="radioButtons-item-input"
+               [formControlName]="formGroupKey.InvoiceType" [value]="invoiceType.Credit" required>
+        <span class="radioButtons-item-label">
+          {{ 'front_miscTransactionsPage_creationForm_invoiceType_credit_label' | translate }}
+        </span>
+      </label>
+    </div>
+
+    <label class="textfield is-required palette-grey mod-long">
+      <input class="textfield-input u-paddingRightStandard"
+             type="number" min="0"
+             [formControlName]="formGroupKey.Amount" required>
+      <span class="textfield-label">{{ 'front_miscTransactionsPage_creationForm_amount_label' | translate }}</span>
+      <span class="textfield-suffix">{{ currencySymbol }}</span>
+      <span class="textfield-messages" *ngIf="formGroup.get(formGroupKey.Amount).hasError('min')">
+        <span class="textfield-messages-error u-textSmaller">
+          {{ 'front_miscTransactionsPage_creationForm_amount_errorMessage' | translate }}
+        </span>
+      </span>
+    </label>
+  </div>
+
+  <label class="textfield  is-required mod-longest palette-grey u-marginBottomStandard">
+    <lu-date-select class="textfield-input"
+                    [granularity]="granularity.month"
+                    [min]="minPeriodOn"
+                    [max]="maxPeriodOn"
+                    [formControlName]="formGroupKey.PeriodOn" required>
+    </lu-date-select>
+    <span class="textfield-label">
+      {{ 'front_miscTransactionsPage_creationForm_periodOn_label' | translate }}
+      <span [luTooltip]="'front_miscTransactionsPage_creationForm_periodOn_info' | translate"
+            aria-hidden="true" class="lucca-icon icon-info"></span>
+    </span>
+    <span class="textfield-messages" *ngIf="hasPeriodOnError">
+			<span class="textfield-messages-error u-textSmaller">
+        {{ 'front_miscTransactionsPage_creationForm_periodOn_errorMessage' | translate }}
+      </span>
+		</span>
+  </label>
+
+  <label class="textfield palette-grey mod-longest">
+    <textarea class="textfield-input u-paddingRightStandard"
+              [rows]="4" [formControlName]="formGroupKey.Comment">
+    </textarea>
+    <span class="textfield-label">
+      {{ 'front_miscTransactionsPage_creationForm_comment_label' | translate }}
+    </span>
+  </label>
+</form>

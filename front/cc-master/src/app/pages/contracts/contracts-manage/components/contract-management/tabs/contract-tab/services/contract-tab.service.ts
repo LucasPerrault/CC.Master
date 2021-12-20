@@ -22,11 +22,6 @@ export class ContractTabService {
       .pipe(map(response => response.data));
   }
 
-  public deleteContract$(contractId: number): Observable<void> {
-    const urlById = `${ this.contractsEndpoint }/${ contractId }`;
-    return this.httpClient.delete<void>(urlById);
-  }
-
   public updateContract$(contractId: number, contractForm: IContractForm): Observable<void> {
     const urlById = `${ this.contractsEndpoint }/${ contractId }`;
     const body = this.getContractEditBody(contractForm);

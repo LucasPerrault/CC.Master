@@ -20,12 +20,17 @@ namespace Billing.Contracts.Infra.Storage
             modelBuilder.ApplyConfiguration(new ContractCommentConfiguration());
             modelBuilder.ApplyConfiguration(new EstablishmentAttachmentConfiguration());
 
+            modelBuilder.ApplyConfiguration(new CountConfiguration());
+
             modelBuilder.ApplyConfiguration(new ContractEnvironmentConfiguration());
             modelBuilder.ApplyConfiguration(new EstablishmentConfiguration());
             modelBuilder.ApplyConfiguration(new EstablishmentExclusionConfiguration());
 
-            modelBuilder.ApplyConfiguration(new DistributorsConfiguration());
             modelBuilder.ApplyConfiguration(new CommercialOfferConfiguration());
+            modelBuilder.ApplyConfiguration(new PriceListsConfiguration());
+            modelBuilder.ApplyConfiguration(new PriceRowsConfiguration());
+
+            modelBuilder.ApplyConfiguration(new DistributorsConfiguration());
             modelBuilder.ApplyConfiguration(new ProductConfiguration());
             modelBuilder.ApplyConfiguration(new ProductSolutionsConfiguration());
             modelBuilder.ApplyConfiguration(new SolutionConfiguration());

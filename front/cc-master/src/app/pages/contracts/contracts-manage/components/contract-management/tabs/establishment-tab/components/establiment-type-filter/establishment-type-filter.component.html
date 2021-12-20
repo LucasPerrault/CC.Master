@@ -1,0 +1,33 @@
+<div class="radioButtons palette-grey mod-outlined">
+  <label class="radioButtons-item">
+    <input type="radio" name="radioButtonsID"
+           class="radioButtons-item-input"
+           [formControl]="formControl"
+           [value]="type.LinkedToContract"
+           checked>
+    <span class="radioButtons-item-label">
+      {{ 'front_contractPage_establishments_type_linkedToContract' | translate }}
+      <span class="label mod-number palette-grey">{{ establishmentsByType.linkedToContract?.length }}</span>
+    </span>
+  </label>
+  <label class="radioButtons-item">
+    <input type="radio" name="radioButtonsID"
+           class="radioButtons-item-input"
+           [formControl]="formControl"
+           [value]="type.LinkedToAnotherContract">
+    <span class="radioButtons-item-label">
+      {{ 'front_contractPage_establishments_type_linkedToAnotherContract' | translate }}
+      <span class="label mod-number palette-grey">{{ establishmentsByType.linkedToAnotherContract?.length }}</span>
+    </span>
+  </label>
+  <label class="radioButtons-item">
+    <input type="radio" name="radioButtonsID"
+           class="radioButtons-item-input"
+           [formControl]="formControl"
+           [value]="type.Excluded">
+    <span class="radioButtons-item-label">
+      {{ 'front_contractPage_establishments_type_excluded' | translate }}
+      <span class="label mod-number palette-grey">{{ establishmentsByType.excluded?.length }}</span>
+    </span>
+  </label>
+</div>

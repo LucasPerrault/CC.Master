@@ -135,9 +135,8 @@ namespace AdvancedFilters.Infra.Services.Sync
 
             await _emailService.SendAsync
             (
-                new SenderForm { DisplayName = "Cafe Sync - Rapport" },
                 RecipientForm.FromContact(EmailContact.CloudControl),
-                _syncEmails.GetSyncReportEmail(exceptions).Content
+                _syncEmails.GetSyncReportEmail(exceptions)
             );
         }
     }

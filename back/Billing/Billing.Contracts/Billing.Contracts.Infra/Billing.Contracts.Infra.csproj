@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
@@ -12,13 +12,14 @@
     <ProjectReference Include="..\..\Billing.Products\Billing.Products.Infra\Billing.Products.Infra.csproj" />
     <ProjectReference Include="..\Billing.Contracts.Domain\Billing.Contracts.Domain.csproj" />
   </ItemGroup>
-
+  
   <ItemGroup>
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="5.0.10" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="5.0.10">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+    <PackageReference Include="CsvHelper" Version="27.1.1" />
   </ItemGroup>
 
 </Project>

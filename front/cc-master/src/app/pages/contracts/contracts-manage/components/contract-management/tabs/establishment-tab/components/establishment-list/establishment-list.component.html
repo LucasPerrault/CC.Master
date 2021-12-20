@@ -1,19 +1,18 @@
-<cc-establishment-list-actions-multiple *ngIf="canEditAttachments()"
-                                        [entries]="selectedEntries"
-                                        [context]="actionsContext">
-</cc-establishment-list-actions-multiple>
+<header class="u-paddingLeftSmall u-paddingRightSmall u-paddingTopSmaller u-paddingBottomSmaller u-displayFlex u-justifyContentSpaceBetween">
+  <label class="checkbox">
+    <input class="checkbox-input" type="checkbox" name="checkboxEtsList" [checked]="areAllSelected" (click)="selectAll()">
+    <span class="checkbox-label">
+      {{ 'front_contractPage_establishments_selectAll_label' | translate }}
+    </span>
+  </label>
+  <div>{{ 'front_contractPage_establishments_display_entries' | translate : { count: (entries.length) } }}</div>
+</header>
 
 <div class="mod-tableContainer">
   <table class="table">
     <thead class="table-head">
       <tr class="table-head-row">
         <th class="table-head-row-cell">
-          <label class="checkbox">
-            <input class="checkbox-input" type="checkbox" name="checkboxEtsList"
-                   [luTooltip]="'front_contractPage_establishments_selectAll_label' | translate"
-                   [checked]="areAllSelected" (click)="selectAll()">
-            <span class="checkbox-label"></span>
-          </label>
         </th>
         <th class="table-head-row-cell">
           {{ 'front_contractPage_establishments_column_name' | translate }}
@@ -87,3 +86,9 @@
   </section>
 
 </div>
+
+<cc-establishment-list-actions-multiple class="u-displayBlock u-textRight u-paddingSmall"
+                                        *ngIf="canEditAttachments()"
+                                        [entries]="selectedEntries"
+                                        [context]="actionsContext">
+</cc-establishment-list-actions-multiple>

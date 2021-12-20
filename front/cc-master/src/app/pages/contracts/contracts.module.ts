@@ -13,6 +13,9 @@ import { ContractManagementComponent } from './contracts-manage/components/contr
 import { AccountingTabComponent } from './contracts-manage/components/contract-management/tabs/accounting-tab/accounting-tab.component';
 import { CloseTabComponent } from './contracts-manage/components/contract-management/tabs/close-tab/close-tab.component';
 import { ContractTabComponent } from './contracts-manage/components/contract-management/tabs/contract-tab/contract-tab.component';
+import {
+  CanDeactivateAfterEditingForm,
+} from './contracts-manage/components/contract-management/tabs/contract-tab/guards/can-deactivate-after-editing-form.guard';
 import { CountTabComponent } from './contracts-manage/components/contract-management/tabs/count-tab/count-tab.component';
 import {
   EnvironmentTabComponent,
@@ -31,6 +34,7 @@ const contractTabsRoutes: Routes = [
   {
     path: ContractsModalTabPath.Contract,
     component: ContractTabComponent,
+    canDeactivate: [CanDeactivateAfterEditingForm],
   },
   {
     path: ContractsModalTabPath.History,

@@ -1,6 +1,7 @@
 ﻿using Lucca.Emails.Client.Contracts;
 using Lucca.Emails.Client.Contracts.Fragments;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Email.Domain
 {
@@ -8,45 +9,49 @@ namespace Email.Domain
     {
         public static string GetEmailSubject(string title) => $"CloudControl - {title}";
         public static MailHeader GetEmailHeader(string title) => new MailHeader { Title = GetEmailSubject(title) };
-
-        public static EmailTemplate GetMailTemplate(string title) => new EmailTemplate
-        {
-            Fragments = new List<Fragment>
+        public static EmailTemplate GetMailTemplate(string title, List<Fragment> fragments) => new EmailTemplate
             {
-                GetEmailHeader(title)
-            }
-        };
+                Fragments = new List<Fragment>
+                {
+                    GetEmailHeader(title),
+                    new CardWrapper
+                    {
+                        Fragments = new List<Fragment>(fragments) { new FooterImage() },
+                    },
+                },
+            };
     }
 
     public class EmailContentBuilder
     {
-        public EmailContent Content { get; }
+        private readonly string _title;
+        private readonly List<Fragment> _fragments = new List<Fragment>();
 
         public EmailContentBuilder(string title)
         {
-            Content = new EmailContent
-            (
-                EmailContentHelper.GetEmailSubject(title),
-                EmailContentHelper.GetMailTemplate(title)
-            );
+            _title = title;
         }
 
         public EmailContentBuilder Add(Fragment f)
         {
-            Content.Template.Fragments.Add(f);
+            _fragments.Add(f);
             return this;
         }
 
         public EmailContentBuilder AddList(IEnumerable<string> elements)
         {
-            Add(new Paragraph("<ul>"));
-            foreach (var element in elements)
-            {
-                Add(new Paragraph($"<li>{element}</li>"));
-            }
-            Add(new Paragraph("</ul>"));
-
+            var text = new List<Fragment>();
+            text.Add(new Paragraph("<ul>"));
+            text.AddRange(elements.Select(e => new Paragraph($"<li>{e}</li>")));
+            text.Add(new Paragraph("</ul>"));
+            Add(new Paragraph { Text = text });
             return this;
         }
+
+        public EmailContent Build() => new EmailContent
+        (
+            EmailContentHelper.GetEmailSubject(_title),
+            EmailContentHelper.GetMailTemplate(_title, _fragments)
+        );
     }
 }

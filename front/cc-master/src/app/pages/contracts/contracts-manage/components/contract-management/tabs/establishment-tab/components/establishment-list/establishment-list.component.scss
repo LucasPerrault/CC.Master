@@ -1,7 +1,10 @@
+@import "theming.import";
+
 .mod-tableContainer {
   overflow: auto;
   display: block;
   max-height: 20rem;
+  border-top: solid 1px _color('grey', 100);
 }
 
 .table .table-head-row {

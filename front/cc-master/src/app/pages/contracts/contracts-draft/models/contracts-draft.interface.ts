@@ -1,6 +1,6 @@
 import { clientFields, IClient } from '@cc/domain/billing/clients';
 import { distributorFields, IDistributor } from '@cc/domain/billing/distributors';
-import { IOffer, IProduct, offerFields, productFields } from '@cc/domain/billing/offers';
+import { IOffer, IProduct, productFields } from '@cc/domain/billing/offers';
 
 export const draftFields = [
   'opportunityLineItemReccuringId',
@@ -10,7 +10,7 @@ export const draftFields = [
   `product[${productFields}]`,
   `client[${clientFields}]`,
   `distributor[${distributorFields}]`,
-  `offer[${offerFields}]`,
+  `offer[id,name]`,
 ].join(',');
 
 export interface IContractDraft {
