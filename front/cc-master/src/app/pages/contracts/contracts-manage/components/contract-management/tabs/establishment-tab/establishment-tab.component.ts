@@ -3,8 +3,6 @@ import { FormControl } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { getButtonState, toSubmissionState } from '@cc/common/forms';
 import { ICount } from '@cc/domain/billing/counts';
-import { Observable, ReplaySubject, Subject } from 'rxjs';
-import { finalize, map, switchMap, take, takeUntil } from 'rxjs/operators';
 import { combineLatest, Observable, ReplaySubject, Subject } from 'rxjs';
 import { finalize, map, take, takeUntil } from 'rxjs/operators';
 
@@ -111,7 +109,6 @@ export class EstablishmentTabComponent implements OnInit, OnDestroy {
       .subscribe(contract => this.set(contract));
   }
 
-  
   private set(contract: IEstablishmentContract): void {
     combineLatest([
       this.contextStoreService.realCounts$,
