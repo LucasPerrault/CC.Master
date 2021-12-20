@@ -7,6 +7,8 @@ import { addMonths, differenceInMonths, startOfMonth } from 'date-fns';
 import { Observable, Subject } from 'rxjs';
 import { debounceTime, takeUntil } from 'rxjs/operators';
 
+import { IContractEstablishment } from '../../../models/contract-establishment.interface';
+import { IEstablishmentExcludedEntity } from '../../../models/establishment-excluded-entity.interface';
 import { EstablishmentsDataService } from '../../../services/establishments-data.service';
 import { IAttachmentLinkingModalData } from './attachment-linking-modal-data.interface';
 
@@ -75,7 +77,8 @@ export class AttachmentLinkingModalComponent implements OnInit, OnDestroy, ILuMo
     const monthRebate = this.formGroup.get(AttachmentLinkingFormKey.MonthRebate).value;
 
     const establishmentIds = this.modalData.establishments.map(e => e.id);
-    return this.establishmentsDataService.createAttachmentRange$(contractId, establishmentIds, startDate, monthRebate);
+    const excludedEntities = this.getExcludedEntitiesToDelete(this.modalData.establishments);
+    return this.establishmentsDataService.createAttachmentRange$(contractId, establishmentIds, startDate, monthRebate, excludedEntities);
   }
 
   private getTitle(): string {
@@ -106,5 +109,12 @@ export class AttachmentLinkingModalComponent implements OnInit, OnDestroy, ILuMo
   private getContractStartDate(): Date | null {
     const start = this.modalData.contract.theoricalStartOn;
     return !!start ? new Date(start) : null;
+  }
+
+  private getExcludedEntitiesToDelete(establishments: IContractEstablishment[]): IEstablishmentExcludedEntity[] {
+    return establishments
+      .map(e => e.excludedEntities)
+      .reduce((flattened, values) => [...flattened, ...values])
+      .filter(e => e.productId === this.modalData.contract.productId);
   }
 }

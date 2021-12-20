@@ -64,13 +64,46 @@ describe('EstablishmentTypeService', () => {
   beforeEach(() => spectator = createService());
 
   it('should get excluded establishments', () => {
-    const excludedEntityWithSameProduct: IEstablishmentExcludedEntity = ({ id: 1, productId });
+    const excludedEntityWithSameProduct: IEstablishmentExcludedEntity = ({ id: 1, productId, legalEntityID: 1 });
     const excludedEstablishment = fakeEstablishment([excludedEntityWithSameProduct]);
     const excludedEntry = fakeEtsEntry(excludedEstablishment, null, null);
 
     const result = spectator.service.getEstablishmentListEntriesByType([excludedEntry], contract);
 
     expect(result.excluded).toEqual([excludedEntry]);
+    expect(result.linkedToAnotherContract).toEqual([]);
+    expect(result.linkedToContract).toEqual([]);
+    expect(result.withError).toEqual([]);
+  });
+
+  it('should get excluded establishments with attachments linked to contract', () => {
+    const excludedEntityWithSameProduct: IEstablishmentExcludedEntity = ({ id: 1, productId, legalEntityID: 1 });
+    const excludedEstablishment = fakeEstablishment([excludedEntityWithSameProduct]);
+    const excludedEntry = fakeEtsEntry(excludedEstablishment, null, null);
+    const currentAttachment = fakeAttachment(startOfMonth(lastMonth), null, contract.id);
+    const excludedEntryWithAttachmentLinkedToContract = fakeEtsEntry(excludedEstablishment, currentAttachment, null);
+    const entries = [excludedEntry, excludedEntryWithAttachmentLinkedToContract];
+
+    const result = spectator.service.getEstablishmentListEntriesByType(entries, contract);
+
+    expect(result.excluded).toEqual([excludedEntry]);
+    expect(result.linkedToAnotherContract).toEqual([]);
+    expect(result.linkedToContract).toEqual([excludedEntryWithAttachmentLinkedToContract]);
+    expect(result.withError).toEqual([]);
+  });
+
+  it('should get excluded establishments with attachments linked to another contract', () => {
+    const excludedEntityWithSameProduct: IEstablishmentExcludedEntity = ({ id: 1, productId, legalEntityID: 1 });
+    const excludedEstablishment = fakeEstablishment([excludedEntityWithSameProduct]);
+    const excludedEntry = fakeEtsEntry(excludedEstablishment, null, null);
+    const anotherContract = fakeContract(2, productId);
+    const attachmentToAnotherContract = fakeAttachment(startOfMonth(lastMonth), null, anotherContract.id);
+    const excludedEntryWithAttachmentLinkedToAnotherContract = fakeEtsEntry(excludedEstablishment, attachmentToAnotherContract, null);
+    const entries = [excludedEntry, excludedEntryWithAttachmentLinkedToAnotherContract];
+
+    const result = spectator.service.getEstablishmentListEntriesByType(entries, contract);
+
+    expect(result.excluded).toEqual([excludedEntry, excludedEntryWithAttachmentLinkedToAnotherContract]);
     expect(result.linkedToAnotherContract).toEqual([]);
     expect(result.linkedToContract).toEqual([]);
     expect(result.withError).toEqual([]);
@@ -99,6 +132,23 @@ describe('EstablishmentTypeService', () => {
     const entriesLinkedToContract = [
       fakeEtsEntry(fakeEstablishment(), currentAttachment, null),
       fakeEtsEntry(fakeEstablishment(), null, nextAttachment),
+    ];
+
+    const result = spectator.service.getEstablishmentListEntriesByType(entriesLinkedToContract, contract);
+
+    expect(result.excluded).toEqual([]);
+    expect(result.linkedToAnotherContract).toEqual([]);
+    expect(result.linkedToContract).toEqual(entriesLinkedToContract);
+    expect(result.withError).toEqual([]);
+  });
+
+  it('should get linked to this contract establishments with excluded entities', () => {
+    const excludedEntityWithSameProduct: IEstablishmentExcludedEntity = ({ id: 1, productId, legalEntityID: 1 });
+    const currentAttachment = fakeAttachment(startOfMonth(lastMonth), null, contract.id);
+    const nextAttachment = fakeAttachment(startOfMonth(nextMonth), null, contract.id);
+    const entriesLinkedToContract = [
+      fakeEtsEntry(fakeEstablishment(), currentAttachment, null),
+      fakeEtsEntry(fakeEstablishment([excludedEntityWithSameProduct]), null, nextAttachment),
     ];
 
     const result = spectator.service.getEstablishmentListEntriesByType(entriesLinkedToContract, contract);

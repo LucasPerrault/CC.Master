@@ -2,10 +2,11 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { ApiV3DateService, IHttpApiV3CollectionResponse } from '@cc/common/queries';
 import { forkJoin, Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { map, switchMap } from 'rxjs/operators';
 
 import { AttachmentEndReason } from '../constants/attachment-end-reason.const';
 import { contractEstablishmentFields, IContractEstablishment } from '../models/contract-establishment.interface';
+import { IEstablishmentExcludedEntity } from '../models/establishment-excluded-entity.interface';
 
 @Injectable()
 export class EstablishmentsDataService {
@@ -25,19 +26,41 @@ export class EstablishmentsDataService {
       .pipe(map(response => response.data.items));
   }
 
-  public createAttachmentRange$(contractId: number, establishmentIds: number[], start: Date, nbMonthFree: number): Observable<void> {
-    const request$ = establishmentIds.map(establishmentId => this.createAttachment$(contractId, establishmentId, start, nbMonthFree));
+  public createAttachmentRange$(
+    contractId: number,
+    establishmentIds: number[],
+    start: Date,
+    nbMonthFree: number,
+    excludedEntities: IEstablishmentExcludedEntity[],
+  ): Observable<void> {
+    const request$ = establishmentIds.map(establishmentId => {
+      const excludedEntityIdsToDelete = excludedEntities.filter(e => e.legalEntityID === establishmentId).map(e => e.id);
+      return this.createAttachment$(contractId, establishmentId, start, nbMonthFree, excludedEntityIdsToDelete);
+    });
+
     return forkJoin(...request$);
   }
 
-  public createAttachment$(contractId: number, establishmentId: number, start: Date, nbMonthFree: number): Observable<void> {
-    return this.httpClient.post<void>(this.attachmentsEndpoint, {
+  public createAttachment$(
+    contractId: number,
+    establishmentId: number,
+    start: Date,
+    nbMonthFree: number,
+    excludedEntityIdsToDelete: number[],
+  ): Observable<void> {
+    const createAttachment$ = this.httpClient.post<void>(this.attachmentsEndpoint, {
       contractId,
       start: this.apiV3DateService.toApiV3DateFormat(start),
       nbMonthFree,
       legalEntityId: establishmentId,
     });
+
+    return !!excludedEntityIdsToDelete.length
+      ? this.deleteExcludedEntities$(excludedEntityIdsToDelete).pipe(switchMap(() => createAttachment$))
+      : createAttachment$;
   }
+
+
 
   public deleteAttachmentRange$(attachmentIds: number[]): Observable<void> {
     const requests$ = attachmentIds.map(attachmentId => this.deleteAttachment$(attachmentId));
@@ -99,5 +122,15 @@ export class EstablishmentsDataService {
 
   public synchronize(environmentId: number): Observable<void> {
     return this.httpClient.get<void>(`${ this.establishmentsEndpoint }/update?environmentId=${ environmentId }`);
+  }
+
+  private deleteExcludedEntities$(ids: number[]): Observable<void> {
+    const requests$ = ids.map(id => this.deleteExcludedEntity$(id));
+    return forkJoin(...requests$);
+  }
+
+  private deleteExcludedEntity$(id: number): Observable<void> {
+    const url = `/api/v3/excludedEntities/${ id }`;
+    return this.httpClient.delete<void>(url);
   }
 }
