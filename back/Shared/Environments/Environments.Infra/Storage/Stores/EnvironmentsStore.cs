@@ -67,9 +67,13 @@ namespace Environments.Infra.Storage.Stores
             List<EnvironmentAccessRight> accessRights
         )
         {
+            if (accessRights == null)
+            {
+                return environments;
+            }
             if (!accessRights.Any())
             {
-                return new List<Environment>().AsQueryable();
+                return environments.Where(_ => false);
             }
 
             var expressions = accessRights
