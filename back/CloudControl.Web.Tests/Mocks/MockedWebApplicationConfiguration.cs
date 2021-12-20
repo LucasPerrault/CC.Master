@@ -9,7 +9,6 @@ public class MockedWebApplicationConfiguration
     {
         IpWhiteList = new IpWhiteList
         {
-            ResponseStatusCode = 401,
             AuthorizedIpAddresses = new List<string> { "127.0.0.1", "::1" },
         },
     };

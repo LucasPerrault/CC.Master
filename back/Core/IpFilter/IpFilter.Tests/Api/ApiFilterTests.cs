@@ -32,14 +32,14 @@ public class ApiFilterTests
     {
         var dbContext = InMemoryDbHelper.InitialiseDb<IpFilterDbContext>("ip-filter", o => new IpFilterDbContext(o));
         var webApplicationFactory = new MockedWebApplicationFactory();
-        webApplicationFactory.Config.LuccaSecuritySettings.IpWhiteList.ResponseStatusCode = (int) HttpStatusCode.LoopDetected;
         webApplicationFactory.Mocks.AddSingleton(MiddlewareConfig);
         webApplicationFactory.Mocks.AddScoped(dbContext);
         webApplicationFactory.Mocks.AddCustomRegister(s => IpFilterConfigurer.ConfigureServices(s, Configuration));
 
         var httpClient = webApplicationFactory.CreateAuthenticatedClient();
         var response = await httpClient.GetAsync("/contracts").CatchApplicationErrorBody();
-        response.StatusCode.Should().Be(HttpStatusCode.LoopDetected);
+        response.StatusCode.Should().Be(HttpStatusCode.Redirect);
+        response.Headers.Location.Should().Be("https://cc.mocked.url/ip");
     }
 
     [Fact]
@@ -52,7 +52,6 @@ public class ApiFilterTests
         var emailMock = new Mock<IEmailService>();
         var ipFilterEmailsMock = new Mock<IIpFilterEmails>();
 
-        webApplicationFactory.Config.LuccaSecuritySettings.IpWhiteList.ResponseStatusCode = (int) HttpStatusCode.LoopDetected;
         webApplicationFactory.Mocks.AddSingleton(MiddlewareConfig);
         webApplicationFactory.Mocks.AddScoped(dbContext);
         webApplicationFactory.Mocks.AddCustomRegister(s => IpFilterConfigurer.ConfigureServices(s, Configuration));

@@ -35,7 +35,6 @@ public class IpFilterControllerTests
         var guid = "deadcafe-f87c-44b6-8f7b-2b58f8cc9e46";
         var dbContext = InMemoryDbHelper.InitialiseDb<IpFilterDbContext>("ip-filter", o => new IpFilterDbContext(o));
         var webApplicationFactory = new MockedWebApplicationFactory();
-        webApplicationFactory.Config.LuccaSecuritySettings.IpWhiteList.ResponseStatusCode = (int) HttpStatusCode.LoopDetected;
         webApplicationFactory.Mocks.AddSingleton(MiddlewareConfig);
         webApplicationFactory.Mocks.AddSingleton(new LegacyCloudControlConfiguration { Host = "mocked.legacy" });
         webApplicationFactory.Mocks.AddScoped(dbContext);
@@ -61,7 +60,6 @@ public class IpFilterControllerTests
     {
         var dbContext = InMemoryDbHelper.InitialiseDb<IpFilterDbContext>("ip-filter", o => new IpFilterDbContext(o));
         var webApplicationFactory = new MockedWebApplicationFactory();
-        webApplicationFactory.Config.LuccaSecuritySettings.IpWhiteList.ResponseStatusCode = (int) HttpStatusCode.LoopDetected;
         webApplicationFactory.Mocks.AddSingleton(MiddlewareConfig);
         webApplicationFactory.Mocks.AddSingleton(new LegacyCloudControlConfiguration { Host = "mocked.legacy" });
         webApplicationFactory.Mocks.AddScoped(dbContext);
@@ -87,7 +85,6 @@ public class IpFilterControllerTests
         var guid = Guid.Parse("deadcafe-f87c-44b6-8f7b-2b58f8cc9e46");
         var dbContext = InMemoryDbHelper.InitialiseDb<IpFilterDbContext>("ip-filter", o => new IpFilterDbContext(o));
         var webApplicationFactory = new MockedWebApplicationFactory();
-        webApplicationFactory.Config.LuccaSecuritySettings.IpWhiteList.ResponseStatusCode = (int) HttpStatusCode.LoopDetected;
         webApplicationFactory.Mocks.AddSingleton(MiddlewareConfig);
         webApplicationFactory.Mocks.AddSingleton(new LegacyCloudControlConfiguration { Host = "mocked.legacy" });
         webApplicationFactory.Mocks.AddScoped(dbContext);
@@ -117,7 +114,6 @@ public class IpFilterControllerTests
     {
         var dbContext = InMemoryDbHelper.InitialiseDb<IpFilterDbContext>("ip-filter", o => new IpFilterDbContext(o));
         var webApplicationFactory = new MockedWebApplicationFactory();
-        webApplicationFactory.Config.LuccaSecuritySettings.IpWhiteList.ResponseStatusCode = (int) HttpStatusCode.LoopDetected;
         webApplicationFactory.Mocks.AddSingleton(MiddlewareConfig);
         webApplicationFactory.Mocks.AddSingleton(new LegacyCloudControlConfiguration { Host = "mocked.legacy" });
         webApplicationFactory.Mocks.AddScoped(dbContext);
@@ -154,7 +150,6 @@ public class IpFilterControllerTests
         var guid = Guid.Parse("deadcafe-f87c-44b6-8f7b-2b58f8cc9e46");
         var dbContext = InMemoryDbHelper.InitialiseDb<IpFilterDbContext>("ip-filter", o => new IpFilterDbContext(o));
         var webApplicationFactory = new MockedWebApplicationFactory();
-        webApplicationFactory.Config.LuccaSecuritySettings.IpWhiteList.ResponseStatusCode = (int) HttpStatusCode.LoopDetected;
         webApplicationFactory.Mocks.AddSingleton(MiddlewareConfig);
         webApplicationFactory.Mocks.AddSingleton(new LegacyCloudControlConfiguration { Host = "mocked.legacy" });
         webApplicationFactory.Mocks.AddScoped(dbContext);

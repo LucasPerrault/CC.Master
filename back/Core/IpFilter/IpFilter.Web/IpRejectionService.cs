@@ -1,6 +1,8 @@
 ﻿using Authentication.Domain;
 using IpFilter.Domain;
 using Lucca.Core.AspNetCore.Middlewares;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Primitives;
 using System;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -25,12 +27,16 @@ namespace IpFilter.Web
             _configuration = configuration;
         }
 
-        public Task HandleRejectionAsync(IpRejection rejection)
+        public async Task HandleRejectionAsync(IpRejection rejection, HttpContext httpContext)
         {
             if (_principal is not CloudControlUserClaimsPrincipal user)
             {
-                return Task.CompletedTask;
+                httpContext.Response.StatusCode = 403;
+                return;
             }
+
+            httpContext.Response.StatusCode = 302;
+            httpContext.Response.Headers.Location = new StringValues(GetRedirectionLocation().ToString());
 
             var rejectedUser = new RejectedUser
             {
@@ -39,7 +45,12 @@ namespace IpFilter.Web
                 LastName = user.User.LastName,
             };
 
-            return _requestCreationService.SendRequestIfNeededAsync(rejectedUser, EmailHrefBuilder);
+            await _requestCreationService.SendRequestIfNeededAsync(rejectedUser, EmailHrefBuilder);
+        }
+
+        private Uri GetRedirectionLocation()
+        {
+            return new Uri(_configuration.CloudControlBaseAddress, "/ip");
         }
 
         private EmailHrefBuilder EmailHrefBuilder => new EmailHrefBuilder

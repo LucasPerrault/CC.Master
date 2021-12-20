@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.Extensions.Hosting;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Tools.Web;
 
 namespace IpFilter.Web
@@ -21,10 +22,22 @@ namespace IpFilter.Web
             "/health/live",
             "/warmup",
             "/maj",
-            "/api/principals",
 
             // front
             "/ip",
+            "/cc-master",
+        };
+        private static HashSet<string> WhitelistedRoutePrefixes = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+        {
+            "/account",
+
+            // needed by front
+            "/api/v3/principals/me",
+            "/api/principals/me",
+
+            // front
+            "/ip",
+            "/cc-master",
         };
 
         public static void UseIpFilter(this IApplicationBuilder app, IWebHostEnvironment env)
@@ -46,6 +59,7 @@ namespace IpFilter.Web
         internal static bool IsAccessibleForAllIps(this HttpContext httpContext)
         {
             return WhitelistedRoutes.Contains(httpContext.Request.Path)
+                   || WhitelistedRoutePrefixes.Any(prefix => httpContext.Request.Path.StartsWithSegments(prefix))
                    || httpContext.HasAttribute<AllowAllIpsAttribute>();
         }
     }
