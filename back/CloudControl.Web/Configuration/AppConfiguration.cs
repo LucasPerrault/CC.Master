@@ -3,6 +3,7 @@ using Billing.Contracts.Infra.Configurations;
 using Cache.Web;
 using Core.Proxy.Infra.Configuration;
 using Email.Infra.Configuration;
+using Environments.Web;
 using Instances.Web;
 using Rights.Infra.Configuration;
 using Salesforce.Infra.Configurations;
@@ -26,6 +27,7 @@ namespace CloudControl.Web.Configuration
         public RedisConfiguration Redis { get; set; }
         public EmailConfiguration Email { get; set; }
         public SlackConfiguration Slack { get; set; }
+        public EnvironmentConfiguration Environment { get; set; }
 
         public UsersConfiguration Users => new UsersConfiguration
         {

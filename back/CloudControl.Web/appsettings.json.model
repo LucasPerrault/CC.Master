@@ -131,6 +131,10 @@
             }
         }
     },
+    "Environment": {
+        "LegacyHost": "http://{{ CC.Master:LegacyCloudControlHost }}",
+        "LegacyToken": "{{ CC.Master:LegacyCommunicationToken }}"
+    },
     "AdvancedFilters": {
         "MaxParallelHttpCalls": 40,
         "Routes": {
@@ -141,7 +145,7 @@
                     "ContractsEndpoint": "/api/contracts?limit=100000&isActive=true,false",
                     "ContractsSubdomainParamName": "subdomain",
                     "ClientsEndpoint": "/api/clients?limit=10000&isActive=true,false",
-                    "DistributorsEndpoint":  "/api/distributors?limit=10000",
+                    "DistributorsEndpoint": "/api/distributors?limit=10000",
                     "EnvironmentAccessesEndpoint": "/api/v3/environmentAccesses?lifecycle=1&environment.isActive=true&environment.purpose=0&fields=id,environmentId,distributorId,type"
                 }
             },

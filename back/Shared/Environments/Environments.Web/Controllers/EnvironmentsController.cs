@@ -1,4 +1,4 @@
-﻿using Environments.Application;
+using Environments.Application;
 using Environments.Domain;
 using Lucca.Core.Api.Abstractions.Paging;
 using Lucca.Core.Api.Web.ModelBinding.Sorting;
