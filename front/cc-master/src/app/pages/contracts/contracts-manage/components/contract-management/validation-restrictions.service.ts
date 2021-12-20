@@ -1,14 +1,19 @@
-import { Injectable } from '@angular/core';
+import { Inject, Injectable } from '@angular/core';
+import { DistributorIds, IPrincipal, PRINCIPAL } from '@cc/aspects/principal';
 import { Operation, RightsService } from '@cc/aspects/rights';
 
 import { IValidationContext } from './validation-context-store.data';
 
 @Injectable()
 export class ValidationRestrictionsService {
-  constructor(private rightsService: RightsService) {}
+  constructor(
+    @Inject(PRINCIPAL) private principal: IPrincipal,
+    private rightsService: RightsService,
+  ) {}
 
   public canDeleteContracts(context: IValidationContext): boolean {
-    return this.canEditContract()
+    return DistributorIds.isLuccaUser(this.principal)
+      && this.canEditContract()
       && !!context
       && !this.hasRealCounts(context)
       && !this.hasActiveEstablishments(context)
