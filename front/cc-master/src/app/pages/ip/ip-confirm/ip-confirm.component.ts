@@ -55,7 +55,7 @@ export class IpConfirmComponent extends NoNavComponent implements OnInit {
     }
 
     this.dataService.getValidity$(this.userCode)
-      .pipe(take(1), tap(this.requestValidity$.next), toRequestValidityState())
+      .pipe(take(1), tap(this.requestValidity$), toRequestValidityState())
       .subscribe(this.requestValidityState$);
   }
 
