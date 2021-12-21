@@ -3,7 +3,7 @@ import { ApiV3DateService } from '@cc/common/queries';
 import { ClientsService, IClient } from '@cc/domain/billing/clients';
 import { DistributorsService, IDistributor } from '@cc/domain/billing/distributors';
 import { EstablishmentsService, IEstablishment } from '@cc/domain/billing/establishments';
-import { IOffer, OffersService, ProductsService } from '@cc/domain/billing/offers';
+import { IOffer, IProduct, OffersService, ProductsService } from '@cc/domain/billing/offers';
 import { EnvironmentsService, IEnvironment } from '@cc/domain/environments';
 import { forkJoin, Observable, of } from 'rxjs';
 import { map, take } from 'rxjs/operators';
@@ -102,7 +102,7 @@ export class ContractsFilterRoutingService {
     return this.clientsService.getClientsById$(clientIds).pipe(take(1));
   }
 
-  private getProducts$(idsToString: string): Observable<IClient[]> {
+  private getProducts$(idsToString: string): Observable<IProduct[]> {
     const productIds = this.convertToNumbers(idsToString);
     if (!productIds.length) {
       return of([]);
