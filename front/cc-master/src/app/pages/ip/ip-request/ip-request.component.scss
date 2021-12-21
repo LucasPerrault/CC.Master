@@ -1,0 +1,21 @@
+@import "theming.import";
+
+.mod-headline.mod-withIcon {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  .lucca-icon {
+    font-size: 5rem;
+    margin-bottom: _theme('spacings.small');
+    padding: _theme('spacings.small');
+    background-color: _color('grey', 50);
+    border-radius: 50%;
+  }
+}
+
+.errorPage-section-info.mod-widthAuto {
+  width: auto;
+  padding-left: 10rem;
+  padding-right: 10rem;
+}
