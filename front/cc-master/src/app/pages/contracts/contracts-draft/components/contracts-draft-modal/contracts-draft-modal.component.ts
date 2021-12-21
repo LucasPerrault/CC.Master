@@ -123,6 +123,7 @@ export class ContractsDraftModalComponent implements ILuSidepanelContent, OnInit
       externalDeploymentAt: c.opportunityLineItemDetail.deploymentOn,
       externalOfferName: c.opportunityLineItemDetail.productName,
       externalDistributorUrl: c.externalDistributorUrl,
+      clientBillingEntity: c.client.billingEntity,
     });
   }
 
