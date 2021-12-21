@@ -1,1 +1,44 @@
-<p>ip-reject works!</p>
+<ng-container [ngSwitch]="requestValidityState$ | async">
+
+  <ng-container *ngSwitchCase="requestValidityState.Load">
+    <div class="loading mod-fullPage"></div>
+  </ng-container>
+
+  <ng-container *ngSwitchCase="requestValidityState.Error">
+    <section class="errorPage-section">
+      <div class="errorPage-section-info">
+        <h1 class="errorPage-section-info-title">
+          {{ 'ip_invalid_authorization' | translate }}
+        </h1>
+      </div>
+      <img src="https://cdn.lucca.fr/errors/svg/404-lucca.svg" alt="Erreur 404" class="errorPage-section-image">
+    </section>
+  </ng-container>
+
+  <ng-container *ngSwitchCase="requestValidityState.Success">
+    <section class="errorPage-section">
+      <div class="errorPage-section-info mod-widthAuto u-marginTopReset u-marginLeftAuto u-marginRightAuto">
+        <h1 class="mod-headline mod-withIcon">
+          <span aria-hidden="true" class="lucca-icon icon-lock"></span>
+          {{ 'ip_title_headline' | translate }}
+        </h1>
+
+        <div class="card mod-fitContent">
+          <div class="card-content">
+            {{ 'ip_rejection_description' | translate : { userIp: userIp } }}
+          </div>
+
+          <footer class="card-footer">
+            <div class="card-footer-right">
+              <button class="button primary report" [ngClass]="rejectionButtonClass$ | async" (click)="reject()">
+                {{ 'ip_rejection_label' | translate }}
+              </button>
+            </div>
+          </footer>
+        </div>
+      </div>
+    </section>
+  </ng-container>
+
+</ng-container>
+
