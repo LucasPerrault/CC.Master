@@ -1,3 +1,4 @@
+export * from './select/billing-entity-select/';
 export { ClientApiSelectModule } from './select/client-api-select/client-api-select.module';
 export { DateRangeSelectModule } from './select/date-range-select';
 export { DistributorApiSelectModule } from './select/distributor-api-select/distributor-api-select.module';
