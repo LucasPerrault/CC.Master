@@ -5,6 +5,7 @@ import { NoNavPath } from '@cc/common/routing';
 
 import { IpComponent } from './ip.component';
 import { IpConfirmComponent } from './ip-confirm/ip-confirm.component';
+import { IpDataService } from './ip-data.service';
 import { IpRejectComponent } from './ip-reject/ip-reject.component';
 import { IpRequestComponent } from './ip-request/ip-request.component';
 
@@ -44,5 +45,6 @@ const routes: Routes = [
     CommonModule,
     RouterModule.forChild(routes),
   ],
+  providers: [IpDataService],
 })
 export class IpModule {}
