@@ -1,6 +1,8 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
+import { ReactiveFormsModule } from '@angular/forms';
 import { RouterModule, Routes } from '@angular/router';
+import { TranslateModule } from '@cc/aspects/translate';
 import { NoNavPath } from '@cc/common/routing';
 
 import { IpComponent } from './ip.component';
@@ -44,6 +46,8 @@ const routes: Routes = [
   imports: [
     CommonModule,
     RouterModule.forChild(routes),
+    ReactiveFormsModule,
+    TranslateModule,
   ],
   providers: [IpDataService],
 })
