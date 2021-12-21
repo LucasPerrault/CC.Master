@@ -189,6 +189,7 @@ export class ContractTabFormComponent implements OnInit, OnDestroy, ControlValue
       salesforceId: this.formInformation.client?.salesforceId,
       commercialManagementId: this.formInformation.client?.commercialManagementId,
       name: this.formInformation.client?.name,
+      billingEntity: this.formInformation.client.billingEntity,
     };
     this.luModal.open(ClientInfoModalComponent, data);
   }
