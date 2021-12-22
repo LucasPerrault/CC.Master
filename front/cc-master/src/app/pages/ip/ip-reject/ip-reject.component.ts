@@ -10,7 +10,6 @@ import { IIpRequestValidity, IpDataService } from '../ip-data.service';
 import { RequestValidityState, toRequestValidityState } from '../ip-request-validity-state.enum';
 
 enum IpRejectRoutingParams {
-  Ip = 'ip',
   Code = 'code',
 }
 
@@ -31,7 +30,6 @@ export class IpRejectComponent extends NoNavComponent implements OnInit, OnDestr
     return this.rejectionSubmissionState$.pipe(map(state => getButtonState(state)));
   }
 
-  public userIp: string;
   public userCode: string;
 
   private destroy$: Subject<void> = new Subject<void>();
@@ -48,7 +46,6 @@ export class IpRejectComponent extends NoNavComponent implements OnInit, OnDestr
     this.requestValidityState$.next(RequestValidityState.Load);
 
     const params = this.activatedRoute.snapshot.queryParamMap;
-    this.userIp = params.get(IpRejectRoutingParams.Ip);
     this.userCode = params.get(IpRejectRoutingParams.Code);
 
     this.dataService.getValidity$(this.userCode)

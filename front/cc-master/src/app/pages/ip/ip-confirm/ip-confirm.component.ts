@@ -16,7 +16,6 @@ import {
 } from './authorization-duration.interface';
 
 enum IpConfirmRoutingParams {
-  Ip = 'ip',
   Code = 'code',
 }
 
@@ -35,7 +34,7 @@ export class IpConfirmComponent extends NoNavComponent implements OnInit {
   public requestValidityState$: ReplaySubject<RequestValidityState> = new ReplaySubject<RequestValidityState>(1);
   public requestValidityState = RequestValidityState;
 
-  public userIp: string;
+  public redirection: string;
   public userCode: string;
 
   constructor(private activatedRoute: ActivatedRoute, private dataService: IpDataService) {
@@ -46,7 +45,6 @@ export class IpConfirmComponent extends NoNavComponent implements OnInit {
     this.requestValidityState$.next(RequestValidityState.Load);
 
     const params = this.activatedRoute.snapshot.queryParamMap;
-    this.userIp = params.get(IpConfirmRoutingParams.Ip);
     this.userCode = params.get(IpConfirmRoutingParams.Code);
 
     if (!this.userCode) {
