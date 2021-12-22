@@ -88,6 +88,9 @@ namespace Billing.Cmrr.Application
             if (filter.DistributorsId.Any())
                 contracts = contracts.Where(c => filter.DistributorsId.Contains(c.DistributorId));
 
+            if (filter.BillingEntities.Any())
+                contracts = contracts.Where(c => filter.BillingEntities.Contains(c.ClientBillingEntity));
+
             return CreateContractSituations(contracts, startPeriodCounts, endPeriodCounts).ToList();
         }
 
