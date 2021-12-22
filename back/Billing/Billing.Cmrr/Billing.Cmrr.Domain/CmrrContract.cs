@@ -2,6 +2,12 @@ using System;
 
 namespace Billing.Cmrr.Domain
 {
+    public enum BillingEntity
+    {
+        Unknown = 0,
+        France = 1,
+        Iberia = 2,
+    }
     public class CmrrContract
     {
         public int Id { get; set; }
@@ -15,7 +21,7 @@ namespace Billing.Cmrr.Domain
 
         public int ClientId { get; set; }
         public string ClientName { get; set; }
-
+        public BillingEntity ClientBillingEntity { get; set; }
         public int DistributorId { get; set; }
         public DateTime EnvironmentCreatedAt { get; set; }
 
