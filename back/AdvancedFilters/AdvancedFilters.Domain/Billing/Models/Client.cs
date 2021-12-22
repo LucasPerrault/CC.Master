@@ -1,6 +1,8 @@
 using AdvancedFilters.Domain.Core.Models;
 using System;
 using System.Collections.Generic;
+using AdvancedFilters.Domain.Filters.Builders;
+using AdvancedFilters.Domain.Filters.Models;
 using Tools;
 
 namespace AdvancedFilters.Domain.Billing.Models
@@ -24,5 +26,18 @@ namespace AdvancedFilters.Domain.Billing.Models
         {
             return this.DeepCopyByExpressionTree();
         }
+    }
+
+    public class ClientAdvancedCriterion : AdvancedCriterion<Client>
+    {
+        public SingleEnumComparisonCriterion<BillingEntity> BillingEntity { get; set; }
+
+        public override IQueryableExpressionBuilder<Client> GetExpressionBuilder(IQueryableExpressionBuilderFactory factory)
+            => factory.Create(this);
+    }
+
+    public class ClientsAdvancedCriterion : ClientAdvancedCriterion, IListCriterion
+    {
+        public ItemsMatching ItemsMatched { get; set; }
     }
 }

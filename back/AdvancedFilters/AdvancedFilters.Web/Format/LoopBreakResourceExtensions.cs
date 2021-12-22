@@ -42,6 +42,7 @@ namespace AdvancedFilters.Web.Format
             src.LegalUnits = src.LegalUnits.WithoutLoop(getBreaker());
             src.AppInstances = src.AppInstances.WithoutLoop(getBreaker());
             src.Accesses = src.Accesses.WithoutLoop(getBreaker());
+            src.Contracts = src.Contracts.WithoutLoop(getBreaker());
         }
 
         public static IEnumerable<EnvironmentAccess> WithoutLoop(this IEnumerable<EnvironmentAccess> list)
