@@ -19,8 +19,9 @@
   </ng-container>
 
   <lu-option-picker-advanced>
-    <header class="lu-picker-header">
+    <header class="lu-picker-header" [class.mod-multiple]="multiple">
       <lu-api-searcher [api]="apiUrl" standard="v4"></lu-api-searcher>
+      <lu-option-select-all class="option-selector position-fixed"></lu-option-select-all>
     </header>
 
     <lu-option *luForOptions="let application; trackBy: trackBy" [value]="application">

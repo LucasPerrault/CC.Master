@@ -10,7 +10,7 @@
     <ng-container *ngIf="multiple; else notMultiple">
       <span *ngIf="value?.length !== 1; else: singleView">
       <span class="label">{{ value.length }}</span>
-        {{ 'front_filterSelection_subdomain' | translate: { count: value.length } }}
+        {{ 'front_select_distributors_selection' | translate: { count: value.length } }}
     </span>
       <ng-template #singleView>{{ value[0].name }}</ng-template>
     </ng-container>
@@ -19,11 +19,10 @@
   </ng-container>
 
   <lu-option-picker-advanced>
-    <header class="lu-picker-header">
-      <lu-api-paged-searcher [api]="apiUrl" standard="v4"></lu-api-paged-searcher>
+    <header class="lu-picker-header" [class.mod-multiple]="multiple">
+      <lu-api-searcher [api]="apiUrl" standard="v4"></lu-api-searcher>
+      <lu-option-select-all class="option-selector position-fixed"></lu-option-select-all>
     </header>
-
-    <lu-option-pager *ngIf="multiple"></lu-option-pager>
 
     <lu-option *luForOptions="let distributor; trackBy: trackBy" [value]="distributor">
         {{ distributor.name }}
