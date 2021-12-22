@@ -12,6 +12,7 @@ import { getBillingUnit } from '../../../enums/billing-unit.enum';
 import { IDetailedOffer } from '../../../models/detailed-offer.interface';
 import { getCurrency } from '../../../models/offer-currency.interface';
 import { IPriceListForm } from '../../../models/price-list-form.interface';
+import { OfferRestrictionsService } from '../../../services/offer-restrictions.service';
 import { PriceListsTimelineService } from '../../../services/price-lists-timeline.service';
 import { OffersEditionStoreService } from '../offers-edition-store.service';
 import { IOfferEditionForm } from './offer-edition-form/offer-edition-form.interface';
@@ -30,10 +31,15 @@ export class OfferEditionTabComponent implements OnInit {
   public formControl: FormControl = new FormControl();
   public editionButtonState$: ReplaySubject<string> = new ReplaySubject<string>(1);
 
+  public get hasRightToCreateAndEditOffers(): boolean {
+    return this.restrictionsService.hasRightToCreateAndEditOffers();
+  }
+
   constructor(
     private router: Router,
     private activatedRoute: ActivatedRoute,
     private storeService: OffersEditionStoreService,
+    private restrictionsService: OfferRestrictionsService,
   ) { }
 
   public ngOnInit(): void {

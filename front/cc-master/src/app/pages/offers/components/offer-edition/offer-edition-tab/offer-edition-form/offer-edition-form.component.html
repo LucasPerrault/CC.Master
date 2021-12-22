@@ -61,7 +61,7 @@
 
   <div class="u-marginLeftSmall u-displayFlex u-flexDirectionColumn">
     <h4>{{ 'offers_forms_title_priceGrid' | translate }}
-      <span aria-hidden="true" class="lucca-icon icon-info"
+      <span aria-hidden="true" class="lucca-icon icon-info" *ngIf="hasRightToCreateAndEditOffers"
             [luTooltip]="'offers_forms_title_priceGrid_info' | translate">
       </span>
     </h4>
@@ -79,7 +79,7 @@
 
       <cc-editable-price-grid [formControlName]="priceListFormKey.Rows"
                               [readonly]="isPriceRowsReadonly"
-                              [withAddPriceRowButton]="true">
+                              [withAddPriceRowButton]="hasRightToCreateAndEditOffers">
       </cc-editable-price-grid>
     </div>
 

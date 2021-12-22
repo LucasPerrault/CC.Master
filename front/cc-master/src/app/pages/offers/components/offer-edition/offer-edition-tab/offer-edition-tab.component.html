@@ -3,7 +3,7 @@
   </cc-offer-edition-form>
 </div>
 
-<div class="page-footer">
+<div class="page-footer" *ngIf="hasRightToCreateAndEditOffers">
   <div class="page-footer-right u-flexGrow1">
     <button class="button"
             [ngClass]="editionButtonState$ | async"

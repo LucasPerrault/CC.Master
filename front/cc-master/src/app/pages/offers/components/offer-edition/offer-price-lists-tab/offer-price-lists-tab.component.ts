@@ -29,6 +29,10 @@ export class OfferPriceListsTabComponent implements OnInit {
     return this.storeService.offer$;
   }
 
+  public get hasRightToCreateAndEditOffers(): boolean {
+    return this.restrictionsService.hasRightToCreateAndEditOffers();
+  }
+
   constructor(
     private activatedRoute: ActivatedRoute,
     private luModal: LuModal,

@@ -1,6 +1,6 @@
 <div class="page-content u-paddingReset">
   <ng-container *ngIf="offer$ | async; let offer">
-    <div class="header">
+    <div class="header" *ngIf="hasRightToCreateAndEditOffers">
       <button class="button u-marginLeftAuto" (click)="openCreationModal(offer.id, offer.priceLists)">
         {{ 'offers_priceList_tab_creation_button' | translate }}
       </button>
@@ -13,10 +13,11 @@
         </span>
         <div>
           <button class="button palette-grey mod-outline mod-small"
+                  *ngIf="hasRightToCreateAndEditOffers"
                   (click)="openEditionModal(offer, priceList, offer.priceLists)">
             {{ 'offers_priceList_tab_edition_button' | translate }}
           </button>
-          <button [disabled]="!canDelete(priceList)" class="button palette-grey mod-outline mod-small"
+          <button *ngIf="hasRightToCreateAndEditOffers" [disabled]="!canDelete(priceList)" class="button palette-grey mod-outline mod-small"
                   (click)="openDeletionModal(offer.id, priceList.id, priceList.startsOn)">
             {{ 'offers_priceList_tab_deletion_button' | translate }}
           </button>

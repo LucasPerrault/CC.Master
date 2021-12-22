@@ -14,11 +14,11 @@ export class OfferRestrictionsService {
   public canDeletePriceList(list: IPriceList): boolean {
     const today = Date.now();
     const startDate = new Date(list.startsOn);
-    return isAfter(startDate, today) && this.hasRightToCreateOffers();
+    return isAfter(startDate, today) && this.hasRightToCreateAndEditOffers();
   }
 
   public canEdit(offer: IDetailedOffer): boolean {
-    return offer.usage?.numberOfCountedContracts === 0 && this.hasRightToCreateOffers();
+    return offer.usage?.numberOfCountedContracts === 0 && this.hasRightToCreateAndEditOffers();
   }
 
   public canEditPriceListStartsOn(offer: IDetailedOffer) {
@@ -31,12 +31,10 @@ export class OfferRestrictionsService {
       new Date(a.startsOn).getTime() - new Date(b.startsOn).getTime());
     const oldestPriceList = sortedPriceLists[0];
 
-    return oldestPriceList.id !== currentPriceList.id
-      && this.canEdit(offer)
-      && this.hasRightToCreateOffers();
+    return oldestPriceList.id !== currentPriceList.id && this.canEdit(offer);
   }
 
-  public hasRightToCreateOffers(): boolean {
+  public hasRightToCreateAndEditOffers(): boolean {
     return this.rightsService.hasOperation(Operation.CreateCommercialOffers);
   }
 }

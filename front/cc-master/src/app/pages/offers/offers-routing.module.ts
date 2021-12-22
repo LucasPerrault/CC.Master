@@ -40,7 +40,7 @@ const routes: Routes = [
     path: `${ NavigationPath.Offers }/:id`,
     component: OfferEditionComponent,
     canActivate: [OperationsGuard],
-    data: { operations: [Operation.CreateCommercialOffers] },
+    data: { operations: [Operation.ReadCommercialOffers] },
     children: [
       {
         path: OfferEditionNavigationPath.Edit,

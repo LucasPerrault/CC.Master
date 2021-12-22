@@ -44,7 +44,7 @@ export class OffersComponent implements OnInit {
   }
 
   public get canCreateOffer(): boolean {
-    return this.restrictionsService.hasRightToCreateOffers();
+    return this.restrictionsService.hasRightToCreateAndEditOffers();
   }
 
   public filters: FormControl = new FormControl();
