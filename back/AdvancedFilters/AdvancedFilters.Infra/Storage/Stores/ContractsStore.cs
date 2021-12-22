@@ -35,8 +35,7 @@ namespace AdvancedFilters.Infra.Storage.Stores
 
         private IQueryable<Contract> Contracts => _dbContext
             .Set<Contract>()
-            .Include(c => c.Client)
-            .Include(c => c.EstablishmentAttachments).ThenInclude(eas => eas.Select(ea => ea.Establishment));
+            .Include(c => c.Client);
     }
 
     internal static class ContractQueryableExtensions

@@ -16,8 +16,6 @@ namespace AdvancedFilters.Domain.Billing.Models
         public int EnvironmentId { get; set; }
 
         public Client Client { get; set; }
-        public IEnumerable<EstablishmentContract> EstablishmentAttachments { get; set; }
-
         public Environment Environment { get; set; }
 
         public Contract DeepCopy()

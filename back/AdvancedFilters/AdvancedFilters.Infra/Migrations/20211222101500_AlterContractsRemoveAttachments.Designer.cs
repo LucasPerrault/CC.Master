@@ -4,24 +4,23 @@ using AdvancedFilters.Infra.Storage;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-
-#nullable disable
 
 namespace AdvancedFilters.Infra.Migrations
 {
     [DbContext(typeof(AdvancedFiltersDbContext))]
-    partial class AdvancedFiltersDbContextModelSnapshot : ModelSnapshot
+    [Migration("20211222101500_AlterContractsRemoveAttachments")]
+    partial class AlterContractsRemoveAttachments
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
                 .HasDefaultSchema("cafe")
-                .HasAnnotation("ProductVersion", "6.0.0")
-                .HasAnnotation("Relational:MaxIdentifierLength", 128);
-
-            SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
+                .HasAnnotation("Relational:MaxIdentifierLength", 128)
+                .HasAnnotation("ProductVersion", "5.0.10")
+                .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
             modelBuilder.Entity("AdvancedFilters.Domain.Billing.Models.Client", b =>
                 {
@@ -49,7 +48,7 @@ namespace AdvancedFilters.Infra.Migrations
                     b.HasIndex("ExternalId")
                         .IsUnique();
 
-                    b.ToTable("Clients", "cafe");
+                    b.ToTable("Clients");
                 });
 
             modelBuilder.Entity("AdvancedFilters.Domain.Billing.Models.Contract", b =>
@@ -75,7 +74,7 @@ namespace AdvancedFilters.Infra.Migrations
 
                     b.HasIndex("EnvironmentId");
 
-                    b.ToTable("Contracts", "cafe");
+                    b.ToTable("Contracts");
                 });
 
             modelBuilder.Entity("AdvancedFilters.Domain.Billing.Models.Distributor", b =>
@@ -101,25 +100,7 @@ namespace AdvancedFilters.Infra.Migrations
                     b.HasIndex("DepartmentId")
                         .IsUnique();
 
-                    b.ToTable("Distributors", "cafe");
-                });
-
-            modelBuilder.Entity("AdvancedFilters.Domain.Billing.Models.EstablishmentContract", b =>
-                {
-                    b.Property<int>("EnvironmentId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("EstablishmentId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("ContractId")
-                        .HasColumnType("int");
-
-                    b.HasKey("EnvironmentId", "EstablishmentId", "ContractId");
-
-                    b.HasIndex("ContractId");
-
-                    b.ToTable("EstablishmentContracts", "cafe");
+                    b.ToTable("Distributors");
                 });
 
             modelBuilder.Entity("AdvancedFilters.Domain.Contacts.Models.AppContact", b =>
@@ -172,7 +153,7 @@ namespace AdvancedFilters.Infra.Migrations
 
                     b.HasIndex("EnvironmentId", "EstablishmentId");
 
-                    b.ToTable("AppContacts", "cafe");
+                    b.ToTable("AppContacts");
                 });
 
             modelBuilder.Entity("AdvancedFilters.Domain.Contacts.Models.ClientContact", b =>
@@ -237,7 +218,7 @@ namespace AdvancedFilters.Infra.Migrations
 
                     b.HasIndex("EnvironmentId", "EstablishmentId");
 
-                    b.ToTable("ClientContacts", "cafe");
+                    b.ToTable("ClientContacts");
                 });
 
             modelBuilder.Entity("AdvancedFilters.Domain.Contacts.Models.SpecializedContact", b =>
@@ -296,7 +277,7 @@ namespace AdvancedFilters.Infra.Migrations
 
                     b.HasIndex("EnvironmentId", "EstablishmentId");
 
-                    b.ToTable("SpecializedContacts", "cafe");
+                    b.ToTable("SpecializedContacts");
                 });
 
             modelBuilder.Entity("AdvancedFilters.Domain.Core.Models.Country", b =>
@@ -311,7 +292,7 @@ namespace AdvancedFilters.Infra.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Countries", "cafe");
+                    b.ToTable("Countries");
                 });
 
             modelBuilder.Entity("AdvancedFilters.Domain.Instance.Models.AppInstance", b =>
@@ -338,7 +319,7 @@ namespace AdvancedFilters.Infra.Migrations
 
                     b.HasKey("EnvironmentId", "Id");
 
-                    b.ToTable("AppInstances", "cafe");
+                    b.ToTable("AppInstances");
                 });
 
             modelBuilder.Entity("AdvancedFilters.Domain.Instance.Models.Environment", b =>
@@ -379,7 +360,7 @@ namespace AdvancedFilters.Infra.Migrations
 
                     b.HasIndex("Subdomain");
 
-                    b.ToTable("Environments", "cafe");
+                    b.ToTable("Environments");
                 });
 
             modelBuilder.Entity("AdvancedFilters.Domain.Instance.Models.EnvironmentAccess", b =>
@@ -405,7 +386,7 @@ namespace AdvancedFilters.Infra.Migrations
 
                     b.HasIndex("EnvironmentId");
 
-                    b.ToTable("EnvironmentAccesses", "cafe");
+                    b.ToTable("EnvironmentAccesses");
                 });
 
             modelBuilder.Entity("AdvancedFilters.Domain.Instance.Models.Establishment", b =>
@@ -458,7 +439,7 @@ namespace AdvancedFilters.Infra.Migrations
 
                     b.HasIndex("EnvironmentId", "LegalUnitId");
 
-                    b.ToTable("Establishments", "cafe");
+                    b.ToTable("Establishments");
                 });
 
             modelBuilder.Entity("AdvancedFilters.Domain.Instance.Models.LegalUnit", b =>
@@ -505,7 +486,7 @@ namespace AdvancedFilters.Infra.Migrations
 
                     b.HasIndex("CountryId");
 
-                    b.ToTable("LegalUnits", "cafe");
+                    b.ToTable("LegalUnits");
                 });
 
             modelBuilder.Entity("AdvancedFilters.Domain.Billing.Models.Contract", b =>

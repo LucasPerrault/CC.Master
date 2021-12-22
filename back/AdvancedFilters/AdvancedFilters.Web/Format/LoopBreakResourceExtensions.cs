@@ -197,21 +197,6 @@ namespace AdvancedFilters.Web.Format
         private static void BreakLoop(this Contract src, Func<LoopBreaker> getBreaker)
         {
             src.Client = src.Client.WithoutLoop(getBreaker());
-            src.EstablishmentAttachments = src.EstablishmentAttachments.WithoutLoop(getBreaker());
-        }
-
-        private static EstablishmentContract WithoutLoop(this EstablishmentContract item, LoopBreaker breaker)
-        {
-            return breaker.GetWithoutLoop(item, Resources.EstablishmentContract, (e, b) => e.BreakLoop(b));
-        }
-        private static IEnumerable<EstablishmentContract> WithoutLoop(this IEnumerable<EstablishmentContract> list, LoopBreaker breaker)
-        {
-            return breaker.GetWithoutLoop(list, Resources.EstablishmentContract, (e, b) => e.BreakLoop(b));
-        }
-        private static void BreakLoop(this EstablishmentContract src, Func<LoopBreaker> getBreaker)
-        {
-            src.Contract = src.Contract.WithoutLoop(getBreaker());
-            src.Establishment = src.Establishment.WithoutLoop(getBreaker());
         }
 
         private class LoopBreaker
