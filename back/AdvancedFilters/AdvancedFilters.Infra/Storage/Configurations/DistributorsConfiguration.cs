@@ -14,6 +14,7 @@ namespace AdvancedFilters.Infra.Storage.Configurations
 
             builder.Property(c => c.Name).HasColumnName("Name").IsRequired();
             builder.Property(c => c.DepartmentId).HasColumnName("DepartmentId").IsRequired();
+            builder.Property(c => c.IsLucca).HasColumnName("IsLucca").IsRequired().HasDefaultValue(false);
             builder.Property(c => c.IsAllowingCommercialCommunication).HasColumnName("IsAllowingCommercialCommunication").IsRequired();
 
             builder.HasIndex(e => e.DepartmentId).IsUnique();
