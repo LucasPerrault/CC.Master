@@ -12,7 +12,6 @@ namespace IpFilter.Domain
 
     public class IpFilterService
     {
-        private static readonly TimeSpan AuthorizationRequestValidity = TimeSpan.FromMinutes(10);
         private readonly IIpFilterAuthorizationStore _authorizationStore;
         private readonly IIpFilterAuthorizationRequestStore _requestStore;
         private readonly IUserAgentAccessor _accessor;
@@ -65,9 +64,13 @@ namespace IpFilter.Domain
         {
             var now = _time.Now();
             var validRequest = await GetValidRequestAsync(now, user, requestCode);
-            if (validRequest is null || await _authorizationStore.ExistsAsync(validRequest.Id))
+            if (validRequest is null)
             {
                 throw new BadRequestException("Could not authorize. Code is unknown or has expired.");
+            }
+            if (await _authorizationStore.ExistsAsync(validRequest.Id))
+            {
+                throw new BadRequestException("Code has already been used for a prior authorization.");
             }
 
             var authorization = new IpFilterAuthorization

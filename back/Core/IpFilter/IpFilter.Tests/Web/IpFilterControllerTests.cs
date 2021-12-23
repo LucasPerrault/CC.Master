@@ -247,7 +247,7 @@ public class IpFilterControllerTests
                 new IpFilterController.ConfirmationBody {Code = guid, Duration = AuthorizationDuration.SixMonth}
             )
         );
-        exception.Message.Should().Match("*Code is unknown or has expired*");
+        exception.Message.Should().Match("*Code has already been used for a prior authorization*");
     }
 
     private async Task<IpFilterController> SetupControllerAsync(ConfirmationTestContext testContext)
