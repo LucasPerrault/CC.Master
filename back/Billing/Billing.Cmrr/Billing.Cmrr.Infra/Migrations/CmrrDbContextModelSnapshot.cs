@@ -18,7 +18,7 @@ namespace Billing.Cmrr.Infra.Migrations
 #pragma warning disable 612, 618
             modelBuilder
                 .HasDefaultSchema("billing")
-                .HasAnnotation("ProductVersion", "6.0.0")
+                .HasAnnotation("ProductVersion", "6.0.1")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
@@ -72,6 +72,8 @@ namespace Billing.Cmrr.Infra.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("DistributorId");
+
                     b.ToView("CmrrContracts");
                 });
 
@@ -105,6 +107,54 @@ namespace Billing.Cmrr.Infra.Migrations
                     b.HasKey("Id");
 
                     b.ToView("CmrrCounts");
+                });
+
+            modelBuilder.Entity("Distributors.Domain.Models.Distributor", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<string>("Code")
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("Code");
+
+                    b.Property<int>("DepartmentId")
+                        .HasColumnType("int")
+                        .HasColumnName("DepartmentId");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit")
+                        .HasColumnName("IsActive");
+
+                    b.Property<bool>("IsAllowingCommercialCommunication")
+                        .HasColumnType("bit")
+                        .HasColumnName("IsAllowingCommercialCommunication");
+
+                    b.Property<bool>("IsLucca")
+                        .HasColumnType("bit")
+                        .HasColumnName("IsLucca");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("Name");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Distributors", "shared");
+                });
+
+            modelBuilder.Entity("Billing.Cmrr.Domain.CmrrContract", b =>
+                {
+                    b.HasOne("Distributors.Domain.Models.Distributor", "Distributor")
+                        .WithMany()
+                        .HasForeignKey("DistributorId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Distributor");
                 });
 #pragma warning restore 612, 618
         }

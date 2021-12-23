@@ -27,6 +27,8 @@ namespace Billing.Cmrr.Infra.Storage.Configurations
             builder.Property(d => d.EnvironmentCreatedAt).HasColumnName("EnvironmentCreatedAt");
 
             builder.Property(d => d.IsArchived).HasColumnName("IsArchived");
+
+            builder.HasOne(d => d.Distributor).WithMany().HasForeignKey(d => d.DistributorId);
         }
     }
 }

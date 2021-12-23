@@ -1,4 +1,5 @@
 using Billing.Cmrr.Infra.Storage.Configurations;
+using Distributors.Infra.Storage.Configurations;
 using Microsoft.EntityFrameworkCore;
 using Storage.Infra.Context;
 using Storage.Infra.Migrations;
@@ -16,6 +17,7 @@ namespace Billing.Cmrr.Infra.Storage
         {
             modelBuilder.ApplyConfiguration(new CmrrCountConfiguration());
             modelBuilder.ApplyConfiguration(new CmrrContractConfiguration());
+            modelBuilder.ApplyConfiguration(new DistributorsConfiguration());
         }
     }
 
