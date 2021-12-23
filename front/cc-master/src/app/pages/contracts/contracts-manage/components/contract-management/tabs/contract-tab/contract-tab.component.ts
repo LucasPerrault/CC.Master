@@ -137,6 +137,11 @@ export class ContractTabComponent implements OnInit, OnDestroy {
   }
 
   private isEqual(contract: IContractDetailed, form: IContractForm): boolean {
+    const isInitialized = !!contract && !!form;
+    if (!isInitialized) {
+      return true;
+    }
+
     return contract.distributor.id === form.distributor.id
       && contract.client.id === form.client.id
       && contract.offer.id === form.offer.id
