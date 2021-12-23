@@ -2,7 +2,8 @@ import { HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { PaginatedListState } from '@cc/common/paging/enums/paginated-list-state.enum';
 import { ApiStandard } from '@cc/common/queries';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, Observable, Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 import { IPaginatedResult } from '../models/paginated-result.interface';
 import { defaultPagingParams, IPagingParams } from '../models/paging-params.interface';
@@ -29,6 +30,8 @@ export class PaginatedList<T> {
 
   private items: BehaviorSubject<T[]> = new BehaviorSubject([]);
   private totalCount: BehaviorSubject<number> = new BehaviorSubject(0);
+
+  private cancelPreviousHttpRequest$: Subject<void> = new Subject();
 
   public get items$(): Observable<T[]> {
     return this.items.asObservable();
@@ -62,6 +65,8 @@ export class PaginatedList<T> {
   }
 
   public updateHttpParams(httpParams: HttpParams): void {
+    this.cancelPreviousHttpRequest$.next();
+
     this.httpParams = httpParams;
 
     this.resetPaging();
@@ -81,16 +86,18 @@ export class PaginatedList<T> {
 
     const paramsWithPaging = this.toPagingParams(this.httpParams, this.paging);
 
-    this.fetchMore(paramsWithPaging).subscribe(
-      res => {
-        const previousValues = !!this.paging.page ? this.items.value : [];
-        this.items.next([...previousValues, ...res.items]);
+    this.fetchMore(paramsWithPaging)
+      .pipe(takeUntil(this.cancelPreviousHttpRequest$))
+      .subscribe(
+        res => {
+          const previousValues = !!this.paging.page ? this.items.value : [];
+          this.items.next([...previousValues, ...res.items]);
 
-        this.totalCount.next(res.totalCount);
-        this.state.next(PaginatedListState.Idle);
-      },
-      e => this.state.next(PaginatedListState.Error),
-    );
+          this.totalCount.next(res.totalCount);
+          this.state.next(PaginatedListState.Idle);
+        },
+        e => this.state.next(PaginatedListState.Error),
+      );
   }
 
   private toPagingParams(params: HttpParams, paging: IPagingParams): HttpParams {
