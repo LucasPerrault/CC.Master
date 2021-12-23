@@ -8,16 +8,10 @@ using System;
 
 namespace IpFilter.Web
 {
-    public class IpFilterConfiguration
-    {
-        public Uri CloudControlBaseAddress { get; set; }
-    }
-
     public static class IpFilterConfigurer
     {
-        public static void ConfigureServices(IServiceCollection services, IpFilterConfiguration configuration)
+        public static void ConfigureServices(IServiceCollection services)
         {
-            services.AddSingleton(configuration);
             services.AddScoped<IIpFilterTranslations, IpFilterTranslations>();
             services.AddScoped<IpFilterRequestCreationService>();
             services.AddScoped<IIpFilterAuthorizationRequestStore, IpFilterAuthorizationRequestStore>();

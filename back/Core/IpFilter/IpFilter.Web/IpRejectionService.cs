@@ -6,25 +6,23 @@ using Microsoft.Extensions.Primitives;
 using System;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using System.Web;
 
 namespace IpFilter.Web
 {
     public class IpRejectionService : IIpRejectionService
     {
         private readonly IpFilterRequestCreationService _requestCreationService;
-        private readonly IpFilterConfiguration _configuration;
         private readonly ClaimsPrincipal _principal;
 
         public IpRejectionService
         (
             ClaimsPrincipal principal,
-            IpFilterRequestCreationService requestCreationService,
-            IpFilterConfiguration configuration
+            IpFilterRequestCreationService requestCreationService
         )
         {
             _principal = principal;
             _requestCreationService = requestCreationService;
-            _configuration = configuration;
         }
 
         public async Task HandleRejectionAsync(IpRejection rejection, HttpContext httpContext)
@@ -36,7 +34,9 @@ namespace IpFilter.Web
             }
 
             httpContext.Response.StatusCode = 302;
-            httpContext.Response.Headers.Location = new StringValues(GetRedirectionLocation().ToString());
+            var baseAddress = new Uri($"https://{httpContext.Request.Host.Value}");
+
+            httpContext.Response.Headers.Location = new StringValues(GetRedirectionLocation(baseAddress).ToString());
 
             var rejectedUser = new RejectedUser
             {
@@ -45,18 +45,19 @@ namespace IpFilter.Web
                 LastName = user.User.LastName,
             };
 
-            await _requestCreationService.SendRequestIfNeededAsync(rejectedUser, EmailHrefBuilder);
+            var redirection = $"{httpContext.Request.Path}{httpContext.Request.QueryString}";
+            await _requestCreationService.SendRequestIfNeededAsync(rejectedUser, EmailHrefBuilder(baseAddress, redirection));
         }
 
-        private Uri GetRedirectionLocation()
+        private Uri GetRedirectionLocation(Uri baseAddress)
         {
-            return new Uri(_configuration.CloudControlBaseAddress, "/ip");
+            return new Uri(baseAddress, "/ip");
         }
 
-        private EmailHrefBuilder EmailHrefBuilder => new EmailHrefBuilder
+        private EmailHrefBuilder EmailHrefBuilder(Uri baseAddress, string redirection) => new EmailHrefBuilder
         {
-            Accept = guid => new Uri(_configuration.CloudControlBaseAddress, $"/ip/confirm?code={guid}").ToString(),
-            Reject = guid => new Uri(_configuration.CloudControlBaseAddress, $"/ip/reject?code={guid}").ToString(),
+            Accept = guid => new Uri(baseAddress, $"/ip/confirm?code={guid}&redirection={HttpUtility.UrlEncode(redirection)}").ToString(),
+            Reject = guid => new Uri(baseAddress, $"/ip/reject?code={guid}").ToString(),
         };
     }
 }

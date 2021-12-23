@@ -10,7 +10,7 @@ namespace Authentication.Web.Middlewares
 {
     public class RedirectForLoginMiddleware
     {
-        private static readonly string _apiRoutePrefix = "/api";
+        private const string ApiRoutePrefix = "/api";
 
         private readonly RequestDelegate _next;
         private readonly AuthRedirectionRemoteService _redirectionService;
@@ -30,7 +30,7 @@ namespace Authentication.Web.Middlewares
             }
 
             var isApiCall = httpContext.Request.Path.HasValue
-                            && httpContext.Request.Path.Value.StartsWith(_apiRoutePrefix);
+                            && httpContext.Request.Path.Value.StartsWith(ApiRoutePrefix);
             if (isApiCall)
             {
                 await _next.Invoke(httpContext);

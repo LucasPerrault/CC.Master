@@ -19,11 +19,6 @@ namespace IpFilter.Tests.Api;
 
 public class IpFilterControllerTests
 {
-    public static readonly IpFilterConfiguration Configuration = new IpFilterConfiguration
-    {
-        CloudControlBaseAddress = new Uri("https://cc.mocked.url"),
-    };
-
     public static readonly MockMiddlewareConfig MiddlewareConfig = new MockMiddlewareConfig
     {
         RemoteIpAddress = IPAddress.Parse("123.123.123.123"),
@@ -38,7 +33,7 @@ public class IpFilterControllerTests
         webApplicationFactory.Mocks.AddSingleton(MiddlewareConfig);
         webApplicationFactory.Mocks.AddSingleton(new LegacyCloudControlConfiguration { Host = "mocked.legacy" });
         webApplicationFactory.Mocks.AddScoped(dbContext);
-        webApplicationFactory.Mocks.AddCustomRegister(s => IpFilterConfigurer.ConfigureServices(s, Configuration));
+        webApplicationFactory.Mocks.AddCustomRegister(s => IpFilterConfigurer.ConfigureServices(s));
 
         var now = DateTime.Now;
         await dbContext.AddRequestForCurrentUser(Guid.Parse(guid), now, TimeSpan.FromMinutes(42));
@@ -63,7 +58,7 @@ public class IpFilterControllerTests
         webApplicationFactory.Mocks.AddSingleton(MiddlewareConfig);
         webApplicationFactory.Mocks.AddSingleton(new LegacyCloudControlConfiguration { Host = "mocked.legacy" });
         webApplicationFactory.Mocks.AddScoped(dbContext);
-        webApplicationFactory.Mocks.AddCustomRegister(s => IpFilterConfigurer.ConfigureServices(s, Configuration));
+        webApplicationFactory.Mocks.AddCustomRegister(s => IpFilterConfigurer.ConfigureServices(s));
 
         if (known is not null)
         {
@@ -88,7 +83,7 @@ public class IpFilterControllerTests
         webApplicationFactory.Mocks.AddSingleton(MiddlewareConfig);
         webApplicationFactory.Mocks.AddSingleton(new LegacyCloudControlConfiguration { Host = "mocked.legacy" });
         webApplicationFactory.Mocks.AddScoped(dbContext);
-        webApplicationFactory.Mocks.AddCustomRegister(s => IpFilterConfigurer.ConfigureServices(s, Configuration));
+        webApplicationFactory.Mocks.AddCustomRegister(s => IpFilterConfigurer.ConfigureServices(s));
 
         var timeMock = new Mock<ITimeProvider>();
         timeMock.Setup(t => t.Now()).Returns(new DateTime(2020, 01, 01, 00, 00, 01));
@@ -117,7 +112,7 @@ public class IpFilterControllerTests
         webApplicationFactory.Mocks.AddSingleton(MiddlewareConfig);
         webApplicationFactory.Mocks.AddSingleton(new LegacyCloudControlConfiguration { Host = "mocked.legacy" });
         webApplicationFactory.Mocks.AddScoped(dbContext);
-        webApplicationFactory.Mocks.AddCustomRegister(s => IpFilterConfigurer.ConfigureServices(s, Configuration));
+        webApplicationFactory.Mocks.AddCustomRegister(s => IpFilterConfigurer.ConfigureServices(s));
 
         var timeMock = new Mock<ITimeProvider>();
         timeMock.Setup(t => t.Now()).Returns(new DateTime(2020, 01, 01));
@@ -153,7 +148,7 @@ public class IpFilterControllerTests
         webApplicationFactory.Mocks.AddSingleton(MiddlewareConfig);
         webApplicationFactory.Mocks.AddSingleton(new LegacyCloudControlConfiguration { Host = "mocked.legacy" });
         webApplicationFactory.Mocks.AddScoped(dbContext);
-        webApplicationFactory.Mocks.AddCustomRegister(s => IpFilterConfigurer.ConfigureServices(s, Configuration));
+        webApplicationFactory.Mocks.AddCustomRegister(s => IpFilterConfigurer.ConfigureServices(s));
 
         var timeMock = new Mock<ITimeProvider>();
         timeMock.Setup(t => t.Now()).Returns(new DateTime(2020, 01, 01, 00, 00, 01));

@@ -106,10 +106,7 @@ namespace CloudControl.Web.Tests.Mocks
             var options = Options.Create(_mockedConfig.LuccaSecuritySettings);
             services.AddSingleton(options);
 
-            IpFilterConfigurer.ConfigureServices(services, new IpFilterConfiguration
-            {
-                CloudControlBaseAddress = new Uri("https://cc.ilucca.mocked"),
-            });
+            IpFilterConfigurer.ConfigureServices(services);
 
             var ipFilterAuthorizationMock = new Mock<IIpFilterAuthorizationStore>();
             ipFilterAuthorizationMock

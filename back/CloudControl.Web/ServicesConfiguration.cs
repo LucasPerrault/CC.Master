@@ -192,10 +192,7 @@ namespace CloudControl.Web
         public virtual void ConfigureIpFilter(IServiceCollection services, AppConfiguration configuration)
         {
             services.Configure<LuccaSecuritySettings>(_configuration.GetSection("LuccaSecurity"));
-            IpFilterConfigurer.ConfigureServices(services, new IpFilterConfiguration
-            {
-                CloudControlBaseAddress = configuration.Host,
-            });
+            IpFilterConfigurer.ConfigureServices(services);
         }
 
         public virtual void ConfigureTenancy(IServiceCollection services)
