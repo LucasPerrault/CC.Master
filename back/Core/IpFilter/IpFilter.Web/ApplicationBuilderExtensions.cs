@@ -22,10 +22,6 @@ namespace IpFilter.Web
             "/health/live",
             "/warmup",
             "/maj",
-
-            // front
-            "/ip",
-            "/cc-master",
         };
         private static HashSet<string> WhitelistedRoutePrefixes = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
         {
