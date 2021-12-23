@@ -1,28 +1,27 @@
 import { DatePipe } from '@angular/common';
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { TranslatePipe } from '@cc/aspects/translate';
 
-import { IAttachmentEnded } from '../../models/attachment-ended.interface';
-import { IClosureFormValidationContext } from '../../models/closure-form-validation-context.interface';
+import { IClosureFormValidationContext, IContextAttachment } from '../../models/closure-form-validation-context.interface';
 
 @Component({
   selector: 'cc-contract-closure-form-information',
   templateUrl: './contract-closure-form-information.component.html',
 })
-export class ContractClosureFormInformationComponent implements OnInit {
-  @Input() lastAttachmentEnded: IAttachmentEnded | null;
+export class ContractClosureFormInformationComponent {
   @Input() formValidationContext: IClosureFormValidationContext;
 
   constructor(private translatePipe: TranslatePipe, private datePipe: DatePipe) { }
 
-  ngOnInit(): void {
-  }
+  public getCloseDateInformation(mostRecentAttachment: IContextAttachment): string {
+    const hasEndDate = !!mostRecentAttachment?.end;
+    const mostRecentDate = hasEndDate ? mostRecentAttachment?.end : mostRecentAttachment?.start;
+    const translationKey = hasEndDate ? 'contracts_closeDate_blockingAttachment_until' : 'contracts_closeDate_blockingAttachment_since';
 
-  public getCloseDateInformation(): string {
-    return this.translatePipe.transform('front_contractPage_closeDateCondition_lastAttachment_callout', {
-      name: this.lastAttachmentEnded.legalEntity.name,
-      id: this.lastAttachmentEnded.legalEntity.id,
-      endDate: this.datePipe.transform(this.lastAttachmentEnded.end, 'dd MMMM yyyy'),
+    return this.translatePipe.transform(translationKey, {
+      name: mostRecentAttachment.legalEntity.name,
+      id: mostRecentAttachment.legalEntity.id,
+      date: this.datePipe.transform(mostRecentDate, 'MMMM yyyy'),
     });
   }
 

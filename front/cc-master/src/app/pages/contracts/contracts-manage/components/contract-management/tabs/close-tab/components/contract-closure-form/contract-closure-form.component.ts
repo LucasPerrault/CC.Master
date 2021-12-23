@@ -3,7 +3,6 @@ import { FormControl, FormGroup } from '@angular/forms';
 import { startOfMonth } from 'date-fns';
 
 import { getCloseContractReason } from '../../constants/close-contract-reason.enum';
-import { IAttachmentEnded } from '../../models/attachment-ended.interface';
 import { IClosureFormValidationContext } from '../../models/closure-form-validation-context.interface';
 import { IContractClosureDetailed } from '../../models/contract-closure-detailed.interface';
 import { IContractClosureForm } from '../../models/contract-closure-form.interface';
@@ -19,7 +18,6 @@ enum CloseContractFormKey {
   styleUrls: ['./contract-closure-form.component.scss'],
 })
 export class ContractClosureFormComponent {
-  @Input() lastAttachmentEnded: IAttachmentEnded | null;
   @Input() formValidationContext: IClosureFormValidationContext;
   @Input() maxContractClosedDate: Date;
   @Input() closeButtonState: string;
