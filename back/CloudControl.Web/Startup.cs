@@ -44,17 +44,16 @@ namespace CloudControl.Web
 
             app.UseMiddleware<SessionKeyAuthMiddleware>();
             app.UseAuthentication();
-            app.UseMiddleware<BetaTesterDetectionMiddleware>();
-
+            app.UseMiddleware<RedirectForLoginMiddleware>();
+            app.UseMiddleware<ForbidAnonymousAccessMiddleware>();
             app.UseIpFilter(env);
+            app.UseMiddleware<BetaTesterDetectionMiddleware>();
 
             app.UseLegacyCloudControlWebSocketProxy();
             app.UseLegacyCloudControlHttpProxy();
 
             app.UseFrontStaticFiles();
             app.UseFileServer();
-
-            app.UseMiddleware<UnauthorizedAccessMiddleware>();
 
             app.UseEndpoints(e => e.MapControllers());
 
