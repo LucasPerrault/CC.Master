@@ -25,7 +25,7 @@ export class CloseTabComponent implements OnInit, OnDestroy {
   public lastCountPeriod$: ReplaySubject<Date | null>
     = new ReplaySubject<Date | null>(1);
   public closureFormValidationContext$: Observable<IClosureFormValidationContext>;
-  public maxContractClosedDate$: Observable<Date>;
+  public minContractClosedDate$: Observable<Date>;
   public isLoading$: ReplaySubject<boolean> = new ReplaySubject<boolean>(1);
 
   public isContractClosed$: Observable<boolean>;
@@ -60,9 +60,9 @@ export class CloseTabComponent implements OnInit, OnDestroy {
       this.toClosureFormValidationContext(),
     );
 
-    this.maxContractClosedDate$ = this.closureFormValidationContext$.pipe(
+    this.minContractClosedDate$ = this.closureFormValidationContext$.pipe(
       takeUntil(this.destroy$),
-      map(context => this.closeContractFormService.getMaxContractClosedDate(context)),
+      map(context => this.closeContractFormService.getMinContractClosedDate(context)),
     );
 
     this.isContractClosed$ = this.contractClosureDetailed$

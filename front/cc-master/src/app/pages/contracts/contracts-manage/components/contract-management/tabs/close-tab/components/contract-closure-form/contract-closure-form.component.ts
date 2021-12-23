@@ -19,7 +19,7 @@ enum CloseContractFormKey {
 })
 export class ContractClosureFormComponent {
   @Input() formValidationContext: IClosureFormValidationContext;
-  @Input() maxContractClosedDate: Date;
+  @Input() minContractClosedDate: Date;
   @Input() closeButtonState: string;
   @Input() set contractClosureDetailed(contractClosureDetailed: IContractClosureDetailed) {
     this.formGroup.patchValue({

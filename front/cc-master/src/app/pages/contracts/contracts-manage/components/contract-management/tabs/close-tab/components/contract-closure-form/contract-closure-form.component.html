@@ -8,7 +8,7 @@
       <label class="textfield is-required mod-longest palette-grey">
         <lu-date-select class="textfield-input" granularity="month"
                         [formControlName]="formGroupKey.CloseOn"
-                        [required]="true" [min]="getFirstDay(maxContractClosedDate)"></lu-date-select>
+                        [required]="true" [min]="getFirstDay(minContractClosedDate)"></lu-date-select>
         <span class="textfield-label">{{ 'front_contractPage_endContractDateSelect_label' | translate }}</span>
       </label>
 

@@ -30,7 +30,7 @@ export class CloseContractFormService {
     private rightsService: RightsService,
   ) {}
 
-  public getMaxContractClosedDate(context: IClosureFormValidationContext): Date {
+  public getMinContractClosedDate(context: IClosureFormValidationContext): Date {
     if (!!context.mostRecentAttachment) {
       const mostRecentDate = context.mostRecentAttachment?.end || context.mostRecentAttachment?.start;
       return new Date(mostRecentDate);

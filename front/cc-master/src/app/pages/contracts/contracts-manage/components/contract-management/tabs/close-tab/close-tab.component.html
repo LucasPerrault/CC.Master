@@ -21,7 +21,7 @@
     <ng-template #canReadContext>
       <cc-contract-closure-form [contractClosureDetailed]="contractClosureDetailed$ | async"
                                 [formValidationContext]="closureFormValidationContext$ | async"
-                                [maxContractClosedDate]="maxContractClosedDate$ | async"
+                                [minContractClosedDate]="minContractClosedDate$ | async"
                                 [closeButtonState]="closeButtonState$ | async"
                                 (closeContract)="closeContract($event)">
       </cc-contract-closure-form>
