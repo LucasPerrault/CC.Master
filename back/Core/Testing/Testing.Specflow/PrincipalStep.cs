@@ -22,8 +22,8 @@ namespace Testing.Specflow
         [Given("a user with department code '(.*)'")]
         public void GivenAUserWithDepartmentCode(string departmentCode)
         {
-            var distributorId = _context.Distributors.Single(d => d.Code == departmentCode).Id;
-            _context.Principal = TestPrincipal.NewUser(distributorId);
+            var distributor = _context.Distributors.Single(d => d.Code == departmentCode);
+            _context.Principal = TestPrincipal.NewUser(distributor);
         }
 
         [Given("user has operation '(.*)' with scope '(.*)'")]

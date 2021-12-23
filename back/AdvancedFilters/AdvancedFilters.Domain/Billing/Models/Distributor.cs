@@ -10,6 +10,7 @@ namespace AdvancedFilters.Domain.Billing.Models
         public int Id { get; set; }
         public string Name { get; set; }
         public int DepartmentId { get; set; }
+        public bool IsLucca { get; set; }
         public bool IsAllowingCommercialCommunication { get; set; }
 
         public IEnumerable<EnvironmentAccess> EnvironmentAccesses { get; set; }

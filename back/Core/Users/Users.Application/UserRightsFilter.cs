@@ -23,9 +23,9 @@ namespace Users.Application
 
         private AccessRight GetAccessRight(User user)
         {
-            return user.DistributorId == DistributorIds.Lucca
+            return user.Distributor.IsLucca
                 ? AccessRight.All
-                : AccessRight.ForDistributor(user.DistributorId);
+                : AccessRight.ForDistributor(user.Distributor.Id);
         }
     }
 }

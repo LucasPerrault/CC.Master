@@ -136,7 +136,7 @@ namespace CloudControl.Web
             services
                 .AddHealthCheck(o =>
                     {
-                        o.ServiceGuid = new Guid("101DFDBD-2438-43D1-9D22-63D1C46B3412");// TODO
+                        o.ServiceGuid = new Guid("101DFDBD-2438-43D1-9D22-63D1C46B3412");
                         o.ServiceName = AppConfiguration.AppName;
                     }
                 )

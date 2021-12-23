@@ -1,4 +1,3 @@
-using Distributors.Domain.Models;
 using Instances.Domain.Instances;
 using Instances.Domain.Instances.Models;
 using System;
@@ -15,6 +14,7 @@ namespace Instances.Infra.DataDuplication
 
     public class SqlScriptPicker : ISqlScriptPicker
     {
+        private const int PeopleSphereDistirbutorId = 36;
         private readonly SqlScriptPickerConfiguration _configuration;
 
         public SqlScriptPicker(SqlScriptPickerConfiguration configuration)
@@ -36,7 +36,7 @@ namespace Instances.Infra.DataDuplication
             {
                 yield return @"Integration\CloudControl\clean_db_for_training.sql";
             }
-            if (duplication.TargetType == InstanceType.Demo && duplication.DistributorId == DistributorIds.PeopleSphere)
+            if (duplication.TargetType == InstanceType.Demo && duplication.DistributorId == PeopleSphereDistirbutorId)
             {
                 yield return @"Integration\CloudControl\MPRH_Demo.login.uniqueness.sql";
             }

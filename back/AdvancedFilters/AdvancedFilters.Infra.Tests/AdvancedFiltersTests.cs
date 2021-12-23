@@ -1,3 +1,4 @@
+using AdvancedFilters.Domain.Billing.Models;
 using AdvancedFilters.Domain.Contacts.Models;
 using AdvancedFilters.Domain.Core.Collections;
 using AdvancedFilters.Domain.Filters.Models;
@@ -17,6 +18,7 @@ namespace AdvancedFilters.Infra.Tests
 {
     public class AdvancedFiltersTests
     {
+        private const int _luccaDistributorId = 123456;
         #region Environments
         public static IEnumerable<object[]> GetEnvironmentTestData()
         {
@@ -124,39 +126,39 @@ namespace AdvancedFilters.Infra.Tests
             {
                 Filter = new EnvironmentAdvancedCriterion().WithDistributorType(ComparisonOperators.Equals, DistributorType.DirectOnly),
                 Check = e =>
-                    e.Accesses.All(a => a.Type != EnvironmentAccessType.Contract || a.DistributorId == Environment.LuccaDistributorId)
+                    e.Accesses.All(a => a.Type != EnvironmentAccessType.Contract || a.Distributor.IsLucca)
             }};
             yield return new object[] { new AdvancedFilterTestEntry<Environment>
             {
                 Filter = new EnvironmentAdvancedCriterion().WithDistributorType(ComparisonOperators.Equals, DistributorType.IndirectOnly),
                 Check = e =>
-                    e.Accesses.All(a => a.Type == EnvironmentAccessType.Contract && a.DistributorId != Environment.LuccaDistributorId)
+                    e.Accesses.All(a => a.Type == EnvironmentAccessType.Contract && !a.Distributor.IsLucca),
             }};
             yield return new object[] { new AdvancedFilterTestEntry<Environment>
             {
                 Filter = new EnvironmentAdvancedCriterion().WithDistributorType(ComparisonOperators.Equals, DistributorType.DirectAndIndirect),
                 Check = e =>
-                    e.Accesses.Any(a => a.Type == EnvironmentAccessType.Contract && a.DistributorId != Environment.LuccaDistributorId)
-                    && e.Accesses.Any(a => a.Type == EnvironmentAccessType.Contract && a.DistributorId == Environment.LuccaDistributorId)
+                    e.Accesses.Any(a => a.Type == EnvironmentAccessType.Contract && !a.Distributor.IsLucca)
+                    && e.Accesses.Any(a => a.Type == EnvironmentAccessType.Contract && a.Distributor.IsLucca),
             }};
             yield return new object[] { new AdvancedFilterTestEntry<Environment>
             {
                 Filter = new EnvironmentAdvancedCriterion().WithDistributorType(ComparisonOperators.NotEquals, DistributorType.DirectOnly),
                 Check = e =>
-                    e.Accesses.Any(a => a.Type == EnvironmentAccessType.Contract && a.DistributorId != Environment.LuccaDistributorId)
+                    e.Accesses.Any(a => a.Type == EnvironmentAccessType.Contract && !a.Distributor.IsLucca),
             }};
             yield return new object[] { new AdvancedFilterTestEntry<Environment>
             {
                 Filter = new EnvironmentAdvancedCriterion().WithDistributorType(ComparisonOperators.NotEquals, DistributorType.IndirectOnly),
                 Check = e =>
-                    e.Accesses.Any(a => a.Type == EnvironmentAccessType.Contract && a.DistributorId == Environment.LuccaDistributorId)
+                    e.Accesses.Any(a => a.Type == EnvironmentAccessType.Contract && a.Distributor.IsLucca)
             }};
             yield return new object[] { new AdvancedFilterTestEntry<Environment>
             {
                 Filter = new EnvironmentAdvancedCriterion().WithDistributorType(ComparisonOperators.NotEquals, DistributorType.DirectAndIndirect),
                 Check = e =>
-                    e.Accesses.All(a => a.Type != EnvironmentAccessType.Contract || a.DistributorId == Environment.LuccaDistributorId)
-                    || e.Accesses.All(a => a.Type != EnvironmentAccessType.Contract || a.DistributorId != Environment.LuccaDistributorId)
+                    e.Accesses.All(a => a.Type != EnvironmentAccessType.Contract || a.Distributor.IsLucca)
+                    || e.Accesses.All(a => a.Type != EnvironmentAccessType.Contract || !a.Distributor.IsLucca)
             }};
         }
 
@@ -221,7 +223,7 @@ namespace AdvancedFilters.Infra.Tests
                     Cluster = "c2",
                     LegalUnits = GetLegalUnits(250, 42),
                     AppInstances = GetAppInstances("lucca", "wfiggo", "wpagga"),
-                    Accesses = GetAccesses(1, (Environment.LuccaDistributorId, EnvironmentAccessType.Contract))
+                    Accesses = GetAccesses(1, (_luccaDistributorId, EnvironmentAccessType.Contract))
                 },
                 new Environment
                 {
@@ -231,7 +233,7 @@ namespace AdvancedFilters.Infra.Tests
                     Cluster = "c1",
                     LegalUnits = GetLegalUnits(250, 276),
                     AppInstances = GetAppInstances("lucca", "wexpenses", "wpoplee"),
-                    Accesses = GetAccesses(2, (Environment.LuccaDistributorId, EnvironmentAccessType.Contract), (42, EnvironmentAccessType.Manual))
+                    Accesses = GetAccesses(2, (_luccaDistributorId, EnvironmentAccessType.Contract), (42, EnvironmentAccessType.Manual))
                 },
                 new Environment
                 {
@@ -241,7 +243,7 @@ namespace AdvancedFilters.Infra.Tests
                     Cluster = "c2",
                     LegalUnits = GetLegalUnits(276, 9001),
                     AppInstances = GetAppInstances("lucca", "wfiggo"),
-                    Accesses = GetAccesses(3, (Environment.LuccaDistributorId, EnvironmentAccessType.Contract), (42, EnvironmentAccessType.Contract))
+                    Accesses = GetAccesses(3, (_luccaDistributorId, EnvironmentAccessType.Contract), (42, EnvironmentAccessType.Contract))
                 },
                 new Environment
                 {
@@ -276,7 +278,21 @@ namespace AdvancedFilters.Infra.Tests
         }
         private static IEnumerable<EnvironmentAccess> GetAccesses(int envId, params (int DistributorId, EnvironmentAccessType AccessType)[] accesses)
         {
-            return accesses.Select(access => new EnvironmentAccess { EnvironmentId = envId, DistributorId = access.DistributorId, Type = access.AccessType }).ToList();
+            return accesses.Select
+                (
+                    access => new EnvironmentAccess
+                    {
+                        EnvironmentId = envId,
+                        DistributorId = access.DistributorId,
+                        Type = access.AccessType,
+                        Distributor = new Distributor()
+                        {
+                            Id = access.DistributorId,
+                            IsLucca = _luccaDistributorId == access.DistributorId
+                        },
+                    }
+                )
+                .ToList();
         }
 
         private static IEnumerable<AppInstance> Filter(IEnumerable<AppInstance> appInstances)
