@@ -12,7 +12,7 @@ namespace Environments.Infra.Storage.Configurations
             builder.HasKey(r => r.Id);
 
             builder.Property(r => r.UserId).HasColumnName("userId");
-            builder.Property(r => r.ApiKeyId).HasColumnName("apiKeyId");
+            builder.Property(r => r.ApiKeyStorageId).HasColumnName("apiKeyStorageId");
             builder.Property(r => r.RenamedOn).HasColumnName("renamedOn");
             builder.Property(r => r.OldName).HasColumnName("oldName");
             builder.Property(r => r.NewName).HasColumnName("newName");

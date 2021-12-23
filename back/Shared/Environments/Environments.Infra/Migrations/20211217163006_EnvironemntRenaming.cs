@@ -15,7 +15,7 @@ namespace Environments.Infra.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     userId = table.Column<int>(type: "int", nullable: true),
-                    apiKeyId = table.Column<int>(type: "int", nullable: true),
+                    apiKeyStorageId = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     renamedOn = table.Column<DateTime>(type: "datetime2", nullable: false),
                     oldName = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     newName = table.Column<string>(type: "nvarchar(max)", nullable: true),

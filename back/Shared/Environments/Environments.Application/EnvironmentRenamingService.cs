@@ -1,4 +1,5 @@
 using Authentication.Domain;
+using Authentication.Domain.Helpers;
 using Environments.Domain;
 using Environments.Domain.ExtensionInterface;
 using Environments.Domain.Storage;
@@ -47,13 +48,9 @@ namespace Environments.Application
                 Environment = environement,
                 OldName = environement.Subdomain,
                 NewName = newName,
-                RenamedOn = DateTime.UtcNow
-            };
-            _ = _claimsPrincipal switch
-            {
-                CloudControlUserClaimsPrincipal u => environmentRenaming.UserId = u.UserId,
-                CloudControlApiKeyClaimsPrincipal ak => environmentRenaming.ApiKeyId = ak.ApiKey.Id,
-                _ => throw new NotImplementedException($"Claims principal type not implemented : {_claimsPrincipal.GetType()}")
+                RenamedOn = DateTime.UtcNow,
+                UserId = _claimsPrincipal.GetAuthorIdOnlyWhenUser(),
+                ApiKeyStorageId = _claimsPrincipal.GetApiKeyStorableId()
             };
             await _environmentRenamingStore.CreateAsync(environmentRenaming);
 

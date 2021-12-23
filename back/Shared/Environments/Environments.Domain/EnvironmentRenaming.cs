@@ -6,7 +6,7 @@ namespace Environments.Domain
     {
         public int Id { get; set; }
         public int? UserId { get; set; }
-        public int? ApiKeyId { get; set; }
+        public string ApiKeyStorageId { get; set; }
         public DateTime RenamedOn { get; set; }
         public string OldName { get; set; }
         public string NewName { get; set; }

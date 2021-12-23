@@ -156,9 +156,9 @@ namespace Environments.Infra.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int?>("ApiKeyId")
-                        .HasColumnType("int")
-                        .HasColumnName("apiKeyId");
+                    b.Property<string>("ApiKeyStorageId")
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("apiKeyStorageId");
 
                     b.Property<int>("EnvironmentId")
                         .HasColumnType("int")
