@@ -84,7 +84,7 @@ describe('EstablishmentTypeService', () => {
     const excludedEntryWithAttachmentLinkedToContract = fakeEtsEntry(excludedEstablishment, currentAttachment, null);
     const entries = [excludedEntry, excludedEntryWithAttachmentLinkedToContract];
 
-    const result = spectator.service.getEstablishmentListEntriesByType(entries, contract);
+    const result = spectator.service.getEstablishmentsByType(entries, contract);
 
     expect(result.excluded).toEqual([excludedEntry]);
     expect(result.linkedToAnotherContract).toEqual([]);
@@ -101,7 +101,7 @@ describe('EstablishmentTypeService', () => {
     const excludedEntryWithAttachmentLinkedToAnotherContract = fakeEtsEntry(excludedEstablishment, attachmentToAnotherContract, null);
     const entries = [excludedEntry, excludedEntryWithAttachmentLinkedToAnotherContract];
 
-    const result = spectator.service.getEstablishmentListEntriesByType(entries, contract);
+    const result = spectator.service.getEstablishmentsByType(entries, contract);
 
     expect(result.excluded).toEqual([excludedEntry, excludedEntryWithAttachmentLinkedToAnotherContract]);
     expect(result.linkedToAnotherContract).toEqual([]);
@@ -151,7 +151,7 @@ describe('EstablishmentTypeService', () => {
       fakeEtsEntry(fakeEstablishment([excludedEntityWithSameProduct]), null, nextAttachment),
     ];
 
-    const result = spectator.service.getEstablishmentListEntriesByType(entriesLinkedToContract, contract);
+    const result = spectator.service.getEstablishmentsByType(entriesLinkedToContract, contract);
 
     expect(result.excluded).toEqual([]);
     expect(result.linkedToAnotherContract).toEqual([]);
