@@ -1,5 +1,6 @@
 using AdvancedFilters.Infra.Storage;
 using AdvancedFilters.Web;
+using AdvancedFilters.Web.Configuration;
 using AngleSharp;
 using Authentication.Web;
 using Billing.Cmrr.Infra.Storage;
@@ -163,7 +164,8 @@ namespace CloudControl.Web
                     .AddModelBinding()
                     .AddEntityFrameworkQuerying()
                     .ConfigureLuccaApiForInstances()
-                    .ConfigureLuccaApiForContracts();
+                    .ConfigureLuccaApiForContracts()
+                    .ConfigureLuccaApiForAdvancedFilters();
             });
 
             services.AddMvc().AddLuccaApi(o =>
