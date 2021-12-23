@@ -23,7 +23,7 @@
 
     <lu-option-picker-advanced>
       <header class="lu-picker-header">
-        <lu-api-paged-searcher [api]="apiUrl" [filters]="filtersToExcludeSelection"></lu-api-paged-searcher>
+        <lu-api-paged-searcher [api]="apiUrl" [fields]="fields" [filters]="filtersToExcludeSelection"></lu-api-paged-searcher>
       </header>
 
       <lu-option-pager *ngIf="multiple"></lu-option-pager>

@@ -194,7 +194,7 @@ export class ContractsDraftFormComponent implements ControlValueAccessor, Valida
     return {
       theoreticalMonthRebate: contract.get(DraftFormKey.TheoreticalMonthRebate).value,
       productId: contract.get(DraftFormKey.Product).value?.id,
-      distributorId: contract.get(DraftFormKey.Distributor).value?.id,
+      distributor: contract.get(DraftFormKey.Distributor).value,
     };
   }
 
