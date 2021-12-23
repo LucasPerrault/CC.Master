@@ -1,5 +1,5 @@
 ﻿using Lucca.Core.Shared.Domain.Exceptions;
-using Medallion.Threading.Sql;
+using Medallion.Threading.SqlServer;
 using System;
 using System.Threading.Tasks;
 

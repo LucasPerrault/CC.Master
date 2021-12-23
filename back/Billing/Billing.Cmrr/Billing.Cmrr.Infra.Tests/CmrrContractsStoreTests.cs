@@ -2,12 +2,12 @@ using Billing.Cmrr.Domain;
 using Billing.Cmrr.Infra.Storage;
 using Billing.Cmrr.Infra.Storage.Stores;
 using FluentAssertions;
-using Microsoft.EntityFrameworkCore;
 using Rights.Domain.Filtering;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Testing.Infra;
 using Xunit;
 
 namespace Billing.Cmrr.Infra.Tests
@@ -18,11 +18,7 @@ namespace Billing.Cmrr.Infra.Tests
 
         public CmrrContractsStoreTests()
         {
-            var options = new DbContextOptionsBuilder<CmrrDbContext>()
-                               .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
-                               .Options;
-
-            _dbContext = new CmrrDbContext(options);
+            _dbContext = InMemoryDbHelper.InitialiseDb<CmrrDbContext>("cmrr", o => new CmrrDbContext(o));
         }
 
         [Fact]

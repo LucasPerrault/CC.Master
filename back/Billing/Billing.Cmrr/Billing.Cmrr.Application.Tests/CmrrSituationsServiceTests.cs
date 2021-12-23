@@ -5,7 +5,6 @@ using Billing.Products.Domain;
 using Billing.Products.Infra.Storage;
 using Billing.Products.Infra.Storage.Stores;
 using FluentAssertions;
-using Microsoft.EntityFrameworkCore;
 using Moq;
 using Rights.Domain.Filtering;
 using System;
@@ -13,6 +12,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using Testing.Infra;
 using Xunit;
 
 namespace Billing.Cmrr.Application.Tests
@@ -23,15 +23,11 @@ namespace Billing.Cmrr.Application.Tests
 
         public CmrrSituationsServiceTests()
         {
-            var options = new DbContextOptionsBuilder<ProductDbContext>()
-                               .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
-                               .Options;
-
-            _dbContext = new ProductDbContext(options);
+            _dbContext = InMemoryDbHelper.InitialiseDb<ProductDbContext>("cmrr", o => new ProductDbContext(o));
         }
 
         [Fact]
-        public void ShouldThrowWhenStartPeriodIsNotOnDayOneOfMonth()
+        public async Task ShouldThrowWhenStartPeriodIsNotOnDayOneOfMonth()
         {
             var startPeriod = new DateTime(2021, 01, 02);
             var endPeriod = new DateTime(2021, 01, 01);
@@ -52,11 +48,11 @@ namespace Billing.Cmrr.Application.Tests
 
             Func<Task<CmrrSituation>> func = () => sut.GetSituationAsync(situationFilter);
 
-            func.Should().ThrowExactly<ArgumentException>().WithMessage("*date*");
+            await func.Should().ThrowExactlyAsync<ArgumentException>().WithMessage("*date*");
         }
 
         [Fact]
-        public void ShouldThrowWhenEndPeriodIsNotOnDayOneOfMonth()
+        public async Task ShouldThrowWhenEndPeriodIsNotOnDayOneOfMonth()
         {
             var startPeriod = new DateTime(2021, 01, 01);
             var endPeriod = new DateTime(2021, 01, 02);
@@ -76,7 +72,7 @@ namespace Billing.Cmrr.Application.Tests
 
             Func<Task<CmrrSituation>> func = () => sut.GetSituationAsync(situationFilter);
 
-            func.Should().ThrowExactly<ArgumentException>().WithMessage("*date*");
+            await func.Should().ThrowExactlyAsync<ArgumentException>().WithMessage("*date*");
         }
 
         [Fact]

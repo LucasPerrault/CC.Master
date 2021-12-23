@@ -21,7 +21,7 @@ namespace Billing.Cmrr.Application.Tests
     public class CmrrEvolutionsServiceTests
     {
         [Fact]
-        public void ShouldThrowWhenStartPeriodIsNotOnDayOneOfMonth()
+        public async Task ShouldThrowWhenStartPeriodIsNotOnDayOneOfMonth()
         {
             var startPeriod = new DateTime(2021, 01, 02);
             var endPeriod = new DateTime(2021, 01, 01);
@@ -40,11 +40,11 @@ namespace Billing.Cmrr.Application.Tests
 
             Func<Task<CmrrEvolution>> func = () => sut.GetEvolutionAsync(evolutionFilter);
 
-            func.Should().ThrowExactly<ArgumentException>().WithMessage("*date*");
+            await func.Should().ThrowExactlyAsync<ArgumentException>().WithMessage("*date*");
         }
 
         [Fact]
-        public void ShouldThrowWhenEndPeriodIsNotOnDayOneOfMonth()
+        public async Task ShouldThrowWhenEndPeriodIsNotOnDayOneOfMonth()
         {
             var startPeriod = new DateTime(2021, 01, 01);
             var endPeriod = new DateTime(2021, 01, 02);
@@ -63,7 +63,7 @@ namespace Billing.Cmrr.Application.Tests
 
             Func<Task<CmrrEvolution>> func = () => sut.GetEvolutionAsync(evolutionFilter);
 
-            func.Should().ThrowExactly<ArgumentException>().WithMessage("*date*");
+            await func.Should().ThrowExactlyAsync<ArgumentException>().WithMessage("*date*");
         }
 
         [Fact]

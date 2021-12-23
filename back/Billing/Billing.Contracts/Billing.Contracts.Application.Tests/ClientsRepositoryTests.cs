@@ -226,7 +226,7 @@ namespace Billing.Contracts.Application.Tests
                     {
                         Id = 1,
                         DepartmentId = 1,
-                        LegalEntityId = 1,
+                        EstablishmentId = 1,
                         DistributorId = distributor.Id,
                         ManagerId = 0,
                     }

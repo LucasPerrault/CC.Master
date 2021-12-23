@@ -24,6 +24,6 @@ namespace Rights.Infra.Stores
             return _departmentsService.GetDepartmentsAsync();
         }
 
-        private ITree<IDepartment> BuildTree(IEnumerable<Department> depts) => Tree.Factory(depts);
+        private ITree<IDepartment> BuildTree(IEnumerable<Department> depts) => Tree.Factory<Department, int>(depts);
     }
 }

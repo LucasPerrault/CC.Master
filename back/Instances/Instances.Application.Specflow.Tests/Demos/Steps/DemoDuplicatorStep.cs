@@ -66,7 +66,10 @@ namespace Instances.Application.Specflow.Tests.Demos.Steps
                     Id = duplicationId,
                     TargetSubdomain = subdomain,
                     Progress = progress,
-                    DistributorId = distributor.Id
+                    DistributorId = distributor.Id,
+                    SourceCluster = "mocked-source-cluster",
+                    TargetCluster = "mocked-target-cluster",
+                    SourceSubdomain = "mocked-source-subdomain"
                 }
             };
             await demoDuplicationsStore.CreateAsync(duplication);
@@ -162,6 +165,7 @@ namespace Instances.Application.Specflow.Tests.Demos.Steps
             var rightsService = _testContext.GetRightsService();
             var ccDataServiceMock = new Mock<ICcDataService>();
             var clusterSelectorMock = new Mock<IClusterSelector>();
+            clusterSelectorMock.Setup(s => s.GetFillingClusterAsync(It.IsAny<string>())).ReturnsAsync("mocked-cluster");
             var dnsMock = new Mock<IDnsService>();
             dnsMock.Setup(d => d.CreateAsync(It.IsAny<DnsEntry>()))
                 .Returns<DnsEntry>(entry =>

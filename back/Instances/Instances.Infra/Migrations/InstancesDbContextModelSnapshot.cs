@@ -6,6 +6,8 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
+#nullable disable
+
 namespace Instances.Infra.Migrations
 {
     [DbContext(typeof(InstancesDbContext))]
@@ -16,16 +18,18 @@ namespace Instances.Infra.Migrations
 #pragma warning disable 612, 618
             modelBuilder
                 .HasDefaultSchema("instances")
-                .HasAnnotation("Relational:MaxIdentifierLength", 128)
-                .HasAnnotation("ProductVersion", "5.0.10")
-                .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                .HasAnnotation("ProductVersion", "6.0.0")
+                .HasAnnotation("Relational:MaxIdentifierLength", 128);
+
+            SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
 
             modelBuilder.Entity("Distributors.Domain.Models.Distributor", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<string>("Code")
                         .HasColumnType("nvarchar(max)")
@@ -34,6 +38,14 @@ namespace Instances.Infra.Migrations
                     b.Property<int>("DepartmentId")
                         .HasColumnType("int")
                         .HasColumnName("DepartmentId");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit")
+                        .HasColumnName("IsActive");
+
+                    b.Property<bool>("IsAllowingCommercialCommunication")
+                        .HasColumnType("bit")
+                        .HasColumnName("IsAllowingCommercialCommunication");
 
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)")
@@ -56,7 +68,7 @@ namespace Instances.Infra.Migrations
 
                     b.HasIndex("githubBranchId");
 
-                    b.ToTable("GithubBranchesCodeSources");
+                    b.ToTable("GithubBranchesCodeSources", "instances");
                 });
 
             modelBuilder.Entity("GithubPullRequestsCodeSources", b =>
@@ -71,15 +83,16 @@ namespace Instances.Infra.Migrations
 
                     b.HasIndex("githubPullRequestId");
 
-                    b.ToTable("GithubPullRequestsCodeSources");
+                    b.ToTable("GithubPullRequestsCodeSources", "instances");
                 });
 
             modelBuilder.Entity("Instances.Domain.CodeSources.CodeSource", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<string>("Code")
                         .HasColumnType("nvarchar(max)")
@@ -111,15 +124,16 @@ namespace Instances.Infra.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("CodeSources");
+                    b.ToTable("CodeSources", "instances");
                 });
 
             modelBuilder.Entity("Instances.Domain.CodeSources.CodeSourceArtifacts", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<int>("ArtifactType")
                         .HasColumnType("int")
@@ -143,7 +157,7 @@ namespace Instances.Infra.Migrations
 
                     b.HasIndex("CodeSourceId");
 
-                    b.ToTable("CodeSourceArtifacts");
+                    b.ToTable("CodeSourceArtifacts", "instances");
                 });
 
             modelBuilder.Entity("Instances.Domain.CodeSources.CodeSourceConfig", b =>
@@ -169,15 +183,16 @@ namespace Instances.Infra.Migrations
 
                     b.HasKey("CodeSourceId");
 
-                    b.ToTable("CodeSourceConfigs");
+                    b.ToTable("CodeSourceConfigs", "instances");
                 });
 
             modelBuilder.Entity("Instances.Domain.CodeSources.CodeSourceProductionVersion", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<string>("BranchName")
                         .HasColumnType("nvarchar(max)")
@@ -203,15 +218,16 @@ namespace Instances.Infra.Migrations
 
                     b.HasIndex("CodeSourceId");
 
-                    b.ToTable("CodeSourcesProductionVersions");
+                    b.ToTable("CodeSourcesProductionVersions", "instances");
                 });
 
             modelBuilder.Entity("Instances.Domain.Demos.Demo", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<int>("AuthorId")
                         .HasColumnType("int")
@@ -261,15 +277,16 @@ namespace Instances.Infra.Migrations
                     b.HasIndex("InstanceID")
                         .IsUnique();
 
-                    b.ToTable("Demos");
+                    b.ToTable("Demos", "instances");
                 });
 
             modelBuilder.Entity("Instances.Domain.Demos.DemoDuplication", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<int>("AuthorId")
                         .HasColumnType("int")
@@ -300,15 +317,16 @@ namespace Instances.Infra.Migrations
 
                     b.HasIndex("InstanceDuplicationId");
 
-                    b.ToTable("DemoDuplications");
+                    b.ToTable("DemoDuplications", "instances");
                 });
 
             modelBuilder.Entity("Instances.Domain.Github.Models.GithubBranch", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2")
@@ -344,15 +362,16 @@ namespace Instances.Infra.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("GithubBranches");
+                    b.ToTable("GithubBranches", "instances");
                 });
 
             modelBuilder.Entity("Instances.Domain.Github.Models.GithubPullRequest", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<DateTime?>("ClosedAt")
                         .HasColumnType("datetime2")
@@ -386,7 +405,7 @@ namespace Instances.Infra.Migrations
 
                     b.HasIndex("OriginBranchId");
 
-                    b.ToTable("GithubPullRequests");
+                    b.ToTable("GithubPullRequests", "instances");
                 });
 
             modelBuilder.Entity("Instances.Domain.Instances.InstanceDuplication", b =>
@@ -445,15 +464,16 @@ namespace Instances.Infra.Migrations
 
                     b.HasIndex("DistributorId");
 
-                    b.ToTable("InstanceDuplications");
+                    b.ToTable("InstanceDuplications", "instances");
                 });
 
             modelBuilder.Entity("Instances.Domain.Instances.Models.Instance", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<string>("AllUsersImposedPassword")
                         .HasColumnType("nvarchar(max)")
@@ -481,7 +501,7 @@ namespace Instances.Infra.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Instances");
+                    b.ToTable("Instances", "instances");
                 });
 
             modelBuilder.Entity("Users.Domain.SimpleUser", b =>

@@ -1,3 +1,4 @@
+using Lucca.Core.Rights.Abstractions;
 using Lucca.Core.Rights.Abstractions.Permissions;
 using Remote.Infra.Services;
 using Rights.Infra.Models;
@@ -30,11 +31,36 @@ namespace Rights.Infra.Remote
             {
                 { "appInstanceId", RightsHelper.CloudControlAppInstanceId.ToString() },
                 { "userId", principalId.ToString() },
-                { "fields", Permission.ApiFields }
+                { "fields", PermissionDto.ApiFields }
             };
 
-            var userPermissions = await _httpClientHelper.GetObjectCollectionResponseAsync<Permission>(queryParams);
-            return userPermissions.Data.Items;
+            var userPermissions = await _httpClientHelper.GetObjectCollectionResponseAsync<PermissionDto>(queryParams);
+            var dtos = userPermissions.Data.Items;
+            return dtos.Select(dto => dto.ToPermission());
+        }
+
+        internal class PermissionDto
+        {
+            public static readonly string ApiFields = $"{nameof(LegalEntityId)},{nameof(Scope)},{nameof(ExternalEntityId)},{nameof(SpecificDepartmentId)},{nameof(SpecificUserId)},{nameof(HasContextualLegalEntityAssociation)},{nameof(OperationId)}";
+
+            public int? LegalEntityId { get; set; }
+            public Scope Scope { get; set; }
+            public int ExternalEntityId { get; set; }
+            public int? SpecificDepartmentId { get; set; }
+            public int? SpecificUserId { get; set; }
+            public bool HasContextualLegalEntityAssociation { get; set; }
+            public int OperationId { get; set; }
+
+            public Permission ToPermission() => new Permission
+            {
+                Scope = Scope,
+                EstablishmentId = LegalEntityId,
+                OperationId = OperationId,
+                ExternalEntityId = ExternalEntityId,
+                SpecificDepartmentId = SpecificDepartmentId,
+                SpecificUserId = SpecificUserId,
+                HasContextualEstablishmentAssociation = HasContextualLegalEntityAssociation
+            };
         }
     }
 }

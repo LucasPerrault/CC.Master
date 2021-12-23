@@ -14,6 +14,7 @@ namespace Billing.Contracts.Domain.Tests
         public static CommercialOffer Build(this CommercialOffer offer, int? id = null)
         {
             offer.Id = id ?? _offerNewId++;
+            offer.Name = "mocked offer";
             return offer;
         }
 
@@ -29,7 +30,7 @@ namespace Billing.Contracts.Domain.Tests
             int currencyId = default
         )
         {
-            offer.Name = name;
+            offer.Name ??= name;
             offer.Tag = tag;
             offer.BillingMode = billingMode;
             offer.Unit = unit;

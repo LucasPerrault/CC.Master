@@ -112,7 +112,7 @@ node(label: CI.getSelectedNode(script: this)) {
 					if (!isPr) {
 						// back
 						def webProjFile = findFiles(glob: "**/CloudControl.Web.csproj").first().path
-						publishBack(startupProjFilepath: webProjFile, framework: "net5.0")
+						publishBack(startupProjFilepath: webProjFile, framework: "net6.0")
 					}
 				},
 				failFast: true

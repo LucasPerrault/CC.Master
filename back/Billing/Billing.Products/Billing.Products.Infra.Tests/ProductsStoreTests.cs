@@ -3,26 +3,21 @@ using Billing.Products.Domain.Interfaces;
 using Billing.Products.Infra.Storage;
 using Billing.Products.Infra.Storage.Stores;
 using FluentAssertions;
-using Microsoft.EntityFrameworkCore;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Testing.Infra;
 using Xunit;
 
 namespace Billing.Products.Infra.Tests
 {
     public class ProductsStoreTests
     {
-        private ProductDbContext _dbContext;
+        private readonly ProductDbContext _dbContext;
 
         public ProductsStoreTests()
         {
-            var options = new DbContextOptionsBuilder<ProductDbContext>()
-                               .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
-                               .Options;
-
-            _dbContext = new ProductDbContext(options);
+            _dbContext = InMemoryDbHelper.InitialiseDb<ProductDbContext>("products", o => new ProductDbContext(o));
         }
         [Fact]
         public async Task Should_Return_Non_Free_Product_Async()
