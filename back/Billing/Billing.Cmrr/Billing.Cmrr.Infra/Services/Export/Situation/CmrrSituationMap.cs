@@ -14,11 +14,11 @@ namespace Billing.Cmrr.Infra.Services.Export.Situation
             Map(s => s.TotalTo).Name(to.ToString("MMM yyyy"));
             Map(s => s.Variation).Name(translations.CmrrExportSituationVariation());
             Map(s => s.VariationPercent).Name(string.Empty);
-            Map(s => s.Creation).Name(translations.CmrrExportSituationCreation());
-            Map(s => s.Upsell).Name(translations.CmrrExportSituationUpsell());
-            Map(s => s.Expansion).Name(translations.CmrrExportSituationExpansion());
-            Map(s => s.Contraction).Name(translations.CmrrExportSituationContraction());
-            Map(s => s.Termination).Name(translations.CmrrExportSituationTermination());
+            Map(s => s.Creation).Name(translations.CmrrExportCreation());
+            Map(s => s.Upsell).Name(translations.CmrrExportUpsell());
+            Map(s => s.Expansion).Name(translations.CmrrExportExpansion());
+            Map(s => s.Contraction).Name(translations.CmrrExportContraction());
+            Map(s => s.Termination).Name(translations.CmrrExportTermination());
             Map(s => s.Nrr).Name(translations.CmrrExportSituationNrr());
             Map(s => s.ChurnRate).Name(translations.CmrrExportSituationChurn());
         }

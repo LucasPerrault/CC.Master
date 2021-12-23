@@ -6,5 +6,6 @@ namespace Billing.Cmrr.Application.Interfaces
     public interface ICmrrEvolutionsService
     {
         Task<CmrrEvolution> GetEvolutionAsync(CmrrFilter evolutionFilter);
+        Task<CmrrAxisEvolution> GetAxisEvolutionAsync(CmrrFilter filter);
     }
 }

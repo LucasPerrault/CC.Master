@@ -1,4 +1,6 @@
+using Billing.Cmrr.Domain.Evolution;
 using Billing.Cmrr.Domain.Situation;
+using Billing.Cmrr.Infra.Services.Export.Evolution;
 using Billing.Cmrr.Infra.Services.Export.Situation;
 using CsvHelper;
 using CsvHelper.Configuration;
@@ -15,10 +17,13 @@ namespace Billing.Cmrr.Infra.Services.Export
     public interface IFileExportService
     {
         FileStreamResult Export(CmrrSituation situation, string filename);
+        FileStreamResult Export(CmrrAxisEvolution evolution, string filename);
     }
 
     public class CsvService : IFileExportService
     {
+        private const string _delimiter = ";";
+
         private readonly ITranslations _translations;
 
         public CsvService(ITranslations translations)
@@ -28,13 +33,7 @@ namespace Billing.Cmrr.Infra.Services.Export
 
         public FileStreamResult Export(CmrrSituation situation, string filename)
         {
-            var situationRows = new List<CmrrSituationCsvRow>();
-            foreach (var line in situation.Lines)
-            {
-                situationRows.Add(new CmrrSituationCsvRow(line.Total, _translations.CmrrExportSituationTotalFormat(line.Name)));
-                situationRows.AddRange(line.SubLines.Values.Select(sl => new CmrrSituationCsvRow(sl)));
-            }
-            situationRows.Add(new CmrrSituationCsvRow(situation.Total));
+            var situationRows = situation.ToRows(_translations);
 
             return ExportAsync
             (
@@ -44,12 +43,25 @@ namespace Billing.Cmrr.Infra.Services.Export
             );
         }
 
+        public FileStreamResult Export(CmrrAxisEvolution evolution, string filename)
+        {
+            var evolutionRows = evolution.ToRows(_translations);
+
+            return ExportAsync
+            (
+                evolutionRows,
+                filename,
+                config => new CmrrEvolutionMap(config, evolution.Axis, evolution.Lines.Select(l => l.Period).Distinct().OrderBy(d => d), _delimiter, _translations)
+            );
+        }
+
         private FileStreamResult ExportAsync<T>(IEnumerable<T> csvData, string filename, Func<CsvConfiguration, ClassMap<T>> getMapFn)
         {
             var configuration = new CsvConfiguration(CultureInfo.CurrentCulture)
             {
-                Delimiter = ";",
+                Delimiter = _delimiter,
                 HasHeaderRecord = true,
+                ShouldQuote = _ => false
             };
             var map = getMapFn(configuration);
 

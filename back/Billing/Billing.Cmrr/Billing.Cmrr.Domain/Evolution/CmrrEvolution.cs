@@ -9,7 +9,7 @@ namespace Billing.Cmrr.Domain.Evolution
         public DateTime EndPeriod { get; set; }
         public List<CmrrEvolutionLine> Lines { get; set; }
     }
-    public class CmrrEvolutionLine
+    public class CmrrEvolutionLine : ICmrrEvolutionLine
     {
         public DateTime Period { get; set; }
         public decimal Amount { get; set; }

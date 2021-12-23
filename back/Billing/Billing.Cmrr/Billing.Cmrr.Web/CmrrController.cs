@@ -50,5 +50,14 @@ namespace Billing.Cmrr.Web
             var result = await _cmrrEvolutionsService.GetEvolutionAsync(query.ToCmrrFilter());
             return result;
         }
+
+        [HttpPost("evolution/export"), ForbidIfMissing(Operation.ReadCMRR)]
+        public async Task<FileStreamResult> ExportEvolutionAsync([FromQuery] CmrrQuery query)
+        {
+            var evolution = await _cmrrEvolutionsService.GetAxisEvolutionAsync(query.ToCmrrFilter());
+
+            var filename = $"cmrr-evolution-{System.DateTime.Now:yyyyMMdd-HHmmss}.csv";
+            return _csvService.Export(evolution, filename);
+        }
     }
 }
