@@ -1,13 +1,13 @@
-import {Component, OnInit} from '@angular/core';
-import {FormControl} from '@angular/forms';
-import {ActivatedRoute} from '@angular/router';
-import {getButtonState, SubmissionState, toSubmissionState} from '@cc/common/forms';
-import {NoNavComponent} from '@cc/common/routing';
-import {ReplaySubject} from 'rxjs';
-import {debounceTime, filter, map, take, tap} from 'rxjs/operators';
+import { Component, OnInit } from '@angular/core';
+import { FormControl } from '@angular/forms';
+import { ActivatedRoute } from '@angular/router';
+import { getButtonState, SubmissionState, toSubmissionState } from '@cc/common/forms';
+import { NoNavComponent } from '@cc/common/routing';
+import { ReplaySubject } from 'rxjs';
+import { debounceTime, filter, map, take, tap } from 'rxjs/operators';
 
-import {IIpRequestValidity, IpDataService} from '../ip-data.service';
-import {RequestValidityState, toRequestValidityState} from '../ip-request-validity-state.enum';
+import { IIpRequestValidity, IpDataService } from '../ip-data.service';
+import { RequestValidityState, toRequestValidityState } from '../ip-request-validity-state.enum';
 import {
   AuthorizationDuration,
   authorizationDurations,
@@ -66,12 +66,12 @@ export class IpConfirmComponent extends NoNavComponent implements OnInit {
     this.redirection$.pipe(
       filter(state => state === SubmissionState.Success ),
       debounceTime(1000),
-      ).subscribe(_ => window.location.href = this.fullRedirectionHref)
+      ).subscribe(() => window.location.href = this.fullRedirectionHref);
   }
 
   public authorize(code: string, duration: IAuthorizationDuration): void {
     this.dataService.confirm$(code, duration?.id)
       .pipe(toSubmissionState(), tap(this.redirection$), map(state => getButtonState(state)))
-      .subscribe(this.authorizationButtonClass$)
+      .subscribe(this.authorizationButtonClass$);
   }
 }
