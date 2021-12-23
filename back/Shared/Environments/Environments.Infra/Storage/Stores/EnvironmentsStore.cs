@@ -1,8 +1,6 @@
 using Environments.Domain.Storage;
-using Environments.Infra.Storage.Stores.Dtos;
 using Lucca.Core.Api.Abstractions.Paging;
 using Lucca.Core.Api.Queryable.Paging;
-using Lucca.Core.Shared.Domain.Exceptions;
 using Lucca.Core.Shared.Domain.Expressions;
 using Microsoft.EntityFrameworkCore;
 using Rights.Domain.Filtering;
@@ -11,10 +9,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Net;
-using System.Net.Http;
-using System.Text;
-using System.Text.Json;
 using System.Threading.Tasks;
 using Environment = Environments.Domain.Environment;
 
@@ -25,13 +19,15 @@ namespace Environments.Infra.Storage.Stores
     {
         private readonly EnvironmentsDbContext _dbContext;
         private readonly IQueryPager _queryPager;
-        private readonly HttpClient _httpClient;
+        private readonly IEnvironmentsRemoteStore _environmentsRemoteStore;
 
-        public EnvironmentsStore(EnvironmentsDbContext dbContext, IQueryPager queryPager, HttpClient httpClient)
+        public EnvironmentsStore(
+            EnvironmentsDbContext dbContext, IQueryPager queryPager,
+            IEnvironmentsRemoteStore environmentsRemoteStore)
         {
             _dbContext = dbContext;
             _queryPager = queryPager;
-            _httpClient = httpClient;
+            _environmentsRemoteStore = environmentsRemoteStore;
         }
 
         public Task<List<Environment>> GetAsync(EnvironmentFilter filter)
@@ -47,23 +43,8 @@ namespace Environments.Infra.Storage.Stores
             return _queryPager.ToPageAsync(GetQueryable(rights, filter), page);
         }
 
-        public async Task UpdateSubDomainAsync(Environment environement, string newName)
-        {
-            var body = JsonSerializer.Serialize(new UpdateEnvironmentDto(newName));
-            var content = new StringContent(body, Encoding.UTF8, "application/json");
-
-            var response = await _httpClient.PostAsync($"{environement.Id}/updateSubdomain", content);
-
-            if (response.StatusCode == HttpStatusCode.BadRequest)
-            {
-                var responseBody = await response.Content.ReadAsStringAsync();
-                throw new DomainException(DomainExceptionCode.BadRequest, responseBody);
-            }
-            if (!response.IsSuccessStatusCode)
-            {
-                throw new DomainException(DomainExceptionCode.InternalServerError, "Failed to contact cc legacy");
-            }
-        }
+        public Task UpdateSubDomainAsync(Environment environement, string newName)
+            => _environmentsRemoteStore.UpdateSubDomainAsync(environement, newName);   
 
         private IQueryable<Environment> GetQueryable(List<EnvironmentAccessRight> rights, EnvironmentFilter filter)
         {

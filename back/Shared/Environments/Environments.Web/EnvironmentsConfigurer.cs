@@ -18,13 +18,14 @@ namespace Environments.Web
     {
         public static void ConfigureEnvironments(IServiceCollection services, EnvironmentConfiguration configuration)
         {
-            services.AddHttpClient<IEnvironmentsStore, EnvironmentsStore>(client =>
+            services.AddHttpClient<IEnvironmentsRemoteStore, EnvironmentsRemoteStore>(client =>
             {
                 client
                     .WithUserAgent(nameof(EnvironmentsStore))
                     .WithBaseAddress(configuration.LegacyHost, "/api/v3/environments")
                     .WithAuthScheme("CloudControl").AuthenticateAsApplication(configuration.LegacyToken);
             });
+            services.AddScoped<IEnvironmentsStore, EnvironmentsStore>();
             services.AddScoped<EnvironmentsRepository>();
             services.AddScoped<EnvironmentRightsFilter>();
 
