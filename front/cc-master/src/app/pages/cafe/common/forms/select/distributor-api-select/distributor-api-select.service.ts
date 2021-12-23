@@ -1,10 +1,16 @@
 import { Injectable } from '@angular/core';
-import { DistributorIds } from '@cc/aspects/principal';
 import { LuApiV4Service } from '@lucca-front/ng/api';
 import { Observable, pipe, UnaryFunction } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 import { IDistributor } from '../../../../environments/models/environment-access.interface';
+
+// TODO sort by isLucca
+const hardcodedLuccaDistributor: IDistributor = {
+  id: 37,
+  name: 'Lucca',
+  isLucca: true
+};
 
 @Injectable()
 export class DistributorApiSelectService extends LuApiV4Service<IDistributor> {
@@ -26,9 +32,7 @@ export class DistributorApiSelectService extends LuApiV4Service<IDistributor> {
           return distributors;
         }
 
-        const distributorsWithoutLucca = distributors.filter(d => d.id !== DistributorIds.lucca);
-        return [luccaDistributor, ...distributorsWithoutLucca];
-      }),
-    );
+  private get excludeLucca(): UnaryFunction<Observable<IDistributor[]>, Observable<IDistributor[]>> {
+    return pipe(map(distributors => distributors.filter(d => !d.isLucca)));
   }
 }

@@ -10,21 +10,21 @@ export const getCultureCode = (initializer: PrincipalInitializer): string => ini
 
 @Injectable()
 export class PrincipalInitializer {
-	public principal: IPrincipal;
+  public principal: IPrincipal;
 
-	constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) {}
 
-	public initPrincipal(): Promise<IPrincipal> {
-		const principalUrl = `/api/principals/me`;
+  public initPrincipal(): Promise<IPrincipal> {
+    const principalUrl = `/api/principals/me`;
 
-		return this.http.get<IPrincipal>(principalUrl).pipe(
-			tap(principal => this.principal = principal,
-          err => this.reconnect(),
+    return this.http.get<IPrincipal>(principalUrl).pipe(
+      tap(principal => this.principal = principal,
+        err => this.reconnect(),
       ),
-		).toPromise();
-	}
+    ).toPromise();
+  }
 
-	public reconnect(): void {
-		window.location.href = '/account/login?returnUrl=' + encodeURIComponent(window.location.pathname);
-	}
+  public reconnect(): void {
+    window.location.href = '/account/login?returnUrl=' + encodeURIComponent(window.location.pathname);
+  }
 }
