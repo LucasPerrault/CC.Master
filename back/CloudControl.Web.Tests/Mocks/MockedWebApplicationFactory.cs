@@ -2,6 +2,7 @@ using Authentication.Infra.Configurations;
 using Cache.Abstractions;
 using CloudControl.Web.Configuration;
 using CloudControl.Web.Tests.Mocks.Overrides;
+using Distributors.Domain;
 using Email.Domain;
 using IpFilter.Domain;
 using IpFilter.Web;
@@ -185,10 +186,20 @@ namespace CloudControl.Web.Tests.Mocks
         { }
 
         public override void ConfigureAdvancedFilters(IServiceCollection services, AppConfiguration configuration)
-        { }
+        {
+            services.AddScoped<IDistributorDomainService, MockedDistributorDomainService>();
+        }
+
 
         public override void ConfigureSlack(IServiceCollection services, AppConfiguration configuration)
         { }
+        
+        private class MockedDistributorDomainService : IDistributorDomainService
+        {
+            public Domain GetDomain(string email) => null;
+            public Task<bool> IsRegisteredAsync(Domain domain, int distributorId) => Task.FromResult(true);
+            public Task<List<Domain>> GetAllRegistered(int distributorId) => Task.FromResult(new List<Domain>());
+        }
     }
 
     public static class ApiTestExtensions

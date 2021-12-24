@@ -10,9 +10,13 @@ namespace Distributors.Web
         public static void ConfigureServices(IServiceCollection services)
         {
             services.AddSingleton<DistributorsCache>();
+            services.AddSingleton<DistributorDomainsCache>();
+
             services.AddScoped<IDistributorsStore, DistributorsStore>();
+            services.AddScoped<IDistributorDomainsStore, DistributorDomainsStore>();
+
             services.AddScoped<DistributorsRepository>();
-            services.AddScoped<DistributorDomainsStore>();
+            services.AddScoped<IDistributorDomainService, DistributorDomainService>();
         }
     }
 }
