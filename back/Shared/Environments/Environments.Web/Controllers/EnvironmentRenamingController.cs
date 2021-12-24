@@ -1,4 +1,5 @@
 using Environments.Application;
+using Environments.Domain;
 using Instances.Web.Dtos;
 using Microsoft.AspNetCore.Mvc;
 using Rights.Domain;
@@ -20,9 +21,9 @@ namespace Environments.Web.Controllers
 
         [HttpPost]
         [ForbidIfMissing(Operation.ReadCodeSources)] // TODO A changer !
-        public async Task RenameEnvironmentAsync([FromBody] EnvironmentRenamingDto environmentRenaming)
+        public async Task<EnvironmentRenamingStatusDetail> RenameEnvironmentAsync([FromBody] EnvironmentRenamingDto environmentRenaming)
         {
-            await _environmentRenamingService.RenameAsync(environmentRenaming.EnvironmentId, environmentRenaming.NewName);
+            return await _environmentRenamingService.RenameAsync(environmentRenaming.EnvironmentId, environmentRenaming.NewName);
         }
     }
 }

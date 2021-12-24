@@ -1,5 +1,5 @@
-using System;
 using Microsoft.EntityFrameworkCore.Migrations;
+using System;
 
 namespace Environments.Infra.Migrations
 {
@@ -19,7 +19,9 @@ namespace Environments.Infra.Migrations
                     renamedOn = table.Column<DateTime>(type: "datetime2", nullable: false),
                     oldName = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     newName = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    environmentId = table.Column<int>(type: "int", nullable: false)
+                    environmentId = table.Column<int>(type: "int", nullable: false),
+                    errorMessage = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    status = table.Column<int>(type: "int", nullable: false),
                 },
                 constraints: table =>
                 {

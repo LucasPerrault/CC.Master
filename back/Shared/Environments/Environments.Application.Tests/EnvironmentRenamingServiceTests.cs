@@ -4,10 +4,10 @@ using Environments.Domain.ExtensionInterface;
 using Environments.Domain.Storage;
 using FluentAssertions;
 using Lucca.Core.Shared.Domain.Exceptions;
+using Microsoft.Extensions.Logging;
 using Moq;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Xunit;
 using Environment = Environments.Domain.Environment;
@@ -26,6 +26,7 @@ namespace Environments.Application.Tests
             _environmentStoreMock = new Mock<IEnvironmentsStore>(MockBehavior.Strict);
             _environmentRenamingStoreMock = new Mock<IEnvironmentsRenamingStore>(MockBehavior.Strict);
             _environmentRenamingExtensionMock = new Mock<IEnvironmentRenamingExtension>(MockBehavior.Strict);
+            _environmentRenamingExtensionMock.Setup(s => s.ExtensionName).Returns("extensionName");
             _environmentRenamingService = new EnvironmentRenamingService(
                 _environmentStoreMock.Object,
                 _environmentRenamingStoreMock.Object,
@@ -34,7 +35,8 @@ namespace Environments.Application.Tests
                 {
                     UserId = 42,
                     User = new Users.Domain.User()
-                })
+                }),
+                new Mock<ILogger<EnvironmentRenamingService>>().Object
             );
         }
 
@@ -62,13 +64,51 @@ namespace Environments.Application.Tests
                 .Setup(e => e.RenameAsync(It.IsAny<Environment>(), It.IsAny<string>()))
                 .Returns(Task.CompletedTask);
 
-            await _environmentRenamingService.RenameAsync(2, "newName");
+            var status = await _environmentRenamingService.RenameAsync(2, "newName");
 
             _environmentStoreMock.Verify(e => e.GetAsync(It.Is<EnvironmentFilter>(f => f.Ids.Contains(2))));
             _environmentStoreMock.Verify(e => e.UpdateSubDomainAsync(environment, "newName"));
             _environmentRenamingExtensionMock.Verify(e => e.RenameAsync(environment, "newName"));
+            status.Status.Should().Be(EnvironmentRenamingStatus.SUCCESS);
             capturedEnvironmentRenaming.Should().NotBeNull();
             capturedEnvironmentRenaming.UserId.Should().Be(42);
+            capturedEnvironmentRenaming.Status.Should().Be(EnvironmentRenamingStatus.SUCCESS);
+            capturedEnvironmentRenaming.ErrorMessage.Should().BeEmpty();
+        }
+
+        [Fact]
+        public async Task RenameAsync_ExtensionError()
+        {
+            var environmentId = 2;
+            var environment = new Environment { Id = environmentId };
+            _environmentStoreMock
+                .Setup(e => e.GetAsync(It.IsAny<EnvironmentFilter>()))
+                .ReturnsAsync(new List<Environment> { environment });
+            _environmentStoreMock
+                .Setup(e => e.UpdateSubDomainAsync(It.IsAny<Environment>(), It.IsAny<string>()))
+                .Returns(Task.CompletedTask);
+            EnvironmentRenaming capturedEnvironmentRenaming = null;
+            _environmentRenamingStoreMock
+                .Setup(e => e.CreateAsync(It.IsAny<EnvironmentRenaming>()))
+                    .Returns((EnvironmentRenaming e) =>
+                    {
+                        capturedEnvironmentRenaming = e;
+                        return Task.FromResult(e);
+                    });
+            _environmentRenamingExtensionMock
+                .Setup(e => e.RenameAsync(It.IsAny<Environment>(), It.IsAny<string>()))
+                .ThrowsAsync(new Exception("test"));
+
+            var status = await _environmentRenamingService.RenameAsync(2, "newName");
+
+            _environmentStoreMock.Verify(e => e.GetAsync(It.Is<EnvironmentFilter>(f => f.Ids.Contains(2))));
+            _environmentStoreMock.Verify(e => e.UpdateSubDomainAsync(environment, "newName"));
+            _environmentRenamingExtensionMock.Verify(e => e.RenameAsync(environment, "newName"));
+            status.Status.Should().Be(EnvironmentRenamingStatus.ERROR);
+            capturedEnvironmentRenaming.Should().NotBeNull();
+            capturedEnvironmentRenaming.UserId.Should().Be(42);
+            capturedEnvironmentRenaming.Status.Should().Be(EnvironmentRenamingStatus.ERROR);
+            capturedEnvironmentRenaming.ErrorMessage.Should().Be("test");
         }
 
         [Fact]

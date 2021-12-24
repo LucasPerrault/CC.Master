@@ -18,7 +18,7 @@ namespace Environments.Infra.Migrations
 #pragma warning disable 612, 618
             modelBuilder
                 .HasDefaultSchema("shared")
-                .HasAnnotation("ProductVersion", "6.0.0")
+                .HasAnnotation("ProductVersion", "6.0.1")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
@@ -153,8 +153,9 @@ namespace Environments.Infra.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<string>("ApiKeyStorageId")
                         .HasColumnType("nvarchar(max)")
@@ -163,6 +164,10 @@ namespace Environments.Infra.Migrations
                     b.Property<int>("EnvironmentId")
                         .HasColumnType("int")
                         .HasColumnName("environmentId");
+
+                    b.Property<string>("ErrorMessage")
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("errorMessage");
 
                     b.Property<string>("NewName")
                         .HasColumnType("nvarchar(max)")
@@ -176,6 +181,10 @@ namespace Environments.Infra.Migrations
                         .HasColumnType("datetime2")
                         .HasColumnName("renamedOn");
 
+                    b.Property<int>("Status")
+                        .HasColumnType("int")
+                        .HasColumnName("status");
+
                     b.Property<int?>("UserId")
                         .HasColumnType("int")
                         .HasColumnName("userId");
@@ -184,7 +193,7 @@ namespace Environments.Infra.Migrations
 
                     b.HasIndex("EnvironmentId");
 
-                    b.ToTable("EnvironmentRenaming");
+                    b.ToTable("EnvironmentRenaming", "shared");
                 });
 
             modelBuilder.Entity("Environments.Domain.EnvironmentSharedAccess", b =>

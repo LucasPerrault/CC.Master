@@ -16,6 +16,8 @@ namespace Environments.Infra.Storage.Configurations
             builder.Property(r => r.RenamedOn).HasColumnName("renamedOn");
             builder.Property(r => r.OldName).HasColumnName("oldName");
             builder.Property(r => r.NewName).HasColumnName("newName");
+            builder.Property(r => r.Status).HasColumnName("status");
+            builder.Property(r => r.ErrorMessage).HasColumnName("errorMessage");
 
             builder.Property(r => r.EnvironmentId).HasColumnName("environmentId");
             builder.HasOne(r => r.Environment).WithMany().HasForeignKey(r => r.EnvironmentId);
