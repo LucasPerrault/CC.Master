@@ -1,6 +1,7 @@
 using Instances.Infra.Dns;
 using Instances.Infra.Shared;
 using Instances.Infra.Windows;
+using Microsoft.Extensions.Logging;
 using Moq;
 using System;
 using System.Collections.Generic;
@@ -13,10 +14,12 @@ namespace Instances.Infra.Tests.Dns
     public class WinDnsServiceTest
     {
         private readonly Mock<IWmiWrapper> _wmiWrapperMock;
+        private readonly Mock<ILogger<WinDnsService>> _loggerMock;
 
         public WinDnsServiceTest()
         {
             _wmiWrapperMock = new Mock<IWmiWrapper>();
+            _loggerMock = new Mock<ILogger<WinDnsService>>();
         }
 
         #region AddNewCname
@@ -26,7 +29,7 @@ namespace Instances.Infra.Tests.Dns
             var internalDnsConfiguration = new WinDnsConfiguration { Server = "my-dns-server" };
             _wmiWrapperMock.Setup(w => w.InvokeClassMethod(It.IsAny<WmiSessionWrapper>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<Dictionary<string, object>>()));
 
-            var winDnsService = new WinDnsService(internalDnsConfiguration, _wmiWrapperMock.Object);
+            var winDnsService = new WinDnsService(internalDnsConfiguration, _wmiWrapperMock.Object, _loggerMock.Object);
             var dnsEntryCreation = new DnsEntryCreation
             {
                 Cluster = "demo",
@@ -59,7 +62,7 @@ namespace Instances.Infra.Tests.Dns
             var internalDnsConfiguration = new WinDnsConfiguration { Server = "my-dns-server" };
             _wmiWrapperMock.Setup(w => w.CreateSession(It.IsAny<string>()));
 
-            var winDnsService = new WinDnsService(internalDnsConfiguration, _wmiWrapperMock.Object);
+            var winDnsService = new WinDnsService(internalDnsConfiguration, _wmiWrapperMock.Object, _loggerMock.Object);
             var dnsEntryCreation = new DnsEntryCreation
             {
                 Cluster = "demo",
@@ -81,7 +84,7 @@ namespace Instances.Infra.Tests.Dns
             var internalDnsConfiguration = new WinDnsConfiguration { Server = "my-dns-server" };
             _wmiWrapperMock.Setup(w => w.QueryAndDeleteObjects(It.IsAny<IWmiSessionWrapper>(), It.IsAny<string>()));
 
-            var winDnsService = new WinDnsService(internalDnsConfiguration, _wmiWrapperMock.Object);
+            var winDnsService = new WinDnsService(internalDnsConfiguration, _wmiWrapperMock.Object, _loggerMock.Object);
             var dnsEntryDeletion = new DnsEntryDeletion
             {
                 DnsZone = "my-zone",
@@ -104,7 +107,7 @@ namespace Instances.Infra.Tests.Dns
             var internalDnsConfiguration = new WinDnsConfiguration { Server = "my-dns-server" };
             _wmiWrapperMock.Setup(w => w.CreateSession(It.IsAny<string>()));
 
-            var winDnsService = new WinDnsService(internalDnsConfiguration, _wmiWrapperMock.Object);
+            var winDnsService = new WinDnsService(internalDnsConfiguration, _wmiWrapperMock.Object, _loggerMock.Object);
             var dnsEntryDeletion = new DnsEntryDeletion
             {
                 DnsZone = "my-zone",

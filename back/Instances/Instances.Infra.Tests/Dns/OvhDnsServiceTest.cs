@@ -1,6 +1,7 @@
 using FluentAssertions;
 using Instances.Infra.Dns;
 using Instances.Infra.Shared;
+using Microsoft.Extensions.Logging;
 using Moq;
 using Moq.Protected;
 using Ovh.Api;
@@ -18,10 +19,12 @@ namespace Instances.Infra.Tests.Dns
     public class OvhDnsServiceTest
     {
         private readonly Mock<HttpMessageHandler> _httpMessageHandlerMock;
+        private readonly Mock<ILogger<OvhDnsService>> _loggerMock;
         private readonly Client _ovhApiClient;
 
         public OvhDnsServiceTest()
         {
+            _loggerMock = new Mock<ILogger<OvhDnsService>>();
             _httpMessageHandlerMock = new Mock<HttpMessageHandler>();
             _ovhApiClient = new Client("ovh-eu", "app-key", "app-secret", "consumer-key", null, ',', new HttpClient(_httpMessageHandlerMock.Object));
             _httpMessageHandlerMock
@@ -72,7 +75,7 @@ namespace Instances.Infra.Tests.Dns
                    Content = new StringContent("")
                }).Callback(() => Assert.True(isCreationCalled));
 
-            var ovhDnsService = new OvhDnsService(_ovhApiClient);
+            var ovhDnsService = new OvhDnsService(_ovhApiClient, _loggerMock.Object);
             var dnsEntryCreation = new DnsEntryCreation
             {
                 Cluster = "demo",
@@ -151,7 +154,7 @@ namespace Instances.Infra.Tests.Dns
                    Content = new StringContent("")
                });
 
-            var ovhDnsService = new OvhDnsService(_ovhApiClient);
+            var ovhDnsService = new OvhDnsService(_ovhApiClient, _loggerMock.Object);
             var dnsEntryDeletion = new DnsEntryDeletion
             {
                 DnsZone = "my-zone",
@@ -232,7 +235,7 @@ namespace Instances.Infra.Tests.Dns
                    Content = new StringContent("")
                }).Callback(() => Assert.True(isDeletionCalled, "La suppression n'a pas été appelée avant le refresh"));
 
-            var ovhDnsService = new OvhDnsService(_ovhApiClient);
+            var ovhDnsService = new OvhDnsService(_ovhApiClient, _loggerMock.Object);
             var dnsEntryDeletion = new DnsEntryDeletion
             {
                 DnsZone = "my-zone",

@@ -1,4 +1,5 @@
 using Instances.Infra.Shared;
+using Microsoft.Extensions.Logging;
 using Ovh.Api;
 using System.Threading.Tasks;
 using Tools;
@@ -25,10 +26,12 @@ namespace Instances.Infra.Dns
         private const string RefreshZoneApiPath = "/domain/zone/{zoneName}/refresh";
 
         private readonly Client _ovhClient;
+        private readonly ILogger<OvhDnsService> _logger;
 
-        public OvhDnsService(Client ovhClient)
+        public OvhDnsService(Client ovhClient, ILogger<OvhDnsService> logger)
         {
             _ovhClient = ovhClient;
+            _logger = logger;
         }
 
         public async Task AddNewCnameAsync(DnsEntryCreation entryCreation)
@@ -38,6 +41,7 @@ namespace Instances.Infra.Dns
                 SubDomain = entryCreation.Subdomain,
                 Target = GetCNameTargetName(entryCreation),
             };
+            _logger.LogDebug("Create new CNAME on ovh : {from} ({zone}) to {target} ", payload.SubDomain, entryCreation.DnsZone, payload.Target);
 
             await _ovhClient.PostStringAsync(GetOvhApiPath(CreateRecordApiPath, entryCreation), Serializer.Serialize(payload));
             await _ovhClient.PostAsync(GetOvhApiPath(RefreshZoneApiPath, entryCreation));
@@ -48,6 +52,7 @@ namespace Instances.Infra.Dns
             var ovhRecordId = await _ovhClient.GetAsync<long[]>(GetOvhApiPath(GetRecordApiPath, entryDeletion));
             if (ovhRecordId.Length == 0) { return; }
 
+            _logger.LogDebug("Delete CNAME on ovh : {domain} ({zone})", entryDeletion.Subdomain, entryDeletion.DnsZone);
             await _ovhClient.DeleteAsync(GetOvhApiPathWithId(DeleteRecordApiPath, entryDeletion, ovhRecordId[0]));
             await _ovhClient.PostAsync(GetOvhApiPath(RefreshZoneApiPath, entryDeletion));
         }

@@ -1,12 +1,7 @@
 using Instances.Domain.Instances;
 using Instances.Infra.Dns;
-using Instances.Infra.Windows;
 using Moq;
-using Ovh.Api;
-using System;
 using System.Collections.Generic;
-using System.Net.Http;
-using System.Text;
 using System.Threading.Tasks;
 using Xunit;
 

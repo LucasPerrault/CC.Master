@@ -1,3 +1,4 @@
+using Environments.Domain.ExtensionInterface;
 using Instances.Application.CodeSources;
 using Instances.Application.Demos;
 using Instances.Application.Demos.Deletion;
@@ -14,6 +15,7 @@ using Instances.Domain.Demos.Validation;
 using Instances.Domain.Github;
 using Instances.Domain.Instances;
 using Instances.Domain.Preview;
+using Instances.Domain.Renaming;
 using Instances.Domain.Shared;
 using Instances.Infra.CodeSources;
 using Instances.Infra.DataDuplication;
@@ -204,6 +206,8 @@ namespace Instances.Web
             services.AddScoped<PullRequestWebhookService>();
 
             services.AddScoped<IHarborWebhookService, HarborWebhookService>();
+
+            services.AddScoped<IEnvironmentRenamingExtension, InstanceDnsRenaming>();
         }
 
         public static LuccaApiBuilder ConfigureLuccaApiForInstances(this LuccaApiBuilder luccaApiBuilder)
