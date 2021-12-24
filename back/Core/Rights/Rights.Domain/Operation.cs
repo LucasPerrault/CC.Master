@@ -13,6 +13,7 @@ namespace Rights.Domain
         ImpersonationOnTrainingAndPreview = 1003,
         ImpersonationOnProd = 1004,
         EditEnvironmentGroup = 1005,
+        RenameEnvironment = 1006,
         Restore = 3,  // OBSOLETE
         CreateInstance = 4,
         UserImpersonationPreviewAndTraining = 5,  // OBSOLETE
