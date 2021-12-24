@@ -4,7 +4,7 @@ export enum NoNavPath {
   IpReject = 'reject',
   IpConfirm = 'confirm',
 
-  WrongEmailDomain = 'wrongemaildomain',
+  WrongEmailDomain = 'invalid-email-domain',
   Forbidden = '403-forbidden',
   NotFound = '404-notFound',
 }

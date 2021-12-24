@@ -1,0 +1,12 @@
+<section class="errorPage-section">
+  <div class="errorPage-section-info mod-widthAuto u-marginTopReset u-marginLeftAuto u-marginRightAuto">
+
+    <h1 class="mod-headline mod-withIcon">
+      <span aria-hidden="true" class="lucca-icon icon-lock"></span>
+      {{ 'distributor_domain_title_headline' | translate }}
+    </h1>
+
+    <div class="description" [innerHTML]="'distributor_domain_title_desc' | translate : { userEmail, registeredDomains }"></div>
+
+  </div>
+</section>
