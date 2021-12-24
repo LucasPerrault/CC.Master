@@ -3,8 +3,8 @@ import { FormControl } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { getButtonState, toSubmissionState } from '@cc/common/forms';
 import { ICount } from '@cc/domain/billing/counts';
-import { Observable, ReplaySubject, Subject } from 'rxjs';
-import { finalize, map, switchMap, take, takeUntil } from 'rxjs/operators';
+import { combineLatest, Observable, ReplaySubject, Subject } from 'rxjs';
+import { finalize, map, take, takeUntil } from 'rxjs/operators';
 
 import { ValidationContextStoreService } from '../../validation-context-store.service';
 import { establishmentDocUrl } from './constants/establishment-doc-url.const';
@@ -14,6 +14,7 @@ import { IEstablishmentWithAttachments } from './models/establishment-with-attac
 import { IEstablishmentsWithAttachmentsByType } from './models/establishments-by-type.interface';
 import { EstablishmentContractDataService } from './services/establishment-contract-data.service';
 import { EstablishmentListActionsService } from './services/establishment-list-actions.service';
+import { EstablishmentTypeService } from './services/establishment-type.service';
 import { EstablishmentsDataService } from './services/establishments-data.service';
 import { EstablishmentsWithAttachmentsService } from './services/establishments-with-attachments.service';
 
@@ -52,6 +53,7 @@ export class EstablishmentTabComponent implements OnInit, OnDestroy {
     private establishmentsService: EstablishmentsDataService,
     private actionsService: EstablishmentListActionsService,
     private contextStoreService: ValidationContextStoreService,
+    private typeService: EstablishmentTypeService,
   ) {
   }
 
@@ -104,18 +106,24 @@ export class EstablishmentTabComponent implements OnInit, OnDestroy {
 
     this.contractService.getContract$(this.contractId)
       .pipe(take(1))
-      .subscribe(contract => this.contract$.next(contract));
+      .subscribe(contract => this.set(contract));
+  }
 
-    this.contextStoreService.realCounts$
-      .pipe(take(1))
-      .subscribe(realCounts => this.realCounts$.next(realCounts));
+  private set(contract: IEstablishmentContract): void {
+    combineLatest([
+      this.contextStoreService.realCounts$,
+      this.getEstablishmentsByType$(contract),
+    ])
+      .pipe(take(1), finalize(() => this.isLoading$.next(false)))
+      .subscribe(([realCounts, establishments]) => {
+        this.contract$.next(contract);
+        this.realCounts$.next(realCounts);
+        this.establishments$.next(establishments);
+      });
+  }
 
-    this.contract$
-      .pipe(
-        take(1),
-        switchMap(contract => this.establishmentsListService.getEstablishments$(contract)
-          .pipe(finalize(() => this.isLoading$.next(false)))),
-      )
-      .subscribe(establishments => this.establishments$.next(establishments));
+  private getEstablishmentsByType$(contract: IEstablishmentContract): Observable<IEstablishmentsWithAttachmentsByType> {
+    return this.establishmentsListService.getEstablishments$(contract)
+      .pipe(map(ets => this.typeService.getEstablishmentsByType(ets, contract)));
   }
 }

@@ -1,71 +1,88 @@
 import { Injectable } from '@angular/core';
-import { Observable, of } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { ISolution } from '@cc/domain/billing/offers';
+import { from, Observable, of, pipe, UnaryFunction } from 'rxjs';
+import { map, switchMap } from 'rxjs/operators';
 
 import { IContractEstablishment } from '../models/contract-establishment.interface';
 import { IEstablishmentAttachment } from '../models/establishment-attachment.interface';
 import { IEstablishmentContract } from '../models/establishment-contract.interface';
-import { IEstablishmentContractProduct } from '../models/establishment-contract-product.interface';
 import { IEstablishmentWithAttachments } from '../models/establishment-with-attachments.interface';
-import { IEstablishmentsWithAttachmentsByType } from '../models/establishments-by-type.interface';
 import { AttachmentsTimelineService } from './attachments-timeline.service';
-import { EstablishmentTypeService } from './establishment-type.service';
+import { EstablishmentProductStoreService } from './establishment-product-store.service';
+import { ISolutionProduct } from './establishment-product-store-data.service';
 import { EstablishmentsDataService } from './establishments-data.service';
 
 @Injectable()
 export class EstablishmentsWithAttachmentsService {
   constructor(
     private dataService: EstablishmentsDataService,
-    private typeService: EstablishmentTypeService,
     private timelineService: AttachmentsTimelineService,
+    private productsStoreService: EstablishmentProductStoreService,
   ) {
   }
 
-  public getEstablishments$(contract: IEstablishmentContract): Observable<IEstablishmentsWithAttachmentsByType> {
-    return this.getEstablishmentsWithAttachments$(contract).pipe(
-      map(ets => this.typeService.getEstablishmentListEntriesByType(ets, contract)),
-    );
-  }
-
-  private getEstablishmentsWithAttachments$(contract: IEstablishmentContract): Observable<IEstablishmentWithAttachments[]> {
+  public getEstablishments$(contract: IEstablishmentContract): Observable<IEstablishmentWithAttachments[]> {
     if (!contract.environmentId) {
       return of([]);
     }
 
-    return this.dataService.getEstablishments$(contract.environmentId).pipe(
-      map((ets: IContractEstablishment[]) => this.getEstablishmentsByProduct(contract.product, ets)),
-      map((ets: IContractEstablishment[]) => this.getEstablishmentsWithAttachments(ets)),
-      map((ets: IEstablishmentWithAttachments[]) => this.getSortedgetEstablishmentsWithAttachments(ets)),
-    );
+    const allEstablishments$ = this.dataService.getEstablishments$(contract.environmentId);
+
+    const etsWithFilteredAttachments$ = allEstablishments$.pipe(
+      switchMap(ets => from(this.getEtsWithFilteredAttachmentsAsync(ets, contract.product.solutions))));
+
+    return etsWithFilteredAttachments$.pipe(this.toTimelineAttachmentsEts);
   }
 
-  private getEstablishmentsByProduct(product: IEstablishmentContractProduct, ets: IContractEstablishment[]): IContractEstablishment[] {
-    return ets.map(establishment => {
-      establishment.contractEntities = this.getAttachmentsByProduct(product, establishment);
-      return establishment;
-    });
+  private async getEtsWithFilteredAttachmentsAsync(
+    establishments: IContractEstablishment[],
+    solutions: ISolution[],
+  ): Promise<IContractEstablishment[]> {
+    const productIds = this.getProductIdsByEts(establishments);
+    const allProducts = await this.productsStoreService.getProducts$(productIds).toPromise();
+
+    for (const establishment of establishments) {
+      const attachments = establishment.contractEntities;
+      establishment.contractEntities = this.getFilteredAttachments(attachments, solutions, allProducts);
+    }
+
+    return establishments;
   }
 
-  private getAttachmentsByProduct(
-    product: IEstablishmentContractProduct,
-    establishment: IContractEstablishment,
+  private getFilteredAttachments(
+    attachments: IEstablishmentAttachment[],
+    solutions: ISolution[],
+    allProducts: ISolutionProduct[],
   ): IEstablishmentAttachment[] {
-    return establishment.contractEntities.filter(attachment =>
-      attachment.contract?.productId === product.id
-      || product.isMultiSuite && this.hasChildProductEquals(product.id, attachment),
+    const filteredAttachments: IEstablishmentAttachment[] = [];
+
+    for (const attachment of attachments) {
+      const attachmentSolutions = allProducts.find(p => p.id === attachment.contract.productId)?.solutions ?? [];
+      const attachmentSolutionIds = attachmentSolutions.map(s => s.id);
+
+      if (solutions.some(solution => attachmentSolutionIds.includes(solution.id))) {
+        filteredAttachments.push(attachment);
+      }
+    }
+
+    return filteredAttachments;
+  }
+
+  private getProductIdsByEts(establishments: IContractEstablishment[]): number[] {
+    return establishments
+      .map(establishment => establishment.contractEntities.map(a => a.contract.productId))
+      .reduce((flattened, productIds) => [...flattened, ...productIds])
+      .filter((value, index, self) => self.indexOf(value) === index);
+  }
+
+  private get toTimelineAttachmentsEts(): UnaryFunction<Observable<IContractEstablishment[]>, Observable<IEstablishmentWithAttachments[]>> {
+    return pipe(
+      map(establishments => establishments.map(e => this.toTimelineAttachment(e))),
+      map(establishments => this.sort(establishments)),
     );
   }
 
-  private hasChildProductEquals(productId: number, attachment: IEstablishmentAttachment): boolean {
-    const childProductIds = attachment.contract?.product.solutions.map(s => s.id);
-    return childProductIds.includes(productId);
-  }
-
-  private getEstablishmentsWithAttachments(ets: IContractEstablishment[]): IEstablishmentWithAttachments[] {
-    return ets.map(establishment => this.getEstablishmentWithAttachments(establishment));
-  }
-
-  private getEstablishmentWithAttachments(establishment: IContractEstablishment): IEstablishmentWithAttachments {
+  private toTimelineAttachment(establishment: IContractEstablishment): IEstablishmentWithAttachments {
     return {
       establishment,
       currentAttachment: this.timelineService.getCurrentAttachment(establishment.contractEntities),
@@ -74,13 +91,11 @@ export class EstablishmentsWithAttachmentsService {
     };
   }
 
-  private getSortedgetEstablishmentsWithAttachments(ets: IEstablishmentWithAttachments[]): IEstablishmentWithAttachments[] {
-    return ets.sort((a, b) =>
-      this.getAttachmentStartDate(a).getTime() - this.getAttachmentStartDate(b).getTime(),
-    );
+  private sort(establishments: IEstablishmentWithAttachments[]): IEstablishmentWithAttachments[] {
+    return establishments.sort((a, b) => this.getStartDate(a).getTime() - this.getStartDate(b).getTime());
   }
 
-  private getAttachmentStartDate(establishmentWithAttachments: IEstablishmentWithAttachments): Date {
+  private getStartDate(establishmentWithAttachments: IEstablishmentWithAttachments): Date {
     const attachment = establishmentWithAttachments.currentAttachment || establishmentWithAttachments.nextAttachment;
     return new Date(attachment?.start);
   }
