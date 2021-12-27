@@ -3,6 +3,7 @@ using Cache.Abstractions;
 using CloudControl.Web.Configuration;
 using CloudControl.Web.Tests.Mocks.Overrides;
 using Distributors.Domain;
+using Distributors.Web;
 using Email.Domain;
 using IpFilter.Domain;
 using IpFilter.Web;
@@ -135,6 +136,7 @@ namespace CloudControl.Web.Tests.Mocks
 
         public override void ConfigureSharedDomains(IServiceCollection services, AppConfiguration configuration)
         {
+            DistributorsConfigurer.ConfigureServices(services, new DistributorsConfiguration { ShouldFilterDistributorDomains = false });
         }
 
         public override void ConfigureAuthentication(IServiceCollection services, AppConfiguration configuration)
