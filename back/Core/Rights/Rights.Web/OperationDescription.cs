@@ -9,7 +9,6 @@ namespace Rights.Web
         public int Id { get; set; }
         public string Name { get; set; }
         public bool IsBusinessItemSpecific { get; set; }
-        public bool IsPrivate { get; set; }
 
         public List<Scope> Scopes { get; set; } = new List<Scope>();
 
@@ -279,19 +278,16 @@ namespace Rights.Web
                 {
                     Id = (int)Operation.UpdatePreviewDeployStatus,
                     Name = "(WS ONLY) Mettre à jour les états des déploiements",
-                    IsPrivate = true
                 },
                 new OperationDescription
                 {
                     Id = (int)Operation.SalesforceSync,
                     Name = "(WS ONLY) Lancer une synchronisation avec Salesforce",
-                    IsPrivate = true
                 },
                 new OperationDescription
                 {
                     Id = (int)Operation.DeleteInstance,
                     Name = "(WS ONLY) Supprimer une instance",
-                    IsPrivate = true
                 },
                 new OperationDescription
                 {

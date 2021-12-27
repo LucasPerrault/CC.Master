@@ -18,7 +18,6 @@ namespace CloudControl.Web.Controllers
         private static readonly Lazy<List<LuccaOperation>> AllDescriptions
             = new Lazy<List<LuccaOperation>>(() => OperationDescription
                 .All()
-                .Where(d => !d.IsPrivate)
                 .Select(d => new LuccaOperation(d))
                 .ToList());
 
