@@ -221,7 +221,7 @@ namespace CloudControl.Web
 
         public virtual void ConfigureSharedDomains(IServiceCollection services, AppConfiguration configuration)
         {
-            DistributorsConfigurer.ConfigureServices(services);
+            DistributorsConfigurer.ConfigureServices(services, configuration.Distributors);
             UsersConfigurer.ConfigureServices(services, configuration.Users);
             EnvironmentsConfigurer.ConfigureEnvironments(services, configuration.Environment);
             RemoteConfigurer.ConfigureRemote(services);

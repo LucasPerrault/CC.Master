@@ -32,8 +32,14 @@ public class DistributorDomainRestrictionMiddleware
         _next = next;
     }
 
-    public async Task Invoke(HttpContext httpContext, IDistributorDomainService service)
+    public async Task Invoke(HttpContext httpContext, IDistributorDomainService service, DistributorsConfiguration configuration)
     {
+        if (!configuration.ShouldFilterDistributorDomains)
+        {
+            await _next.Invoke(httpContext);
+            return;
+        }
+
         if (httpContext.User is not CloudControlUserClaimsPrincipal user)
         {
             await _next.Invoke(httpContext);

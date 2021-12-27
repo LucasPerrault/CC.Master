@@ -36,6 +36,7 @@ namespace CloudControl.Web.Configuration
         public EmailConfiguration Email { get; set; }
         public SlackConfiguration Slack { get; set; }
         public EnvironmentConfiguration Environment { get; set; }
+        public Distributors.Web.DistributorsConfiguration Distributors { get; set; }
 
         public UsersConfiguration Users => new UsersConfiguration
         {
