@@ -2,7 +2,6 @@
 using Distributors.Domain;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Primitives;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -60,9 +59,8 @@ public class DistributorDomainRestrictionMiddleware
         }
 
         var registered = await service.GetAllRegistered(user.User.DistributorId);
-        httpContext.Response.StatusCode = 302;
         var baseAddress = new Uri($"https://{httpContext.Request.Host.Value}");
-        httpContext.Response.Headers.Location = new StringValues(GetRedirectionLocation(baseAddress, domain, registered).ToString());
+        httpContext.Response.Redirect(GetRedirectionLocation(baseAddress, domain, registered).ToString());
     }
 
     private Uri GetRedirectionLocation(Uri baseAddress, Domain.Domain domain, List<Domain.Domain> registered)

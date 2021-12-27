@@ -2,7 +2,6 @@
 using IpFilter.Domain;
 using Lucca.Core.AspNetCore.Middlewares;
 using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Primitives;
 using System;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -33,10 +32,8 @@ namespace IpFilter.Web
                 return;
             }
 
-            httpContext.Response.StatusCode = 302;
             var baseAddress = new Uri($"https://{httpContext.Request.Host.Value}");
-
-            httpContext.Response.Headers.Location = new StringValues(GetRedirectionLocation(baseAddress).ToString());
+            httpContext.Response.Redirect(GetRedirectionLocation(baseAddress).ToString());
 
             var rejectedUser = new RejectedUser
             {
