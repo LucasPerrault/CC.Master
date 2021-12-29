@@ -2,6 +2,7 @@ import { Component, Inject, OnInit } from '@angular/core';
 import { TranslatePipe } from '@cc/aspects/translate';
 import { ICurrency, IPriceList, IPriceRow } from '@cc/domain/billing/offers';
 import { ILuModalContent, LU_MODAL_DATA } from '@lucca-front/ng/modal';
+import { isBefore, isEqual } from 'date-fns';
 import { BehaviorSubject } from 'rxjs';
 import { finalize } from 'rxjs/operators';
 
@@ -37,7 +38,15 @@ export class PriceGridModalComponent implements ILuModalContent, OnInit {
   }
 
   public getPriceList(): IPriceList {
-    return this.offer.priceLists.find(list => new Date(list.startsOn) <= new Date(this.data.contractStartOn));
+    const sortedDescLists = this.offer.priceLists.sort((a, b) =>
+      new Date(b.startsOn).getTime() - new Date(a.startsOn).getTime());
+
+    if (!this.data?.lastCountPeriod) {
+      return this.getFirstListWhichStartedBeforeOrEqualContractStartDate(sortedDescLists);
+    }
+
+
+    return this.getFirstListWhichStartedBeforeLastCountPeriod(sortedDescLists);
   }
 
   public getPriceRows(): IPriceRow[] {
@@ -46,6 +55,20 @@ export class PriceGridModalComponent implements ILuModalContent, OnInit {
 
   public getCurrency(code: CurrencyCode): ICurrency {
     return getCurrency(code);
+  }
+
+  private getFirstListWhichStartedBeforeOrEqualContractStartDate(sortedDesc: IPriceList[]): IPriceList {
+    return sortedDesc.find(list =>
+      isBefore(new Date(list.startsOn), new Date(this.data.contractStartOn))
+      || isEqual(new Date(list.startsOn), new Date(this.data.contractStartOn)),
+    );
+  }
+
+  private getFirstListWhichStartedBeforeLastCountPeriod(sortedDesc: IPriceList[]): IPriceList {
+    return sortedDesc.find(list =>
+      isBefore(new Date(list.startsOn), new Date(this.data.lastCountPeriod))
+      || isEqual(new Date(list.startsOn), new Date(this.data.lastCountPeriod)),
+    );
   }
 }
 

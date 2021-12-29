@@ -70,10 +70,13 @@
                         [luTooltipDisabled]="canEditOffer">
       </cc-offer-api-select>
       <span class="textfield-label">{{ "offer_select_label" | translate }}</span>
-      <span class="textfield-messages" *ngIf="hasRequiredError(formGroupKey.Offer)">
-      <span class="textfield-messages-error">
-        {{ "front_select_offers_errorMessage_required" | translate }}
-      </span>
+      <span class="textfield-messages">
+        <a class="textfield-messages-helper" (click)="redirectToOfferTab()">
+          {{ 'contracts_contractEdition_similar_offer_redirection' | translate }}
+        </a>
+        <span *ngIf="hasRequiredError(formGroupKey.Offer)" class="textfield-messages-error">
+          {{ "front_select_offers_errorMessage_required" | translate }}
+        </span>
     </span>
     </label>
   </div>

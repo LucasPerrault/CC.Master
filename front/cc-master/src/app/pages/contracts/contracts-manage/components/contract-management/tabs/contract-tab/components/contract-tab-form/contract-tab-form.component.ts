@@ -8,12 +8,14 @@ import {
   NG_VALUE_ACCESSOR,
   ValidationErrors,
 } from '@angular/forms';
+import { ActivatedRoute, Router } from '@angular/router';
 import { SelectDisplayMode } from '@cc/common/forms';
 import { ContractBillingMonth, IContractForm } from '@cc/domain/billing/contracts';
 import { LuModal } from '@lucca-front/ng/modal';
 import { ReplaySubject, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
+import { ContractsModalTabPath } from '../../../../constants/contracts-modal-tab-path.enum';
 import { IValidationContext } from '../../../../validation-context-store.data';
 import { IContractFormInformation } from '../../models/contract-form-information.interface';
 import { ContractActionRestrictionsService } from '../../services/contract-action-restrictions.service';
@@ -65,12 +67,13 @@ export class ContractTabFormComponent implements OnInit, OnDestroy, ControlValue
   public isFrequencyDisabled$: ReplaySubject<boolean> = new ReplaySubject<boolean>();
 
   public get offerApiFilters(): string[] {
+    const filters = [`isArchived=false`];
     const product = this.formGroup.get(ContractFormKey.Product).value;
-    if (!product) {
-      return [];
+    if (!!product) {
+      filters.push(`productId=${product.id}`);
     }
 
-    return [`productId=${product.id}`];
+    return filters;
   }
 
   public get canEditTheoreticalStartOn(): boolean {
@@ -107,7 +110,12 @@ export class ContractTabFormComponent implements OnInit, OnDestroy, ControlValue
 
   private destroy$: Subject<void> = new Subject<void>();
 
-  constructor(private formValidationService: ContractActionRestrictionsService, private luModal: LuModal) {
+  constructor(
+    private router: Router,
+    private luModal: LuModal,
+    private activatedRoute: ActivatedRoute,
+    private formValidationService: ContractActionRestrictionsService,
+  ) {
   }
 
   public ngOnInit(): void {
@@ -179,6 +187,12 @@ export class ContractTabFormComponent implements OnInit, OnDestroy, ControlValue
   public hasRequiredError(formKey: ContractFormKey): boolean {
     const ctrl = this.formGroup.get(formKey);
     return ctrl.touched && ctrl.hasError('required');
+  }
+
+  public redirectToOfferTab(): void {
+    this.router.navigate(['../', ContractsModalTabPath.Offer], {
+      relativeTo: this.activatedRoute,
+    });
   }
 
   private setBillingMonthDisabled(billingMonth: ContractBillingMonth): void {

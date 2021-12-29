@@ -27,6 +27,7 @@ import {
   EstablishmentTabComponent,
 } from './contracts-manage/components/contract-management/tabs/establishment-tab/establishment-tab.component';
 import { HistoryTabComponent } from './contracts-manage/components/contract-management/tabs/history-tab/history-tab.component';
+import { OfferTabComponent } from './contracts-manage/components/contract-management/tabs/offer-tab/offer-tab.component';
 import { ContractsManageComponent } from './contracts-manage/contracts-manage.component';
 import { ContractsManageModule } from './contracts-manage/contracts-manage.module';
 
@@ -47,6 +48,10 @@ const contractTabsRoutes: Routes = [
   {
     path: ContractsModalTabPath.Environment,
     component: EnvironmentTabComponent,
+  },
+  {
+    path: ContractsModalTabPath.Offer,
+    component: OfferTabComponent,
   },
   {
     path: ContractsModalTabPath.Counts,

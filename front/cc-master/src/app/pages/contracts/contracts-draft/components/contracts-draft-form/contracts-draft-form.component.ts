@@ -65,12 +65,13 @@ export class ContractsDraftFormComponent implements ControlValueAccessor, Valida
   }
 
   public get offerApiFilters(): string[] {
+    const filters = ['isArchived=false'];
     const product = this.formGroup.get(DraftFormKey.Product).value;
-    if (!product) {
-      return [];
+    if (!!product) {
+      filters.push(`productId=${product.id}`);
     }
 
-    return [`productId=${product.id}`];
+    return filters;
   }
 
   private destroy$: Subject<void> = new Subject<void>();
