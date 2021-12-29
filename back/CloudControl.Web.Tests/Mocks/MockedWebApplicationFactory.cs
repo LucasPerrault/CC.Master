@@ -163,5 +163,8 @@ namespace CloudControl.Web.Tests.Mocks
 
         public override void ConfigureAdvancedFilters(IServiceCollection services, AppConfiguration configuration)
         { }
+
+        public override void ConfigureSlack(IServiceCollection services, AppConfiguration configuration)
+        { }
     }
 }

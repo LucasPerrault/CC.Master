@@ -1,8 +1,8 @@
-﻿namespace TeamNotification.Web
+namespace TeamNotification.Web
 {
-    public class SlackConfiguration
+    public interface ISlackConfiguration
     {
-        public SlackHooks Hooks { get; set; }
+        public SlackHooks Hooks { get; }
     }
 
     public class SlackHooks

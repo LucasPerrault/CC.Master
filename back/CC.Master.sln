@@ -1,6 +1,6 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.29806.167
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.32014.148
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CloudControl.Web", "CloudControl.Web\CloudControl.Web.csproj", "{3CD3249B-116F-443E-A5FF-D7D8ABA0ED56}"
 EndProject
@@ -230,11 +230,19 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Billing.Contracts.Web.Tests
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Billing.Contracts.Domain.Tests", "Billing\Billing.Contracts\Billing.Contracts.Domain.Tests\Billing.Contracts.Domain.Tests.csproj", "{D683FE6D-554D-46A7-994F-8A7920EA2306}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Billing.Contracts.Infra.Tests", "Billing\Billing.Contracts\Billing.Contracts.Infra.Tests\Billing.Contracts.Infra.Tests.csproj", "{5520AB64-E9E0-4659-9564-DEBBF6EC1422}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Billing.Contracts.Infra.Tests", "Billing\Billing.Contracts\Billing.Contracts.Infra.Tests\Billing.Contracts.Infra.Tests.csproj", "{5520AB64-E9E0-4659-9564-DEBBF6EC1422}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Testing.Infra.Tests", "Core\Testing\Testing.Infra.Tests\Testing.Infra.Tests.csproj", "{869161A5-4A84-48C5-A53D-06C8879359B2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Testing.Infra.Tests", "Core\Testing\Testing.Infra.Tests\Testing.Infra.Tests.csproj", "{869161A5-4A84-48C5-A53D-06C8879359B2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Authentication.Domain.Tests", "Core\Authentication\Tests\Authentication.Domain.Tests\Authentication.Domain.Tests.csproj", "{BF32C2F4-E115-456F-A492-443C13D0E276}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Authentication.Domain.Tests", "Core\Authentication\Tests\Authentication.Domain.Tests\Authentication.Domain.Tests.csproj", "{BF32C2F4-E115-456F-A492-443C13D0E276}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Slack", "Slack", "{9F6EA151-3097-464A-9CE9-2F9EB12B30D1}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Slack.Infra", "Core\Slack\Slack.Infra\Slack.Infra.csproj", "{D9C5955F-03C2-4E5E-9D74-3AC1C18F96BD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Slack.Domain", "Core\Slack\Slack.Domain\Slack.Domain.csproj", "{CFCE7D78-7E42-490D-B05F-F51335151626}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Slack.Infra.Tests", "Core\Slack\Slack.Infra.Tests\Slack.Infra.Tests.csproj", "{191100D5-BCF6-4DA8-81F5-55579D157828}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -578,10 +586,6 @@ Global
 		{FFE9134F-B5F2-47F7-A9B6-2D1A09FC454F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FFE9134F-B5F2-47F7-A9B6-2D1A09FC454F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FFE9134F-B5F2-47F7-A9B6-2D1A09FC454F}.Release|Any CPU.Build.0 = Release|Any CPU
-		{BF32C2F4-E115-456F-A492-443C13D0E276}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{BF32C2F4-E115-456F-A492-443C13D0E276}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{BF32C2F4-E115-456F-A492-443C13D0E276}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{BF32C2F4-E115-456F-A492-443C13D0E276}.Release|Any CPU.Build.0 = Release|Any CPU
 		{EFC3927A-C12E-486A-B884-35345445CB23}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{EFC3927A-C12E-486A-B884-35345445CB23}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EFC3927A-C12E-486A-B884-35345445CB23}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -598,6 +602,22 @@ Global
 		{869161A5-4A84-48C5-A53D-06C8879359B2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{869161A5-4A84-48C5-A53D-06C8879359B2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{869161A5-4A84-48C5-A53D-06C8879359B2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BF32C2F4-E115-456F-A492-443C13D0E276}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BF32C2F4-E115-456F-A492-443C13D0E276}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BF32C2F4-E115-456F-A492-443C13D0E276}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BF32C2F4-E115-456F-A492-443C13D0E276}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D9C5955F-03C2-4E5E-9D74-3AC1C18F96BD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D9C5955F-03C2-4E5E-9D74-3AC1C18F96BD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D9C5955F-03C2-4E5E-9D74-3AC1C18F96BD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D9C5955F-03C2-4E5E-9D74-3AC1C18F96BD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CFCE7D78-7E42-490D-B05F-F51335151626}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CFCE7D78-7E42-490D-B05F-F51335151626}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CFCE7D78-7E42-490D-B05F-F51335151626}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CFCE7D78-7E42-490D-B05F-F51335151626}.Release|Any CPU.Build.0 = Release|Any CPU
+		{191100D5-BCF6-4DA8-81F5-55579D157828}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{191100D5-BCF6-4DA8-81F5-55579D157828}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{191100D5-BCF6-4DA8-81F5-55579D157828}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{191100D5-BCF6-4DA8-81F5-55579D157828}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -710,6 +730,10 @@ Global
 		{5520AB64-E9E0-4659-9564-DEBBF6EC1422} = {585C8C27-C998-4D65-B7C5-31BBC3D877DB}
 		{869161A5-4A84-48C5-A53D-06C8879359B2} = {E7BC419B-74C9-4934-9573-B8A7EE5B0B09}
 		{BF32C2F4-E115-456F-A492-443C13D0E276} = {90D93B9D-512D-4086-87A6-9D15AE8C6D9B}
+		{9F6EA151-3097-464A-9CE9-2F9EB12B30D1} = {D2E2B97F-F64D-42B1-B5E0-42EE97C53944}
+		{D9C5955F-03C2-4E5E-9D74-3AC1C18F96BD} = {9F6EA151-3097-464A-9CE9-2F9EB12B30D1}
+		{CFCE7D78-7E42-490D-B05F-F51335151626} = {9F6EA151-3097-464A-9CE9-2F9EB12B30D1}
+		{191100D5-BCF6-4DA8-81F5-55579D157828} = {9F6EA151-3097-464A-9CE9-2F9EB12B30D1}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {EBA79BF7-490F-4B8F-8162-771B77F6C73B}

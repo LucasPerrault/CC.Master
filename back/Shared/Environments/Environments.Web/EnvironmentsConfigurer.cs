@@ -12,6 +12,7 @@ namespace Environments.Web
     {
         public Uri LegacyHost { get; set; }
         public Guid LegacyToken { get; set; }
+        public EnvironmentRenamingConfiguration Renaming { get; set; }
     }
 
     public static class EnvironmentsConfigurer
@@ -29,6 +30,7 @@ namespace Environments.Web
             services.AddScoped<EnvironmentsRepository>();
             services.AddScoped<EnvironmentRightsFilter>();
 
+            services.AddSingleton(configuration.Renaming);
             services.AddScoped<IEnvironmentRenamingService, EnvironmentRenamingService>();
             services.AddScoped<IEnvironmentsRenamingStore, EnvironmentsRenamingStore>();
         }
