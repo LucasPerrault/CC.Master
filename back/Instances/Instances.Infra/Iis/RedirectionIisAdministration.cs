@@ -68,7 +68,7 @@ namespace Instances.Infra.Iis
             {
                 redirectionConf = await JsonSerializer.DeserializeAsync<RedirectionConf>(stream);
             }
-            redirectionConf.Redirection.Insert(0, new RedirectionElementConf
+            redirectionConf.Redirections.Insert(0, new RedirectionElementConf
             {
                 TargetDomain = domain,
                 SourceSubDomain = oldTenant,
@@ -83,7 +83,7 @@ namespace Instances.Infra.Iis
         private class RedirectionConf
         {
             [JsonPropertyName("redirections")]
-            public List<RedirectionElementConf> Redirection { get; set; }
+            public List<RedirectionElementConf> Redirections { get; set; }
         }
         private class RedirectionElementConf
         {
