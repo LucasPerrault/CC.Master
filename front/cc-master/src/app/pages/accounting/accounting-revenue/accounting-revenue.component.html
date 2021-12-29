@@ -4,11 +4,12 @@
   </header>
 
   <section class="grid u-marginSmall">
-    <cc-accounting-period-card class="mod-accountingRevenueCard grid-l6"
-                               [accountingPeriod]="currentPeriod$ | async"
+		
+    <cc-accounting-period-card *ngFor="let currentPeriod of currentPeriod$ | async" class="mod-accountingRevenueCard grid-l6"
+                               [accountingPeriod]="currentPeriod"
                                [isLoading]="isCurrentPeriodLoading$ | async"
                                [closeButtonState]="closePeriodButtonState$ | async"
-                               (closeCurrentPeriod)="closeCurrentPeriod($event)">
+                               (closeCurrentPeriod)="closeCurrentPeriod($event, currentPeriod.entity)">
     </cc-accounting-period-card>
 
     <cc-accounting-sync-revenue-card class="mod-accountingRevenueCard grid-l6"

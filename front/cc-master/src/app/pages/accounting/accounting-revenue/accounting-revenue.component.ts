@@ -4,8 +4,9 @@ import { ReplaySubject, Subject } from 'rxjs';
 import { finalize, map, take } from 'rxjs/operators';
 
 import { ISyncRevenueInfo } from './models/sync-revenue-info.interface';
-import { AccountingPeriodService } from './services/accounting-period.service';
+import { AccountingPeriodService, CurrentAccountingPeriod } from './services/accounting-period.service';
 import { SyncRevenueService } from './services/sync-revenue.service';
+import { BillingEntity } from '@cc/domain/billing/billing-entity';
 
 @Component({
   selector: 'cc-accounting-revenue',
@@ -18,7 +19,7 @@ export class AccountingRevenueComponent implements OnInit {
   public isSyncRevenueLoading$: ReplaySubject<boolean> = new ReplaySubject<boolean>(1);
   public syncButtonState$: Subject<string> = new Subject<string>();
 
-  public currentPeriod$: ReplaySubject<Date> = new ReplaySubject<Date>(1);
+  public currentPeriod$: ReplaySubject<CurrentAccountingPeriod[]> = new ReplaySubject<CurrentAccountingPeriod[]>(1);
   public isCurrentPeriodLoading$: ReplaySubject<boolean> = new ReplaySubject<boolean>(1);
   public closePeriodButtonState$: Subject<string> = new Subject<string>();
 
@@ -43,8 +44,8 @@ export class AccountingRevenueComponent implements OnInit {
       .subscribe(buttonState => this.syncButtonState$.next(buttonState));
   }
 
-  public closeCurrentPeriod(currentPeriod: Date): void {
-    this.accountingPeriodService.closePeriod$(currentPeriod)
+  public closeCurrentPeriod(currentPeriod: Date, entity: BillingEntity): void {
+    this.accountingPeriodService.closePeriod$(currentPeriod, entity)
       .pipe(
         take(1),
         toSubmissionState(),
@@ -56,7 +57,7 @@ export class AccountingRevenueComponent implements OnInit {
 
   private refreshAccountingPeriod(): void {
     this.isCurrentPeriodLoading$.next(true);
-    this.accountingPeriodService.getCurrentAccountingPeriod$()
+    this.accountingPeriodService.getCurrentAccountingPeriods$()
       .pipe(take(1), finalize(() => this.isCurrentPeriodLoading$.next(false)))
       .subscribe(period => this.currentPeriod$.next(period));
   }
