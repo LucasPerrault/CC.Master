@@ -30,9 +30,6 @@ namespace Environments.Infra.Storage.Stores
             _environmentsRemoteStore = environmentsRemoteStore;
         }
 
-        public Task<List<Environment>> GetAsync(EnvironmentFilter filter)
-            => GetAsync(null, filter);
-
         public Task<List<Environment>> GetAsync(List<EnvironmentAccessRight> rights, EnvironmentFilter filter)
         {
             return GetQueryable(rights, filter).ToListAsync();
@@ -78,10 +75,6 @@ namespace Environments.Infra.Storage.Stores
             List<EnvironmentAccessRight> accessRights
         )
         {
-            if (accessRights == null)
-            {
-                return environments;
-            }
             if (!accessRights.Any())
             {
                 return environments.Where(_ => false);

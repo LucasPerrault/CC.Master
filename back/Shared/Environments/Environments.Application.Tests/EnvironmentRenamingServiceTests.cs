@@ -47,7 +47,7 @@ namespace Environments.Application.Tests
             var environmentId = 2;
             var environment = new Environment { Id = environmentId };
             _environmentStoreMock
-                .Setup(e => e.GetAsync(It.IsAny<EnvironmentFilter>()))
+                .Setup(e => e.GetAsync(It.IsAny<List<EnvironmentAccessRight>>(), It.IsAny<EnvironmentFilter>()))
                 .ReturnsAsync(new List<Environment> { environment });
             _environmentStoreMock
                 .Setup(e => e.UpdateSubDomainAsync(It.IsAny<Environment>(), It.IsAny<string>()))
@@ -66,7 +66,7 @@ namespace Environments.Application.Tests
 
             var status = await _environmentRenamingService.RenameAsync(2, "newName");
 
-            _environmentStoreMock.Verify(e => e.GetAsync(It.Is<EnvironmentFilter>(f => f.Ids.Contains(2))));
+            _environmentStoreMock.Verify(e => e.GetAsync(EnvironmentAccessRight.Everything, It.Is<EnvironmentFilter>(f => f.Ids.Contains(2))));
             _environmentStoreMock.Verify(e => e.UpdateSubDomainAsync(environment, "newName"));
             _environmentRenamingExtensionMock.Verify(e => e.RenameAsync(environment, "newName"));
             status.Status.Should().Be(EnvironmentRenamingStatus.SUCCESS);
@@ -82,7 +82,7 @@ namespace Environments.Application.Tests
             var environmentId = 2;
             var environment = new Environment { Id = environmentId };
             _environmentStoreMock
-                .Setup(e => e.GetAsync(It.IsAny<EnvironmentFilter>()))
+                .Setup(e => e.GetAsync(It.IsAny<List<EnvironmentAccessRight>>(), It.IsAny<EnvironmentFilter>()))
                 .ReturnsAsync(new List<Environment> { environment });
             _environmentStoreMock
                 .Setup(e => e.UpdateSubDomainAsync(It.IsAny<Environment>(), It.IsAny<string>()))
@@ -101,7 +101,7 @@ namespace Environments.Application.Tests
 
             var status = await _environmentRenamingService.RenameAsync(2, "newName");
 
-            _environmentStoreMock.Verify(e => e.GetAsync(It.Is<EnvironmentFilter>(f => f.Ids.Contains(2))));
+            _environmentStoreMock.Verify(e => e.GetAsync(EnvironmentAccessRight.Everything, It.Is<EnvironmentFilter>(f => f.Ids.Contains(2))));
             _environmentStoreMock.Verify(e => e.UpdateSubDomainAsync(environment, "newName"));
             _environmentRenamingExtensionMock.Verify(e => e.RenameAsync(environment, "newName"));
             status.Status.Should().Be(EnvironmentRenamingStatus.ERROR);
@@ -117,7 +117,7 @@ namespace Environments.Application.Tests
             var environmentId = 2;
             var environment = new Environment { Id = environmentId };
             _environmentStoreMock
-                .Setup(e => e.GetAsync(It.IsAny<EnvironmentFilter>()))
+                .Setup(e => e.GetAsync(It.IsAny<List<EnvironmentAccessRight>>(), It.IsAny<EnvironmentFilter>()))
                 .ReturnsAsync(new List<Environment>());
 
             Func<Task> act = () => _environmentRenamingService.RenameAsync(2, "newName");

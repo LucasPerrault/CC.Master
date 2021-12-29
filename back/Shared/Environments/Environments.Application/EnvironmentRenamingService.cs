@@ -34,7 +34,7 @@ namespace Environments.Application
 
         public async Task<EnvironmentRenamingStatusDetail> RenameAsync(int environmentId, string newName)
         {
-            var environement = (await _environmentStore.GetAsync(new EnvironmentFilter
+            var environement = (await _environmentStore.GetAsync(EnvironmentAccessRight.Everything, new EnvironmentFilter
             {
                 IsActive = Tools.CompareBoolean.TrueOnly,
                 Ids = new HashSet<int> { environmentId }
