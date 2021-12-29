@@ -28,12 +28,14 @@ namespace Instances.Domain.Instances
             Cluster = cluster,
             Zone = DnsEntryZone.Demos
         };
+
         public static DnsEntry ForPreview(string subdomain, string cluster) => new DnsEntry
         {
             Subdomain = subdomain,
             Cluster = cluster,
             Zone = DnsEntryZone.Previews
         };
+
         public static DnsEntry ForProduction(string subdomain, string cluster, EnvironmentDomain domain) => new DnsEntry
         {
             Subdomain = subdomain,
