@@ -11,7 +11,8 @@ namespace Instances.Domain.Instances
         Demos = 1,
         RbxProductions = 2,
         ChProductions = 3,
-        Previews = 4
+        Previews = 4,
+        Trainings = 5
     }
 
     public class DnsEntry
@@ -47,6 +48,14 @@ namespace Instances.Domain.Instances
                 _ => throw new NotSupportedException($"Renaming of domain {domain} is not supported")
             }
         };
+
+        public static DnsEntry ForTraining(string subdomain, string cluster) => new DnsEntry
+        {
+            Subdomain = subdomain,
+            Cluster = cluster,
+            Zone = DnsEntryZone.Trainings
+        };
+
     }
 
     public interface IDnsService

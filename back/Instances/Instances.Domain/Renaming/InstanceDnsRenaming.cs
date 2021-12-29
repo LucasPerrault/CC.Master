@@ -18,6 +18,7 @@ namespace Instances.Domain.Renaming
         public async Task RenameAsync(Environments.Domain.Environment environment, string newName)
         {
             await _dnsService.CreateAsync(DnsEntry.ForProduction(newName, environment.Cluster, environment.Domain));
+            await _dnsService.CreateAsync(DnsEntry.ForTraining(newName, environment.Cluster));
             await _dnsService.CreateAsync(DnsEntry.ForPreview(newName, environment.Cluster));
             await _dnsService.CreateAsync(DnsEntry.ForPreview($"static-{newName}", environment.Cluster));
         }

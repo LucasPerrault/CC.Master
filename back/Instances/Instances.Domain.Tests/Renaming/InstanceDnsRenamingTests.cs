@@ -34,9 +34,12 @@ namespace Instances.Domain.Tests.Renaming
                 Domain = Environments.Domain.EnvironmentDomain.ILuccaDotNet
             }, newName);
 
-            _dnsServiceMock.Verify(dns => dns.CreateAsync(It.IsAny<DnsEntry>()), Times.Exactly(3));
+            _dnsServiceMock.Verify(dns => dns.CreateAsync(It.IsAny<DnsEntry>()), Times.Exactly(4));
             _dnsServiceMock.Verify(dns => dns.CreateAsync(It.Is<DnsEntry>(dns =>
                 dns.Cluster == cluster && dns.Subdomain == newName && dns.Zone == DnsEntryZone.RbxProductions
+            )));
+            _dnsServiceMock.Verify(dns => dns.CreateAsync(It.Is<DnsEntry>(dns =>
+                dns.Cluster == cluster && dns.Subdomain == newName && dns.Zone == DnsEntryZone.Trainings
             )));
             _dnsServiceMock.Verify(dns => dns.CreateAsync(It.Is<DnsEntry>(dns =>
                 dns.Cluster == cluster && dns.Subdomain == newName && dns.Zone == DnsEntryZone.Previews
