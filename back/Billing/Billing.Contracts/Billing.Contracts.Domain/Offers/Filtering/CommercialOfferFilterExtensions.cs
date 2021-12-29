@@ -13,17 +13,20 @@ namespace Billing.Contracts.Domain.Offers.Filtering
                 return false;
             }
 
-            var priceListsUntil = target.PriceLists
+            var referencePriceListsUntil = reference.PriceLists
                 .Where(pl => pl.StartsOn < until)
                 .ToList();
-            if (priceListsUntil.Count < reference.PriceLists.Count)
+            var targetPriceListsUntil = target.PriceLists
+                .Where(pl => pl.StartsOn < until)
+                .ToList();
+            if (targetPriceListsUntil.Count != referencePriceListsUntil.Count)
             {
                 return false;
             }
 
-            var referencePriceListsByStartsOn = reference.PriceLists.ToDictionary(pl => pl.StartsOn, pl => pl);
+            var referencePriceListsByStartsOn = referencePriceListsUntil.ToDictionary(pl => pl.StartsOn, pl => pl);
 
-            return priceListsUntil.All(pl =>
+            return targetPriceListsUntil.All(pl =>
                 referencePriceListsByStartsOn.TryGetValue(pl.StartsOn, out var referencePriceList)
                 && pl.IsIdenticalTo(referencePriceList)
             );
