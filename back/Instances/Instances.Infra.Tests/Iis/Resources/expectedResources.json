@@ -1,0 +1,16 @@
+{
+  "redirections": [
+    {
+      "domainCible": "ilucca.net",
+      "dateFin": "24/12/2021",
+      "subdomainCible": "new-tenant",
+      "subdomainSource": "old-tenant"
+    },
+    {
+      "domainCible": "ilucca.net",
+      "dateFin": "02/10/2020",
+      "subdomainCible": "blabla",
+      "subdomainSource": "car"
+    }
+  ]
+}

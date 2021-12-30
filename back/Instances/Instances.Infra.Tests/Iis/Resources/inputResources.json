@@ -1,0 +1,10 @@
+{
+  "redirections": [
+    {
+      "domainCible": "ilucca.net",
+      "dateFin": "02/10/2020",
+      "subdomainCible": "blabla",
+      "subdomainSource": "car"
+    }
+  ]
+}

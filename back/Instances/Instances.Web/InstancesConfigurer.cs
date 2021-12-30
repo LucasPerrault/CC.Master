@@ -22,6 +22,7 @@ using Instances.Infra.DataDuplication;
 using Instances.Infra.Demos;
 using Instances.Infra.Dns;
 using Instances.Infra.Github;
+using Instances.Infra.Iis;
 using Instances.Infra.Instances;
 using Instances.Infra.Instances.Services;
 using Instances.Infra.Shared;
@@ -62,6 +63,7 @@ namespace Instances.Web
             public ClusterSelectorConfiguration DemoClusterSelection { get; set; }
             public GithubConfiguration Github { get; set; }
             public DnsConfiguration Dns { get; set; }
+            public RedirectionIisConfiguration RedirectionIis { get; set; }
         }
 
         public static void ConfigureServices(IServiceCollection services, InstancesConfiguration configuration)
@@ -208,6 +210,9 @@ namespace Instances.Web
             services.AddScoped<IHarborWebhookService, HarborWebhookService>();
 
             services.AddScoped<IEnvironmentRenamingExtension, InstanceDnsRenaming>();
+            services.AddScoped<IEnvironmentRenamingExtension, RedirectionRenaming>();
+            services.AddSingleton(configuration.RedirectionIis);
+            services.AddSingleton<IRedirectionIisAdministration, RedirectionIisAdministration>();
         }
 
         public static LuccaApiBuilder ConfigureLuccaApiForInstances(this LuccaApiBuilder luccaApiBuilder)

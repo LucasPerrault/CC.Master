@@ -133,6 +133,10 @@
                 "Previews": "ilucca-preview.net",
                 "Trainings": "ilucca-test.net"
             }
+        },
+        "RedirectionIis": {
+            "ApplicationHost": "\\\\\\\\labs2.lucca.local\\\\c$\\Windows\\System32\\inetsrv\\config\\applicationHost.config",
+            "RedirectionConf": "\\\\labs2.lucca.local\\c$\\d\\Sites\\redirect\\redirect.config"
         }
     },
     "Environment": {
