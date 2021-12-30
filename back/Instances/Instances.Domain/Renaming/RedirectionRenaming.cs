@@ -18,6 +18,7 @@ namespace Instances.Domain.Renaming
         }
 
         public string ExtensionName => "Old domain redirection";
+        public bool ShouldExecute(IEnvironmentRenamingExtensionParameters parameters) => parameters.HasRedirection;
 
         public async Task RenameAsync(Environments.Domain.Environment environment, string newName)
         {
