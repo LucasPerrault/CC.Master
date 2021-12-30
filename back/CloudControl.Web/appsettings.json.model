@@ -65,7 +65,8 @@
         "Hooks": {
             "CloudControlTeam": "{{ CC.Master:SlackHookCcNotifications }}",
             "DemosMaintainers": "{{ CC.Master:SlackHookCcNotifications }}"
-        }
+        },
+        "Token":  "{{ CC.Master:SlackToken }}"
     },
     "Instances": {
         "InstancesStore": {
@@ -141,7 +142,10 @@
     },
     "Environment": {
         "LegacyHost": "http://{{ CC.Master:LegacyCloudControlHost }}",
-        "LegacyToken": "{{ CC.Master:LegacyCommunicationToken }}"
+        "LegacyToken": "{{ CC.Master:LegacyCommunicationToken }}",
+        "Renaming": {
+            "SlackChannel": "#plateforme-infos"
+        }
     },
     "AdvancedFilters": {
         "MaxParallelHttpCalls": 40,

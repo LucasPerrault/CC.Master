@@ -40,6 +40,7 @@ using Proxy.Web;
 using Remote.Infra;
 using Rights.Web;
 using Salesforce.Web;
+using Slack.Infra;
 using Storage.Infra.Context;
 using Storage.Web;
 using System;
@@ -89,6 +90,7 @@ namespace CloudControl.Web
             ConfigureInstances(services, configuration);
             ConfigureEmails(services, configuration);
             ConfigureAdvancedFilters(services, configuration);
+            ConfigureSlack(services, configuration);
         }
         private void ConfigureCulture(IServiceCollection services)
         {
@@ -273,6 +275,11 @@ namespace CloudControl.Web
         public virtual void ConfigureSalesforce(IServiceCollection services, AppConfiguration configuration)
         {
             SalesforceConfigurer.ConfigureServices(services, configuration.Salesforce);
+        }
+
+        public virtual void ConfigureSlack(IServiceCollection services, AppConfiguration configuration)
+        {
+            services.AddSlack(configuration.Slack);
         }
     }
 }

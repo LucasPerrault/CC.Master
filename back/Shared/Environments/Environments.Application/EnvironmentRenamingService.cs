@@ -4,6 +4,7 @@ using Environments.Domain.ExtensionInterface;
 using Environments.Domain.Storage;
 using Lucca.Core.Shared.Domain.Exceptions;
 using Microsoft.Extensions.Logging;
+using Slack.Domain;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,6 +13,7 @@ using System.Threading.Tasks;
 
 namespace Environments.Application
 {
+
     public class EnvironmentRenamingService : IEnvironmentRenamingService
     {
         private readonly IEnvironmentsStore _environmentStore;
@@ -19,16 +21,21 @@ namespace Environments.Application
         private readonly IEnumerable<IEnvironmentRenamingExtension> _environmentRenamingExtensions;
         private readonly ClaimsPrincipal _claimsPrincipal;
         private readonly ILogger<EnvironmentRenamingService> _logger;
+        private readonly string _slackChannel;
+        private readonly ISlackClient _slackClient;
 
         public EnvironmentRenamingService(
             IEnvironmentsStore environmentStore, IEnvironmentsRenamingStore environmentRenamingStore,
             IEnumerable<IEnvironmentRenamingExtension> environmentRenamingExtensions, ClaimsPrincipal claimsPrincipal,
+            ISlackClient slackClient, EnvironmentRenamingConfiguration environmentRenamingConfiguration,
             ILogger<EnvironmentRenamingService> logger)
         {
             _environmentStore = environmentStore;
             _environmentRenamingStore = environmentRenamingStore;
             _environmentRenamingExtensions = environmentRenamingExtensions;
             _claimsPrincipal = claimsPrincipal;
+            _slackClient = slackClient;
+            _slackChannel = environmentRenamingConfiguration.SlackChannel;
             _logger = logger;
         }
 
@@ -44,7 +51,17 @@ namespace Environments.Application
                 throw new DomainException(DomainExceptionCode.BadRequest, $"Environment {environmentId} is not found");
             }
 
-            await _environmentStore.UpdateSubDomainAsync(environement, newName);
+            var slackRenamingText = $"Renaming of {environement.Subdomain} to {newName} by {_claimsPrincipal?.Identity?.Name ?? "unknown"}";
+            var slackMessage = await _slackClient.SendMessageAsync(_slackChannel, $":fidget_spinner: {slackRenamingText}");
+            try
+            {
+                await _environmentStore.UpdateSubDomainAsync(environement, newName);
+            }
+            catch
+            {
+                await slackMessage.EditMessageAsync(SlackMessageType.ERROR, slackRenamingText);
+                throw;
+            }
 
             var exceptionMessages = new List<string>();
             foreach (var environmentRenamingExtension in _environmentRenamingExtensions)
@@ -53,9 +70,11 @@ namespace Environments.Application
                 {
                     _logger.LogDebug("Execution of renamingExtension {extensionName}", environmentRenamingExtension.ExtensionName);
                     await environmentRenamingExtension.RenameAsync(environement, newName);
+                    await slackMessage.SendThreadMessageAsync(SlackMessageType.OK, $"{environmentRenamingExtension.ExtensionName}: OK");
                 }
                 catch (Exception ex)
                 {
+                    await slackMessage.SendThreadMessageAsync(SlackMessageType.ERROR, $"{environmentRenamingExtension.ExtensionName}: Error");
                     _logger.LogError(ex, "Error during execution of renaming extension {extensionName}", environmentRenamingExtension.ExtensionName);
                     exceptionMessages.Add(ex.Message);
                 }
@@ -74,6 +93,12 @@ namespace Environments.Application
                 ErrorMessage = string.Join(" -- ", status.ErrorMessages)
             };
             await _environmentRenamingStore.CreateAsync(environmentRenaming);
+
+            await slackMessage.EditMessageAsync(
+                status.Status == EnvironmentRenamingStatus.SUCCESS ? SlackMessageType.OK : SlackMessageType.WARNING,
+                slackRenamingText
+            );
+
             return status;
         }
     }

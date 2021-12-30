@@ -6,6 +6,7 @@ using FluentAssertions;
 using Lucca.Core.Shared.Domain.Exceptions;
 using Microsoft.Extensions.Logging;
 using Moq;
+using Slack.Domain;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -19,6 +20,7 @@ namespace Environments.Application.Tests
         private readonly Mock<IEnvironmentsStore> _environmentStoreMock;
         private readonly Mock<IEnvironmentsRenamingStore> _environmentRenamingStoreMock;
         private readonly Mock<IEnvironmentRenamingExtension> _environmentRenamingExtensionMock;
+        private readonly Mock<ISlackClient> _slackClientMock;
         private readonly EnvironmentRenamingService _environmentRenamingService;
 
         public EnvironmentRenamingServiceTests()
@@ -27,6 +29,10 @@ namespace Environments.Application.Tests
             _environmentRenamingStoreMock = new Mock<IEnvironmentsRenamingStore>(MockBehavior.Strict);
             _environmentRenamingExtensionMock = new Mock<IEnvironmentRenamingExtension>(MockBehavior.Strict);
             _environmentRenamingExtensionMock.Setup(s => s.ExtensionName).Returns("extensionName");
+            _slackClientMock = new Mock<ISlackClient>(MockBehavior.Strict);
+            _slackClientMock
+                .Setup(c => c.SendMessageAsync(It.IsAny<string>(), It.IsAny<SlackMessage>()))
+                .ReturnsAsync(new Mock<ISlackMessageLifeManager>().Object);
             _environmentRenamingService = new EnvironmentRenamingService(
                 _environmentStoreMock.Object,
                 _environmentRenamingStoreMock.Object,
@@ -36,6 +42,8 @@ namespace Environments.Application.Tests
                     UserId = 42,
                     User = new Users.Domain.User()
                 }),
+                _slackClientMock.Object,
+                new EnvironmentRenamingConfiguration { SlackChannel = "channel" },
                 new Mock<ILogger<EnvironmentRenamingService>>().Object
             );
         }

@@ -36,6 +36,7 @@
       <ProjectReference Include="..\Core\Rights\Rights.Web\Rights.Web.csproj" />
       <ProjectReference Include="..\Core\Salesforce\Salesforce.Infra\Salesforce.Infra.csproj" />
       <ProjectReference Include="..\Core\Salesforce\Salesforce.Web\Salesforce.Web.csproj" />
+      <ProjectReference Include="..\Core\Slack\Slack.Infra\Slack.Infra.csproj" />
       <ProjectReference Include="..\Core\Storage\Storage.Web\Storage.Web.csproj" />
       <ProjectReference Include="..\Core\TeamNotification\TeamNotification.Web\TeamNotification.Web.csproj" />
       <ProjectReference Include="..\Core\Users\Users.Web\Users.Web.csproj" />

@@ -13,6 +13,13 @@ using AuthenticationConfiguration = Authentication.Infra.Configurations.Authenti
 
 namespace CloudControl.Web.Configuration
 {
+    public class SlackConfiguration : ISlackConfiguration, Slack.Infra.ISlackConfiguration
+    {
+        public string Token { get; init; }
+
+        public SlackHooks Hooks { get; init; }
+    }
+
     public class AppConfiguration
     {
         public const string LuccaLoggerOptionsKey = "LuccaLoggerOptions";
