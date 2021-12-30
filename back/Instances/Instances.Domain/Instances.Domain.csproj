@@ -15,6 +15,7 @@
     <ProjectReference Include="..\..\Core\Rights\Rights.Domain\Rights.Domain.csproj" />
     <ProjectReference Include="..\..\Core\Tools\Tools\Tools.csproj" />
     <ProjectReference Include="..\..\Shared\Distributors\Distributors.Domain\Distributors.Domain.csproj" />
+    <ProjectReference Include="..\..\Shared\Environments\Environments.Domain\Environments.Domain.csproj" />
   </ItemGroup>
 
 </Project>

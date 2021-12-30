@@ -127,7 +127,11 @@
                 "ConsumerKey": "{{ CC.Master:OvhDnsConsumerKey }}"
             },
             "Zones": {
-                "Demos": "ilucca-demo.net"
+                "Demos": "ilucca-demo.net",
+                "RbxProductions": "ilucca.net",
+                "ChProductions": "ilucca.ch",
+                "Previews": "ilucca-preview.net",
+                "Trainings": "ilucca-test.net"
             }
         }
     },

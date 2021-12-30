@@ -15,6 +15,10 @@ namespace Instances.Infra.Dns
     public class DnsZonesConfiguration
     {
         public string Demos { get; set; }
+        public string RbxProductions { get; set; }
+        public string ChProductions { get; set; }
+        public string Previews { get; set; }
+        public string Trainings { get; set; }
     }
 
 
@@ -79,6 +83,10 @@ namespace Instances.Infra.Dns
             return entry.Zone switch
             {
                 DnsEntryZone.Demos => _dnsZones.Demos,
+                DnsEntryZone.RbxProductions => _dnsZones.RbxProductions,
+                DnsEntryZone.ChProductions => _dnsZones.ChProductions,
+                DnsEntryZone.Previews => _dnsZones.Previews,
+                DnsEntryZone.Trainings => _dnsZones.Trainings,
                 _ => throw new InvalidEnumArgumentException(nameof(entry.Zone), (int)entry.Zone, typeof(DnsEntryZone))
             };
         }
