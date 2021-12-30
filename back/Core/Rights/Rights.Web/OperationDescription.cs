@@ -1,4 +1,4 @@
-﻿using Lucca.Core.Rights.Abstractions;
+using Lucca.Core.Rights.Abstractions;
 using Rights.Domain;
 using System.Collections.Generic;
 
@@ -248,6 +248,11 @@ namespace Rights.Web
                 {
                     Id = (int)Operation.EditEnvironmentGroup,
                     Name = "Modifier le groupe d'environnement",
+                },
+                new OperationDescription
+                {
+                    Id = (int)Operation.RenameEnvironment,
+                    Name = "Renommage d'environnement",
                 },
                 new OperationDescription
                 {

@@ -219,7 +219,7 @@ namespace CloudControl.Web
         {
             DistributorsConfigurer.ConfigureServices(services);
             UsersConfigurer.ConfigureServices(services, configuration.Users);
-            EnvironmentsConfigurer.ConfigureEnvironments(services);
+            EnvironmentsConfigurer.ConfigureEnvironments(services, configuration.Environment);
             RemoteConfigurer.ConfigureRemote(services);
         }
 

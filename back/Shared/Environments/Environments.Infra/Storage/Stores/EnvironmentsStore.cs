@@ -14,15 +14,20 @@ using Environment = Environments.Domain.Environment;
 
 namespace Environments.Infra.Storage.Stores
 {
+
     public class EnvironmentsStore : IEnvironmentsStore
     {
         private readonly EnvironmentsDbContext _dbContext;
         private readonly IQueryPager _queryPager;
+        private readonly IEnvironmentsRemoteStore _environmentsRemoteStore;
 
-        public EnvironmentsStore(EnvironmentsDbContext dbContext, IQueryPager queryPager)
+        public EnvironmentsStore(
+            EnvironmentsDbContext dbContext, IQueryPager queryPager,
+            IEnvironmentsRemoteStore environmentsRemoteStore)
         {
             _dbContext = dbContext;
             _queryPager = queryPager;
+            _environmentsRemoteStore = environmentsRemoteStore;
         }
 
         public Task<List<Environment>> GetAsync(List<EnvironmentAccessRight> rights, EnvironmentFilter filter)
@@ -34,6 +39,9 @@ namespace Environments.Infra.Storage.Stores
         {
             return _queryPager.ToPageAsync(GetQueryable(rights, filter), page);
         }
+
+        public Task UpdateSubDomainAsync(Environment environement, string newName)
+            => _environmentsRemoteStore.UpdateSubDomainAsync(environement, newName);   
 
         private IQueryable<Environment> GetQueryable(List<EnvironmentAccessRight> rights, EnvironmentFilter filter)
         {
@@ -69,7 +77,7 @@ namespace Environments.Infra.Storage.Stores
         {
             if (!accessRights.Any())
             {
-                return new List<Environment>().AsQueryable();
+                return environments.Where(_ => false);
             }
 
             var expressions = accessRights

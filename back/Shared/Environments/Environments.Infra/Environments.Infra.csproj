@@ -15,6 +15,7 @@
     <ItemGroup>
       <ProjectReference Include="..\..\..\Core\Storage\Storage.Infra\Storage.Infra.csproj" />
       <ProjectReference Include="..\..\Distributors\Distributors.Infra\Distributors.Infra.csproj" />
+      <ProjectReference Include="..\..\Remote\Remote.Infra\Remote.Infra.csproj" />
       <ProjectReference Include="..\Environments.Domain\Environments.Domain.csproj" />
     </ItemGroup>
 

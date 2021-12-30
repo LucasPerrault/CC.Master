@@ -8,5 +8,6 @@ namespace Environments.Domain.Storage
     {
         Task<List<Environment>> GetAsync(List<EnvironmentAccessRight> rights, EnvironmentFilter filter);
         Task<Page<Environment>> GetAsync(IPageToken page, List<EnvironmentAccessRight> rights, EnvironmentFilter filter);
+        Task UpdateSubDomainAsync(Environment environement, string newName);
     }
 }

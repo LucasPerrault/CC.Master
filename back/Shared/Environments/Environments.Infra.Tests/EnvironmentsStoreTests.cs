@@ -10,16 +10,19 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Testing.Infra;
 using Xunit;
+using Environment = Environments.Domain.Environment;
 
 namespace Environments.Infra.Tests
 {
-    public class EnvironmentStoreTests
+    public class EnvironmentsStoreTests
     {
         private readonly Mock<IQueryPager> _queryPager;
+        private readonly Mock<IEnvironmentsRemoteStore> _mockEnvironmentsRemoteStore;
 
-        public EnvironmentStoreTests()
+        public EnvironmentsStoreTests()
         {
-            _queryPager = new Mock<IQueryPager>();
+            _queryPager = new Mock<IQueryPager>(MockBehavior.Strict);
+            _mockEnvironmentsRemoteStore = new Mock<IEnvironmentsRemoteStore>(MockBehavior.Strict);
         }
 
         [Fact]
@@ -36,7 +39,7 @@ namespace Environments.Infra.Tests
             );
             await dbContext.SaveChangesAsync();
 
-            var store = new EnvironmentsStore(dbContext, _queryPager.Object);
+            var store = new EnvironmentsStore(dbContext, _queryPager.Object, _mockEnvironmentsRemoteStore.Object);
             var envs = await store.GetAsync(EnvironmentAccessRight.Everything, new EnvironmentFilter());
             Assert.Single(envs);
         }
@@ -54,7 +57,7 @@ namespace Environments.Infra.Tests
             );
             await dbContext.SaveChangesAsync();
 
-            var store = new EnvironmentsStore(dbContext, _queryPager.Object);
+            var store = new EnvironmentsStore(dbContext, _queryPager.Object, _mockEnvironmentsRemoteStore.Object);
             var envs = await store.GetAsync(new List<EnvironmentAccessRight>
             {
                 new EnvironmentAccessRight
@@ -79,7 +82,7 @@ namespace Environments.Infra.Tests
             );
             await dbContext.SaveChangesAsync();
 
-            var store = new EnvironmentsStore(dbContext, _queryPager.Object);
+            var store = new EnvironmentsStore(dbContext, _queryPager.Object, _mockEnvironmentsRemoteStore.Object);
             var envs = await store.GetAsync(new List<EnvironmentAccessRight>
             {
                 new EnvironmentAccessRight
@@ -108,7 +111,7 @@ namespace Environments.Infra.Tests
             );
             await dbContext.SaveChangesAsync();
 
-            var store = new EnvironmentsStore(dbContext, _queryPager.Object);
+            var store = new EnvironmentsStore(dbContext, _queryPager.Object, _mockEnvironmentsRemoteStore.Object);
             var envs = await store.GetAsync(new List<EnvironmentAccessRight>
             {
                 new EnvironmentAccessRight
@@ -136,7 +139,7 @@ namespace Environments.Infra.Tests
             );
             await dbContext.SaveChangesAsync();
 
-            var store = new EnvironmentsStore(dbContext, _queryPager.Object);
+            var store = new EnvironmentsStore(dbContext, _queryPager.Object, _mockEnvironmentsRemoteStore.Object);
             var envs = await store.GetAsync(new List<EnvironmentAccessRight>
             {
                 new EnvironmentAccessRight
@@ -166,7 +169,7 @@ namespace Environments.Infra.Tests
             );
             await dbContext.SaveChangesAsync();
 
-            var store = new EnvironmentsStore(dbContext, _queryPager.Object);
+            var store = new EnvironmentsStore(dbContext, _queryPager.Object, _mockEnvironmentsRemoteStore.Object);
             var envs = await store.GetAsync(new List<EnvironmentAccessRight>
             {
                 new EnvironmentAccessRight
@@ -195,7 +198,7 @@ namespace Environments.Infra.Tests
             );
             await dbContext.SaveChangesAsync();
 
-            var store = new EnvironmentsStore(dbContext, _queryPager.Object);
+            var store = new EnvironmentsStore(dbContext, _queryPager.Object, _mockEnvironmentsRemoteStore.Object);
 
             var envs = await store.GetAsync(new List<EnvironmentAccessRight>
             {

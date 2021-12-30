@@ -1,4 +1,4 @@
-﻿using Distributors.Infra.Storage.Configurations;
+using Distributors.Infra.Storage.Configurations;
 using Environments.Infra.Storage.Configurations;
 using Microsoft.EntityFrameworkCore;
 using Storage.Infra.Context;
@@ -18,6 +18,7 @@ namespace Environments.Infra.Storage
             modelBuilder.ApplyConfiguration(new DistributorsConfiguration());
             modelBuilder.ApplyConfiguration(new EnvironmentAccessesConfiguration());
             modelBuilder.ApplyConfiguration(new EnvironmentSharedAccessesConfiguration());
+            modelBuilder.ApplyConfiguration(new EnvironmentRenamingConfiguration());
         }
 
         public class EnvironmentsMigrationDefinition : CloudControlDbContextMigrationDefinition<EnvironmentsDbContext>
