@@ -23,7 +23,7 @@ namespace Environments.Web.Controllers
         [ForbidIfMissing(Operation.RenameEnvironment)]
         public async Task<EnvironmentRenamingStatusDetail> RenameEnvironmentAsync([FromBody] EnvironmentRenamingDto environmentRenaming)
         {
-            return await _environmentRenamingService.RenameAsync(environmentRenaming.EnvironmentId, environmentRenaming.NewName);
+            return await _environmentRenamingService.RenameAsync(environmentRenaming.EnvironmentId, environmentRenaming.NewName, environmentRenaming);
         }
     }
 }

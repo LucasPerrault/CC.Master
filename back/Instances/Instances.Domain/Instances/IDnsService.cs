@@ -56,10 +56,18 @@ namespace Instances.Domain.Instances
             Zone = DnsEntryZone.Trainings
         };
 
+        public static DnsEntry ForRedirection(string subdomain) => new DnsEntry
+        {
+            Subdomain = subdomain,
+            Cluster = IDnsService.RedirectionCluster,
+            Zone = DnsEntryZone.RbxProductions
+        };
     }
 
     public interface IDnsService
     {
+        public const string RedirectionCluster = "Redirection";
+
         Task CreateAsync(DnsEntry entry);
         Task DeleteAsync(IEnumerable<DnsEntry> entries);
         Task DeleteAsync(DnsEntry entry);

@@ -1,4 +1,5 @@
 using Environments.Domain;
+using Instances.Domain.Instances;
 using Instances.Domain.Renaming;
 using Moq;
 using System;
@@ -11,12 +12,14 @@ namespace Instances.Domain.Tests.Renaming
     public class RedirectionRenamingTests
     {
         private readonly Mock<IRedirectionIisAdministration> _redirectionIisAdministrationMock;
+        private readonly Mock<IDnsService> _dnsServiceMock;
         private readonly RedirectionRenaming _redirectionRenaming;
 
         public RedirectionRenamingTests()
         {
             _redirectionIisAdministrationMock = new Mock<IRedirectionIisAdministration>(MockBehavior.Strict);
-            _redirectionRenaming = new RedirectionRenaming(_redirectionIisAdministrationMock.Object);
+            _dnsServiceMock = new Mock<IDnsService>(MockBehavior.Strict);
+            _redirectionRenaming = new RedirectionRenaming(_redirectionIisAdministrationMock.Object, _dnsServiceMock.Object);
         }
 
         #region RenameAsync
@@ -32,6 +35,9 @@ namespace Instances.Domain.Tests.Renaming
             _redirectionIisAdministrationMock
                 .Setup(r => r.BindDomainAsync(It.IsAny<string>(), It.IsAny<string>()))
                 .Returns(Task.CompletedTask);
+            _dnsServiceMock
+                .Setup(d => d.CreateAsync(It.IsAny<DnsEntry>()))
+                .Returns(Task.CompletedTask);
 
             await _redirectionRenaming.RenameAsync(new Environment
             {
@@ -46,6 +52,7 @@ namespace Instances.Domain.Tests.Renaming
                     "ilucca.net",
                     It.Is<DateOnly>(d => d.Month == DateTime.Now.AddMonths(3).Month)));
             _redirectionIisAdministrationMock.Verify(r => r.BindDomainAsync(newName, "ilucca.net"));
+            _dnsServiceMock.Verify(d => d.CreateAsync(It.Is<DnsEntry>(d => d.Subdomain == oldName && d.Cluster == IDnsService.RedirectionCluster)));
         }
 
         #endregion

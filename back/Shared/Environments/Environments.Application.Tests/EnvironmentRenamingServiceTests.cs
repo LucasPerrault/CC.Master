@@ -71,8 +71,11 @@ namespace Environments.Application.Tests
             _environmentRenamingExtensionMock
                 .Setup(e => e.RenameAsync(It.IsAny<Environment>(), It.IsAny<string>()))
                 .Returns(Task.CompletedTask);
+            _environmentRenamingExtensionMock
+                .Setup(e => e.ShouldExecute(It.IsAny<IEnvironmentRenamingExtensionParameters>()))
+                .Returns(true);
 
-            var status = await _environmentRenamingService.RenameAsync(2, "newName");
+            var status = await _environmentRenamingService.RenameAsync(2, "newName", new Mock<IEnvironmentRenamingExtensionParameters>().Object);
 
             _environmentStoreMock.Verify(e => e.GetAsync(EnvironmentAccessRight.Everything, It.Is<EnvironmentFilter>(f => f.Ids.Contains(2))));
             _environmentStoreMock.Verify(e => e.UpdateSubDomainAsync(environment, "newName"));
@@ -104,10 +107,13 @@ namespace Environments.Application.Tests
                         return Task.FromResult(e);
                     });
             _environmentRenamingExtensionMock
+                .Setup(e => e.ShouldExecute(It.IsAny<IEnvironmentRenamingExtensionParameters>()))
+                .Returns(true);
+            _environmentRenamingExtensionMock
                 .Setup(e => e.RenameAsync(It.IsAny<Environment>(), It.IsAny<string>()))
                 .ThrowsAsync(new Exception("test"));
 
-            var status = await _environmentRenamingService.RenameAsync(2, "newName");
+            var status = await _environmentRenamingService.RenameAsync(2, "newName", new Mock<IEnvironmentRenamingExtensionParameters>().Object);
 
             _environmentStoreMock.Verify(e => e.GetAsync(EnvironmentAccessRight.Everything, It.Is<EnvironmentFilter>(f => f.Ids.Contains(2))));
             _environmentStoreMock.Verify(e => e.UpdateSubDomainAsync(environment, "newName"));
@@ -128,7 +134,7 @@ namespace Environments.Application.Tests
                 .Setup(e => e.GetAsync(It.IsAny<List<EnvironmentAccessRight>>(), It.IsAny<EnvironmentFilter>()))
                 .ReturnsAsync(new List<Environment>());
 
-            Func<Task> act = () => _environmentRenamingService.RenameAsync(2, "newName");
+            Func<Task> act = () => _environmentRenamingService.RenameAsync(2, "newName", new Mock<IEnvironmentRenamingExtensionParameters>().Object);
 
             (await act.Should().ThrowAsync<DomainException>())
                 .And.Status.Should().Be(DomainExceptionCode.BadRequest);

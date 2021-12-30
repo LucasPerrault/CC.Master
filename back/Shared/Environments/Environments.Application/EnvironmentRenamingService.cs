@@ -39,7 +39,7 @@ namespace Environments.Application
             _logger = logger;
         }
 
-        public async Task<EnvironmentRenamingStatusDetail> RenameAsync(int environmentId, string newName)
+        public async Task<EnvironmentRenamingStatusDetail> RenameAsync(int environmentId, string newName, IEnvironmentRenamingExtensionParameters parameters)
         {
             var environement = (await _environmentStore.GetAsync(EnvironmentAccessRight.Everything, new EnvironmentFilter
             {
@@ -64,7 +64,7 @@ namespace Environments.Application
             }
 
             var exceptionMessages = new List<string>();
-            foreach (var environmentRenamingExtension in _environmentRenamingExtensions)
+            foreach (var environmentRenamingExtension in _environmentRenamingExtensions.Where(e => e.ShouldExecute(parameters)))
             {
                 try
                 {

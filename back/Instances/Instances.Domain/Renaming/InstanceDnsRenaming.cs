@@ -14,6 +14,7 @@ namespace Instances.Domain.Renaming
         }
 
         public string ExtensionName => "Dns renaming";
+        public bool ShouldExecute(IEnvironmentRenamingExtensionParameters parameters) => true;
 
         public async Task RenameAsync(Environments.Domain.Environment environment, string newName)
         {
@@ -22,5 +23,6 @@ namespace Instances.Domain.Renaming
             await _dnsService.CreateAsync(DnsEntry.ForPreview(newName, environment.Cluster));
             await _dnsService.CreateAsync(DnsEntry.ForPreview($"static-{newName}", environment.Cluster));
         }
+
     }
 }

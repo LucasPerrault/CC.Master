@@ -1,3 +1,4 @@
+using Instances.Domain.Instances;
 using Instances.Infra.Shared;
 using Microsoft.Extensions.Logging;
 using Ovh.Api;
@@ -69,6 +70,10 @@ namespace Instances.Infra.Dns
 
         private string GetCNameTargetName(DnsEntryCreation entryCreation)
         {
+            if (entryCreation.Cluster == IDnsService.RedirectionCluster)
+            {
+                return "redirection.ilucca.net.";
+            }
             return $"ovh-{ClusterNameConvertor.GetLongName(entryCreation.Cluster)}.{entryCreation.DnsZone}.";
         }
 
