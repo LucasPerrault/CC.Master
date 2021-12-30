@@ -17,20 +17,20 @@ internal class InternalSlackClient
         _logger = logger;
     }
 
-    public Task<string?> PostMessageAsync(string channel, string? threadId, SlackMessageType type, SlackMessage message)
+    public Task<SlackMessageChannelInformation> PostMessageAsync(string channel, string? threadId, SlackMessageType type, SlackMessage message)
         => PostOrUpdateMessageAsync("/api/chat.postMessage", channel, threadId, type, message);
 
-    public Task<string?> UpdateMessageAsync(string channel, string? threadId, SlackMessageType type, SlackMessage message)
+    public Task<SlackMessageChannelInformation> UpdateMessageAsync(string channel, string? threadId, SlackMessageType type, SlackMessage message)
     {
         if (threadId is null)
         {
             _logger.LogWarning("Can't send message to {channel} because {threadId} is null", channel, nameof(threadId));
-            return Task.FromResult((string?)null);
+            return Task.FromResult(new SlackMessageChannelInformation(channel, null));
         }
         return PostOrUpdateMessageAsync("/api/chat.update", channel, threadId, type, message);
     }
 
-    private async Task<string?> PostOrUpdateMessageAsync(string slackApiPath, string channel, string? threadId, SlackMessageType type, SlackMessage message)
+    private async Task<SlackMessageChannelInformation> PostOrUpdateMessageAsync(string slackApiPath, string channel, string? threadId, SlackMessageType type, SlackMessage message)
     {
         List<object>? attachments = null;
         var blocks = new List<object> { new
@@ -81,16 +81,23 @@ internal class InternalSlackClient
         {
             var body = await response.Content.ReadAsStringAsync();
             _logger.LogError("Failed to send message, bad http response {httpResponse} : {error}", response.StatusCode, body);
-            return null;
+            return new SlackMessageChannelInformation(channel, null);
         }
 
         using var document = await JsonDocument.ParseAsync(response.Content.ReadAsStream());
         if (!document.RootElement.TryGetProperty("ts", out var tsElement))
         {
             _logger.LogWarning("Failed to extract ts field after posting message");
-            return null;
+            return new SlackMessageChannelInformation(channel, null);
         }
-        return tsElement.GetString();
+        document.RootElement.TryGetProperty("channel", out var newChannelElement);
+        var newChannel = newChannelElement.GetString();
+        if (newChannel is null)
+        {
+            _logger.LogWarning("Failed to extract channel field after posting message");
+            return new SlackMessageChannelInformation(channel, threadId);
+        }
+        return new SlackMessageChannelInformation(newChannel, tsElement.GetString());
     }
 
 }
