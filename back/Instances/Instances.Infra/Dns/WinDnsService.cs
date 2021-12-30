@@ -1,3 +1,4 @@
+using Instances.Domain.Instances;
 using Instances.Infra.Shared;
 using Instances.Infra.Windows;
 using Microsoft.Extensions.Logging;
@@ -58,6 +59,10 @@ namespace Instances.Infra.Dns
 
         private string GetPrimaryName(string targetClusterName)
         {
+            if (targetClusterName == IDnsService.RedirectionCluster)
+            {
+                return "lab2.lucca.fr.";
+            }
             return $"rbx-{ClusterNameConvertor.GetShortName(targetClusterName)}-haproxy.lucca.local.";
         }
     }

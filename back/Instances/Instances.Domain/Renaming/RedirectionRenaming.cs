@@ -1,4 +1,5 @@
 using Environments.Domain.ExtensionInterface;
+using Instances.Domain.Instances;
 using System;
 using System.Threading.Tasks;
 using Tools;
@@ -8,10 +9,12 @@ namespace Instances.Domain.Renaming
     public class RedirectionRenaming : IEnvironmentRenamingExtension
     {
         private readonly IRedirectionIisAdministration _redirectionIisAdministration;
+        private readonly IDnsService _dnsService;
 
-        public RedirectionRenaming(IRedirectionIisAdministration redirectionIisAdminstration)
+        public RedirectionRenaming(IRedirectionIisAdministration redirectionIisAdminstration, IDnsService dnsService)
         {
             _redirectionIisAdministration = redirectionIisAdminstration;
+            _dnsService = dnsService;
         }
 
         public string ExtensionName => "Old domain redirection";
@@ -26,6 +29,7 @@ namespace Instances.Domain.Renaming
                 DateOnly.FromDateTime(DateTime.Now).AddMonths(3)
             );
             await _redirectionIisAdministration.BindDomainAsync(newName, domain);
+            await _dnsService.CreateAsync(DnsEntry.ForRedirection(environment.Subdomain));
         }
     }
 }
