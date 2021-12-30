@@ -1,4 +1,4 @@
-﻿using Slack.Domain;
+using Slack.Domain;
 
 namespace Slack.Infra;
 
@@ -13,12 +13,11 @@ internal class SlackClient : ISlackClient
 
     public async Task<ISlackMessageLifeManager> SendMessageAsync(string channel, SlackMessageType type, SlackMessage message)
     {
-        var threadId = await _slackClient.PostMessageAsync(channel, threadId: null, type, message);
+        var channelInformation = await _slackClient.PostMessageAsync(channel, threadId: null, type, message);
 
         return new SlackMessageLifeManager(
             _slackClient,
-            channel,
-            threadId
+            channelInformation
         );
     }
 }
