@@ -111,6 +111,8 @@ namespace Instances.Web.Controllers
 
         public string Search { get; set; }
 
+        public string GithubRepo { get; set; }
+
         public HashSet<int> Id { get; set; } = new HashSet<int>();
 
         public string Code { get; set; }
@@ -121,7 +123,8 @@ namespace Instances.Web.Controllers
             Id = Id,
             Search = Search,
             Lifecycle = Lifecycle,
-            Type = Type
+            Type = Type,
+            GithubRepo = GithubRepo,
         };
     }
 }
