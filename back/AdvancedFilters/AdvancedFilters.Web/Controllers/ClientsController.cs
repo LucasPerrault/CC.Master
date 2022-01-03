@@ -23,21 +23,9 @@ namespace AdvancedFilters.Web.Controllers
 
         [HttpGet]
         [ForbidIfMissing(Operation.ReadAllCafe)]
-        public async Task<Page<Client>> GetAsync([FromQuery] ClientsQuery query)
+        public Task<Page<Client>> GetAsync([FromQuery] ClientsQuery query)
         {
-            var page = await _store.GetAsync(query.Page, query.ToFilter());
-            return PreparePage(page);
-        }
-
-        private Page<Client> PreparePage(Page<Client> src)
-        {
-            return new Page<Client>
-            {
-                Count = src.Count,
-                Prev = src.Prev,
-                Next = src.Next,
-                Items = src.Items
-            };
+            return _store.GetAsync(query.Page, query.ToFilter());
         }
     }
 

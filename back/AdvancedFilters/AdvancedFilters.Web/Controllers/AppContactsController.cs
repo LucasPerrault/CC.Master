@@ -30,23 +30,21 @@ namespace AdvancedFilters.Web.Controllers
 
         [HttpGet]
         [ForbidIfMissing(Operation.ReadAllCafe)]
-        public async Task<Page<AppContact>> GetAsync([FromQuery]AppContactsQuery query)
+        public Task<Page<AppContact>> GetAsync([FromQuery]AppContactsQuery query)
         {
-            var page = await _store.GetAsync(query.Page, query.ToFilter());
-            return PreparePage(page);
+            return _store.GetAsync(query.Page, query.ToFilter());
         }
 
         [HttpPost("search")]
         [ForbidIfMissing(Operation.ReadAllCafe)]
-        public async Task<Page<AppContact>> SearchAsync
+        public Task<Page<AppContact>> SearchAsync
         (
             IPageToken pageToken,
             [FromBody, ModelBinder(BinderType = typeof(AdvancedFilterModelBinder<AppContactAdvancedCriterion>))]
             IAdvancedFilter criterion
         )
         {
-            var page = await _store.SearchAsync(pageToken, criterion);
-            return PreparePage(page);
+            return _store.SearchAsync(pageToken, criterion);
         }
 
         [HttpPost("export")]
@@ -60,17 +58,6 @@ namespace AdvancedFilters.Web.Controllers
             var contacts = await _store.SearchAsync(criterion);
             var filename = $"export-{System.DateTime.Now:yyyyMMdd-HHmmss}.csv";
             return _exportService.Export(contacts, filename);
-        }
-
-        private Page<AppContact> PreparePage(Page<AppContact> src)
-        {
-            return new Page<AppContact>
-            {
-                Count = src.Count,
-                Prev = src.Prev,
-                Next = src.Next,
-                Items = src.Items
-            };
         }
     }
 

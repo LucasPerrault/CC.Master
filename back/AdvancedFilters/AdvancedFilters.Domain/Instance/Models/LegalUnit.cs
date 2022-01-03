@@ -3,11 +3,10 @@ using AdvancedFilters.Domain.Filters.Builders;
 using AdvancedFilters.Domain.Filters.Models;
 using System;
 using System.Collections.Generic;
-using Tools;
 
 namespace AdvancedFilters.Domain.Instance.Models
 {
-    public class LegalUnit : IDeepCopyable<LegalUnit>
+    public class LegalUnit
     {
         public int Id { get; set; }
         public int EnvironmentId { get; set; }
@@ -24,11 +23,6 @@ namespace AdvancedFilters.Domain.Instance.Models
         public IEnumerable<Establishment> Establishments { get; set; }
 
         public Country Country { get; set; }
-
-        public LegalUnit DeepCopy()
-        {
-            return this.DeepCopyByExpressionTree();
-        }
     }
 
     public class LegalUnitAdvancedCriterion : AdvancedCriterion<LegalUnit>

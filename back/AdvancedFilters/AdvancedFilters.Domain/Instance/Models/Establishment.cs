@@ -1,10 +1,8 @@
-using AdvancedFilters.Domain.Core.Models;
 using System;
-using Tools;
 
 namespace AdvancedFilters.Domain.Instance.Models
 {
-    public class Establishment : IDeepCopyable<Establishment>
+    public class Establishment
     {
         public int Id { get; set; }
         public string Name { get; set; }
@@ -20,10 +18,5 @@ namespace AdvancedFilters.Domain.Instance.Models
 
         public LegalUnit LegalUnit { get; set; }
         public Environment Environment { get; set; }
-
-        public Establishment DeepCopy()
-        {
-            return this.DeepCopyByExpressionTree();
-        }
     }
 }
