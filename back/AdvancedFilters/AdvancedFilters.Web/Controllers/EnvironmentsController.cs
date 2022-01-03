@@ -4,7 +4,6 @@ using AdvancedFilters.Domain.Instance.Interfaces;
 using AdvancedFilters.Domain.Instance.Models;
 using AdvancedFilters.Infra.Services;
 using AdvancedFilters.Web.Binding;
-using AdvancedFilters.Web.Format;
 using Lucca.Core.Api.Abstractions.Paging;
 using Lucca.Core.Api.Web.ModelBinding.Sorting;
 using Microsoft.AspNetCore.Mvc;
@@ -85,7 +84,7 @@ namespace AdvancedFilters.Web.Controllers
                 Count = src.Count,
                 Prev = src.Prev,
                 Next = src.Next,
-                Items = src.Items.WithoutLoop()
+                Items = src.Items
             };
         }
     }
