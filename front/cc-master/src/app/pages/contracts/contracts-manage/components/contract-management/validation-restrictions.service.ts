@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@angular/core';
 import { DistributorIds, IPrincipal, PRINCIPAL } from '@cc/aspects/principal';
-import { Operation, OperationRestrictionMode, RightsService } from '@cc/aspects/rights';
+import { Operation, RightsService } from '@cc/aspects/rights';
 
 import { IValidationContext } from './validation-context-store.data';
 
@@ -43,7 +43,14 @@ export class ValidationRestrictionsService {
   }
 
   public get hasRightsToReadValidationContext(): boolean {
-    const operationsToReadValidationContext = [Operation.ReadCounts, Operation.ReadContractEntries];
-    return this.rightsService.hasOperationsByRestrictionMode(operationsToReadValidationContext, OperationRestrictionMode.All);
+    return this.canReadCount && this.canReadContractEntries;
+  }
+
+  public get canReadCount(): boolean {
+    return this.rightsService.hasOperation(Operation.ReadCounts);
+  }
+
+  public get canReadContractEntries(): boolean {
+    return this.rightsService.hasOperation(Operation.ReadContractEntries);
   }
 }

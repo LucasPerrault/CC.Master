@@ -80,6 +80,10 @@ export class ContractTabFormComponent implements OnInit, OnDestroy, ControlValue
     return this.restrictionsService.canEditTheoreticalStartOn(this.validationContext);
   }
 
+  public get canEditWithSimilarOffer(): boolean {
+    return this.restrictionsService.canEditWithSimilarOffer();
+  }
+
   private get canEditContract(): boolean {
     return this.restrictionsService.canEditContract(this.validationContext);
   }

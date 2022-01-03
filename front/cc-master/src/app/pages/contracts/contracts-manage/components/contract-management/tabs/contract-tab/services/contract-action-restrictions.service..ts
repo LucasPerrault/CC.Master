@@ -57,6 +57,10 @@ export class ContractActionRestrictionsService {
       && !this.commonRestrictionsService.hasActiveEstablishments(context);
   }
 
+  public canEditWithSimilarOffer(): boolean {
+    return this.commonRestrictionsService.hasRightsToEditContracts && this.commonRestrictionsService.canReadCount;
+  }
+
   private hasContractEntries(context: IValidationContext): boolean {
     return this.canEditContract(context) && !!context?.contractEntries?.length;
   }
