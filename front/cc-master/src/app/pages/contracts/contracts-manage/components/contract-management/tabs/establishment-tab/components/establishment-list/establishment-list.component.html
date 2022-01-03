@@ -12,8 +12,7 @@
   <table class="table">
     <thead class="table-head">
       <tr class="table-head-row">
-        <th class="table-head-row-cell">
-        </th>
+        <th class="table-head-row-cell" *ngIf="canReadValidationContext"></th>
         <th class="table-head-row-cell">
           {{ 'front_contractPage_establishments_column_name' | translate }}
         </th>

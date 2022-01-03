@@ -37,12 +37,8 @@ export class ContractTabComponent implements OnInit, OnDestroy {
   public editButtonState$: Subject<string> = new Subject<string>();
   public isClosePopupConfirmed$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
-  public get canEditContract(): boolean {
-    return this.restrictionsService.hasRightsToEditContracts;
-  }
-
-  public get canReadValidationContext(): boolean {
-    return this.restrictionsService.hasRightsToReadValidationContext;
+  public get canEditContract$(): Observable<boolean> {
+    return this.validationContext$.pipe(map(context => this.restrictionsService.canEditContract(context)));
   }
 
   public get contractId(): number {
@@ -66,11 +62,9 @@ export class ContractTabComponent implements OnInit, OnDestroy {
   public ngOnInit(): void {
     this.isLoading$.next(true);
 
-    if (this.canReadValidationContext) {
-      this.contextStoreService.context$
-        .pipe(take(1))
-        .subscribe(context => this.validationContext$.next(context));
-    }
+    this.contextStoreService.context$
+      .pipe(take(1))
+      .subscribe(context => this.validationContext$.next(context));
 
     this.contractTabService.getContractDetailed$(this.contractId)
       .pipe(take(1), finalize(() => this.isLoading$.next(false)))
