@@ -1,4 +1,4 @@
 export enum BillingEntity {
-	France = 1,
-	Iberia = 2,
+	France = 'Lucca France',
+	Iberia = 'Lucca Iberia',
 }

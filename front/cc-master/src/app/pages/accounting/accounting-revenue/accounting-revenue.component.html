@@ -12,11 +12,11 @@
                                (closeCurrentPeriod)="closeCurrentPeriod($event, currentPeriod.entity)">
     </cc-accounting-period-card>
 
-    <cc-accounting-sync-revenue-card class="mod-accountingRevenueCard grid-l6"
-                                     [syncRevenueInfo]="syncRevenueInfo$ | async"
+    <cc-accounting-sync-revenue-card *ngFor="let syncRevenueInfo of syncRevenueInfo$ | async" class="mod-accountingRevenueCard grid-l6"
+                                     [syncRevenueInfo]="syncRevenueInfo"
                                      [isLoading]="isSyncRevenueLoading$ | async"
                                      [syncButtonState]="syncButtonState$ | async"
-                                     (syncRevenue)="syncRevenue()">
+                                     (syncRevenue)="syncRevenue(syncRevenueInfo.entity)">
     </cc-accounting-sync-revenue-card>
   </section>
 

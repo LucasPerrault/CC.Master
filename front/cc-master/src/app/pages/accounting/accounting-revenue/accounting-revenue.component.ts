@@ -5,7 +5,7 @@ import { finalize, map, take } from 'rxjs/operators';
 
 import { ISyncRevenueInfo } from './models/sync-revenue-info.interface';
 import { AccountingPeriodService, CurrentAccountingPeriod } from './services/accounting-period.service';
-import { SyncRevenueService } from './services/sync-revenue.service';
+import { SyncRevenueService, CurrentSyncRevenueInfo } from './services/sync-revenue.service';
 import { BillingEntity } from '@cc/domain/billing/billing-entity';
 
 @Component({
@@ -15,7 +15,7 @@ import { BillingEntity } from '@cc/domain/billing/billing-entity';
   encapsulation: ViewEncapsulation.None,
 })
 export class AccountingRevenueComponent implements OnInit {
-  public syncRevenueInfo$: ReplaySubject<ISyncRevenueInfo> = new ReplaySubject<ISyncRevenueInfo>(1);
+  public syncRevenueInfo$: ReplaySubject<CurrentSyncRevenueInfo[]> = new ReplaySubject<CurrentSyncRevenueInfo[]>(1);
   public isSyncRevenueLoading$: ReplaySubject<boolean> = new ReplaySubject<boolean>(1);
   public syncButtonState$: Subject<string> = new Subject<string>();
 
@@ -33,8 +33,9 @@ export class AccountingRevenueComponent implements OnInit {
     this.refreshSyncRevenueInfo();
   }
 
-  public syncRevenue(): void {
-    this.syncRevenueService.synchronise$()
+  public syncRevenue(entity: BillingEntity): void {
+		console.log(entity);
+    this.syncRevenueService.synchronise$(entity)
       .pipe(
         take(1),
         toSubmissionState(),

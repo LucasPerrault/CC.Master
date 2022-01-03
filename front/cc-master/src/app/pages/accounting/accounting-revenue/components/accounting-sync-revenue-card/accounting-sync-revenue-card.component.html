@@ -1,6 +1,6 @@
 <div class="card">
   <div class="card-content">
-    <h2>{{ 'front_accountingRevenuePage_sync_title_card' | translate }}</h2>
+    <h2>{{ syncRevenueInfo.entity }} :{{ 'front_accountingRevenuePage_sync_title_card' | translate }}</h2>
 
     <div *ngIf="isLoading; else isNotLoading" class="progress mod-indeterminate">
       <div class="progress-bar"></div>
@@ -10,12 +10,12 @@
       <div class="u-displayFlex u-flexDirectionColumn u-alignItemsFlexEnd">
         <span>
           {{ 'front_accountingRevenuePage_sync_amount' | translate }} :
-          <strong>{{ syncRevenueInfo?.amount | currency:"EUR"}}</strong>
+          <strong>{{ syncRevenueInfo?.syncRevenue.amount | currency:"EUR"}}</strong>
         </span>
 
           <span>
             {{ 'front_accountingRevenuePage_sync_lineCount' | translate }}
-            <strong>{{ syncRevenueInfo?.lineCount | number }}</strong>
+            <strong>{{ syncRevenueInfo?.syncRevenue.lineCount | number }}</strong>
           </span>
       </div>
     </ng-template>
