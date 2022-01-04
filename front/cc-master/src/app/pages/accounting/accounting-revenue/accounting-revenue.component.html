@@ -3,20 +3,20 @@
     <h1>{{ 'front_accountingRevenuePage_title' | translate }}</h1>
   </header>
 
-  <section class="grid u-marginSmall">
-		
-    <cc-accounting-period-card *ngFor="let currentPeriod of currentPeriod$ | async" class="mod-accountingRevenueCard grid-l6"
+  <section *ngFor="let currentPeriod of currentPeriod$ | async" class="grid u-marginSmall">
+		<h2 class="grid-l12"> {{ getBillingEntityName(currentPeriod.entity) }} </h2>
+    <cc-accounting-period-card class="mod-accountingRevenueCard grid-l6"
                                [accountingPeriod]="currentPeriod"
                                [isLoading]="isCurrentPeriodLoading$ | async"
                                [closeButtonState]="closePeriodButtonState$ | async"
                                (closeCurrentPeriod)="closeCurrentPeriod($event, currentPeriod.entity)">
     </cc-accounting-period-card>
 
-    <cc-accounting-sync-revenue-card *ngFor="let syncRevenueInfo of syncRevenueInfo$ | async" class="mod-accountingRevenueCard grid-l6"
-                                     [syncRevenueInfo]="syncRevenueInfo"
+    <cc-accounting-sync-revenue-card  class="mod-accountingRevenueCard grid-l6"
+                                     [syncRevenueInfo]="getSyncRevenueInfo$(currentPeriod.entity) | async"
                                      [isLoading]="isSyncRevenueLoading$ | async"
                                      [syncButtonState]="syncButtonState$ | async"
-                                     (syncRevenue)="syncRevenue(syncRevenueInfo.entity)">
+                                     (syncRevenue)="syncRevenue(currentPeriod.entity)">
     </cc-accounting-sync-revenue-card>
   </section>
 

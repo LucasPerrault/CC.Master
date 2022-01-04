@@ -1,9 +1,5 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-
-import { ISyncRevenueInfo } from '../../models/sync-revenue-info.interface';
 import { CurrentSyncRevenueInfo } from '../../services/sync-revenue.service';
-import { BillingEntity, getBillingEntity } from '@cc/domain/billing/clients';
-import { TranslatePipe } from '@cc/aspects/translate';
 
 @Component({
 	selector: 'cc-accounting-sync-revenue-card',
@@ -19,14 +15,9 @@ export class AccountingSyncRevenueCardComponent {
 		return this.isLoading || this.syncRevenueInfo.syncRevenue.lineCount === 0;
 	}
 
-	constructor(private translatePipe: TranslatePipe) { }
+	constructor() { }
 
 	public synchronise(): void {
 		this.syncRevenue.emit();
-	}
-
-	public getBillingEntityName(billingEntity: BillingEntity): string {
-		const translationKey = getBillingEntity(billingEntity)?.name;
-		return this.translatePipe.transform(translationKey);
 	}
 }
