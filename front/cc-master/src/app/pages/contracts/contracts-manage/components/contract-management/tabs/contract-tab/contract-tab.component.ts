@@ -114,7 +114,8 @@ export class ContractTabComponent implements OnInit, OnDestroy {
   }
 
   public hasFormChanged(): boolean {
-    return !this.isEqual(this.contractToEdit$.value, this.contractForm.value);
+    const isInitialized = !!this.contractToEdit$.value && !!this.contractForm.value;
+    return isInitialized && !this.isEqual(this.contractToEdit$.value, this.contractForm.value);
   }
 
   private toContractForm(contractDetailed: IContractDetailed): IContractForm {
@@ -137,11 +138,6 @@ export class ContractTabComponent implements OnInit, OnDestroy {
   }
 
   private isEqual(contract: IContractDetailed, form: IContractForm): boolean {
-    const isInitialized = !!contract && !!form;
-    if (!isInitialized) {
-      return true;
-    }
-
     return contract.distributor.id === form.distributor.id
       && contract.client.id === form.client.id
       && contract.offer.id === form.offer.id
