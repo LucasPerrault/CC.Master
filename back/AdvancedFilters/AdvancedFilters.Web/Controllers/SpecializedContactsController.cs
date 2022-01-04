@@ -4,7 +4,6 @@ using AdvancedFilters.Domain.Contacts.Models;
 using AdvancedFilters.Domain.Filters.Models;
 using AdvancedFilters.Infra.Services;
 using AdvancedFilters.Web.Binding;
-using AdvancedFilters.Web.Format;
 using Lucca.Core.Api.Abstractions.Paging;
 using Lucca.Core.Api.Web.ModelBinding.Sorting;
 using Microsoft.AspNetCore.Mvc;
@@ -31,10 +30,9 @@ namespace AdvancedFilters.Web.Controllers
 
         [HttpGet]
         [ForbidIfMissing(Operation.ReadAllCafe)]
-        public async Task<Page<SpecializedContact>> GetAsync([FromQuery]SpecializedsContactQuery query)
+        public Task<Page<SpecializedContact>> GetAsync([FromQuery]SpecializedsContactQuery query)
         {
-            var page = await _store.GetAsync(query.Page, query.ToFilter());
-            return PreparePage(page);
+            return _store.GetAsync(query.Page, query.ToFilter());
         }
 
         [HttpGet("roles")]
@@ -46,15 +44,14 @@ namespace AdvancedFilters.Web.Controllers
 
         [HttpPost("search")]
         [ForbidIfMissing(Operation.ReadAllCafe)]
-        public async Task<Page<SpecializedContact>> SearchAsync
+        public Task<Page<SpecializedContact>> SearchAsync
         (
             IPageToken pageToken,
             [FromBody, ModelBinder(BinderType = typeof(AdvancedFilterModelBinder<SpecializedContactAdvancedCriterion>))]
             IAdvancedFilter criterion
         )
         {
-            var page = await _store.SearchAsync(pageToken, criterion);
-            return PreparePage(page);
+            return _store.SearchAsync(pageToken, criterion);
         }
 
         [HttpPost("export")]
@@ -68,16 +65,6 @@ namespace AdvancedFilters.Web.Controllers
             var contacts = await _store.SearchAsync(criterion);
             var filename = $"export-{System.DateTime.Now:yyyyMMdd-HHmmss}.csv";
             return _exportService.Export(contacts, filename);
-        }
-        private Page<SpecializedContact> PreparePage(Page<SpecializedContact> src)
-        {
-            return new Page<SpecializedContact>
-            {
-                Count = src.Count,
-                Prev = src.Prev,
-                Next = src.Next,
-                Items = src.Items.WithoutLoop()
-            };
         }
     }
 

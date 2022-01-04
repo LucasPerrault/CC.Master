@@ -2,7 +2,6 @@ using AdvancedFilters.Domain.Core.Models;
 using AdvancedFilters.Domain.Instance.Filters;
 using AdvancedFilters.Domain.Instance.Interfaces;
 using AdvancedFilters.Domain.Instance.Models;
-using AdvancedFilters.Web.Format;
 using Lucca.Core.Api.Abstractions.Paging;
 using Lucca.Core.Api.Web.ModelBinding.Sorting;
 using Microsoft.AspNetCore.Mvc;
@@ -26,10 +25,9 @@ namespace AdvancedFilters.Web.Controllers
 
         [HttpGet]
         [ForbidIfMissing(Operation.ReadAllCafe)]
-        public async Task<Page<LegalUnit>> GetAsync([FromQuery]LegalUnitsQuery query)
+        public Task<Page<LegalUnit>> GetAsync([FromQuery]LegalUnitsQuery query)
         {
-            var page = await _store.GetAsync(query.Page, query.ToFilter());
-            return PreparePage(page);
+            return _store.GetAsync(query.Page, query.ToFilter());
         }
 
         [HttpGet("countries")]
@@ -37,17 +35,6 @@ namespace AdvancedFilters.Web.Controllers
         public Task<Page<Country>> GetCountriesAsync(string search)
         {
             return _store.GetAllCountriesAsync(search);
-        }
-
-        private Page<LegalUnit> PreparePage(Page<LegalUnit> src)
-        {
-            return new Page<LegalUnit>
-            {
-                Count = src.Count,
-                Prev = src.Prev,
-                Next = src.Next,
-                Items = src.Items.WithoutLoop()
-            };
         }
     }
 

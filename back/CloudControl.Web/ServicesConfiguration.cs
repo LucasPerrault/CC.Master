@@ -148,6 +148,7 @@ namespace CloudControl.Web
                 .AddControllers()
                 .AddJsonOptions(o =>
                 {
+                    o.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
                     o.JsonSerializerOptions.Converters.Add(new DomainEnumJsonConverter());
                     o.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
                     o.JsonSerializerOptions.Converters.Add(new AccountingPeriodJsonConverter());
