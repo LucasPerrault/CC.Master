@@ -136,7 +136,7 @@
             }
         },
         "RedirectionIis": {
-            "ApplicationHost": "\\\\\\\\labs2.lucca.local\\\\c$\\Windows\\System32\\inetsrv\\config\\applicationHost.config",
+            "ApplicationHost": "\\\\labs2.lucca.local\\c$\\Windows\\System32\\inetsrv\\config\\applicationHost.config",
             "RedirectionConf": "\\\\labs2.lucca.local\\c$\\d\\Sites\\redirect\\redirect.config"
         }
     },
