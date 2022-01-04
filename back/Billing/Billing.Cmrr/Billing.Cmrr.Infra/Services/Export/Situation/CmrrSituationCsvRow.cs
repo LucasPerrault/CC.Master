@@ -27,7 +27,7 @@ namespace Billing.Cmrr.Infra.Services.Export.Situation
             TotalFrom = ToRound(line.TotalFrom.Amount);
             TotalTo = ToRound(line.TotalTo.Amount);
             Variation = ToRound(TotalTo - TotalFrom);
-            VariationPercent = ToPercentage(TotalTo / TotalFrom) - 100;
+            VariationPercent = TotalFrom == 0 ? 0 : ToPercentage(TotalTo / TotalFrom) - 100;
             Creation = ToRound(line.Creation.Amount);
             Upsell = ToRound(line.Upsell.Amount);
             Expansion = ToRound(line.Expansion.Amount);
