@@ -18,7 +18,7 @@ import { takeUntil } from 'rxjs/operators';
 import { ContractsModalTabPath } from '../../../../constants/contracts-modal-tab-path.enum';
 import { IValidationContext } from '../../../../validation-context-store.data';
 import { IContractFormInformation } from '../../models/contract-form-information.interface';
-import { ContractActionRestrictionsService } from '../../services/contract-action-restrictions.service.';
+import { ContractActionRestrictionsService } from '../../services/contract-action-restrictions.service';
 import { ClientInfoModalComponent } from './client-info-modal/client-info-modal.component';
 import { IClientInfoModalData } from './client-info-modal/client-info-modal-data.interface';
 
