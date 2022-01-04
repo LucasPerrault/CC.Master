@@ -3,10 +3,10 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 
 import { ISyncRevenueInfo } from '../models/sync-revenue-info.interface';
-import { BillingEntity } from '@cc/domain/billing/billing-entity';
-import { map } from 'rxjs/operators';
 import { IHttpApiV3CollectionResponse } from '@cc/common/queries';
 import { enIN } from 'date-fns/locale';
+import { BillingEntity } from '@cc/domain/billing/clients';
+import { map } from 'rxjs/operators';
 
 export class CurrentSyncRevenueInfo {
 	syncRevenue: ISyncRevenueInfo;
@@ -22,17 +22,12 @@ export class SyncRevenueService {
 
 	public getSyncInfo$(): Observable<CurrentSyncRevenueInfo[]> {
 		return this.httpClient.get<IHttpApiV3CollectionResponse<CurrentSyncRevenueInfo>>(this.syncSummaryEndPoint)
-			.pipe(map(res => !!res.data ? res.data.items.map(x=> ({...x, syncRevenue: x.syncRevenue})) : null));
+			.pipe(map(res => res.data.items));
 	}
 
-  public synchronise$(entity: BillingEntity): Observable<void> {
-		const body = { billingEntity: this.getEnumKeyByEnumValue(BillingEntity,entity) };
+  public synchronise$(billingEntity: BillingEntity): Observable<void> {
+		const body = { billingEntity };
 
     return this.httpClient.post<void>(this.syncEndPoint, body);
-	}
-	
-	public getEnumKeyByEnumValue(myEnum, enumValue) {
-    let keys = Object.keys(myEnum).filter(x => myEnum[x] == enumValue);
-    return keys.length > 0 ? keys[0] : null;
 	}
 }

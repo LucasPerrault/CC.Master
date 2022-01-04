@@ -1,9 +1,9 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { ApiV3DateService, IHttpApiV3Response, IHttpApiV3Collection, IHttpApiV3CollectionResponse } from '@cc/common/queries';
+import { ApiV3DateService, IHttpApiV3CollectionResponse } from '@cc/common/queries';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { BillingEntity } from '@cc/domain/billing/billing-entity';
+import { BillingEntity } from '@cc/domain/billing/clients';
 
 
 export class CurrentAccountingPeriod {

@@ -3,10 +3,9 @@ import { getButtonState, toSubmissionState } from '@cc/common/forms';
 import { ReplaySubject, Subject } from 'rxjs';
 import { finalize, map, take } from 'rxjs/operators';
 
-import { ISyncRevenueInfo } from './models/sync-revenue-info.interface';
 import { AccountingPeriodService, CurrentAccountingPeriod } from './services/accounting-period.service';
 import { SyncRevenueService, CurrentSyncRevenueInfo } from './services/sync-revenue.service';
-import { BillingEntity } from '@cc/domain/billing/billing-entity';
+import { BillingEntity } from '@cc/domain/billing/clients';
 
 @Component({
   selector: 'cc-accounting-revenue',

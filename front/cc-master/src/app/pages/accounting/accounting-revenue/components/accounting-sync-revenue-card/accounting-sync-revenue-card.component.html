@@ -1,6 +1,6 @@
 <div class="card">
   <div class="card-content">
-    <h2>{{ syncRevenueInfo.entity }} :{{ 'front_accountingRevenuePage_sync_title_card' | translate }}</h2>
+    <h2>{{ getBillingEntityName(syncRevenueInfo.entity) }} : {{ 'front_accountingRevenuePage_sync_title_card' | translate }}</h2>
 
     <div *ngIf="isLoading; else isNotLoading" class="progress mod-indeterminate">
       <div class="progress-bar"></div>
