@@ -2,6 +2,7 @@ using Instances.Domain.Instances;
 using Instances.Infra.Shared;
 using Instances.Infra.Windows;
 using Microsoft.Extensions.Logging;
+using System;
 using System.Collections.Generic;
 using Tools;
 
@@ -34,7 +35,7 @@ namespace Instances.Infra.Dns
 
         public void AddNewCname(DnsEntryCreation entryCreation)
         {
-            var target = GetPrimaryName(entryCreation.Cluster);
+            var target = GetPrimaryName(entryCreation);
             _logger.LogDebug("Create new CNAME on win : {from} ({zone}) to {target} ", entryCreation.Subdomain, entryCreation.DnsZone, target);
             _session.SafeRun(LazyWithResetRetry.Once, session =>
             {
@@ -57,13 +58,26 @@ namespace Instances.Infra.Dns
             });
         }
 
-        private string GetPrimaryName(string targetClusterName)
+        private string GetPrimaryName(DnsEntryCreation dnsEntryCreation)
         {
-            if (targetClusterName == IDnsService.RedirectionCluster)
+            if (dnsEntryCreation.Cluster == IDnsService.RedirectionCluster)
             {
                 return "lab2.lucca.fr.";
             }
-            return $"rbx-{ClusterNameConvertor.GetShortName(targetClusterName)}-haproxy.lucca.local.";
+            return $"{GetPrimaryNamePrefix(dnsEntryCreation.DnsEntryZone)}{ClusterNameConvertor.GetShortName(dnsEntryCreation.Cluster)}-haproxy.lucca.local.";
+        }
+
+        private string GetPrimaryNamePrefix(DnsEntryZone zone)
+        {
+            return zone switch
+            {
+                DnsEntryZone.ChProductions => "ch-",
+                DnsEntryZone.RbxProductions => "rbx-",
+                DnsEntryZone.Demos => "rbx-",
+                DnsEntryZone.Previews => "rbx-pw",
+                DnsEntryZone.Trainings => "rbx-fm",
+                _ => throw new NotSupportedException($"{zone} dns inconnue"),
+            };
         }
     }
 }

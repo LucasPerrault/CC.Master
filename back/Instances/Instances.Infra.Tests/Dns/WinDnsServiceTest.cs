@@ -1,3 +1,4 @@
+using Instances.Domain.Instances;
 using Instances.Infra.Dns;
 using Instances.Infra.Shared;
 using Instances.Infra.Windows;
@@ -23,8 +24,13 @@ namespace Instances.Infra.Tests.Dns
         }
 
         #region AddNewCname
-        [Fact]
-        public void AddNewCname_ShouldCallWmiWithTheCorrectData()
+        [Theory]
+        [InlineData(DnsEntryZone.RbxProductions, "rbx-")]
+        [InlineData(DnsEntryZone.ChProductions, "ch-")]
+        [InlineData(DnsEntryZone.Demos, "rbx-")]
+        [InlineData(DnsEntryZone.Previews, "rbx-pw")]
+        [InlineData(DnsEntryZone.Trainings, "rbx-fm")]
+        public void AddNewCname_ShouldCallWmiWithTheCorrectData(DnsEntryZone zone, string expectedZonePrefix)
         {
             var internalDnsConfiguration = new WinDnsConfiguration { Server = "my-dns-server" };
             _wmiWrapperMock.Setup(w => w.InvokeClassMethod(It.IsAny<WmiSessionWrapper>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<Dictionary<string, object>>()));
@@ -33,6 +39,7 @@ namespace Instances.Infra.Tests.Dns
             var dnsEntryCreation = new DnsEntryCreation
             {
                 Cluster = "demo",
+                DnsEntryZone = zone,
                 DnsZone = "my-zone",
                 Subdomain = "des-maux",
             };
@@ -51,7 +58,7 @@ namespace Instances.Infra.Tests.Dns
                     && d.ContainsKey(WmiConstants.PropertyCNameTypeOwnerName)
                      && (string)d[WmiConstants.PropertyCNameTypeOwnerName] == $"{dnsEntryCreation.Subdomain}.{dnsEntryCreation.DnsZone}"
                     && d.ContainsKey(WmiConstants.PropertyCNameTypePrimaryName)
-                     && (string)d[WmiConstants.PropertyCNameTypePrimaryName] == $"rbx-{ClusterNameConvertor.GetShortName(dnsEntryCreation.Cluster)}-haproxy.lucca.local."
+                     && (string)d[WmiConstants.PropertyCNameTypePrimaryName] == $"{expectedZonePrefix}{ClusterNameConvertor.GetShortName(dnsEntryCreation.Cluster)}-haproxy.lucca.local."
                 )), Times.Once
             );
         }
@@ -66,6 +73,7 @@ namespace Instances.Infra.Tests.Dns
             var dnsEntryCreation = new DnsEntryCreation
             {
                 Cluster = "demo",
+                DnsEntryZone = DnsEntryZone.RbxProductions,
                 DnsZone = "my-zone",
                 Subdomain = "des-maux",
             };

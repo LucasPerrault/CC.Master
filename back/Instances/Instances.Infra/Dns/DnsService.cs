@@ -55,6 +55,7 @@ namespace Instances.Infra.Dns
             var creation = new DnsEntryCreation
             {
                 Subdomain = entry.Subdomain,
+                DnsEntryZone = entry.Zone,
                 DnsZone = GetDnsZoneAsString(entry),
                 Cluster = entry.Cluster,
             };

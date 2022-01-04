@@ -1,3 +1,5 @@
+using Instances.Domain.Instances;
+
 namespace Instances.Infra.Dns
 {
     public interface IDnsEntry
@@ -11,6 +13,7 @@ namespace Instances.Infra.Dns
         public string Subdomain { get; set; }
         public string DnsZone { get; set; }
         public string Cluster { get; set; }
+        public DnsEntryZone DnsEntryZone { get; init; }
     }
 
     public class DnsEntryDeletion : IDnsEntry
