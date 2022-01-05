@@ -1,0 +1,13 @@
+<section class="errorPage-section">
+  <div class="errorPage-section-info mod-widthAuto u-marginTopReset u-marginLeftAuto u-marginRightAuto">
+
+    <h1 class="mod-headline mod-withIcon">
+      <span aria-hidden="true" class="lucca-icon icon-lock"></span>
+      {{ 'ip_title_headline' | translate }}
+    </h1>
+
+    <p *ngIf="userIp">{{ 'ip_request_subdescription' | translate : { userIp: userIp } }}</p>
+    <p>{{ 'ip_request_description' | translate }}</p>
+
+  </div>
+</section>

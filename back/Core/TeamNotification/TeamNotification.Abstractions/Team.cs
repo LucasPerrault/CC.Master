@@ -3,6 +3,7 @@
     public enum Team
     {
         DemoMaintainers,
-        CafeAdmins
+        CafeAdmins,
+        IpFilterGuardians,
     }
 }

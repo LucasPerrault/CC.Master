@@ -13,6 +13,10 @@ import { CodeSourcesComponent } from './pages/code-sources/code-sources.componen
 import { CodeSourcesModule } from './pages/code-sources/code-sources.module';
 import { ContractsComponent } from './pages/contracts/contracts.component';
 import { ContractsModule } from './pages/contracts/contracts.module';
+import { DistributorDomainComponent } from './pages/distributor-domain/distributor-domain.component';
+import { DistributorDomainModule } from './pages/distributor-domain/distributor-domain.module';
+import { IpComponent } from './pages/ip/ip.component';
+import { IpModule } from './pages/ip/ip.module';
 import { LogsComponent } from './pages/logs/logs.component';
 import { LogsModule } from './pages/logs/logs.module';
 import { OffersComponent } from './pages/offers/offers.component';
@@ -46,6 +50,8 @@ const pageRoutes: Routes = [
 ];
 
 const routes: Routes = [
+  { path: NoNavPath.Ip, component: IpComponent },
+  { path: NoNavPath.WrongEmailDomain, component: DistributorDomainComponent },
   { path: NoNavPath.Forbidden, component: ForbiddenComponent },
   { path: NoNavPath.NotFound, component: NotFoundComponent },
   { path: '', canActivate: [OperationsPageGuard], data: { tabs: navigationTabs }, children: pageRoutes },
@@ -61,6 +67,8 @@ const routes: Routes = [
     AccountingModule,
     OffersModule,
     CafeModule,
+    IpModule,
+    DistributorDomainModule,
   ],
   exports: [RouterModule],
 })

@@ -4,6 +4,7 @@ const PROXY_CONFIG = [
 	{
 		context: [
 			'/api',
+			'/ip-filter'
 		],
 		logLevel: 'debug',
     changeOrigin: true,

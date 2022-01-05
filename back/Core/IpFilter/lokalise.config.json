@@ -1,0 +1,10 @@
+{
+  "config": [
+    {
+      "generator": "asp_net_core_resx",
+      "remote_directory": "back/Ip.Filter",
+      "local_directory": "IpFilter.Domain/Resources/Translations",
+      "project_id": "355064325fdcc500c72789.45020379"
+    }
+  ]
+}

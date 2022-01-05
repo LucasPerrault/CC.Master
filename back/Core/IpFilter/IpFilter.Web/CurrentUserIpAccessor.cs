@@ -1,5 +1,7 @@
-﻿using Authentication.Domain;
+﻿#nullable enable
+using Authentication.Domain;
 using IpFilter.Domain;
+using IpFilter.Domain.Accessors;
 using Lucca.Core.AspNetCore.Middlewares;
 using Microsoft.AspNetCore.Http;
 using System.Collections.Generic;
@@ -10,21 +12,26 @@ using System.Threading.Tasks;
 
 namespace IpFilter.Web
 {
-    public class CurrentUserIpAccessor : IScopedIpWhitelistAccessor
+    public class CurrentUserIpAccessor : IScopedIpWhitelistAccessor, IIpAccessor
     {
         private static readonly HashSet<IPAddress>_emptyResponse = new HashSet<IPAddress>();
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly ClaimsPrincipal _principal;
-        private readonly IIpFilterService _ipFilterService;
+        private readonly IpFilterService _ipFilterService;
 
-        public CurrentUserIpAccessor(IHttpContextAccessor httpContextAccessor, ClaimsPrincipal principal, IIpFilterService ipFilterService)
+        public CurrentUserIpAccessor
+        (
+            IHttpContextAccessor httpContextAccessor,
+            ClaimsPrincipal principal,
+            IpFilterService ipFilterService
+        )
         {
             _httpContextAccessor = httpContextAccessor;
             _principal = principal;
             _ipFilterService = ipFilterService;
         }
 
-        private HttpContext HttpContext => _httpContextAccessor.HttpContext;
+        public IPAddress? IpAddress => _httpContextAccessor.HttpContext?.Connection.RemoteIpAddress;
 
         public async Task<HashSet<IPAddress>> GetIpWhitelistAsync()
         {
@@ -33,7 +40,7 @@ namespace IpFilter.Web
                 return _emptyResponse;
             }
 
-            var ip = HttpContext.Connection?.RemoteIpAddress;
+            var ip = IpAddress;
             if (ip == null)
             {
                 return _emptyResponse;

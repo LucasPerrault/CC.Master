@@ -7,6 +7,7 @@ using Environments.Web;
 using Instances.Web;
 using Rights.Infra.Configuration;
 using Salesforce.Infra.Configurations;
+using System;
 using TeamNotification.Web;
 using Users.Web;
 using AuthenticationConfiguration = Authentication.Infra.Configurations.AuthenticationConfiguration;
@@ -35,6 +36,7 @@ namespace CloudControl.Web.Configuration
         public EmailConfiguration Email { get; set; }
         public SlackConfiguration Slack { get; set; }
         public EnvironmentConfiguration Environment { get; set; }
+        public Distributors.Web.DistributorsConfiguration Distributors { get; set; }
 
         public UsersConfiguration Users => new UsersConfiguration
         {
@@ -46,6 +48,7 @@ namespace CloudControl.Web.Configuration
 
         public SqlConfiguration SqlInfos { get; set; }
         public AdvancedFiltersConfiguration AdvancedFilters { get; set; }
+        public Uri Host { get; set; }
     }
 
     public class SqlConfiguration

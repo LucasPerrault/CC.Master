@@ -20,7 +20,7 @@ namespace Email.Infra
         {
             return _luccaEmails.SendAsync
             (
-                new NewEmail(ApplicationId.WEXTERNE, AppName, content)
+                new NewEmail(ApplicationId.CC, AppName, content)
                 {
                     RecipientId = GetRecipientId(recipientForm),
                     RecipientEmail = GetRecipientEmail(recipientForm),

@@ -51,9 +51,7 @@ namespace Instances.Web.Tests.Controllers
                 query = "?" + string.Join("&", queryJoin);
             }
 
-            var response = await httpClient.GetAsync(
-                "/api/helm/releases" + query
-            );
+            var response = await httpClient.GetAsync("/api/helm/releases" + query).CatchApplicationErrorBody();
 
             response.StatusCode.Should().Be(HttpStatusCode.OK);
             var content = await response.Content.ReadAsStringAsync();
@@ -77,7 +75,7 @@ namespace Instances.Web.Tests.Controllers
 
             var response = await httpClient.GetAsync(
                 "/api/helm/releases?gitRef=myBranch"
-            );
+            ).CatchApplicationErrorBody();
 
             response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
             var content = await response.Content.ReadAsStringAsync();

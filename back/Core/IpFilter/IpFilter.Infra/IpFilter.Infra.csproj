@@ -5,7 +5,9 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\..\Email\Email.Domain\Email.Domain.csproj" />
       <ProjectReference Include="..\..\Storage\Storage.Infra\Storage.Infra.csproj" />
+      <ProjectReference Include="..\..\Users\Users.Domain\Users.Domain.csproj" />
       <ProjectReference Include="..\IpFilter.Domain\IpFilter.Domain.csproj" />
     </ItemGroup>
 

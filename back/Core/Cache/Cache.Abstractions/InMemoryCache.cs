@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Concurrent;
+using Tools;
 
 namespace Cache.Abstractions
 {
@@ -12,6 +13,11 @@ namespace Cache.Abstractions
         {
             _cacheInvalidation = cacheInvalidation;
             _cache = new ConcurrentDictionary<TKey, CachedValue<TValue>>();
+        }
+
+        public bool HasKey(TKey key)
+        {
+            return TryGet(key, out _);
         }
 
         public bool TryGet(TKey key, out TValue value)
@@ -29,6 +35,33 @@ namespace Cache.Abstractions
         public  void Cache(TKey key, TValue value)
         {
             _cache[key] = new CachedValue<TValue>(value, _cacheInvalidation);
+        }
+    }
+
+    public abstract class InMemoryValueObjectCache<T>
+        where T : ValueObject
+    {
+        private readonly InMemoryCache<T, T> _cache;
+
+        protected InMemoryValueObjectCache(TimeSpan cacheInvalidation)
+        {
+            _cache = new PrivateCache(cacheInvalidation);
+        }
+
+        public bool Has(T value)
+        {
+            return _cache.TryGet(value, out _);
+        }
+
+        public  void Cache(T value)
+        {
+            _cache.Cache(value, value);
+        }
+
+        private class PrivateCache : InMemoryCache<T, T>
+        {
+            public PrivateCache(TimeSpan cacheInvalidation) : base(cacheInvalidation)
+            { }
         }
     }
 

@@ -6,13 +6,14 @@
 
     <ItemGroup>
       <ProjectReference Include="..\..\Authentication\Authentication.Domain\Authentication.Domain.csproj" />
+      <ProjectReference Include="..\..\Cache\Cache.Abstractions\Cache.Abstractions.csproj" />
       <ProjectReference Include="..\..\Tools\Tools.Web\Tools.Web.csproj" />
       <ProjectReference Include="..\IpFilter.Domain\IpFilter.Domain.csproj" />
       <ProjectReference Include="..\IpFilter.Infra\IpFilter.Infra.csproj" />
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="Lucca.Core.AspNetCore.Middlewares" Version="4.0.1" />
+      <PackageReference Include="Lucca.Core.AspNetCore.Middlewares" Version="4.0.2" />
     </ItemGroup>
 
 </Project>

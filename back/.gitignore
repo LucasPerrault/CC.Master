@@ -18,5 +18,6 @@ CloudControl.Web/Properties/PublishProfiles/*.pubxml
 CloudControl.Web/Properties/PublishProfiles/*.user
 publish
 CloudControl.Web/appsettings.json
+CloudControl.Web/appsettings.json.override
 CloudControl.Web/web.config
 CloudControl.Web/migration.log

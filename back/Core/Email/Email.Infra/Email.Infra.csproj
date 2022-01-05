@@ -5,7 +5,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="Lucca.Emails.Client" Version="1.9.0" />
+      <PackageReference Include="Lucca.Emails.Client" Version="1.11.0" />
     </ItemGroup>
 
     <ItemGroup>

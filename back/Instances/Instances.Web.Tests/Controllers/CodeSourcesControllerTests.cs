@@ -30,7 +30,7 @@ namespace Instances.Web.Tests.Controllers
 
             var response = await httpClient.GetAsync(
                 "/api/code-sources/services/build-url?CodeSourceCode=Figgo&branchName=MyBranch&BuildNumber=1234"
-            );
+            ).CatchApplicationErrorBody();
 
             response.StatusCode.Should().Be(HttpStatusCode.OK);
             var content = await response.Content.ReadAsStringAsync();
@@ -56,7 +56,7 @@ namespace Instances.Web.Tests.Controllers
 
             var response = await httpClient.GetAsync(
                 "/api/code-sources/services/build-url?CodeSourceCode=Figgo&branchName=MyBranch&BuildNumber=1234"
-            );
+            ).CatchApplicationErrorBody();
 
             response.StatusCode.Should().Be(HttpStatusCode.NotFound);
         }
@@ -82,7 +82,7 @@ namespace Instances.Web.Tests.Controllers
 
             var response = await httpClient.GetAsync(
                 $"/api/code-sources/services/build-url?CodeSourceCode=Figgo&branchName={branchName}&BuildNumber={buildNumber}"
-            );
+            ).CatchApplicationErrorBody();
 
             response.StatusCode.Should().Be(expectedStatus);
         }
@@ -105,7 +105,7 @@ namespace Instances.Web.Tests.Controllers
 
             var httpClient = webApplicationFactory.CreateAuthenticatedClient();
 
-            var response = await httpClient.GetAsync("/api/code-sources/23/artifacts");
+            var response = await httpClient.GetAsync("/api/code-sources/23/artifacts").CatchApplicationErrorBody();
 
             response.StatusCode.Should().Be(HttpStatusCode.OK);
             var content = await Serializer.DeserializeAsync<List<object>>(await response.Content.ReadAsStreamAsync());

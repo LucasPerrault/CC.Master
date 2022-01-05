@@ -9,5 +9,6 @@ namespace TeamNotification.Web
     {
         public string DemosMaintainers { get; set; }
         public string CloudControlTeam { get; set; }
+        public string IpFilterRejectionAlert { get; set; }
     }
 }
