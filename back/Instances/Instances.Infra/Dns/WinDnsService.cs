@@ -62,7 +62,7 @@ namespace Instances.Infra.Dns
         {
             if (dnsEntryCreation.Cluster == IDnsService.RedirectionCluster)
             {
-                return "lab2.lucca.fr.";
+                return "labs2.lucca.fr.";
             }
             return $"{GetPrimaryNamePrefix(dnsEntryCreation.DnsEntryZone)}{ClusterNameConvertor.GetShortName(dnsEntryCreation.Cluster)}-haproxy.lucca.local.";
         }
