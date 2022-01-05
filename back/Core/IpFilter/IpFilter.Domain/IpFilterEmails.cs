@@ -57,8 +57,8 @@ namespace IpFilter.Domain
             (
                 _translations.RejectionEmailActionDescriptionAndExpiration
                 (
-                    $"{request.CreatedAt.ToString(CultureInfo.CurrentCulture.DateTimeFormat.LongDatePattern)}",
-                    $"{request.CreatedAt.ToString(CultureInfo.CurrentCulture.DateTimeFormat.LongTimePattern)}"
+                    $"{request.ExpiresAt.ToString(CultureInfo.CurrentCulture.DateTimeFormat.LongDatePattern)}",
+                    $"{request.ExpiresAt.ToString(CultureInfo.CurrentCulture.DateTimeFormat.LongTimePattern)}"
                 ).WithHtmlNewLines()
             );
         }
@@ -68,8 +68,8 @@ namespace IpFilter.Domain
             return new Paragraph(_translations.RejectionEmailGreetingsAndContext
                 (
                     user.FirstName,
-                    $"{request.ExpiresAt.ToString(CultureInfo.CurrentCulture.DateTimeFormat.LongDatePattern)}",
-                    $"{request.ExpiresAt.ToString(CultureInfo.CurrentCulture.DateTimeFormat.LongTimePattern)}",
+                    $"{request.CreatedAt.ToString(CultureInfo.CurrentCulture.DateTimeFormat.LongDatePattern)}",
+                    $"{request.CreatedAt.ToString(CultureInfo.CurrentCulture.DateTimeFormat.LongTimePattern)}",
                     request.Address
                 ).WithHtmlNewLines()
             );

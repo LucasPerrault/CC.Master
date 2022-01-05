@@ -21,7 +21,7 @@ export class DistributorDomainComponent extends NoNavComponent implements OnInit
   }
 
   public get registeredDomains(): string {
-    return `<b>${this.registered}</b>`;
+    return `<b>${this.registered.split(',').join(', ')}</b>`;
   }
 
   constructor(private activatedRoute: ActivatedRoute) {
