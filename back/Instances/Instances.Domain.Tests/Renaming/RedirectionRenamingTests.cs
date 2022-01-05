@@ -51,7 +51,7 @@ namespace Instances.Domain.Tests.Renaming
                     newName,
                     "ilucca.net",
                     It.Is<DateOnly>(d => d.Month == DateTime.Now.AddMonths(3).Month)));
-            _redirectionIisAdministrationMock.Verify(r => r.BindDomainAsync(newName, "ilucca.net"));
+            _redirectionIisAdministrationMock.Verify(r => r.BindDomainAsync(oldName, "ilucca.net"));
             _dnsServiceMock.Verify(d => d.CreateAsync(It.Is<DnsEntry>(d => d.Subdomain == oldName && d.Cluster == IDnsService.RedirectionCluster)));
         }
 
