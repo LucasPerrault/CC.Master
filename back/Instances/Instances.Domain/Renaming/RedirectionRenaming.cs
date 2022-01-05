@@ -29,7 +29,7 @@ namespace Instances.Domain.Renaming
                 domain,
                 DateOnly.FromDateTime(DateTime.Now).AddMonths(3)
             );
-            await _redirectionIisAdministration.BindDomainAsync(newName, domain);
+            await _redirectionIisAdministration.BindDomainAsync(environment.Subdomain, domain);
             await _dnsService.CreateAsync(DnsEntry.ForRedirection(environment.Subdomain));
         }
     }
