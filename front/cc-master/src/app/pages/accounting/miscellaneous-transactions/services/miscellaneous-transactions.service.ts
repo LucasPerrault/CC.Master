@@ -31,14 +31,10 @@ export class MiscellaneousTransactionsService {
 
   constructor(private httpClient: HttpClient, private apiV3DateService: ApiV3DateService) {}
 
-  public getMiscellaneousTransactions$(contractIds: number[]): Observable<IMiscellaneousTransaction[]> {
-    let params = new HttpParams()
+  public getMiscellaneousTransactions$(params: HttpParams): Observable<IMiscellaneousTransaction[]> {
+    params = params
       .set('fields', miscTransactionFields)
       .set(ApiSortHelper.v3SortKey, `periodOn,${ ApiSortHelper.v3DscKey },contract.Id,${ ApiSortHelper.v3AscKey }`);
-
-    if (!!contractIds?.length) {
-      params = params.set('contractId', contractIds.join(','));
-    }
 
     return this.httpClient.get<IHttpApiV3CollectionResponse<IMiscellaneousTransaction>>(MiscTransactionEndPoint.base, { params })
       .pipe(map(res => res.data.items));
