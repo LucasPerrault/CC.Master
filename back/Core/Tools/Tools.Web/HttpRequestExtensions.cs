@@ -17,6 +17,7 @@ public static class HttpRequestExtensions
         "/health/live",
         "/warmup",
         "/maj",
+        "/api/v3/opportunitiesSync",
     };
     private static HashSet<string> WhitelistedRoutePrefixes = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
     {
