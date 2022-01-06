@@ -16,6 +16,7 @@
     "Authentication": {
         "ServerUri": "{{ CC.Master:PartenairesUri }}",
         "ApiKeysFetcherToken": "{{ CC.Master:AuthApiKeysFetcherToken }}",
+        "MagicToken": "{{ shared:CloudControlMagicToken }}",
         "UsersEndpointPath": "/api/v3/users/me",
         "AllUsersEndpointPath": "/api/v3/users",
         "ApiKeysEndpointPath": "/api/v3/apikeys",

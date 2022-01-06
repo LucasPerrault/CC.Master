@@ -1,6 +1,7 @@
 ﻿using Lucca.Core.Authentication.Abstractions.Methods;
 using Lucca.Core.Authentication.Tokens;
 using Microsoft.AspNetCore.Http;
+using System;
 using System.Linq;
 
 namespace Authentication.Infra.Services
@@ -20,7 +21,7 @@ namespace Authentication.Infra.Services
             }
 
             var header = httpRequest.Headers[AuthorizationKey].FirstOrDefault()?.ToUpperInvariant();
-            return header != null 
+            return header != null
                    && header.StartsWith(GetHeaderPrefix(key));
         }
 
@@ -30,6 +31,22 @@ namespace Authentication.Infra.Services
             return authorization.Replace(GetHeaderPrefix(key), "");
         }
 
-        private string GetHeaderPrefix(string key) => $"{Scheme} {key}=".ToUpperInvariant();
+        public static bool TryGetGuidValue(HttpRequest httpRequest, string key, out Guid guid)
+        {
+            var authorization = httpRequest.Headers[AuthorizationKey].FirstOrDefault()?.ToUpperInvariant();
+            if (
+                string.IsNullOrEmpty(authorization)
+                || !Guid.TryParse(authorization.Replace(GetHeaderPrefix(key), ""), out var parsed)
+               )
+            {
+                guid = default;
+                return false;
+            }
+
+            guid = parsed;
+            return true;
+        }
+
+        private static string GetHeaderPrefix(string key) => $"{Scheme} {key}=".ToUpperInvariant();
     }
 }
