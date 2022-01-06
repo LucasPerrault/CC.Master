@@ -1,6 +1,7 @@
 import { ConfigOption } from '@ngx-formly/core';
 
 import { FormlyFieldApplication } from './application/application.component';
+import { FormlyFieldBillingEntity } from './billing-entity/billing-entity.component';
 import { FormlyFieldCluster } from './cluster/cluster.component';
 import { FormlyFieldCountry } from './country/country.component';
 import { FormlyFieldDistributor } from './distributor/distributor.component';
@@ -42,6 +43,10 @@ export const luFormlyConfig: ConfigOption = {
     {
       name: 'distributorType',
       component: FormlyFieldDistributorType,
+    },
+    {
+      name: 'billing-entity',
+      component: FormlyFieldBillingEntity,
     },
   ],
 };
