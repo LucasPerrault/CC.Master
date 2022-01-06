@@ -3,6 +3,7 @@ import { Component, ElementRef, EventEmitter, HostListener, Input, Output } from
 import { TranslatePipe } from '@cc/aspects/translate';
 import { PaginatedListState } from '@cc/common/paging';
 import { ISortParams, SortOrder, SortService } from '@cc/common/sort';
+import { BillingEntity, getBillingEntity } from '@cc/domain/billing/clients';
 import { IEstablishment } from '@cc/domain/billing/establishments';
 import { Subject } from 'rxjs';
 
@@ -60,6 +61,11 @@ export class ContractsManageListComponent {
 
   public getSortOrderClass(field: string): string {
     return this.sortService.getSortOrderClass(field, this.sortParams);
+  }
+
+  public getBillingEntityName(billingEntity: BillingEntity): string {
+    const translationKey = getBillingEntity(billingEntity)?.name;
+    return this.translatePipe.transform(translationKey);
   }
 
   public getEstablishmentNames(establishments: IEstablishment[]): string {

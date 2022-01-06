@@ -7,6 +7,7 @@ export enum ContractAdditionalColumn {
   StartAt = 'startAt',
   CloseOn = 'closeOn',
   CreatedOn = 'createdOn',
+  BillingEntity = 'billingEntity',
   Establishments = 'establishments',
   EstablishmentsHealth = 'establishmentsHealth',
 }
@@ -60,6 +61,10 @@ export const contractAdditionalColumns: IContractAdditionalColumn[] = [
   {
     id: ContractAdditionalColumn.Establishments,
     name: 'front_contractPage_column_establishments',
+  },
+  {
+    id: ContractAdditionalColumn.BillingEntity,
+    name: 'billingEntity_column',
   },
   {
     id: ContractAdditionalColumn.EstablishmentsHealth,
