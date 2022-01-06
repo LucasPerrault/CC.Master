@@ -22,7 +22,7 @@ namespace Instances.Infra.Tests.Iis
             _redirectionIisConfiguration = new RedirectionIisConfiguration
             {
                 ApplicationHost = Path.Join(_tempDirectory, "applicationHost.conf"),
-                RedirectionConf = @"C:\d\temp\test.json"
+                RedirectionConf = Path.Join(_tempDirectory, "test.json")
             };
             _redirectionIisAdministration = new RedirectionIisAdministration(_redirectionIisConfiguration);
         }
