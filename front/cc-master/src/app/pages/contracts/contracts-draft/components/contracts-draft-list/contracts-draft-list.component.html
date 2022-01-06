@@ -2,6 +2,7 @@
   <thead class="table-head">
   <tr class="table-head-row">
     <th class="table-head-row-cell">{{ 'front_draftPage_columnTable_client' | translate }}</th>
+    <th class="table-head-row-cell">{{ 'billingEntity_column' | translate }}</th>
     <th class="table-head-row-cell">{{ 'front_draftPage_columnTable_distributor' | translate }}</th>
     <th class="table-head-row-cell">{{ 'front_draftPage_columnTable_product' | translate }}</th>
     <th class="table-head-row-cell">{{ 'front_draftPage_columnTable_offer' | translate }}</th>
@@ -15,6 +16,7 @@
     <tr class="table-body-row" *ngFor="let contractDraft of contractDrafts"
         [routerLink]="getContractCreationUrl(contractDraft.id)">
       <td class="table-body-row-cell">{{ contractDraft.client.name }}</td>
+      <td class="table-body-row-cell">{{ getBillingEntityName(contractDraft?.client?.billingEntity) }}</td>
       <td class="table-body-row-cell">{{ contractDraft.distributor.name }}</td>
       <td class="table-body-row-cell">
         <cc-product-chip *ngIf="!!contractDraft.product" [product]="contractDraft.product"></cc-product-chip>
