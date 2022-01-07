@@ -17,7 +17,6 @@ namespace Billing.Contracts.Infra.Storage.Configurations
             builder.Property(d => d.BillingStreet).HasColumnName("BillingStreet");
             builder.Property(d => d.BillingPostalCode).HasColumnName("BillingPostalCode");
             builder.Property(d => d.BillingCity).HasColumnName("BillingCity");
-            builder.Property(d => d.BillingState).HasColumnName("BillingState");
             builder.Property(d => d.BillingCountry).HasColumnName("BillingCountry");
             builder.Property(d => d.BillingMail).HasColumnName("BillingMail");
             builder.Property(d => d.Phone).HasColumnName("Phone");
