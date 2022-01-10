@@ -1,6 +1,6 @@
-<ng-container [ngSwitch]="context.establishmentType">
+<ng-container [ngSwitch]="type">
 
-  <ng-container *ngSwitchCase="etsType.LinkedToContract">
+  <ng-container *ngSwitchCase="listEntryType.LinkedToThisContract">
     <button *ngIf="canDelete"
             type="button" class="actionIcon"
             [luTooltip]="'front_contractPage_establishments_delete_button_label' | translate"
@@ -42,7 +42,7 @@
     </button>
   </ng-container>
 
-  <ng-container *ngSwitchCase="etsType.LinkedToAnotherContract">
+  <ng-container *ngSwitchCase="listEntryType.LinkedToAnotherContract">
     <button *ngIf="canLink"
             type="button" class="actionIcon"
             [luTooltip]="'front_contractPage_establishments_link_button_label' | translate"
@@ -58,7 +58,7 @@
     </button>
   </ng-container>
 
-  <ng-container *ngSwitchCase="etsType.Excluded">
+  <ng-container *ngSwitchCase="listEntryType.Excluded">
     <button *ngIf="canLink"
             type="button" class="actionIcon"
             [luTooltip]="'front_contractPage_establishments_link_button_label' | translate"
@@ -68,7 +68,7 @@
     </button>
   </ng-container>
 
-  <ng-container *ngSwitchCase="etsType.WithError">
+  <ng-container *ngSwitchCase="listEntryType.Error">
     <button *ngIf="canLink"
             type="button" class="actionIcon"
             [luTooltip]="'front_contractPage_establishments_link_button_label' | translate"

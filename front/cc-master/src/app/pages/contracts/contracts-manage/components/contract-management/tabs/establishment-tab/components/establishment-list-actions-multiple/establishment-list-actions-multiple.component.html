@@ -1,6 +1,6 @@
-<ng-container [ngSwitch]="context.establishmentType">
+<ng-container [ngSwitch]="type">
 
-  <ng-container *ngSwitchCase="etsType.LinkedToContract">
+  <ng-container *ngSwitchCase="listEntryType.LinkedToThisContract">
     <button [disabled]="isDisabled || !canDelete"
             type="button" class="button palette-grey mod-outline mod-small"
             (click)="openAttachmentDeletion()">
@@ -26,7 +26,7 @@
     </button>
   </ng-container>
 
-  <ng-container *ngSwitchCase="etsType.LinkedToAnotherContract">
+  <ng-container *ngSwitchCase="listEntryType.LinkedToAnotherContract">
     <button [disabled]="isDisabled || !canLink"
             type="button" class="button palette-grey mod-outline mod-small"
             (click)="openAttachmentLinking()">
@@ -34,7 +34,7 @@
     </button>
   </ng-container>
 
-  <ng-container *ngSwitchCase="etsType.Excluded">
+  <ng-container *ngSwitchCase="listEntryType.Excluded">
     <button type="button"
             [disabled]="isDisabled || !canLink"
             class="button palette-grey mod-outline mod-small" (click)="openAttachmentLinking()">
@@ -42,7 +42,7 @@
     </button>
   </ng-container>
 
-  <ng-container *ngSwitchCase="etsType.WithError">
+  <ng-container *ngSwitchCase="listEntryType.Error">
     <button type="button"
             [disabled]="isDisabled || !canLink"
             class="button palette-grey mod-outline mod-small" (click)="openAttachmentLinking()">

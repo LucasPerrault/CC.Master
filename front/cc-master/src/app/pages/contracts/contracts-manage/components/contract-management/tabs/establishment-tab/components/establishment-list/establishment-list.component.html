@@ -16,10 +16,10 @@
         <th class="table-head-row-cell">
           {{ 'front_contractPage_establishments_column_name' | translate }}
         </th>
-        <th class="table-head-row-cell" *ngIf="isType(establishmentType.LinkedToAnotherContract)">
+        <th class="table-head-row-cell" *ngIf="isType(listEntryType.LinkedToAnotherContract)">
           {{ 'front_contractPage_establishments_column_contract' | translate }}
         </th>
-        <th class="table-head-row-cell" *ngIf="!isType(establishmentType.Excluded)">
+        <th class="table-head-row-cell" *ngIf="!isType(listEntryType.Excluded)">
           {{ 'front_contractPage_establishments_column_state' | translate }}
         </th>
         <th class="table-head-row-cell" *ngIf="isLinked">
@@ -46,29 +46,30 @@
             <span class="checkbox-label"></span>
           </label>
         </td>
-        <td class="table-body-row-cell">{{ entry.establishment.name }}</td>
-        <td class="table-body-row-cell" *ngIf="isType(establishmentType.LinkedToAnotherContract)">
-          {{ getAttachment(entry)?.contract?.name }}
+        <td class="table-body-row-cell">{{ entry.establishment?.name }}</td>
+        <td class="table-body-row-cell" *ngIf="isType(listEntryType.LinkedToAnotherContract)">
+          {{ entry.attachment?.contract?.name }}
         </td>
-        <td class="table-body-row-cell" *ngIf="!isType(establishmentType.Excluded)">
-          {{ getEstablishmentStatus(entry) }}
-        </td>
-        <td class="table-body-row-cell" *ngIf="isLinked">
-          {{ getAttachment(entry)?.start | date : 'dd/MM/yyyy' }}
+        <td class="table-body-row-cell" *ngIf="!isType(listEntryType.Excluded)">
+          {{ getLifecycleStepDescription(entry.lifecycleStep, entry.establishment) }}
         </td>
         <td class="table-body-row-cell" *ngIf="isLinked">
-          {{ getAttachment(entry)?.end | date : 'dd/MM/yyyy' }}
+          {{ entry.attachment?.start | date : 'dd/MM/yyyy' }}
         </td>
         <td class="table-body-row-cell" *ngIf="isLinked">
-          {{ getAttachmentEndReason(entry) }}
+          {{ entry.attachment?.end | date : 'dd/MM/yyyy' }}
         </td>
         <td class="table-body-row-cell" *ngIf="isLinked">
-          {{ getAttachment(entry)?.nbMonthFree }}
+          {{ getEndReason(entry.attachment?.endReason) }}
+        </td>
+        <td class="table-body-row-cell" *ngIf="isLinked">
+          {{ entry.attachment?.nbMonthFree }}
         </td>
         <td class="table-body-row-cell mod-actions" *ngIf="canReadValidationContext">
           <cc-establishment-list-actions-single *ngIf="canEditAttachments()"
+                                                [type]="type"
                                                 [entry]="entry"
-                                                [context]="actionsContext">
+                                                [context]="context">
           </cc-establishment-list-actions-single>
         </td>
       </tr>
@@ -88,6 +89,7 @@
 
 <cc-establishment-list-actions-multiple class="u-displayBlock u-textRight u-paddingSmall"
                                         *ngIf="canEditAttachments() && canReadValidationContext"
+                                        [type]="type"
                                         [entries]="selectedEntries"
-                                        [context]="actionsContext">
+                                        [context]="context">
 </cc-establishment-list-actions-multiple>

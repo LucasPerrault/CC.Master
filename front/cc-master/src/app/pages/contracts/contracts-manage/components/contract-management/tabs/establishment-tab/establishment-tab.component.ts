@@ -8,16 +8,18 @@ import { finalize, map, take, takeUntil } from 'rxjs/operators';
 
 import { ValidationContextStoreService } from '../../validation-context-store.service';
 import { establishmentDocUrl } from './constants/establishment-doc-url.const';
-import { EstablishmentType } from './constants/establishment-type.enum';
 import { IEstablishmentContract } from './models/establishment-contract.interface';
 import { IEstablishmentWithAttachments } from './models/establishment-with-attachments.interface';
 import { IEstablishmentsWithAttachmentsByType } from './models/establishments-by-type.interface';
 import { AttachmentsActionRestrictionsService } from './services/attachments-action-restrictions.service';
+import { IListEntry, ListEntryType } from './models/establishment-list-entry.interface';
 import { EstablishmentContractDataService } from './services/establishment-contract-data.service';
 import { EstablishmentListActionsService } from './services/establishment-list-actions.service';
+import { EstablishmentListEntriesService } from './services/establishment-list-entries.service';
 import { EstablishmentTypeService } from './services/establishment-type.service';
 import { EstablishmentsDataService } from './services/establishments-data.service';
-import { EstablishmentsWithAttachmentsService } from './services/establishments-with-attachments.service';
+import { IEstablishmentActionsContext } from './models/establishment-actions-context.interface';
+import { TimelineCountsService } from '@cc/domain/billing/counts/timeline-counts-service';
 
 @Component({
   selector: 'cc-establishment-tab',
@@ -35,12 +37,12 @@ export class EstablishmentTabComponent implements OnInit, OnDestroy {
     return parseInt(this.activatedRoute.parent.snapshot.paramMap.get('id'), 10);
   }
 
-  public establishmentType = EstablishmentType;
-  public typeFilter: FormControl = new FormControl(EstablishmentType.LinkedToContract);
+  public listEntryType = ListEntryType;
+  public typeFilter: FormControl = new FormControl(ListEntryType.LinkedToThisContract);
 
-  public establishments$: ReplaySubject<IEstablishmentsWithAttachmentsByType> = new ReplaySubject<IEstablishmentsWithAttachmentsByType>(1);
+  public entries$: ReplaySubject<IListEntry[]> = new ReplaySubject<IListEntry[]>(1);
   public contract$: ReplaySubject<IEstablishmentContract> = new ReplaySubject<IEstablishmentContract>(1);
-  public realCounts$: ReplaySubject<ICount[]> = new ReplaySubject<ICount[]>(1);
+  public context$: ReplaySubject<IEstablishmentActionsContext> = new ReplaySubject<IEstablishmentActionsContext>(1);
 
   public isLoading$: ReplaySubject<boolean> = new ReplaySubject(1);
   public synchronizeButtonClass$: ReplaySubject<string> = new ReplaySubject(1);
@@ -49,12 +51,12 @@ export class EstablishmentTabComponent implements OnInit, OnDestroy {
 
   constructor(
     private activatedRoute: ActivatedRoute,
-    private establishmentsListService: EstablishmentsWithAttachmentsService,
     private contractService: EstablishmentContractDataService,
     private establishmentsService: EstablishmentsDataService,
     private actionsService: EstablishmentListActionsService,
     private contextStoreService: ValidationContextStoreService,
     private typeService: EstablishmentTypeService,
+    private listService: EstablishmentListEntriesService,
     private restrictionsService: AttachmentsActionRestrictionsService,
   ) {
   }
@@ -75,15 +77,18 @@ export class EstablishmentTabComponent implements OnInit, OnDestroy {
     this.destroy$.complete();
   }
 
-  public getFilteredEntries(establishment: IEstablishmentsWithAttachmentsByType, type: EstablishmentType): IEstablishmentWithAttachments[] {
-    switch (type) {
-      case EstablishmentType.LinkedToContract:
-        return establishment.linkedToContract;
-      case EstablishmentType.LinkedToAnotherContract:
-        return establishment.linkedToAnotherContract;
-      case EstablishmentType.Excluded:
-        return establishment.excluded;
+  public getTotalCount(entries: IListEntry[], isErrorSection: boolean): number {
+    const errorEntriesCount = EstablishmentTypeService.getEntriesByType(entries, ListEntryType.Error)?.length ?? 0;
+    return isErrorSection ? errorEntriesCount : entries.length - errorEntriesCount;
+  }
+
+  public getSortedEntriesByType(allEntries: IListEntry[], type: ListEntryType): IListEntry[] {
+    const entries = EstablishmentTypeService.getEntriesByType(allEntries, type);
+    if (type !== ListEntryType.Error) {
+      return entries.sort((a, b) =>
+        new Date(a.attachment?.start).getTime() - new Date(b.attachment?.start).getTime());
     }
+    return entries;
   }
 
   public openEstablishmentsDoc(): void {
@@ -125,18 +130,18 @@ export class EstablishmentTabComponent implements OnInit, OnDestroy {
 
     combineLatest([
       this.contextStoreService.realCounts$,
-      this.getEstablishmentsByType$(contract),
+      this.listService.getListEntries$(contract),
     ])
       .pipe(take(1), finalize(() => this.isLoading$.next(false)))
       .subscribe(([realCounts, establishments]) => {
         this.contract$.next(contract);
-        this.realCounts$.next(realCounts);
-        this.establishments$.next(establishments);
+        this.context$.next(this.toContext(contract, realCounts));
+        this.entries$.next(establishments);
       });
   }
 
-  private getEstablishmentsByType$(contract: IEstablishmentContract): Observable<IEstablishmentsWithAttachmentsByType> {
-    return this.establishmentsListService.getEstablishments$(contract)
-      .pipe(map(ets => this.typeService.getEstablishmentsByType(ets, contract)));
+  private toContext(contract: IEstablishmentContract, realCounts: ICount[]): IEstablishmentActionsContext {
+    const lastCountPeriod = TimelineCountsService.getLastCountPeriod(realCounts);
+    return { contract, realCounts, lastCountPeriod };
   }
 }

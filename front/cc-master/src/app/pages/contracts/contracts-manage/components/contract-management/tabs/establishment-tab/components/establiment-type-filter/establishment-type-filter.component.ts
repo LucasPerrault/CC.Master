@@ -3,8 +3,8 @@ import { ControlValueAccessor, FormControl, NG_VALUE_ACCESSOR } from '@angular/f
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { EstablishmentType } from '../../constants/establishment-type.enum';
-import { IEstablishmentsWithAttachmentsByType } from '../../models/establishments-by-type.interface';
+import { IListEntry, ListEntryType } from '../../models/establishment-list-entry.interface';
+import { EstablishmentTypeService } from '../../services/establishment-type.service';
 
 @Component({
   selector: 'cc-establishment-type-filter',
@@ -18,10 +18,10 @@ import { IEstablishmentsWithAttachmentsByType } from '../../models/establishment
   ],
 })
 export class EstablishmentTypeFilterComponent implements OnInit, OnDestroy, ControlValueAccessor {
-  @Input() public establishmentsByType: IEstablishmentsWithAttachmentsByType;
+  @Input() public allEntries: IListEntry[];
 
   public formControl: FormControl = new FormControl();
-  public type = EstablishmentType;
+  public type = ListEntryType;
 
   private destroy$: Subject<void> = new Subject();
 
@@ -36,7 +36,7 @@ export class EstablishmentTypeFilterComponent implements OnInit, OnDestroy, Cont
     this.destroy$.complete();
   }
 
-  public onChange: (e: EstablishmentType) => void = () => {};
+  public onChange: (e: ListEntryType) => void = () => {};
   public onTouch: () => void = () => {};
 
   public registerOnChange(fn: () => void): void {
@@ -47,9 +47,13 @@ export class EstablishmentTypeFilterComponent implements OnInit, OnDestroy, Cont
     this.onTouch = fn;
   }
 
-  public writeValue(e: EstablishmentType): void {
+  public writeValue(e: ListEntryType): void {
     if (!!e && e !== this.formControl.value) {
       this.formControl.patchValue(e);
     }
+  }
+
+  public getByType(entries: IListEntry[], type: ListEntryType): IListEntry[] {
+    return EstablishmentTypeService.getEntriesByType(entries, type);
   }
 }

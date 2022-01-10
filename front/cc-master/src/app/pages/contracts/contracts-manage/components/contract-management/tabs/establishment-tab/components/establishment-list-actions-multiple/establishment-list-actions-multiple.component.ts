@@ -1,10 +1,9 @@
 import { Component, Input } from '@angular/core';
 
-import { EstablishmentType } from '../../constants/establishment-type.enum';
 import { IContractEstablishment } from '../../models/contract-establishment.interface';
 import { IEstablishmentActionsContext } from '../../models/establishment-actions-context.interface';
 import { IEstablishmentAttachment } from '../../models/establishment-attachment.interface';
-import { IEstablishmentWithAttachments } from '../../models/establishment-with-attachments.interface';
+import { IListEntry, ListEntryType } from '../../models/establishment-list-entry.interface';
 import { AttachmentsActionRestrictionsService } from '../../services/attachments-action-restrictions.service';
 import { EstablishmentListActionsService } from '../../services/establishment-list-actions.service';
 
@@ -13,41 +12,42 @@ import { EstablishmentListActionsService } from '../../services/establishment-li
   templateUrl: './establishment-list-actions-multiple.component.html',
 })
 export class EstablishmentListActionsMultipleComponent {
+  @Input() public type: ListEntryType;
   @Input() public context: IEstablishmentActionsContext;
-  @Input() public entries: IEstablishmentWithAttachments[];
+  @Input() public entries: IListEntry[];
 
   public get establishments(): IContractEstablishment[] {
     return this.entries.map(e => e.establishment);
   }
 
-  public get currentOrFutureAttachments(): IEstablishmentAttachment[] {
-    return this.entries.map(e => e.currentAttachment || e.nextAttachment);
+  public get attachments(): IEstablishmentAttachment[] {
+    return this.entries.map(e => e.attachment);
   }
 
-  public etsType = EstablishmentType;
+  public listEntryType = ListEntryType;
 
   public get isDisabled(): boolean {
     return !this.establishments.length;
   }
 
   public get canDelete(): boolean {
-    return this.actionRestrictionsService.canDeleteRange(this.currentOrFutureAttachments, this.context.realCounts);
+    return this.actionRestrictionsService.canDeleteRange(this.attachments, this.context.realCounts);
   }
 
   public get canEditFutureEnd(): boolean {
-    return this.actionRestrictionsService.canEditFutureEndRange(this.currentOrFutureAttachments, this.context.realCounts);
+    return this.actionRestrictionsService.canEditFutureEndRange(this.attachments, this.context.realCounts);
   }
 
   public get canEditFutureStart(): boolean {
-    return this.actionRestrictionsService.canEditFutureStartRange(this.currentOrFutureAttachments, this.context.realCounts);
+    return this.actionRestrictionsService.canEditFutureStartRange(this.attachments, this.context.realCounts);
   }
 
   public get canUnlink(): boolean {
-    return this.actionRestrictionsService.canUnlinkRange(this.currentOrFutureAttachments);
+    return this.actionRestrictionsService.canUnlinkRange(this.attachments);
   }
 
   public get canLink(): boolean {
-    return this.actionRestrictionsService.canLinkRange(this.currentOrFutureAttachments);
+    return this.actionRestrictionsService.canLinkRange(this.attachments);
   }
 
   constructor(
@@ -56,14 +56,14 @@ export class EstablishmentListActionsMultipleComponent {
   ) { }
 
   public openAttachmentDeletion(): void {
-    const attachmentIds = this.currentOrFutureAttachments.map(a => a.id);
+    const attachmentIds = this.attachments.map(a => a.id);
     this.actionsService.openAttachmentsDeletion(attachmentIds);
   }
 
   public openAttachmentFutureDeactivationEdition(): void {
     this.actionsService.openAttachmentsFutureDeactivationEdition(
       this.establishments,
-      this.currentOrFutureAttachments,
+      this.attachments,
       this.context.lastCountPeriod,
     );
   }
@@ -71,21 +71,18 @@ export class EstablishmentListActionsMultipleComponent {
   public openAttachmentFutureActivationEdition(): void {
     this.actionsService.openAttachmentsFutureActivationEdition(
       this.establishments,
-      this.currentOrFutureAttachments,
+      this.attachments,
       this.context.lastCountPeriod,
       new Date(this.context.contract.theoricalStartOn),
     );
   }
 
   public openAttachmentLinking(): void {
-    const finishedAttachments = this.entries.map(e => e.lastAttachment);
-    const allAttachments = [...this.currentOrFutureAttachments, ...finishedAttachments];
-
-    this.actionsService.openAttachmentsLinking(this.establishments, allAttachments, this.context.contract);
+    this.actionsService.openAttachmentsLinking(this.establishments, this.attachments, this.context.contract);
   }
 
   public openAttachmentUnlinking(): void {
-    this.actionsService.openAttachmentsUnlinking(this.establishments, this.currentOrFutureAttachments, this.context.lastCountPeriod);
+    this.actionsService.openAttachmentsUnlinking(this.establishments, this.attachments, this.context.lastCountPeriod);
   }
 
   public openAttachmentExclusion(): void {

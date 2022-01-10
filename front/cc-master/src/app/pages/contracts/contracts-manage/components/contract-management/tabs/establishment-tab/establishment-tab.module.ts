@@ -20,14 +20,13 @@ import { EstablishmentActionModalsModule } from './components/modals/establishme
 import { EstablishmentTabComponent } from './establishment-tab.component';
 import { AttachmentsActionRestrictionsService } from './services/attachments-action-restrictions.service';
 import { AttachmentsTimelineService } from './services/attachments-timeline.service';
-import { EstablishmentActionContextService } from './services/establishment-action-context.service';
 import { EstablishmentContractDataService } from './services/establishment-contract-data.service';
 import { EstablishmentListActionsService } from './services/establishment-list-actions.service';
+import { EstablishmentListEntriesService } from './services/establishment-list-entries.service';
 import { EstablishmentProductStoreService } from './services/establishment-product-store.service';
 import { EstablishmentProductStoreDataService } from './services/establishment-product-store-data.service';
-import { EstablishmentTypeService } from './services/establishment-type.service';
 import { EstablishmentsDataService } from './services/establishments-data.service';
-import { EstablishmentsWithAttachmentsService } from './services/establishments-with-attachments.service';
+import { EstablishmentsTimelineService } from './services/establishments-timeline.service';
 
 @NgModule({
   declarations: [
@@ -49,15 +48,14 @@ import { EstablishmentsWithAttachmentsService } from './services/establishments-
     ],
   providers: [
     EstablishmentsDataService,
-    EstablishmentsWithAttachmentsService,
-    EstablishmentTypeService,
-    AttachmentsTimelineService,
     AttachmentsActionRestrictionsService,
     EstablishmentContractDataService,
     EstablishmentListActionsService,
-    EstablishmentActionContextService,
     EstablishmentProductStoreService,
     EstablishmentProductStoreDataService,
+    AttachmentsTimelineService,
+    EstablishmentsTimelineService,
+    EstablishmentListEntriesService,
   ],
 })
 export class EstablishmentTabModule { }

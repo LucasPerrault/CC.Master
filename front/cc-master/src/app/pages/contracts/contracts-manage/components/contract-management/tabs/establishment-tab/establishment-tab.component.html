@@ -6,32 +6,29 @@
    </cc-contract-without-environment-callout>
 
    <ng-template #hasEnvironment>
-     <ng-container *ngIf="establishments$ | async; let establishments">
+     <ng-container *ngIf="entries$ | async; let entries">
 
        <cc-establishment-type-section [title]="'front_contractPage_establishments_section_info' | translate"
                                       [isExpandedByDefault]="true">
          <div class="u-paddingSmaller" filters>
-           <cc-establishment-type-filter [formControl]="typeFilter"
-                                         [establishmentsByType]="establishments"></cc-establishment-type-filter>
+           <cc-establishment-type-filter [formControl]="typeFilter" [allEntries]="entries"></cc-establishment-type-filter>
          </div>
          <cc-establishment-list content
                                 [type]="typeFilter.value"
-                                [realCounts]="realCounts$ | async"
-                                [contract]="contract$ | async"
-                                [entries]="getFilteredEntries(establishments, typeFilter.value)">
+                                [context]="context$ | async"
+                                [entries]="getSortedEntriesByType(entries, typeFilter.value)">
          </cc-establishment-list>
        </cc-establishment-type-section>
 
        <cc-establishment-type-section class="mod-error"
                                       [title]="'front_contractPage_establishments_section_error' | translate"
-                                      [totalCount]="establishments.withError.length"
+                                      [totalCount]="getTotalCount(entries, true)"
                                       [isExpandedByDefault]="true">
          <cc-establishment-list content
                                 class="u-displayBlock u-paddingTopSmaller"
-                                [type]="establishmentType.WithError"
-                                [realCounts]="realCounts$ | async"
-                                [contract]="contract$ | async"
-                                [entries]="establishments.withError">
+                                [type]="listEntryType.Error"
+                                [context]="context$ | async"
+                                [entries]="getSortedEntriesByType(entries, listEntryType.Error)">
          </cc-establishment-list>
        </cc-establishment-type-section>
 
