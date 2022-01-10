@@ -7,8 +7,7 @@ import { combineLatest, Observable, pipe, ReplaySubject, Subject, UnaryFunction 
 import { finalize, map, share, take, takeUntil } from 'rxjs/operators';
 
 import { ContractsListService } from '../../../../services/contracts-list.service';
-import { IAttachmentEnded } from './models/attachment-ended.interface';
-import { IClosureFormValidationContext } from './models/closure-form-validation-context.interface';
+import { IClosureFormValidationContext, IContextAttachment } from './models/closure-form-validation-context.interface';
 import { IContractClosureDetailed } from './models/contract-closure-detailed.interface';
 import { IContractClosureForm } from './models/contract-closure-form.interface';
 import { CloseContractService } from './services/close-contract.service';
@@ -22,12 +21,11 @@ import { CloseContractFormService } from './services/close-contract-form.service
 export class CloseTabComponent implements OnInit, OnDestroy {
   public contractClosureDetailed$: ReplaySubject<IContractClosureDetailed>
     = new ReplaySubject<IContractClosureDetailed>(1);
-  public lastAttachmentEnded$: ReplaySubject<IAttachmentEnded | null>
-    = new ReplaySubject<IAttachmentEnded | null>(1);
+  public mostRecentAttachment$ = new ReplaySubject<IContextAttachment | null>(1);
   public lastCountPeriod$: ReplaySubject<Date | null>
     = new ReplaySubject<Date | null>(1);
   public closureFormValidationContext$: Observable<IClosureFormValidationContext>;
-  public maxContractClosedDate$: Observable<Date>;
+  public minContractClosedDate$: Observable<Date>;
   public isLoading$: ReplaySubject<boolean> = new ReplaySubject<boolean>(1);
 
   public isContractClosed$: Observable<boolean>;
@@ -56,15 +54,15 @@ export class CloseTabComponent implements OnInit, OnDestroy {
   public ngOnInit(): void {
     this.refreshContractClosureDetailed();
 
-    const closureConditions$ = [this.contractClosureDetailed$, this.lastCountPeriod$, this.lastAttachmentEnded$];
+    const closureConditions$ = [this.contractClosureDetailed$, this.lastCountPeriod$, this.mostRecentAttachment$];
     this.closureFormValidationContext$ = combineLatest(closureConditions$).pipe(
       takeUntil(this.destroy$),
       this.toClosureFormValidationContext(),
     );
 
-    this.maxContractClosedDate$ = this.closureFormValidationContext$.pipe(
+    this.minContractClosedDate$ = this.closureFormValidationContext$.pipe(
       takeUntil(this.destroy$),
-      map(context => this.closeContractFormService.getMaxContractClosedDate(context)),
+      map(context => this.closeContractFormService.getMinContractClosedDate(context)),
     );
 
     this.isContractClosed$ = this.contractClosureDetailed$
@@ -106,9 +104,9 @@ export class CloseTabComponent implements OnInit, OnDestroy {
     this.isLoading$.next(true);
 
     if (this.closeContractFormService.canReadValidationContext) {
-      this.closeContractFormService.getLastAttachmentEnded$(this.contractId)
+      this.closeContractFormService.getMostRecentAttachment$(this.contractId)
         .pipe(take(1))
-        .subscribe(e => this.lastAttachmentEnded$.next(e));
+        .subscribe(e => this.mostRecentAttachment$.next(e));
 
       this.closeContractFormService.getLastCountPeriod$()
         .pipe(take(1))
@@ -124,12 +122,12 @@ export class CloseTabComponent implements OnInit, OnDestroy {
   }
 
   private toClosureFormValidationContext(
-  ): UnaryFunction<Observable<[IContractClosureDetailed, Date, IAttachmentEnded]>, Observable<IClosureFormValidationContext>> {
+  ): UnaryFunction<Observable<[IContractClosureDetailed, Date, IContextAttachment]>, Observable<IClosureFormValidationContext>> {
     return pipe(
-      map(([contract, lastCountPeriod, lastAttachmentEnded]) => ({
+      map(([contract, lastCountPeriod, mostRecentAttachment]) => ({
         theoreticalStartOn: new Date(contract.theoricalStartOn),
         lastCountPeriod: !!lastCountPeriod ? new Date(lastCountPeriod) : null,
-        lastAttachmentEndedDate: !!lastAttachmentEnded ? new Date(lastAttachmentEnded.end) : null,
+        mostRecentAttachment,
       })),
     );
   }

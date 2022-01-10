@@ -3,12 +3,16 @@ import { Injectable } from '@angular/core';
 import { Operation, OperationRestrictionMode, RightsService } from '@cc/aspects/rights';
 import { IHttpApiV3CollectionResponse } from '@cc/common/queries';
 import { ICount } from '@cc/domain/billing/counts/count.interface';
+import { isAfter, max } from 'date-fns';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 import { ValidationContextStoreService } from '../../../validation-context-store.service';
-import { attachmentEndedFields, IAttachmentEnded } from '../models/attachment-ended.interface';
-import { IClosureFormValidationContext } from '../models/closure-form-validation-context.interface';
+import {
+  contextAttachmentFields,
+  IClosureFormValidationContext,
+  IContextAttachment,
+} from '../models/closure-form-validation-context.interface';
 
 @Injectable()
 export class CloseContractFormService {
@@ -26,9 +30,10 @@ export class CloseContractFormService {
     private rightsService: RightsService,
   ) {}
 
-  public getMaxContractClosedDate(context: IClosureFormValidationContext): Date {
-    if (!!context.lastAttachmentEndedDate) {
-      return context.lastAttachmentEndedDate;
+  public getMinContractClosedDate(context: IClosureFormValidationContext): Date {
+    if (!!context.mostRecentAttachment) {
+      const mostRecentDate = context.mostRecentAttachment?.end || context.mostRecentAttachment?.start;
+      return new Date(mostRecentDate);
     }
 
     if (!!context.lastCountPeriod) {
@@ -36,14 +41,6 @@ export class CloseContractFormService {
     }
 
     return context.theoreticalStartOn;
-  }
-
-  public getLastAttachmentEnded$(contractId: number): Observable<IAttachmentEnded | null> {
-    return this.getAttachmentsEnded$(contractId).pipe(
-      map(entities => !!entities.length
-        ? entities.reduce((a, b) => (new Date(a.end) > new Date(b.end) ? a : b))
-        : null,
-      ));
   }
 
   public getLastCountPeriod$(): Observable<Date | null> {
@@ -56,14 +53,34 @@ export class CloseContractFormService {
     );
   }
 
-  private getAttachmentsEnded$(contractId: number): Observable<IAttachmentEnded[]> {
-    const params = new HttpParams()
-      .set('fields', attachmentEndedFields)
-      .set('contractId', String(contractId))
-      .set('legalEntity.isActive', `${ true }`)
-      .set('end', 'notequal,null');
+  public getMostRecentAttachment$(contractId: number): Observable<IContextAttachment | null> {
+    return this.getAttachments$(contractId).pipe(
+      map(as => as.reduce((mostRecent, other) => this.isMostRecent(mostRecent, other) ? mostRecent : other)));
+  }
 
-    return this.httpClient.get<IHttpApiV3CollectionResponse<IAttachmentEnded>>(this.attachmentsEndpoint, { params })
+  private isMostRecent(attachment: IContextAttachment, comparison: IContextAttachment): boolean {
+    const mostRecentDate = !!attachment?.end
+      ? max([new Date(attachment.end), new Date(attachment.start)])
+      : new Date(attachment.start);
+
+    const mostRecentDateToCompare = !!comparison?.end
+      ? max([new Date(comparison.end), new Date(comparison.start)])
+      : new Date(comparison.start);
+
+    return isAfter(mostRecentDate, mostRecentDateToCompare);
+  }
+
+  private getRealCounts$(): Observable<ICount[]> {
+    return this.contextStoreService.realCounts$;
+  }
+
+  private getAttachments$(contractId: number): Observable<IContextAttachment[]> {
+    const params = new HttpParams()
+      .set('fields', contextAttachmentFields)
+      .set('contractId', String(contractId))
+      .set('legalEntity.isActive', `${ true }`);
+
+    return this.httpClient.get<IHttpApiV3CollectionResponse<IContextAttachment>>(this.attachmentsEndpoint, { params })
       .pipe(map(response => response.data.items));
   }
 }

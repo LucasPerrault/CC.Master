@@ -1,7 +1,7 @@
 <div class="callout palette-grey mod-icon">
   <div class="callout-icon"><span aria-hidden="true" class="lucca-icon">info</span></div>
-  <div *ngIf="!!formValidationContext.lastAttachmentEndedDate; else othersReason">
-    {{ getCloseDateInformation() }}
+  <div *ngIf="!!formValidationContext.mostRecentAttachment; else othersReason">
+    {{ getCloseDateInformation(formValidationContext.mostRecentAttachment) }}
   </div>
 
   <ng-template #othersReason>

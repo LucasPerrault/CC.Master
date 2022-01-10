@@ -114,7 +114,8 @@ export class ContractTabComponent implements OnInit, OnDestroy {
   }
 
   public hasFormChanged(): boolean {
-    return !this.isEqual(this.contractToEdit$.value, this.contractForm.value);
+    const isInitialized = !!this.contractToEdit$.value && !!this.contractForm.value;
+    return isInitialized && !this.isEqual(this.contractToEdit$.value, this.contractForm.value);
   }
 
   private toContractForm(contractDetailed: IContractDetailed): IContractForm {
