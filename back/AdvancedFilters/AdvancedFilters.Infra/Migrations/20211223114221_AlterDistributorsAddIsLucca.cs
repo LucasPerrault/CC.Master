@@ -15,6 +15,12 @@ namespace AdvancedFilters.Infra.Migrations
                 type: "bit",
                 nullable: false,
                 defaultValue: false);
+
+            migrationBuilder.Sql(@"
+                update cafe.Distributors
+                set IsLucca = 1
+                where Id = 37
+            ");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
