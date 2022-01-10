@@ -70,10 +70,23 @@ namespace Instances.Infra.Tests.Shared
             {
                 SourceTenant = new TenantDto { Tenant = "tenant" },
                 TargetTenant = "target",
+                SkipBufferServer = false,
+                PostBufferServerRestoreScripts = new List<UriLinkDto>{
+                    new UriLinkDto
+                    {
+                        Uri = new Uri("http://test1")
+                    }
+                },
+                PreRestoreScripts = new List<UriLinkDto>{
+                    new UriLinkDto
+                    {
+                        Uri = new Uri("http://test2")
+                    }
+                },
                 PostRestoreScripts = new List<UriLinkDto> {
                     new UriLinkDto
                     {
-                        Uri = new Uri("http://test")
+                        Uri = new Uri("http://test3")
                     }
                 }
             }, "cluster5", "callback/path/return");
@@ -96,7 +109,10 @@ namespace Instances.Infra.Tests.Shared
             {
                 SourceTenant = new { Tenant = "tenant", CcDataServerUri = (string)null },
                 TargetTenant = "target",
-                PostRestoreScripts = new object[] { new { Uri = "http://test", AuthorizationHeader = (string)null } },
+                SkipBufferServer = false,
+                PostBufferServerRestoreScripts = new object[] { new { Uri = "http://test1", AuthorizationHeader = (string)null } },
+                PreRestoreScripts = new object[] { new { Uri = "http://test2", AuthorizationHeader = (string)null } },
+                PostRestoreScripts = new object[] { new { Uri = "http://test3", AuthorizationHeader = (string)null } },
                 CallbackUri = "https://cc.ilucca.local/callback/path/return",
                 CallbackAuthorizationHeader =  $"Cloudcontrol application={_ccDataConfiguration.InboundToken}",
             });

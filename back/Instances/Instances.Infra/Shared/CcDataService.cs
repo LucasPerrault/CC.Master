@@ -23,7 +23,10 @@ namespace Instances.Infra.Shared
     {
         public TenantDto SourceTenant { get; set; }
         public string TargetTenant { get; set; }
-        public List<UriLinkDto> PostRestoreScripts { get; set; }
+        public bool SkipBufferServer { get; init; }
+        public List<UriLinkDto> PostBufferServerRestoreScripts { get; init; }
+        public List<UriLinkDto> PreRestoreScripts { get; init; }
+        public List<UriLinkDto> PostRestoreScripts { get; init; }
         public Uri CallbackUri { get; set; }
         public string CallbackAuthorizationHeader { get; set; }
 
@@ -31,6 +34,9 @@ namespace Instances.Infra.Shared
         {
             SourceTenant = dto.SourceTenant;
             TargetTenant = dto.TargetTenant;
+            SkipBufferServer = dto.SkipBufferServer;
+            PostBufferServerRestoreScripts = dto.PostBufferServerRestoreScripts;
+            PreRestoreScripts = dto.PreRestoreScripts;
             PostRestoreScripts = dto.PostRestoreScripts;
         }
     }
