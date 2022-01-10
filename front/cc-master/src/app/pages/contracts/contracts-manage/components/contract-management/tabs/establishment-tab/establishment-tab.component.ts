@@ -160,14 +160,14 @@ export class EstablishmentTabComponent implements OnInit, OnDestroy {
       .pipe(take(1), finalize(() => this.isLoading$.next(false)))
       .subscribe(([realCounts, establishments]) => {
         this.contract$.next(contract);
-        this.context$.next(this.toContext(contract, realCounts));
         this.entries$.next(establishments);
+        this.context$.next(this.toContext(contract, realCounts, establishments));
       });
   }
 
-  private toContext(contract: IEstablishmentContract, realCounts: ICount[]): IEstablishmentActionsContext {
+  private toContext(contract: IEstablishmentContract, realCounts: ICount[], allEntries: IListEntry[]): IEstablishmentActionsContext {
     const lastCountPeriod = TimelineCountsService.getLastCountPeriod(realCounts);
-    return { contract, realCounts, lastCountPeriod };
+    return { contract, realCounts, lastCountPeriod, allEntries };
   }
 
   private updateShowFinishedAttachments(showFinishedAttachments: false): void {
