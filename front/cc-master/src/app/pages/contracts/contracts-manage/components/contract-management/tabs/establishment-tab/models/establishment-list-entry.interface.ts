@@ -11,6 +11,7 @@ export enum ListEntryType {
 export enum LifecycleStep {
   StartInTheFuture = 'StartInTheFuture',
   InProgress = 'InProgress',
+  Finished = 'Finished',
   Inactive = 'Inactive',
   WaitingFirstActivation = 'WaitingFirstActivation',
   NotLinkedSince = 'NotLinkedSince',

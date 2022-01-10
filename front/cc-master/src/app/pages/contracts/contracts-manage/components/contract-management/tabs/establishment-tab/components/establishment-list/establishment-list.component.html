@@ -38,7 +38,7 @@
       </tr>
     </thead>
     <tbody class="table-body">
-      <tr class="table-body-row" *ngFor="let entry of entries; trackBy: trackBy">
+      <tr class="table-body-row" *ngFor="let entry of entries; trackBy: trackBy" [ngClass]="{ 'u-textLight': isFinished(entry) }">
         <td class="table-body-row-cell" *ngIf="canReadValidationContext">
           <label class="checkbox">
             <input class="checkbox-input" type="checkbox" name="checkboxEtsList"

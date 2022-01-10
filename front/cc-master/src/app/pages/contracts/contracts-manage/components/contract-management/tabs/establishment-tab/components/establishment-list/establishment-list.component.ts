@@ -52,6 +52,10 @@ export class EstablishmentListComponent {
     return this.type === type;
   }
 
+  public isFinished(entry: IListEntry): boolean {
+    return entry.lifecycleStep === LifecycleStep.Finished;
+  }
+
   public trackBy(index: number, entry: IListEntry): number {
     return entry.establishment?.id;
   }
@@ -90,6 +94,10 @@ export class EstablishmentListComponent {
 
     if (lifecycleStep === LifecycleStep.StartInTheFuture) {
       return this.translatePipe.transform('front_contractPage_establishments_state_futureActivation');
+    }
+
+    if (lifecycleStep === LifecycleStep.Finished) {
+      return this.translatePipe.transform('front_contractPage_establishments_state_finished');
     }
   }
 

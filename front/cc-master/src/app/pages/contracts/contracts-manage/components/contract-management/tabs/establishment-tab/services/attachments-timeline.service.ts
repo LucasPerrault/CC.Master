@@ -18,6 +18,10 @@ export class AttachmentsTimelineService {
       return LifecycleStep.StartInTheFuture;
     }
 
+    if (this.isCompletelyFinished(attachment)) {
+      return LifecycleStep.Finished;
+    }
+
     return LifecycleStep.Unknown;
   }
 

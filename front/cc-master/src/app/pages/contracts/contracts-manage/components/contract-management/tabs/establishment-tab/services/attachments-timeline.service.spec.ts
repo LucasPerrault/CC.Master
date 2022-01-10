@@ -1,5 +1,5 @@
 import { createServiceFactory, SpectatorService } from '@ngneat/spectator';
-import { addMonths, addYears, endOfMonth, startOfMonth, subMonths } from 'date-fns';
+import { addMonths, addYears, endOfMonth, startOfMonth, subMonths, subYears } from 'date-fns';
 
 import { AttachmentEndReason } from '../constants/attachment-end-reason.const';
 import { IEstablishmentAttachment } from '../models/establishment-attachment.interface';
@@ -46,6 +46,14 @@ describe('AttachmentsTimelineService', () => {
     const result = spectator.service.getLifecycleStep(futureAttachment);
 
     expect(result).toEqual(LifecycleStep.StartInTheFuture);
+  });
+
+  it('should get finished lifecycle step', () => {
+    const pastAttachment = fakeAttachment(startOfMonth(subYears(today, 4)), endOfMonth(lastMonth));
+
+    const result = spectator.service.getLifecycleStep(pastAttachment);
+
+    expect(result).toEqual(LifecycleStep.Finished);
   });
 
   it('should get unknown lifecycle step', () => {
