@@ -1,44 +1,39 @@
 import { Injectable } from '@angular/core';
-import { isAfter, isBefore, isFuture, isPast, isToday } from 'date-fns';
+import { isFuture, isPast, isToday } from 'date-fns';
 
 import { IEstablishmentAttachment } from '../models/establishment-attachment.interface';
+import { LifecycleStep } from '../models/establishment-list-entry.interface';
 
 @Injectable()
 export class AttachmentsTimelineService {
-  public getCurrentAttachment(attachments: IEstablishmentAttachment[]): IEstablishmentAttachment {
-    return attachments.find(ce => this.isStarted(ce) && !this.isFinished(ce));
-  }
 
-  public getNextAttachment(attachments: IEstablishmentAttachment[]): IEstablishmentAttachment {
-    const nextAttachments = attachments.filter(ce => this.shouldBeStartedInFuture(ce) && !this.isFinished(ce));
+  constructor() {}
 
-    if (!nextAttachments.length) {
-      return;
+  public getLifecycleStep(attachment: IEstablishmentAttachment): LifecycleStep {
+    if (this.isInProgress(attachment)) {
+      return LifecycleStep.InProgress;
     }
 
-    return nextAttachments.reduce((nextAttachment, attachment) =>
-      !nextAttachment || isBefore(new Date(attachment.start), new Date(nextAttachment.start))
-        ? attachment
-        : nextAttachment,
-    );
-  }
-
-  public getLastAttachment(attachments: IEstablishmentAttachment[]): IEstablishmentAttachment {
-    const lastAttachments = attachments.filter(ce => this.isStarted(ce) && this.isFinished(ce));
-
-    if (!lastAttachments.length) {
-      return;
+    if (this.isStartedInTheFuture(attachment)) {
+      return LifecycleStep.StartInTheFuture;
     }
 
-    return lastAttachments.reduce((lastAttachment, attachment) =>
-      !lastAttachment || isAfter(new Date(attachment.end), new Date(lastAttachment.end))
-        ? attachment
-        : lastAttachment,
-    );
+    return LifecycleStep.Unknown;
   }
 
-  public shouldBeStartedInFuture(attachment: IEstablishmentAttachment): boolean {
-    return !!attachment.start && isFuture(new Date(attachment.start));
+  public isStartedInTheFuture(attachment: IEstablishmentAttachment): boolean {
+    return !!attachment.start && isFuture(new Date(attachment.start))
+      && !this.isFinished(attachment);
+  }
+
+  public isCompletelyFinished(attachment: IEstablishmentAttachment): boolean {
+    return this.isStarted(attachment)
+      && this.isFinished(attachment);
+  }
+
+  public isInProgress(attachment: IEstablishmentAttachment): boolean {
+    return this.isStarted(attachment)
+      && !this.isFinished(attachment);
   }
 
   public shouldBeEndedInFuture(attachment: IEstablishmentAttachment): boolean {
@@ -46,7 +41,7 @@ export class AttachmentsTimelineService {
   }
 
   public isStarted(attachment: IEstablishmentAttachment): boolean {
-    if (!attachment.start) {
+    if (!attachment?.start) {
       return false;
     }
 

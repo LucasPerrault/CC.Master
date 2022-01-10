@@ -4,6 +4,7 @@ import { addMonths, addYears, endOfMonth, startOfMonth, subMonths } from 'date-f
 import { AttachmentEndReason } from '../constants/attachment-end-reason.const';
 import { IEstablishmentAttachment } from '../models/establishment-attachment.interface';
 import { IEstablishmentContract } from '../models/establishment-contract.interface';
+import { LifecycleStep } from '../models/establishment-list-entry.interface';
 import { AttachmentsTimelineService } from './attachments-timeline.service';
 
 const fakeAttachment = (start: Date, end: Date): IEstablishmentAttachment => ({
@@ -24,10 +25,8 @@ const lastMonth = subMonths(today, 1);
 
 const currentAttachment = fakeAttachment(startOfMonth(lastMonth), null);
 const futureDeactivatedAttachment = fakeAttachment(startOfMonth(lastMonth), endOfMonth(nextMonth));
-const futureAttachmentClosestToday = fakeAttachment(startOfMonth(nextMonth), null);
 const futureAttachment = fakeAttachment(startOfMonth(addYears(today, 4)), null);
-const terminatedAttachmentClosestToday = fakeAttachment(startOfMonth(subMonths(today, 2)), endOfMonth(lastMonth));
-const terminatedAttachment = fakeAttachment(startOfMonth(subMonths(today, 4)), endOfMonth(subMonths(today, 3)));
+const finishedAttachment = fakeAttachment(startOfMonth(subMonths(today, 4)), endOfMonth(subMonths(today, 3)));
 
 describe('AttachmentsTimelineService', () => {
   let spectator: SpectatorService<AttachmentsTimelineService>;
@@ -37,26 +36,38 @@ describe('AttachmentsTimelineService', () => {
 
   beforeEach(() => spectator = createService());
 
-  it('should output the current attachment', () => {
-    const mockedAttachments = [futureAttachment, currentAttachment, terminatedAttachment];
-    const result = spectator.service.getCurrentAttachment(mockedAttachments);
-    expect(result).toBe(currentAttachment);
+  it('should get in progress lifecycle step', () => {
+    const result = spectator.service.getLifecycleStep(currentAttachment);
+
+    expect(result).toEqual(LifecycleStep.InProgress);
   });
 
-  it('should output the next attachment', () => {
-    const mockedAttachments = [futureAttachment, futureAttachmentClosestToday, currentAttachment, terminatedAttachment];
-    const result = spectator.service.getNextAttachment(mockedAttachments);
-    expect(result).toBe(futureAttachmentClosestToday);
+  it('should get started in future lifecycle step', () => {
+    const result = spectator.service.getLifecycleStep(futureAttachment);
+
+    expect(result).toEqual(LifecycleStep.StartInTheFuture);
   });
 
-  it('should output the last attachment', () => {
-    const mockedAttachments = [terminatedAttachment, terminatedAttachmentClosestToday, currentAttachment, futureAttachment];
-    const result = spectator.service.getLastAttachment(mockedAttachments);
-    expect(result).toBe(terminatedAttachmentClosestToday);
+  it('should get unknown lifecycle step', () => {
+    const unknownAttachment = fakeAttachment(null, null);
+
+    const result = spectator.service.getLifecycleStep(unknownAttachment);
+
+    expect(result).toEqual(LifecycleStep.Unknown);
   });
 
   it('should be started in future', () => {
-    const result = spectator.service.shouldBeStartedInFuture(futureAttachment);
+    const result = spectator.service.isStartedInTheFuture(futureAttachment);
+    expect(result).toBeTruthy();
+  });
+
+  it('should be in progress ', () => {
+    const result = spectator.service.isInProgress(currentAttachment);
+    expect(result).toBeTruthy();
+  });
+
+  it('should be completely finished ', () => {
+    const result = spectator.service.isFinished(finishedAttachment);
     expect(result).toBeTruthy();
   });
 
@@ -66,7 +77,7 @@ describe('AttachmentsTimelineService', () => {
   });
 
   it('should be finished', () => {
-    const result = spectator.service.isFinished(terminatedAttachment);
+    const result = spectator.service.isFinished(finishedAttachment);
     expect(result).toBeTruthy();
   });
 

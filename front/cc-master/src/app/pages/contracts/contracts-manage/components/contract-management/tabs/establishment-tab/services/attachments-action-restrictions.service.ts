@@ -62,7 +62,7 @@ export class AttachmentsActionRestrictionsService {
   }
 
   public canEditFutureStart(attachment: IEstablishmentAttachment, realCounts: ICount[]): boolean {
-    return this.canReadValidationContext && !!attachment && !!attachment.start && this.timelineService.shouldBeStartedInFuture(attachment);
+    return this.canReadValidationContext && !!attachment && !!attachment.start && this.timelineService.isStartedInTheFuture(attachment);
   }
 
   public canEditFutureEndRange(attachments: IEstablishmentAttachment[], realCounts: ICount[]): boolean {
