@@ -34,6 +34,10 @@ export class CloseTabComponent implements OnInit, OnDestroy {
   public cancelButtonState$: Subject<string> = new Subject<string>();
   public closeButtonState$: Subject<string> = new Subject<string>();
 
+  public get canReadValidationContext(): boolean {
+    return this.closeContractFormService.canReadValidationContext;
+  }
+
   private destroy$: Subject<void> = new Subject<void>();
 
   private get contractId(): number {
@@ -101,13 +105,15 @@ export class CloseTabComponent implements OnInit, OnDestroy {
   private refreshContractClosureDetailed(): void {
     this.isLoading$.next(true);
 
-    this.closeContractFormService.getLastAttachmentEnded$(this.contractId)
-      .pipe(take(1))
-      .subscribe(e => this.lastAttachmentEnded$.next(e));
+    if (this.closeContractFormService.canReadValidationContext) {
+      this.closeContractFormService.getLastAttachmentEnded$(this.contractId)
+        .pipe(take(1))
+        .subscribe(e => this.lastAttachmentEnded$.next(e));
 
-    this.closeContractFormService.getLastCountPeriod$()
-      .pipe(take(1))
-      .subscribe(p => this.lastCountPeriod$.next(p));
+      this.closeContractFormService.getLastCountPeriod$()
+        .pipe(take(1))
+        .subscribe(p => this.lastCountPeriod$.next(p));
+    }
 
     const contractClosureDetailed$ = this.closeContractService.getContractClosureDetailed$(this.contractId)
       .pipe(take(1), share());

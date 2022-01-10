@@ -1,4 +1,4 @@
-import { Operation } from '@cc/aspects/rights';
+import { Operation, OperationRestrictionMode } from '@cc/aspects/rights';
 import { INavigationTab } from '@cc/common/navigation';
 
 import { ContractsModalTabPath } from './contracts-modal-tab-path.enum';
@@ -27,7 +27,10 @@ export const contractsModalTabs: INavigationTab[] = [
   {
     name: 'front_contractPage_offerTab',
     url: ContractsModalTabPath.Offer,
-    restriction: { operations: [Operation.ReadContracts, Operation.CloseContracts] },
+    restriction: {
+      operations: [Operation.ReadContracts, Operation.CloseContracts, Operation.ReadCounts],
+      mode: OperationRestrictionMode.All,
+    },
   },
   {
     name: 'front_contractPage_establishmentsTab',

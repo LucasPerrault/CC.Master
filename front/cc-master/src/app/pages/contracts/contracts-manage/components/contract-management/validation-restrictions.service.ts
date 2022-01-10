@@ -6,6 +6,7 @@ import { IValidationContext } from './validation-context-store.data';
 
 @Injectable()
 export class ValidationRestrictionsService {
+
   constructor(
     @Inject(PRINCIPAL) private principal: IPrincipal,
     private rightsService: RightsService,
@@ -13,8 +14,7 @@ export class ValidationRestrictionsService {
 
   public canDeleteContracts(context: IValidationContext): boolean {
     return DistributorIds.isLuccaUser(this.principal)
-      && this.canEditContract()
-      && !!context
+      && this.canEditContract(context)
       && !this.hasRealCounts(context)
       && !this.hasActiveEstablishments(context)
       && !this.hasUnletteredContractEntries(context);
@@ -32,7 +32,25 @@ export class ValidationRestrictionsService {
     return !!context?.contractEntries?.filter(ce => ce.letter === null).length;
   }
 
-  public canEditContract(): boolean {
+  public canEditContract(context: IValidationContext): boolean {
+    return this.hasRightsToEditContracts
+      && this.hasRightsToReadValidationContext
+      && !!context;
+  }
+
+  public get hasRightsToEditContracts(): boolean {
     return this.rightsService.hasOperation(Operation.EditContracts);
+  }
+
+  public get hasRightsToReadValidationContext(): boolean {
+    return this.canReadCount && this.canReadContractEntries;
+  }
+
+  public get canReadCount(): boolean {
+    return this.rightsService.hasOperation(Operation.ReadCounts);
+  }
+
+  public get canReadContractEntries(): boolean {
+    return this.rightsService.hasOperation(Operation.ReadContractEntries);
   }
 }

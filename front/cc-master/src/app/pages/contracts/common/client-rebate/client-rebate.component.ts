@@ -123,7 +123,7 @@ export class ClientRebateComponent implements ControlValueAccessor, Validator, O
   }
 
   public updateEndAt(date: Date): void {
-    this.clientRebate.endAt = endOfMonth(date);
+    this.clientRebate.endAt = !!date ? endOfMonth(new Date(date)) : null;
     this.onChange(this.clientRebate);
   }
 }

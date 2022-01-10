@@ -1,6 +1,8 @@
+import { RightsService } from '@cc/aspects/rights';
 import { ICount } from '@cc/domain/billing/counts';
-import { createServiceFactory, SpectatorService } from '@ngneat/spectator';
+import { createServiceFactory, mockProvider, SpectatorService } from '@ngneat/spectator';
 import { addMonths, endOfMonth, startOfMonth, subMonths } from 'date-fns';
+import { BehaviorSubject } from 'rxjs';
 
 import { AttachmentEndReason } from '../constants/attachment-end-reason.const';
 import { IEstablishmentAttachment } from '../models/establishment-attachment.interface';
@@ -26,15 +28,19 @@ const fakeRealCount = (countPeriod: Date): ICount => ({
 });
 
 const today = new Date();
+const canReadValidationContext$ = new BehaviorSubject(true);
 
 describe('AttachmentsActionRestrictionsService', () => {
   let spectator: SpectatorService<AttachmentsActionRestrictionsService>;
   const createService = createServiceFactory({
-    providers: [AttachmentsTimelineService],
+    providers: [AttachmentsTimelineService, mockProvider(RightsService, {
+      hasOperationsByRestrictionMode: () => canReadValidationContext$.value,
+    })],
     service: AttachmentsActionRestrictionsService,
   });
 
   beforeEach(() => spectator = createService());
+
 
   it('should delete attachment', () => {
     const attachmentStart = startOfMonth(today);
@@ -42,8 +48,11 @@ describe('AttachmentsActionRestrictionsService', () => {
     const mockedRealCounts = [fakeRealCount(subMonths(attachmentStart, 1)), fakeRealCount(subMonths(attachmentStart, 2))];
 
     const result = spectator.service.canDelete(mockedAttachment, mockedRealCounts);
-
     expect(result).toBeTruthy();
+
+    canReadValidationContext$.next(false);
+    const resultWithoutRights = spectator.service.canDelete(mockedAttachment, mockedRealCounts);
+    expect(resultWithoutRights).toBeFalsy();
   });
 
   it('should not delete attachment when is null', () => {
@@ -66,11 +75,15 @@ describe('AttachmentsActionRestrictionsService', () => {
   });
 
   it('should unlink attachment', () => {
+    canReadValidationContext$.next(true);
     const mockedAttachment = fakeAttachment(subMonths(startOfMonth(today), 4), null);
 
     const result = spectator.service.canUnlink(mockedAttachment);
-
     expect(result).toBeTruthy();
+
+    canReadValidationContext$.next(false);
+    const resultWithoutRights = spectator.service.canUnlink(mockedAttachment);
+    expect(resultWithoutRights).toBeFalsy();
   });
 
   it('should not unlink attachment when is not started', () => {
@@ -92,15 +105,20 @@ describe('AttachmentsActionRestrictionsService', () => {
   });
 
   it('should link attachment when should be ended in future', () => {
+    canReadValidationContext$.next(true);
     const nextMonth = addMonths(today, 1);
     const mockedFutureEndedAttachment = fakeAttachment(startOfMonth(nextMonth), endOfMonth(nextMonth));
 
     const resultWithEndedAttachment = spectator.service.canLink(mockedFutureEndedAttachment);
-
     expect(resultWithEndedAttachment).toBeTruthy();
+
+    canReadValidationContext$.next(false);
+    const resultWithoutRights = spectator.service.canLink(mockedFutureEndedAttachment);
+    expect(resultWithoutRights).toBeFalsy();
   });
 
   it('should link attachment when is finished', () => {
+    canReadValidationContext$.next(true);
     const lastMonth = subMonths(today, 1);
     const mockedEndedAttachment = fakeAttachment(startOfMonth(lastMonth), endOfMonth(lastMonth));
 
@@ -110,6 +128,7 @@ describe('AttachmentsActionRestrictionsService', () => {
   });
 
   it('should link attachment when is null', () => {
+    canReadValidationContext$.next(true);
     const resultWithoutAttachment = spectator.service.canLink(null);
 
     expect(resultWithoutAttachment).toBeTruthy();
@@ -124,14 +143,18 @@ describe('AttachmentsActionRestrictionsService', () => {
   });
 
   it('should edit attachment\'s start date', () => {
+    canReadValidationContext$.next(true);
     const nextMonth = startOfMonth(addMonths(today, 1));
     const lastMonth = startOfMonth(subMonths(today, 1));
     const mockedRealCounts = [fakeRealCount(lastMonth), fakeRealCount(subMonths(lastMonth, 1))];
     const mockedAttachment = fakeAttachment(nextMonth, null);
 
     const result = spectator.service.canEditFutureStart(mockedAttachment, mockedRealCounts);
-
     expect(result).toBeTruthy();
+
+    canReadValidationContext$.next(false);
+    const resultWithoutRights = spectator.service.canEditFutureStart(mockedAttachment, mockedRealCounts);
+    expect(resultWithoutRights).toBeFalsy();
   });
 
   it('should not edit attachment\'s start date when it not begins in the future', () => {
@@ -164,14 +187,18 @@ describe('AttachmentsActionRestrictionsService', () => {
   });
 
   it('should edit attachment\'s end date', () => {
+    canReadValidationContext$.next(true);
     const nextMonth = startOfMonth(addMonths(today, 1));
     const lastMonth = startOfMonth(subMonths(today, 1));
     const mockedRealCounts = [fakeRealCount(lastMonth), fakeRealCount(subMonths(lastMonth, 1))];
     const mockedAttachment = fakeAttachment(lastMonth, nextMonth);
 
     const result = spectator.service.canEditFutureEnd(mockedAttachment, mockedRealCounts);
-
     expect(result).toBeTruthy();
+
+    canReadValidationContext$.next(false);
+    const resultWithoutRights = spectator.service.canEditFutureEnd(mockedAttachment, mockedRealCounts);
+    expect(resultWithoutRights).toBeFalsy();
   });
 
   it('should not edit attachment\'s end date when has no end date', () => {

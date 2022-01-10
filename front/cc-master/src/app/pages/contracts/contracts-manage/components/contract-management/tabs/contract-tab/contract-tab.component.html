@@ -9,7 +9,7 @@
 
   <footer class="page-footer">
     <div class="page-footer-right">
-      <button *ngIf="canEditContract"
+      <button *ngIf="canEditContract$ | async"
               (click)="edit()"
               class="button"
               [disabled]="contractForm.invalid || !contractForm.dirty"
