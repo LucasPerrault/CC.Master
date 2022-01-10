@@ -3,6 +3,7 @@ using Distributors.Infra.Storage;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Distributors.Infra.Migrations
 {
     [DbContext(typeof(DistributorsDbContext))]
-    partial class DistributorsDbContextModelSnapshot : ModelSnapshot
+    [Migration("20211223111423_AlterDistributorsAddIsLucca")]
+    partial class AlterDistributorsAddIsLucca
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

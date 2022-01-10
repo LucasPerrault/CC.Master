@@ -1,7 +1,7 @@
 import { ChangeDetectorRef, Component, forwardRef, Input } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { TranslatePipe } from '@cc/aspects/translate';
-import { IDistributor } from '@cc/domain/billing/distributors';
+import { distributorFields, IDistributor } from '@cc/domain/billing/distributors';
 
 import { SelectDisplayMode } from '../select-display-mode.enum';
 
@@ -32,6 +32,7 @@ export class DistributorApiSelectComponent implements ControlValueAccessor {
   public onTouch: () => void;
 
   public apiUrl = 'api/v3/distributors';
+  public fields = distributorFields;
 
   public model: IDistributor | IDistributor[] = [];
   public distributorsSelected: IDistributor[];

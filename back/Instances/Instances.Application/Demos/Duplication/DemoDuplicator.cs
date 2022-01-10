@@ -126,7 +126,7 @@ namespace Instances.Application.Demos.Duplication
             }
 
             var distributor = await _distributorsStore.GetActiveByCodeAsync(request.DistributorCode);
-            if (user.User.DistributorId == distributor.Id)
+            if (user.User.Distributor.Id == distributor.Id)
             {
                 return;
             }

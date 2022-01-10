@@ -46,7 +46,7 @@ public class DistributorDomainRestrictionMiddleware
         }
 
         var domain = service.GetDomain(user.User.Mail);
-        if (await service.IsRegisteredAsync(domain, user.User.DistributorId))
+        if (await service.IsRegisteredAsync(domain, user.User.Distributor.Id))
         {
             await _next.Invoke(httpContext);
             return;
@@ -58,7 +58,7 @@ public class DistributorDomainRestrictionMiddleware
             return;
         }
 
-        var registered = await service.GetAllRegistered(user.User.DistributorId);
+        var registered = await service.GetAllRegistered(user.User.Distributor.Id);
         var baseAddress = new Uri($"https://{httpContext.Request.Host.Value}");
         httpContext.Response.Redirect(GetRedirectionLocation(baseAddress, domain, registered).ToString());
     }

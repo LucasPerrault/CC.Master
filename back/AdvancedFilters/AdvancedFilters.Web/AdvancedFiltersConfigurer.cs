@@ -1,4 +1,5 @@
 using AdvancedFilters.Domain.Billing.Interfaces;
+using AdvancedFilters.Domain.Billing.Models;
 using AdvancedFilters.Domain.Contacts.Interfaces;
 using AdvancedFilters.Domain.Core.Collections;
 using AdvancedFilters.Domain.DataSources;
@@ -8,6 +9,8 @@ using AdvancedFilters.Infra.Services.Sync;
 using AdvancedFilters.Infra.Storage.Services;
 using AdvancedFilters.Infra.Storage.Stores;
 using AdvancedFilters.Web.Configuration;
+using Lucca.Core.Api.Abstractions;
+using Lucca.Core.Api.Web;
 using Lucca.Core.PublicData;
 using Microsoft.Extensions.DependencyInjection;
 using Remote.Infra.Extensions;
@@ -81,6 +84,17 @@ namespace AdvancedFilters.Web
             services.AddScoped<IAppContactsStore, AppContactsStore>();
             services.AddScoped<IClientContactsStore, ClientContactsStore>();
             services.AddScoped<ISpecializedContactsStore, SpecializedContactsStore>();
+        }
+
+        public static LuccaApiBuilder ConfigureLuccaApiForAdvancedFilters(this LuccaApiBuilder luccaApiBuilder)
+        {
+            luccaApiBuilder
+                .ConfigureSorting<Distributor>()
+                .Allow(o => o.Id)
+                .Allow(o => o.Name)
+                .Allow(o => o.IsLucca);
+
+            return luccaApiBuilder;
         }
     }
 }

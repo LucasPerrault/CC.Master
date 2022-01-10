@@ -1,4 +1,5 @@
 using Authentication.Domain;
+using Distributors.Domain.Models;
 using Environments.Domain.Storage;
 using Moq;
 using Rights.Domain;
@@ -33,8 +34,8 @@ namespace Environments.Domain.Tests
                 {
                     FirstName = "Bernard",
                     LastName = "Martin",
-                    DistributorId = DistributorId
-                }
+                    Distributor = new Distributor { Id = DistributorId },
+                },
             });
 
             var accessRights = await envRightsFilter.GetAccessRightAsync(principal, Operation.ReadEnvironments);

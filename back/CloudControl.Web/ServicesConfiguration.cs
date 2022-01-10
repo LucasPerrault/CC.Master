@@ -1,5 +1,6 @@
 using AdvancedFilters.Infra.Storage;
 using AdvancedFilters.Web;
+using AdvancedFilters.Web.Configuration;
 using AngleSharp;
 using Authentication.Web;
 using Billing.Cmrr.Infra.Storage;
@@ -136,7 +137,7 @@ namespace CloudControl.Web
             services
                 .AddHealthCheck(o =>
                     {
-                        o.ServiceGuid = new Guid("101DFDBD-2438-43D1-9D22-63D1C46B3412");// TODO
+                        o.ServiceGuid = new Guid("101DFDBD-2438-43D1-9D22-63D1C46B3412");
                         o.ServiceName = AppConfiguration.AppName;
                     }
                 )
@@ -163,7 +164,8 @@ namespace CloudControl.Web
                     .AddModelBinding()
                     .AddEntityFrameworkQuerying()
                     .ConfigureLuccaApiForInstances()
-                    .ConfigureLuccaApiForContracts();
+                    .ConfigureLuccaApiForContracts()
+                    .ConfigureLuccaApiForAdvancedFilters();
             });
 
             services.AddMvc().AddLuccaApi(o =>

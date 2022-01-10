@@ -47,6 +47,10 @@ namespace Environments.Infra.Migrations
                         .HasColumnType("bit")
                         .HasColumnName("IsAllowingCommercialCommunication");
 
+                    b.Property<bool>("IsLucca")
+                        .HasColumnType("bit")
+                        .HasColumnName("IsLucca");
+
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)")
                         .HasColumnName("Name");

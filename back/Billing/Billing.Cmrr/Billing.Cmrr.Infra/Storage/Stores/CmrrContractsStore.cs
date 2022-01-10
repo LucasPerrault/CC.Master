@@ -29,6 +29,7 @@ namespace Billing.Cmrr.Infra.Storage.Stores
 
         private IQueryable<CmrrContract> NotArchivedContract => _dbContext
             .Set<CmrrContract>()
+            .Include(c => c.Distributor)
             .Where(c => !c.IsArchived)
             .AsNoTracking();
     }

@@ -11,8 +11,6 @@ namespace AdvancedFilters.Domain.Instance.Models
 {
     public class Environment
     {
-        public const int LuccaDistributorId = 37;
-
         public int Id { get; set; }
         public string Subdomain { get; set; }
         public string Domain { get; set; }
@@ -54,8 +52,8 @@ namespace AdvancedFilters.Domain.Instance.Models
     public static class EnvironmentExpressions
     {
         public static Expression<Func<Environment, DistributorType>> DistributorTypeFn
-            => e => e.Accesses.Where(a => a.Type == EnvironmentAccessType.Contract).Any(a => a.DistributorId == Environment.LuccaDistributorId)
-                ? e.Accesses.Where(a => a.Type == EnvironmentAccessType.Contract).Any(a => a.DistributorId != Environment.LuccaDistributorId)
+            => e => e.Accesses.Where(a => a.Type == EnvironmentAccessType.Contract).Any(a => a.Distributor.IsLucca)
+                ? e.Accesses.Where(a => a.Type == EnvironmentAccessType.Contract).Any(a => !a.Distributor.IsLucca)
                     ? DistributorType.DirectAndIndirect
                     : DistributorType.DirectOnly
                 : DistributorType.IndirectOnly;

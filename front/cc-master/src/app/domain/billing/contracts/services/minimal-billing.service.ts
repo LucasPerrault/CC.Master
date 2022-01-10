@@ -1,7 +1,6 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { IHttpApiV3Response } from '@cc/common/queries';
-import { luccaDistributorId } from '@cc/domain/billing/distributors';
 import {
   IProductMinimalBillingEligibility,
   productMinimalBillingEligibilityFields,
@@ -20,7 +19,7 @@ export class MinimalBillingService {
   constructor(private httpClient: HttpClient) {}
 
   public isEligibleForMinimalBilling$(contract: IContractMinimalBillable): Observable<boolean> {
-    if (!this.isDirectSales(contract) || this.hasTheoreticalMonthRebate(contract)) {
+    if (!contract?.distributor?.isDirectSales || this.hasTheoreticalMonthRebate(contract)) {
       return of(false);
     }
 
@@ -29,10 +28,6 @@ export class MinimalBillingService {
 
   private hasTheoreticalMonthRebate(contract: IContractMinimalBillable): boolean {
     return contract.theoreticalMonthRebate > 0;
-  }
-
-  private isDirectSales(contract: IContractMinimalBillable): boolean {
-    return !!contract.distributorId && contract.distributorId === luccaDistributorId;
   }
 
   private isProductEligible$(contract: IContractMinimalBillable): Observable<boolean> {

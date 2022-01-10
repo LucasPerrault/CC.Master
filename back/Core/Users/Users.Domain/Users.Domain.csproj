@@ -10,6 +10,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\..\..\Shared\Distributors\Distributors.Domain\Distributors.Domain.csproj" />
       <ProjectReference Include="..\..\Rights\Rights.Domain\Rights.Domain.csproj" />
       <ProjectReference Include="..\..\Tools\Tools\Tools.csproj" />
     </ItemGroup>

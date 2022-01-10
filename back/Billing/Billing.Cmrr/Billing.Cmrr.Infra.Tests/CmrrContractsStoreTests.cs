@@ -1,6 +1,7 @@
 using Billing.Cmrr.Domain;
 using Billing.Cmrr.Infra.Storage;
 using Billing.Cmrr.Infra.Storage.Stores;
+using Distributors.Domain.Models;
 using FluentAssertions;
 using Rights.Domain.Filtering;
 using System;
@@ -33,28 +34,32 @@ namespace Billing.Cmrr.Infra.Tests
                 {
                     Id = 1,
                     StartDate = startCountPeriod,
-                    IsArchived = false
+                    IsArchived = false,
+                    Distributor = new Distributor(),
                 },
                 new CmrrContract
                 {
                     Id = 2,
                     StartDate = startCountPeriod,
                     EndDate = endCountPeriod,
-                    IsArchived = false
+                    IsArchived = false,
+                    Distributor = new Distributor(),
                 },
                 new CmrrContract
                 {
                     Id = 3,
                     StartDate = startCountPeriod.AddMonths(-2),
                     EndDate = startCountPeriod.AddMonths(-1),
-                    IsArchived = false
+                    IsArchived = false,
+                    Distributor = new Distributor(),
                 },
                 new CmrrContract
                 {
                     Id = 4,
                     StartDate = endCountPeriod.AddMonths(1),
                     EndDate = endCountPeriod.AddMonths(2),
-                    IsArchived = false
+                    IsArchived = false,
+                    Distributor = new Distributor(),
                 }
             };
 
@@ -83,14 +88,16 @@ namespace Billing.Cmrr.Infra.Tests
                 {
                     Id = 1,
                     StartDate = startCountPeriod,
-                    IsArchived = false
+                    IsArchived = false,
+                    Distributor = new Distributor(),
                 },
                 new CmrrContract
                 {
                     Id = 2,
                     StartDate = startCountPeriod,
                     EndDate = endCountPeriod,
-                    IsArchived = true
+                    IsArchived = true,
+                    Distributor = new Distributor(),
                 }
             };
 

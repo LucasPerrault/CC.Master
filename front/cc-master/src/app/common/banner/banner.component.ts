@@ -1,6 +1,6 @@
 import { Component, Inject } from '@angular/core';
 import { CookiesService } from '@cc/aspects/cookies';
-import { DistributorIds, IPrincipal, PRINCIPAL } from '@cc/aspects/principal';
+import { IPrincipal, PRINCIPAL } from '@cc/aspects/principal';
 
 @Component({
   selector: 'cc-banner',
@@ -13,7 +13,7 @@ export class BannerComponent {
   private readonly logoutHref = '/logout';
 
   constructor(@Inject(PRINCIPAL) public principal: IPrincipal, private cookiesService: CookiesService) {
-    this.shouldDisplayLuccaUrl = DistributorIds.isLuccaUser(principal);
+    this.shouldDisplayLuccaUrl = principal.isLucca;
   }
 
   public async logoutAsync(): Promise<void> {

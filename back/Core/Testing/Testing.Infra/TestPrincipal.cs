@@ -1,4 +1,5 @@
 ﻿using Authentication.Domain;
+using Distributors.Domain.Models;
 using System.Security.Claims;
 using Users.Domain;
 
@@ -8,14 +9,14 @@ namespace Testing.Infra
     {
         private const int DefaultTestDepartmentId = 1;
 
-        public static ClaimsPrincipal NewUser() => NewUser(DefaultTestDepartmentId);
+        public static ClaimsPrincipal NewUser() => NewUser(new Distributor { Id = DefaultTestDepartmentId });
 
-        public static ClaimsPrincipal NewUser(int departmentId) => new CloudControlUserClaimsPrincipal(new Principal
+        public static ClaimsPrincipal NewUser(Distributor distributor) => new CloudControlUserClaimsPrincipal(new Principal
         {
             UserId = 1,
             User = new User
             {
-                DistributorId = departmentId,
+                Distributor = distributor,
                 FirstName = "Jean",
                 LastName = "Bombeur",
             }
