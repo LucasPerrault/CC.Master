@@ -3,8 +3,13 @@ import { ControlValueAccessor, FormControl, NG_VALUE_ACCESSOR } from '@angular/f
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { IListEntry, ListEntryType } from '../../models/establishment-list-entry.interface';
-import { EstablishmentTypeService } from '../../services/establishment-type.service';
+import { ListEntryType } from '../../../models/establishment-list-entry.interface';
+
+export interface IEstablishmentTypeFilterInfo {
+  linkedToThisContractCount: number;
+  linkedToAnotherContractCount: number;
+  excludedCount: number;
+}
 
 @Component({
   selector: 'cc-establishment-type-filter',
@@ -18,7 +23,7 @@ import { EstablishmentTypeService } from '../../services/establishment-type.serv
   ],
 })
 export class EstablishmentTypeFilterComponent implements OnInit, OnDestroy, ControlValueAccessor {
-  @Input() public allEntries: IListEntry[];
+  @Input() public infos: IEstablishmentTypeFilterInfo;
 
   public formControl: FormControl = new FormControl();
   public type = ListEntryType;
@@ -51,9 +56,5 @@ export class EstablishmentTypeFilterComponent implements OnInit, OnDestroy, Cont
     if (!!e && e !== this.formControl.value) {
       this.formControl.patchValue(e);
     }
-  }
-
-  public getByType(entries: IListEntry[], type: ListEntryType): IListEntry[] {
-    return EstablishmentTypeService.getEntriesByType(entries, type);
   }
 }

@@ -7,7 +7,7 @@ import { Component, Input } from '@angular/core';
 })
 export class EstablishmentTypeSectionComponent {
   @Input() public title: string;
-  @Input() public totalCount: number;
+  @Input() public totalCount?: number;
   @Input() public isExpandedByDefault = false;
   @Input() public class: string;
 

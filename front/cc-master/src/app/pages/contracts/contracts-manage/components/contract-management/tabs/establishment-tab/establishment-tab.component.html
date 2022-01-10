@@ -6,33 +6,33 @@
    </cc-contract-without-environment-callout>
 
    <ng-template #hasEnvironment>
-     <ng-container *ngIf="entries$ | async; let entries">
-
-       <cc-establishment-type-section [title]="'front_contractPage_establishments_section_info' | translate"
+       <cc-establishment-type-section *ngIf="allEntriesExceptWithError$ | async; let allEntriesExceptWithError"
+                                      [title]="'front_contractPage_establishments_section_info' | translate"
                                       [isExpandedByDefault]="true">
          <div class="u-paddingSmaller" filters>
-           <cc-establishment-type-filter [formControl]="typeFilter" [allEntries]="entries"></cc-establishment-type-filter>
+           <cc-establishment-filters [allEntriesExceptWithError]="allEntriesExceptWithError"
+                                     [hasFinishedEntries]="hasFinishedEntriesByType(allEntriesExceptWithError, type)"
+                                     [formControl]="filters"></cc-establishment-filters>
          </div>
          <cc-establishment-list content
-                                [type]="typeFilter.value"
+                                [type]="type"
                                 [context]="context$ | async"
-                                [entries]="getSortedEntriesByType(entries, typeFilter.value)">
+                                [entries]="getFilteredEntries(allEntriesExceptWithError, filters.value)">
          </cc-establishment-list>
        </cc-establishment-type-section>
 
-       <cc-establishment-type-section class="mod-error"
+       <cc-establishment-type-section *ngIf="entriesWithError$ | async; let entriesWithError"
+                                      class="mod-error"
                                       [title]="'front_contractPage_establishments_section_error' | translate"
-                                      [totalCount]="getTotalCount(entries, true)"
+                                      [totalCount]="entriesWithError.length"
                                       [isExpandedByDefault]="true">
          <cc-establishment-list content
                                 class="u-displayBlock u-paddingTopSmaller"
                                 [type]="listEntryType.Error"
                                 [context]="context$ | async"
-                                [entries]="getSortedEntriesByType(entries, listEntryType.Error)">
+                                [entries]="entriesWithError">
          </cc-establishment-list>
        </cc-establishment-type-section>
-
-     </ng-container>
    </ng-template>
 
    <div class="u-displayFlex u-alignFlexItemsCenter u-justifyContentSpaceBetween u-marginTopStandard">

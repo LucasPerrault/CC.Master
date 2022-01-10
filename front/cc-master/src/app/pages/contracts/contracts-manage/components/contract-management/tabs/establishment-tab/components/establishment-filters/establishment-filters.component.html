@@ -1,0 +1,17 @@
+<form [formGroup]="formGroup" class="u-displayFlex u-alignItemsCenter u-justifyContentSpaceBetween">
+  <cc-establishment-type-filter [infos]="typeFilterInfos$ | async" [formControlName]="formKey.Type">
+  </cc-establishment-type-filter>
+
+  <ng-container>
+    <label class="checkbox palette-grey"
+           [ngClass]="{ 'mod-hidden': this.formGroup.get(formKey.Type).value === type.Excluded }"
+           [luTooltip]="'contracts_establishments_show_finished_attachments_disabled_info' | translate"
+           [luTooltipDisabled]="this.formGroup.get(formKey.ShowFinishedAttachments).enabled">
+      <input class="checkbox-input" type="checkbox" name="checkboxList1"
+             [formControlName]="formKey.ShowFinishedAttachments">
+      <span class="checkbox-label">
+      {{ 'contracts_establishments_show_finished_attachments_label' | translate }}
+    </span>
+    </label>
+  </ng-container>
+</form>

@@ -7,7 +7,8 @@ import { LuTooltipTriggerModule } from '@lucca-front/ng/tooltip';
 import {
   ContractWithoutEnvironmentCalloutComponent,
 } from './components/contract-without-environment-callout/contract-without-environment-callout.component';
-import { EstablishmentTypeFilterModule } from './components/establiment-type-filter/establishment-type-filter.module';
+import { EstablishmentTypeFilterModule } from './components/establishment-filters/establiment-type-filter/establishment-type-filter.module';
+import { EstablishmentFiltersModule } from './components/establishment-filters/establishment-filters.module';
 import { EstablishmentListComponent } from './components/establishment-list/establishment-list.component';
 import {
   EstablishmentListActionsMultipleComponent,
@@ -37,15 +38,16 @@ import { EstablishmentsTimelineService } from './services/establishments-timelin
     ContractWithoutEnvironmentCalloutComponent,
     EstablishmentListActionsMultipleComponent,
   ],
-    imports: [
-        CommonModule,
-        ReactiveFormsModule,
-        FormsModule,
-        TranslateModule,
-        LuTooltipTriggerModule,
-        EstablishmentActionModalsModule,
-        EstablishmentTypeFilterModule,
-    ],
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    FormsModule,
+    TranslateModule,
+    LuTooltipTriggerModule,
+    EstablishmentActionModalsModule,
+    EstablishmentTypeFilterModule,
+    EstablishmentFiltersModule,
+  ],
   providers: [
     EstablishmentsDataService,
     AttachmentsActionRestrictionsService,

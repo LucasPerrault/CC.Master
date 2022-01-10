@@ -7,7 +7,7 @@
            checked>
     <span class="radioButtons-item-label">
       {{ 'front_contractPage_establishments_type_linkedToContract' | translate }}
-      <span class="label mod-number palette-grey">{{ getByType(allEntries, type.LinkedToThisContract)?.length }}</span>
+      <span class="label mod-number palette-grey">{{ infos?.linkedToThisContractCount }}</span>
     </span>
   </label>
   <label class="radioButtons-item">
@@ -17,7 +17,7 @@
            [value]="type.LinkedToAnotherContract">
     <span class="radioButtons-item-label">
       {{ 'front_contractPage_establishments_type_linkedToAnotherContract' | translate }}
-      <span class="label mod-number palette-grey">{{ getByType(allEntries, type.LinkedToAnotherContract)?.length }}</span>
+      <span class="label mod-number palette-grey">{{ infos?.linkedToAnotherContractCount }}</span>
     </span>
   </label>
   <label class="radioButtons-item">
@@ -27,7 +27,7 @@
            [value]="type.Excluded">
     <span class="radioButtons-item-label">
       {{ 'front_contractPage_establishments_type_excluded' | translate }}
-      <span class="label mod-number palette-grey">{{ getByType(allEntries, type.Excluded)?.length }}</span>
+      <span class="label mod-number palette-grey">{{ infos?.excludedCount }}</span>
     </span>
   </label>
 </div>
