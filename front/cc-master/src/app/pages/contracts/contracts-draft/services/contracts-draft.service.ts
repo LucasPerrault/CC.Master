@@ -25,7 +25,7 @@ import {
 const opportunityFields = (draftFields: string) => [
   'id',
   'name',
-  'isDirectSales',
+  'distributor.isDirectSales',
   'urlToSFOpportunity',
   'urlToSFDistributor',
   'closeOn',
@@ -35,11 +35,15 @@ const opportunityFields = (draftFields: string) => [
 interface IOpportunity<T extends IContractDraft> {
   id: number;
   name: string;
-  isDirectSales: boolean;
   urlToSFOpportunity: string;
   urlToSFDistributor: string;
   closeOn: string;
   contractDrafts: T[];
+  distributor: IOpportunityDistributor;
+}
+
+interface IOpportunityDistributor {
+  isDirectSales: boolean;
 }
 
 @Injectable()
@@ -133,7 +137,7 @@ export class ContractsDraftService {
       createdAt: opportunity.closeOn,
       externalUrl: opportunity.urlToSFOpportunity,
       externalDistributorUrl: opportunity.urlToSFDistributor,
-      isDirectSales: opportunity.isDirectSales,
+      isDirectSales: opportunity.distributor.isDirectSales,
       ...draft,
     }));
   }
