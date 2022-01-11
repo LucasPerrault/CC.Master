@@ -49,20 +49,23 @@ export class EstablishmentListActionsService {
     establishment: IContractEstablishment,
     attachment: IEstablishmentAttachment,
     lastCountPeriod: Date,
+    contractCloseOn: string,
   ): void {
-    this.openAttachmentsFutureDeactivationEdition([establishment], [attachment], lastCountPeriod);
+    this.openAttachmentsFutureDeactivationEdition([establishment], [attachment], lastCountPeriod, contractCloseOn);
   }
 
   public openAttachmentsFutureDeactivationEdition(
     establishments: IContractEstablishment[],
     attachments: IEstablishmentAttachment[],
     lastCountPeriod: Date,
+    contractCloseOn: string,
   ): void {
     const modalData: IAttachmentEndEditionModalData = {
       mode: AttachmentEndEditionModalMode.FutureDeactivationEdition,
       establishments,
       attachments,
       lastCountPeriod,
+      contractCloseOn,
     };
 
     const luModalRef = this.luModal.open(AttachmentEndEditionModalComponent, modalData);
@@ -118,20 +121,23 @@ export class EstablishmentListActionsService {
     establishment: IContractEstablishment,
     attachment: IEstablishmentAttachment,
     lastCountPeriod: Date,
+    contractCloseOn: string,
   ): void {
-    this.openAttachmentsUnlinking([establishment], [attachment], lastCountPeriod);
+    this.openAttachmentsUnlinking([establishment], [attachment], lastCountPeriod, contractCloseOn);
   }
 
   public openAttachmentsUnlinking(
     establishments: IContractEstablishment[],
     attachments: IEstablishmentAttachment[],
     lastCountPeriod: Date,
+    contractCloseOn: string,
   ): void {
     const modalData: IAttachmentEndEditionModalData = {
       mode: AttachmentEndEditionModalMode.Unlinking,
       establishments,
       attachments,
       lastCountPeriod,
+      contractCloseOn,
       description: 'front_contractPage_establishments_unlink_modal_description',
     };
 
@@ -142,11 +148,13 @@ export class EstablishmentListActionsService {
   public openAttachmentUnlinkingCancellation(
     establishment: IContractEstablishment,
     attachment: IEstablishmentAttachment,
+    contractCloseOn: string,
   ): void {
     const modalData: IAttachmentEndEditionModalData = {
       mode: AttachmentEndEditionModalMode.UnlinkingCancellation,
       establishments: [establishment],
       attachments: [attachment],
+      contractCloseOn,
       description: 'front_contractPage_establishments_cancelUnlinking_modal_description',
     };
 

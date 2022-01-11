@@ -65,6 +65,7 @@ export class EstablishmentListActionsMultipleComponent {
       this.establishments,
       this.attachments,
       this.context.lastCountPeriod,
+      this.context.contract.closeOn,
     );
   }
 
@@ -82,7 +83,12 @@ export class EstablishmentListActionsMultipleComponent {
   }
 
   public openAttachmentUnlinking(): void {
-    this.actionsService.openAttachmentsUnlinking(this.establishments, this.attachments, this.context.lastCountPeriod);
+    this.actionsService.openAttachmentsUnlinking(
+      this.establishments,
+      this.attachments,
+      this.context.lastCountPeriod,
+      this.context.contract.closeOn,
+    );
   }
 
   public openAttachmentExclusion(): void {

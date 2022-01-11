@@ -3,12 +3,13 @@ import { FormControl, FormGroup } from '@angular/forms';
 import { TranslatePipe } from '@cc/aspects/translate';
 import { ELuDateGranularity } from '@lucca-front/ng/core';
 import { ILuModalContent, LU_MODAL_DATA } from '@lucca-front/ng/modal';
-import { addMonths, differenceInMonths, startOfMonth } from 'date-fns';
+import { differenceInMonths, startOfMonth } from 'date-fns';
 import { Observable, Subject } from 'rxjs';
 import { debounceTime, takeUntil } from 'rxjs/operators';
 
 import { IContractEstablishment } from '../../../models/contract-establishment.interface';
 import { IEstablishmentExcludedEntity } from '../../../models/establishment-excluded-entity.interface';
+import { AttachmentLinkingConditions } from '../../../services/attachments-action-conditions';
 import { EstablishmentsDataService } from '../../../services/establishments-data.service';
 import { IAttachmentLinkingModalData } from './attachment-linking-modal-data.interface';
 
@@ -29,16 +30,9 @@ export class AttachmentLinkingModalComponent implements OnInit, OnDestroy, ILuMo
   public formGroup: FormGroup;
   public formKey = AttachmentLinkingFormKey;
 
+  public min: Date;
+  public max: Date;
   public granularity = ELuDateGranularity;
-
-  public get min(): Date {
-    const lastAttachmentEndDate = this.getLastAttachmentEndDate();
-    const min = !!lastAttachmentEndDate
-      ? addMonths(lastAttachmentEndDate, 1)
-      : this.getContractStartDate();
-
-    return startOfMonth(min);
-  }
 
   private destroy$: Subject<void> = new Subject();
 
@@ -49,6 +43,9 @@ export class AttachmentLinkingModalComponent implements OnInit, OnDestroy, ILuMo
   ) {
     this.submitLabel = this.translatePipe.transform('front_contractPage_establishments_linking_modal_button');
     this.title = this.getTitle();
+
+    this.min = AttachmentLinkingConditions.minDate(this.modalData.establishments, this.modalData?.contract?.theoricalStartOn);
+    this.max = AttachmentLinkingConditions.maxDate(this.modalData?.contract?.closeOn);
 
     this.formGroup = new FormGroup({
       [AttachmentLinkingFormKey.StartDate]: new FormControl(),
@@ -94,21 +91,6 @@ export class AttachmentLinkingModalComponent implements OnInit, OnDestroy, ILuMo
       ? this.modalData.contract.nbMonthTheorical - months
       : 0;
     this.formGroup.get(AttachmentLinkingFormKey.MonthRebate).patchValue(monthRebateCount);
-  }
-
-  private getLastAttachmentEndDate(): Date {
-    const attachmentEndDates = this.modalData?.attachments.filter(a => !!a?.end).map(a => new Date(a.end));
-    if (!attachmentEndDates.length) {
-      return null;
-    }
-
-    const sortedEndDates = attachmentEndDates.sort((a, b) => new Date(b).getTime() - new Date(a).getTime());
-    return sortedEndDates[0];
-  }
-
-  private getContractStartDate(): Date | null {
-    const start = this.modalData.contract.theoricalStartOn;
-    return !!start ? new Date(start) : null;
   }
 
   private getExcludedEntitiesToDelete(establishments: IContractEstablishment[]): IEstablishmentExcludedEntity[] {

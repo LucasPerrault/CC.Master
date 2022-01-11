@@ -13,4 +13,5 @@ export interface IAttachmentEndEditionModalData {
   description?: string;
   lastCountPeriod?: Date;
   mode: AttachmentEndEditionModalMode;
+  contractCloseOn: string;
 }

@@ -7,6 +7,7 @@ export const establishmentContractFields = [
   'environmentId',
   'theoricalStartOn',
   'nbMonthTheorical',
+  'closeOn',
   'productId',
   `product[${ etsContractProductFields }]`,
 ].join(',');
@@ -16,5 +17,6 @@ export interface IEstablishmentContract extends IContract {
   productId: number;
   product: IEstablishmentContractProduct;
   theoricalStartOn: string;
+  closeOn: string;
   nbMonthTheorical: number;
 }

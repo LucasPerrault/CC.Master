@@ -3,10 +3,11 @@ import { FormControl, FormGroup } from '@angular/forms';
 import { TranslatePipe } from '@cc/aspects/translate';
 import { ELuDateGranularity } from '@lucca-front/ng/core';
 import { ILuModalContent, LU_MODAL_DATA } from '@lucca-front/ng/modal';
-import { addMonths, isEqual, startOfMonth } from 'date-fns';
+import { isEqual, startOfMonth } from 'date-fns';
 import { Observable, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
+import { AttachmentStartEditionConditions } from '../../../services/attachments-action-conditions';
 import { EstablishmentsDataService } from '../../../services/establishments-data.service';
 import { IAttachmentStartEditionModalData } from './attachment-start-edition-modal-data.interface';
 
@@ -27,13 +28,8 @@ export class AttachmentStartEditionModalComponent implements OnInit, OnDestroy, 
   public formGroup: FormGroup;
   public formKey = AttachmentStartEditionFormKey;
 
+  public min: Date;
   public granularity = ELuDateGranularity;
-
-  public get min(): Date {
-    return !!this.modalData.lastCountPeriod
-      ? addMonths(this.modalData.lastCountPeriod, 1)
-      : this.getLastAttachmentStartDate();
-  }
 
   private destroy$: Subject<void> = new Subject();
 
@@ -44,6 +40,8 @@ export class AttachmentStartEditionModalComponent implements OnInit, OnDestroy, 
   ) {
     this.submitLabel = this.translatePipe.transform('front_contractPage_establishments_startEdition_modal_button');
     this.title = this.getTitle();
+
+    this.min = AttachmentStartEditionConditions.minDate(this.modalData.lastCountPeriod, this.modalData.attachments);
 
     this.formGroup = new FormGroup({
       [AttachmentStartEditionFormKey.StartDate]: new FormControl(this.getStartDate()),
@@ -95,17 +93,5 @@ export class AttachmentStartEditionModalComponent implements OnInit, OnDestroy, 
 
     const establishments = this.modalData.establishments;
     return this.translatePipe.transform(translationKey, { count: establishments.length });
-  }
-
-  private getLastAttachmentStartDate(): Date {
-    if (!this.modalData.attachments?.length) {
-      return null;
-    }
-
-    const sortedStartedAttachments = this.modalData.attachments
-      .sort((a, b) => new Date(a.start).getTime() - new Date(b.start).getTime());
-
-    const lastAttachmentStartDate = sortedStartedAttachments[0]?.start;
-    return !!lastAttachmentStartDate ? new Date(sortedStartedAttachments[0]?.start) : null;
   }
 }

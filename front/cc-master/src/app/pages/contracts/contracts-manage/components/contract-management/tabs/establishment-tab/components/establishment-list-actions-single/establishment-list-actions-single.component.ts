@@ -54,6 +54,7 @@ export class EstablishmentListActionsSingleComponent {
       this.entry.establishment,
       this.entry.attachment,
       this.context.lastCountPeriod,
+      this.context.contract.closeOn,
     );
   }
 
@@ -75,11 +76,16 @@ export class EstablishmentListActionsSingleComponent {
       this.entry.establishment,
       this.entry.attachment,
       this.context.lastCountPeriod,
+      this.context.contract.closeOn,
     );
   }
 
   public openAttachmentUnlinkingCancellation(): void {
-    this.actionsService.openAttachmentUnlinkingCancellation(this.entry.establishment, this.entry.attachment);
+    this.actionsService.openAttachmentUnlinkingCancellation(
+      this.entry.establishment,
+      this.entry.attachment,
+      this.context.contract.closeOn,
+    );
   }
 
   public openAttachmentExclusion(): void {

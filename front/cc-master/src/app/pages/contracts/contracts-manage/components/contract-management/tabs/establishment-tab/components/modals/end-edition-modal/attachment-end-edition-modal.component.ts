@@ -8,6 +8,7 @@ import { Observable, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
 import { getAttachmentEndReason, IAttachmentEndReason } from '../../../constants/attachment-end-reason.const';
+import { AttachmentEndEditionConditions } from '../../../services/attachments-action-conditions';
 import { EstablishmentsDataService } from '../../../services/establishments-data.service';
 import { AttachmentEndEditionModalMode, IAttachmentEndEditionModalData } from './attachment-end-edition-modal-data.interface';
 
@@ -29,13 +30,9 @@ export class AttachmentEndEditionModalComponent implements OnInit, OnDestroy, IL
   public formKey = AttachmentEndEditionFormKey;
 
   public mode = AttachmentEndEditionModalMode;
+  public min: Date;
+  public max: Date;
   public granularity = ELuDateGranularity;
-
-  public get min(): Date {
-    return !!this.modalData.lastCountPeriod
-      ? this.modalData.lastCountPeriod
-      : this.getLastAttachmentStartDate();
-  }
 
   private destroy$: Subject<void> = new Subject();
 
@@ -47,6 +44,13 @@ export class AttachmentEndEditionModalComponent implements OnInit, OnDestroy, IL
     this.title = this.getTitle();
     this.submitLabel = this.translatePipe.transform(this.getSubmitLabel(modalData.mode));
     this.submitDisabled = modalData.mode !== AttachmentEndEditionModalMode.UnlinkingCancellation;
+
+    this.min = AttachmentEndEditionConditions.minDate(this.modalData.lastCountPeriod, this.modalData.attachments);
+    this.max = AttachmentEndEditionConditions.maxDate(
+      this.modalData.contractCloseOn,
+      this.modalData.establishments,
+      this.modalData.attachments,
+    );
 
     this.formGroup = new FormGroup({
       [AttachmentEndEditionFormKey.EndDate]: new FormControl(this.getEndDate()),
@@ -125,13 +129,5 @@ export class AttachmentEndEditionModalComponent implements OnInit, OnDestroy, IL
       case AttachmentEndEditionModalMode.UnlinkingCancellation:
         return 'front_contractPage_establishments_cancelUnlinking_modal_button';
     }
-  }
-
-  private getLastAttachmentStartDate(): Date {
-    const lastStartedAttachments = this.modalData.attachments.sort((a, b) =>
-      new Date(a.start).getTime() - new Date(b.start).getTime(),
-    );
-
-    return !!lastStartedAttachments?.length ? new Date(lastStartedAttachments[0].start) : null;
   }
 }
