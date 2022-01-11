@@ -13,7 +13,7 @@
       {{ 'front_contractPage_establishments_startEdition_button_label' | translate }}
     </button>
 
-    <button [disabled]="isDisabled || !canEditFutureEnd"
+    <button [disabled]="isDisabled || !canEditEnd"
             type="button" class="button palette-grey mod-outline mod-small"
             (click)="openAttachmentFutureDeactivationEdition()">
       {{ 'front_contractPage_establishments_endEdition_button_label' | translate }}
@@ -49,7 +49,7 @@
       {{ 'front_contractPage_establishments_link_button_label' | translate }}
     </button>
     <button type="button"
-            [disabled]="isDisabled"
+            [disabled]="isDisabled || !canExclude"
             class="button palette-grey mod-outline mod-small" (click)="openAttachmentExclusion()">
       {{ 'front_contractPage_establishments_exclude_button_label' | translate }}
     </button>

@@ -3,7 +3,9 @@ import { Operation, OperationRestrictionMode, RightsService } from '@cc/aspects/
 import { ICount } from '@cc/domain/billing/counts';
 import { isAfter, isBefore, isEqual } from 'date-fns';
 
+import { IEstablishmentActionsContext } from '../models/establishment-actions-context.interface';
 import { IEstablishmentAttachment } from '../models/establishment-attachment.interface';
+import { IListEntry, ListEntryType } from '../models/establishment-list-entry.interface';
 import { AttachmentsTimelineService } from './attachments-timeline.service';
 
 @Injectable()
@@ -14,7 +16,7 @@ export class AttachmentsActionRestrictionsService {
     return this.rightsService.hasOperationsByRestrictionMode(this.operationsToReadValidationContext, OperationRestrictionMode.All);
   }
 
-    constructor(private timelineService: AttachmentsTimelineService, private rightsService: RightsService) {}
+  constructor(private timelineService: AttachmentsTimelineService, private rightsService: RightsService) {}
 
   public canDeleteRange(attachments: IEstablishmentAttachment[], realCounts: ICount[]): boolean {
     return this.canReadValidationContext && attachments.every(ce => this.canDelete(ce, realCounts));
@@ -29,12 +31,32 @@ export class AttachmentsActionRestrictionsService {
     return !this.hasRealCountsBetween(new Date(attachment.start), maxDate, realCounts);
   }
 
-  public canCancelUnlinking(attachment: IEstablishmentAttachment, realCounts: ICount[]): boolean {
-    if (!!attachment && !this.timelineService.shouldBeEndedInFuture(attachment)) {
+  public canExcludeRange(entries: IListEntry[]): boolean {
+    return entries.every(e => this.canExclude(e));
+  }
+
+  public canExclude(entry: IListEntry): boolean {
+    return !entry?.establishment?.contractEntities?.some(a => !a.end);
+  }
+
+  public canCancelUnlinking(entry: IListEntry, context: IEstablishmentActionsContext): boolean {
+    if (!entry?.attachment?.end) {
       return false;
     }
 
-    return this.canReadValidationContext && this.canEditFutureEnd(attachment, realCounts);
+    if (!this.canReadValidationContext) {
+      return false;
+    }
+
+    if (entry.establishment.contractEntities.some(a => !a.end)) {
+      return false;
+    }
+
+    if (this.hasRealCountsSince(new Date(entry.attachment.end), context.realCounts)) {
+      return false;
+    }
+
+    return !context.contract.closeOn || this.timelineService.shouldBeEndedInFuture(entry?.attachment);
   }
 
   public canUnlinkRange(attachments: IEstablishmentAttachment[]): boolean {
@@ -45,16 +67,20 @@ export class AttachmentsActionRestrictionsService {
     return this.canReadValidationContext && this.timelineService.isStarted(attachment) && !attachment?.end;
   }
 
-  public canLinkRange(attachments: IEstablishmentAttachment[]): boolean {
-    return this.canReadValidationContext && attachments.every(a => this.canLink(a));
+  public canLinkRange(entries: IListEntry[]): boolean {
+    return this.canReadValidationContext && entries.every(e => this.canLink(e));
   }
 
-  public canLink(attachment: IEstablishmentAttachment): boolean {
+  public canLink(entry: IListEntry): boolean {
     if (!this.canReadValidationContext) {
-      return false;
+        return false;
     }
 
-    return !attachment || this.timelineService.isFinished(attachment) || this.timelineService.shouldBeEndedInFuture(attachment);
+    if (!!entry.establishment?.contractEntities?.length) {
+      return entry.establishment?.contractEntities.every(ce => !!ce.end);
+    }
+
+    return true;
   }
 
   public canEditFutureStartRange(attachments: IEstablishmentAttachment[], realCounts: ICount[]): boolean {
@@ -65,16 +91,24 @@ export class AttachmentsActionRestrictionsService {
     return this.canReadValidationContext && !!attachment && !!attachment.start && this.timelineService.isStartedInTheFuture(attachment);
   }
 
-  public canEditFutureEndRange(attachments: IEstablishmentAttachment[], realCounts: ICount[]): boolean {
-    return this.canReadValidationContext && attachments.every(ce => this.canEditFutureEnd(ce, realCounts));
+  public canEditEndRange(entries: IListEntry[], context: IEstablishmentActionsContext): boolean {
+    return entries.every(entry => this.canEditEnd(entry, context));
   }
 
-  public canEditFutureEnd(attachment: IEstablishmentAttachment, realCounts: ICount[]): boolean {
-    if (!attachment || !attachment.end || !this.canReadValidationContext) {
+  public canEditEnd(entry: IListEntry, context: IEstablishmentActionsContext): boolean {
+    if (!entry?.attachment?.end) {
       return false;
     }
 
-    return !this.hasRealCountsSince(new Date(attachment.end), realCounts);
+    if (!this.canReadValidationContext) {
+      return false;
+    }
+
+    if (!!context.contract?.closeOn && isEqual(new Date(entry.attachment.end), new Date(context.contract.closeOn))) {
+      return false;
+    }
+
+    return !this.hasRealCountsSince(new Date(entry.attachment.end), context.realCounts);
   }
 
   private hasRealCountsBetween(from: Date, to: Date, realCounts: ICount[]): boolean {
@@ -96,5 +130,9 @@ export class AttachmentsActionRestrictionsService {
 
   private isAfterOrEquals(date: Date, dateToCompare: Date): boolean {
     return isAfter(date, dateToCompare) || isEqual(date, dateToCompare);
+  }
+
+  private isLinked(entry: IListEntry): boolean {
+    return entry.type === ListEntryType.LinkedToThisContract || entry.type === ListEntryType.LinkedToAnotherContract;
   }
 }

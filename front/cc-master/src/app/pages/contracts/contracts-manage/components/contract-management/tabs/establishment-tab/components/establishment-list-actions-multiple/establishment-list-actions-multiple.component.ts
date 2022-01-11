@@ -34,8 +34,8 @@ export class EstablishmentListActionsMultipleComponent {
     return this.actionRestrictionsService.canDeleteRange(this.attachments, this.context.realCounts);
   }
 
-  public get canEditFutureEnd(): boolean {
-    return this.actionRestrictionsService.canEditFutureEndRange(this.attachments, this.context.realCounts);
+  public get canEditEnd(): boolean {
+    return this.actionRestrictionsService.canEditEndRange(this.entries, this.context);
   }
 
   public get canEditFutureStart(): boolean {
@@ -47,7 +47,11 @@ export class EstablishmentListActionsMultipleComponent {
   }
 
   public get canLink(): boolean {
-    return this.actionRestrictionsService.canLinkRange(this.attachments);
+    return this.actionRestrictionsService.canLinkRange(this.entries);
+  }
+
+  public get canExclude(): boolean {
+    return this.actionRestrictionsService.canExcludeRange(this.entries);
   }
 
   constructor(

@@ -20,8 +20,8 @@ export class EstablishmentListActionsSingleComponent {
     return this.actionRestrictionsService.canDelete(this.entry.attachment, this.context.realCounts);
   }
 
-  public get canEditFutureEnd(): boolean {
-    return this.actionRestrictionsService.canEditFutureEnd(this.entry.attachment, this.context.realCounts);
+  public get canEditEnd(): boolean {
+    return this.actionRestrictionsService.canEditEnd(this.entry, this.context);
   }
 
   public get canEditFutureStart(): boolean {
@@ -29,7 +29,7 @@ export class EstablishmentListActionsSingleComponent {
   }
 
   public get canCancelUnlinking(): boolean {
-    return this.actionRestrictionsService.canCancelUnlinking(this.entry.attachment, this.context.realCounts);
+    return this.actionRestrictionsService.canCancelUnlinking(this.entry, this.context);
   }
 
   public get canUnlink(): boolean {
@@ -37,7 +37,11 @@ export class EstablishmentListActionsSingleComponent {
   }
 
   public get canLink(): boolean {
-    return this.actionRestrictionsService.canLink(this.entry.attachment);
+    return this.actionRestrictionsService.canLink(this.entry);
+  }
+
+  public get canExclude(): boolean {
+    return this.actionRestrictionsService.canExclude(this.entry);
   }
 
   constructor(
