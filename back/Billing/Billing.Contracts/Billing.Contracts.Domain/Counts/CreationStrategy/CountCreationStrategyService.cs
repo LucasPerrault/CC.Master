@@ -1,9 +1,9 @@
 ﻿using Billing.Contracts.Domain.Common;
 using Billing.Contracts.Domain.Counts.Interfaces;
-using Billing.Contracts.Domain.Counts.Services;
 using Billing.Contracts.Domain.Offers;
 using Billing.Contracts.Domain.Offers.Interfaces;
 using System;
+using Tools;
 
 namespace Billing.Contracts.Domain.Counts.CreationStrategy
 {
@@ -11,6 +11,7 @@ namespace Billing.Contracts.Domain.Counts.CreationStrategy
     {
         private readonly PriceListService _priceListService;
         private readonly MinimalBillingService _minimalBillingService;
+        private readonly ITimeProvider _time;
         private readonly ICountsStore _countsStore;
         private readonly IContractPricingsStore _contractPricingsStore;
 
@@ -18,12 +19,14 @@ namespace Billing.Contracts.Domain.Counts.CreationStrategy
         (
             PriceListService priceListService,
             MinimalBillingService minimalBillingService,
+            ITimeProvider time,
             ICountsStore countsStore,
             IContractPricingsStore contractPricingsStore
         )
         {
             _priceListService = priceListService;
             _minimalBillingService = minimalBillingService;
+            _time = time;
             _countsStore = countsStore;
             _contractPricingsStore = contractPricingsStore;
         }
@@ -37,8 +40,17 @@ namespace Billing.Contracts.Domain.Counts.CreationStrategy
 
         private bool ShouldCreateRealCount(AccountingPeriod period)
         {
-            var currentPeriod = AccountingPeriod.Current();
-            return period.Year <= currentPeriod.Year && period.Month < currentPeriod.Month;
+            var currentPeriod = _time.Today();
+
+            if (period.Year < currentPeriod.Year)
+            {
+                return true;
+            }
+            if (period.Year == currentPeriod.Year)
+            {
+                return period.Month < currentPeriod.Month;
+            }
+            return false;
         }
 
         private CountCreationStrategy GetRealCountCreationStrategy(ContractWithCountNumber contractWithCountNumber)
