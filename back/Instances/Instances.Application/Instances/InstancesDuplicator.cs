@@ -1,5 +1,6 @@
 using Instances.Domain.Instances;
 using Instances.Domain.Shared;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -17,7 +18,7 @@ namespace Instances.Application.Instances
         }
 
         internal Task RequestRemoteDuplicationAsync
-            (InstanceDuplication duplication, string callbackPath)
+            (InstanceDuplication duplication, bool skipBufferServer, string callbackPath)
         {
             var scripts = _scriptPicker.GetForDuplication(duplication);
 
@@ -32,7 +33,10 @@ namespace Instances.Application.Instances
                     Tenant = duplication.SourceSubdomain,
                     CcDataServerUri = sourceClusterUri
                 },
+                SkipBufferServer = skipBufferServer,
                 TargetTenant = duplication.TargetSubdomain,
+                PostBufferServerRestoreScripts = new List<UriLinkDto>(),
+                PreRestoreScripts = new List<UriLinkDto>(),
                 PostRestoreScripts = scripts.Select(uri => new UriLinkDto { Uri = uri }).ToList()
             };
 
