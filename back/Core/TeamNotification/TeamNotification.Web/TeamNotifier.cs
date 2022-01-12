@@ -30,6 +30,7 @@ namespace TeamNotification.Web
                 Team.DemoMaintainers => _hooks.DemosMaintainers,
                 Team.CafeAdmins => _hooks.CloudControlTeam,
                 Team.IpFilterGuardians => _hooks.IpFilterRejectionAlert,
+                Team.CountProcessFollowers => _hooks.CloudControlTeam,
                 _ => _hooks.CloudControlTeam // a notification should never be lost, CC team is default team
             };
         }

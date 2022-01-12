@@ -5,5 +5,6 @@
         DemoMaintainers,
         CafeAdmins,
         IpFilterGuardians,
+        CountProcessFollowers,
     }
 }

@@ -21,6 +21,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\..\..\CloudControl.Web.Tests\CloudControl.Web.Tests.csproj" />
       <ProjectReference Include="..\..\..\Core\Testing\Testing.Infra\Testing.Infra.csproj" />
       <ProjectReference Include="..\Billing.Contracts.Web\Billing.Contracts.Web.csproj" />
     </ItemGroup>
