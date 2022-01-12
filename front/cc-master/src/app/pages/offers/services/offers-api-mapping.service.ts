@@ -58,7 +58,7 @@ export class OffersApiMappingService {
       return params.delete(OfferQueryParamKey.Search);
     }
 
-    const urlSafeClues = search.split(' ');
+    const urlSafeClues = search.trim().split(' ');
     return params.set(OfferQueryParamKey.Search, `${ urlSafeClues }`);
   }
 
