@@ -10,6 +10,7 @@ import {
 } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { SelectDisplayMode } from '@cc/common/forms';
+import { NavigationPath } from '@cc/common/navigation';
 import { ContractBillingMonth, IContractForm } from '@cc/domain/billing/contracts';
 import { LuModal } from '@lucca-front/ng/modal';
 import { ReplaySubject, Subject } from 'rxjs';
@@ -74,6 +75,10 @@ export class ContractTabFormComponent implements OnInit, OnDestroy, ControlValue
     }
 
     return filters;
+  }
+
+  public get canReadOffer(): boolean {
+    return this.restrictionsService.canReadOffer();
   }
 
   public get canEditTheoreticalStartOn(): boolean {
@@ -197,6 +202,10 @@ export class ContractTabFormComponent implements OnInit, OnDestroy, ControlValue
     this.router.navigate(['../', ContractsModalTabPath.Offer], {
       relativeTo: this.activatedRoute,
     });
+  }
+
+  public redirectToOffer(offerId: number): void {
+    window.open(`${ NavigationPath.Offers }/${ offerId }`);
   }
 
   private setBillingMonthDisabled(billingMonth: ContractBillingMonth): void {

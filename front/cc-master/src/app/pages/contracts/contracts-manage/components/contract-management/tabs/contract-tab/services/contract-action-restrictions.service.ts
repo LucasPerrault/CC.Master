@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { RightsService } from '@cc/aspects/rights';
+import { Operation, RightsService } from '@cc/aspects/rights';
 
 import { IValidationContext } from '../../../validation-context-store.data';
 import { ValidationRestrictionsService } from '../../../validation-restrictions.service';
@@ -59,6 +59,10 @@ export class ContractActionRestrictionsService {
 
   public canEditWithSimilarOffer(): boolean {
     return this.commonRestrictionsService.hasRightsToEditContracts && this.commonRestrictionsService.canReadCount;
+  }
+
+  public canReadOffer(): boolean {
+    return this.rightsService.hasOperation(Operation.ReadCommercialOffers);
   }
 
   private hasContractEntries(context: IValidationContext): boolean {
