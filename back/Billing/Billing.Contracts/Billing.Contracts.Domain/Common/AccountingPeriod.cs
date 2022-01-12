@@ -9,8 +9,8 @@ namespace Billing.Contracts.Domain.Common
 
     public class AccountingPeriod : ValueObject, IComparable
     {
-        public int Year { get; init; }
-        public int Month { get; init; }
+        public int Year { get; }
+        public int Month { get; }
 
         protected override IEnumerable<object> EqualityComponents
         {
@@ -22,11 +22,15 @@ namespace Billing.Contracts.Domain.Common
 
         }
 
-        private AccountingPeriod() { }
+        public AccountingPeriod(int year, int month)
+        {
+            Year = year;
+            Month = month;
+        }
 
         public static implicit operator DateTime(AccountingPeriod p) => new DateTime(p.Year, p.Month, 1);
         public static implicit operator AccountingPeriod(DateTime d) => d.Day == 1
-            ? new AccountingPeriod { Year = d.Year, Month = d.Month }
+            ? new AccountingPeriod(d.Year, d.Month)
             : throw new InvalidCountPeriodDayException();
 
         public int CompareTo(object? obj)
@@ -40,13 +44,16 @@ namespace Billing.Contracts.Domain.Common
         }
 
         private int TotalMonths() => Year * 12 + Month;
+
+        public AccountingPeriod AddMonth(int monthCount)
+        {
+            return ((DateTime)this).AddMonths(monthCount);
+        }
     }
 
     public class InvalidCountPeriodDayException : DomainException
     {
         public InvalidCountPeriodDayException() : base(DomainExceptionCode.BadRequest, "When expressed as a date, accounting period should be the first of the month")
-        {
-            throw new NotImplementedException();
-        }
+        { }
     }
 }
