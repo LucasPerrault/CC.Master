@@ -4,16 +4,17 @@ import { FormControl } from '@angular/forms';
 import { getButtonState, toSubmissionState } from '@cc/common/forms';
 import { IPaginatedResult, PaginatedList, PaginatedListState, PagingService } from '@cc/common/paging';
 import { ISortParams, SortOrder } from '@cc/common/sort';
-import { endOfMonth, startOfMonth, subMonths } from 'date-fns';
 import { BehaviorSubject, combineLatest, Observable, ReplaySubject, Subject } from 'rxjs';
 import { debounceTime, map, skip, take, takeUntil } from 'rxjs/operators';
 
-import { CountAdditionalColumn, defaultColumnsDisplayed } from './components/count-additional-column-select/count-additional-column.enum';
+import { CountAdditionalColumn } from './components/count-additional-column-select/count-additional-column.enum';
 import { CountsSortParamKey } from './enums/count-sort-param-key.enum';
-import { CountsFilterFormKey } from './models/counts-filter-form.interface';
+import { ICountsFilterForm } from './models/counts-filter-form.interface';
 import { IDetailedCount } from './models/detailed-count.interface';
 import { CountsApiMappingService } from './services/counts-api-mapping.service';
 import { CountsDataService } from './services/counts-data.service';
+import { CountsFilterRoutingService } from './services/counts-filter-routing.service';
+import { CountsRoutingService } from './services/counts-routing.service';
 
 @Component({
   selector: 'cc-counts-table-page',
@@ -36,8 +37,11 @@ export class CountsTablePageComponent implements OnInit, OnDestroy {
   }
 
   public isLoading$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(true);
-  public filters: FormControl = new FormControl();
-  public sortParams$: BehaviorSubject<ISortParams> = new BehaviorSubject<ISortParams>(null);
+  public filters: FormControl = new FormControl(null);
+  public sortParams$: BehaviorSubject<ISortParams> = new BehaviorSubject<ISortParams>({
+    field: CountsSortParamKey.CountPeriod,
+    order: SortOrder.Desc,
+  });
 
   public exportButtonClass$ = new ReplaySubject<string>(1);
 
@@ -51,12 +55,12 @@ export class CountsTablePageComponent implements OnInit, OnDestroy {
     private pagingService: PagingService,
     private dataService: CountsDataService,
     private apiMappingService: CountsApiMappingService,
+    private routingService: CountsRoutingService,
+    private filtersRoutingService: CountsFilterRoutingService,
   ) {
   }
 
   public ngOnInit(): void {
-    this.initDefaultFiltersAndSort();
-
     combineLatest([this.filters.valueChanges, this.sortParams$])
       .pipe(
         takeUntil(this.destroy$),
@@ -66,11 +70,21 @@ export class CountsTablePageComponent implements OnInit, OnDestroy {
       )
       .subscribe(httpParams => this.paginatedCounts.updateHttpParams(httpParams));
 
+    combineLatest([this.filters.valueChanges, this.columnsSelected$])
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(async ([filters, columns]) => await this.updateRoutingParamsAsync(filters, columns));
+
     this.columnsSelectedFormControl.valueChanges
       .pipe(map(columns => !!columns ? columns.map(c => c.id) : []))
       .subscribe(this.columnsSelected$);
 
-    this.columnsSelectedFormControl.setValue(defaultColumnsDisplayed);
+    const routingParams = this.routingService.getRoutingParams();
+    this.filtersRoutingService.toFilter$(routingParams)
+      .pipe(take(1))
+      .subscribe(filters => this.filters.setValue(filters, { emitEvent: false }));
+
+    const routingColumnsSelected = this.filtersRoutingService.toColumnsSelected(routingParams);
+    this.columnsSelectedFormControl.setValue(routingColumnsSelected);
 
     this.paginatedCounts = this.pagingService.paginate<IDetailedCount>(
       (httpParams) => this.getPaginatedCounts$(httpParams),
@@ -110,14 +124,8 @@ export class CountsTablePageComponent implements OnInit, OnDestroy {
     );
   }
 
-  private initDefaultFiltersAndSort(): void {
-    this.sortParams$.next({ field: CountsSortParamKey.Client, order: SortOrder.Asc });
-    this.filters.setValue({
-      [CountsFilterFormKey.CountPeriod]: {
-        startDate: subMonths(startOfMonth(Date.now()), 1),
-        endDate: subMonths(endOfMonth(Date.now()), 1),
-      },
-    });
+  private async updateRoutingParamsAsync(filters: ICountsFilterForm, columns: CountAdditionalColumn[]): Promise<void> {
+    const routingParams = this.filtersRoutingService.toRoutingParams(filters, columns);
+    await this.routingService.updateRouterAsync(routingParams);
   }
-
 }

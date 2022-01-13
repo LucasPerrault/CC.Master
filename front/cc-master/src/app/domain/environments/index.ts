@@ -8,5 +8,6 @@ export * from './models/environment-domain.interface';
 export * from './models/environment-group.interface';
 export * from './models/environment-log.interface';
 export * from './models/environment-log-message.interface';
+export * from './services/environment-groups.service';
 export * from './services/environments.service';
 export * from './services/logs.service';
