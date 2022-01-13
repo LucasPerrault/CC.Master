@@ -1,4 +1,9 @@
 <cc-counts-page-template>
+
+  <ng-container page-header-right>
+    <button class="button" [ngClass]="exportButtonClass$ | async" (click)="export()">Exporter</button>
+  </ng-container>
+
   <ng-container page-content>
 
     <cc-counts-filter class="header blockWithFixedSizeInFlex" [formControl]="filters"></cc-counts-filter>

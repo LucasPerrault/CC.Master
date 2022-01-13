@@ -9,7 +9,7 @@ import { detailedCountFields, IDetailedCount } from '../models/detailed-count.in
 
 @Injectable()
 export class CountsDataService {
-  constructor(private httpClient: HttpClient) {}
+  constructor(private httpClient: HttpClient, private downloadService: DownloadService) {}
 
   public getDetailedCounts$(httpParams: HttpParams): Observable<IHttpApiV3CollectionCount<IDetailedCount>> {
     const url = '/api/v3/counts';
@@ -17,5 +17,10 @@ export class CountsDataService {
 
     return this.httpClient.get<IHttpApiV3CollectionCountResponse<IDetailedCount>>(url, { params })
       .pipe(map(response => response.data));
+  }
+
+  public export$(params: HttpParams): Observable<void> {
+    const url = '/api/v3/counts/export';
+    return this.downloadService.download$([url, params.toString()].join('?'));
   }
 }

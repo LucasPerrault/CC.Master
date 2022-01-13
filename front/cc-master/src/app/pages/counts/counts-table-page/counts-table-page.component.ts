@@ -1,11 +1,12 @@
 import { HttpParams } from '@angular/common/http';
 import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
+import { getButtonState, toSubmissionState } from '@cc/common/forms';
 import { IPaginatedResult, PaginatedList, PaginatedListState, PagingService } from '@cc/common/paging';
 import { ISortParams, SortOrder } from '@cc/common/sort';
 import { endOfMonth, startOfMonth, subMonths } from 'date-fns';
 import { BehaviorSubject, combineLatest, Observable, ReplaySubject, Subject } from 'rxjs';
-import { debounceTime, map, shareReplay, skip, startWith, takeUntil, tap } from 'rxjs/operators';
+import { debounceTime, map, skip, take, takeUntil } from 'rxjs/operators';
 
 import { CountAdditionalColumn, defaultColumnsDisplayed } from './components/count-additional-column-select/count-additional-column.enum';
 import { CountsSortParamKey } from './enums/count-sort-param-key.enum';
@@ -13,7 +14,6 @@ import { CountsFilterFormKey } from './models/counts-filter-form.interface';
 import { IDetailedCount } from './models/detailed-count.interface';
 import { CountsApiMappingService } from './services/counts-api-mapping.service';
 import { CountsDataService } from './services/counts-data.service';
-import { IContractAdditionalColumn } from '../../contracts/contracts-manage/constants/contract-additional-column.enum';
 
 @Component({
   selector: 'cc-counts-table-page',
@@ -38,6 +38,8 @@ export class CountsTablePageComponent implements OnInit, OnDestroy {
   public isLoading$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(true);
   public filters: FormControl = new FormControl();
   public sortParams$: BehaviorSubject<ISortParams> = new BehaviorSubject<ISortParams>(null);
+
+  public exportButtonClass$ = new ReplaySubject<string>(1);
 
   public columnsSelectedFormControl: FormControl = new FormControl();
   public columnsSelected$: ReplaySubject<CountAdditionalColumn[]> = new ReplaySubject(1);
@@ -90,6 +92,16 @@ export class CountsTablePageComponent implements OnInit, OnDestroy {
 
   public sort(sortParams: ISortParams) {
     this.sortParams$.next(sortParams);
+  }
+
+  public export(): void {
+    const filters = this.filters.value;
+    const sort = this.sortParams$.value;
+    const httpParams = this.apiMappingService.toHttpParams({ filters, sort });
+
+    this.dataService.export$(httpParams)
+      .pipe(take(1), toSubmissionState(), map(state => getButtonState(state)))
+      .subscribe(this.exportButtonClass$);
   }
 
   private getPaginatedCounts$(httpParams: HttpParams): Observable<IPaginatedResult<IDetailedCount>> {
