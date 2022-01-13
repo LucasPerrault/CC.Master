@@ -1,0 +1,36 @@
+<lu-select [formControl]="formControl"
+           class="textfield-input"
+           [placeholder]="placeholder"
+           [multiple]="multiple"
+           [required]="required"
+           (blur)="onTouch()">
+
+  <ng-container *luDisplayer="let value; multiple: multiple">
+    <ng-container *ngIf="multiple; else notMultiple">
+
+      <ng-container *ngIf="value?.length !== 1; else: singleView">
+        <span class="label">{{ value.length }}</span>
+        {{ 'select_environment_groups_label' | translate }}
+      </ng-container>
+
+      <ng-template #singleView>{{ value[0].name }}</ng-template>
+    </ng-container>
+
+    <ng-template #notMultiple>{{ value.name }}</ng-template>
+  </ng-container>
+
+  <lu-option-picker-advanced>
+    <header class="lu-picker-header" [class.mod-multiple]="multiple">
+      <lu-api-feeder [api]="apiUrl" [filters]="filters" standard="v3"></lu-api-feeder>
+      <lu-option-select-all class="option-selector position-fixed"></lu-option-select-all>
+    </header>
+
+    <lu-option *luForOptions="let environmentGroup; trackBy: trackBy" [value]="environmentGroup">
+      {{ environmentGroup.name }}
+    </lu-option>
+
+  </lu-option-picker-advanced>
+
+  <lu-input-clearer></lu-input-clearer>
+</lu-select>
+

@@ -5,6 +5,7 @@ export { DistributorApiSelectModule } from './select/distributor-api-select/dist
 export { EnvironmentActionSelectModule } from './select/environment-action-select/environment-action-select.module';
 export { EnvironmentApiSelectModule } from './select/environment-api-select/environment-api-select.module';
 export { EnvironmentDomainSelectModule } from './select/environment-domain-select/environment-domain-select.module';
+export { EnvironmentGroupApiSelectModule } from './select/environment-group-api-select/environment-group-api-select.module';
 export { EstablishmentApiSelectModule } from './select/establishment-api-select/establishment-api-select.module';
 export { OfferApiSelectModule } from './select/offer-api-select/offer-api-select.module';
 export { ProductApiSelectModule } from './select/product-api-select/product-api-select.module';
