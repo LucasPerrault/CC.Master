@@ -1,12 +1,12 @@
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
+import { TranslatePipe } from '@cc/aspects/translate';
 import { getButtonState, toSubmissionState } from '@cc/common/forms';
-import { ReplaySubject, Subject, Observable } from 'rxjs';
+import { BillingEntity, getBillingEntity } from '@cc/domain/billing/clients';
+import { Observable,ReplaySubject, Subject } from 'rxjs';
 import { finalize, map, take } from 'rxjs/operators';
 
 import { AccountingPeriodService, CurrentAccountingPeriod } from './services/accounting-period.service';
-import { SyncRevenueService, CurrentSyncRevenueInfo } from './services/sync-revenue.service';
-import { BillingEntity, getBillingEntity } from '@cc/domain/billing/clients';
-import { TranslatePipe } from '@cc/aspects/translate';
+import { CurrentSyncRevenueInfo,SyncRevenueService } from './services/sync-revenue.service';
 
 @Component({
   selector: 'cc-accounting-revenue',

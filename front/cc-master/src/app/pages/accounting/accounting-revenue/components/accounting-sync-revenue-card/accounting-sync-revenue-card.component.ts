@@ -1,4 +1,5 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
+
 import { CurrentSyncRevenueInfo } from '../../services/sync-revenue.service';
 
 @Component({

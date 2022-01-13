@@ -1,16 +1,15 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { IHttpApiV3CollectionResponse } from '@cc/common/queries';
+import { BillingEntity } from '@cc/domain/billing/clients';
 import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 import { ISyncRevenueInfo } from '../models/sync-revenue-info.interface';
-import { IHttpApiV3CollectionResponse } from '@cc/common/queries';
-import { enIN } from 'date-fns/locale';
-import { BillingEntity } from '@cc/domain/billing/clients';
-import { map } from 'rxjs/operators';
 
 export class CurrentSyncRevenueInfo {
 	syncRevenue: ISyncRevenueInfo;
-	entity: BillingEntity; 
+	entity: BillingEntity;
 }
 
 @Injectable()

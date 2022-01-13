@@ -1,5 +1,6 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { endOfMonth, isBefore, startOfMonth } from 'date-fns';
+
 import { CurrentAccountingPeriod } from '../../services/accounting-period.service';
 
 @Component({
