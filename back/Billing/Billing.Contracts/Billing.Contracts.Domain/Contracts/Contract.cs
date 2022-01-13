@@ -1,4 +1,5 @@
 using Billing.Contracts.Domain.Clients;
+using Billing.Contracts.Domain.Distributors;
 using Billing.Contracts.Domain.Environments;
 using Billing.Contracts.Domain.Offers;
 using Distributors.Domain.Models;
@@ -30,7 +31,7 @@ namespace Billing.Contracts.Domain.Contracts
 
         public int DistributorId { get; set; }
         public Distributor Distributor { get; set; }
-
+        public DistributorBillingPreference DistributorBillingPreference { get; set; }
         public int ClientId { get; set; }
         public Client Client { get; set; }
 

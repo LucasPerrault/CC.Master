@@ -1,9 +1,9 @@
 ﻿using Billing.Contracts.Domain.Common;
 using Billing.Contracts.Domain.Contracts;
 using Billing.Contracts.Domain.Counts;
+using Billing.Contracts.Domain.Distributors;
 using Billing.Contracts.Domain.Offers;
 using Billing.Products.Domain;
-using Distributors.Domain.Models;
 using FluentAssertions;
 using System;
 using Xunit;
@@ -26,7 +26,7 @@ namespace Billing.Contracts.Domain.Tests.Counts
                 {
                     Product = new Product { IsEligibleToMinimalBilling = isProductEligible },
                 },
-                Distributor = new Distributor
+                DistributorBillingPreference = new DistributorBillingPreference
                 {
                     IsEnforcingMinimalBilling = isDistributorEnforcing,
                 },
@@ -52,7 +52,7 @@ namespace Billing.Contracts.Domain.Tests.Counts
                 MinimalBillingPercentage = 75,
                 TheoreticalStartOn = new DateTime(2020, 01, 01),
                 CommercialOffer = new CommercialOffer { Product = new Product { IsEligibleToMinimalBilling = true } },
-                Distributor = new Distributor { IsEnforcingMinimalBilling = true },
+                DistributorBillingPreference = new DistributorBillingPreference { IsEnforcingMinimalBilling = true },
             };
 
             new MinimalBillingService()
@@ -77,7 +77,7 @@ namespace Billing.Contracts.Domain.Tests.Counts
                 TheoreticalFreeMonths = freeMonthsCount,
                 TheoreticalStartOn = new DateTime(2020, 01, 01),
                 CommercialOffer = new CommercialOffer { Product = new Product { IsEligibleToMinimalBilling = true } },
-                Distributor = new Distributor { IsEnforcingMinimalBilling = true },
+                DistributorBillingPreference = new DistributorBillingPreference { IsEnforcingMinimalBilling = true },
             };
 
             new MinimalBillingService()

@@ -24,6 +24,7 @@ namespace Billing.Contracts.Infra.Storage.Configurations
             builder.Property(d => d.CommercialOfferId).HasColumnName("CommercialOfferId");
 
             builder.HasOne(d => d.Distributor).WithMany().HasForeignKey(d => d.DistributorId);
+            builder.HasOne(d => d.DistributorBillingPreference).WithMany().HasForeignKey(d => d.DistributorId);
             builder.HasOne(d => d.Client).WithMany(c => c.Contracts).HasForeignKey(d => d.ClientId);
             builder.HasOne(d => d.CommercialOffer).WithMany().HasForeignKey(d => d.CommercialOfferId);
 

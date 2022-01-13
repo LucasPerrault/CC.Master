@@ -9,6 +9,5 @@ namespace Distributors.Domain.Models
         public int DepartmentId { get; set; }
         public bool IsAllowingCommercialCommunication { get; set; }
         public bool IsActive { get; set; }
-        public bool IsEnforcingMinimalBilling { get; set; }
     }
 }

@@ -43,7 +43,7 @@ namespace Billing.Contracts.Domain.Counts
 
         private bool IsDistributorEnforcingMinimalBilling(Contract contract)
         {
-            return contract.Distributor.IsEnforcingMinimalBilling;
+            return contract.DistributorBillingPreference.IsEnforcingMinimalBilling;
         }
 
         public void ThrowIfPercentageAndEligibilityAreIncoherent(Contract contractOrDraft)
