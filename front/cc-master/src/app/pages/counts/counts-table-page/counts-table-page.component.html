@@ -1,7 +1,29 @@
 <cc-counts-page-template>
   <ng-container page-content>
 
+    <cc-counts-filter class="header blockWithFixedSizeInFlex" [formControl]="filters"></cc-counts-filter>
 
+    <div class="loading mod-fullPage" *ngIf="isLoading$ | async; else isNotLoading"></div>
+
+    <ng-template #isNotLoading>
+      <h4 class="page-content page-resultsCount u-displayFlex u-alignItemsCenter u-justifyContentSpaceBetween">
+        {{ 'counts_resultsCount' | translate : { count: totalCount$ | async } }}
+
+        <cc-count-additional-column-select textfieldClass="palette-grey mod-outlined mod-long"
+                                           [formControl]="columnsSelectedFormControl">
+        </cc-count-additional-column-select>
+      </h4>
+
+      <cc-counts-list ccInfiniteScroll
+                      (bottomReached)="nextPage()"
+                      [columnsSelected]="columnsSelected$ | async"
+                      [counts]="counts$ | async"
+                      [state]="state$ | async"
+                      (sort)="sort($event)"
+                      [sortParams]="sortParams$ | async">
+
+      </cc-counts-list>
+    </ng-template>
 
   </ng-container>
 </cc-counts-page-template>
