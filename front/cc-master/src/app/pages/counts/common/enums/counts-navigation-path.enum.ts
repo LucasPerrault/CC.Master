@@ -10,5 +10,9 @@ export const navigationTabs: INavigationTab[] = [
     name: 'counts_table_page_title',
     url: CountsNavigationPath.Table,
   },
+  {
+    name: 'counts_launcher_page_title',
+    url: CountsNavigationPath.Launcher,
+  },
 ];
 

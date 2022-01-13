@@ -6,7 +6,7 @@
       <ng-content select="[page-header-right]"></ng-content>
     </div>
 
-    <nav class="menu u-flexWrapWrap u-paddingLeftReset">
+    <nav class="menu u-flexWrapWrap u-paddingLeftReset" *ngIf="canCreateCounts">
       <ng-container *ngFor="let tab of tabs">
         <a [routerLink]="['../', tab.url]"
            [routerLinkActive]="'is-active'"
