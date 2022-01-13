@@ -37,7 +37,7 @@ namespace Billing.Contracts.Domain.Counts.CreationStrategy
             }
 
             var minimalBillingCount = MakeMinimalBillingCountAsync(countContext);
-            minimalBillingCount.IsMinimalBilling = true;
+            minimalBillingCount.BillingStrategy = BillingStrategy.MinimalBilling;
 
             var highPriorityCount = new[] {count, minimalBillingCount}.GetHighestPriority();
             return Task.FromResult(CountCreationResult.Success(highPriorityCount));

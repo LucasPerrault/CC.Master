@@ -55,7 +55,7 @@ namespace Billing.Contracts.Domain.Counts.CreationStrategy
                 FixedPrice = olderCount.FixedPrice,
                 UnitPrice = olderCount.UnitPrice,
                 CommercialOfferId = contract.CommercialOfferId,
-                IsMinimalBilling = false,
+                BillingStrategy = BillingStrategy.Standard,
             }
         );
 

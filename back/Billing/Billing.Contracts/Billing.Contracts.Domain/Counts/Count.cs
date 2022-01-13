@@ -1,10 +1,15 @@
 ﻿using Billing.Contracts.Domain.Common;
 using Billing.Contracts.Domain.Contracts;
-using Lucca.Core.Shared.Domain.Exceptions;
 using System.Collections.Generic;
 
 namespace Billing.Contracts.Domain.Counts
 {
+    public enum BillingStrategy
+    {
+        Standard = 0,
+        MinimalBilling = 1,
+    }
+
     public class Count
     {
         public int Id { get; set; }
@@ -14,7 +19,7 @@ namespace Billing.Contracts.Domain.Counts
         public int Number { get; set; }
         public decimal UnitPrice { get; set; }
         public decimal FixedPrice { get; set; }
-        public bool IsMinimalBilling { get; set; }
+        public BillingStrategy BillingStrategy { get; set; }
         public decimal TotalInCurrency => FixedPrice + UnitPrice * Number;
         public Contract Contract { get; set; }
         public List<CountDetail> Details { get; set; }

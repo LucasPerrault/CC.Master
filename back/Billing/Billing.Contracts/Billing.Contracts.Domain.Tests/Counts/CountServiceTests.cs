@@ -103,7 +103,7 @@ namespace Billing.Contracts.Domain.Tests
             count.ContractId.Should().Be(123);
             count.FixedPrice.Should().Be(3);
             count.UnitPrice.Should().Be(7);
-            count.IsMinimalBilling.Should().Be(false);
+            count.BillingStrategy.Should().Be(BillingStrategy.Standard);
             count.TotalInCurrency.Should().Be(3 + 1000 * 7);
         }
 
@@ -141,7 +141,7 @@ namespace Billing.Contracts.Domain.Tests
             count.ContractId.Should().Be(123);
             count.FixedPrice.Should().Be(1337);
             count.UnitPrice.Should().Be(0);
-            count.IsMinimalBilling.Should().Be(false);
+            count.BillingStrategy.Should().Be(BillingStrategy.Standard);
             count.TotalInCurrency.Should().Be(1337);
         }
 
@@ -189,7 +189,7 @@ namespace Billing.Contracts.Domain.Tests
             oneContractCount.ContractId.Should().Be(123);
             oneContractCount.FixedPrice.Should().Be(0);
             oneContractCount.UnitPrice.Should().Be((decimal)0.5);
-            oneContractCount.IsMinimalBilling.Should().Be(false);
+            oneContractCount.BillingStrategy.Should().Be(BillingStrategy.Standard);
             oneContractCount.TotalInCurrency.Should().Be((decimal)(15 * 0.5));
         }
 

@@ -30,7 +30,7 @@ namespace Billing.Contracts.Domain.Counts.CreationStrategy
                     CommercialOfferId = contractWithCountNumber.Contract.CommercialOfferId,
                     FixedPrice = pricing.ConstantPrice,
                     UnitPrice = 0,
-                    IsMinimalBilling = false,
+                    BillingStrategy = BillingStrategy.Standard,
                     CountPeriod = countPeriod,
                     Number = contractWithCountNumber.CountNumber,
                 }

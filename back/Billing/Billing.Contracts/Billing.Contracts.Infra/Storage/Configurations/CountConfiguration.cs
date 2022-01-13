@@ -18,7 +18,7 @@ namespace Billing.Contracts.Infra.Storage.Configurations
             builder.Property(c => c.FixedPrice).HasColumnName("FixedPrice");
             builder.Property(c => c.UnitPrice).HasColumnName("UnitPrice");
             builder.Property(c => c.Number).HasColumnName("Number");
-            builder.Property(c => c.IsMinimalBilling).HasColumnName("IsMinimalBilling");
+            builder.Property(c => c.BillingStrategy).HasColumnName("BillingStrategy");
 
             builder.Ignore(c => c.TotalInCurrency);
 

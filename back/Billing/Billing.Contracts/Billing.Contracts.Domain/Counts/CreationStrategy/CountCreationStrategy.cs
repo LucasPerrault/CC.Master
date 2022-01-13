@@ -51,7 +51,7 @@ namespace Billing.Contracts.Domain.Counts.CreationStrategy
         public static bool HasPriorityOver(this Count count, Count otherCount)
         {
             return count.TotalInCurrency > otherCount.TotalInCurrency
-                   || ( count.TotalInCurrency == otherCount.TotalInCurrency && !count.IsMinimalBilling );
+                   || ( count.TotalInCurrency == otherCount.TotalInCurrency && count.BillingStrategy == BillingStrategy.Standard );
         }
 
         public static Count GetHighestPriority(this IEnumerable<Count> counts)
