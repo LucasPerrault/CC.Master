@@ -39,7 +39,7 @@ namespace Billing.Contracts.Application
             _lockService = lockService;
         }
 
-        public async Task<IEnumerable<Count>> RunAsync(AccountingPeriod period)
+        public async Task<CountProcessResult> RunAsync(AccountingPeriod period)
         {
             using (await _lockService.TakeLockAsync("CountProcess", TimeSpan.FromSeconds(5)))
             {
@@ -47,7 +47,8 @@ namespace Billing.Contracts.Application
                 var totalContractCount = contractsWithCount.Count;
                 var contractsWithMissingCount = contractsWithCount.Where(c => c.Count is null).ToList();
                 var alreadyProcessedContracts = totalContractCount - contractsWithMissingCount.Count;
-                await _teamNotifier.NotifyAsync(Team.CountProcessFollowers, $"Processus de décomptes : ${totalContractCount} contrats pour la période, ${alreadyProcessedContracts} déjà traités");
+
+                await _teamNotifier.NotifyAsync(Team.CountProcessFollowers, $":flying_money_with_wings: Processus de décomptes : ${totalContractCount} contrats pour la période ${period:YYYY-MM}, ${alreadyProcessedContracts} déjà traités");
 
                 return await _countService.CreateForPeriodAsync
                 (

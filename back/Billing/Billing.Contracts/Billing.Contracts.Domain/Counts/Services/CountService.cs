@@ -2,12 +2,32 @@
 using Billing.Contracts.Domain.Contracts;
 using Billing.Contracts.Domain.Counts.CreationStrategy;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace Billing.Contracts.Domain.Counts
 {
+    public class CountProcessResult
+    {
+        public ConcurrentBag<Count> Counts { get; } = new ConcurrentBag<Count>();
+        public ConcurrentDictionary<int, string> ExceptionsPerContractId { get; }= new ConcurrentDictionary<int, string>();
+
+        public async Task AggregateAsync(Task<CountProcessResult> resultTask)
+        {
+            var result = await resultTask;
+            foreach (var count in result.Counts)
+            {
+                Counts.Add(count);
+            }
+            foreach (var kvp in result.ExceptionsPerContractId)
+            {
+                ExceptionsPerContractId[kvp.Key] = kvp.Value;
+            }
+        }
+    }
+
     public class CountService
     {
         private readonly CountCreationStrategyService _countCreationStrategyService;
@@ -26,7 +46,7 @@ namespace Billing.Contracts.Domain.Counts
             _countCreationStrategyService = countCreationStrategyService;
         }
 
-        public async Task<IEnumerable<Count>> CreateForPeriodAsync(AccountingPeriod countPeriod, List<Contract> contractsToCount)
+        public async Task<CountProcessResult> CreateForPeriodAsync(AccountingPeriod countPeriod, List<Contract> contractsToCount)
         {
             var contractsWithoutGroup = contractsToCount.Where(c => !(c.Environment?.GroupId).HasValue).ToList();
             if (contractsWithoutGroup.Any())
@@ -40,13 +60,15 @@ namespace Billing.Contracts.Domain.Counts
 
             var envGroups = await _environmentGroupStore.GetEnvGroupsAsync(contractsPerEnvGroup.Keys);
 
-            var tasks = envGroups.Select(g => CreateForPeriodAsync(g, contractsPerEnvGroup[g.EnvironmentGroupId], countPeriod));
-            var counts = await Task.WhenAll(tasks);
-
-            return counts.SelectMany(c => c);
+            var result = new CountProcessResult();
+            var tasks = envGroups
+                .Select(g => CreateForPeriodAsync(g, contractsPerEnvGroup[g.EnvironmentGroupId], countPeriod))
+                .Select(t => result.AggregateAsync(t));
+            await Task.WhenAll(tasks);
+            return result;
         }
 
-        public async Task<IEnumerable<Count>> CreateForPeriodAsync
+        public async Task<CountProcessResult> CreateForPeriodAsync
         (
             EnvironmentWithContractGroup environmentWithContractGroup,
             HashSet<int> contractsToCountIds,
@@ -67,7 +89,7 @@ namespace Billing.Contracts.Domain.Counts
             return await GetCounts(countPeriod, contractsToCountIds, contractsWithCountNumber);
         }
 
-        private async Task<IEnumerable<Count>> GetCounts(AccountingPeriod countPeriod, HashSet<int> contractsToCountIds, ContractWithCountNumber[] contractsWithCountNumber)
+        private async Task<CountProcessResult> GetCounts(AccountingPeriod countPeriod, HashSet<int> contractsToCountIds, ContractWithCountNumber[] contractsWithCountNumber)
         {
             var contractsWithCountNumberPerProductId = contractsWithCountNumber
                 .GroupBy(c => c.Contract.CommercialOffer.ProductId)
@@ -76,7 +98,7 @@ namespace Billing.Contracts.Domain.Counts
             var contractsWithCountNumberToCreateCounts = contractsWithCountNumber
                 .Where(c => contractsToCountIds.Contains(c.Contract.Id));
 
-            var counts = new List<Count>();
+            var result = new CountProcessResult();
             foreach (var contractWithCountNumber in contractsWithCountNumberToCreateCounts)
             {
                 var otherFromContractGroup = contractsWithCountNumberPerProductId[contractWithCountNumber.Contract.CommercialOffer.ProductId]
@@ -84,12 +106,19 @@ namespace Billing.Contracts.Domain.Counts
                     .ToList();
 
                 var strategy = _countCreationStrategyService.GetCountCreationStrategy(contractWithCountNumber);
-                var count = await strategy.MakeCountAsync(countPeriod, contractWithCountNumber, otherFromContractGroup);
-                count.Details = contractWithCountNumber.Details;
-                counts.Add(count);
+                var countResult = await strategy.TryMakeCountAsync(countPeriod, contractWithCountNumber, otherFromContractGroup);
+                if (countResult.IsSuccess)
+                {
+                    countResult.Count.Details = contractWithCountNumber.Details;
+                    result.Counts.Add(countResult.Count);
+                }
+                else
+                {
+                    result.ExceptionsPerContractId[contractWithCountNumber.Contract.Id] = countResult.Exception.Message;
+                }
             }
 
-            return counts;
+            return result;
         }
 
         private HashSet<int> GetProductIdsToCount(EnvironmentWithContractGroup environmentWithContractGroup, HashSet<int> contractsToCountIds)

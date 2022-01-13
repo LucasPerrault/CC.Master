@@ -95,8 +95,9 @@ namespace Billing.Contracts.Domain.Tests
             var service = new CountService(_remoteServiceMock, _envGroupStoreMock.Object, _countStrategyService);
             var contractsToCount = new List<Contract> { contract };
 
-            var counts = await service.CreateForPeriodAsync(new AccountingPeriod(2010, 01), contractsToCount);
-            var count = counts.Single();
+            var result = await service.CreateForPeriodAsync(new AccountingPeriod(2010, 01), contractsToCount);
+            result.ExceptionsPerContractId.Should().BeEmpty();
+            var count = result.Counts.Single();
             count.Number.Should().Be(1000);
             count.CountPeriod.Should().Be(new AccountingPeriod(2010, 01));
             count.ContractId.Should().Be(123);
@@ -133,9 +134,9 @@ namespace Billing.Contracts.Domain.Tests
             var service = new CountService(_remoteServiceMock, _envGroupStoreMock.Object, _countStrategyService);
             var contractsToCount = new List<Contract> { contract };
 
-            var counts = await service.CreateForPeriodAsync(new AccountingPeriod(2010, 01), contractsToCount);
-            var count = counts.Single();
-            count.Number.Should().Be(1000);
+            var result = await service.CreateForPeriodAsync(new AccountingPeriod(2010, 01), contractsToCount);
+            result.ExceptionsPerContractId.Should().BeEmpty();
+            var count = result.Counts.Single();
             count.CountPeriod.Should().Be(new AccountingPeriod(2010, 01));
             count.ContractId.Should().Be(123);
             count.FixedPrice.Should().Be(1337);
@@ -179,8 +180,10 @@ namespace Billing.Contracts.Domain.Tests
 
             var oneContract = new List<Contract> { contract };
 
-            var oneContractCounts = await service.CreateForPeriodAsync(new AccountingPeriod(2010, 01), oneContract);
-            var oneContractCount = oneContractCounts.Single();
+            var oneContractCountResult = await service.CreateForPeriodAsync(new AccountingPeriod(2010, 01), oneContract);
+            oneContractCountResult.ExceptionsPerContractId.Should().BeEmpty();
+
+            var oneContractCount = oneContractCountResult.Counts.Single();
             oneContractCount.Number.Should().Be(15);
             oneContractCount.CountPeriod.Should().Be(new AccountingPeriod(2010, 01));
             oneContractCount.ContractId.Should().Be(123);

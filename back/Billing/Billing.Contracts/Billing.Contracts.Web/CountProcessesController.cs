@@ -2,7 +2,6 @@
 using Billing.Contracts.Domain.Common;
 using Billing.Contracts.Domain.Counts;
 using Microsoft.AspNetCore.Mvc;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Billing.Contracts.Web
@@ -18,7 +17,7 @@ namespace Billing.Contracts.Web
         }
 
         [HttpPost("launch")]
-        public Task<IEnumerable<Count>> LaunchAsync([FromBody]CountProcessQuery query)
+        public Task<CountProcessResult> LaunchAsync([FromBody]CountProcessQuery query)
         {
             return _countProcessService.RunAsync(query.Period);
         }

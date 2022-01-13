@@ -16,9 +16,34 @@ namespace Billing.Contracts.Domain.Counts.CreationStrategy
         public PriceList PriceList { get; set; }
     }
 
+    public class CountCreationResult
+    {
+        public Count Count { get; set; }
+        public Exception Exception { get; set; }
+
+        public bool IsSuccess => Exception is null;
+
+        private CountCreationResult() { }
+
+        public static CountCreationResult Success(Count count) => new CountCreationResult { Count = count };
+        public static CountCreationResult Failure(Exception exception) => new CountCreationResult { Exception = exception };
+    }
+
     public abstract class CountCreationStrategy
     {
-        public abstract Task<Count> MakeCountAsync(AccountingPeriod countPeriod, ContractWithCountNumber contractWithCountNumber, List<ContractWithCountNumber> otherFromContractGroup);
+        public Task<CountCreationResult> TryMakeCountAsync(AccountingPeriod countPeriod, ContractWithCountNumber contractWithCountNumber, List<ContractWithCountNumber> otherFromContractGroup)
+        {
+            try
+            {
+                return MakeCountAsync(countPeriod, contractWithCountNumber, otherFromContractGroup);
+            }
+            catch (Exception e)
+            {
+                return Task.FromResult<CountCreationResult>(CountCreationResult.Failure(e));
+            }
+        }
+
+        protected abstract Task<CountCreationResult> MakeCountAsync(AccountingPeriod countPeriod, ContractWithCountNumber contractWithCountNumber, List<ContractWithCountNumber> otherFromContractGroup);
     }
 
     public static class CountsExtensions

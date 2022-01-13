@@ -19,6 +19,7 @@ using Environments.Domain;
 using Environments.Domain.Storage;
 using Environments.Infra.Storage;
 using Environments.Web;
+using FluentAssertions;
 using Lock;
 using Moq;
 using Remote.Infra.Extensions;
@@ -174,7 +175,8 @@ namespace Billing.Contracts.Web.Tests
                 throw new ApplicationException(await response.Content.ReadAsStringAsync());
             }
             var content = await response.Content.ReadAsStreamAsync();
-            var counts = await Serializer.DeserializeAsync<List<Count>>(content, new AccountingPeriodJsonConverter());
+            var result = await Serializer.DeserializeAsync<CountProcessResult>(content, new AccountingPeriodJsonConverter());
+            result.ExceptionsPerContractId.Should().BeEmpty();
         }
     }
 }

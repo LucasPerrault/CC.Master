@@ -16,7 +16,7 @@ namespace Billing.Contracts.Domain.Counts.CreationStrategy
             _minimalBillingService = minimalBillingService;
         }
 
-        public override Task<Count> MakeCountAsync(AccountingPeriod countPeriod, ContractWithCountNumber contractWithCountNumber, List<ContractWithCountNumber> otherFromContractGroup)
+        protected override Task<CountCreationResult> MakeCountAsync(AccountingPeriod countPeriod, ContractWithCountNumber contractWithCountNumber, List<ContractWithCountNumber> otherFromContractGroup)
         {
 
             var otherCountNumberFromContractGroup = otherFromContractGroup.Select(c => c.CountNumber).ToList();
@@ -33,13 +33,14 @@ namespace Billing.Contracts.Domain.Counts.CreationStrategy
 
             if (!_minimalBillingService.ShouldApplyMinimalBillingForPeriod(contractWithCountNumber.Contract, countPeriod))
             {
-                return Task.FromResult(count);
+                return Task.FromResult(CountCreationResult.Success(count));
             }
 
             var minimalBillingCount = MakeMinimalBillingCountAsync(countContext);
             minimalBillingCount.IsMinimalBilling = true;
 
-            return Task.FromResult(new [] { count, minimalBillingCount }.GetHighestPriority());
+            var highPriorityCount = new[] {count, minimalBillingCount}.GetHighestPriority();
+            return Task.FromResult(CountCreationResult.Success(highPriorityCount));
         }
 
         private Count MakeCountAsync(CountContext contractWithCountNumber, int countNumber)

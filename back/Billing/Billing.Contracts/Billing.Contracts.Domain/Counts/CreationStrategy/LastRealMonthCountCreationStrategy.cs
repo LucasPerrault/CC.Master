@@ -21,7 +21,7 @@ namespace Billing.Contracts.Domain.Counts.CreationStrategy
             _countsStore = countsStore;
         }
 
-        public override async Task<Count> MakeCountAsync(AccountingPeriod countPeriod, ContractWithCountNumber contractWithCountNumber, List<ContractWithCountNumber> otherFromContractGroup)
+        protected override async Task<CountCreationResult> MakeCountAsync(AccountingPeriod countPeriod, ContractWithCountNumber contractWithCountNumber, List<ContractWithCountNumber> otherFromContractGroup)
         {
             var lastMonth = countPeriod.AddMonth(-1);
             var countToFind = new CountKey { CountPeriod = lastMonth, ContractId = contractWithCountNumber.Contract.Id };
@@ -45,7 +45,9 @@ namespace Billing.Contracts.Domain.Counts.CreationStrategy
 
         }
 
-        private Count MakeCount(AccountingPeriod countPeriod, Count olderCount, Contract contract) => new Count
+        private CountCreationResult MakeCount(AccountingPeriod countPeriod, Count olderCount, Contract contract) => CountCreationResult.Success
+        (
+            new Count
             {
                 CountPeriod = countPeriod,
                 Number = olderCount.Number,
@@ -54,7 +56,8 @@ namespace Billing.Contracts.Domain.Counts.CreationStrategy
                 UnitPrice = olderCount.UnitPrice,
                 CommercialOfferId = contract.CommercialOfferId,
                 IsMinimalBilling = false,
-            };
+            }
+        );
 
         private void AddToCache(Count count)
         {
