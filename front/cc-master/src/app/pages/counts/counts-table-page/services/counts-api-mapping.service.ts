@@ -12,7 +12,7 @@ import { ICountsFilterForm } from '../models/counts-filter-form.interface';
 
 interface HttpParamsAttributes {
   filters: ICountsFilterForm;
-  sort: ISortParams;
+  sort?: ISortParams;
 }
 
 enum CountsQueryParamKey {

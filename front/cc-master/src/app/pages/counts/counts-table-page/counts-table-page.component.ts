@@ -5,11 +5,12 @@ import { getButtonState, toSubmissionState } from '@cc/common/forms';
 import { IPaginatedResult, PaginatedList, PaginatedListState, PagingService } from '@cc/common/paging';
 import { ISortParams, SortOrder } from '@cc/common/sort';
 import { BehaviorSubject, combineLatest, Observable, ReplaySubject, Subject } from 'rxjs';
-import { debounceTime, map, skip, take, takeUntil } from 'rxjs/operators';
+import { debounceTime, map, skip, switchMap, take, takeUntil } from 'rxjs/operators';
 
 import { CountAdditionalColumn } from './components/count-additional-column-select/count-additional-column.enum';
 import { CountsSortParamKey } from './enums/count-sort-param-key.enum';
 import { ICountsFilterForm } from './models/counts-filter-form.interface';
+import { ICountsSummary } from './models/counts-summary.interface';
 import { IDetailedCount } from './models/detailed-count.interface';
 import { CountsApiMappingService } from './services/counts-api-mapping.service';
 import { CountsDataService } from './services/counts-data.service';
@@ -35,6 +36,8 @@ export class CountsTablePageComponent implements OnInit, OnDestroy {
   public get state$(): Observable<PaginatedListState> {
     return this.paginatedCounts.state$;
   }
+
+  public summary$ = new ReplaySubject<ICountsSummary>(1);
 
   public isLoading$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(true);
   public filters: FormControl = new FormControl(null);
@@ -69,6 +72,13 @@ export class CountsTablePageComponent implements OnInit, OnDestroy {
         map(attributes => this.apiMappingService.toHttpParams(attributes)),
       )
       .subscribe(httpParams => this.paginatedCounts.updateHttpParams(httpParams));
+
+    this.filters.valueChanges
+      .pipe(
+        takeUntil(this.destroy$),
+        map(filters => this.apiMappingService.toHttpParams({ filters })),
+        switchMap(httpParams => this.dataService.getSummary$(httpParams)))
+      .subscribe(this.summary$);
 
     combineLatest([this.filters.valueChanges, this.columnsSelected$])
       .pipe(takeUntil(this.destroy$))

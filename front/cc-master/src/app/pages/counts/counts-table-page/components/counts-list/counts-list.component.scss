@@ -1,3 +1,5 @@
+@import "theming.import";
+
 :host {
   overflow: auto;
 }
@@ -11,4 +13,12 @@
 
 .mod-hidden {
   display: none;
+}
+
+.table .table-body-row.mod-stickyFooter {
+  z-index: 30;
+  position: sticky;
+  bottom: 0;
+  border-top: 1px solid _theme("commons.divider.color");
+  margin-top: -1px;
 }

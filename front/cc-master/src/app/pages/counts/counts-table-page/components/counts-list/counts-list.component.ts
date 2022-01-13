@@ -1,5 +1,5 @@
 import { CurrencyPipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { TranslatePipe } from '@cc/aspects/translate';
 import { NavigationPath } from '@cc/common/navigation';
 import { PaginatedListState } from '@cc/common/paging';
@@ -7,6 +7,7 @@ import { ISortParams, SortOrder, SortService } from '@cc/common/sort';
 import { CurrencyName, ICurrency } from '@cc/domain/billing/offers';
 
 import { CountsSortParamKey } from '../../enums/count-sort-param-key.enum';
+import { ICountsSummary } from '../../models/counts-summary.interface';
 import { IDetailedCount } from '../../models/detailed-count.interface';
 import { CountAdditionalColumn, countAdditionalColumns } from '../count-additional-column-select/count-additional-column.enum';
 
@@ -18,10 +19,18 @@ import { CountAdditionalColumn, countAdditionalColumns } from '../count-addition
 })
 export class CountsListComponent implements OnInit {
   @Input() public counts: IDetailedCount[];
+  @Input() public summary: ICountsSummary;
   @Input() public sortParams: ISortParams;
   @Input() public state: PaginatedListState;
   @Input() public columnsSelected: CountAdditionalColumn[];
   @Output() public sort: EventEmitter<ISortParams> = new EventEmitter<ISortParams>();
+
+  @ViewChild('table') tableElementRef: ElementRef;
+
+  public get columnsNumber(): number {
+    return this.tableElementRef?.nativeElement?.rows[0].cells?.length ?? 0;
+  }
+
 
   public get isEmpty(): boolean {
     return this.isIdle && !this.counts.length;

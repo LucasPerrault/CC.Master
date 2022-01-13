@@ -23,10 +23,10 @@
                       (bottomReached)="nextPage()"
                       [columnsSelected]="columnsSelected$ | async"
                       [counts]="counts$ | async"
+                      [summary]="summary$ | async"
                       [state]="state$ | async"
                       (sort)="sort($event)"
                       [sortParams]="sortParams$ | async">
-
       </cc-counts-list>
     </ng-template>
 
