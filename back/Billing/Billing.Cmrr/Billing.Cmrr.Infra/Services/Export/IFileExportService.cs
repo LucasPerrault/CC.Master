@@ -1,5 +1,6 @@
 using Billing.Cmrr.Domain.Evolution;
 using Billing.Cmrr.Domain.Situation;
+using Billing.Cmrr.Infra.Services.Export.Clients;
 using Billing.Cmrr.Infra.Services.Export.Evolution;
 using Billing.Cmrr.Infra.Services.Export.Situation;
 using CsvHelper;
@@ -18,6 +19,7 @@ namespace Billing.Cmrr.Infra.Services.Export
     {
         FileStreamResult Export(CmrrSituation situation, string filename);
         FileStreamResult Export(CmrrAxisEvolution evolution, string filename);
+        FileStreamResult Export(IReadOnlyCollection<CmrrClient> clients, string filename);
     }
 
     public class CsvService : IFileExportService
@@ -55,7 +57,14 @@ namespace Billing.Cmrr.Infra.Services.Export
             );
         }
 
-        private FileStreamResult ExportAsync<T>(IEnumerable<T> csvData, string filename, Func<CsvConfiguration, ClassMap<T>> getMapFn)
+        public FileStreamResult Export(IReadOnlyCollection<CmrrClient> clients, string filename)
+        {
+            var clientRows = clients.ToRows(_translations);
+
+            return ExportAsync(clientRows, filename);
+        }
+
+        private FileStreamResult ExportAsync<T>(IEnumerable<T> csvData, string filename, Func<CsvConfiguration, ClassMap<T>> getMapFn = null)
         {
             var configuration = new CsvConfiguration(CultureInfo.CurrentCulture)
             {
@@ -63,13 +72,16 @@ namespace Billing.Cmrr.Infra.Services.Export
                 HasHeaderRecord = true,
                 ShouldQuote = _ => false
             };
-            var map = getMapFn(configuration);
+            var map = getMapFn?.Invoke(configuration);
 
             var stream = new MemoryStream();
             using var writer = new StreamWriter(stream, leaveOpen: true);
             using var csvWriter = new CsvWriter(writer, configuration);
 
-            csvWriter.Context.RegisterClassMap(map);
+            if (map != null)
+            {
+                csvWriter.Context.RegisterClassMap(map);
+            }
 
             csvWriter.WriteRecords(csvData);
 

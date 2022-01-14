@@ -5,6 +5,7 @@ using Billing.Cmrr.Infra.Services.Export;
 using Microsoft.AspNetCore.Mvc;
 using Rights.Domain;
 using Rights.Web.Attributes;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Billing.Cmrr.Web
@@ -58,6 +59,24 @@ namespace Billing.Cmrr.Web
 
             var filename = $"cmrr-evolution-{System.DateTime.Now:yyyyMMdd-HHmmss}.csv";
             return _csvService.Export(evolution, filename);
+        }
+
+        [HttpPost("situation/acquisition/clients/export"), ForbidIfMissing(Operation.ReadCMRR)]
+        public async Task<FileStreamResult> ExportSituationAcquisitionClientsAsync([FromQuery] CmrrQuery query)
+        {
+            var clients = await _cmrrSituationsService.GetAcquiredClientsAsync(query.ToCmrrFilter());
+
+            var filename = $"cmrr-acquired-clients-{System.DateTime.Now:yyyyMMdd-HHmmss}.csv";
+            return _csvService.Export(clients, filename);
+        }
+
+        [HttpPost("situation/termination/clients/export"), ForbidIfMissing(Operation.ReadCMRR)]
+        public async Task<FileStreamResult> ExportSituationTerminationClientsAsync([FromQuery] CmrrQuery query)
+        {
+            var clients = await _cmrrSituationsService.GetTerminatedClientsAsync(query.ToCmrrFilter());
+
+            var filename = $"cmrr-terminated-clients-{System.DateTime.Now:yyyyMMdd-HHmmss}.csv";
+            return _csvService.Export(clients, filename);
         }
     }
 }
