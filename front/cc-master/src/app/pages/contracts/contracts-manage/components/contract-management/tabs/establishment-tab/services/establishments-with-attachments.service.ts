@@ -38,6 +38,10 @@ export class EstablishmentsWithAttachmentsService {
     establishments: IContractEstablishment[],
     solutions: ISolution[],
   ): Promise<IContractEstablishment[]> {
+    if (!establishments?.length) {
+      return [];
+    }
+
     const productIds = this.getProductIdsByEts(establishments);
     const allProducts = await this.productsStoreService.getProducts$(productIds).toPromise();
 
