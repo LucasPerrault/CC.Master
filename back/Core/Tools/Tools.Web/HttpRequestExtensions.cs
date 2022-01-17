@@ -31,6 +31,8 @@ public static class HttpRequestExtensions
         "/ip",
         "/invalid-email-domain",
         "/cc-master",
+        "/Content",
+        "/static",
     };
 
     public static bool IsRouteWhitelistedForRestrictions(this HttpRequest request)
