@@ -1,7 +1,5 @@
-import { CountCode, countFields, ICount } from '@cc/domain/billing/counts';
+import { BillingStrategy, CountCode, countFields, ICount } from '@cc/domain/billing/counts';
 import { currencyFields, ICurrency } from '@cc/domain/billing/offers';
-
-import { BillingStrategy } from '../constants/billing-strategy.enum';
 
 export const detailedCountFields = [
   countFields,
