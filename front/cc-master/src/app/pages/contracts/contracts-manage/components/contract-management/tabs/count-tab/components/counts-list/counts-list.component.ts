@@ -1,11 +1,10 @@
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { TranslatePipe } from '@cc/aspects/translate';
-import { CountCode } from '@cc/domain/billing/counts';
+import { BillingStrategy, CountCode } from '@cc/domain/billing/counts';
 import { BehaviorSubject, Subject } from 'rxjs';
 import { skip, takeUntil } from 'rxjs/operators';
 
-import { BillingStrategy } from '../../constants/billing-strategy.enum';
 import { ICountContract } from '../../models/count-contract.interface';
 import { ICountListEntry } from '../../models/count-list-entry.interface';
 import { IDetailedCount } from '../../models/detailed-count.interface';

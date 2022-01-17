@@ -1,0 +1,192 @@
+<table class="table mod-layoutFixed-xs mod-stickyColumn-xs mod-stickyMultipleHeader">
+  <thead class="table-head">
+    <tr class="table-head-row u-nowrap">
+      <th class="table-head-row-cell mod-layoutFixed-xs30 mod-stickyColumn-leftOffset0" colspan="2">
+        {{ 'counts_column_client' | translate }}
+      </th>
+      <th class=" table-head-row-cell mod-stickyColumn-leftOffset30 mod-stickyColumn-shadow" role="presentation" >
+        <div class="stickyColumn-shadow-wrapper"></div>
+      </th>
+      <th class="table-head-row-cell" colspan="1"
+          [ngClass]="{ 'mod-hidden': isHidden([column.Offer]) }">
+        {{ 'counts_column_product' | translate }}
+      </th>
+      <th class="table-head-row-cell" [ngClass]="{ 'mod-hidden': isHidden([column.CountPeriod]) }"></th>
+      <th class="table-head-row-cell"
+          [attr.colspan]="getActiveColumns([column.NormalCount, column.EnhancedCount, column.MinimalBilling])"
+          [ngClass]="{ 'mod-hidden': isHidden([column.NormalCount, column.EnhancedCount, column.MinimalBilling]) }">
+        {{ 'counts_column_count' | translate }}
+      </th>
+      <th class="table-head-row-cell"
+          [attr.colspan]="getActiveColumns([column.UnitPrice])"
+          [ngClass]="{ 'mod-hidden': isHidden([column.UnitPrice]) }"></th>
+      <th class="table-head-row-cell" colspan="3"
+          [attr.colspan]="getActiveColumns([column.TotalLucca, column.TotalPartner, column.TotalBillable])"
+          [ngClass]="{ 'mod-hidden': isHidden([column.TotalLucca, column.TotalPartner, column.TotalBillable]) }">
+        {{ 'counts_column_total' | translate }}
+      </th>
+      <th class="table-head-row-cell"
+          [attr.colspan]="getActiveColumns([column.ClientRebate, column.DistributorRebate])"
+          [ngClass]="{ 'mod-hidden': isHidden([column.ClientRebate, column.DistributorRebate]) }">
+        {{ 'counts_column_rebate' | translate }}
+      </th>
+      <th class="table-head-row-cell mod-actions"></th>
+    </tr>
+    <tr class="table-head-row u-nowrap">
+      <th class="table-head-row-cell mod-layoutFixed-xs16 mod-stickyColumn-leftOffset0"
+          [attr.aria-sort]="getSortOrderClass(sortParamKey.Client)">
+        <button class="table-head-row-cell-sortableButton" (click)="sortBy(sortParamKey.Client)">
+          {{ 'counts_column_name' | translate }}
+        </button>
+      </th>
+      <th class="table-head-row-cell mod-layoutFixed-xs14 mod-stickyColumn-leftOffset16"
+          [attr.aria-sort]="getSortOrderClass(sortParamKey.Distributor)">
+        <button class="table-head-row-cell-sortableButton" (click)="sortBy(sortParamKey.Distributor)">
+          {{ 'counts_column_distributor' | translate }}
+        </button>
+      </th>
+      <th class=" table-head-row-cell mod-stickyColumn-leftOffset30 mod-stickyColumn-shadow" role="presentation" >
+        <div class="stickyColumn-shadow-wrapper"></div>
+      </th>
+      <th class="table-head-row-cell"
+          [ngClass]="{ 'mod-hidden': isHidden([column.Offer]) }"
+          [attr.aria-sort]="getSortOrderClass(sortParamKey.Offer)">
+        <button class="table-head-row-cell-sortableButton" (click)="sortBy(sortParamKey.Offer)">
+          {{ 'counts_column_offer' | translate }}
+        </button>
+      </th>
+      <th class="table-head-row-cell"
+          [ngClass]="{ 'mod-hidden': isHidden([column.CountPeriod]) }"
+          [attr.aria-sort]="getSortOrderClass(sortParamKey.CountPeriod)">
+        <button class="table-head-row-cell-sortableButton" (click)="sortBy(sortParamKey.CountPeriod)">
+          {{ 'counts_column_countPeriod' | translate }}
+        </button>
+      </th>
+      <th class="table-head-row-cell"
+          [ngClass]="{ 'mod-hidden': isHidden([column.NormalCount]) }"
+          [attr.aria-sort]="getSortOrderClass(sortParamKey.NormalCount)">
+        <button class="table-head-row-cell-sortableButton" (click)="sortBy(sortParamKey.NormalCount)">
+          {{ 'counts_column_normalCount' | translate }}
+        </button>
+      </th>
+      <th class="table-head-row-cell"
+          [ngClass]="{ 'mod-hidden': isHidden([column.EnhancedCount]) }"
+          [attr.aria-sort]="getSortOrderClass(sortParamKey.EnhancedCount)">
+        <button class="table-head-row-cell-sortableButton" (click)="sortBy(sortParamKey.EnhancedCount)">
+          {{ 'counts_column_enhancedCount' | translate }}
+        </button>
+      </th>
+      <th class="table-head-row-cell"
+          [ngClass]="{ 'mod-hidden': isHidden([column.MinimalBilling]) }"
+          [attr.aria-sort]="getSortOrderClass(sortParamKey.MinimalBilling)">
+        <button class="table-head-row-cell-sortableButton" (click)="sortBy(sortParamKey.MinimalBilling)">
+          {{ 'counts_column_minimalBilling' | translate }}
+        </button>
+      </th>
+      <th class="table-head-row-cell"
+          [ngClass]="{ 'mod-hidden': isHidden([column.UnitPrice]) }"
+          [attr.aria-sort]="getSortOrderClass(sortParamKey.UnitPrice)">
+        <button class="table-head-row-cell-sortableButton" (click)="sortBy(sortParamKey.UnitPrice)">
+          {{ 'counts_column_unitPrice' | translate }}
+        </button>
+      </th>
+      <th class="table-head-row-cell"
+          [ngClass]="{ 'mod-hidden': isHidden([column.TotalBillable]) }"
+          [attr.aria-sort]="getSortOrderClass(sortParamKey.TotalBillable)">
+        <button class="table-head-row-cell-sortableButton" (click)="sortBy(sortParamKey.TotalBillable)">
+          {{ 'counts_column_totalBillable' | translate }}
+        </button>
+      </th>
+      <th class="table-head-row-cell"
+          [ngClass]="{ 'mod-hidden': isHidden([column.TotalPartner]) }"
+          [attr.aria-sort]="getSortOrderClass(sortParamKey.TotalPartner)">
+        <button class="table-head-row-cell-sortableButton" (click)="sortBy(sortParamKey.TotalPartner)">
+          {{ 'counts_column_totalPartner' | translate }}
+        </button>
+      </th>
+      <th class="table-head-row-cell"
+          [ngClass]="{ 'mod-hidden': isHidden([column.TotalLucca]) }"
+          [attr.aria-sort]="getSortOrderClass(sortParamKey.TotalLucca)">
+        <button class="table-head-row-cell-sortableButton" (click)="sortBy(sortParamKey.TotalLucca)">
+          {{ 'counts_column_totalLucca' | translate }}
+        </button>
+      </th>
+      <th class="table-head-row-cell"
+          [ngClass]="{ 'mod-hidden': isHidden([column.ClientRebate]) }"
+          [attr.aria-sort]="getSortOrderClass(sortParamKey.ClientRebate)">
+        <button class="table-head-row-cell-sortableButton" (click)="sortBy(sortParamKey.ClientRebate)">
+          {{ 'counts_column_clientRebate' | translate }}
+        </button>
+      </th>
+      <th class="table-head-row-cell"
+          [ngClass]="{ 'mod-hidden': isHidden([column.DistributorRebate]) }"
+          [attr.aria-sort]="getSortOrderClass(sortParamKey.DistributorRebate)">
+        <button class="table-head-row-cell-sortableButton" (click)="sortBy(sortParamKey.DistributorRebate)">
+          {{ 'counts_column_distributorRebate' | translate }}
+        </button>
+      </th>
+      <th class="table-head-row-cell mod-actions"></th>
+    </tr>
+  </thead>
+  <tbody class="table-body">
+    <tr class="table-body-row" *ngFor="let count of counts; trackBy: trackBy">
+      <td class="table-body-row-cell mod-layoutFixed-xs16 mod-stickyColumn-leftOffset0">
+        {{ count?.contract?.client?.name }}
+      </td>
+      <td class="table-body-row-cell mod-layoutFixed-xs14 mod-stickyColumn-leftOffset16">
+        {{ count?.contract?.distributor?.name }}
+      </td>
+      <td class=" table-body-row-cell mod-stickyColumn-leftOffset30 mod-stickyColumn-shadow " role="presentation" >
+        <div class="stickyColumn-shadow-wrapper"></div>
+      </td>
+      <td class="table-body-row-cell size-biggest" [ngClass]="{ 'mod-hidden': isHidden([column.Offer]) }">
+        {{ count?.offer?.name }}
+      </td>
+      <td class="table-body-row-cell size-small" [ngClass]="{ 'mod-hidden': isHidden([column.CountPeriod]) }">
+        {{ count?.countPeriod | date : 'MMMM YYYY' }}
+      </td>
+      <td class="table-body-row-cell mod-alignRight" [ngClass]="{ 'mod-hidden': isHidden([column.NormalCount]) }">
+        {{ count?.number | number }}
+      </td>
+      <td class="table-body-row-cell mod-alignRight" [ngClass]="{ 'mod-hidden': isHidden([column.EnhancedCount]) }">
+        {{ count?.accountingNumber | number }}
+      </td>
+      <td class="table-body-row-cell mod-alignRight u-nowrap" [ngClass]="{ 'mod-hidden': isHidden([column.MinimalBilling]) }">
+        <span *ngIf="!!count.billingStrategy; else hasNoBillingStrategy">
+          {{ count?.contract?.minimalBillingPercentage | number : '1.2' }} %
+        </span>
+        <ng-template #hasNoBillingStrategy>-</ng-template>
+      </td>
+      <td class="table-body-row-cell mod-alignRight" [ngClass]="{ 'mod-hidden': isHidden([column.UnitPrice]) }">
+        {{ getUnitPrice(count?.unitPrice, count?.currency) }}
+      </td>
+      <td class="table-body-row-cell mod-alignRight" [ngClass]="{ 'mod-hidden': isHidden([column.TotalBillable]) }">
+        {{ toEuro(count?.totalBillableInEuro) }}
+      </td>
+      <td class="table-body-row-cell mod-alignRight" [ngClass]="{ 'mod-hidden': isHidden([column.TotalPartner]) }">
+        {{ toEuro(count?.totalPartnerInEuro) }}
+      </td>
+      <td class="table-body-row-cell mod-alignRight" [ngClass]="{ 'mod-hidden': isHidden([column.TotalLucca]) }">
+        {{ toEuro(count?.totalLuccaInEuro) }}
+      </td>
+      <td class="table-body-row-cell mod-alignRight u-nowrap" [ngClass]="{ 'mod-hidden': isHidden([column.ClientRebate]) }">
+        {{ count?.additionalRebate | number : '1.2' }} %
+      </td>
+      <td class="table-body-row-cell mod-alignRight u-nowrap" [ngClass]="{ 'mod-hidden': isHidden([column.DistributorRebate]) }">
+        {{ count?.distributorRebate | number : '1.2' }} %
+      </td>
+      <td class="table-body-row-cell mod-actions">
+        <button class="actionIcon" [luTooltip]="'counts_table_contract_redirection' | translate">
+          <span aria-hidden="true" class="lucca-icon icon-file" (click)="redirectToContract(count?.contract?.id)"></span>
+        </button>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="loading u-positionSticky u-left0" *ngIf="isLoadingMore"></div>
+
+<section class="emptyState" *ngIf="isEmpty">
+  <h3 class="emptyState-title">{{ 'counts_emptyState_title' | translate }}</h3>
+  <p class="emptyState-description">{{ 'counts_emptyState_information' | translate }}</p>
+</section>

@@ -4,19 +4,26 @@ import { RouterModule, Routes } from '@angular/router';
 import { TranslateModule } from '@cc/aspects/translate';
 import { NavigationPath } from '@cc/common/navigation';
 
+import { CountsNavigationPath } from './common/enums/counts-navigation-path.enum';
 import { CountsComponent } from './counts.component';
-import { CountsTableModule } from './counts-table/counts-table.module';
-
-enum ChildrenNavigationPath {
-  CountsTable = 'table',
-  CountsLauncher = 'launcher'
-}
+import { CountsTablePageComponent } from './counts-table-page/counts-table-page.component';
+import { CountsTablePageModule } from './counts-table-page/counts-table-page.module';
 
 const routes: Routes = [
   {
     path: NavigationPath.Counts,
     component: CountsComponent,
-    children: [],
+    children: [
+      {
+        path: '',
+        pathMatch: 'full',
+        redirectTo: CountsNavigationPath.Table,
+      },
+      {
+        path: CountsNavigationPath.Table,
+        component: CountsTablePageComponent,
+      },
+    ],
   },
 ];
 
@@ -27,7 +34,7 @@ const routes: Routes = [
   imports: [
     CommonModule,
     RouterModule.forChild(routes),
-    CountsTableModule,
+    CountsTablePageModule,
     TranslateModule,
   ],
 })

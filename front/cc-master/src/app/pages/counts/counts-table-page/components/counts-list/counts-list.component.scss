@@ -1,0 +1,14 @@
+:host {
+  overflow: auto;
+}
+
+.table.mod-stickyMultipleHeader .table-head {
+  position: sticky;
+  z-index: 30;
+  top: 0;
+  background-color: white;
+}
+
+.mod-hidden {
+  display: none;
+}
