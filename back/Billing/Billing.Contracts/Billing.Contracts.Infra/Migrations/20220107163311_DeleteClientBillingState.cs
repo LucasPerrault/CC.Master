@@ -23,8 +23,10 @@ namespace Billing.Contracts.Infra.Migrations
                     CAST(CASE WHEN c.ArchivedAt is null THEN 0 ELSE 1 END AS bit) AS isArchived
                 FROM dbo.[Contracts] c
                 INNER JOIN [billing].[CommercialOffers] o on c.idCommercialOffer = o.id
-                INNER JOIN [shared].[Environments] e on c.environmentID = e.id
+                INNER JOIN [shared].[Environments] e on c.environmentID = e.id;
+            ");
 
+            migrationBuilder.Sql($@"
                 ALTER VIEW [billing].[Clients] WITH SCHEMABINDING AS
                     SELECT
                         c.[Id] Id,
@@ -38,8 +40,10 @@ namespace Billing.Contracts.Infra.Migrations
                         c.[BillingCountry] BillingCountry,
                         c.[BillingMail] BillingMail,
                         c.[Phone] Phone
-                FROM [dbo].[Clients] c
+                FROM [dbo].[Clients] c;
+            ");
 
+            migrationBuilder.Sql($@"
                 ALTER VIEW [billing].[CmrrContracts] WITH SCHEMABINDING AS
                 SELECT
                     c.idContract id,
@@ -77,8 +81,10 @@ namespace Billing.Contracts.Infra.Migrations
                     CAST(CASE WHEN c.ArchivedAt is null THEN 0 ELSE 1 END AS bit) AS isArchived
                 FROM dbo.[Contracts] c
                 INNER JOIN [billing].[CommercialOffers] o on c.idCommercialOffer = o.id
-                INNER JOIN [shared].[Environments] e on c.environmentID = e.id
+                INNER JOIN [shared].[Environments] e on c.environmentID = e.id;
+            ");
 
+            migrationBuilder.Sql($@"
                 ALTER VIEW [billing].[Clients] WITH SCHEMABINDING AS
                     SELECT
                         c.[Id] Id,
@@ -93,8 +99,10 @@ namespace Billing.Contracts.Infra.Migrations
                         c.[BillingCountry] BillingCountry,
                         c.[BillingMail] BillingMail,
                         c.[Phone] Phone
-                FROM [dbo].[Clients] c
+                FROM [dbo].[Clients] c;
+            ");
 
+            migrationBuilder.Sql($@"
                 ALTER VIEW [billing].[CmrrContracts] WITH SCHEMABINDING AS
                 SELECT
                     c.idContract id,
