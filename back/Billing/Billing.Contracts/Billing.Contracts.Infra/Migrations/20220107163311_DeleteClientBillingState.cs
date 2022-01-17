@@ -9,6 +9,22 @@ namespace Billing.Contracts.Infra.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.Sql($@"
+                ALTER VIEW [billing].[CmrrContracts] WITH SCHEMABINDING AS
+                SELECT
+                    c.idContract id,
+                    o.productId productId,
+                    cast(c.startDate as date) startDate,
+                    cast(c.endDate as date) endDate,
+                    c.creationCause creationCause,
+                    c.endContractReason endReason,
+                    c.clientId clientId,
+                    c.idDistributor distributorId,
+                    e.CreatedAt environmentCreatedAt,
+                    CAST(CASE WHEN c.ArchivedAt is null THEN 0 ELSE 1 END AS bit) AS isArchived
+                FROM dbo.[Contracts] c
+                INNER JOIN [billing].[CommercialOffers] o on c.idCommercialOffer = o.id
+                INNER JOIN [shared].[Environments] e on c.environmentID = e.id
+
                 ALTER VIEW [billing].[Clients] WITH SCHEMABINDING AS
                     SELECT
                         c.[Id] Id,
@@ -23,12 +39,46 @@ namespace Billing.Contracts.Infra.Migrations
                         c.[BillingMail] BillingMail,
                         c.[Phone] Phone
                 FROM [dbo].[Clients] c
+
+                ALTER VIEW [billing].[CmrrContracts] WITH SCHEMABINDING AS
+                SELECT
+                    c.idContract id,
+                    o.productId productId,
+                    cast(c.startDate as date) startDate,
+                    cast(c.endDate as date) endDate,
+                    c.creationCause creationCause,
+                    c.endContractReason endReason,
+                    c.clientId clientId,
+                    c.idDistributor distributorId,
+                    e.CreatedAt environmentCreatedAt,
+                    cl.name clientName,
+                    CAST(CASE WHEN c.ArchivedAt is null THEN 0 ELSE 1 END AS bit) AS isArchived
+                FROM dbo.[Contracts] c
+                INNER JOIN [billing].[CommercialOffers] o on c.idCommercialOffer = o.id
+                INNER JOIN [shared].[Environments] e on c.environmentID = e.id
+                INNER JOIN [billing].[Clients] cl on c.clientId = cl.id;
             ");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.Sql($@"
+                ALTER VIEW [billing].[CmrrContracts] WITH SCHEMABINDING AS
+                SELECT
+                    c.idContract id,
+                    o.productId productId,
+                    cast(c.startDate as date) startDate,
+                    cast(c.endDate as date) endDate,
+                    c.creationCause creationCause,
+                    c.endContractReason endReason,
+                    c.clientId clientId,
+                    c.idDistributor distributorId,
+                    e.CreatedAt environmentCreatedAt,
+                    CAST(CASE WHEN c.ArchivedAt is null THEN 0 ELSE 1 END AS bit) AS isArchived
+                FROM dbo.[Contracts] c
+                INNER JOIN [billing].[CommercialOffers] o on c.idCommercialOffer = o.id
+                INNER JOIN [shared].[Environments] e on c.environmentID = e.id
+
                 ALTER VIEW [billing].[Clients] WITH SCHEMABINDING AS
                     SELECT
                         c.[Id] Id,
@@ -44,6 +94,24 @@ namespace Billing.Contracts.Infra.Migrations
                         c.[BillingMail] BillingMail,
                         c.[Phone] Phone
                 FROM [dbo].[Clients] c
+
+                ALTER VIEW [billing].[CmrrContracts] WITH SCHEMABINDING AS
+                SELECT
+                    c.idContract id,
+                    o.productId productId,
+                    cast(c.startDate as date) startDate,
+                    cast(c.endDate as date) endDate,
+                    c.creationCause creationCause,
+                    c.endContractReason endReason,
+                    c.clientId clientId,
+                    c.idDistributor distributorId,
+                    e.CreatedAt environmentCreatedAt,
+                    cl.name clientName,
+                    CAST(CASE WHEN c.ArchivedAt is null THEN 0 ELSE 1 END AS bit) AS isArchived
+                FROM dbo.[Contracts] c
+                INNER JOIN [billing].[CommercialOffers] o on c.idCommercialOffer = o.id
+                INNER JOIN [shared].[Environments] e on c.environmentID = e.id
+                INNER JOIN [billing].[Clients] cl on c.clientId = cl.id;
             ");
         }
     }
