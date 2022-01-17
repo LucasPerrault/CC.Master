@@ -104,7 +104,7 @@ export const navigationTabs: INavigationTab[] = [
     ],
   },
   {
-    name: 'front_navigation_cmrrTab',
+    name: 'front_navigation_mrrTab',
     url: NavigationPath.Cmrr,
     icon: 'evolution',
     restriction: { operations: [Operation.ReadCMRR] },
