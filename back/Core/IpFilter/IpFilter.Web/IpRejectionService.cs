@@ -11,6 +11,7 @@ namespace IpFilter.Web
 {
     public class IpRejectionService : IIpRejectionService
     {
+        private const string ApiRoutePrefix = "/api";
         private readonly IpFilterRequestCreationService _requestCreationService;
         private readonly ClaimsPrincipal _principal;
 
@@ -42,7 +43,7 @@ namespace IpFilter.Web
                 LastName = user.User.LastName,
             };
 
-            var redirection = $"{httpContext.Request.Path}{httpContext.Request.QueryString}";
+            var redirection = GetAcceptRedirectionEndpoint(httpContext.Request);
             await _requestCreationService.SendRequestIfNeededAsync(rejectedUser, EmailHrefBuilder(baseAddress, redirection));
         }
 
@@ -56,5 +57,10 @@ namespace IpFilter.Web
             Accept = guid => new Uri(baseAddress, $"/ip/confirm?code={guid}&redirection={HttpUtility.UrlEncode(redirection)}").ToString(),
             Reject = guid => new Uri(baseAddress, $"/ip/reject?code={guid}").ToString(),
         };
+
+        private string GetAcceptRedirectionEndpoint(HttpRequest request)
+            => request.Path.StartsWithSegments(ApiRoutePrefix)
+                ? "/"
+                : $"{request.Path}{request.QueryString}";
     }
 }
