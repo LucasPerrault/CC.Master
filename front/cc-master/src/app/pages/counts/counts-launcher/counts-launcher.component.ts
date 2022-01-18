@@ -1,7 +1,7 @@
 import { HttpParams } from '@angular/common/http';
 import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { toSubmissionState } from '@cc/common/forms';
+import { getButtonState, toSubmissionState } from '@cc/common/forms';
 import { NavigationPath } from '@cc/common/navigation';
 import { PaginatedList, PaginatedListState, PagingService } from '@cc/common/paging';
 import { IContract } from '@cc/domain/billing/contracts';
@@ -36,6 +36,8 @@ export class CountsLauncherComponent implements OnInit, OnDestroy {
   public section = CountsDashboardDetailsSection;
 
   public hasRunningCounts$ = new ReplaySubject<boolean>(1);
+
+  public cleanForecastButtonClass$ = new ReplaySubject<string>(1);
 
   private paginatedContractsWithDraftCount: PaginatedList<IContract>;
   private paginatedContractsWithCountWithoutAccountingEntry: PaginatedList<IContract>;
@@ -131,6 +133,12 @@ export class CountsLauncherComponent implements OnInit, OnDestroy {
           .subscribe(this.dashboard.withCountWithoutAccountingEntryRedirectionState$);
         return;
     }
+  }
+
+  public cleanForecast(): void {
+    this.dataService.cleanForecast$()
+      .pipe(take(1), toSubmissionState(), map(state => getButtonState(state)))
+      .subscribe(this.cleanForecastButtonClass$);
   }
 
   public openCountsLauncher(): void {

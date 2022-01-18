@@ -17,6 +17,11 @@ import { countWithContractFields, ICountWithContract } from '../models/count-wit
 export class CountsDataService {
   constructor(private httpClient: HttpClient, private apiDateService: ApiV3DateService) {}
 
+  public cleanForecast$(): Observable<void> {
+    const url = '/api/v3/counts/deleteDraftInPast';
+    return this.httpClient.post<void>(url, {});
+  }
+
   public getCounts$(countPeriod: Date): Observable<ICountWithContract[]> {
     const url = '/api/v3/counts';
     const params = new HttpParams()

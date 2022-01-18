@@ -8,17 +8,29 @@
         </lu-date-select>
       </label>
 
-      <button class="button mod-icon is-disabled" *ngIf="hasRunningCounts$ | async; else hasNoRunningCounts">
-        {{ 'counts_launcher_process_in_progress' | translate }}
-        <span aria-hidden="true" class="button-icon loading"></span>
-      </button>
-
-
-      <ng-template #hasNoRunningCounts>
-        <button class="button u-marginLeftAuto" (click)="openCountsLauncher()">
-          {{ 'counts_launcher_button' | translate }}
+      <div class="button-group u-marginLeftAuto">
+        <button class="button mod-icon is-disabled" [ngClass]="cleanForecastButtonClass$ | async"
+                *ngIf="hasRunningCounts$ | async; else hasNoRunningCounts">
+          {{ 'counts_launcher_process_in_progress' | translate }}
+          <span aria-hidden="true" class="button-icon loading"></span>
         </button>
-      </ng-template>
+        <ng-template #hasNoRunningCounts>
+          <button class="button" [ngClass]="cleanForecastButtonClass$ | async" (click)="openCountsLauncher()">
+            {{ 'counts_launcher_button' | translate }}
+          </button>
+        </ng-template>
+
+        <button class="button mod-more" [luDropdown]="dropdown"></button>
+      </div>
+
+      <lu-dropdown #dropdown>
+        <li class="lu-dropdown-options-item" (click)="cleanForecast()">
+          <div class="lu-dropdown-options-item-action" luDropdownItem>
+            {{ 'counts_launcher_clean_forecast_button' | translate }}
+          </div>
+        </li>
+      </lu-dropdown>
+
     </div>
 
     <div class="u-displayFlex u-flexWrapWrap u-flexGrow1 u-alignSelfStretch mod-overflowAuto">

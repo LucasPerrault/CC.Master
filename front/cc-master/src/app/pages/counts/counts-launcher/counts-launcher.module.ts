@@ -4,6 +4,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { TranslateModule } from '@cc/aspects/translate';
 import { PagingModule } from '@cc/common/paging';
 import { LuDateSelectInputModule } from '@lucca-front/ng/date';
+import { LuDropdownItemModule, LuDropdownPanelModule, LuDropdownTriggerModule } from '@lucca-front/ng/dropdown';
 import { LuModalModule } from '@lucca-front/ng/modal';
 
 import { CountsPageTemplateModule } from '../common/counts-page-template/counts-page-template.module';
@@ -28,6 +29,9 @@ import { CountsProcessDataService } from './services/counts-process-data.service
     PagingModule,
     TranslateModule,
     LuModalModule,
+    LuDropdownPanelModule,
+    LuDropdownTriggerModule,
+    LuDropdownItemModule,
   ],
   providers: [CountsDataService, CountsLauncherService, CountsProcessDataService],
 })
