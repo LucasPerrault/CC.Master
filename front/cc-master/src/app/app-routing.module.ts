@@ -13,6 +13,8 @@ import { CodeSourcesComponent } from './pages/code-sources/code-sources.componen
 import { CodeSourcesModule } from './pages/code-sources/code-sources.module';
 import { ContractsComponent } from './pages/contracts/contracts.component';
 import { ContractsModule } from './pages/contracts/contracts.module';
+import { CountsComponent } from './pages/counts/counts.component';
+import { CountsModule } from './pages/counts/counts.module';
 import { DistributorDomainComponent } from './pages/distributor-domain/distributor-domain.component';
 import { DistributorDomainModule } from './pages/distributor-domain/distributor-domain.module';
 import { IpComponent } from './pages/ip/ip.component';
@@ -47,6 +49,10 @@ const pageRoutes: Routes = [
     path: NavigationPath.Cafe,
     component: CafeComponent,
   },
+  {
+    path: NavigationPath.Counts,
+    component: CountsComponent,
+  },
 ];
 
 const routes: Routes = [
@@ -69,6 +75,7 @@ const routes: Routes = [
     CafeModule,
     IpModule,
     DistributorDomainModule,
+    CountsModule,
   ],
   exports: [RouterModule],
 })

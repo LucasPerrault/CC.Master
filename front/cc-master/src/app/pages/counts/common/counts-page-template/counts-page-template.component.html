@@ -1,0 +1,22 @@
+<div class="page mod-fullWidth mod-fullHeight mod-withFullwidthTable">
+  <header class="page-header blockWithFixedSizeInFlex u-flexDirectionColumn u-alignItemsFlexStart u-paddingBottomReset">
+    <div class="u-displayFlex u-alignItemsCenter u-alignSelfStretch u-justifyContentSpaceBetween">
+      <h1>{{ 'counts_page_title' | translate }}</h1>
+
+      <ng-content select="[page-header-right]"></ng-content>
+    </div>
+
+    <nav class="menu u-flexWrapWrap u-paddingLeftReset">
+      <ng-container *ngFor="let tab of tabs">
+        <a [routerLink]="['../', tab.url]"
+           [routerLinkActive]="'is-active'"
+           class="menu-link">
+          {{ tab.name | translate }}
+        </a>
+      </ng-container>
+    </nav>
+  </header>
+
+  <ng-content select="[page-content]"></ng-content>
+
+</div>
