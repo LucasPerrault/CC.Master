@@ -1,0 +1,14 @@
+<div class="card {{ mod }}" [ngClass]="{ 'is-selected': isSelected }" (click)="showMoreDetails.emit()">
+
+  <div class="card-content">
+    <ng-container *ngIf="isLoading; else isNotLoading">
+      <div class="loading">{{ 'counts_launcher_dashboard_card_loading' | translate }}</div>
+    </ng-container>
+
+    <ng-template #isNotLoading>
+      <span class="label mod-number">{{ totalCount ?? '?' }}</span>
+      <div>{{ 'counts_launcher_number_of_contracts' | translate : { count: totalCount ?? 0 } }}</div>
+    </ng-template>
+  </div>
+
+</div>
