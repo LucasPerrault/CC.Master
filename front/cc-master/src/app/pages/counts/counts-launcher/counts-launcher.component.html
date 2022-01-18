@@ -7,6 +7,18 @@
                         [placeholder]="'counts_launcher_period' | translate" [formControl]="countPeriod">
         </lu-date-select>
       </label>
+
+      <button class="button mod-icon is-disabled" *ngIf="hasRunningCounts$ | async; else hasNoRunningCounts">
+        {{ 'counts_launcher_process_in_progress' | translate }}
+        <span aria-hidden="true" class="button-icon loading"></span>
+      </button>
+
+
+      <ng-template #hasNoRunningCounts>
+        <button class="button u-marginLeftAuto" (click)="openCountsLauncher()">
+          {{ 'counts_launcher_button' | translate }}
+        </button>
+      </ng-template>
     </div>
 
     <div class="u-displayFlex u-flexWrapWrap u-flexGrow1 u-alignSelfStretch mod-overflowAuto">

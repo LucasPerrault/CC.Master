@@ -6,15 +6,18 @@ import { NavigationPath } from '@cc/common/navigation';
 import { PaginatedList, PaginatedListState, PagingService } from '@cc/common/paging';
 import { IContract } from '@cc/domain/billing/contracts';
 import { ELuDateGranularity } from '@lucca-front/ng/core';
+import { LuModal } from '@lucca-front/ng/modal';
 import { startOfMonth, subMonths } from 'date-fns';
 import { Observable, ReplaySubject, Subject } from 'rxjs';
 import { filter, finalize, map, take, takeUntil, tap } from 'rxjs/operators';
 
 import { ContractState } from '../../contracts/contracts-manage/constants/contract-state.enum';
+import { CountsProcessLauncherModalComponent } from './components/counts-process-launcher-modal/counts-process-launcher-modal.component';
 import { CountsDashboardDetailsSection } from './enums/counts-dashboard-details-section.enum';
 import { CountsDashboard } from './models/counts-dashboard.interface';
 import { CountsDataService } from './services/counts-data.service';
 import { CountsLauncherService } from './services/counts-launcher.service';
+import { CountsProcessDataService } from './services/counts-process-data.service';
 
 @Component({
   selector: 'cc-counts-launcher',
@@ -32,15 +35,19 @@ export class CountsLauncherComponent implements OnInit, OnDestroy {
   public selectedSection$ = new ReplaySubject<CountsDashboardDetailsSection>(1);
   public section = CountsDashboardDetailsSection;
 
+  public hasRunningCounts$ = new ReplaySubject<boolean>(1);
+
   private paginatedContractsWithDraftCount: PaginatedList<IContract>;
   private paginatedContractsWithCountWithoutAccountingEntry: PaginatedList<IContract>;
 
   private destroy$: Subject<void> = new Subject();
 
   constructor(
+    private processService: CountsProcessDataService,
     private launcherService: CountsLauncherService,
     private dataService: CountsDataService,
     private pagingService: PagingService,
+    private luModal: LuModal,
   ) {}
 
   public ngOnInit(): void {
@@ -73,6 +80,8 @@ export class CountsLauncherComponent implements OnInit, OnDestroy {
     this.paginatedContractsWithCountWithoutAccountingEntry.state$
       .pipe(takeUntil(this.destroy$), map(state => state === PaginatedListState.Update))
       .subscribe(this.dashboard.isContractsWithCountWithoutAccountingEntryLoading$);
+
+    this.refreshRunningProcess();
 
     this.countPeriod.valueChanges
       .pipe(takeUntil(this.destroy$), filter(period => !!period))
@@ -122,6 +131,17 @@ export class CountsLauncherComponent implements OnInit, OnDestroy {
           .subscribe(this.dashboard.withCountWithoutAccountingEntryRedirectionState$);
         return;
     }
+  }
+
+  public openCountsLauncher(): void {
+    const modalRef = this.luModal.open(CountsProcessLauncherModalComponent);
+    modalRef.onClose.pipe(takeUntil(this.destroy$)).subscribe(() => this.refreshRunningProcess());
+  }
+
+  private refreshRunningProcess(): void {
+    this.processService.getCountProcessNumber$()
+      .pipe(take(1), map(processNumber => !!processNumber))
+      .subscribe(this.hasRunningCounts$);
   }
 
   private refreshDashboard(countPeriod: Date): void {
