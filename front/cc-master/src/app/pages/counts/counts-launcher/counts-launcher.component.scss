@@ -1,0 +1,16 @@
+@import "theming.import";
+
+.mod-overflowAuto {
+  overflow: auto;
+}
+
+.mod-cardList {
+  position: sticky;
+  top: 0;
+
+  display: flex;
+  flex-direction: column;
+  align-self: stretch;
+  border-right: solid 2px _color('grey', 50);
+  padding: 0;
+}

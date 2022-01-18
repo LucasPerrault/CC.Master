@@ -1,5 +1,53 @@
 <cc-counts-page-template>
   <ng-container page-content>
 
+    <div class="header blockWithFixedSizeInFlex">
+      <label class="textfield palette-grey mod-outlined">
+        <lu-date-select class="textfield-input" [hideClearer]="true" [granularity]="granularity.month"
+                        [placeholder]="'counts_launcher_period' | translate" [formControl]="countPeriod">
+        </lu-date-select>
+      </label>
+    </div>
+
+    <div class="u-displayFlex u-flexWrapWrap u-flexGrow1 u-alignSelfStretch mod-overflowAuto">
+
+      <cc-counts-dashboard-card-list [dashboard]="dashboard" (showSectionDetails)="showSectionDetails($event)"
+                                     class="mod-cardList grid-xs4 u-paddingReset">
+      </cc-counts-dashboard-card-list>
+
+      <ng-container [ngSwitch]="selectedSection$ | async">
+        <cc-counts-dashboard-contracts-table *ngSwitchCase="section.WithoutCount"
+                                             [contracts]="dashboard?.contractsWithoutCounts$ | async"
+                                             [totalCounts]="dashboard?.numberOfContractsWithoutCount$ | async"
+                                             [isLoading]="dashboard?.isContractsWithoutCountLoading$ | async"
+                                             (showAllContracts)="redirectToContractsAsync(section.WithoutCount)"
+                                             class="grid-xs8 u-paddingReset">
+        </cc-counts-dashboard-contracts-table>
+
+        <cc-counts-dashboard-contracts-table *ngSwitchCase="section.WithDraftCount"
+                                             ccInfiniteScroll
+                                             (bottomReached)="nextPage(section.WithDraftCount)"
+                                             [contracts]="dashboard.contractsWithDraftCount$ | async"
+                                             [totalCounts]="dashboard?.numberOfContractsWithDraftCount$ | async"
+                                             [isLoading]="dashboard?.isContractsWithDraftCountLoading$ | async"
+                                             [redirectionState]="dashboard?.withDraftCountRedirectionState$ | async"
+                                             (showAllContracts)="redirectToContractsAsync(section.WithDraftCount)"
+                                             class="grid-xs8 u-paddingReset">
+        </cc-counts-dashboard-contracts-table>
+
+        <cc-counts-dashboard-contracts-table *ngSwitchCase="section.WithCountWithoutAccountingEntry"
+                                             ccInfiniteScroll
+                                             (bottomReached)="nextPage(section.WithCountWithoutAccountingEntry)"
+                                             [contracts]="dashboard.contractsWithCountWithoutAccountingEntry$ | async"
+                                             [totalCounts]="dashboard?.numberOfContractsWithCountWithoutAccountingEntry$ | async"
+                                             [isLoading]="dashboard?.isContractsWithCountWithoutAccountingEntryLoading$ | async"
+                                             [redirectionState]="dashboard?.withCountWithoutAccountingEntryRedirectionState$ | async"
+                                             (showAllContracts)="redirectToContractsAsync(section.WithCountWithoutAccountingEntry)"
+                                             class="grid-xs8 u-paddingReset">
+        </cc-counts-dashboard-contracts-table>
+      </ng-container>
+
+    </div>
+
   </ng-container>
 </cc-counts-page-template>
