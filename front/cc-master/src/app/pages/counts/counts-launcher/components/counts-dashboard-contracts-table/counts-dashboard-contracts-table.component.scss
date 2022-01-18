@@ -1,0 +1,18 @@
+@import "theming.import";
+
+:host {
+  overflow: auto;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.mod-stickyFooter {
+  z-index: 30;
+  position: sticky;
+  bottom: 0;
+  border-top: 1px solid _theme("commons.divider.color");
+  margin-top: -1px;
+  background-color: white;
+}

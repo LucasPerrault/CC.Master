@@ -1,0 +1,33 @@
+<div>
+  <table class="table u-paddingReset mod-clickable u-marginTopSmaller">
+    <thead class="table-head">
+    <tr class="table-head-row">
+      <th class="table-head-row-cell">{{ 'counts_launcher_column_id' | translate }}</th>
+      <th class="table-head-row-cell">{{ 'counts_launcher_column_name' | translate }}</th>
+    </tr>
+    </thead>
+    <tbody class="table-body">
+    <tr class="table-body-row" (click)="redirectToContract(contract.id)"
+        *ngFor="let contract of contracts; trackBy: trackBy">
+      <td class="table-body-row-cell">{{ contract?.id }}</td>
+      <td class="table-body-row-cell">{{ contract?.name }}</td>
+    </tr>
+    </tbody>
+  </table>
+
+  <div class="loading mod-fullPage" *ngIf="isLoading"></div>
+
+  <section class="emptyState" *ngIf="!isLoading && !contracts?.length">
+    <h3 class="emptyState-title">{{ 'counts_launcher_emptyState_title' | translate }}</h3>
+    <p class="emptyState-description">{{ 'counts_launcher_emptyState_description' | translate }}</p>
+  </section>
+</div>
+
+<div class="mod-stickyFooter u-textRight u-paddingSmaller u-paddingRightSmall" *ngIf="!!contracts?.length">
+  <span [luTooltip]="'counts_launcher_show_all_contracts_disabled_description' | translate"
+        [luTooltipDisabled]="!isDisabled">
+    <button class="button mod-small" [disabled]="isDisabled" (click)="showContracts()" [ngClass]="redirectionButtonClass">
+      {{ 'counts_launcher_show_all_contracts' | translate }}
+    </button>
+  </span>
+</div>
