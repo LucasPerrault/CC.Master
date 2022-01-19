@@ -162,7 +162,8 @@ export class EditablePriceGridComponent implements OnInit, OnDestroy, ControlVal
   }
 
   public addRange(priceRows?: IPriceRowForm[]): void {
-    priceRows.forEach(priceRow => this.add(priceRow));
+    const sortedAscRows = priceRows?.sort((a, b) => a.maxIncludedCount - b.maxIncludedCount);
+    sortedAscRows.forEach(priceRow => this.add(priceRow));
   }
 
   public remove(index: number) {
