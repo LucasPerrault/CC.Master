@@ -16,6 +16,8 @@ import { OfferRestrictionsService } from './services/offer-restrictions.service'
 import { OfferUsageStoreService } from './services/offer-usage-store.service';
 import { OffersApiMappingService } from './services/offers-api-mapping.service';
 import { OffersDataService } from './services/offers-data.service';
+import { OffersFilterRoutingService } from './services/offers-filter-routing.service';
+import { OffersRoutingService } from './services/offers-routing.service';
 import { PriceListsDataService } from './services/price-lists-data.service';
 
 @NgModule({
@@ -43,6 +45,8 @@ import { PriceListsDataService } from './services/price-lists-data.service';
     OfferListService,
     OfferRestrictionsService,
     OfferUsageStoreService,
+    OffersRoutingService,
+    OffersFilterRoutingService,
   ],
 })
 export class OffersModule { }
