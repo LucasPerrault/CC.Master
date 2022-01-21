@@ -1,6 +1,6 @@
 <div class="card">
   <div class="card-content">
-    <h2>{{ 'front_accountingRevenuePage_currentPeriod_title_card' | translate }}</h2>
+    <h3>{{ 'front_accountingRevenuePage_currentPeriod_title_card' | translate }}</h3>
 
     <div *ngIf="isLoading; else isNotLoading" class="progress mod-indeterminate">
       <div class="progress-bar"></div>
@@ -9,7 +9,7 @@
     <ng-template #isNotLoading>
       <div class="u-right">
         {{ 'front_accountingRevenuePage_currentPeriod' | translate }} :
-        <strong>{{ accountingPeriod | date : 'MMMM YYYY' }}</strong>
+        <strong>{{ accountingPeriod.date | date : 'MMMM YYYY' }}</strong>
       </div>
     </ng-template>
 
