@@ -1,0 +1,12 @@
+<ng-container [ngSwitch]="data.mode">
+
+  <div *ngSwitchCase="mode.Readonly">{{ data?.demo.comment }}</div>
+
+  <div *ngSwitchCase="mode.Edition">
+    <label class="textfield mod-multiline palette-grey mod-block">
+      <textarea class="textfield-input" [formControl]="comment"></textarea>
+    </label>
+  </div>
+
+</ng-container>
+
