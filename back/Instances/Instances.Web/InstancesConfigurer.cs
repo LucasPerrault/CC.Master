@@ -221,6 +221,7 @@ namespace Instances.Web
                 .Allow(d => d.DeletionScheduledOn)
                 .Allow(d => d.Id)
                 .Allow(d => d.CreatedAt)
+                .Allow(d => d.IsTemplate)
                 .Allow(d => d.Subdomain);
             return luccaApiBuilder;
         }
