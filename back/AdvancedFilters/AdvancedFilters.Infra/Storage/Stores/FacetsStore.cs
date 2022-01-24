@@ -37,6 +37,7 @@ namespace AdvancedFilters.Infra.Storage.Stores
 
         private IQueryable<EnvironmentFacetValueDao> EnvironmentValues => _dbContext
             .Set<EnvironmentFacetValueDao>()
+            .Where(v => v.Facet.Type != FacetType.Unknown)
             .Include(v => v.Facet);
     }
 
@@ -44,9 +45,7 @@ namespace AdvancedFilters.Infra.Storage.Stores
     {
         public static IQueryable<IEnvironmentFacetValue> ToValues(this IQueryable<EnvironmentFacetValueDao> daos)
         {
-            return daos
-                .Select(dao => dao.ToValue())
-                .Where(v => v != null);
+            return daos.Select(dao => dao.ToValue());
         }
         public static IQueryable<EnvironmentFacetValueDao> WhereMatches(this IQueryable<EnvironmentFacetValueDao> daos, EnvironmentFacetFilter filter)
         {
