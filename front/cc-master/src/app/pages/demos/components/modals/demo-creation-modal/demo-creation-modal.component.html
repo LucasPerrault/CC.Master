@@ -1,0 +1,39 @@
+<form [formGroup]="formGroup">
+
+  <cc-demo-client-subdomain-input [formControlName]="formKey.Subdomain"></cc-demo-client-subdomain-input>
+
+  <label class="textfield palette-grey mod-block u-marginTopSmall is-required">
+    <cc-demo-api-select [required]="true" [formControlName]="formKey.Source"></cc-demo-api-select>
+    <span class="textfield-label">{{ 'demos_duplication_source_label' | translate }}</span>
+    <span class="textfield-messages">
+      <span class="textfield-messages-error" *ngIf="hasRequiredError(formKey.Source)">
+        {{ 'demos_duplication_source_required' | translate }}
+      </span>
+    </span>
+  </label>
+
+  <cc-demo-password-input class="u-marginTopSmall" [formControlName]="formKey.Password"></cc-demo-password-input>
+
+  <label class="checkbox u-marginTopSmall">
+    <input class="checkbox-input" type="checkbox" name="show-distributor" [formControl]="showDistributor">
+    <span class="checkbox-label">{{ 'demos_show_distributor_label' | translate }}</span>
+  </label>
+
+  <label *ngIf="showDistributor.value" class="textfield palette-grey mod-block u-marginTopSmall is-required">
+    <lu-api-select class="textfield-input" api="/api/distributors" standard="v4" [filters]="['name']"
+                   [required]="showDistributor.value" [formControlName]="formKey.Distributor">
+    </lu-api-select>
+    <span class="textfield-label">{{ 'select_distributor_label' | translate }}</span>
+    <span class="textfield-messages">
+      <span class="textfield-messages-error" *ngIf="hasRequiredError(formKey.Distributor)">
+        {{ 'select_distributor_required' | translate }}
+      </span>
+    </span>
+  </label>
+
+  <label class="textfield mod-multiline mod-block palette-grey u-marginTopSmall">
+    <textarea class="textfield-input" [formControlName]="formKey.Comment"></textarea>
+    <span class="textfield-label">{{ 'select_comment_label' | translate }}</span>
+  </label>
+
+</form>

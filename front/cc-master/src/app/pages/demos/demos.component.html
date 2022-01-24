@@ -2,6 +2,8 @@
      ccInfiniteScroll (bottomReached)="nextPage()">
   <header class="page-header blockWithFixedSizeInFlex">
     <h1>{{ 'demos_title' | translate }}</h1>
+
+    <button class="button" [routerLink]="['create']">{{ 'demos_create_button' | translate }}</button>
   </header>
 
   <cc-demo-filters class="header blockWithFixedSizeInFlex" [formControl]="filters"></cc-demo-filters>
@@ -26,3 +28,5 @@
 
   </ng-template>
 </div>
+
+<router-outlet></router-outlet>
