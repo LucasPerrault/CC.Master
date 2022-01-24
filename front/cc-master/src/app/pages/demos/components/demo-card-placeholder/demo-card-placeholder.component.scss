@@ -1,0 +1,7 @@
+@import "theming.import";
+
+.card {
+  max-width: 1000px;
+  background-color: _color('grey', 50);
+  opacity: .6;
+}
