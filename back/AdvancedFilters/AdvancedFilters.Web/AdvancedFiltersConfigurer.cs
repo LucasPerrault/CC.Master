@@ -3,6 +3,7 @@ using AdvancedFilters.Domain.Billing.Models;
 using AdvancedFilters.Domain.Contacts.Interfaces;
 using AdvancedFilters.Domain.Core.Collections;
 using AdvancedFilters.Domain.DataSources;
+using AdvancedFilters.Domain.Facets;
 using AdvancedFilters.Domain.Instance.Interfaces;
 using AdvancedFilters.Infra.Services;
 using AdvancedFilters.Infra.Services.Sync;
@@ -32,6 +33,8 @@ namespace AdvancedFilters.Web
             services.ConfigureInstances();
             services.ConfigureBilling();
             services.ConfigureContacts();
+
+            services.ConfigureFacets();
 
             services.AddScoped<IExportService, ExportCsvService>();
 
@@ -84,6 +87,11 @@ namespace AdvancedFilters.Web
             services.AddScoped<IAppContactsStore, AppContactsStore>();
             services.AddScoped<IClientContactsStore, ClientContactsStore>();
             services.AddScoped<ISpecializedContactsStore, SpecializedContactsStore>();
+        }
+
+        private static void ConfigureFacets(this IServiceCollection services)
+        {
+            services.AddScoped<IFacetsStore, FacetsStore>();
         }
 
         public static LuccaApiBuilder ConfigureLuccaApiForAdvancedFilters(this LuccaApiBuilder luccaApiBuilder)
