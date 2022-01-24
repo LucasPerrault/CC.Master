@@ -1,0 +1,89 @@
+<div class="card">
+  <div class="card-content grid u-marginLeftReset">
+
+    <div class="card-content-left grid-xs6">
+      <h3 class="u-displayFlex u-alignItemsCenter u-marginBottomSmallest">
+        <a class="link mod-text u-marginRightSmaller" (click)="openDemo(demo?.href)">{{ getTitle(demo?.subdomain) }}</a>
+
+        <span class="lucca-icon icon-lock" [luTooltip]="'demos_card_isProtected' | translate"
+              *ngIf="demo?.instance?.isProtected; else isNotProtected"></span>
+        <ng-template #isNotProtected>
+          <span class="lucca-icon icon-unlock" [luTooltip]="'demos_card_isNotProtected' | translate"></span>
+        </ng-template>
+
+        <button *ngIf="!!demo?.comment" (click)="showComment.emit(demo)"
+                type="button" class="actionIcon" [luTooltip]="'demos_card_show_comment' | translate">
+          <span aria-hidden="true" class="lucca-icon icon-dialog"></span>
+          <span class="u-mask">{{ 'demos_card_show_comment' | translate }}</span>
+        </button>
+      </h3>
+
+      <div class="u-displayFlex u-flexDirectionColumn u-textSmall">
+        <div class="u-marginBottomSmallest">
+          {{ 'demos_card_author_creation' | translate : { name: getAuthorName(demo?.authorId, demo?.author), date: demo?.createdAt | date : 'shortDate' } }}
+        </div>
+        <div class="u-marginBottomSmallest" *ngIf="shouldExpire(demo)">
+          {{ 'demos_card_expireOn' | translate : { date : demo?.deletionScheduledOn | date : 'shortDate' } }}
+        </div>
+        <div class="u-pointer u-widthFitContent" *ngIf="hasPassword" (mouseover)="showPassword()" (mouseout)="hidePassword()"
+             (click)="copyPassword()" [luTooltip]="passwordTooltip$ | async" luTooltipPosition="after">
+          {{ 'demos_card_password' | translate : { password: password$ | async } }}
+        </div>
+      </div>
+    </div>
+
+    <div class="card-content-right grid-xs6">
+      <div class="u-displayFlex u-flexDirectionColumn u-justifyContentCenter">
+        <div class="u-displayFlex u-alignItemsCenter">
+          <span aria-hidden="true" class="lucca-icon icon-info u-marginLeftSmaller u-marginRightSmallest"
+                  [luTooltip]="'demos_card_users_example' | translate">
+          </span>
+          <label class="textfield palette-grey mod-outlined mod-long">
+            <cc-demo-instance-user-api-select [instanceId]="demo?.instanceID"
+                                              [placeholder]="'demos_card_connect_as' | translate"
+                                              [formControl]="formControl">
+            </cc-demo-instance-user-api-select>
+          </label>
+        </div>
+        <button class="button palette-grey mod-outline u-marginLeftBig u-marginTopSmaller" (click)="connectAsMasterKey()">
+          {{ 'demos_card_connect_as_master_key' | translate }}
+        </button>
+      </div>
+
+      <div class="card-content-actions">
+        <button *ngIf="!demo?.instance?.isProtected" type="button" class="actionIcon"
+                [luTooltip]="'demos_card_protect' | translate"
+                [ngClass]="protectionButtonClass$ | async" (click)="lock(demo)">
+          <span aria-hidden="true" class="lucca-icon icon-lock"></span>
+          <span class="u-mask">{{ 'demos_card_protect' | translate }}</span>
+        </button>
+
+        <button *ngIf="demo?.instance?.isProtected" type="button" class="actionIcon"
+                [luTooltip]="'demos_card_unprotect' | translate"
+                [ngClass]="protectionButtonClass$ | async" (click)="unlock(demo)">
+          <span aria-hidden="true" class="lucca-icon icon-unlock"></span>
+          <span class="u-mask">{{ 'demos_card_unprotect' | translate }}</span>
+        </button>
+
+        <button type="button" class="actionIcon"
+                [luTooltip]="'demos_card_delete' | translate" (click)="delete.emit(demo)">
+          <span aria-hidden="true" class="lucca-icon icon-trash"></span>
+          <span class="u-mask">{{ 'demos_card_delete' | translate }}</span>
+        </button>
+
+        <button type="button" class="actionIcon"
+                [luTooltip]="'demos_card_edit_comment' | translate" (click)="editComment.emit(demo)">
+          <span aria-hidden="true" class="lucca-icon icon-dialog"></span>
+          <span class="u-mask">{{ 'demos_card_edit_comment' | translate }}</span>
+        </button>
+
+        <button type="button" class="actionIcon"
+                [luTooltip]="'demos_card_edit_password' | translate" (click)="editPassword.emit(demo)">
+          <span aria-hidden="true" class="lucca-icon icon-edit"></span>
+          <span class="u-mask">{{ 'demos_card_edit_password' | translate }}</span>
+        </button>
+      </div>
+
+    </div>
+  </div>
+</div>

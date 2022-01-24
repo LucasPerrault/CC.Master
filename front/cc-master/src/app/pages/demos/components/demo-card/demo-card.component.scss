@@ -1,0 +1,38 @@
+@import "theming.import";
+
+.u-pointer { cursor: pointer; }
+.u-widthFitContent { width: fit-content; }
+
+.link.mod-text {
+  color: _color('grey', 800);
+  text-decoration: none;
+  &:hover { text-decoration: underline; }
+}
+
+.card {
+  max-width: 1000px;
+}
+
+.card-content {
+  padding: 0;
+  display: flex;
+  justify-content: space-between;
+}
+
+.card-content-left {
+  border-radius: 8px 0 0 8px;
+  padding: _theme('spacings.standard');
+  background-color: _color('grey', 50);
+}
+
+.card-content-right {
+  display: flex;
+}
+
+.card-content-actions {
+  display: flex;
+  flex-direction: column;
+  background-color: _color('grey', 50);
+  margin-left: auto;
+  border-radius: 0 8px 8px 0;
+}
