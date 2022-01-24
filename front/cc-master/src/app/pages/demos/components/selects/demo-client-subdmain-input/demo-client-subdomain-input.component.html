@@ -1,0 +1,20 @@
+<label class="textfield palette-grey mod-block is-required mod-withLongSuffix"
+       [ngClass]="subdomainAvailabilityClass$ | async">
+  <input class="textfield-input"
+         type="text"
+         [required]="true"
+         [formControl]="subdomain"
+         (blur)="checkSubdomainAvailability()">
+  <span class="textfield-label">{{ 'demos_client_subdomain_label' | translate }}</span>
+  <span class="textfield-suffix u-marginRightStandard">.ilucca-demo.net</span>
+</label>
+
+<span class="textfield-messages">
+  <span class="textfield-messages-error" *ngIf="subdomain.touched && subdomain.hasError('required')">
+    {{ 'demos_client_subdomain_required' | translate }}
+  </span>
+
+  <span class="textfield-messages-error" *ngIf="hasSubdomainAvailabilityError$ | async">
+    {{ (subdomainAvailabilityMessage$ | async) | translate }}
+  </span>
+</span>
