@@ -1,1 +1,28 @@
-<p>demos works!</p>
+<div class="page mod-fullWidth mod-withFullwidthTable mod-withInfiniteScroll"
+     ccInfiniteScroll (bottomReached)="nextPage()">
+  <header class="page-header blockWithFixedSizeInFlex">
+    <h1>{{ 'demos_title' | translate }}</h1>
+  </header>
+
+  <cc-demo-filters class="header blockWithFixedSizeInFlex" [formControl]="filters"></cc-demo-filters>
+
+  <div class="loading mod-fullPage" *ngIf="isLoading$ | async; else isNotLoading"></div>
+
+  <ng-template #isNotLoading>
+    <div class="u-paddingStandard">
+      <cc-demo-card *ngFor="let demo of demos$ | async"
+                    [demo]="demo"
+                    [templateDemos]="templateDemos$ | async"
+                    (delete)="openDeletionModal($event)"
+                    (showComment)="openCommentModal($event)"
+                    (editComment)="openCommentEditionModal($event)"
+                    (editPassword)="openPasswordEditionModal($event)">
+      </cc-demo-card>
+    </div>
+
+    <div *ngIf="isLoadingMore$ | async" class="loading u-marginLeftStandard u-marginBottomStandard">
+      {{ 'demos_loading' | translate }}
+    </div>
+
+  </ng-template>
+</div>
