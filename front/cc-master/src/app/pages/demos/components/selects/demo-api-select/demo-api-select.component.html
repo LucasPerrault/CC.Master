@@ -1,0 +1,22 @@
+<lu-select [formControl]="formControl"
+           class="textfield-input"
+           [placeholder]="placeholder"
+           [required]="required"
+           (blur)="onTouch()">
+
+  <ng-container *luDisplayer="let value">{{ value?.subdomain }}</ng-container>
+
+  <lu-option-picker-advanced>
+    <header class="lu-picker-header">
+      <lu-api-paged-searcher [api]="api" standard="v4" [filters]="filters"></lu-api-paged-searcher>
+    </header>
+
+    <lu-option *luForOptions="let demo; trackBy: trackBy" [value]="demo">
+        {{ demo?.subdomain }}
+    </lu-option>
+
+  </lu-option-picker-advanced>
+
+  <lu-input-clearer></lu-input-clearer>
+</lu-select>
+
