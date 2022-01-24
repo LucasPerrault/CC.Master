@@ -1,0 +1,43 @@
+<lu-select [formControl]="formControl"
+           class="textfield-input"
+           [placeholder]="placeholder"
+           [multiple]="multiple"
+           [required]="required"
+           (blur)="onTouch()">
+
+  <ng-container *luDisplayer="let value; multiple: multiple">
+    <ng-container *ngIf="multiple; else notMultiple">
+
+      <ng-container *ngIf="value?.length !== 1; else: singleView">
+        <span class="label">{{ value.length }}</span>
+        {{ 'select_demos_users' | translate }}
+      </ng-container>
+
+      <ng-template #singleView>{{ getUserName(value[0]) }}</ng-template>
+    </ng-container>
+
+    <ng-template #notMultiple>{{ getUserName(value) }}</ng-template>
+  </ng-container>
+
+  <lu-option-picker-advanced>
+    <header class="lu-picker-header">
+      <lu-api-paged-searcher [api]="api" standard="v4"></lu-api-paged-searcher>
+    </header>
+
+    <lu-option class="u-fontWeightBold" [value]="principalAsUser">
+      {{ 'select_demos_users_me' | translate : { name: principal?.name } }}
+    </lu-option>
+
+    <lu-option *ngFor="let specificUser of specificUsers; trackBy: trackBy" [value]="specificUser">
+      {{ getUserName(specificUser) }}
+    </lu-option>
+
+    <lu-option *luForOptions="let user; trackBy: trackBy" [value]="user">
+      {{ getUserName(user) }}
+    </lu-option>
+
+  </lu-option-picker-advanced>
+
+  <lu-input-clearer></lu-input-clearer>
+</lu-select>
+
