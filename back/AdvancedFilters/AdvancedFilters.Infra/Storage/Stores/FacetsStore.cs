@@ -3,6 +3,7 @@ using AdvancedFilters.Infra.Storage.DAO;
 using Lucca.Core.Api.Abstractions.Paging;
 using Lucca.Core.Api.Queryable.Paging;
 using Microsoft.EntityFrameworkCore;
+using Storage.Infra.Extensions;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -22,26 +23,39 @@ namespace AdvancedFilters.Infra.Storage.Stores
 
         public Task<Page<IEnvironmentFacetValue>> GetAsync(IPageToken pageToken, EnvironmentFacetFilter filter)
         {
-            var queryable = EnvironmentValues.ToValues();
+            var queryable = EnvironmentValues.WhereMatches(filter).ToValues();
 
             return _queryPager.ToPageAsync(queryable, pageToken);
         }
 
         public Task<List<IEnvironmentFacetValue>> GetAsync(EnvironmentFacetFilter filter)
         {
-            return EnvironmentValues.ToValues().ToListAsync();
+            return EnvironmentValues
+                .WhereMatches(filter)
+                .ToValues().ToListAsync();
         }
 
-        private IQueryable<EnvironmentFacetValueDao> EnvironmentValues => _dbContext.Set<EnvironmentFacetValueDao>();
+        private IQueryable<EnvironmentFacetValueDao> EnvironmentValues => _dbContext
+            .Set<EnvironmentFacetValueDao>()
+            .Include(v => v.Facet);
     }
 
-    internal static class FacetsStoreExtensions
+    internal static class EnvironmentFacetsStoreExtensions
     {
         public static IQueryable<IEnvironmentFacetValue> ToValues(this IQueryable<EnvironmentFacetValueDao> daos)
         {
             return daos
                 .Select(dao => dao.ToValue())
                 .Where(v => v != null);
+        }
+        public static IQueryable<EnvironmentFacetValueDao> WhereMatches(this IQueryable<EnvironmentFacetValueDao> daos, EnvironmentFacetFilter filter)
+        {
+            return daos
+                .WhenNotNullOrEmpty(filter.Codes).ApplyWhere(dao => filter.Codes.Contains(dao.Facet.Code))
+                .WhenNotNullOrEmpty(filter.ApplicationIds).ApplyWhere(dao => filter.ApplicationIds.Contains(dao.Facet.ApplicationId))
+                .WhenNotNullOrEmpty(filter.FacetTypes).ApplyWhere(dao => filter.FacetTypes.Contains(dao.Facet.Type))
+                .WhenNotNullOrEmpty(filter.EnvironmentIds).ApplyWhere(dao => filter.EnvironmentIds.Contains(dao.EnvironmentId))
+                .WhenNotNullOrEmpty(filter.FacetIdentifiers).ApplyWhere(dao => filter.FacetIdentifiers.Any(id => dao.Facet.ApplicationId == id.ApplicationId && dao.Facet.Code == id.Code));
         }
 
         public static IEnvironmentFacetValue ToValue(this EnvironmentFacetValueDao dao)
