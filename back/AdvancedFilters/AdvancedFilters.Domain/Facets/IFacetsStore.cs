@@ -6,6 +6,7 @@ namespace AdvancedFilters.Domain.Facets;
 
 public interface IFacetsStore
 {
-    Task<Page<IEnvironmentFacetValue>> GetAsync(IPageToken pageToken, EnvironmentFacetFilter filter);
-    Task<List<IEnvironmentFacetValue>> GetAsync(EnvironmentFacetFilter filter);
+    Task<Page<Facet>> GetAsync(IPageToken pageToken, FacetScope scope, FacetFilter filter);
+    Task<Page<IEnvironmentFacetValue>> GetValuesAsync(IPageToken pageToken, EnvironmentFacetValueFilter filter);
+    Task<List<IEnvironmentFacetValue>> GetValuesAsync(EnvironmentFacetValueFilter filter);
 }

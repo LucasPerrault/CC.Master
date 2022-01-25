@@ -21,7 +21,13 @@ namespace AdvancedFilters.Infra.Storage.Stores
             _queryPager = queryPager;
         }
 
-        public async Task<Page<IEnvironmentFacetValue>> GetAsync(IPageToken pageToken, EnvironmentFacetFilter filter)
+        public Task<Page<Facet>> GetAsync(IPageToken pageToken, FacetScope scope, FacetFilter filter)
+        {
+            var queryable = Facets(scope).WhereMatches(filter);
+            return _queryPager.ToPageAsync(queryable, pageToken);
+        }
+
+        public async Task<Page<IEnvironmentFacetValue>> GetValuesAsync(IPageToken pageToken, EnvironmentFacetValueFilter filter)
         {
             var queryable = EnvironmentValues.WhereMatches(filter);
             var page = await _queryPager.ToPageAsync(queryable, pageToken);
@@ -33,7 +39,7 @@ namespace AdvancedFilters.Infra.Storage.Stores
             };
         }
 
-        public async Task<List<IEnvironmentFacetValue>> GetAsync(EnvironmentFacetFilter filter)
+        public async Task<List<IEnvironmentFacetValue>> GetValuesAsync(EnvironmentFacetValueFilter filter)
         {
             return (await EnvironmentValues
                 .WhereMatches(filter)
@@ -42,20 +48,27 @@ namespace AdvancedFilters.Infra.Storage.Stores
                 .ToList();
         }
 
+        private IQueryable<Facet> Facets(FacetScope scope) => _dbContext
+            .Set<Facet>()
+            .Where(f => f.Scope == scope);
+
         private IQueryable<EnvironmentFacetValueDao> EnvironmentValues => _dbContext
             .Set<EnvironmentFacetValueDao>()
             .Where(v => v.Facet.Type != FacetType.Unknown)
             .Include(v => v.Facet);
     }
 
-    internal static class EnvironmentFacetsStoreExtensions
+    internal static class FacetsExtensions
     {
-        public static IEnumerable<IEnvironmentFacetValue> ToValues(this IEnumerable<EnvironmentFacetValueDao> daos)
+        public static IQueryable<Facet> WhereMatches(this IQueryable<Facet> facets, FacetFilter filter)
         {
-            return daos.Select(dao => dao.ToValue());
+            return facets
+                .WhenNotNullOrEmpty(filter.Codes).ApplyWhere(facet => filter.Codes.Contains(facet.Code))
+                .WhenNotNullOrEmpty(filter.ApplicationIds).ApplyWhere(facet => filter.ApplicationIds.Contains(facet.ApplicationId))
+                .WhenNotNullOrEmpty(filter.FacetTypes).ApplyWhere(facet => filter.FacetTypes.Contains(facet.Type));
         }
 
-        public static IQueryable<EnvironmentFacetValueDao> WhereMatches(this IQueryable<EnvironmentFacetValueDao> daos, EnvironmentFacetFilter filter)
+        public static IQueryable<EnvironmentFacetValueDao> WhereMatches(this IQueryable<EnvironmentFacetValueDao> daos, EnvironmentFacetValueFilter filter)
         {
             return daos
                 .WhenNotNullOrEmpty(filter.Codes).ApplyWhere(dao => filter.Codes.Contains(dao.Facet.Code))
@@ -65,7 +78,12 @@ namespace AdvancedFilters.Infra.Storage.Stores
                 .WhenNotNullOrEmpty(filter.FacetIdentifiers).ApplyWhere(dao => filter.FacetIdentifiers.Any(id => dao.Facet.ApplicationId == id.ApplicationId && dao.Facet.Code == id.Code));
         }
 
-        public static IEnvironmentFacetValue ToValue(this EnvironmentFacetValueDao dao)
+        public static IEnumerable<IEnvironmentFacetValue> ToValues(this IEnumerable<EnvironmentFacetValueDao> daos)
+        {
+            return daos.Select(dao => dao.ToValue());
+        }
+
+        private static IEnvironmentFacetValue ToValue(this EnvironmentFacetValueDao dao)
         {
             return dao.Facet.Type switch
             {
@@ -78,7 +96,7 @@ namespace AdvancedFilters.Infra.Storage.Stores
             };
         }
 
-        public static IEnvironmentFacetValue ToEnvironmentFacetValue<T>(this EnvironmentFacetValueDao dao, T value)
+        private static IEnvironmentFacetValue ToEnvironmentFacetValue<T>(this EnvironmentFacetValueDao dao, T value)
         {
             return new EnvironmentFacetValue<T>
             {
