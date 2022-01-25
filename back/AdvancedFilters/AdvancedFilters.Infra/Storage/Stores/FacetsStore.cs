@@ -21,18 +21,25 @@ namespace AdvancedFilters.Infra.Storage.Stores
             _queryPager = queryPager;
         }
 
-        public Task<Page<IEnvironmentFacetValue>> GetAsync(IPageToken pageToken, EnvironmentFacetFilter filter)
+        public async Task<Page<IEnvironmentFacetValue>> GetAsync(IPageToken pageToken, EnvironmentFacetFilter filter)
         {
-            var queryable = EnvironmentValues.WhereMatches(filter).ToValues();
+            var queryable = EnvironmentValues.WhereMatches(filter);
+            var page = await _queryPager.ToPageAsync(queryable, pageToken);
 
-            return _queryPager.ToPageAsync(queryable, pageToken);
+            return new Page<IEnvironmentFacetValue>
+            {
+                Count = page.Count,
+                Items = page.Items.ToValues()
+            };
         }
 
-        public Task<List<IEnvironmentFacetValue>> GetAsync(EnvironmentFacetFilter filter)
+        public async Task<List<IEnvironmentFacetValue>> GetAsync(EnvironmentFacetFilter filter)
         {
-            return EnvironmentValues
+            return (await EnvironmentValues
                 .WhereMatches(filter)
-                .ToValues().ToListAsync();
+                .ToListAsync())
+                .ToValues()
+                .ToList();
         }
 
         private IQueryable<EnvironmentFacetValueDao> EnvironmentValues => _dbContext
@@ -43,10 +50,11 @@ namespace AdvancedFilters.Infra.Storage.Stores
 
     internal static class EnvironmentFacetsStoreExtensions
     {
-        public static IQueryable<IEnvironmentFacetValue> ToValues(this IQueryable<EnvironmentFacetValueDao> daos)
+        public static IEnumerable<IEnvironmentFacetValue> ToValues(this IEnumerable<EnvironmentFacetValueDao> daos)
         {
             return daos.Select(dao => dao.ToValue());
         }
+
         public static IQueryable<EnvironmentFacetValueDao> WhereMatches(this IQueryable<EnvironmentFacetValueDao> daos, EnvironmentFacetFilter filter)
         {
             return daos
@@ -69,10 +77,12 @@ namespace AdvancedFilters.Infra.Storage.Stores
                 _ => null,
             };
         }
+
         public static IEnvironmentFacetValue ToEnvironmentFacetValue<T>(this EnvironmentFacetValueDao dao, T value)
         {
             return new EnvironmentFacetValue<T>
             {
+                Id = dao.Id,
                 EnvironmentId = dao.EnvironmentId,
                 FacetId = dao.FacetId,
                 Type = dao.Facet.Type,

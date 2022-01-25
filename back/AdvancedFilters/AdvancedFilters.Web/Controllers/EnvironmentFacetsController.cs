@@ -1,5 +1,6 @@
 ﻿using AdvancedFilters.Domain.Facets;
 using Lucca.Core.Api.Abstractions.Paging;
+using Lucca.Core.Api.Web.ModelBinding.Sorting;
 using Microsoft.AspNetCore.Mvc;
 using Rights.Domain;
 using Rights.Web.Attributes;
@@ -8,6 +9,7 @@ using System.Threading.Tasks;
 
 namespace AdvancedFilters.Web.Controllers;
 
+[ApiSort("Id")]
 [ApiController, Route("/api/cafe/facets/environments")]
 public class EnvironmentFacetsController
 {
