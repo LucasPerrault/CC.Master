@@ -12,6 +12,11 @@
 
   <ng-template #isNotLoading>
     <div class="u-paddingStandard">
+
+      <ng-container *ngFor="let duplicationId of duplicationIds$ | async">
+        <cc-demo-duplication-card [duplicationId]="duplicationId"></cc-demo-duplication-card>
+      </ng-container>
+
       <cc-demo-card *ngFor="let demo of demos$ | async"
                     [demo]="demo"
                     [templateDemos]="templateDemos$ | async"

@@ -5,10 +5,12 @@ import { RouterModule, Routes } from '@angular/router';
 import { TranslateModule } from '@cc/aspects/translate';
 import { NavigationPath } from '@cc/common/navigation';
 import { PagingModule } from '@cc/common/paging';
-import { InstancesDuplicationsDataService } from '@cc/domain/instances';
+import { InstanceDuplicationsService, InstancesDuplicationsDataService } from '@cc/domain/instances';
 import { LuModalModule } from '@lucca-front/ng/modal';
 
 import { DemoCardModule } from './components/demo-card/demo-card.module';
+import { DemoCardPlaceholderModule } from './components/demo-card-placeholder/demo-card-placeholder.module';
+import { DemoDuplicationCardModule } from './components/demo-duplication-card/demo-duplication-card.module';
 import { DemoFiltersModule } from './components/demo-filters/demo-filters.module';
 import {
   DemoCommentModalModule,
@@ -19,9 +21,9 @@ import {
 import { DemoCreationEntryModalComponent } from './components/modals/demo-creation-modal/demo-creation-modal.component';
 import { DemosComponent } from './demos.component';
 import { ConnectAsDataService } from './services/connect-as-data.service';
+import { DemoDuplicationsService } from './services/demo-duplications.service';
 import { DemosApiMappingService } from './services/demos-api-mapping.service';
 import { DemosDataService } from './services/demos-data.service';
-import { DemosDuplicationStoreService } from './services/demos-duplication-store.service';
 import { DemosListService } from './services/demos-list.service';
 
 const routes: Routes = [
@@ -52,14 +54,17 @@ const routes: Routes = [
     PagingModule,
     RouterModule.forChild(routes),
     TranslateModule,
+    DemoCardPlaceholderModule,
+    DemoDuplicationCardModule,
   ],
   providers: [
     DemosDataService,
     DemosApiMappingService,
     DemosListService,
     ConnectAsDataService,
-    DemosDuplicationStoreService,
     InstancesDuplicationsDataService,
+    InstanceDuplicationsService,
+    DemoDuplicationsService,
   ],
 })
 export class DemosModule {

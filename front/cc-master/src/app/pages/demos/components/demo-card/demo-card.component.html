@@ -65,7 +65,7 @@
           <span class="u-mask">{{ 'demos_card_unprotect' | translate }}</span>
         </button>
 
-        <button type="button" class="actionIcon"
+        <button *ngIf="!demo?.instance?.isProtected" type="button" class="actionIcon"
                 [luTooltip]="'demos_card_delete' | translate" (click)="delete.emit(demo)">
           <span aria-hidden="true" class="lucca-icon icon-trash"></span>
           <span class="u-mask">{{ 'demos_card_delete' | translate }}</span>

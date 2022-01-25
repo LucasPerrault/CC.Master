@@ -5,9 +5,9 @@ import { TranslatePipe } from '@cc/aspects/translate';
 import { SelectDisplayMode } from '@cc/common/forms';
 import { ILuSidepanelContent, LuSidepanel } from '@lucca-front/ng/sidepanel';
 import { Observable, Subject } from 'rxjs';
-import { filter, takeUntil } from 'rxjs/operators';
+import { filter, map, takeUntil } from 'rxjs/operators';
 
-import { DemoFormKey, IDemoDuplication } from '../../../models/demo-creation-dto.interface';
+import { DemoFormKey } from '../../../models/demo-creation-dto.interface';
 import { DemoDuplicationsService } from '../../../services/demo-duplications.service';
 import { DemosDataService } from '../../../services/demos-data.service';
 
@@ -26,8 +26,8 @@ export class DemoCreationEntryModalComponent {
     const dialog = this.luSidepanel.open(DemoCreationModalComponent);
 
     dialog.onDismiss.subscribe(async () => await this.redirectToParentAsync());
-    dialog.onClose.subscribe(async (duplication: IDemoDuplication) => {
-      this.duplicationsService.add(duplication?.instanceDuplicationId);
+    dialog.onClose.subscribe(async (duplicationId: string) => {
+      this.duplicationsService.add(duplicationId);
       await this.redirectToParentAsync();
     });
   }
@@ -86,8 +86,9 @@ export class DemoCreationModalComponent implements ILuSidepanelContent, OnInit, 
     this.destroy$.complete();
   }
 
-  public submitAction(): Observable<IDemoDuplication> {
-    return this.dataService.create$(this.formGroup.value);
+  public submitAction(): Observable<string> {
+    return this.dataService.create$(this.formGroup.value)
+      .pipe(map(duplication => duplication?.instanceDuplicationId));
   }
 
   public hasRequiredError(formKey: DemoFormKey): boolean {

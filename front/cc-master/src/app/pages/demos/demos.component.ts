@@ -15,6 +15,7 @@ import { DemoDeletionModalComponent } from './components/modals/demo-deletion-mo
 import { DemoPasswordEditionModalComponent } from './components/modals/demo-password-edition-modal/demo-password-edition-modal.component';
 import { IDemo, ITemplateDemo } from './models/demo.interface';
 import { DemoFilterFormKey } from './models/demo-filters.interface';
+import { DemoDuplicationsService } from './services/demo-duplications.service';
 import { DemosApiMappingService } from './services/demos-api-mapping.service';
 import { DemosDataService } from './services/demos-data.service';
 import { DemosListService } from './services/demos-list.service';
@@ -26,6 +27,10 @@ import { DemosListService } from './services/demos-list.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DemosComponent implements OnInit, OnDestroy {
+
+  public get duplicationIds$(): Observable<string[]> {
+    return this.duplicationsService.duplicationIds$;
+  }
 
   public get demos$(): Observable<IDemo[]> { return this.paginatedDemos.items$; }
   public isLoading$: ReplaySubject<boolean> = new ReplaySubject<boolean>(1);
@@ -43,10 +48,12 @@ export class DemosComponent implements OnInit, OnDestroy {
     private dataService: DemosDataService,
     private apiMappingService: DemosApiMappingService,
     private listService: DemosListService,
+    private duplicationsService: DemoDuplicationsService,
     private luModal: LuModal,
   ) { }
 
   public ngOnInit(): void {
+
     this.dataService.getTemplateDemos$()
       .pipe(take(1))
       .subscribe(this.templateDemos$);
