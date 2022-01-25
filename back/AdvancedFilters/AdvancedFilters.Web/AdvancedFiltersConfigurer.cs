@@ -13,9 +13,12 @@ using AdvancedFilters.Web.Configuration;
 using Lucca.Core.Api.Abstractions;
 using Lucca.Core.Api.Web;
 using Lucca.Core.PublicData;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 using Remote.Infra.Extensions;
 using Resources.Translations;
+using System;
+using Tools;
 
 namespace AdvancedFilters.Web
 {
@@ -103,6 +106,21 @@ namespace AdvancedFilters.Web
                 .Allow(o => o.IsLucca);
 
             return luccaApiBuilder;
+        }
+
+        public static void ConfigureSerializer(JsonOptions jsonOptions)
+        {
+            var envFacetSerializer = Serializer.WithPolymorphism<IEnvironmentFacetValue, FacetType>(nameof(IEnvironmentFacetValue.Type))
+                .AddMatch<EnvironmentFacetValue<int>>(FacetType.Integer)
+                .AddMatch<EnvironmentFacetValue<string>>(FacetType.String)
+                .AddMatch<EnvironmentFacetValue<decimal>>(FacetType.Decimal)
+                .AddMatch<EnvironmentFacetValue<decimal>>(FacetType.Percentage)
+                .AddMatch<EnvironmentFacetValue<DateTime>>(FacetType.DateTime)
+                .Build();
+            foreach (var converter in envFacetSerializer.GetConverters())
+            {
+                jsonOptions.JsonSerializerOptions.Converters.Add(converter);
+            }
         }
     }
 }

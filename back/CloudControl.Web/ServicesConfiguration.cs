@@ -155,6 +155,7 @@ namespace CloudControl.Web
                     o.JsonSerializerOptions.Converters.Add(new DomainEnumJsonConverter());
                     o.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
                     o.JsonSerializerOptions.Converters.Add(new AccountingPeriodJsonConverter());
+                    AdvancedFiltersConfigurer.ConfigureSerializer(o);
                 });
 
             services.AddLuccaApi(luccaApiBuilder =>
