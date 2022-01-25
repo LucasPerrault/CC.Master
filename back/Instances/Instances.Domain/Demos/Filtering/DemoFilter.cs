@@ -5,6 +5,7 @@ namespace Instances.Domain.Demos.Filtering
 {
     public class DemoFilter
     {
+        public HashSet<int> Id { get; set; } = new HashSet<int>();
         public CompareString Subdomain { get; set; } = CompareString.Bypass;
         public string Search { get; set; }
         public CompareBoolean IsActive { get; set; } = CompareBoolean.Bypass;
@@ -15,5 +16,6 @@ namespace Instances.Domain.Demos.Filtering
         public HashSet<string> Clusters { get; set; } = new HashSet<string>();
 
         public static DemoFilter Active() => new DemoFilter { IsActive = CompareBoolean.TrueOnly };
+        public static DemoFilter ById(int id) => new DemoFilter { Id = new HashSet<int> { id } };
     }
 }

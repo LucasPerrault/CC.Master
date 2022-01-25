@@ -45,6 +45,13 @@ namespace Instances.Web.Controllers
             return _demosRepository.GetDemosAsync(query.Page, query.ToDemoFilter());
         }
 
+        [HttpGet("{id:int}")]
+        [ForbidIfMissing(Operation.Demo)]
+        public async Task<Demo> GetAsync(int id)
+        {
+            return await _demosRepository.GetByIdAsync(id);
+        }
+
         [HttpPut("{id:int}")]
         [ForbidIfMissing(Operation.Demo)]
         public Task<Demo> PutAsync([FromRoute]int id, [FromBody]DemoPutPayload payload)

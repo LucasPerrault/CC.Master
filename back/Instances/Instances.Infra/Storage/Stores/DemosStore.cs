@@ -121,7 +121,8 @@ namespace Instances.Infra.Storage.Stores
                 .WhenNotNullOrEmpty(filter.Clusters).ApplyWhere(d => filter.Clusters.Contains(d.Cluster))
                 .WhenNotNullOrEmpty(filter.Search).ApplyWhere(d => d.Subdomain.Contains(filter.Search))
                 .WhenHasValue(filter.DistributorId).ApplyWhere(d => d.DistributorId == filter.DistributorId.Value)
-                .WhenHasValue(filter.AuthorId).ApplyWhere(d => d.AuthorId == filter.AuthorId.Value);
+                .WhenHasValue(filter.AuthorId).ApplyWhere(d => d.AuthorId == filter.AuthorId.Value)
+                .WhenNotNullOrEmpty(filter.Id).ApplyWhere(d => filter.Id.Contains(d.Id));
         }
     }
 }

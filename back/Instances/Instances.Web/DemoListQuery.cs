@@ -17,11 +17,13 @@ namespace Instances.Web
         public HashSet<bool> IsTemplate { get; set; } = new HashSet<bool>();
         public HashSet<string> Cluster { get; set; } = new HashSet<string>();
         public DemoListInstance Instance { get; set; } = new DemoListInstance();
+        public HashSet<int> Id { get; set; } = new HashSet<int>();
 
         public DemoFilter ToDemoFilter()
         {
             return new DemoFilter
             {
+                Id = Id,
                 IsActive = IsActive.ToCompareBoolean(),
                 Search = Search,
                 IsTemplate = IsTemplate.ToCompareBoolean(),

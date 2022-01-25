@@ -1,3 +1,4 @@
+using System.Linq;
 using Instances.Application.Demos.Dtos;
 using Instances.Domain.Demos;
 using Instances.Domain.Demos.Filtering;
@@ -48,6 +49,11 @@ namespace Instances.Application.Demos
             );
         }
 
+        public async Task<Demo> GetByIdAsync(int id)
+        {
+            return await GetSingleOrDefaultAsync(DemoFilter.ById(id));
+        }
+
         public async Task<Demo> UpdateDemoAsync(int id, DemoPutPayload payload)
         {
             var demo = await GetSingleActiveDemoAsync(id);
@@ -84,6 +90,19 @@ namespace Instances.Application.Demos
             await _instancesStore.DeleteForDemoAsync(demo.Instance);
             await _demosStore.DeleteAsync(demo);
             await _ccDataService.DeleteInstanceAsync(demo.Subdomain, demo.Cluster, string.Empty);
+            return demo;
+        }
+
+        private async Task<Demo> GetSingleOrDefaultAsync(DemoFilter filter)
+        {
+            var access = await _rightsFilter.GetReadAccessAsync(_principal);
+            var demos = await _demosStore.GetAsync(filter, access);
+            var demo = demos.SingleOrDefault();
+            if (demo == null)
+            {
+                throw new NotFoundException("Unknown demo");
+            }
+
             return demo;
         }
 
