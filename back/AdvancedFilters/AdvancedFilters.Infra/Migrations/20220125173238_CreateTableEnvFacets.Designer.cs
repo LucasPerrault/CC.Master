@@ -4,6 +4,7 @@ using AdvancedFilters.Infra.Storage;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AdvancedFilters.Infra.Migrations
 {
     [DbContext(typeof(AdvancedFiltersDbContext))]
-    partial class AdvancedFiltersDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220125173238_CreateTableEnvFacets")]
+    partial class CreateTableEnvFacets
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -27,12 +29,6 @@ namespace AdvancedFilters.Infra.Migrations
                 {
                     b.Property<int>("Id")
                         .HasColumnType("int");
-
-                    b.Property<int>("BillingEntity")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasDefaultValue(1)
-                        .HasColumnName("BillingEntity");
 
                     b.Property<Guid>("ExternalId")
                         .HasMaxLength(36)
@@ -595,6 +591,25 @@ namespace AdvancedFilters.Infra.Migrations
                     b.Navigation("Environment");
                 });
 
+            modelBuilder.Entity("AdvancedFilters.Domain.Billing.Models.EstablishmentContract", b =>
+                {
+                    b.HasOne("AdvancedFilters.Domain.Billing.Models.Contract", "Contract")
+                        .WithMany("EstablishmentAttachments")
+                        .HasForeignKey("ContractId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("AdvancedFilters.Domain.Instance.Models.Establishment", "Establishment")
+                        .WithMany()
+                        .HasForeignKey("EnvironmentId", "EstablishmentId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("Contract");
+
+                    b.Navigation("Establishment");
+                });
+
             modelBuilder.Entity("AdvancedFilters.Domain.Contacts.Models.AppContact", b =>
                 {
                     b.HasOne("AdvancedFilters.Domain.Instance.Models.Environment", "Environment")
@@ -759,6 +774,11 @@ namespace AdvancedFilters.Infra.Migrations
             modelBuilder.Entity("AdvancedFilters.Domain.Billing.Models.Client", b =>
                 {
                     b.Navigation("Contracts");
+                });
+
+            modelBuilder.Entity("AdvancedFilters.Domain.Billing.Models.Contract", b =>
+                {
+                    b.Navigation("EstablishmentAttachments");
                 });
 
             modelBuilder.Entity("AdvancedFilters.Domain.Billing.Models.Distributor", b =>
