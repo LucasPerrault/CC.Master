@@ -32,7 +32,7 @@ export class DemoPasswordEditionModalComponent implements ILuModalContent {
 
   public submitAction(): Observable<void> {
     return this.dataService.editPassword$(this.demo.instanceID, this.password.value)
-      .pipe(tap(() => this.listService.resetAll()));
+      .pipe(tap(() => this.listService.resetOne(this.demo.id)));
   }
 
 }

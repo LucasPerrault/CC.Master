@@ -33,6 +33,6 @@ export class DemoCommentModalComponent implements ILuModalContent {
 
   public submitAction(): Observable<void> {
     return this.dataService.editComment$(this.data.demo.id, this.comment.value)
-      .pipe(tap(() => this.listService.resetAll()));
+      .pipe(tap(() => this.listService.resetOne(this.data.demo.id)));
   }
 }

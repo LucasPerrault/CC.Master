@@ -21,6 +21,10 @@ export class DemosDataService {
     return this.httpClient.get<IHttpApiV4CollectionCountResponse<IDemo>>(DemosApiRoute.base, { params });
   }
 
+  public getDemo$(id: number): Observable<IDemo> {
+    return this.httpClient.get<IDemo>(DemosApiRoute.id(id));
+  }
+
   public getTemplateDemos$(): Observable<ITemplateDemo[]> {
     const params = new HttpParams().set('isTemplate', true.toString());
     return this.httpClient.get<IHttpApiV4CollectionResponse<ITemplateDemo>>(DemosApiRoute.base, { params })

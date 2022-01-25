@@ -6,7 +6,7 @@ import { defaultPagingParams, IPaginatedResult, PaginatedList, PaginatedListStat
 import { ApiStandard } from '@cc/common/queries';
 import { IUser } from '@cc/domain/users/v4';
 import { LuModal } from '@lucca-front/ng/modal';
-import { Observable, ReplaySubject, Subject } from 'rxjs';
+import { BehaviorSubject, Observable, ReplaySubject, Subject } from 'rxjs';
 import { map, skip, take, takeUntil } from 'rxjs/operators';
 
 import { DemoCommentModalComponent } from './components/modals/demo-comment-modal/demo-comment-modal.component';
@@ -32,13 +32,14 @@ export class DemosComponent implements OnInit, OnDestroy {
     return this.duplicationsService.duplicationIds$;
   }
 
-  public get demos$(): Observable<IDemo[]> { return this.paginatedDemos.items$; }
+  public get demos$(): Observable<IDemo[]> { return this.demos.asObservable(); }
   public isLoading$: ReplaySubject<boolean> = new ReplaySubject<boolean>(1);
   public isLoadingMore$: ReplaySubject<boolean> = new ReplaySubject<boolean>(1);
 
   public templateDemos$ = new ReplaySubject<ITemplateDemo[]>(1);
   public filters = new FormControl();
 
+  private demos = new BehaviorSubject<IDemo[]>([]);
   private paginatedDemos: PaginatedList<IDemo>;
   private destroy$ = new Subject<void>();
 
@@ -53,7 +54,6 @@ export class DemosComponent implements OnInit, OnDestroy {
   ) { }
 
   public ngOnInit(): void {
-
     this.dataService.getTemplateDemos$()
       .pipe(take(1))
       .subscribe(this.templateDemos$);
@@ -66,11 +66,19 @@ export class DemosComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.destroy$), map(() => this.apiMappingService.toHttpParams(this.filters.value)))
       .subscribe(httpParams => this.paginatedDemos.updateHttpParams(httpParams));
 
+    this.listService.resetOne$
+      .pipe(takeUntil(this.destroy$), map(updatedDemo => this.updateDemos(updatedDemo, this.demos.value)))
+      .subscribe(demos => this.demos.next(demos));
+
     this.paginatedDemos = this.pagingService.paginate<IDemo>(
       (httpParams) => this.getDemos$(httpParams),
       { page: defaultPagingParams.page, limit: 20 },
       ApiStandard.V4,
     );
+
+    this.paginatedDemos.items$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(this.demos);
 
     this.paginatedDemos.state$
       .pipe(skip(1), map(state => state === PaginatedListState.Update))
@@ -121,6 +129,12 @@ export class DemosComponent implements OnInit, OnDestroy {
       [DemoFilterFormKey.Author]: principalAsUser,
       [DemoFilterFormKey.IsProtected]: false,
     });
+  }
+
+  private updateDemos(updatedDemo: IDemo, allDemos: IDemo[]): IDemo[] {
+    const updatedDemoIndex = allDemos.findIndex(d => d?.id === updatedDemo?.id);
+    allDemos.splice(updatedDemoIndex, 1, updatedDemo);
+    return allDemos;
   }
 
 }

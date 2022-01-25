@@ -95,11 +95,11 @@ export class DemoCardComponent implements OnInit, OnDestroy {
   }
 
   public lock(demo: IDemo): void {
-    this.toggleProtection(demo?.instanceID, true);
+    this.toggleProtection(demo, true);
   }
 
   public unlock(demo: IDemo): void {
-    this.toggleProtection(demo?.instanceID, false);
+    this.toggleProtection(demo, false);
   }
 
   public connectAsMasterKey(): void {
@@ -114,10 +114,10 @@ export class DemoCardComponent implements OnInit, OnDestroy {
       .subscribe(url => window.open(url));
   }
 
-  private toggleProtection(instanceId: number, isProtected: boolean): void {
-    this.dataService.protect$(instanceId, isProtected)
+  private toggleProtection(demo: IDemo, isProtected: boolean): void {
+    this.dataService.protect$(demo?.instanceID, isProtected)
       .pipe(take(1), toSubmissionState(), map(state => getButtonState(state)),
-        finalize(() => this.listService.resetAll()))
+        finalize(() => this.listService.resetOne(demo?.id)))
       .subscribe(this.protectionButtonClass$);
   }
 }
