@@ -25,6 +25,11 @@ namespace AdvancedFilters.Infra.Filters.Builders
             return new EnvironmentCriterionExpressionBuilder(criterion);
         }
 
+        public IQueryableExpressionBuilder<Establishment> Create(EstablishmentAdvancedCriterion criterion)
+        {
+            return new EstablishmentCriterionExpressionBuilder(criterion);
+        }
+
         public IQueryableExpressionBuilder<AppInstance> Create(AppInstanceAdvancedCriterion criterion)
         {
             return new AppInstanceCriterionExpressionBuilder(criterion);
