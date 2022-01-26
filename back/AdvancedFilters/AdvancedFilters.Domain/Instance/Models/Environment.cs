@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using AdvancedFilters.Domain.Facets;
 
 namespace AdvancedFilters.Domain.Instance.Models
 {
@@ -24,6 +25,7 @@ namespace AdvancedFilters.Domain.Instance.Models
         public IEnumerable<AppInstance> AppInstances { get; set; }
         public IEnumerable<Contract> Contracts { get; set; }
         public IEnumerable<EnvironmentAccess> Accesses { get; set; } = new List<EnvironmentAccess>();
+        public IEnumerable<IEnvironmentFacetValue> Facets { get; set; } = new List<IEnvironmentFacetValue>();
     }
 
     public class EnvironmentAdvancedCriterion : AdvancedCriterion<Environment>

@@ -9,6 +9,7 @@ namespace AdvancedFilters.Web.Binding
     public class AdvancedFilterModelBinder<TCriterion> : AdvancedFilterModelBinder<IAdvancedFilter, TCriterion>
         where TCriterion : AdvancedCriterion
     { }
+
     public class AdvancedFilterModelBinder<T, TCriterion> : IModelBinder
         where TCriterion : AdvancedCriterion
     {

@@ -104,7 +104,12 @@ namespace AdvancedFilters.Infra.Storage.Stores
                 EnvironmentId = dao.EnvironmentId,
                 FacetId = dao.FacetId,
                 Type = dao.Facet.Type,
-                Value = value
+                Value = value,
+                Facet = new FacetIdentifier
+                {
+                    Code = dao.Facet.Code,
+                    ApplicationId = dao.Facet.ApplicationId
+                },
             };
         }
     }
