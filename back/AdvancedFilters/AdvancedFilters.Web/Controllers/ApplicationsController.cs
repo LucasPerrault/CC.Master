@@ -1,10 +1,10 @@
 using AdvancedFilters.Domain.Core.Collections;
-using AdvancedFilters.Domain.Core.Models;
 using Lucca.Core.Api.Abstractions.Paging;
 using Microsoft.AspNetCore.Mvc;
 using Rights.Domain;
 using Rights.Web.Attributes;
 using System.Threading.Tasks;
+using LuccaApplication = AdvancedFilters.Domain.Core.Models.Application;
 
 namespace AdvancedFilters.Web.Controllers
 {
@@ -20,10 +20,10 @@ namespace AdvancedFilters.Web.Controllers
 
         [HttpGet]
         [ForbidIfMissing(Operation.ReadAllCafe)]
-        public async Task<Page<Application>> GetApplicationsAsync(string search)
+        public async Task<Page<LuccaApplication>> GetApplicationsAsync(string search)
         {
             var apps = await _collection.GetAsync(search);
-            return new Page<Application>
+            return new Page<LuccaApplication>
             {
                 Count = apps.Count,
                 Items = apps

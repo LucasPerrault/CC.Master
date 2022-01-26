@@ -18,6 +18,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Remote.Infra.Extensions;
 using Resources.Translations;
 using System;
+using AdvancedFilters.Application;
 using Tools;
 
 namespace AdvancedFilters.Web
@@ -40,7 +41,7 @@ namespace AdvancedFilters.Web
             services.ConfigureFacets();
 
             services.AddScoped<IExportService, ExportCsvService>();
-
+            services.AddScoped<IEnvironmentPopulator, EnvironmentPopulator>();
         }
 
         public static void ConfigureStorage(this IServiceCollection services)

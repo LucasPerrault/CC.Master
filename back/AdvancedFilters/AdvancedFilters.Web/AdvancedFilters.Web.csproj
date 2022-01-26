@@ -16,6 +16,7 @@
     <ProjectReference Include="..\..\Core\Rights\Rights.Web\Rights.Web.csproj" />
     <ProjectReference Include="..\..\Core\Tools\Tools.Web\Tools.Web.csproj" />
     <ProjectReference Include="..\..\Core\Tools\Tools\Tools.csproj" />
+    <ProjectReference Include="..\AdvancedFilters.Application\AdvancedFilters.Application.csproj" />
     <ProjectReference Include="..\AdvancedFilters.Domain\AdvancedFilters.Domain.csproj" />
     <ProjectReference Include="..\AdvancedFilters.Infra\AdvancedFilters.Infra.csproj" />
   </ItemGroup>

@@ -11,6 +11,8 @@ using Rights.Domain;
 using Rights.Web.Attributes;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using AdvancedFilters.Application;
+using AdvancedFilters.Domain.Facets;
 using Tools.Web;
 using Environment = AdvancedFilters.Domain.Instance.Models.Environment;
 
@@ -21,11 +23,13 @@ namespace AdvancedFilters.Web.Controllers
     public class EnvironmentsController
     {
         private readonly IEnvironmentsStore _store;
+        private readonly IEnvironmentPopulator _environmentPopulator;
         private readonly IExportService _exportService;
 
-        public EnvironmentsController(IEnvironmentsStore store, IExportService exportService)
+        public EnvironmentsController(IEnvironmentsStore store, IEnvironmentPopulator environmentPopulator, IExportService exportService)
         {
             _store = store;
+            _environmentPopulator = environmentPopulator;
             _exportService = exportService;
         }
 
@@ -50,14 +54,18 @@ namespace AdvancedFilters.Web.Controllers
 
         [HttpPost("search")]
         [ForbidIfMissing(Operation.ReadAllCafe)]
-        public Task<Page<Environment>> SearchAsync
+        public async Task<Page<Environment>> SearchAsync
         (
             IPageToken pageToken,
-            [FromBody, ModelBinder(BinderType = typeof(AdvancedFilterModelBinder<EnvironmentAdvancedCriterion>))]
-            IAdvancedFilter criterion
+            [FromBody,
+             ModelBinder(BinderType =
+                 typeof(AdvancedFilterModelBinder<EnvironmentSearchBody, EnvironmentAdvancedCriterion>))]
+            EnvironmentSearchBody body
         )
         {
-            return _store.SearchAsync(pageToken, criterion);
+            var page = await _store.SearchAsync(pageToken, body.Criterion);
+            await _environmentPopulator.PopulateAsync(page.Items, body.Facets);
+            return page;
         }
 
         [HttpPost("export")]
@@ -74,6 +82,12 @@ namespace AdvancedFilters.Web.Controllers
             return _exportService.Export(environments, filename);
 
         }
+    }
+
+    public class EnvironmentSearchBody
+    {
+        public HashSet<FacetIdentifier> Facets { get; set; } = new();
+        public IAdvancedFilter Criterion { get; set; }
     }
 
     public class EnvironmentsQuery
