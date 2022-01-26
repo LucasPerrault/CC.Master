@@ -3,6 +3,7 @@ using AdvancedFilters.Domain.Filters.Models;
 using AdvancedFilters.Domain.Instance.Filters;
 using AdvancedFilters.Domain.Instance.Interfaces;
 using AdvancedFilters.Domain.Instance.Models;
+using AdvancedFilters.Infra.Services;
 using AdvancedFilters.Web.Binding;
 using Lucca.Core.Api.Abstractions.Paging;
 using Lucca.Core.Api.Web.ModelBinding.Sorting;
@@ -17,10 +18,12 @@ namespace AdvancedFilters.Web.Controllers;
 public class EstablishmentsController
 {
     private readonly IEstablishmentsStore _store;
+    private readonly IExportService _exportService;
 
-    public EstablishmentsController(IEstablishmentsStore store)
+    public EstablishmentsController(IEstablishmentsStore store, IExportService exportService)
     {
         _store = store;
+        _exportService = exportService;
     }
 
     [HttpGet]
@@ -40,6 +43,21 @@ public class EstablishmentsController
     )
     {
         return _store.SearchAsync(pageToken, criterion);
+    }
+
+    [HttpPost("export")]
+    [ForbidIfMissing(Operation.ReadAllCafe)]
+    public async Task<FileStreamResult> ExportAsync
+    (
+        [FromBody, ModelBinder(BinderType = typeof(AdvancedFilterModelBinder<EstablishmentAdvancedCriterion>))]
+        IAdvancedFilter criterion
+    )
+    {
+        var establishments = await _store.SearchAsync(criterion);
+
+        var filename = $"export-{System.DateTime.Now:yyyyMMdd-HHmmss}.csv";
+        return _exportService.Export(establishments, filename);
+
     }
 
     public class EstablishmentsQuery
