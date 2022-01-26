@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using AdvancedFilters.Domain.Instance.Filters;
 using AdvancedFilters.Domain.Instance.Interfaces;
 using AdvancedFilters.Domain.Instance.Models;
@@ -34,6 +35,11 @@ namespace AdvancedFilters.Infra.Storage.Stores
             return _queryPager.ToPageAsync(establishments, pageToken);
         }
 
+        public Task<List<Establishment>> SearchAsync(IAdvancedFilter filter)
+        {
+            return Get(filter).ToListAsync();
+        }
+
         private IQueryable<Establishment> Get(EstablishmentFilter filter)
         {
             return Establishments
@@ -51,7 +57,7 @@ namespace AdvancedFilters.Infra.Storage.Stores
         private IQueryable<Establishment> Establishments => _dbContext
             .Set<Establishment>()
             .Include(e => e.Environment)
-            .Include(e => e.LegalUnit);
+            .Include(e => e.LegalUnit).ThenInclude(le => le.Country);
     }
 
     internal static class EstablishmentQueryableExtensions
