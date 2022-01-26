@@ -6,6 +6,8 @@ using Lucca.Core.Api.Queryable.Paging;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using System.Threading.Tasks;
+using AdvancedFilters.Domain.Filters.Models;
+using AdvancedFilters.Infra.Filters;
 
 namespace AdvancedFilters.Infra.Storage.Stores
 {
@@ -26,10 +28,23 @@ namespace AdvancedFilters.Infra.Storage.Stores
             return _queryPager.ToPageAsync(establishments, pageToken);
         }
 
+        public Task<Page<Establishment>> SearchAsync(IPageToken pageToken, IAdvancedFilter filter)
+        {
+            var establishments = Get(filter);
+            return _queryPager.ToPageAsync(establishments, pageToken);
+        }
+
         private IQueryable<Establishment> Get(EstablishmentFilter filter)
         {
             return Establishments
                 .WhereMatches(filter)
+                .AsNoTracking();
+        }
+
+        private IQueryable<Establishment> Get(IAdvancedFilter filter)
+        {
+            return Establishments
+                .Filter(filter)
                 .AsNoTracking();
         }
 

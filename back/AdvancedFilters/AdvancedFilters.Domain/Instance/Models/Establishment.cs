@@ -1,4 +1,6 @@
 using System;
+using AdvancedFilters.Domain.Filters.Builders;
+using AdvancedFilters.Domain.Filters.Models;
 
 namespace AdvancedFilters.Domain.Instance.Models
 {
@@ -18,5 +20,14 @@ namespace AdvancedFilters.Domain.Instance.Models
 
         public LegalUnit LegalUnit { get; set; }
         public Environment Environment { get; set; }
+    }
+
+    public class EstablishmentAdvancedCriterion : AdvancedCriterion<Establishment>
+    {
+        public EnvironmentAdvancedCriterion Environment { get; set; }
+        public LegalUnitAdvancedCriterion LegalUnit { get; set; }
+
+        public override IQueryableExpressionBuilder<Establishment> GetExpressionBuilder(IQueryableExpressionBuilderFactory factory)
+            => factory.Create(this);
     }
 }
