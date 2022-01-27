@@ -1,3 +1,4 @@
+using System;
 using AdvancedFilters.Domain.Facets;
 using AdvancedFilters.Infra.Storage.DAO;
 using Lucca.Core.Api.Abstractions.Paging;
@@ -39,11 +40,32 @@ namespace AdvancedFilters.Infra.Storage.Stores
             };
         }
 
+        public async Task<Page<IEstablishmentFacetValue>> GetValuesAsync(IPageToken pageToken, EstablishmentFacetValueFilter filter)
+        {
+            var queryable = EstablishmentValues.WhereMatches(filter);
+            var page = await _queryPager.ToPageAsync(queryable, pageToken);
+
+            return new Page<IEstablishmentFacetValue>
+            {
+                Count = page.Count,
+                Items = page.Items.ToValues()
+            };
+        }
+
         public async Task<List<IEnvironmentFacetValue>> GetValuesAsync(EnvironmentFacetValueFilter filter)
         {
             return (await EnvironmentValues
-                .WhereMatches(filter)
-                .ToListAsync())
+                    .WhereMatches(filter)
+                    .ToListAsync())
+                .ToValues()
+                .ToList();
+        }
+
+        public async Task<List<IEstablishmentFacetValue>> GetValuesAsync(EstablishmentFacetValueFilter filter)
+        {
+            return (await EstablishmentValues
+                    .WhereMatches(filter)
+                    .ToListAsync())
                 .ToValues()
                 .ToList();
         }
@@ -54,6 +76,11 @@ namespace AdvancedFilters.Infra.Storage.Stores
 
         private IQueryable<EnvironmentFacetValueDao> EnvironmentValues => _dbContext
             .Set<EnvironmentFacetValueDao>()
+            .Where(v => v.Facet.Type != FacetType.Unknown)
+            .Include(v => v.Facet);
+
+        private IQueryable<EstablishmentFacetValueDao> EstablishmentValues => _dbContext
+            .Set<EstablishmentFacetValueDao>()
             .Where(v => v.Facet.Type != FacetType.Unknown)
             .Include(v => v.Facet);
     }
@@ -75,6 +102,17 @@ namespace AdvancedFilters.Infra.Storage.Stores
                 .WhenNotNullOrEmpty(filter.ApplicationIds).ApplyWhere(dao => filter.ApplicationIds.Contains(dao.Facet.ApplicationId))
                 .WhenNotNullOrEmpty(filter.FacetTypes).ApplyWhere(dao => filter.FacetTypes.Contains(dao.Facet.Type))
                 .WhenNotNullOrEmpty(filter.EnvironmentIds).ApplyWhere(dao => filter.EnvironmentIds.Contains(dao.EnvironmentId))
+                .WhenNotNullOrEmpty(filter.FacetIdentifiers).ApplyWhere(dao => filter.FacetIdentifiers.Any(id => dao.Facet.ApplicationId == id.ApplicationId && dao.Facet.Code == id.Code));
+        }
+
+        public static IQueryable<EstablishmentFacetValueDao> WhereMatches(this IQueryable<EstablishmentFacetValueDao> daos, EstablishmentFacetValueFilter filter)
+        {
+            return daos
+                .WhenNotNullOrEmpty(filter.Codes).ApplyWhere(dao => filter.Codes.Contains(dao.Facet.Code))
+                .WhenNotNullOrEmpty(filter.ApplicationIds).ApplyWhere(dao => filter.ApplicationIds.Contains(dao.Facet.ApplicationId))
+                .WhenNotNullOrEmpty(filter.FacetTypes).ApplyWhere(dao => filter.FacetTypes.Contains(dao.Facet.Type))
+                .WhenNotNullOrEmpty(filter.EnvironmentIds).ApplyWhere(dao => filter.EnvironmentIds.Contains(dao.EnvironmentId))
+                .WhenNotNullOrEmpty(filter.EstablishmentIds).ApplyWhere(dao => filter.EstablishmentIds.Contains(dao.EstablishmentId))
                 .WhenNotNullOrEmpty(filter.FacetIdentifiers).ApplyWhere(dao => filter.FacetIdentifiers.Any(id => dao.Facet.ApplicationId == id.ApplicationId && dao.Facet.Code == id.Code));
         }
 
@@ -102,6 +140,42 @@ namespace AdvancedFilters.Infra.Storage.Stores
             {
                 Id = dao.Id,
                 EnvironmentId = dao.EnvironmentId,
+                FacetId = dao.FacetId,
+                Type = dao.Facet.Type,
+                Value = value,
+                Facet = new FacetIdentifier
+                {
+                    Code = dao.Facet.Code,
+                    ApplicationId = dao.Facet.ApplicationId
+                },
+            };
+        }
+
+        public static IEnumerable<IEstablishmentFacetValue> ToValues(this IEnumerable<EstablishmentFacetValueDao> daos)
+        {
+            return daos.Select(dao => dao.ToValue());
+        }
+
+        private static IEstablishmentFacetValue ToValue(this EstablishmentFacetValueDao dao)
+        {
+            return dao.Facet.Type switch
+            {
+                FacetType.Integer => dao.ToEstablishmentFacetValue(dao.IntValue.Value),
+                FacetType.String => dao.ToEstablishmentFacetValue(dao.StringValue),
+                FacetType.DateTime => dao.ToEstablishmentFacetValue(dao.DateTimeValue.Value),
+                FacetType.Decimal => dao.ToEstablishmentFacetValue(dao.DecimalValue.Value),
+                FacetType.Percentage => dao.ToEstablishmentFacetValue(dao.DecimalValue.Value),
+                _ => null,
+            };
+        }
+
+        private static IEstablishmentFacetValue ToEstablishmentFacetValue<T>(this EstablishmentFacetValueDao dao, T value)
+        {
+            return new EstablishmentFacetValue<T>
+            {
+                Id = dao.Id,
+                EnvironmentId = dao.EnvironmentId,
+                EstablishmentId = dao.EstablishmentId,
                 FacetId = dao.FacetId,
                 Type = dao.Facet.Type,
                 Value = value,
