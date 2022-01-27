@@ -47,3 +47,34 @@ public class EnvironmentFacetValueFilter
         ApplicationIds = string.IsNullOrEmpty(applicationId) ? new HashSet<string>() : new HashSet<string> { applicationId }
     };
 }
+
+public class EstablishmentFacetValueFilter
+{
+    public HashSet<int> EnvironmentIds { get; set; } = new();
+    public HashSet<int> EstablishmentIds { get; set; } = new();
+    public HashSet<FacetIdentifier> FacetIdentifiers { get; set; } = new();
+    public HashSet<FacetType> FacetTypes { get; set; } = new();
+    public HashSet<string> ApplicationIds { get; set; } = new();
+    public HashSet<string> Codes { get; set; } = new();
+
+    private EstablishmentFacetValueFilter()
+    { }
+
+    public static EstablishmentFacetValueFilter All() => new EstablishmentFacetValueFilter();
+    public static EstablishmentFacetValueFilter ForEstablishments(HashSet<int> establishmentIds, HashSet<FacetIdentifier> identifiers)
+        => new EstablishmentFacetValueFilter
+        {
+            EstablishmentIds = establishmentIds,
+            FacetIdentifiers = identifiers,
+        };
+
+    public static EstablishmentFacetValueFilter ForSearch(HashSet<int> environmentIds, HashSet<int> establishmentIds, HashSet<FacetType> types, HashSet<string> codes, string applicationId)
+        => new EstablishmentFacetValueFilter
+        {
+            EnvironmentIds = environmentIds,
+            EstablishmentIds = establishmentIds,
+            FacetTypes = types,
+            Codes = codes,
+            ApplicationIds = string.IsNullOrEmpty(applicationId) ? new HashSet<string>() : new HashSet<string> { applicationId }
+        };
+}
