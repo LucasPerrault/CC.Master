@@ -1,4 +1,7 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
+using AdvancedFilters.Application;
+using AdvancedFilters.Domain.Facets;
 using AdvancedFilters.Domain.Filters.Models;
 using AdvancedFilters.Domain.Instance.Filters;
 using AdvancedFilters.Domain.Instance.Interfaces;
@@ -18,12 +21,14 @@ namespace AdvancedFilters.Web.Controllers;
 public class EstablishmentsController
 {
     private readonly IEstablishmentsStore _store;
+    private readonly IEstablishmentPopulator _populator;
     private readonly IExportService _exportService;
 
-    public EstablishmentsController(IEstablishmentsStore store, IExportService exportService)
+    public EstablishmentsController(IEstablishmentsStore store, IExportService exportService, IEstablishmentPopulator populator)
     {
         _store = store;
         _exportService = exportService;
+        _populator = populator;
     }
 
     [HttpGet]
@@ -35,14 +40,16 @@ public class EstablishmentsController
 
     [HttpPost("search")]
     [ForbidIfMissing(Operation.ReadAllCafe)]
-    public Task<Page<Establishment>> SearchAsync
+    public async Task<Page<Establishment>> SearchAsync
     (
         IPageToken pageToken,
-        [FromBody, ModelBinder(BinderType = typeof(AdvancedFilterModelBinder<EstablishmentAdvancedCriterion>))]
-        IAdvancedFilter criterion
+        [FromBody, ModelBinder(BinderType = typeof(AdvancedFilterModelBinder<EstablishmentSearchBody, EstablishmentAdvancedCriterion>))]
+        EstablishmentSearchBody body
     )
     {
-        return _store.SearchAsync(pageToken, criterion);
+        var page = await _store.SearchAsync(pageToken, body.Criterion);
+        await _populator.PopulateAsync(page.Items, body.Facets);
+        return page;
     }
 
     [HttpPost("export")]
@@ -58,6 +65,12 @@ public class EstablishmentsController
         var filename = $"export-{System.DateTime.Now:yyyyMMdd-HHmmss}.csv";
         return _exportService.Export(establishments, filename);
 
+    }
+
+    public class EstablishmentSearchBody
+    {
+        public HashSet<FacetIdentifier> Facets { get; set; } = new();
+        public IAdvancedFilter Criterion { get; set; }
     }
 
     public class EstablishmentsQuery
