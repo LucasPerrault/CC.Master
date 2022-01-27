@@ -32,6 +32,8 @@ namespace AdvancedFilters.Infra.Storage.Configurations
                 .WithMany(lu => lu.Establishments)
                 .HasForeignKey(e => new { e.EnvironmentId, e.LegalUnitId })
                 .OnDelete(DeleteBehavior.NoAction);
+
+            builder.Ignore(e => e.Facets);
         }
     }
 }
