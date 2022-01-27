@@ -34,6 +34,5 @@ namespace Authentication.Domain
         public Guid Token => _principal.Token;
         public int? UserId => _principal.UserId;
         public User User => _principal.User;
-        public bool IsLuccaAdmin => UserId == 0;
     }
 }

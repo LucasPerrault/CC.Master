@@ -1,0 +1,70 @@
+<ng-container [ngSwitch]="requestValidityState$ | async">
+
+  <ng-container *ngSwitchCase="requestValidityState.Load">
+    <div class="loading mod-fullPage"></div>
+  </ng-container>
+
+  <ng-container *ngSwitchCase="requestValidityState.HasNoUserCode">
+    <div class="errorPage">
+      <section class="errorPage-section u-flexWrapWrap">
+        <div class="errorPage-section-info mod-widthAuto">
+          <h1 class="errorPage-section-info-title">{{ 'ip_no_user_code_detected_title' | translate }}</h1>
+          <p class="errorPage-section-info-text">{{ 'ip_no_user_code_detected_description' | translate }}</p>
+        </div>
+      </section>
+    </div>
+  </ng-container>
+
+  <ng-container *ngSwitchCase="requestValidityState.Error">
+    <section class="errorPage-section">
+      <div class="errorPage-section-info">
+        <h1 class="errorPage-section-info-title">
+          {{ 'ip_invalid_connection' | translate }}
+        </h1>
+      </div>
+      <img src="https://cdn.lucca.fr/errors/svg/404-lucca.svg" alt="Erreur 404" class="errorPage-section-image">
+    </section>
+  </ng-container>
+
+  <ng-container *ngSwitchCase="requestValidityState.Success">
+    <section class="errorPage-section">
+      <div class="errorPage-section-info mod-widthAuto u-marginTopReset u-marginLeftAuto u-marginRightAuto">
+        <h1 class="mod-headline mod-withIcon">
+          <span aria-hidden="true" class="lucca-icon icon-lock"></span>
+          {{ 'ip_title_headline' | translate }}
+        </h1>
+
+        <h4>{{ 'ip_authorisation_title' | translate }}</h4>
+
+        <div class="card mod-fitContent">
+          <div class="card-content">
+            <fieldset class="radiosfield">
+              <legend class="radiosfield-label">
+                {{ 'ip_duration_selection_label' | translate }}
+              </legend>
+              <div class="radiosfield-input">
+                <div class="choice-radio-container" *ngFor="let duration of authorizationDurations">
+                  <label class="radio">
+                    <input class="radio-input" type="radio" name="radioList1"
+                           [value]="duration" [formControl]="authorizationDuration">
+                    <span class="radio-label choice-title">{{ duration.label | translate }}</span>
+                  </label>
+                  <div class="mod-description">{{ duration.description | translate }}</div>
+                </div>
+              </div>
+            </fieldset>
+          </div>
+
+          <footer class="card-footer">
+            <div class="card-footer-right">
+              <button class="button" [ngClass]="authorizationButtonClass$ | async"
+                      (click)="authorize(userCode, authorizationDuration.value)">
+                {{ 'ip_authorization_action_label' | translate : { duration: (authorizationDuration?.value?.label | translate) } }}
+              </button>
+            </div>
+          </footer>
+        </div>
+      </div>
+    </section>
+  </ng-container>
+</ng-container>

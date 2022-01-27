@@ -1,4 +1,5 @@
 using Authentication.Domain.Helpers;
+using Distributors.Domain.Models;
 using System;
 using Users.Domain;
 using Xunit;
@@ -31,7 +32,10 @@ namespace Authentication.Domain.Tests.Helpers
                 User = new User()
                 {
                     Id = userId,
-                    DistributorId = 3,
+                    Distributor = new Distributor
+                    {
+                        Id = 3,
+                    },
                     DepartmentId = 4,
                     FirstName = "Jean",
                     LastName = "Bombeur",
@@ -70,7 +74,10 @@ namespace Authentication.Domain.Tests.Helpers
                 User = new User()
                 {
                     Id = userId,
-                    DistributorId = 3,
+                    Distributor = new Distributor
+                    {
+                        Id = 3,
+                    },
                     DepartmentId = 4,
                     FirstName = "Jean",
                     LastName = "Bombeur",
@@ -125,7 +132,10 @@ namespace Authentication.Domain.Tests.Helpers
                 User = new User()
                 {
                     Id = 2,
-                    DistributorId = 3,
+                    Distributor = new Distributor
+                    {
+                        Id = 3,
+                    },
                     DepartmentId = 4,
                     FirstName = "Jean",
                     LastName = "Bombeur",

@@ -1,7 +1,6 @@
 using AdvancedFilters.Domain.Billing.Filters;
 using AdvancedFilters.Domain.Billing.Interfaces;
 using AdvancedFilters.Domain.Billing.Models;
-using AdvancedFilters.Web.Format;
 using Lucca.Core.Api.Abstractions.Paging;
 using Lucca.Core.Api.Web.ModelBinding.Sorting;
 using Microsoft.AspNetCore.Mvc;
@@ -31,7 +30,7 @@ namespace AdvancedFilters.Web.Controllers
             return new Page<Distributor>
             {
                 Count = page.Count,
-                Items = page.Items.WithoutLoop()
+                Items = page.Items
             };
         }
     }

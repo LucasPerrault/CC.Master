@@ -1,20 +1,16 @@
 using AdvancedFilters.Domain.Billing.Models;
 using AdvancedFilters.Domain.Core.Collections;
-using AdvancedFilters.Domain.Core.Models;
 using AdvancedFilters.Domain.Filters.Builders;
 using AdvancedFilters.Domain.Filters.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-using Tools;
 
 namespace AdvancedFilters.Domain.Instance.Models
 {
-    public class Environment : IDeepCopyable<Environment>
+    public class Environment
     {
-        public const int LuccaDistributorId = 37;
-
         public int Id { get; set; }
         public string Subdomain { get; set; }
         public string Domain { get; set; }
@@ -28,11 +24,6 @@ namespace AdvancedFilters.Domain.Instance.Models
         public IEnumerable<AppInstance> AppInstances { get; set; }
         public IEnumerable<Contract> Contracts { get; set; }
         public IEnumerable<EnvironmentAccess> Accesses { get; set; } = new List<EnvironmentAccess>();
-
-        public Environment DeepCopy()
-        {
-            return this.DeepCopyByExpressionTree();
-        }
     }
 
     public class EnvironmentAdvancedCriterion : AdvancedCriterion<Environment>
@@ -62,8 +53,8 @@ namespace AdvancedFilters.Domain.Instance.Models
     public static class EnvironmentExpressions
     {
         public static Expression<Func<Environment, DistributorType>> DistributorTypeFn
-            => e => e.Accesses.Where(a => a.Type == EnvironmentAccessType.Contract).Any(a => a.DistributorId == Environment.LuccaDistributorId)
-                ? e.Accesses.Where(a => a.Type == EnvironmentAccessType.Contract).Any(a => a.DistributorId != Environment.LuccaDistributorId)
+            => e => e.Accesses.Where(a => a.Type == EnvironmentAccessType.Contract).Any(a => a.Distributor.IsLucca)
+                ? e.Accesses.Where(a => a.Type == EnvironmentAccessType.Contract).Any(a => !a.Distributor.IsLucca)
                     ? DistributorType.DirectAndIndirect
                     : DistributorType.DirectOnly
                 : DistributorType.IndirectOnly;

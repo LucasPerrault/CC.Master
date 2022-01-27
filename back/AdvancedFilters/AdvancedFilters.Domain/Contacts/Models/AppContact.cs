@@ -1,14 +1,12 @@
-using AdvancedFilters.Domain.Core.Models;
 using AdvancedFilters.Domain.Filters.Builders;
 using AdvancedFilters.Domain.Filters.Models;
 using AdvancedFilters.Domain.Instance.Models;
 using System;
-using Tools;
 using Environment = AdvancedFilters.Domain.Instance.Models.Environment;
 
 namespace AdvancedFilters.Domain.Contacts.Models
 {
-    public class AppContact : IDeepCopyable<AppContact>
+    public class AppContact
     {
         public int Id { get; set; }
         public int AppInstanceId { get; set; }
@@ -25,11 +23,6 @@ namespace AdvancedFilters.Domain.Contacts.Models
         public AppInstance AppInstance { get; set; }
         public Environment Environment { get; set; }
         public Establishment Establishment { get; set; }
-
-        public AppContact DeepCopy()
-        {
-            return this.DeepCopyByExpressionTree();
-        }
     }
 
     public class AppContactAdvancedCriterion : AdvancedCriterion<AppContact>

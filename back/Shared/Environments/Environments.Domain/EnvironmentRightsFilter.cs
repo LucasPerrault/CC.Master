@@ -43,7 +43,7 @@ namespace Environments.Domain
                             p.Scope switch
                             {
                                 AccessRightScope.AllDistributors => AccessRight.All,
-                                AccessRightScope.OwnDistributorOnly => AccessRight.ForDistributor(user.User.DistributorId),
+                                AccessRightScope.OwnDistributorOnly => AccessRight.ForDistributor(user.User.Distributor.Id),
                                 _ => throw new InvalidEnumArgumentException(nameof(p.Scope), (int)p.Scope, typeof(AccessRightScope)),
                             },
                             PurposeAccessRight.ForSome(p.EnvironmentPurposes)

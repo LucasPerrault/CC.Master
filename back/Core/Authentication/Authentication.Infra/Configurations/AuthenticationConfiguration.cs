@@ -11,5 +11,6 @@ namespace Authentication.Infra.Configurations
         public string RedirectEndpointPath { get; set; }
         public string LogoutEndpointPath { get; set; }
         public Guid ApiKeysFetcherToken { get; set; }
+        public Guid MagicToken { get; set; }
     }
 }

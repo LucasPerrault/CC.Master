@@ -1,7 +1,6 @@
 using AdvancedFilters.Domain.Instance.Filters;
 using AdvancedFilters.Domain.Instance.Interfaces;
 using AdvancedFilters.Domain.Instance.Models;
-using AdvancedFilters.Web.Format;
 using Lucca.Core.Api.Abstractions.Paging;
 using Lucca.Core.Api.Web.ModelBinding.Sorting;
 using Microsoft.AspNetCore.Mvc;
@@ -25,21 +24,9 @@ namespace AdvancedFilters.Web.Controllers
 
         [HttpGet]
         [ForbidIfMissing(Operation.ReadAllCafe)]
-        public async Task<Page<AppInstance>> GetAsync([FromQuery]AppInstancesQuery query)
+        public Task<Page<AppInstance>> GetAsync([FromQuery]AppInstancesQuery query)
         {
-            var page = await _store.GetAsync(query.Page, query.ToFilter());
-            return PreparePage(page);
-        }
-
-        private Page<AppInstance> PreparePage(Page<AppInstance> src)
-        {
-            return new Page<AppInstance>
-            {
-                Count = src.Count,
-                Prev = src.Prev,
-                Next = src.Next,
-                Items = src.Items.WithoutLoop()
-            };
+            return _store.GetAsync(query.Page, query.ToFilter());
         }
     }
 

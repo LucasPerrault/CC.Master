@@ -40,6 +40,7 @@ namespace Instances.Application.Demos.Duplication
     {
         private const int DefaultSourceDemoId = 385;
         private const int DefaultAuthorId = 0;
+        private const int DefaultDistributorId = 37;
         private const string DefaultHubspotPassword = "test";
 
         private readonly ICacheService _cacheService;
@@ -107,7 +108,7 @@ namespace Instances.Application.Demos.Duplication
 
             var duplication = DuplicationFactory.New
                 (
-                    DistributorIds.Lucca,
+                    DefaultDistributorId,
                     DefaultAuthorId,
                     demoToDuplicate,
                     targetCluster,
@@ -117,7 +118,7 @@ namespace Instances.Application.Demos.Duplication
 
             await _dnsService.CreateAsync(DnsEntry.ForDemo(targetSubdomain, targetCluster));
             await _duplicationsStore.CreateAsync(duplication);
-            await _instancesDuplicator.RequestRemoteDuplicationAsync(duplication.InstanceDuplication, $"/api/hubspot/duplications/{duplication.InstanceDuplicationId}/notify");
+            await _instancesDuplicator.RequestRemoteDuplicationAsync(duplication.InstanceDuplication, skipBufferServer:true, $"/api/hubspot/duplications/{duplication.InstanceDuplicationId}/notify");
 
             return duplication;
         }

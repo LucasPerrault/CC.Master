@@ -5,7 +5,7 @@ import { DistributorFilter } from '../../common/distributor-filter-button-group'
 import { IContractsDraftFilter } from '../models';
 
 enum ContractDraftQueryParamKey {
-  IsDirectSales = 'isDirectSales',
+  IsDirectSales = 'distributor.isDirectSales',
   Name = 'name',
 }
 

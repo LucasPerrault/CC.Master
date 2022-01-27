@@ -62,7 +62,9 @@ export class ContractManagementComponent implements OnInit, OnDestroy {
   }
 
   public ngOnInit(): void {
-    this.contextStoreService.init(this.contractId);
+    if (this.restrictionsService.hasRightsToReadValidationContext) {
+      this.contextStoreService.init(this.contractId);
+    }
 
     this.updateContractTitle();
 

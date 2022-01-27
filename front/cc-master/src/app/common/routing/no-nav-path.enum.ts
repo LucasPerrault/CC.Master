@@ -1,8 +1,10 @@
 export enum NoNavPath {
-  IpAuthorizationRequest = 'ipauthorizationrequest',
-  AuthorizeIp = 'authorizeip',
-  InvalidIp = 'invalidiprequest',
-  WrongEmailDomain = 'wrongemaildomain',
+  Ip = 'ip',
+  IpRequest = 'request',
+  IpReject = 'reject',
+  IpConfirm = 'confirm',
+
+  WrongEmailDomain = 'invalid-email-domain',
   Forbidden = '403-forbidden',
   NotFound = '404-notFound',
 }

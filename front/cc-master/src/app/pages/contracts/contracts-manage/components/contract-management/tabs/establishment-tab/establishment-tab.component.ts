@@ -12,6 +12,7 @@ import { EstablishmentType } from './constants/establishment-type.enum';
 import { IEstablishmentContract } from './models/establishment-contract.interface';
 import { IEstablishmentWithAttachments } from './models/establishment-with-attachments.interface';
 import { IEstablishmentsWithAttachmentsByType } from './models/establishments-by-type.interface';
+import { AttachmentsActionRestrictionsService } from './services/attachments-action-restrictions.service';
 import { EstablishmentContractDataService } from './services/establishment-contract-data.service';
 import { EstablishmentListActionsService } from './services/establishment-list-actions.service';
 import { EstablishmentTypeService } from './services/establishment-type.service';
@@ -54,6 +55,7 @@ export class EstablishmentTabComponent implements OnInit, OnDestroy {
     private actionsService: EstablishmentListActionsService,
     private contextStoreService: ValidationContextStoreService,
     private typeService: EstablishmentTypeService,
+    private restrictionsService: AttachmentsActionRestrictionsService,
   ) {
   }
 
@@ -110,6 +112,17 @@ export class EstablishmentTabComponent implements OnInit, OnDestroy {
   }
 
   private set(contract: IEstablishmentContract): void {
+    if (!this.restrictionsService.canReadValidationContext) {
+      this.getEstablishmentsByType$(contract)
+        .pipe(take(1), finalize(() => this.isLoading$.next(false)))
+        .subscribe(establishments => {
+          this.contract$.next(contract);
+          this.establishments$.next(establishments);
+        });
+
+      return;
+    }
+
     combineLatest([
       this.contextStoreService.realCounts$,
       this.getEstablishmentsByType$(contract),

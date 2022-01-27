@@ -1,5 +1,7 @@
 using AdvancedFilters.Infra.Storage;
 using AdvancedFilters.Web;
+using AdvancedFilters.Web.Configuration;
+using AngleSharp;
 using Authentication.Web;
 using Billing.Cmrr.Infra.Storage;
 using Billing.Cmrr.Web;
@@ -51,6 +53,7 @@ using TeamNotification.Web;
 using Tools.Web;
 using Users.Infra.Storage;
 using Users.Web;
+using IConfiguration = Microsoft.Extensions.Configuration.IConfiguration;
 
 namespace CloudControl.Web
 {
@@ -79,7 +82,7 @@ namespace CloudControl.Web
             ConfigureLock(services, configuration);
             ConfigureNotifications(services, configuration);
             ConfigureProxy(services);
-            ConfigureIpFilter(services);
+            ConfigureIpFilter(services, configuration);
             ConfigureTenancy(services);
             ConfigureStorage(services);
             ConfigureSharedDomains(services, configuration);
@@ -134,7 +137,7 @@ namespace CloudControl.Web
             services
                 .AddHealthCheck(o =>
                     {
-                        o.ServiceGuid = new Guid("101DFDBD-2438-43D1-9D22-63D1C46B3412");// TODO
+                        o.ServiceGuid = new Guid("101DFDBD-2438-43D1-9D22-63D1C46B3412");
                         o.ServiceName = AppConfiguration.AppName;
                     }
                 )
@@ -148,6 +151,7 @@ namespace CloudControl.Web
                 .AddControllers()
                 .AddJsonOptions(o =>
                 {
+                    o.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
                     o.JsonSerializerOptions.Converters.Add(new DomainEnumJsonConverter());
                     o.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
                     o.JsonSerializerOptions.Converters.Add(new AccountingPeriodJsonConverter());
@@ -160,7 +164,8 @@ namespace CloudControl.Web
                     .AddModelBinding()
                     .AddEntityFrameworkQuerying()
                     .ConfigureLuccaApiForInstances()
-                    .ConfigureLuccaApiForContracts();
+                    .ConfigureLuccaApiForContracts()
+                    .ConfigureLuccaApiForAdvancedFilters();
             });
 
             services.AddMvc().AddLuccaApi(o =>
@@ -187,7 +192,7 @@ namespace CloudControl.Web
             ProxyConfigurer.ConfigureServices(services);
         }
 
-        public virtual void ConfigureIpFilter(IServiceCollection services)
+        public virtual void ConfigureIpFilter(IServiceCollection services, AppConfiguration configuration)
         {
             services.Configure<LuccaSecuritySettings>(_configuration.GetSection("LuccaSecurity"));
             IpFilterConfigurer.ConfigureServices(services);
@@ -219,7 +224,7 @@ namespace CloudControl.Web
 
         public virtual void ConfigureSharedDomains(IServiceCollection services, AppConfiguration configuration)
         {
-            DistributorsConfigurer.ConfigureServices(services);
+            DistributorsConfigurer.ConfigureServices(services, configuration.Distributors);
             UsersConfigurer.ConfigureServices(services, configuration.Users);
             EnvironmentsConfigurer.ConfigureEnvironments(services, configuration.Environment);
             RemoteConfigurer.ConfigureRemote(services);

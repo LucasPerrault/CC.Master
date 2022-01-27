@@ -7,6 +7,7 @@ namespace Tools.Web
         public static void ConfigureTools(IServiceCollection service)
         {
             service.AddSingleton<ITimeProvider, TimeProvider>();
+            service.AddSingleton<IGuidGenerator, GuidGenerator>();
         }
     }
 }

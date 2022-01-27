@@ -25,9 +25,9 @@ namespace Distributors.Application
             return _principal switch
             {
                 CloudControlApiKeyClaimsPrincipal _ => distributors,
-                CloudControlUserClaimsPrincipal u when u.User.DistributorId == DistributorIds.Lucca => distributors,
-                CloudControlUserClaimsPrincipal u => distributors.Where(d => d.Id == u.User.DistributorId).ToList(),
-                _ => new List<Distributor>()
+                CloudControlUserClaimsPrincipal u when u.User.Distributor.IsLucca => distributors,
+                CloudControlUserClaimsPrincipal u => distributors.Where(d => d.Id == u.User.Distributor.Id).ToList(),
+                _ => new List<Distributor>(),
             };
         }
     }

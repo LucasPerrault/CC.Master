@@ -11,10 +11,16 @@ namespace IpFilter.Infra.Storage.Configurations
             builder.ToTable("IpFilterAuthorizations");
             builder.HasKey(d => d.Id);
             builder.Property(d => d.Device).HasColumnName("Device");
-            builder.Property(d => d.UserId).HasColumnName("UserID");
+            builder.Property(d => d.UserId).HasColumnName("UserId");
             builder.Property(d => d.IpAddress).HasColumnName("IpAddress");
             builder.Property(d => d.CreatedAt).HasColumnName("CreatedAt");
             builder.Property(d => d.ExpiresAt).HasColumnName("ExpiresAt");
+            builder.Property(d => d.RequestId).HasColumnName("RequestId");
+
+            builder
+                .HasOne(c => c.Request)
+                .WithMany()
+                .HasForeignKey(c => c.RequestId);
         }
     }
 }

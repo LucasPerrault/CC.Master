@@ -1,6 +1,5 @@
 import { Component, Input } from '@angular/core';
 import { TranslatePipe } from '@cc/aspects/translate';
-import { luccaDistributorId } from '@cc/domain/billing/distributors';
 
 import { IAppInstance } from '../../models/app-instance.interface';
 import { DistributorType, IEnvironment } from '../../models/environment.interface';
@@ -49,8 +48,8 @@ export class EnvironmentListComponent {
 
   public getDistributorNames(environment: IEnvironment): string {
     const distributors = environment.accesses?.map(a => a.distributor) ?? [];
-    const distributorsWithoutLucca = distributors?.filter(d => d.id !== luccaDistributorId);
-    const luccaDistributor = distributors?.find(d => d.id === luccaDistributorId);
+    const distributorsWithoutLucca = distributors?.filter(d => !d.isLucca);
+    const luccaDistributor = distributors?.find(d => d.isLucca);
 
     const names = distributorsWithoutLucca?.map(a => a.name);
     const distinct = names.filter((value, index, self) => self.indexOf(value) === index);

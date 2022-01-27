@@ -1,29 +1,43 @@
 using Authentication.Infra.Configurations;
+using Cache.Abstractions;
 using CloudControl.Web.Configuration;
+using CloudControl.Web.Tests.Mocks.Overrides;
+using Distributors.Domain;
+using Distributors.Web;
+using Email.Domain;
 using IpFilter.Domain;
 using IpFilter.Web;
-using Lucca.Core.AspNetCore.Middlewares;
+using Lock;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Moq;
+using Resources.Translations;
 using Rights.Domain.Abstractions;
 using System;
 using System.Collections.Generic;
+using System.Net;
 using System.Net.Http;
+using System.Threading.Tasks;
+using TeamNotification.Abstractions;
 using Users.Domain;
+using IConfiguration = Microsoft.Extensions.Configuration.IConfiguration;
 
 namespace CloudControl.Web.Tests.Mocks
 {
-
     public class MockedWebApplicationFactory : WebApplicationFactory<Startup>
     {
         public MockedWebApplicationMocks Mocks { get; } = new MockedWebApplicationMocks();
+        public MockedWebApplicationConfiguration Config { get; } = new MockedWebApplicationConfiguration();
+
+        public MockedWebApplicationFactory()
+        {
+            Mocks.AddSingleton(new MockMiddlewareConfig());
+        }
 
         protected override IWebHostBuilder CreateWebHostBuilder()
         {
@@ -33,6 +47,7 @@ namespace CloudControl.Web.Tests.Mocks
                 {
                     s.AddSingleton<ServicesConfiguration>(sp => new MockedServicesConfiguration
                     (
+                        Config,
                         sp.GetRequiredService<IConfiguration>(),
                         sp.GetRequiredService<IWebHostEnvironment>()
                     ));
@@ -60,9 +75,13 @@ namespace CloudControl.Web.Tests.Mocks
 
     public class MockedServicesConfiguration : ServicesConfiguration
     {
-        public MockedServicesConfiguration(IConfiguration configuration, IWebHostEnvironment env)
+        private readonly MockedWebApplicationConfiguration _mockedConfig;
+
+        public MockedServicesConfiguration(MockedWebApplicationConfiguration mockedConfig, IConfiguration configuration, IWebHostEnvironment env)
             : base(configuration, env)
-        { }
+        {
+            _mockedConfig = mockedConfig;
+        }
 
         public override AppConfiguration ConfigureConfiguration(IServiceCollection services)
         {
@@ -75,35 +94,40 @@ namespace CloudControl.Web.Tests.Mocks
         }
 
         public override void ConfigureCache(IServiceCollection services, AppConfiguration configuration)
-        { }
+        {
+            services.AddScoped(_ => new Mock<ICacheService>().Object);
+        }
 
         public override void ConfigureLock(IServiceCollection services, AppConfiguration configuration)
-        { }
-
-        public override void ConfigureIpFilter(IServiceCollection services)
         {
-            var settings = new LuccaSecuritySettings
-            {
-                IpWhiteList = new IpWhiteList
-                {
-                    ResponseStatusCode = 401,
-                    AuthorizedIpAddresses = new List<string> { "127.0.0.1", "::1" }
-                }
-            };
-            var options = Options.Create(settings);
+            services.AddSingleton(new Mock<ILockService>().Object);
+        }
+
+        public override void ConfigureIpFilter(IServiceCollection services, AppConfiguration configuration)
+        {
+            var options = Options.Create(_mockedConfig.LuccaSecuritySettings);
             services.AddSingleton(options);
 
             IpFilterConfigurer.ConfigureServices(services);
 
             var ipFilterAuthorizationMock = new Mock<IIpFilterAuthorizationStore>();
             ipFilterAuthorizationMock
-                .Setup(i => i.GetByUserAsync(It.IsAny<IpFilterUser>()))
+                .Setup(i => i.GetAsync(It.IsAny<IpFilterAuthorizationFilter>()))
                 .ReturnsAsync(new List<IpFilterAuthorization>());
             services.AddSingleton(ipFilterAuthorizationMock.Object);
+
+
+            var authRequestStore = new Mock<IIpFilterAuthorizationRequestStore>();
+            authRequestStore
+                .Setup(s => s.FirstOrDefaultAsync(It.IsAny<IpFilterAuthorizationRequestFilter>()))
+                .ReturnsAsync((IpFilterAuthorizationRequest)null);
+            services.AddScoped(_ => authRequestStore.Object);
+            services.AddScoped(_ => new Mock<IIpFilterTranslations>().Object);
         }
 
         public override void ConfigureNotifications(IServiceCollection services, AppConfiguration configuration)
         {
+            services.AddSingleton(new Mock<ITeamNotifier>().Object);
         }
 
         public override void ConfigureStorage(IServiceCollection services)
@@ -112,6 +136,7 @@ namespace CloudControl.Web.Tests.Mocks
 
         public override void ConfigureSharedDomains(IServiceCollection services, AppConfiguration configuration)
         {
+            DistributorsConfigurer.ConfigureServices(services, new DistributorsConfiguration { ShouldFilterDistributorDomains = false });
         }
 
         public override void ConfigureAuthentication(IServiceCollection services, AppConfiguration configuration)
@@ -134,6 +159,7 @@ namespace CloudControl.Web.Tests.Mocks
 
         public override void ConfigureEmails(IServiceCollection services, AppConfiguration configuration)
         {
+            services.AddScoped(_ => new Mock<IEmailService>().Object);
         }
 
         public override void ConfigureRights(IServiceCollection services, AppConfiguration configuration)
@@ -162,9 +188,34 @@ namespace CloudControl.Web.Tests.Mocks
         { }
 
         public override void ConfigureAdvancedFilters(IServiceCollection services, AppConfiguration configuration)
-        { }
+        {
+            services.AddScoped<IDistributorDomainService, MockedDistributorDomainService>();
+        }
+
 
         public override void ConfigureSlack(IServiceCollection services, AppConfiguration configuration)
         { }
+        
+        private class MockedDistributorDomainService : IDistributorDomainService
+        {
+            public Domain GetDomain(string email) => null;
+            public Task<bool> IsRegisteredAsync(Domain domain, int distributorId) => Task.FromResult(true);
+            public Task<List<Domain>> GetAllRegistered(int distributorId) => Task.FromResult(new List<Domain>());
+        }
+    }
+
+    public static class ApiTestExtensions
+    {
+        public static async Task<HttpResponseMessage> CatchApplicationErrorBody(this Task<HttpResponseMessage> task)
+        {
+            var response = await task;
+            if (response.StatusCode != HttpStatusCode.InternalServerError)
+            {
+                return response;
+            }
+
+            var errorBody = await response.Content.ReadAsStringAsync();
+            throw new Exception(errorBody);
+        }
     }
 }

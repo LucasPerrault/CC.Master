@@ -42,7 +42,7 @@
     <div class="textfield-messages">
       <a *ngIf="!!formInformation?.client" class="textfield-messages-helper u-textSmaller u-right"
          (click)="openClientInformationModal()">
-        Voir plus d'informations
+        {{ 'contracts_client_info' | translate }}
       </a>
     </div>
 
@@ -70,14 +70,24 @@
                         [luTooltipDisabled]="canEditOffer">
       </cc-offer-api-select>
       <span class="textfield-label">{{ "offer_select_label" | translate }}</span>
-      <span class="textfield-messages">
-        <a class="textfield-messages-helper" (click)="redirectToOfferTab()">
-          {{ 'contracts_contractEdition_similar_offer_redirection' | translate }}
-        </a>
-        <span *ngIf="hasRequiredError(formGroupKey.Offer)" class="textfield-messages-error">
+      <span class="textfield-messages u-displayFlex u-alignSelfStretch u-justifyContentSpaceBetween">
+        <span class="textfield-messages-error" *ngIf="hasRequiredError(formGroupKey.Offer); else hasNoError">
           {{ "front_select_offers_errorMessage_required" | translate }}
         </span>
-    </span>
+
+        <ng-template #hasNoError>
+          <a class="textfield-messages-helper u-textSmaller" (click)="redirectToOfferTab()" *ngIf="canEditWithSimilarOffer">
+            {{ 'contracts_contractEdition_similar_offer_redirection' | translate }}
+          </a>
+
+          <ng-container *ngIf="canReadOffer">
+            <a class="textfield-messages-helper u-textSmaller"
+               *ngIf="formGroup.get(formGroupKey.Offer)?.value; let offer" (click)="redirectToOffer(offer?.id)">
+              {{ 'contracts_contractEdition_offer_redirection' | translate }}
+            </a>
+          </ng-container>
+        </ng-template>
+      </span>
     </label>
   </div>
 

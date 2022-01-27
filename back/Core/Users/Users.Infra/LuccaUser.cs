@@ -40,10 +40,10 @@ namespace Users.Infra
                 LastName = user.LastName,
                 Mail = user.Mail,
                 Login = user.Login,
-                DistributorId = distributor.Id,
                 ManagerId = user.ManagerId,
                 DepartmentId = user.DepartmentId,
                 EstablishmentId = user.LegalEntityId,
+                Distributor = distributor,
             };
         }
     }

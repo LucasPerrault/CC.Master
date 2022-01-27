@@ -1,3 +1,4 @@
+using Distributors.Domain.Models;
 using System;
 
 namespace Billing.Cmrr.Domain
@@ -26,7 +27,7 @@ namespace Billing.Cmrr.Domain
         public DateTime EnvironmentCreatedAt { get; set; }
 
         public bool IsArchived { get; set; }
-
+        public Distributor Distributor { get; set; }
     }
 
     public enum ContractCreationCause : byte

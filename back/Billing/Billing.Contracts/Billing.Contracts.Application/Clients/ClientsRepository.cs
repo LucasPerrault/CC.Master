@@ -79,7 +79,6 @@ namespace Billing.Contracts.Application.Clients
                 BillingStreet = client.BillingStreet,
                 BillingCity = client.BillingCity,
                 BillingPostalCode = client.BillingPostalCode,
-                BillingState = client.BillingState,
                 BillingCountry = client.BillingCountry,
                 Email_de_facturation__c = client.BillingMail,
                 Phone = client.Phone

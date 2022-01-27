@@ -14,6 +14,7 @@ namespace Distributors.Infra.Storage.Configurations
             builder.Property(d => d.Name).HasColumnName("Name");
             builder.Property(d => d.Code).HasColumnName("Code");
             builder.Property(d => d.DepartmentId).HasColumnName("DepartmentId");
+            builder.Property(d => d.IsLucca).HasColumnName("IsLucca");
             builder.Property(d => d.IsAllowingCommercialCommunication).HasColumnName("IsAllowingCommercialCommunication");
             builder.Property(d => d.IsActive).HasColumnName("IsActive");
         }

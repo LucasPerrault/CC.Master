@@ -38,7 +38,8 @@ namespace Rights.Web.Controllers
                     Token = user.Token,
                     Culture = new CultureDto { Code = CultureInfo.CurrentCulture.Name },
                     Permissions = await GetPermissionsAsync(user),
-                    DistributorId = user.User.DistributorId
+                    DistributorId = user.User.Distributor.Id,
+                    IsLucca = user.User.Distributor.IsLucca,
                 },
                 CloudControlApiKeyClaimsPrincipal apiKey => new MeDto
                 {
@@ -93,6 +94,7 @@ namespace Rights.Web.Controllers
         public CultureDto Culture { get; set; }
         public int DistributorId { get; set; }
         public List<PermissionDto> Permissions { get; set; }
+        public bool IsLucca { get; set; }
     }
 
     public class PermissionDto

@@ -6,6 +6,7 @@ export interface IEnvironmentAccess {
 }
 
 export interface IDistributor {
+  isLucca: boolean;
   id: number;
   name: string;
 }

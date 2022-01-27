@@ -5,14 +5,24 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Distributors.Web
 {
+    public class DistributorsConfiguration
+    {
+        public bool ShouldFilterDistributorDomains { get; set; }
+    }
+
     public static class DistributorsConfigurer
     {
-        public static void ConfigureServices(IServiceCollection services)
+        public static void ConfigureServices(IServiceCollection services, DistributorsConfiguration configuration)
         {
+            services.AddSingleton(configuration);
             services.AddSingleton<DistributorsCache>();
+            services.AddSingleton<DistributorDomainsCache>();
+
             services.AddScoped<IDistributorsStore, DistributorsStore>();
+            services.AddScoped<IDistributorDomainsStore, DistributorDomainsStore>();
+
             services.AddScoped<DistributorsRepository>();
-            services.AddScoped<DistributorDomainsStore>();
+            services.AddScoped<IDistributorDomainService, DistributorDomainService>();
         }
     }
 }

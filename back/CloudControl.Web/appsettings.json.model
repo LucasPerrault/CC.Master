@@ -12,9 +12,11 @@
     "SqlInfos": {
         "Default": "Data Source={{ CC.Master:SqlServer }};Initial Catalog=CloudControl;user={{ CC.Master:SqlLogin }};Password={{ CC.Master:SqlPassword }};MultipleActiveResultSets=True;App=CloudControl;Encrypt=False"
     },
+    "Host": "{{ CC.Master:scheme }}://{{ CC.Master:tenant }}.{{ CC.Master:domain }}",
     "Authentication": {
         "ServerUri": "{{ CC.Master:PartenairesUri }}",
         "ApiKeysFetcherToken": "{{ CC.Master:AuthApiKeysFetcherToken }}",
+        "MagicToken": "{{ shared:CloudControlMagicToken }}",
         "UsersEndpointPath": "/api/v3/users/me",
         "AllUsersEndpointPath": "/api/v3/users",
         "ApiKeysEndpointPath": "/api/v3/apikeys",
@@ -46,7 +48,6 @@
     },
     "LuccaSecurity": {
         "IpWhitelist": {
-            "ResponseStatusCode": 401,
             "AuthorizedIPAddresses": "{{ CC.Master:WhitelistedIps }}"
         }
     },
@@ -64,9 +65,13 @@
     "Slack": {
         "Hooks": {
             "CloudControlTeam": "{{ CC.Master:SlackHookCcNotifications }}",
+            "IpFilterRejectionAlert": "{{ CC.Master:SlackHookCcNotifications }}",
             "DemosMaintainers": "{{ CC.Master:SlackHookCcNotifications }}"
         },
         "Token":  "{{ CC.Master:SlackToken }}"
+    },
+    "Distributors": {
+        "ShouldFilterDistributorDomains": {{ CC.Master:EnableDistributorDomainFilter }}
     },
     "Instances": {
         "InstancesStore": {
@@ -136,7 +141,7 @@
             }
         },
         "RedirectionIis": {
-            "ApplicationHost": "\\\\\\\\labs2.lucca.local\\\\c$\\Windows\\System32\\inetsrv\\config\\applicationHost.config",
+            "ApplicationHost": "\\\\labs2.lucca.local\\c$\\Windows\\System32\\inetsrv\\config\\applicationHost.config",
             "RedirectionConf": "\\\\labs2.lucca.local\\c$\\d\\Sites\\redirect\\redirect.config"
         }
     },

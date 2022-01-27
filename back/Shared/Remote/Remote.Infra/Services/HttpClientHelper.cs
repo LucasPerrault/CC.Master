@@ -79,9 +79,19 @@ namespace Remote.Infra.Services
             return GetRequestWithContentResponseAsync<TForm, TResult>(HttpMethod.Put, id, queryParams, content);
         }
 
+        public Task PutGenericObjectResponseAsync<TForm>(string id, TForm content, Dictionary<string, string> queryParams)
+        {
+            return GetRequestWithContentResponseAsync(HttpMethod.Put, id, queryParams, content);
+        }
+
         public Task<TResult> PutGenericObjectResponseAsync<TForm, TResult>(string id, TForm content)
         {
             return PutGenericObjectResponseAsync<TForm, TResult>(id, content, new Dictionary<string, string>());
+        }
+
+        public Task PutGenericObjectResponseAsync<TForm>(string id, TForm content)
+        {
+            return PutGenericObjectResponseAsync(id, content, new Dictionary<string, string>());
         }
 
         public Task<HttpResponseMessage> GetRequestResponseMessageAsync(HttpMethod method, string subRoute, Dictionary<string, string> queryParams)
@@ -133,14 +143,14 @@ namespace Remote.Infra.Services
 
         private async Task<TResponse> ParseResponseAsync<TResponse>(HttpResponseMessage response)
         {
-            var responseString = await response.Content.ReadAsStreamAsync();
+            var responseStream = await response.Content.ReadAsStreamAsync();
 
             if (response.IsSuccessStatusCode)
             {
-                return await Serializer.DeserializeAsync<TResponse>(responseString);
+                return await Serializer.DeserializeAsync<TResponse>(responseStream);
             }
 
-            var errorMessage = _errorMessageFunc(await Serializer.DeserializeAsync<TError>(responseString));
+            var errorMessage = _errorMessageFunc(await Serializer.DeserializeAsync<TError>(responseStream));
             throw new RemoteServiceException(_remoteApiDescription, response.StatusCode, errorMessage);
 
         }

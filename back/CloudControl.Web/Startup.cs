@@ -2,6 +2,7 @@ using Authentication.Web.Middlewares;
 using CloudControl.Web.Middlewares;
 using CloudControl.Web.Spa;
 using Core.Proxy.Infra.Extensions;
+using Distributors.Web;
 using IpFilter.Web;
 using Lucca.Core.AspNetCore.Healthz;
 using Microsoft.AspNetCore.Builder;
@@ -44,6 +45,11 @@ namespace CloudControl.Web
 
             app.UseMiddleware<SessionKeyAuthMiddleware>();
             app.UseAuthentication();
+            app.UseMiddleware<RedirectForLoginMiddleware>();
+            app.UseMiddleware<ForbidAnonymousAccessMiddleware>();
+            app.UseDistributorDomainFilter();
+            app.UseIpFilter(env);
+
             app.UseMiddleware<BetaTesterDetectionMiddleware>();
 
             app.UseLegacyCloudControlWebSocketProxy();
@@ -51,9 +57,6 @@ namespace CloudControl.Web
 
             app.UseFrontStaticFiles();
             app.UseFileServer();
-
-            app.UseMiddleware<UnauthorizedAccessMiddleware>();
-            app.UseIpFilter(env);
 
             app.UseEndpoints(e => e.MapControllers());
 

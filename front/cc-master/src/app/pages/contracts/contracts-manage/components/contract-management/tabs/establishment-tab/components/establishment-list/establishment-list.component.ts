@@ -10,6 +10,7 @@ import { IEstablishmentActionsContext } from '../../models/establishment-actions
 import { IEstablishmentAttachment } from '../../models/establishment-attachment.interface';
 import { IEstablishmentContract } from '../../models/establishment-contract.interface';
 import { IEstablishmentWithAttachments } from '../../models/establishment-with-attachments.interface';
+import { AttachmentsActionRestrictionsService } from '../../services/attachments-action-restrictions.service';
 import { EstablishmentActionContextService } from '../../services/establishment-action-context.service';
 
 @Component({
@@ -43,11 +44,16 @@ export class EstablishmentListComponent {
 
   public establishmentType = EstablishmentType;
 
+  public get canReadValidationContext(): boolean {
+    return this.restrictionsService.canReadValidationContext;
+  }
+
   constructor(
     private translatePipe: TranslatePipe,
     private datePipe: DatePipe,
     private rightsService: RightsService,
     private actionContextService: EstablishmentActionContextService,
+    private restrictionsService: AttachmentsActionRestrictionsService,
   ) { }
 
   public isType(type: EstablishmentType): boolean {

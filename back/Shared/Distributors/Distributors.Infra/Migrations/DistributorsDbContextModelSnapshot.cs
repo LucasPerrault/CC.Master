@@ -17,7 +17,7 @@ namespace Distributors.Infra.Migrations
 #pragma warning disable 612, 618
             modelBuilder
                 .HasDefaultSchema("shared")
-                .HasAnnotation("ProductVersion", "6.0.0")
+                .HasAnnotation("ProductVersion", "6.0.1")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
@@ -45,6 +45,10 @@ namespace Distributors.Infra.Migrations
                     b.Property<bool>("IsAllowingCommercialCommunication")
                         .HasColumnType("bit")
                         .HasColumnName("IsAllowingCommercialCommunication");
+
+                    b.Property<bool>("IsLucca")
+                        .HasColumnType("bit")
+                        .HasColumnName("IsLucca");
 
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)")

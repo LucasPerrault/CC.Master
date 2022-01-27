@@ -1,5 +1,5 @@
 import { IPriceList } from '@cc/domain/billing/offers';
-import { isBefore, isEqual } from 'date-fns';
+import { compareDesc, isBefore, isEqual } from 'date-fns';
 
 export class PriceListsTimelineService {
   public static get defaultStartsOn(): Date {
@@ -12,6 +12,7 @@ export class PriceListsTimelineService {
     }
 
     const today = Date.now();
-    return priceLists.find(p => isBefore(new Date(p.startsOn), today) || isEqual(new Date(p.startsOn), today));
+    const sortedDescLists = priceLists.sort((a, b) => compareDesc(new Date(a.startsOn), new Date(b.startsOn))) ?? [];
+    return sortedDescLists.find(p => isBefore(new Date(p.startsOn), today) || isEqual(new Date(p.startsOn), today));
   }
 }

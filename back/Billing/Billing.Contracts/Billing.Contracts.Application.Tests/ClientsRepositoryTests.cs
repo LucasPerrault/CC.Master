@@ -227,7 +227,7 @@ namespace Billing.Contracts.Application.Tests
                         Id = 1,
                         DepartmentId = 1,
                         EstablishmentId = 1,
-                        DistributorId = distributor.Id,
+                        Distributor = distributor,
                         ManagerId = 0,
                     }
                 }

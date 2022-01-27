@@ -20,7 +20,7 @@ namespace Billing.Contracts.Domain.Contracts
         {
             return principal switch
             {
-                CloudControlUserClaimsPrincipal userPrincipal => await _rightsFilter.FilterByDistributorAsync(Operation.ReadContracts, userPrincipal.User.DistributorId),
+                CloudControlUserClaimsPrincipal userPrincipal => await _rightsFilter.FilterByDistributorAsync(Operation.ReadContracts, userPrincipal.User.Distributor.Id),
                 CloudControlApiKeyClaimsPrincipal _ => AccessRight.All,
                 _ => throw new ApplicationException("Unhandled ClaimsPrincipal type")
             };

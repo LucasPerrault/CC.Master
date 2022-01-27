@@ -7,6 +7,7 @@ using Rights.Web;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Tools.Web;
 
 namespace Core.Proxy.Infra.Extensions
 {
@@ -33,6 +34,7 @@ namespace Core.Proxy.Infra.Extensions
             "/health/ready",
             "/health/live",
             "/warmup",
+            "/ip-filter",
 
             // front
             "/cc-master",
@@ -42,6 +44,8 @@ namespace Core.Proxy.Infra.Extensions
             "/reports",
             "/offers",
             "/contracts",
+            "/ip",
+            "/invalid-email-domain",
         };
 
         private static readonly HashSet<string> BetaNonRedirectableSegments = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
@@ -98,8 +102,8 @@ namespace Core.Proxy.Infra.Extensions
             }
 
             return httpContext.Request.Path.StartsWithSegments("/api/v3")
-                   || httpContext.Request.Path.IsNonV3LegacyApiPath()
-                   || !httpContext.Request.Path.StartsWithSegments("/api");
+                   || httpContext.Request.IsNonV3LegacyApiPath()
+                   || !httpContext.Request.IsApiCall();
         }
 
         public static bool IsRootCall(this PathString pathString)
@@ -117,19 +121,19 @@ namespace Core.Proxy.Infra.Extensions
             return BetaNonRedirectableSegments.Any(s => pathString.StartsWithSegments(s));
         }
 
-        private static bool IsNonV3LegacyApiPath(this PathString pathString)
+        private static bool IsNonV3LegacyApiPath(this HttpRequest request)
         {
-            if (!pathString.HasValue)
+            if (!request.Path.HasValue)
             {
                 return false;
             }
 
-            if (!pathString.StartsWithSegments("/api"))
+            if (!request.IsApiCall())
             {
                 return false;
             }
 
-            var secondSegment = pathString.Value.Split('/').Skip(2).FirstOrDefault();
+            var secondSegment = request.Path.Value.Split('/').Skip(2).FirstOrDefault();
             return !string.IsNullOrEmpty(secondSegment) && NonV3LegacyApiSegments.Contains(secondSegment);
         }
 

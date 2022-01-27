@@ -76,7 +76,8 @@ namespace AdvancedFilters.Infra.Services.Sync.Dtos
                 Id = dto.Id,
                 Name = GetDistributorName(dto),
                 IsAllowingCommercialCommunication = dto.IsAllowingCommercialCommunication,
-                DepartmentId = dto.DepartmentId
+                DepartmentId = dto.DepartmentId,
+                IsLucca = dto.IsLucca,
             };
         }
 
@@ -93,6 +94,7 @@ namespace AdvancedFilters.Infra.Services.Sync.Dtos
         public string Code { get; set; }
         public int DepartmentId { get; set; }
         public bool IsAllowingCommercialCommunication { get; set; }
+        public bool IsLucca { get; set; }
     }
 
     internal class EnvironmentAccessesDto : ApiV3Dto<EnvironmentAccess>, IDto<EnvironmentAccess>

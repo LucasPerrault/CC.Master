@@ -4,7 +4,6 @@ using AdvancedFilters.Domain.Instance.Interfaces;
 using AdvancedFilters.Domain.Instance.Models;
 using AdvancedFilters.Infra.Services;
 using AdvancedFilters.Web.Binding;
-using AdvancedFilters.Web.Format;
 using Lucca.Core.Api.Abstractions.Paging;
 using Lucca.Core.Api.Web.ModelBinding.Sorting;
 using Microsoft.AspNetCore.Mvc;
@@ -33,10 +32,9 @@ namespace AdvancedFilters.Web.Controllers
 
         [HttpGet]
         [ForbidIfMissing(Operation.ReadAllCafe)]
-        public async Task<Page<Environment>> GetAsync([FromQuery]EnvironmentsQuery query)
+        public Task<Page<Environment>> GetAsync([FromQuery]EnvironmentsQuery query)
         {
-            var page = await _store.GetAsync(query.Page, query.ToFilter());
-            return PreparePage(page);
+            return _store.GetAsync(query.Page, query.ToFilter());
         }
 
         [HttpGet("clusters")]
@@ -53,15 +51,14 @@ namespace AdvancedFilters.Web.Controllers
 
         [HttpPost("search")]
         [ForbidIfMissing(Operation.ReadAllCafe)]
-        public async Task<Page<Environment>> SearchAsync
+        public Task<Page<Environment>> SearchAsync
         (
             IPageToken pageToken,
             [FromBody, ModelBinder(BinderType = typeof(AdvancedFilterModelBinder<EnvironmentAdvancedCriterion>))]
             IAdvancedFilter criterion
         )
         {
-            var page = await _store.SearchAsync(pageToken, criterion);
-            return PreparePage(page);
+            return _store.SearchAsync(pageToken, criterion);
         }
 
         [HttpPost("export")]
@@ -77,17 +74,6 @@ namespace AdvancedFilters.Web.Controllers
             var filename = $"export-{System.DateTime.Now:yyyyMMdd-HHmmss}.csv";
             return _exportService.Export(environments, filename);
 
-        }
-
-        private Page<Environment> PreparePage(Page<Environment> src)
-        {
-            return new Page<Environment>
-            {
-                Count = src.Count,
-                Prev = src.Prev,
-                Next = src.Next,
-                Items = src.Items.WithoutLoop()
-            };
         }
     }
 

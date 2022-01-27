@@ -10,7 +10,7 @@ import {
   ValidationErrors,
   Validator,
 } from '@angular/forms';
-import { BehaviorSubject, combineLatest, Observable, ReplaySubject, Subject } from 'rxjs';
+import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
 import { filter, map, takeUntil } from 'rxjs/operators';
 
 import { IPriceRowForm } from '../../models/price-list-form.interface';
@@ -61,7 +61,7 @@ export class EditablePriceGridComponent implements OnInit, OnDestroy, ControlVal
   @ViewChild('tableElement') public tableElement: ElementRef<HTMLTableElement>;
 
   public readonly$: BehaviorSubject<boolean> = new BehaviorSubject(false);
-  public disabled$: ReplaySubject<boolean> = new ReplaySubject(1);
+  public disabled$: BehaviorSubject<boolean> = new BehaviorSubject(false);
   public readonlyFormControls: AbstractControl[] = [];
 
   public get showAddPriceRowButton(): boolean {
@@ -162,7 +162,8 @@ export class EditablePriceGridComponent implements OnInit, OnDestroy, ControlVal
   }
 
   public addRange(priceRows?: IPriceRowForm[]): void {
-    priceRows.forEach(priceRow => this.add(priceRow));
+    const sortedAscRows = priceRows?.sort((a, b) => a.maxIncludedCount - b.maxIncludedCount);
+    sortedAscRows.forEach(priceRow => this.add(priceRow));
   }
 
   public remove(index: number) {

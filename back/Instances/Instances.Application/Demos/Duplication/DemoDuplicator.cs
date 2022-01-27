@@ -81,6 +81,7 @@ namespace Instances.Application.Demos.Duplication
             await _instancesDuplicator.RequestRemoteDuplicationAsync
             (
                 duplication.InstanceDuplication,
+                skipBufferServer: true,
                 $"/api/demos/duplications/{duplication.InstanceDuplicationId}/notify"
             );
 
@@ -126,7 +127,7 @@ namespace Instances.Application.Demos.Duplication
             }
 
             var distributor = await _distributorsStore.GetActiveByCodeAsync(request.DistributorCode);
-            if (user.User.DistributorId == distributor.Id)
+            if (user.User.Distributor.Id == distributor.Id)
             {
                 return;
             }
