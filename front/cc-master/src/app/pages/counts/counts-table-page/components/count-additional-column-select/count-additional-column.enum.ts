@@ -21,6 +21,10 @@ export interface ICountAdditionalColumn {
 
 export const countAdditionalColumns: ICountAdditionalColumn[] = [
   {
+    id: CountAdditionalColumn.Distributor,
+    name: 'counts_column_selection_distributor',
+  },
+  {
     id: CountAdditionalColumn.Offer,
     name: 'counts_column_selection_offer',
   },
@@ -67,6 +71,7 @@ export const countAdditionalColumns: ICountAdditionalColumn[] = [
 ];
 
 export const defaultColumnsDisplayed = [
+  CountAdditionalColumn.Distributor,
   CountAdditionalColumn.Offer,
   CountAdditionalColumn.CountPeriod,
   CountAdditionalColumn.NormalCount,

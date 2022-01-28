@@ -1,12 +1,13 @@
 <table class="table mod-layoutFixed-xs mod-stickyColumn-xs mod-stickyMultipleHeader" #table>
   <thead class="table-head">
     <tr class="table-head-row u-nowrap">
-      <th class="table-head-row-cell mod-layoutFixed-xs30 mod-stickyColumn-leftOffset0" colspan="2">
+      <th class="table-head-row-cell mod-layoutFixed-xs16 mod-stickyColumn-leftOffset0" colspan="1">
         {{ 'counts_column_client' | translate }}
       </th>
-      <th class=" table-head-row-cell mod-stickyColumn-leftOffset30 mod-stickyColumn-shadow" role="presentation" >
+      <th class=" table-head-row-cell mod-stickyColumn-leftOffset16 mod-stickyColumn-shadow" role="presentation" >
         <div class="stickyColumn-shadow-wrapper"></div>
       </th>
+      <th class="table-head-row-cell" colspan="1"></th>
       <th class="table-head-row-cell" colspan="1"
           [ngClass]="{ 'mod-hidden': isHidden([column.Offer]) }">
         {{ 'counts_column_product' | translate }}
@@ -39,14 +40,15 @@
           {{ 'counts_column_name' | translate }}
         </button>
       </th>
-      <th class="table-head-row-cell mod-layoutFixed-xs14 mod-stickyColumn-leftOffset16"
+      <th class=" table-head-row-cell mod-stickyColumn-leftOffset16 mod-stickyColumn-shadow" role="presentation" >
+        <div class="stickyColumn-shadow-wrapper"></div>
+      </th>
+      <th class="table-head-row-cell"
+          [ngClass]="{ 'mod-hidden': isHidden([column.Distributor]) }"
           [attr.aria-sort]="getSortOrderClass(sortParamKey.Distributor)">
         <button class="table-head-row-cell-sortableButton" (click)="sortBy(sortParamKey.Distributor)">
           {{ 'counts_column_distributor' | translate }}
         </button>
-      </th>
-      <th class=" table-head-row-cell mod-stickyColumn-leftOffset30 mod-stickyColumn-shadow" role="presentation" >
-        <div class="stickyColumn-shadow-wrapper"></div>
       </th>
       <th class="table-head-row-cell"
           [ngClass]="{ 'mod-hidden': isHidden([column.Offer]) }"
@@ -133,11 +135,11 @@
       <td class="table-body-row-cell mod-layoutFixed-xs16 mod-stickyColumn-leftOffset0">
         {{ count?.contract?.client?.name }}
       </td>
-      <td class="table-body-row-cell mod-layoutFixed-xs14 mod-stickyColumn-leftOffset16">
-        {{ count?.contract?.distributor?.name }}
-      </td>
-      <td class=" table-body-row-cell mod-stickyColumn-leftOffset30 mod-stickyColumn-shadow " role="presentation" >
+      <td class=" table-body-row-cell mod-stickyColumn-leftOffset16 mod-stickyColumn-shadow " role="presentation" >
         <div class="stickyColumn-shadow-wrapper"></div>
+      </td>
+      <td class="table-body-row-cell" [ngClass]="{ 'mod-hidden': isHidden([column.Distributor]) }">
+        {{ count?.contract?.distributor?.name }}
       </td>
       <td class="table-body-row-cell size-biggest" [ngClass]="{ 'mod-hidden': isHidden([column.Offer]) }">
         {{ count?.offer?.name }}
@@ -190,11 +192,11 @@
       <td class="table-body-row-cell mod-layoutFixed-xs16 mod-stickyColumn-leftOffset0">
         {{ summary?.numberOfClient }} clients
       </td>
-      <td class="table-body-row-cell mod-layoutFixed-xs14 mod-stickyColumn-leftOffset16">
-        {{ summary?.numberOfContract }} contrats
-      </td>
-      <td class=" table-body-row-cell mod-stickyColumn-leftOffset30 mod-stickyColumn-shadow " role="presentation" >
+      <td class=" table-body-row-cell mod-stickyColumn-leftOffset16 mod-stickyColumn-shadow " role="presentation" >
         <div class="stickyColumn-shadow-wrapper"></div>
+      </td>
+      <td class="table-body-row-cell" [ngClass]="{ 'mod-hidden': isHidden([column.Distributor]) }">
+        {{ summary?.numberOfContract }} contrats
       </td>
       <td class="table-body-row-cell size-biggest" [ngClass]="{ 'mod-hidden': isHidden([column.Offer]) }"></td>
       <td class="table-body-row-cell size-small" [ngClass]="{ 'mod-hidden': isHidden([column.CountPeriod]) }"></td>
