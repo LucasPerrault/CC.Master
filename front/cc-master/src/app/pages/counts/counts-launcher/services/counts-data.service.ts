@@ -94,7 +94,8 @@ export class CountsDataService {
       .set('startOn', `until,${ this.apiDateService.toApiV3DateFormat(this.toMiddleOfMonth(countPeriod))}`)
       .set('closeOn', `since,${ this.apiDateService.toApiV3DateFormat(this.toMiddleOfMonth(countPeriod))},null`);
 
-    return this.httpClient.get<number>(url, { params });
+    return this.httpClient.get<IHttpApiV3CountResponse>(url, { params })
+      .pipe(map(res => res.data.count));
   }
 
   private toMiddleOfMonth(countPeriod: Date): Date {
