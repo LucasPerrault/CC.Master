@@ -4,6 +4,7 @@ using Billing.Contracts.Infra.Storage;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Billing.Contracts.Infra.Migrations
 {
     [DbContext(typeof(ContractsDbContext))]
-    partial class ContractsDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220128111305_AlterCountsAddContractsIndex")]
+    partial class AlterCountsAddContractsIndex
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -38,10 +40,6 @@ namespace Billing.Contracts.Infra.Migrations
                     b.Property<string>("BillingCountry")
                         .HasColumnType("nvarchar(max)")
                         .HasColumnName("BillingCountry");
-
-                    b.Property<int>("BillingEntity")
-                        .HasColumnType("int")
-                        .HasColumnName("BillingEntity");
 
                     b.Property<string>("BillingMail")
                         .HasColumnType("nvarchar(max)")
