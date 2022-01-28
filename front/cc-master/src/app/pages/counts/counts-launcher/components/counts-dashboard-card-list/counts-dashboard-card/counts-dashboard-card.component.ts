@@ -7,7 +7,7 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 })
 export class CountsDashboardCardComponent {
   @Input() public mod: string;
-  @Input() public titleTranslationKey: number;
+  @Input() public title: string;
   @Input() public totalCount: number;
   @Input() public isLoading: boolean;
   @Input() public isSelected: boolean;

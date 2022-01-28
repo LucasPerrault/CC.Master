@@ -2,12 +2,12 @@
 
   <h4 class="u-marginLeftStandard u-marginTopSmall">{{ 'counts_launcher_info_numbers' | translate }}</h4>
 
-  <cc-counts-dashboard-card titleTranslationKey="counts_launcher_number_of_contracts"
+  <cc-counts-dashboard-card [title]="contractsTitle$ | async"
                             [totalCount]="dashboard?.numberOfContracts$ | async"
                             [isLoading]="dashboard?.isNumberOfContractsLoading$ | async">
   </cc-counts-dashboard-card>
 
-  <cc-counts-dashboard-card titleTranslationKey="counts_launcher_number_of_real_counts"
+  <cc-counts-dashboard-card [title]="realCountsTitle$ | async"
                             [totalCount]="dashboard?.numberOfRealCounts$ | async"
                             [isLoading]="dashboard?.isNumberOfRealCountsLoading$ | async">
   </cc-counts-dashboard-card>
@@ -16,7 +16,7 @@
   <h4 class="u-marginLeftStandard u-marginTopSmall">{{ 'counts_launcher_info_with_details' | translate }}</h4>
 
   <cc-counts-dashboard-card mod="mod-clickable"
-                            titleTranslationKey="counts_launcher_missing_counts"
+                            [title]="missingCountsTitle$ | async"
                             [totalCount]="dashboard?.numberOfContractsWithoutCount$ | async"
                             [isLoading]="dashboard?.isContractsWithoutCountLoading$ | async"
                             [isSelected]="isSelected(section.WithoutCount)"
@@ -24,7 +24,7 @@
   </cc-counts-dashboard-card>
 
   <cc-counts-dashboard-card mod="mod-clickable"
-                            titleTranslationKey="counts_launcher_draft_counts"
+                            [title]="draftCountsTitle$ | async"
                             [totalCount]="dashboard?.numberOfContractsWithDraftCount$ | async"
                             [isLoading]="dashboard?.isContractsWithDraftCountLoading$ | async"
                             [isSelected]="isSelected(section.WithDraftCount)"
@@ -32,7 +32,7 @@
   </cc-counts-dashboard-card>
 
   <cc-counts-dashboard-card mod="mod-clickable"
-                            titleTranslationKey="counts_launcher_without_accounting_entry"
+                            [title]="countsWithoutAccountingEntryTitle$ | async"
                             [totalCount]="dashboard?.numberOfContractsWithCountWithoutAccountingEntry$ | async"
                             [isLoading]="dashboard?.isContractsWithCountWithoutAccountingEntryLoading$ | async"
                             [isSelected]="isSelected(section.WithCountWithoutAccountingEntry)"
