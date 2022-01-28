@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using Billing.Contracts.Domain.Counts;
 using Tools;
 
 namespace Billing.Contracts.Domain.Contracts
@@ -48,6 +49,8 @@ namespace Billing.Contracts.Domain.Contracts
         public DateTime? RebateEndsOn { get; set; }
         public double MinimalBillingPercentage { get; set; }
         public BillingPeriodicity BillingPeriodicity { get; set; }
+
+        public List<Count> Counts { get; set; }
 
         public ContractStatus Status => ContractExpressions.IsNotStartedCompiled(this)
             ? ContractStatus.NotStarted
