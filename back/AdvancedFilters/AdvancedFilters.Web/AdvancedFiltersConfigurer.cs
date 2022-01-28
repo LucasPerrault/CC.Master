@@ -59,6 +59,7 @@ namespace AdvancedFilters.Web
             services.AddScoped<ILocalDataSourceService, LocalDataSourceService>();
             services.AddScoped<ISyncEmails, SyncEmails>();
             services.AddScoped<IDataSyncService, DataSyncService>();
+            services.AddScoped<IFacetsSyncService, FacetsSyncService>();
             services.AddScoped<Synchronizer>();
 
             services.AddHttpClient<IDataSourceSyncCreationService, DataSourceSyncCreationService>

@@ -217,8 +217,9 @@ namespace AdvancedFilters.Infra.Tests
                 _syncEmailsMock.Object,
                 _teamNotifierMock.Object
             );
+            var facetsSyncService = new FacetsSyncService();
 
-            return new Synchronizer(_environmentsStoreMock.Object, dataSyncService);
+            return new Synchronizer(_environmentsStoreMock.Object, dataSyncService, facetsSyncService);
         }
 
         private static readonly AdvancedFiltersConfiguration Configuration = new AdvancedFiltersConfiguration
