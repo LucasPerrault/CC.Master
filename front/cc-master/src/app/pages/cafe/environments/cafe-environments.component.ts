@@ -13,7 +13,7 @@ import {
   EnvironmentAdditionalColumn,
   getAdditionalColumnByIds,
 } from './components/environment-additional-column-select/environment-additional-column.enum';
-import { IEnvironment } from './models/environment.interface';
+import { IEnvironment } from '../common/models/environment.interface';
 import { EnvironmentDataService } from './services/environment-data.service';
 
 @Component({

@@ -5,7 +5,7 @@ import { IHttpApiV4CollectionCountResponse } from '@cc/common/queries';
 import { Observable } from 'rxjs';
 
 import { AdvancedFilter } from '../../common/cafe-filters/advanced-filter-form';
-import { IEnvironment } from '../models/environment.interface';
+import { IEnvironment } from '../../common/models/environment.interface';
 
 @Injectable()
 export class EnvironmentDataService {

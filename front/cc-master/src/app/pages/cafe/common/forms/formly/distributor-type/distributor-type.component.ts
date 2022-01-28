@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { TranslatePipe } from '@cc/aspects/translate';
 import { FieldType } from '@ngx-formly/core';
-import { DistributorType } from 'src/app/pages/cafe/environments/models/environment.interface';
+import { DistributorType } from 'src/app/pages/cafe/common/models/environment.interface';
 
 @Component({
   selector: 'cc-formly-field-distributor-type',

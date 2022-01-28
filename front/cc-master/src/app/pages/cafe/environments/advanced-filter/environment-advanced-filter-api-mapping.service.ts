@@ -10,7 +10,7 @@ import {
   IFilterCriterionEncapsulation,
 } from '../../common/cafe-filters/advanced-filter-form';
 import { AdvancedFilterOperatorMapping } from '../../common/cafe-filters/advanced-filter-form';
-import { IEnvironment } from '../models/environment.interface';
+import { IEnvironment } from '../../common/models/environment.interface';
 import { EnvironmentAdvancedFilterKey } from './environment-advanced-filter-key.enum';
 
 @Injectable()

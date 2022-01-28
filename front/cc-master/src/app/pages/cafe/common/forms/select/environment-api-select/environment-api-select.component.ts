@@ -12,7 +12,7 @@ import { FormlyFieldConfig } from '@ngx-formly/core/lib/components/formly.field.
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { IEnvironment } from '../../../../environments/models/environment.interface';
+import { IEnvironment } from '../../../models/environment.interface';
 
 @Component({
   selector: 'cc-environment-api-select',
