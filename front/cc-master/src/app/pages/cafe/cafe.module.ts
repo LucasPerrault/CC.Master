@@ -9,17 +9,17 @@ import { CafeExportService } from './cafe-export.service';
 import { CafeFiltersModule } from './common/cafe-filters/cafe-filters.module';
 import { CafeContactsModule } from './contacts/cafe-contacts.module';
 import { CafeEnvironmentsModule } from './environments/cafe-environments.module';
+import { EstablishmentsModule } from './establishments/establishments.module';
 
 @NgModule({
-  declarations: [
-    CafeComponent,
-  ],
+  declarations: [CafeComponent],
   imports: [
     CommonModule,
     TranslateModule,
     CafeFiltersModule,
     CafeEnvironmentsModule,
     CafeContactsModule,
+    EstablishmentsModule,
     ReactiveFormsModule,
   ],
   providers: [CafeConfiguration, CafeExportService],
