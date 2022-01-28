@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 
-import { IClient } from '../../../billing/models/client.interface';
+import { IClient } from '../../../common/models/client.interface';
 import {
   AdvancedFilter,
   AdvancedFilterFormMapping,
