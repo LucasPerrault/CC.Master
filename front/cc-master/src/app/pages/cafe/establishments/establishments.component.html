@@ -1,1 +1,14 @@
-<p>cafe-establishments works!</p>
+<div class="loading mod-fullPage" *ngIf="isLoading$ | async; else isNotLoading"></div>
+
+<ng-template #isNotLoading>
+
+  <h4 class="page-content page-resultsCount u-displayFlex u-alignItemsCenter u-justifyContentSpaceBetween">
+    {{ 'cafe_establishments_count' | translate : { count: totalCount$ | async } }}
+  </h4>
+
+  <cc-establishment-list ccInfiniteScroll
+                         (bottomReached)="nextPage()"
+                         [establishments]="establishments$ | async">
+  </cc-establishment-list>
+
+</ng-template>
