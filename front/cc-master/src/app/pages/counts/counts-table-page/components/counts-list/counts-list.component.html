@@ -138,7 +138,7 @@
       <td class=" table-body-row-cell mod-stickyColumn-leftOffset16 mod-stickyColumn-shadow " role="presentation" >
         <div class="stickyColumn-shadow-wrapper"></div>
       </td>
-      <td class="table-body-row-cell" [ngClass]="{ 'mod-hidden': isHidden([column.Distributor]) }">
+      <td class="table-body-row-cell size-medium" [ngClass]="{ 'mod-hidden': isHidden([column.Distributor]) }">
         {{ count?.contract?.distributor?.name }}
       </td>
       <td class="table-body-row-cell size-biggest" [ngClass]="{ 'mod-hidden': isHidden([column.Offer]) }">
@@ -190,13 +190,13 @@
     </tr>
     <tr class="table-body-row mod-stickyFooter u-fontWeightBold">
       <td class="table-body-row-cell mod-layoutFixed-xs16 mod-stickyColumn-leftOffset0">
-        {{ summary?.numberOfClient }} clients
+        {{ 'counts_summary_clients' | translate : { count: summary?.numberOfClient } }}
       </td>
       <td class=" table-body-row-cell mod-stickyColumn-leftOffset16 mod-stickyColumn-shadow " role="presentation" >
         <div class="stickyColumn-shadow-wrapper"></div>
       </td>
-      <td class="table-body-row-cell" [ngClass]="{ 'mod-hidden': isHidden([column.Distributor]) }">
-        {{ summary?.numberOfContract }} contrats
+      <td class="table-body-row-cell size-medium" [ngClass]="{ 'mod-hidden': isHidden([column.Distributor]) }">
+        {{ 'counts_summary_contracts' | translate : { count: summary?.numberOfContract } }}
       </td>
       <td class="table-body-row-cell size-biggest" [ngClass]="{ 'mod-hidden': isHidden([column.Offer]) }"></td>
       <td class="table-body-row-cell size-small" [ngClass]="{ 'mod-hidden': isHidden([column.CountPeriod]) }"></td>
