@@ -58,7 +58,8 @@ namespace AdvancedFilters.Web
             services.AddSingleton<FetchAuthenticator>();
             services.AddScoped<ILocalDataSourceService, LocalDataSourceService>();
             services.AddScoped<ISyncEmails, SyncEmails>();
-            services.AddScoped<ISyncService, SyncService>();
+            services.AddScoped<IDataSyncService, DataSyncService>();
+            services.AddScoped<Synchronizer>();
 
             services.AddHttpClient<IDataSourceSyncCreationService, DataSourceSyncCreationService>
             (

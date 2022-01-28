@@ -1,3 +1,4 @@
+using AdvancedFilters.Application;
 using AdvancedFilters.Domain.Core.Models;
 using AdvancedFilters.Domain.DataSources;
 using AdvancedFilters.Domain.Instance.Filters;
@@ -69,18 +70,7 @@ namespace AdvancedFilters.Infra.Tests
                 [DataSources.Environments] = DataSourceMapper.Get(DataSources.Environments, Configuration)
             };
 
-            var service = new SyncService
-            (
-                new DataSourcesRepository
-                (
-                    confs
-                ),
-                _creationService,
-                _environmentsStoreMock.Object,
-                _emailServiceMock.Object,
-                _syncEmailsMock.Object,
-                _teamNotifierMock.Object
-            );
+            var service = GetSynchronizer(confs);
 
             SetupHttpResponse("https://mocked-cc.ilucca.local/api/envs", new EnvironmentsDto
             {
@@ -108,18 +98,7 @@ namespace AdvancedFilters.Infra.Tests
                 [DataSources.AppInstances] = DataSourceMapper.Get(DataSources.AppInstances, Configuration)
             };
 
-            var service = new SyncService
-            (
-                new DataSourcesRepository
-                (
-                    confs
-                ),
-                _creationService,
-                _environmentsStoreMock.Object,
-                _emailServiceMock.Object,
-                _syncEmailsMock.Object,
-                _teamNotifierMock.Object
-            );
+            var service = GetSynchronizer(confs);
 
             SetupKnownEnvironments(new Environment { Id = 42, ProductionHost = "https://mocked-tenant.dev", Accesses = new List<EnvironmentAccess>() });
             SetupHttpResponse("https://mocked-tenant.dev/api/app-instances", new AppInstancesDto
@@ -148,18 +127,7 @@ namespace AdvancedFilters.Infra.Tests
                 [DataSources.LegalUnits] = DataSourceMapper.Get(DataSources.LegalUnits, Configuration)
             };
 
-            var service = new SyncService
-            (
-                new DataSourcesRepository
-                (
-                    confs
-                ),
-                _creationService,
-                _environmentsStoreMock.Object,
-                _emailServiceMock.Object,
-                _syncEmailsMock.Object,
-                _teamNotifierMock.Object
-            );
+            var service = GetSynchronizer(confs);
 
             SetupKnownEnvironments(new Environment { Id = 42, ProductionHost = "https://mocked-tenant.dev", Accesses = new List<EnvironmentAccess>() });
             SetupHttpResponse("https://mocked-tenant.dev/api/legal-units", new LegalUnitsDto
@@ -189,18 +157,7 @@ namespace AdvancedFilters.Infra.Tests
                 [DataSources.LegalUnits] = DataSourceMapper.Get(DataSources.LegalUnits, Configuration),
             };
 
-            var service = new SyncService
-            (
-                new DataSourcesRepository
-                (
-                    confs
-                ),
-                _creationService,
-                _environmentsStoreMock.Object,
-                _emailServiceMock.Object,
-                _syncEmailsMock.Object,
-                _teamNotifierMock.Object
-            );
+            var service = GetSynchronizer(confs);
 
             SetupKnownEnvironments
             (
@@ -216,7 +173,7 @@ namespace AdvancedFilters.Infra.Tests
                 Data = ApiV3Response(new AppInstance { EnvironmentId = 1, ApplicationId = "WFIGGO"})
             });
 
-            await service.SyncMonoTenantDataAsync(new HashSet<string> { "toto", "titi" });
+            await service.SyncMonoTenantAsync(new HashSet<string> { "toto", "titi" });
             _httpClientHandlerMock.VerifySendAsync(MessageWithUrl(HttpMethod.Get, "https://toto.dev/api/app-instances"), Times.Once());
             _httpClientHandlerMock.VerifySendAsync(MessageWithUrl(HttpMethod.Get, "https://titi.dev/api/app-instances"), Times.Once());
             _httpClientHandlerMock.VerifySendAsync(MessageWithUrl(HttpMethod.Get, "https://toto.dev/api/legal-units"), Times.Once());
@@ -245,6 +202,23 @@ namespace AdvancedFilters.Infra.Tests
         {
             var envs = environments == null ? new List<Environment>() : environments.ToList();
             _environmentsStoreMock.Setup(s => s.GetAsync(It.IsAny<EnvironmentFilter>())).ReturnsAsync(envs);
+        }
+
+        private Synchronizer GetSynchronizer(Dictionary<DataSources, DataSource> confs)
+        {
+            var dataSyncService = new DataSyncService
+            (
+                new DataSourcesRepository
+                (
+                    confs
+                ),
+                _creationService,
+                _emailServiceMock.Object,
+                _syncEmailsMock.Object,
+                _teamNotifierMock.Object
+            );
+
+            return new Synchronizer(_environmentsStoreMock.Object, dataSyncService);
         }
 
         private static readonly AdvancedFiltersConfiguration Configuration = new AdvancedFiltersConfiguration

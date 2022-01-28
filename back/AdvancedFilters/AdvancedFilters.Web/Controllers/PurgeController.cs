@@ -1,4 +1,4 @@
-using AdvancedFilters.Domain.DataSources;
+using AdvancedFilters.Application;
 using AdvancedFilters.Web.Controllers.Locks;
 using Lock.Web;
 using Microsoft.AspNetCore.Mvc;
@@ -14,11 +14,11 @@ namespace AdvancedFilters.Web.Controllers
     [ApiController, Route("/api/cafe/purge")]
     public class PurgeController
     {
-        private readonly ISyncService _syncService;
+        private readonly Synchronizer _sync;
 
-        public PurgeController(ISyncService syncService)
+        public PurgeController(Synchronizer sync)
         {
-            _syncService = syncService;
+            _sync = sync;
         }
 
         [HttpPost("all")]
@@ -26,7 +26,7 @@ namespace AdvancedFilters.Web.Controllers
         [ForbidIfMissing(Operation.SyncAllCafe)]
         public Task HugeSyncAsync()
         {
-            return _syncService.PurgeEverythingAsync();
+            return _sync.PurgeEverythingAsync();
         }
 
         [HttpPost("mono-tenant")]
@@ -38,7 +38,7 @@ namespace AdvancedFilters.Web.Controllers
             {
                 throw new ApplicationException("subdomain query param is mandatory");
             }
-            return _syncService.PurgeTenantsAsync(subdomains);
+            return _sync.PurgeTenantsAsync(subdomains);
         }
     }
 }

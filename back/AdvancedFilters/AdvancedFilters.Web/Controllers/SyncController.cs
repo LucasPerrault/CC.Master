@@ -1,3 +1,4 @@
+using AdvancedFilters.Application;
 using AdvancedFilters.Domain.DataSources;
 using AdvancedFilters.Web.Controllers.Locks;
 using Lock.Web;
@@ -14,11 +15,11 @@ namespace AdvancedFilters.Web.Controllers
     [ApiController, Route("/api/cafe/sync")]
     public class SyncController
     {
-        private readonly ISyncService _syncService;
+        private readonly Synchronizer _sync;
 
-        public SyncController(ISyncService syncService)
+        public SyncController(Synchronizer sync)
         {
-            _syncService = syncService;
+            _sync = sync;
         }
 
         [HttpPost("huge")]
@@ -26,7 +27,7 @@ namespace AdvancedFilters.Web.Controllers
         [ForbidIfMissing(Operation.SyncAllCafe)]
         public Task HugeSyncAsync()
         {
-            return _syncService.SyncEverythingAsync();
+            return _sync.SyncEverythingAsync();
         }
 
         [HttpPost("multi-tenant")]
@@ -34,7 +35,7 @@ namespace AdvancedFilters.Web.Controllers
         [ForbidIfMissing(Operation.SyncAllCafe)]
         public Task MultiSyncAsync()
         {
-            return _syncService.SyncMultiTenantDataAsync();
+            return _sync.SyncMultiTenantAsync();
         }
 
         [HttpPost("mono-tenant")]
@@ -46,7 +47,7 @@ namespace AdvancedFilters.Web.Controllers
             {
                 throw new BadRequestException("Subdomain query param is mandatory");
             }
-            return _syncService.SyncMonoTenantDataAsync(query.Subdomain);
+            return _sync.SyncMonoTenantAsync(query.Subdomain);
         }
 
         [HttpPost("mono-tenant/random")]
@@ -58,7 +59,7 @@ namespace AdvancedFilters.Web.Controllers
             {
                 throw new BadRequestException("tenantCount query param is mandatory");
             }
-            return _syncService.SyncRandomMonoTenantDataAsync(tenantCount);
+            return _sync.SyncRandomMonoTenantAsync(tenantCount);
         }
     }
 
