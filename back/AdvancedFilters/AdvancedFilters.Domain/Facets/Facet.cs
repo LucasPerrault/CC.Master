@@ -1,4 +1,7 @@
-﻿namespace AdvancedFilters.Domain.Facets;
+using System.Collections.Generic;
+using Tools;
+
+namespace AdvancedFilters.Domain.Facets;
 
 public enum FacetType
 {
@@ -17,10 +20,19 @@ public enum FacetScope
     Establishment = 2,
 }
 
-public class FacetIdentifier
+public class FacetIdentifier : ValueObject
 {
     public string Code { get; set; }
     public string ApplicationId { get; set; }
+
+    protected override IEnumerable<object> EqualityComponents
+    {
+        get
+        {
+            yield return Code;
+            yield return ApplicationId;
+        }
+    }
 }
 
 public class Facet : FacetIdentifier

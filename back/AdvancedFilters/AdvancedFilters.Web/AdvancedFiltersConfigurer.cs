@@ -116,6 +116,7 @@ namespace AdvancedFilters.Web
 
         public static void ConfigureSerializer(JsonOptions jsonOptions)
         {
+
             var facetSerializers = new List<IPolymorphicSerializer>
             {
                 Serializer.WithPolymorphism<IEnvironmentFacetValue, FacetType>(nameof(IEnvironmentFacetValue.Type))

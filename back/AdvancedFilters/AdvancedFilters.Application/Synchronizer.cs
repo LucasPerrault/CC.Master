@@ -38,7 +38,6 @@ namespace AdvancedFilters.Application
             var dataSyncStrategy = subdomains.Any()
                 ? DataSyncStrategy.SyncSpecificEnvironmentsOnly
                 : DataSyncStrategy.SyncEverything;
-
             var environments = await _environmentsStore.GetAsync(new EnvironmentFilter { Subdomains = subdomains });
 
             await _dataSyncService.SyncTenantsDataAsync(environments, dataSyncStrategy);

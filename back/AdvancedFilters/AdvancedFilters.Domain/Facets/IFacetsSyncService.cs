@@ -7,7 +7,7 @@ namespace AdvancedFilters.Domain.Facets
 {
     public interface IFacetsSyncService
     {
-        Task SyncTenantsFacetsAsync(List<Environment> environments, DataSyncStrategy syncSpecificEnvironmentsOnly);
+        Task SyncTenantsFacetsAsync(List<Environment> environments, DataSyncStrategy dataSyncStrategy);
         Task PurgeEverythingAsync();
         Task PurgeTenantsAsync(List<Environment> environments);
     }
