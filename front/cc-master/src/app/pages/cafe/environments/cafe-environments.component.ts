@@ -1,14 +1,13 @@
 import { HttpParams } from '@angular/common/http';
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { toSubmissionState } from '@cc/common/forms';
+import { getButtonState, toSubmissionState } from '@cc/common/forms';
 import { defaultPagingParams, IPaginatedResult, PaginatedList, PaginatedListState, PagingService } from '@cc/common/paging';
-import { BehaviorSubject, Observable, Subject } from 'rxjs';
-import { filter, map, switchMap, take, takeUntil } from 'rxjs/operators';
+import { BehaviorSubject, Observable, pipe, ReplaySubject, Subject, UnaryFunction } from 'rxjs';
+import { filter, map, take, takeUntil } from 'rxjs/operators';
 
-import { CafeExportService } from '../cafe-export.service';
 import { AdvancedFilter, IAdvancedFilterForm } from '../common/cafe-filters/advanced-filter-form';
-import { EnvironmentAdvancedFilterApiMappingService } from './advanced-filter';
+import { EnvironmentAdvancedFilterApiMappingService, EnvironmentAdvancedFilterConfiguration } from './advanced-filter';
 import {
   EnvironmentAdditionalColumn,
   getAdditionalColumnByIds,
@@ -22,8 +21,6 @@ import { EnvironmentDataService } from './services/environment-data.service';
   styleUrls: ['./cafe-environments.component.scss'],
 })
 export class CafeEnvironmentsComponent implements OnInit, OnDestroy {
-  @Input() public set advancedFilterForm(f: IAdvancedFilterForm) { this.setAdvancedFilter(f); }
-
   public get environments$(): Observable<IEnvironment[]> {
     return this.paginatedEnvironments.items$;
   }
@@ -37,39 +34,40 @@ export class CafeEnvironmentsComponent implements OnInit, OnDestroy {
       .pipe(map(state => state === PaginatedListState.Update));
   }
 
-  public advancedFilter$: BehaviorSubject<AdvancedFilter> = new BehaviorSubject<AdvancedFilter>(null);
+  public get canExport(): boolean {
+    return !!this.filters?.value?.criterionForms?.length;
+  }
 
+  public exportButtonClass$ = new ReplaySubject<string>(1);
   public selectedColumns: FormControl = new FormControl(getAdditionalColumnByIds([
     EnvironmentAdditionalColumn.Environment,
     EnvironmentAdditionalColumn.AppInstances,
     EnvironmentAdditionalColumn.Distributors,
   ]));
 
+  public filters: FormControl = new FormControl();
+  public searchDto$ = new BehaviorSubject<AdvancedFilter>(null);
+
   private paginatedEnvironments: PaginatedList<IEnvironment>;
   private destroy$: Subject<void> = new Subject<void>();
 
   constructor(
+    public advancedFilterConfig: EnvironmentAdvancedFilterConfiguration,
     private pagingService: PagingService,
     private apiMappingService: EnvironmentAdvancedFilterApiMappingService,
     private environmentsDataService: EnvironmentDataService,
-    private exportService: CafeExportService,
   ) {
     this.paginatedEnvironments = this.getPaginatedEnvironments$();
   }
 
   public ngOnInit(): void {
-    this.advancedFilter$
+    this.searchDto$
       .pipe(takeUntil(this.destroy$), filter(f => !!f))
       .subscribe(() => this.refresh());
 
-    this.exportService.exportRequests$
-      .pipe(
-        takeUntil(this.destroy$),
-        filter(() => !!this.advancedFilter$.value),
-        map(() => this.advancedFilter$.value),
-        switchMap(f => this.environmentsDataService.exportEnvironments$(f).pipe(take(1), toSubmissionState())),
-      )
-      .subscribe(s => this.exportService.notifyExport(s));
+    this.filters.valueChanges
+      .pipe(takeUntil(this.destroy$), this.toApiMapping)
+      .subscribe(searchDto => this.searchDto$.next(searchDto));
   }
 
   public ngOnDestroy(): void {
@@ -81,13 +79,19 @@ export class CafeEnvironmentsComponent implements OnInit, OnDestroy {
     this.paginatedEnvironments.nextPage();
   }
 
+  public export(): void {
+    this.environmentsDataService.exportEnvironments$(this.searchDto$.value)
+      .pipe(take(1), toSubmissionState(), map(state => getButtonState(state)))
+      .subscribe(c => this.exportButtonClass$.next(c));
+  }
+
   private refresh(): void {
     this.paginatedEnvironments.updateHttpParams(new HttpParams());
   }
 
   private getPaginatedEnvironments$(): PaginatedList<IEnvironment> {
     return this.pagingService.paginate<IEnvironment>(
-      (httpParams) => this.getEnvironments$(httpParams, this.advancedFilter$.value),
+      (httpParams) => this.getEnvironments$(httpParams, this.searchDto$.value),
       { page: defaultPagingParams.page, limit: 50 },
     );
   }
@@ -98,8 +102,7 @@ export class CafeEnvironmentsComponent implements OnInit, OnDestroy {
     );
   }
 
-  private setAdvancedFilter(form: IAdvancedFilterForm) {
-    const advancedFilter = this.apiMappingService.toAdvancedFilter(form);
-    this.advancedFilter$.next(advancedFilter);
+  private get toApiMapping(): UnaryFunction<Observable<IAdvancedFilterForm>, Observable<AdvancedFilter>> {
+    return pipe(map(filters => this.apiMappingService.toAdvancedFilter(filters)));
   }
 }
