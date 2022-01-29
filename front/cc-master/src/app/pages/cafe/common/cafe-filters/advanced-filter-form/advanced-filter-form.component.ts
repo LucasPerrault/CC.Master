@@ -1,18 +1,20 @@
+import { Component, forwardRef, Input, OnDestroy, OnInit } from '@angular/core';
 import {
-  ChangeDetectionStrategy,
-  Component,
-  EventEmitter,
-  forwardRef,
-  Input,
-  OnDestroy,
-  OnInit,
-  Output,
-} from '@angular/core';
-import { AbstractControl, ControlValueAccessor, FormArray, FormControl, FormGroup, NG_VALUE_ACCESSOR } from '@angular/forms';
+  AbstractControl,
+  ControlValueAccessor,
+  FormArray,
+  FormControl,
+  FormGroup,
+  NG_VALIDATORS,
+  NG_VALUE_ACCESSOR,
+  ValidationErrors,
+  Validator,
+} from '@angular/forms';
 import { Subject } from 'rxjs';
 import { filter, takeUntil } from 'rxjs/operators';
 
 import { IAdvancedFilterForm } from './advanced-filter-form.interface';
+import { AdvancedFilterFormService } from './advanced-filter-form.service';
 import { IComparisonFilterCriterionForm } from './components/comparison-filter-criterion';
 import { getLogicalOperator } from './components/logical-operator-select/logical-operator.interface';
 import { LogicalOperator } from './enums/logical-operator.enum';
@@ -22,22 +24,21 @@ import { IAdvancedFilterConfiguration } from './models/advanced-filter-configura
   selector: 'cc-advanced-filter-form',
   templateUrl: './advanced-filter-form.component.html',
   styleUrls: ['./advanced-filter-form.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,
       useExisting: forwardRef(() => AdvancedFilterFormComponent),
       multi: true,
     },
+    {
+      provide: NG_VALIDATORS,
+      multi: true,
+      useExisting: AdvancedFilterFormComponent,
+    },
   ],
 })
-export class AdvancedFilterFormComponent implements ControlValueAccessor, OnInit, OnDestroy {
+export class AdvancedFilterFormComponent implements ControlValueAccessor, Validator, OnInit, OnDestroy {
   @Input() public configuration: IAdvancedFilterConfiguration;
-  @Output() public cancel: EventEmitter<void> = new EventEmitter<void>();
-
-  public get invalid(): boolean {
-    return !this.formArray.dirty || this.formArray.invalid || this.isLogicalOperatorInvalid();
-  }
 
   public logicalOperator: FormControl = new FormControl();
 
@@ -49,10 +50,23 @@ export class AdvancedFilterFormComponent implements ControlValueAccessor, OnInit
 
   private destroy$: Subject<void> = new Subject<void>();
 
+  constructor(private formService: AdvancedFilterFormService) {}
+
   public ngOnInit(): void {
     this.formArray.valueChanges
       .pipe(takeUntil(this.destroy$), filter(forms => forms.length === 1))
       .subscribe(() => this.logicalOperator.patchValue(getLogicalOperator(LogicalOperator.And)));
+
+    this.formGroup.get(this.formArrayKey).valueChanges
+      .pipe(takeUntil(this.destroy$), filter(c => !!c && !!c?.length))
+      .subscribe(criterionForms => this.onChange({
+        logicalOperator: this.logicalOperator.value,
+        criterionForms,
+      }));
+
+    this.formService.reset$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(() => this.reset());
   }
 
   public ngOnDestroy(): void {
@@ -88,6 +102,12 @@ export class AdvancedFilterFormComponent implements ControlValueAccessor, OnInit
     this.reset();
   }
 
+  public validate(control: AbstractControl): ValidationErrors | null {
+    if (!this.formArray.dirty || this.formArray.invalid || this.isLogicalOperatorInvalid) {
+      return { invalid: true };
+    }
+  }
+
   public trackBy(index: number, control: AbstractControl): AbstractControl {
     return control;
   }
@@ -99,35 +119,19 @@ export class AdvancedFilterFormComponent implements ControlValueAccessor, OnInit
   public removeAt(index: number) {
     this.formArray.removeAt(index);
     if (!this.formArray.length) {
-      this.insertAt(0);
+      this.resetFormArray();
     }
   }
 
-  public reset(): void {
+  private reset(): void {
     this.logicalOperator.reset();
+    this.resetFormArray();
+  }
+
+  private resetFormArray(): void {
     this.formArray.clear();
+    this.formArray.reset();
     this.insertAt(0);
-  }
-
-  public cancelForm(): void {
-    this.cancel.emit();
-  }
-
-  public submitAdvancedFilter(): void {
-    const criterionForms = this.formGroup.get(this.formArrayKey)?.value;
-    if (!criterionForms && !!criterionForms.length) {
-      return;
-    }
-
-    const logicalOperator = this.logicalOperator.value;
-    const advancedFilterForm: IAdvancedFilterForm = { logicalOperator, criterionForms };
-
-    this.onChange(advancedFilterForm);
-  }
-
-  public openExternalDocumentation(): void {
-    const externalDocumentationUrl = 'https://support.lucca.fr/hc/fr/articles/4409676130578-Module-de-rapport-CC';
-    window.open(externalDocumentationUrl);
   }
 
   private addRange(criterionForms: IComparisonFilterCriterionForm[]): void {
@@ -138,7 +142,7 @@ export class AdvancedFilterFormComponent implements ControlValueAccessor, OnInit
     return new FormControl(defaultForm);
   }
 
-  private isLogicalOperatorInvalid(): boolean {
+  private get isLogicalOperatorInvalid(): boolean {
     return this.formArray.length > 1 ? this.logicalOperator.invalid : false;
   }
 }

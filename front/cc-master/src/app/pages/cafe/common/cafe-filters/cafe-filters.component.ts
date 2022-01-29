@@ -4,6 +4,7 @@ import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { map, takeUntil } from 'rxjs/operators';
 
 import { IAdvancedFilterConfiguration, IAdvancedFilterForm } from './advanced-filter-form';
+import { AdvancedFilterFormService } from './advanced-filter-form/advanced-filter-form.service';
 import { ICafeFilters } from './cafe-filters.interface';
 import { ICategory } from './category-filter/category-select/category.interface';
 
@@ -34,6 +35,11 @@ export class CafeFiltersComponent implements OnInit, OnDestroy, ControlValueAcce
     return filters?.criterionForms?.length || 0;
   }
 
+  public get valid(): boolean {
+    const filter = this.formGroup?.get(CafeFilterKey.AdvancedFilterForm);
+    return filter.dirty && filter.valid;
+  }
+
   public get hasSelectedConfiguration$(): Observable<boolean> {
     return this.selectedConfiguration$.pipe(map(c => !!c));
   }
@@ -47,13 +53,12 @@ export class CafeFiltersComponent implements OnInit, OnDestroy, ControlValueAcce
 
   private destroy$: Subject<void> = new Subject();
 
-  constructor() {
+  constructor(private advancedFilterService: AdvancedFilterFormService) {
     this.formGroup = new FormGroup({
       [CafeFilterKey.Category]: new FormControl(),
       [CafeFilterKey.AdvancedFilterForm]: new FormControl(),
     });
   }
-
 
   public ngOnInit(): void {
     this.formGroup.get(CafeFilterKey.Category).valueChanges
@@ -66,10 +71,6 @@ export class CafeFiltersComponent implements OnInit, OnDestroy, ControlValueAcce
 
         this.formGroup.get(CafeFilterKey.AdvancedFilterForm).reset({ criterionForms: [] });
       });
-
-    this.formGroup.valueChanges
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(form => this.onChange(form));
   }
 
   public ngOnDestroy(): void {
@@ -94,8 +95,26 @@ export class CafeFiltersComponent implements OnInit, OnDestroy, ControlValueAcce
     }
   }
 
+  public submit(): void {
+    const filter: ICafeFilters = this.formGroup.value;
+    this.onChange(filter);
+  }
+
+  public reset(): void {
+    this.advancedFilterService.reset();
+  }
+
+  public cancel(): void {
+    this.showAdvancedFilters = false;
+  }
+
   public toggleAdvancedFiltersDisplay(): void {
     this.showAdvancedFilters = !this.showAdvancedFilters;
+  }
+
+  public openExternalDocumentation(): void {
+    const externalDocumentationUrl = 'https://support.lucca.fr/hc/fr/articles/4409676130578-Module-de-rapport-CC';
+    window.open(externalDocumentationUrl);
   }
 
   private getSelectedConfiguration(category: ICategory): IAdvancedFilterConfiguration {
