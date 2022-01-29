@@ -5,6 +5,7 @@ import { IHttpApiV4CollectionCountResponse } from '@cc/common/queries';
 import { Observable } from 'rxjs';
 
 import { AdvancedFilter } from '../../common/cafe-filters/advanced-filter-form';
+import { toSearchDto } from '../../common/models';
 import { IEnvironment } from '../models/environment.interface';
 
 @Injectable()
@@ -18,8 +19,9 @@ export class EnvironmentDataService {
     const query = params.toString();
     const route = '/api/cafe/environments/search';
     const url = [route, query].join('?');
+    const body = toSearchDto(advancedFilter);
 
-    return this.httpClient.post<IHttpApiV4CollectionCountResponse<IEnvironment>>(url, advancedFilter);
+    return this.httpClient.post<IHttpApiV4CollectionCountResponse<IEnvironment>>(url, body);
   }
 
   public exportEnvironments$(advancedFilter: AdvancedFilter): Observable<void> {
