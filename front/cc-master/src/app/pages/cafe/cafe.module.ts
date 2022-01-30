@@ -4,9 +4,8 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
 
 import { CafeComponent } from './cafe.component';
-import { CafeConfiguration } from './cafe-configuration';
-import { CafeExportService } from './cafe-export.service';
 import { CafeFiltersModule } from './common/cafe-filters/cafe-filters.module';
+import { CafeCategoryService } from './common/services/cafe-category.service';
 import { CafeContactsModule } from './contacts/cafe-contacts.module';
 import { CafeEnvironmentsModule } from './environments/cafe-environments.module';
 
@@ -22,6 +21,6 @@ import { CafeEnvironmentsModule } from './environments/cafe-environments.module'
     CafeContactsModule,
     ReactiveFormsModule,
   ],
-  providers: [CafeConfiguration, CafeExportService],
+  providers: [CafeCategoryService],
 })
 export class CafeModule { }

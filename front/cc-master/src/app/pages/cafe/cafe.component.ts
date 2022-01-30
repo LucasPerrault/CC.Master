@@ -1,71 +1,35 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { FormControl } from '@angular/forms';
-import { getButtonState } from '@cc/common/forms';
-import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
+import { ReplaySubject, Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
-import { CafeConfiguration } from './cafe-configuration';
-import { ICafeConfiguration } from './cafe-configuration.interface';
-import { CafeExportService } from './cafe-export.service';
-import { IAdvancedFilterForm } from './common/cafe-filters/advanced-filter-form';
-import { ICategory } from './common/cafe-filters/category-filter/category-select/category.interface';
-import { ContactCategory } from './contacts/common/enums/cafe-contacts-category.enum';
-import { EnvironmentsCategory } from './environments/enums/environments-category.enum';
+import { CafeCategory } from './common/enums/cafe-category.enum';
+import { CafeCategoryService } from './common/services/cafe-category.service';
 
 @Component({
   selector: 'cc-cafe',
   templateUrl: './cafe.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class CafeComponent {
+export class CafeComponent implements OnInit, OnDestroy {
 
-  public cafeFilters: FormControl = new FormControl();
-  public configuration: ICafeConfiguration;
+  public category$ = new ReplaySubject<CafeCategory>(1);
+  public category = CafeCategory;
 
-  public get category(): ContactCategory | EnvironmentsCategory {
-    return this.cafeFilters.value?.category?.id;
+  private destroy$ = new Subject<void>();
+
+  constructor(private categoryService: CafeCategoryService) {}
+
+  public ngOnInit(): void {
+    this.categoryService.category$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(category => this.category$.next(category));
+
+    const defaultCategory = CafeCategory.Environments;
+    this.categoryService.update(defaultCategory);
   }
 
-  public get advancedFilterForm(): IAdvancedFilterForm {
-    return this.cafeFilters.value?.advancedFilterForm;
-  }
-
-  public get isEnvironmentCategory(): boolean {
-    return this.category === EnvironmentsCategory.Environments;
-  }
-
-  public get buttonState$(): Observable<string> {
-    return this.cafeExportService.exportState$.pipe(map(state => getButtonState(state)));
-  }
-
-  public get canExport(): boolean {
-    return !!this.advancedFilterForm?.criterionForms?.length;
-  }
-
-  public get isContactCategory(): boolean {
-    return !!this.contactCategories.find(c => c === this.category);
-    }
-
-  private readonly contactCategories = [
-    ContactCategory.Client,
-    ContactCategory.Specialized,
-    ContactCategory.Application,
-  ];
-
-  constructor(cafeConfiguration: CafeConfiguration, private cafeExportService: CafeExportService) {
-    this.configuration = cafeConfiguration;
-
-    this.cafeFilters.patchValue({ category: this.getDefaultCategory(EnvironmentsCategory.Environments) });
-  }
-
-  public export(): void {
-    this.cafeExportService.requestExport();
-  }
-
-  private getDefaultCategory(category: EnvironmentsCategory | ContactCategory): ICategory {
-      return this.configuration.categories
-            .map(c => [c, ...(c.children || [])])
-            .reduce((flattened: ICategory[], array: ICategory[]) => [...flattened, ...array])
-            .find(c => c.id === category);
+  public ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 }
