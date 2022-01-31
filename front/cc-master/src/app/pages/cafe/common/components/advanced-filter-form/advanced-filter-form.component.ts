@@ -103,7 +103,7 @@ export class AdvancedFilterFormComponent implements ControlValueAccessor, Valida
   }
 
   public validate(control: AbstractControl): ValidationErrors | null {
-    if (!this.formArray.dirty || this.formArray.invalid || this.isLogicalOperatorInvalid) {
+    if (this.invalid) {
       return { invalid: true };
     }
   }
@@ -142,7 +142,11 @@ export class AdvancedFilterFormComponent implements ControlValueAccessor, Valida
     return new FormControl(defaultForm);
   }
 
-  private get isLogicalOperatorInvalid(): boolean {
-    return this.formArray.length > 1 ? this.logicalOperator.invalid : false;
+  private get invalid(): boolean {
+    const isLogicalOperatorInvalid = this.formArray.length > 1 ? this.logicalOperator.invalid : false;
+    return !this.formArray.dirty
+      || this.formArray.invalid
+      || this.formArray.controls.some(c => c.pristine)
+      || isLogicalOperatorInvalid;
   }
 }
