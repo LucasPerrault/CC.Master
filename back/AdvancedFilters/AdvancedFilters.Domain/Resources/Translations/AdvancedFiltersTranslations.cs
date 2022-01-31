@@ -12,11 +12,11 @@ namespace Resources.Translations
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("devtools", "1.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    public class Translations : ITranslations
+    public class AdvancedFiltersTranslations : IAdvancedFiltersTranslations
     {
-        private readonly IStringLocalizer<Translations> _stringLocalizer;
+        private readonly IStringLocalizer<AdvancedFiltersTranslations> _stringLocalizer;
 
-        public Translations(IStringLocalizer<Translations> stringLocalizer)
+        public AdvancedFiltersTranslations(IStringLocalizer<AdvancedFiltersTranslations> stringLocalizer)
         {
             _stringLocalizer = stringLocalizer ?? throw new ArgumentNullException(nameof(stringLocalizer));
         }
@@ -29,7 +29,7 @@ namespace Resources.Translations
 
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("devtools", "1.0.0")]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    public interface ITranslations
+    public interface IAdvancedFiltersTranslations
     {
         /// <summary>
         /// UNFORMATTED Similar to: {0} errors occurred while syncing CAFE.

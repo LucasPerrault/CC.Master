@@ -48,7 +48,7 @@ namespace Billing.Contracts.Web
             services.AddScoped<CommercialOfferValidationService>();
             services.AddScoped<ICommercialOffersStore, CommercialOffersStore>();
             services.AddScoped<CommercialOffersRepository>();
-            services.AddScoped<ITranslations, Translations>();
+            services.AddScoped<IContractsTranslations, ContractsTranslations>();
             services.AddScoped<CommercialOfferRightsFilter>();
             services.AddScoped<CommercialOfferRightsFilter>();
 

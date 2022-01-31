@@ -11,9 +11,9 @@ namespace Instances.Application.Instances
     {
         private readonly IInstanceDuplicationsStore _duplicationsStore;
         private readonly ISubdomainValidator _subdomainValidator;
-        private readonly Translations _translations;
+        private readonly IInstancesTranslations _translations;
 
-        public InstanceDuplicationsRepository(IInstanceDuplicationsStore duplicationsStore, ISubdomainValidator subdomainValidator, Translations translations)
+        public InstanceDuplicationsRepository(IInstanceDuplicationsStore duplicationsStore, ISubdomainValidator subdomainValidator, IInstancesTranslations translations)
         {
             _duplicationsStore = duplicationsStore;
             _subdomainValidator = subdomainValidator;

@@ -142,7 +142,7 @@ namespace Instances.Web
 
             services.AddScoped<IDemoEmails, DemoEmails>();
 
-            services.AddScoped<Translations>();
+            services.AddScoped<IInstancesTranslations, InstancesTranslations>();
 
             services.AddScoped<IDemoUsersPasswordResetService, DemoUsersPasswordResetService>();
 

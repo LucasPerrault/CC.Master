@@ -24,7 +24,7 @@ namespace AdvancedFilters.Web
         {
             services.AddSingleton(new DataSourcesRepository(DataSourceMapper.GetAll(configuration)));
 
-            services.AddScoped<Translations>();
+            services.AddScoped<IAdvancedFiltersTranslations, AdvancedFiltersTranslations>();
             services.ConfigureStorage();
             services.ConfigureSync(configuration);
 

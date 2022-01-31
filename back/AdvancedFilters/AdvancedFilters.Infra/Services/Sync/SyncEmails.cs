@@ -15,9 +15,9 @@ namespace AdvancedFilters.Infra.Services.Sync
 
     public class SyncEmails : ISyncEmails
     {
-        private readonly Translations _translations;
+        private readonly IAdvancedFiltersTranslations _translations;
 
-        public SyncEmails(Translations translations)
+        public SyncEmails(IAdvancedFiltersTranslations translations)
         {
             _translations = translations;
         }

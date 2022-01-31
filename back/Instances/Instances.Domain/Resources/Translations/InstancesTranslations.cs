@@ -12,11 +12,11 @@ namespace Resources.Translations
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("devtools", "1.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    public class Translations : ITranslations
+    public class InstancesTranslations : IInstancesTranslations
     {
-        private readonly IStringLocalizer<Translations> _stringLocalizer;
+        private readonly IStringLocalizer<InstancesTranslations> _stringLocalizer;
 
-        public Translations(IStringLocalizer<Translations> stringLocalizer)
+        public InstancesTranslations(IStringLocalizer<InstancesTranslations> stringLocalizer)
         {
             _stringLocalizer = stringLocalizer ?? throw new ArgumentNullException(nameof(stringLocalizer));
         }
@@ -52,7 +52,7 @@ namespace Resources.Translations
 
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("devtools", "1.0.0")]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    public interface ITranslations
+    public interface IInstancesTranslations
     {
         /// <summary>
         /// UNFORMATTED Similar to: {0} démos non protégées ont été détecté comme actives et inéligibles à une suppression dans les jours à venir.
