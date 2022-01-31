@@ -1,5 +1,5 @@
-import { IAppInstance } from './app-instance.interface';
-import { IEnvironmentAccess } from './environment-access.interface';
+import { IAppInstance } from '../../environments/models/app-instance.interface';
+import { IEnvironmentAccess } from '../../environments/models/environment-access.interface';
 import { ILegalUnit } from './legal-unit.interface';
 
 export interface IEnvironment {

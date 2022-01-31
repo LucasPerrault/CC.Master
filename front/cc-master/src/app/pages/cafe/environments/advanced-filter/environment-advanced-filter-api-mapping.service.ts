@@ -12,7 +12,7 @@ import {
   IFilterCriterionEncapsulation,
   ItemsMatchedDto,
 } from '../../common/components/advanced-filter-form';
-import { IEnvironment } from '../models/environment.interface';
+import { IEnvironment } from '../../common/models/environment.interface';
 import { EnvironmentAdvancedFilterKey } from './environment-advanced-filter-key.enum';
 
 @Injectable()
