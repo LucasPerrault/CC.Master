@@ -59,8 +59,6 @@ node(label: CI.getSelectedNode(script: this)) {
 
 			computeVersion()
 
-			lokalise()
-
 			parallel(
 				front: {
 					restoreFront(spaSubPath: spaSubPath)

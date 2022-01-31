@@ -12,9 +12,9 @@ namespace Instances.Domain.Demos.Validation
 
     public class SubdomainValidationTranslator : ISubdomainValidationTranslator
     {
-        private readonly Translations _translations;
+        private readonly IInstancesTranslations _translations;
 
-        public SubdomainValidationTranslator(Translations translations)
+        public SubdomainValidationTranslator(IInstancesTranslations translations)
         {
             _translations = translations;
         }

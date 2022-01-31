@@ -11,9 +11,9 @@ namespace Billing.Contracts.Domain.Offers.Validation
     public class CommercialOfferValidationService
     {
         private readonly ITimeProvider _time;
-        private readonly ITranslations _translations;
+        private readonly IContractsTranslations _translations;
 
-        public CommercialOfferValidationService(ITimeProvider time, ITranslations translations)
+        public CommercialOfferValidationService(ITimeProvider time, IContractsTranslations translations)
         {
             _time = time;
             _translations = translations;

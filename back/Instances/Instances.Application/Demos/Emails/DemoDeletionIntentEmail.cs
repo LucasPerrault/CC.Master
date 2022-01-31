@@ -16,9 +16,9 @@ namespace Instances.Application.Demos.Emails
 
     public class DemoEmails : IDemoEmails
     {
-        private readonly Translations _translations;
+        private readonly IInstancesTranslations _translations;
 
-        public DemoEmails(Translations translations)
+        public DemoEmails(IInstancesTranslations translations)
         {
             _translations = translations;
         }

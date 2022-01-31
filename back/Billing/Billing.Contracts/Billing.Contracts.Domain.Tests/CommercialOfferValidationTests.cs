@@ -16,14 +16,14 @@ namespace Billing.Contracts.Domain.Tests
     public class CommercialOfferValidationTests
     {
         private readonly Mock<ITimeProvider> _time;
-        private readonly Mock<ITranslations> _translations;
+        private readonly Mock<IContractsTranslations> _translations;
 
         private CommercialOfferValidationService Validation => new CommercialOfferValidationService(_time.Object, _translations.Object);
 
         public CommercialOfferValidationTests()
         {
             _time = new Mock<ITimeProvider>();
-            _translations = new Mock<ITranslations>();
+            _translations = new Mock<IContractsTranslations>();
         }
 
         [Fact]
@@ -504,7 +504,7 @@ namespace Billing.Contracts.Domain.Tests
             _translations.Reset();
         }
 
-        private void ShouldThrowWhenCreate(CommercialOffer offer, Expression<Func<ITranslations, string>> reasonFn)
+        private void ShouldThrowWhenCreate(CommercialOffer offer, Expression<Func<IContractsTranslations, string>> reasonFn)
         {
             Action throwIfFn = () => Validation.ThrowIfCannotCreateOffer(offer);
 
@@ -519,7 +519,7 @@ namespace Billing.Contracts.Domain.Tests
             throwIfFn.Should().NotThrow<OfferValidationException>();
         }
 
-        private void ShouldThrowWhenModify(CommercialOffer oldOffer, CommercialOffer newOffer, CommercialOfferUsage usage, Expression<Func<ITranslations, string>> reasonFn)
+        private void ShouldThrowWhenModify(CommercialOffer oldOffer, CommercialOffer newOffer, CommercialOfferUsage usage, Expression<Func<IContractsTranslations, string>> reasonFn)
         {
             Action throwIfFn = () => Validation.ThrowIfCannotModifyOffer(oldOffer, newOffer, usage);
 
@@ -534,7 +534,7 @@ namespace Billing.Contracts.Domain.Tests
             throwIfFn.Should().NotThrow<OfferValidationException>();
         }
 
-        private void ShouldThrowWhenAdd(PriceList pl, CommercialOffer offer, Expression<Func<ITranslations, string>> reasonFn)
+        private void ShouldThrowWhenAdd(PriceList pl, CommercialOffer offer, Expression<Func<IContractsTranslations, string>> reasonFn)
         {
             Action throwIfFn = () => Validation.ThrowIfCannotAddPriceList(offer, pl);
 
@@ -549,7 +549,7 @@ namespace Billing.Contracts.Domain.Tests
             throwIfFn.Should().NotThrow<OfferValidationException>();
         }
 
-        private void ShouldThrowWhenModify(PriceList pl, PriceList newPriceList, CommercialOffer offer, CommercialOfferUsage usage, Expression<Func<ITranslations, string>> reasonFn)
+        private void ShouldThrowWhenModify(PriceList pl, PriceList newPriceList, CommercialOffer offer, CommercialOfferUsage usage, Expression<Func<IContractsTranslations, string>> reasonFn)
         {
             Action throwIfFn = () => Validation.ThrowIfCannotModifyPriceList(offer, pl, newPriceList, usage);
 
@@ -564,7 +564,7 @@ namespace Billing.Contracts.Domain.Tests
             throwIfFn.Should().NotThrow<OfferValidationException>();
         }
 
-        private void ShouldThrowWhenDelete(PriceList pl, CommercialOffer offer, Expression<Func<ITranslations, string>> reasonFn)
+        private void ShouldThrowWhenDelete(PriceList pl, CommercialOffer offer, Expression<Func<IContractsTranslations, string>> reasonFn)
         {
             Action throwIfFn = () => Validation.ThrowIfCannotDeletePriceList(offer, pl);
 
