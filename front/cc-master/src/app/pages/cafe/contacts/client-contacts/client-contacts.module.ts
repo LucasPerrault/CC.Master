@@ -5,9 +5,13 @@ import { TranslateModule } from '@cc/aspects/translate';
 import { PagingModule } from '@cc/common/paging';
 import { LuTooltipTriggerModule } from '@lucca-front/ng/tooltip';
 
+import { CategorySelectModule } from '../../common/cafe-filters/category-filter/category-select/category-select.module';
+import { CafePageFilterTemplateModule } from '../../common/components/cafe-page-filter-template/cafe-page-filter-template.module';
+import { CafePageTemplateModule } from '../../common/components/cafe-page-template/cafe-page-template.module';
 import {
   ContactAdditionalColumnSelectModule,
 } from '../common/components/contact-additional-column-select/contract-additional-column-select.module';
+import { ContactCategorySelectModule } from '../common/components/contact-category-select/contact-category-select.module';
 import { ClientContactAdvancedFilterConfiguration } from './advanced-filter/client-contact-advanced-filter.configuration';
 import { ClientContactAdvancedFilterApiMappingService } from './advanced-filter/client-contact-advanced-filter-api-mapping.service';
 import { ClientContactFormlyConfiguration } from './advanced-filter/client-contact-formly-configuration.service';
@@ -27,6 +31,10 @@ import { ClientContactsDataService } from './client-contacts-data.service';
     ReactiveFormsModule,
     LuTooltipTriggerModule,
     PagingModule,
+    CafePageTemplateModule,
+    CafePageFilterTemplateModule,
+    CategorySelectModule,
+    ContactCategorySelectModule,
   ],
   providers: [
     ClientContactsDataService,
