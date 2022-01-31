@@ -17,7 +17,7 @@ namespace Billing.Cmrr.Infra.Services.Export.Clients
 
     public static class CmrrClientRowExtensions
     {
-        public static IReadOnlyCollection<CmrrClientRow> ToRows(this IReadOnlyCollection<CmrrClient> clients, ITranslations translations)
+        public static IReadOnlyCollection<CmrrClientRow> ToRows(this IReadOnlyCollection<CmrrClient> clients, ICmrrTranslations translations)
         {
             return clients.Select(ToRow).ToList();
         }
