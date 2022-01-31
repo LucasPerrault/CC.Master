@@ -81,7 +81,6 @@ namespace Instances.Web
             services.AddSingleton<DeletionCallbackNotifier>();
             services.AddSingleton<IUsersPasswordHelper, UsersPasswordHelper>();
             services.AddSingleton<IDemoDeletionCalculator, DemoDeletionCalculator>();
-            services.AddSingleton<ISqlScriptPicker, SqlScriptPicker>();
 
             services.AddSingleton<IDnsService, DnsService>();
             services.AddSingleton<IWmiWrapper, WmiWrapper>();
@@ -104,6 +103,8 @@ namespace Instances.Web
                     return client;
                 });
             services.AddSingleton<IGithubService, GithubService>();
+
+            services.AddScoped<ISqlScriptPicker, SqlScriptPicker>();
 
             services.AddScoped<InstancesWebhookHandler>();
             services.AddScoped<GithubWebhookHandler>();
