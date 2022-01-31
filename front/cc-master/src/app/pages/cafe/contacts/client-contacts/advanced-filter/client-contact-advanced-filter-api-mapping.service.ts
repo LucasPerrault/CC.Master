@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 
-import { IClient } from '../../../common/models/client.interface';
 import {
   AdvancedFilter,
   AdvancedFilterFormMapping,
@@ -9,6 +8,7 @@ import {
   IAdvancedFilterForm,
 } from '../../../common/components/advanced-filter-form';
 import { AdvancedFilterOperatorMapping } from '../../../common/components/advanced-filter-form';
+import { IClient } from '../../../common/models/client.interface';
 import { EnvironmentAdvancedFilterApiMappingService } from '../../../environments/advanced-filter';
 import { ClientContactAdvancedFilterKey } from './client-contact-advanced-filter-key.enum';
 

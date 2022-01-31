@@ -5,9 +5,9 @@ import { TranslateModule } from '@cc/aspects/translate';
 import { PagingModule } from '@cc/common/paging';
 import { LuTooltipTriggerModule } from '@lucca-front/ng/tooltip';
 
-import { CategorySelectModule } from '../../common/forms';
 import { CafePageFilterTemplateModule } from '../../common/components/cafe-page-filter-template/cafe-page-filter-template.module';
 import { CafePageTemplateModule } from '../../common/components/cafe-page-template/cafe-page-template.module';
+import { CategorySelectModule } from '../../common/forms';
 import {
   ContactAdditionalColumnSelectModule,
 } from '../common/components/contact-additional-column-select/contract-additional-column-select.module';
