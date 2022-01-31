@@ -7,14 +7,12 @@ import {
   ICriterionConfiguration,
 } from '../../../common/cafe-filters/advanced-filter-form';
 import { EnvironmentAdvancedFilterConfiguration } from '../../../environments/advanced-filter';
-import { ContactCategory } from '../../common/enums/cafe-contacts-category.enum';
 import { AppContactAdvancedFilterKey } from './app-contact-advanced-filter-key.enum';
 import { AppContactCriterionKey } from './app-contact-criterion-key.enum';
 import { AppContactFormlyConfiguration } from './app-contact-formly.configuration';
 
 @Injectable()
 export class AppContactAdvancedFilterConfiguration implements IAdvancedFilterConfiguration {
-  public readonly categoryId = ContactCategory.Application;
   public readonly criterions: ICriterionConfiguration[] = [
     {
       key: AppContactCriterionKey.Environment,
