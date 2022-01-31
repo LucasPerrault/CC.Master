@@ -14,7 +14,7 @@ namespace Billing.Cmrr.Web
     {
         public static void ConfigureServices(IServiceCollection services)
         {
-            services.AddSingleton<ITranslations, Translations>();
+            services.AddSingleton<ICmrrTranslations, CmrrTranslations>();
             services.AddSingleton(new BreakDownInMemoryCache());
 
             services.AddScoped<ICmrrContractsStore, CmrrContractsStore>();

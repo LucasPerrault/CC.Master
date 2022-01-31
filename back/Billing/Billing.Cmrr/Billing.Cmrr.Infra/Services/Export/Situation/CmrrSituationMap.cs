@@ -6,7 +6,7 @@ namespace Billing.Cmrr.Infra.Services.Export.Situation
 {
     internal class CmrrSituationMap : ClassMap<CmrrSituationCsvRow>
     {
-        public CmrrSituationMap(CsvConfiguration config, DateTime from, DateTime to, ITranslations translations)
+        public CmrrSituationMap(CsvConfiguration config, DateTime from, DateTime to, ICmrrTranslations translations)
         {
             AutoMap(config);
             Map(s => s.Name).Name(translations.CmrrExportSituationAxis());

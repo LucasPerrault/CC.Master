@@ -19,7 +19,7 @@ namespace Billing.Cmrr.Application.Evolution
         private readonly ICmrrRightsFilter _cmrrRightsFilter;
         private readonly IContractAxisSectionSituationsService _axisSectionSituationsService;
         private readonly ClaimsPrincipal _claimsPrincipal;
-        private readonly ITranslations _translations;
+        private readonly ICmrrTranslations _translations;
 
         public CmrrEvolutionsService
         (
@@ -28,7 +28,7 @@ namespace Billing.Cmrr.Application.Evolution
             ICmrrRightsFilter cmrrRightsFilter,
             IContractAxisSectionSituationsService axisSectionSituationsService,
             ClaimsPrincipal claimsPrincipal,
-            ITranslations translations
+            ICmrrTranslations translations
         )
         {
             _contractsStore = contractsStore;

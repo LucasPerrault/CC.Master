@@ -82,9 +82,9 @@ namespace Billing.Cmrr.Application.Evolution
 
     internal class CmrrEvolutionBreakdownLineBuilder : CmrrEvolutionLineBuilder<CmrrEvolutionBreakdownLine>
     {
-        private readonly ITranslations _translations;
+        private readonly ICmrrTranslations _translations;
 
-        public CmrrEvolutionBreakdownLineBuilder(IContractAxisSectionSituationsService axisSectionSituationsService, ITranslations translations)
+        public CmrrEvolutionBreakdownLineBuilder(IContractAxisSectionSituationsService axisSectionSituationsService, ICmrrTranslations translations)
             : base(axisSectionSituationsService)
         {
             _translations = translations;

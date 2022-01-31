@@ -8,7 +8,7 @@ namespace Billing.Cmrr.Infra.Services.Export.Evolution
 {
     internal static class CmrrEvolutionCsvRowExtensions
     {
-        public static IEnumerable<CmrrEvolutionCsvRow> ToRows(this CmrrAxisEvolution evolution, ITranslations translations)
+        public static IEnumerable<CmrrEvolutionCsvRow> ToRows(this CmrrAxisEvolution evolution, ICmrrTranslations translations)
         {
             var linesBySection = evolution.Lines
                 .GroupBy(l => l.SectionName)

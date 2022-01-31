@@ -37,7 +37,7 @@ namespace Billing.Cmrr.Application.Tests
             var cmrrContractsStoreMock = new Mock<ICmrrContractsStore>();
             var cmrrCountsStoreMock = new Mock<ICmrrCountsStore>();
             var contractAxisSectionsSituationsServiceMock = new Mock<IContractAxisSectionSituationsService>();
-            var translationsMock = new Mock<ITranslations>();
+            var translationsMock = new Mock<ICmrrTranslations>();
 
             var sut = new CmrrEvolutionsService(cmrrContractsStoreMock.Object, cmrrCountsStoreMock.Object, null, contractAxisSectionsSituationsServiceMock.Object, null, translationsMock.Object);
 
@@ -61,7 +61,7 @@ namespace Billing.Cmrr.Application.Tests
             var cmrrContractsStoreMock = new Mock<ICmrrContractsStore>();
             var cmrrCountsStoreMock = new Mock<ICmrrCountsStore>();
             var contractAxisSectionsSituationsServiceMock = new Mock<IContractAxisSectionSituationsService>();
-            var translationsMock = new Mock<ITranslations>();
+            var translationsMock = new Mock<ICmrrTranslations>();
 
             var sut = new CmrrEvolutionsService(cmrrContractsStoreMock.Object, cmrrCountsStoreMock.Object, null, contractAxisSectionsSituationsServiceMock.Object, null, translationsMock.Object);
 
@@ -163,7 +163,7 @@ namespace Billing.Cmrr.Application.Tests
                     }
                 );
 
-            var translationsMock = new Mock<ITranslations>();
+            var translationsMock = new Mock<ICmrrTranslations>();
             var cmrrRightsFilterMock = new Mock<ICmrrRightsFilter>();
             cmrrRightsFilterMock.Setup(x => x.GetReadAccessAsync(It.IsAny<ClaimsPrincipal>())).ReturnsAsync(AccessRight.All);
             var sut = new CmrrEvolutionsService(cmrrContractsStoreMock.Object, cmrrCountsStoreMock.Object, cmrrRightsFilterMock.Object, new ContractAxisSectionSituationsService(new BreakdownService(productsStoreMock.Object, new BreakDownInMemoryCache())), new ClaimsPrincipal(), translationsMock.Object);

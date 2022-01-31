@@ -24,9 +24,9 @@ namespace Billing.Cmrr.Infra.Services.Export
     {
         private const string _delimiter = ";";
 
-        private readonly ITranslations _translations;
+        private readonly ICmrrTranslations _translations;
 
-        public CsvService(ITranslations translations)
+        public CsvService(ICmrrTranslations translations)
         {
             _translations = translations;
         }

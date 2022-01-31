@@ -7,7 +7,7 @@ namespace Billing.Cmrr.Infra.Services.Export.Situation
 {
     internal static class CmrrSituationCsvRowExtensions
     {
-        public static IEnumerable<CmrrSituationCsvRow> ToRows(this CmrrSituation situation, ITranslations translations)
+        public static IEnumerable<CmrrSituationCsvRow> ToRows(this CmrrSituation situation, ICmrrTranslations translations)
         {
             var situationRows = new List<CmrrSituationCsvRow>();
 

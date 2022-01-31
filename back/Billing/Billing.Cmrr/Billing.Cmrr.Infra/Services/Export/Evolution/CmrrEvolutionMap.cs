@@ -10,9 +10,9 @@ namespace Billing.Cmrr.Infra.Services.Export.Evolution
 {
     internal class CmrrEvolutionMap : ClassMap<CmrrEvolutionCsvRow>
     {
-        private readonly ITranslations _translations;
+        private readonly ICmrrTranslations _translations;
 
-        public CmrrEvolutionMap(CsvConfiguration config, CmrrAxis axis, IEnumerable<DateTime> periods, string delimiter, ITranslations translations)
+        public CmrrEvolutionMap(CsvConfiguration config, CmrrAxis axis, IEnumerable<DateTime> periods, string delimiter, ICmrrTranslations translations)
         {
             _translations = translations;
             AutoMap(config);
