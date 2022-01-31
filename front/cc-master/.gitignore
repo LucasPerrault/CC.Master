@@ -47,6 +47,3 @@ Thumbs.db
 
 # proxy
 .lu-proxyrc
-
-# translation
-/src/translations/translations.ts
