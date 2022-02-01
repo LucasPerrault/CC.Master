@@ -5,6 +5,7 @@ import { IHttpApiV4CollectionCountResponse } from '@cc/common/queries';
 import { Observable } from 'rxjs';
 
 import { AdvancedFilter } from '../../common/cafe-filters/advanced-filter-form';
+import { toSearchDto } from '../../common/models';
 import { ISpecializedContact } from './specialized-contact.interface';
 
 @Injectable()
@@ -21,8 +22,9 @@ export class SpecializedContactsDataService {
     const query = params.toString();
     const route = '/api/cafe/specialized-contacts/search';
     const url = [route, query].join('?');
+    const body = toSearchDto(advancedFilter);
 
-    return this.httpClient.post<IHttpApiV4CollectionCountResponse<ISpecializedContact>>(url, advancedFilter);
+    return this.httpClient.post<IHttpApiV4CollectionCountResponse<ISpecializedContact>>(url, body);
   }
 
   public exportSpeContacts$(advancedFilter: AdvancedFilter): Observable<void> {
