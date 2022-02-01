@@ -1,1 +1,31 @@
-<p>cafe-establishments works!</p>
+<cc-cafe-page-template>
+
+  <ng-container page-header-right>
+    <button class="button primary u-marginBottomStandard" type="button"
+            [class]="exportButtonClass$ | async" [disabled]="!canExport" (click)="export()">
+      {{ 'cafe_export_button' | translate }}
+    </button>
+  </ng-container>
+
+  <ng-container page-subheader>
+    <cc-cafe-page-filter-template [advancedFilterConfig]="advancedFilterConfig" [formControl]="filters">
+    </cc-cafe-page-filter-template>
+  </ng-container>
+
+  <ng-container page-content>
+    <div class="loading mod-fullPage" *ngIf="isLoading$ | async; else isNotLoading"></div>
+
+    <ng-template #isNotLoading>
+
+      <h4 class="page-content page-resultsCount u-displayFlex u-alignItemsCenter u-justifyContentSpaceBetween">
+        {{ 'cafe_establishments_count' | translate : { count: totalCount$ | async } }}
+      </h4>
+
+      <cc-establishment-list ccInfiniteScroll
+                             (bottomReached)="nextPage()"
+                             [establishments]="establishments$ | async">
+      </cc-establishment-list>
+
+    </ng-template>
+  </ng-container>
+</cc-cafe-page-template>
