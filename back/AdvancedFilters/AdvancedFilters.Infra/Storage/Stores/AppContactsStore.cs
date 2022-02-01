@@ -52,7 +52,7 @@ namespace AdvancedFilters.Infra.Storage.Stores
 
         private IQueryable<AppContact> AppContacts => _dbContext
             .Set<AppContact>()
-            .Include(c => c.Environment).ThenInclude(c => c.Accesses)
+            .Include(c => c.Environment).ThenInclude(c => c.Accesses).ThenInclude(a => a.Distributor)
             .Include(c => c.Establishment).ThenInclude(e => e.LegalUnit).ThenInclude(lu => lu.Country)
             .Include(c => c.AppInstance);
     }
