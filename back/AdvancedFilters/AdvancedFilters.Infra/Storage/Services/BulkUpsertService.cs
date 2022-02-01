@@ -1,3 +1,4 @@
+using AdvancedFilters.Domain.Sync;
 using EFCore.BulkExtensions;
 using Storage.Infra.Extensions;
 using System;
@@ -53,6 +54,16 @@ namespace AdvancedFilters.Infra.Storage.Services
 
     public abstract class UpsertFilter
     {
+        public static UpsertFilter ForStrategy<T>(SyncStrategy syncStrategy, HashSet<int> environmentIds, Expression<Func<T, int>> getId) where T : class
+        {
+            return syncStrategy switch
+            {
+                SyncStrategy.SyncEverything => Everything(),
+                SyncStrategy.SyncSpecificEnvironmentsOnly => ForEnvironments(environmentIds, getId),
+                _ => throw new ApplicationException($"Unsupported data sync strategy {syncStrategy}")
+            };
+        }
+
         public static UpsertFilter Everything() => new UpsertEverythingFilter();
         public static UpsertFilter ForEnvironments<T>(HashSet<int> envIds, Expression<Func<T, int>> getId) => new UpsertForEnvironmentsFilter<T>(envIds, getId);
     }

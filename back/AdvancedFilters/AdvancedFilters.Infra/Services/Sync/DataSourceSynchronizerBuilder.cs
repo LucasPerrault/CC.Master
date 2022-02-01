@@ -7,6 +7,7 @@ using AdvancedFilters.Domain.Core.Models;
 using AdvancedFilters.Domain.DataSources;
 using AdvancedFilters.Domain.Instance;
 using AdvancedFilters.Domain.Instance.Models;
+using AdvancedFilters.Domain.Sync;
 using AdvancedFilters.Infra.Services.Sync.Dtos;
 using AdvancedFilters.Infra.Storage.Services;
 using System;
@@ -50,7 +51,7 @@ namespace AdvancedFilters.Infra.Services.Sync
             _localDataSourceService = localDataSourceService;
         }
 
-        public IDataSourceSynchronizerBuilder ForEnvironments(List<Environment> environments, DataSyncStrategy strategy)
+        public IDataSourceSynchronizerBuilder ForEnvironments(List<Environment> environments, SyncStrategy strategy)
         {
             return new DataSourceSynchronizerBuilder(_httpClient, _bulk, _configuration, _localDataSourceService, _authenticator, environments, strategy);
         }
@@ -64,7 +65,7 @@ namespace AdvancedFilters.Infra.Services.Sync
         private readonly FetchAuthenticator _authenticator;
         private readonly ILocalDataSourceService _localDataSourceService;
         private readonly List<Environment> _environments;
-        private readonly DataSyncStrategy _dataSyncStrategy;
+        private readonly SyncStrategy _syncStrategy;
         private readonly HashSet<int> _environmentIds;
 
         public DataSourceSynchronizerBuilder
@@ -75,7 +76,7 @@ namespace AdvancedFilters.Infra.Services.Sync
             ILocalDataSourceService localDataSourceService,
             FetchAuthenticator authenticator,
             List<Environment> environments,
-            DataSyncStrategy dataSyncStrategy
+            SyncStrategy syncStrategy
         )
         {
             _httpClient = httpClient;
@@ -85,7 +86,7 @@ namespace AdvancedFilters.Infra.Services.Sync
             _authenticator = authenticator;
             _environments = environments;
             _environmentIds = environments.Select(e => e.Id).ToHashSet();
-            _dataSyncStrategy = dataSyncStrategy;
+            _syncStrategy = syncStrategy;
 
         }
 
@@ -221,14 +222,7 @@ namespace AdvancedFilters.Infra.Services.Sync
         }
 
         private UpsertFilter GetFilter<T>(Expression<Func<T, int>> getId) where T : class
-        {
-            return _dataSyncStrategy switch
-            {
-                DataSyncStrategy.SyncEverything => UpsertFilter.Everything(),
-                DataSyncStrategy.SyncSpecificEnvironmentsOnly => UpsertFilter.ForEnvironments(_environmentIds, getId),
-                _ => throw new ApplicationException($"Unsupported data sync strategy {_dataSyncStrategy}")
-            };
-        }
+            => UpsertFilter.ForStrategy<T>(_syncStrategy, _environmentIds, getId);
 
         private IDataSourceSynchronizer BuildFromLocal<T>(Func<Task<IReadOnlyCollection<T>>> getItemsAction, BulkUpsertConfig config) where T : class
         {

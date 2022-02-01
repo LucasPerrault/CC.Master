@@ -2,6 +2,7 @@ using AdvancedFilters.Domain.DataSources;
 using AdvancedFilters.Domain.Facets;
 using AdvancedFilters.Domain.Instance.Filters;
 using AdvancedFilters.Domain.Instance.Interfaces;
+using AdvancedFilters.Domain.Sync;
 using MoreLinq;
 using System.Collections.Generic;
 using System.Linq;
@@ -35,13 +36,13 @@ namespace AdvancedFilters.Application
 
         public async Task SyncMonoTenantAsync(HashSet<string> subdomains)
         {
-            var dataSyncStrategy = subdomains.Any()
-                ? DataSyncStrategy.SyncSpecificEnvironmentsOnly
-                : DataSyncStrategy.SyncEverything;
+            var syncStrategy = subdomains.Any()
+                ? SyncStrategy.SyncSpecificEnvironmentsOnly
+                : SyncStrategy.SyncEverything;
             var environments = await _environmentsStore.GetAsync(new EnvironmentFilter { Subdomains = subdomains });
 
-            await _dataSyncService.SyncTenantsDataAsync(environments, dataSyncStrategy);
-            await _facetsSyncService.SyncTenantsFacetsAsync(environments, dataSyncStrategy);
+            await _dataSyncService.SyncTenantsDataAsync(environments, syncStrategy);
+            await _facetsSyncService.SyncTenantsFacetsAsync(environments, syncStrategy);
         }
 
         public async Task SyncRandomMonoTenantAsync(int tenantCount)
@@ -51,8 +52,8 @@ namespace AdvancedFilters.Application
                 .Take(tenantCount)
                 .ToList();
 
-            await _dataSyncService.SyncTenantsDataAsync(environments, DataSyncStrategy.SyncSpecificEnvironmentsOnly);
-            await _facetsSyncService.SyncTenantsFacetsAsync(environments, DataSyncStrategy.SyncSpecificEnvironmentsOnly);
+            await _dataSyncService.SyncTenantsDataAsync(environments, SyncStrategy.SyncSpecificEnvironmentsOnly);
+            await _facetsSyncService.SyncTenantsFacetsAsync(environments, SyncStrategy.SyncSpecificEnvironmentsOnly);
         }
 
         public Task SyncMultiTenantAsync()

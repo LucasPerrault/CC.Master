@@ -1,6 +1,6 @@
-using AdvancedFilters.Domain.DataSources;
 using AdvancedFilters.Domain.Facets;
 using AdvancedFilters.Domain.Instance.Models;
+using AdvancedFilters.Domain.Sync;
 using AdvancedFilters.Infra.Storage.DAO;
 using AdvancedFilters.Infra.Storage.Services;
 using System.Collections.Generic;
@@ -35,7 +35,7 @@ namespace AdvancedFilters.Infra.Services.Sync
             _bulkUpsertService = bulkUpsertService;
         }
 
-        public async Task SyncTenantsFacetsAsync(List<Environment> environments, DataSyncStrategy dataSyncStrategy)
+        public async Task SyncTenantsFacetsAsync(List<Environment> environments, SyncStrategy syncStrategy)
         {
             var allFacetDtos = new List<MiaouFacetDto>();
 

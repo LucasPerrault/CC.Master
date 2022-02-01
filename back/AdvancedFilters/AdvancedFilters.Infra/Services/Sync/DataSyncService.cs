@@ -1,4 +1,5 @@
 using AdvancedFilters.Domain.DataSources;
+using AdvancedFilters.Domain.Sync;
 using Email.Domain;
 using System;
 using System.Collections.Generic;
@@ -35,12 +36,12 @@ namespace AdvancedFilters.Infra.Services.Sync
 
         public async Task SyncMultiTenantDataAsync()
         {
-            var builder = _creationService.ForEnvironments(new List<Environment>(), DataSyncStrategy.SyncEverything);
+            var builder = _creationService.ForEnvironments(new List<Environment>(), SyncStrategy.SyncEverything);
             var dataSources = _dataSourcesRepository.GetMultiTenant();
             await SyncAsync(dataSources, builder);
         }
 
-        public async Task SyncTenantsDataAsync(List<Environment> environments, DataSyncStrategy strategy)
+        public async Task SyncTenantsDataAsync(List<Environment> environments, SyncStrategy strategy)
         {
             var builder = _creationService.ForEnvironments(environments, strategy);
             var dataSources = _dataSourcesRepository.GetMonoTenant();
@@ -50,7 +51,7 @@ namespace AdvancedFilters.Infra.Services.Sync
         public async Task PurgeEverythingAsync()
         {
             await _teamNotifier.NotifyAsync(Team.CafeAdmins, ":coffee: Cafe : complete data purge has been requested");
-            var builder = _creationService.ForEnvironments(new List<Environment>(), DataSyncStrategy.SyncEverything);
+            var builder = _creationService.ForEnvironments(new List<Environment>(), SyncStrategy.SyncEverything);
             var dataSources = _dataSourcesRepository.GetAll();
             foreach (var dataSource in dataSources.Reverse())
             {
@@ -63,7 +64,7 @@ namespace AdvancedFilters.Infra.Services.Sync
         public async Task PurgeTenantsDataAsync(List<Environment> environments)
         {
             await _teamNotifier.NotifyAsync(Team.CafeAdmins, $":coffee: Cafe : purge of {environments.Count} tenants has been requested");
-            var builder = _creationService.ForEnvironments(environments, DataSyncStrategy.SyncSpecificEnvironmentsOnly);
+            var builder = _creationService.ForEnvironments(environments, SyncStrategy.SyncSpecificEnvironmentsOnly);
             var dataSources = _dataSourcesRepository.GetMonoTenant();
             foreach (var dataSource in dataSources.Reverse())
             {

@@ -3,20 +3,15 @@ using AdvancedFilters.Domain.Contacts;
 using AdvancedFilters.Domain.Core;
 using AdvancedFilters.Domain.Instance;
 using AdvancedFilters.Domain.Instance.Models;
+using AdvancedFilters.Domain.Sync;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace AdvancedFilters.Domain.DataSources
 {
-    public enum DataSyncStrategy
-    {
-        SyncEverything = 0,
-        SyncSpecificEnvironmentsOnly = 1
-    }
-
     public interface IDataSourceSyncCreationService
     {
-        IDataSourceSynchronizerBuilder ForEnvironments(List<Environment> environments, DataSyncStrategy strategy);
+        IDataSourceSynchronizerBuilder ForEnvironments(List<Environment> environments, SyncStrategy strategy);
     }
 
     public interface IDataSourceSynchronizerBuilder
