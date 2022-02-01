@@ -1,4 +1,4 @@
-import { ICategory } from '../cafe-filters/category-filter/category-select/category.interface';
+import { ICategory } from '../forms/select/category-select/category.interface';
 
 export enum CafeCategory {
   Environments = 'environments',

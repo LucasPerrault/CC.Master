@@ -5,7 +5,7 @@ import {
   ComparisonOperator,
   IAdvancedFilterConfiguration,
   ICriterionConfiguration,
-} from '../../common/cafe-filters/advanced-filter-form';
+} from '../../common/components/advanced-filter-form';
 import { EnvironmentAdvancedFilterKey } from './environment-advanced-filter-key.enum';
 import { EnvironmentCriterionKey } from './environment-criterion-key.enum';
 import { EnvironmentFormlyConfiguration } from './environment-formly-configuration.service';

@@ -4,7 +4,6 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { TranslateModule } from '@cc/aspects/translate';
 import { PagingModule } from '@cc/common/paging';
 
-import { CafeFiltersModule } from '../common/cafe-filters/cafe-filters.module';
 import { CafePageFilterTemplateModule } from '../common/components/cafe-page-filter-template/cafe-page-filter-template.module';
 import { CafePageTemplateModule } from '../common/components/cafe-page-template/cafe-page-template.module';
 import {
@@ -31,7 +30,6 @@ import { EnvironmentDataService } from './services/environment-data.service';
     EnvironmentAdditionalColumnSelectModule,
     ReactiveFormsModule,
     CafePageTemplateModule,
-    CafeFiltersModule,
     CafePageFilterTemplateModule,
   ],
   exports: [

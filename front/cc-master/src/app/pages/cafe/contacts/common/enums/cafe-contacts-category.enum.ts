@@ -1,4 +1,4 @@
-import { ICategory } from '../../../common/cafe-filters/category-filter/category-select/category.interface';
+import { ICategory } from '../../../common/forms/select/category-select/category.interface';
 
 export enum ContactCategory {
   Specialized = 'specialized',

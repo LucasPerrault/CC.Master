@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { FormControl } from '@angular/forms';
 
-import { ICategory } from '../../cafe-filters/category-filter/category-select/category.interface';
+import { ICategory } from '../../forms/select/category-select/category.interface';
 
 @Component({
   selector: 'cc-cafe-page-template',

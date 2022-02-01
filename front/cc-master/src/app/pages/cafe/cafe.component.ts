@@ -3,7 +3,7 @@ import { ReplaySubject, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
 import { CafeCategory } from './common/enums/cafe-category.enum';
-import { CafeCategoryService } from './common/services/cafe-category.service';
+import { CafeCategoriesService } from './common/services/cafe-categories.service';
 
 @Component({
   selector: 'cc-cafe',
@@ -17,7 +17,7 @@ export class CafeComponent implements OnInit, OnDestroy {
 
   private destroy$ = new Subject<void>();
 
-  constructor(private categoryService: CafeCategoryService) {}
+  constructor(private categoryService: CafeCategoriesService) {}
 
   public ngOnInit(): void {
     this.categoryService.category$

@@ -5,7 +5,7 @@ import {
   ComparisonOperator,
   IAdvancedFilterConfiguration,
   ICriterionConfiguration,
-} from '../../../common/cafe-filters/advanced-filter-form';
+} from '../../../common/components/advanced-filter-form';
 import { EnvironmentAdvancedFilterConfiguration } from '../../../environments/advanced-filter';
 import { ClientContactAdvancedFilterKey } from './client-contact-advanced-filter-key.enum';
 import { ClientContactCriterionKey } from './client-contact-criterion-key.enum';

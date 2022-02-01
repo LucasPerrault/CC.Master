@@ -6,8 +6,8 @@ import {
   AdvancedFilterTypeMapping,
   IAdvancedFilterAttributes,
   IAdvancedFilterForm,
-} from '../../../common/cafe-filters/advanced-filter-form';
-import { AdvancedFilterOperatorMapping } from '../../../common/cafe-filters/advanced-filter-form';
+} from '../../../common/components/advanced-filter-form';
+import { AdvancedFilterOperatorMapping } from '../../../common/components/advanced-filter-form';
 import { EnvironmentAdvancedFilterApiMappingService } from '../../../environments/advanced-filter';
 import { IAppInstance } from '../../../environments/models/app-instance.interface';
 import { CommonApiMappingStrategies } from '../../common/advanced-filter/common-api-mapping-strategies';

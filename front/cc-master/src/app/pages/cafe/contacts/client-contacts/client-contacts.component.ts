@@ -6,7 +6,7 @@ import { defaultPagingParams, IPaginatedResult, PaginatedList, PaginatedListStat
 import { BehaviorSubject, Observable, pipe, ReplaySubject, Subject, UnaryFunction } from 'rxjs';
 import { filter, map, take, takeUntil } from 'rxjs/operators';
 
-import { AdvancedFilter, IAdvancedFilterForm } from '../../common/cafe-filters/advanced-filter-form';
+import { AdvancedFilter, IAdvancedFilterForm } from '../../common/components/advanced-filter-form';
 import { ClientContactAdvancedFilterConfiguration } from './advanced-filter/client-contact-advanced-filter.configuration';
 import { ClientContactAdvancedFilterApiMappingService } from './advanced-filter/client-contact-advanced-filter-api-mapping.service';
 import { IClientContact } from './client-contact.interface';

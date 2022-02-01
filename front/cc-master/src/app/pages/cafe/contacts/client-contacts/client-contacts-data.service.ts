@@ -4,7 +4,7 @@ import { DownloadService } from '@cc/common/download';
 import { IHttpApiV4CollectionCountResponse } from '@cc/common/queries';
 import { Observable } from 'rxjs';
 
-import { AdvancedFilter } from '../../common/cafe-filters/advanced-filter-form';
+import { AdvancedFilter } from '../../common/components/advanced-filter-form';
 import { toSearchDto } from '../../common/models';
 import { IClientContact } from './client-contact.interface';
 

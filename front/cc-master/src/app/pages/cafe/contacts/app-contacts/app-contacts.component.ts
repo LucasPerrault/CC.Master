@@ -9,7 +9,7 @@ import { filter, map, take, takeUntil } from 'rxjs/operators';
 import {
   AdvancedFilter,
   IAdvancedFilterForm,
-} from '../../common/cafe-filters/advanced-filter-form';
+} from '../../common/components/advanced-filter-form';
 import { AppContactAdvancedFilterConfiguration } from './advanced-filter/app-contact-advanced-filter.configuration';
 import { AppContactAdvancedFilterApiMappingService } from './advanced-filter/app-contact-advanced-filter-api-mapping.service';
 import { IAppContact } from './app-contact.interface';

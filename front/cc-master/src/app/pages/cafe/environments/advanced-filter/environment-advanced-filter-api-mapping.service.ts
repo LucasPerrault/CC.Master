@@ -8,8 +8,8 @@ import {
   IAdvancedFilterAttributes,
   IAdvancedFilterForm,
   IFilterCriterionEncapsulation,
-} from '../../common/cafe-filters/advanced-filter-form';
-import { AdvancedFilterOperatorMapping } from '../../common/cafe-filters/advanced-filter-form';
+} from '../../common/components/advanced-filter-form';
+import { AdvancedFilterOperatorMapping } from '../../common/components/advanced-filter-form';
 import { IEnvironment } from '../models/environment.interface';
 import { EnvironmentAdvancedFilterKey } from './environment-advanced-filter-key.enum';
 

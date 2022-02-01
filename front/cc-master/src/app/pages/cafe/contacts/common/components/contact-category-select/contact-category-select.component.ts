@@ -4,7 +4,7 @@ import { TranslatePipe } from '@cc/aspects/translate';
 import { Subject } from 'rxjs';
 import { filter, takeUntil } from 'rxjs/operators';
 
-import { ICategory } from '../../../../common/cafe-filters/category-filter/category-select/category.interface';
+import { ICategory } from '../../../../common/forms/select/category-select/category.interface';
 import { categories, getCategory } from '../../enums/cafe-contacts-category.enum';
 import { CafeContactCategoryService } from '../../services/cafe-contact-category.service';
 

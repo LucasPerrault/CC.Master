@@ -3,8 +3,8 @@ import {
   AdvancedFilterTypeMapping,
   ComparisonOperator,
   getComparisonBooleanValue,
-} from '../../../common/cafe-filters/advanced-filter-form';
-import { AdvancedFilterOperatorMapping } from '../../../common/cafe-filters/advanced-filter-form';
+} from '../../../common/components/advanced-filter-form';
+import { AdvancedFilterOperatorMapping } from '../../../common/components/advanced-filter-form';
 
 export class CommonApiMappingStrategies {
 

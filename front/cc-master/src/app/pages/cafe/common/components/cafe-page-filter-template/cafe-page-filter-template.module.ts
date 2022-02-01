@@ -3,8 +3,8 @@ import { NgModule } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { TranslateModule } from '@cc/aspects/translate';
 
-import { AdvancedFilterFormModule } from '../../cafe-filters/advanced-filter-form/advanced-filter-form.module';
-import { CategorySelectModule } from '../../cafe-filters/category-filter/category-select/category-select.module';
+import { CategorySelectModule } from '../../forms';
+import { AdvancedFilterFormModule } from '../advanced-filter-form/advanced-filter-form.module';
 import { CafePageFilterTemplateComponent } from './cafe-page-filter-template.component';
 
 @NgModule({

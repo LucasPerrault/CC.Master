@@ -4,8 +4,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
 
 import { CafeComponent } from './cafe.component';
-import { CafeFiltersModule } from './common/cafe-filters/cafe-filters.module';
-import { CafeCategoryService } from './common/services/cafe-category.service';
+import { CafeCategoriesService } from './common/services/cafe-categories.service';
 import { CafeContactsModule } from './contacts/cafe-contacts.module';
 import { CafeEnvironmentsModule } from './environments/cafe-environments.module';
 
@@ -16,11 +15,10 @@ import { CafeEnvironmentsModule } from './environments/cafe-environments.module'
   imports: [
     CommonModule,
     TranslateModule,
-    CafeFiltersModule,
     CafeEnvironmentsModule,
     CafeContactsModule,
     ReactiveFormsModule,
   ],
-  providers: [CafeCategoryService],
+  providers: [CafeCategoriesService],
 })
 export class CafeModule { }

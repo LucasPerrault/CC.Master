@@ -3,9 +3,9 @@ import { ControlValueAccessor, FormControl, NG_VALUE_ACCESSOR } from '@angular/f
 import { Subject } from 'rxjs';
 import { filter, map, takeUntil } from 'rxjs/operators';
 
-import { IAdvancedFilterConfiguration, IAdvancedFilterForm } from '../../cafe-filters/advanced-filter-form';
-import { AdvancedFilterFormService } from '../../cafe-filters/advanced-filter-form/advanced-filter-form.service';
-import { ICategory } from '../../cafe-filters/category-filter/category-select/category.interface';
+import { IAdvancedFilterConfiguration, IAdvancedFilterForm } from '../advanced-filter-form';
+import { AdvancedFilterFormService } from '../advanced-filter-form/advanced-filter-form.service';
+import { ICategory } from '../../forms/select/category-select/category.interface';
 import { categories, getCategory } from '../../enums/cafe-category.enum';
 import { CafeCategoriesService } from '../../services/cafe-categories.service';
 
