@@ -6,7 +6,10 @@ using Tools;
 
 namespace AdvancedFilters.Web.Binding
 {
-    public class AdvancedFilterModelBinder<TCriterion> : IModelBinder
+    public class AdvancedFilterModelBinder<TCriterion> : AdvancedFilterModelBinder<IAdvancedFilter, TCriterion>
+        where TCriterion : AdvancedCriterion
+    { }
+    public class AdvancedFilterModelBinder<T, TCriterion> : IModelBinder
         where TCriterion : AdvancedCriterion
     {
         public async Task BindModelAsync(ModelBindingContext bindingContext)
@@ -27,7 +30,7 @@ namespace AdvancedFilters.Web.Binding
             try
             {
                 var serializer = BuildPolymorphicSerializer();
-                var parsed = await serializer.DeserializeAsync<IAdvancedFilter>(req.Body);
+                var parsed = await serializer.DeserializeAsync<T>(req.Body);
 
                 bindingContext.Result = ModelBindingResult.Success(parsed);
             }
