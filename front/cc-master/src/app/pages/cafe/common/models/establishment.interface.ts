@@ -1,3 +1,6 @@
+import { IEnvironment } from './environment.interface';
+import { ILegalUnit } from './legal-unit.interface';
+
 export interface IEstablishment {
   id: number;
   name: string;
@@ -10,4 +13,7 @@ export interface IEstablishment {
   createdAt: string;
   isArchived: boolean;
   environmentId: number;
+
+  environment: IEnvironment;
+  legalUnit: ILegalUnit;
 }
