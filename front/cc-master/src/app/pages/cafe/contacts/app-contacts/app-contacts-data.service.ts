@@ -5,6 +5,7 @@ import { IHttpApiV4CollectionCountResponse } from '@cc/common/queries';
 import { Observable } from 'rxjs';
 
 import { AdvancedFilter } from '../../common/cafe-filters/advanced-filter-form';
+import { toSearchDto } from '../../common/models';
 import { IAppContact } from './app-contact.interface';
 
 @Injectable()
@@ -18,8 +19,9 @@ export class AppContactsDataService {
     const query = params.toString();
     const route = '/api/cafe/app-contacts/search';
     const url = [route, query].join('?');
+    const body = toSearchDto(advancedFilter);
 
-    return this.httpClient.post<IHttpApiV4CollectionCountResponse<IAppContact>>(url, advancedFilter);
+    return this.httpClient.post<IHttpApiV4CollectionCountResponse<IAppContact>>(url, body);
 	}
 
 	public exportAppContacts$(advancedFilter: AdvancedFilter): Observable<void> {

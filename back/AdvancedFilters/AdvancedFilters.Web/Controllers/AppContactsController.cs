@@ -40,11 +40,11 @@ namespace AdvancedFilters.Web.Controllers
         public Task<Page<AppContact>> SearchAsync
         (
             IPageToken pageToken,
-            [FromBody, ModelBinder(BinderType = typeof(AdvancedFilterModelBinder<AppContactAdvancedCriterion>))]
-            IAdvancedFilter criterion
+            [FromBody, ModelBinder(BinderType = typeof(AdvancedFilterModelBinder<AppContactSearchBody, AppContactAdvancedCriterion>))]
+            AppContactSearchBody body
         )
         {
-            return _store.SearchAsync(pageToken, criterion);
+            return _store.SearchAsync(pageToken, body.Criterion);
         }
 
         [HttpPost("export")]
@@ -59,6 +59,11 @@ namespace AdvancedFilters.Web.Controllers
             var filename = $"export-{System.DateTime.Now:yyyyMMdd-HHmmss}.csv";
             return _exportService.Export(contacts, filename);
         }
+    }
+
+    public class AppContactSearchBody
+    {
+        public IAdvancedFilter Criterion { get; set; }
     }
 
     public class AppContactsQuery
