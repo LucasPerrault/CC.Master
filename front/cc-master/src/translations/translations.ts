@@ -912,6 +912,7 @@
 		'cafe_establishments_count': {"one":"{{count}} establishment","other":"{{count}} establishments"},
 		'cafe_filters_establishment_country': "Establishment's country",
 		'cafe_filters_establishment_environment': "In the environment",
+		'cafe_filters_reset': "Reset filters",
 	},
 	"de": {
 		'front_hello_world': "Hallo Welt!",
@@ -1826,6 +1827,7 @@
 		'cafe_establishments_count': {"one":"{{count}} establishment","other":"{{count}} establishments"},
 		'cafe_filters_establishment_country': "Establishment's country",
 		'cafe_filters_establishment_environment': "In the environment",
+		'cafe_filters_reset': "Reset filters",
 	},
 	"fr": {
 		'front_hello_world': "Bonjour, monde !",
@@ -2740,6 +2742,7 @@
 		'cafe_establishments_count': {"one":"{{count}} établissement","other":"{{count}} établissements"},
 		'cafe_filters_establishment_country': "Pays de l'établissement",
 		'cafe_filters_establishment_environment': "Dans l'environnement",
+		'cafe_filters_reset': "Réinitialiser les filtres",
 	},
 	"it": {
 		'front_hello_world': "Ciao mondo!",
@@ -3654,6 +3657,7 @@
 		'cafe_establishments_count': {"one":"{{count}} establishment","other":"{{count}} establishments"},
 		'cafe_filters_establishment_country': "Establishment's country",
 		'cafe_filters_establishment_environment': "In the environment",
+		'cafe_filters_reset': "Reset filters",
 	},
 	"nl": {
 		'front_hello_world': "Hallo, wereld!",
@@ -4568,6 +4572,7 @@
 		'cafe_establishments_count': {"one":"{{count}} establishment","other":"{{count}} establishments"},
 		'cafe_filters_establishment_country': "Establishment's country",
 		'cafe_filters_establishment_environment': "In the environment",
+		'cafe_filters_reset': "Reset filters",
 	},
 	"nl-BE": {
 		'front_hello_world': "Hallo wereld!",
@@ -5482,6 +5487,7 @@
 		'cafe_establishments_count': {"one":"{{count}} establishment","other":"{{count}} establishments"},
 		'cafe_filters_establishment_country': "Establishment's country",
 		'cafe_filters_establishment_environment': "In the environment",
+		'cafe_filters_reset': "Reset filters",
 	},
 	"es": {
 		'front_hello_world': "¡Hola, mundo!",
@@ -6396,6 +6402,7 @@
 		'cafe_establishments_count': {"one":"{{count}} establishment","other":"{{count}} establishments"},
 		'cafe_filters_establishment_country': "Establishment's country",
 		'cafe_filters_establishment_environment': "In the environment",
+		'cafe_filters_reset': "Reset filters",
 	},
 	"pt": {
 		'front_hello_world': "Olá mundo!",
@@ -7310,5 +7317,6 @@
 		'cafe_establishments_count': {"one":"{{count}} establishment","other":"{{count}} establishments"},
 		'cafe_filters_establishment_country': "Establishment's country",
 		'cafe_filters_establishment_environment': "In the environment",
+		'cafe_filters_reset': "Reset filters",
 	},
 };

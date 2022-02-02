@@ -7,10 +7,17 @@
 
   <ng-content select="[main-filters]"></ng-content>
 
-  <button *ngIf="!!advancedFilterConfig" class="button palette-grey mod-outlined mod-counter u-marginLeftAuto"
-          (click)="toggleFilterDisplay()">
-    {{ 'cafe_filters_button_label' | translate }} <span class="button-counter">{{ filterCount }}</span>
-  </button>
+  <div *ngIf="!!advancedFilterConfig" class="u-marginLeftAuto">
+    <a class="mod-resetLink" (click)="reset()">
+      {{ 'cafe_filters_reset' | translate }}
+    </a>
+
+    <button class="button palette-grey mod-outlined mod-counter"
+            (click)="toggleFilterDisplay()">
+      {{ 'cafe_filters_button_label' | translate }} <span class="button-counter">{{ filterCount }}</span>
+    </button>
+  </div>
+
 </div>
 
 <div *ngIf="!!advancedFilterConfig" [ngClass]="{ 'mod-hidden': !showAdvancedFilter }">
@@ -27,10 +34,6 @@
 
     <div class="u-marginLeftAuto">
       <ng-content select="[footer-right-actions]"></ng-content>
-
-      <button class="button palette-grey mod-outline" (click)="reset()">
-        {{ 'cafe_filters_delete_all_button_label' | translate }}
-      </button>
 
       <button class="button palette-grey" (click)="submit()" [disabled]="!filterValid">
         {{ 'cafe_filters_submit_button_label' | translate }}

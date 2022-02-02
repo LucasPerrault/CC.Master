@@ -1,3 +1,5 @@
+@import "theming.import";
+
 :host {
   display: flex;
   flex-direction: column;
@@ -6,4 +8,11 @@
 
 .mod-hidden {
   display: none;
+}
+
+.mod-resetLink {
+  color: _color('grey', '700');
+  margin-right: _theme('spacings.small');
+
+  &:hover { color: _color('grey', '900'); }
 }
