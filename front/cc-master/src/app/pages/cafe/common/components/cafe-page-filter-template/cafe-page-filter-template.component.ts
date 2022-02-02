@@ -25,7 +25,7 @@ export class CafePageFilterTemplateComponent implements OnInit, OnDestroy, Contr
   @Input() public advancedFilterConfig: IAdvancedFilterConfiguration;
 
   public get filterCount(): number {
-    return this.advancedFilter.value?.criterionForms?.length ?? 0;
+    return this.advancedFilter.value?.criterionForms?.filter(c => !!c)?.length ?? 0;
   }
 
   public get filterValid(): boolean {
