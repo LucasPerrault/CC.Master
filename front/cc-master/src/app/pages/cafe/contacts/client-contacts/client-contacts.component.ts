@@ -41,7 +41,7 @@ export class ClientContactsComponent implements OnInit, OnDestroy {
   }
 
   public filters: FormControl = new FormControl();
-  public searchDto$ = new BehaviorSubject<AdvancedFilter>(null);
+  public advancedFilter$ = new BehaviorSubject<AdvancedFilter>(null);
   public exportButtonClass$ = new ReplaySubject<string>(1);
 
 
@@ -67,13 +67,13 @@ export class ClientContactsComponent implements OnInit, OnDestroy {
   }
 
   public ngOnInit(): void {
-    this.searchDto$
+    this.advancedFilter$
       .pipe(takeUntil(this.destroy$), filter(f => !!f))
       .subscribe(() => this.refresh());
 
     this.filters.valueChanges
-      .pipe(takeUntil(this.destroy$), this.toApiMapping)
-      .subscribe(searchDto => this.searchDto$.next(searchDto));
+      .pipe(takeUntil(this.destroy$), this.toAdvancedFilter)
+      .subscribe(advancedFilter => this.advancedFilter$.next(advancedFilter));
   }
 
   public ngOnDestroy(): void {
@@ -86,7 +86,7 @@ export class ClientContactsComponent implements OnInit, OnDestroy {
   }
 
   public export(): void {
-    this.contactsService.exportClientContacts$(this.searchDto$.value)
+    this.contactsService.exportClientContacts$(this.advancedFilter$.value)
       .pipe(take(1), toSubmissionState(), map(state => getButtonState(state)))
       .subscribe(c => this.exportButtonClass$.next(c));
   }
@@ -97,7 +97,7 @@ export class ClientContactsComponent implements OnInit, OnDestroy {
 
   private getPaginatedClientContacts$(): PaginatedList<IClientContact> {
     return this.pagingService.paginate<IClientContact>(
-      (httpParams) => this.getClientContacts$(httpParams, this.searchDto$.value),
+      (httpParams) => this.getClientContacts$(httpParams, this.advancedFilter$.value),
       { page: defaultPagingParams.page, limit: 50 },
     );
   }
@@ -107,7 +107,7 @@ export class ClientContactsComponent implements OnInit, OnDestroy {
       .pipe(map(res => ({ items: res.items, totalCount: res.count })));
   }
 
-  private get toApiMapping(): UnaryFunction<Observable<IAdvancedFilterForm>, Observable<AdvancedFilter>> {
+  private get toAdvancedFilter(): UnaryFunction<Observable<IAdvancedFilterForm>, Observable<AdvancedFilter>> {
     return pipe(map(filters => this.apiMappingService.toAdvancedFilter(filters)));
   }
 }

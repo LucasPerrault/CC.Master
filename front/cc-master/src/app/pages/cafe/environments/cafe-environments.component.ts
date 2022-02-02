@@ -46,7 +46,7 @@ export class CafeEnvironmentsComponent implements OnInit, OnDestroy {
   ]));
 
   public filters: FormControl = new FormControl();
-  public searchDto$ = new BehaviorSubject<AdvancedFilter>(null);
+  public advancedFilter$ = new BehaviorSubject<AdvancedFilter>(null);
 
   private paginatedEnvironments: PaginatedList<IEnvironment>;
   private destroy$: Subject<void> = new Subject<void>();
@@ -61,13 +61,13 @@ export class CafeEnvironmentsComponent implements OnInit, OnDestroy {
   }
 
   public ngOnInit(): void {
-    this.searchDto$
+    this.advancedFilter$
       .pipe(takeUntil(this.destroy$), filter(f => !!f))
       .subscribe(() => this.refresh());
 
     this.filters.valueChanges
-      .pipe(takeUntil(this.destroy$), this.toApiMapping)
-      .subscribe(searchDto => this.searchDto$.next(searchDto));
+      .pipe(takeUntil(this.destroy$), this.toAdvancedFilter)
+      .subscribe(advancedFilter => this.advancedFilter$.next(advancedFilter));
   }
 
   public ngOnDestroy(): void {
@@ -80,7 +80,7 @@ export class CafeEnvironmentsComponent implements OnInit, OnDestroy {
   }
 
   public export(): void {
-    this.environmentsDataService.exportEnvironments$(this.searchDto$.value)
+    this.environmentsDataService.exportEnvironments$(this.advancedFilter$.value)
       .pipe(take(1), toSubmissionState(), map(state => getButtonState(state)))
       .subscribe(c => this.exportButtonClass$.next(c));
   }
@@ -91,7 +91,7 @@ export class CafeEnvironmentsComponent implements OnInit, OnDestroy {
 
   private getPaginatedEnvironments$(): PaginatedList<IEnvironment> {
     return this.pagingService.paginate<IEnvironment>(
-      (httpParams) => this.getEnvironments$(httpParams, this.searchDto$.value),
+      (httpParams) => this.getEnvironments$(httpParams, this.advancedFilter$.value),
       { page: defaultPagingParams.page, limit: 50 },
     );
   }
@@ -102,7 +102,7 @@ export class CafeEnvironmentsComponent implements OnInit, OnDestroy {
     );
   }
 
-  private get toApiMapping(): UnaryFunction<Observable<IAdvancedFilterForm>, Observable<AdvancedFilter>> {
+  private get toAdvancedFilter(): UnaryFunction<Observable<IAdvancedFilterForm>, Observable<AdvancedFilter>> {
     return pipe(map(filters => this.apiMappingService.toAdvancedFilter(filters)));
   }
 }
