@@ -913,6 +913,8 @@
 		'cafe_filters_establishment_country': "Establishment's country",
 		'cafe_filters_establishment_environment': "In the environment",
 		'cafe_filters_reset': "Reset filters",
+		'select_facets_and_columns_label': "selected columns",
+		'select_facets_and_columns_placeholder': "Columns to display",
 	},
 	"de": {
 		'front_hello_world': "Hallo Welt!",
@@ -1828,6 +1830,8 @@
 		'cafe_filters_establishment_country': "Establishment's country",
 		'cafe_filters_establishment_environment': "In the environment",
 		'cafe_filters_reset': "Reset filters",
+		'select_facets_and_columns_label': "selected columns",
+		'select_facets_and_columns_placeholder': "Columns to display",
 	},
 	"fr": {
 		'front_hello_world': "Bonjour, monde !",
@@ -2743,6 +2747,8 @@
 		'cafe_filters_establishment_country': "Pays de l'établissement",
 		'cafe_filters_establishment_environment': "Dans l'environnement",
 		'cafe_filters_reset': "Réinitialiser les filtres",
+		'select_facets_and_columns_label': "colonnes sélectionnées",
+		'select_facets_and_columns_placeholder': "Colonnes à afficher",
 	},
 	"it": {
 		'front_hello_world': "Ciao mondo!",
@@ -3658,6 +3664,8 @@
 		'cafe_filters_establishment_country': "Establishment's country",
 		'cafe_filters_establishment_environment': "In the environment",
 		'cafe_filters_reset': "Reset filters",
+		'select_facets_and_columns_label': "selected columns",
+		'select_facets_and_columns_placeholder': "Columns to display",
 	},
 	"nl": {
 		'front_hello_world': "Hallo, wereld!",
@@ -4573,6 +4581,8 @@
 		'cafe_filters_establishment_country': "Establishment's country",
 		'cafe_filters_establishment_environment': "In the environment",
 		'cafe_filters_reset': "Reset filters",
+		'select_facets_and_columns_label': "selected columns",
+		'select_facets_and_columns_placeholder': "Columns to display",
 	},
 	"nl-BE": {
 		'front_hello_world': "Hallo wereld!",
@@ -5488,6 +5498,8 @@
 		'cafe_filters_establishment_country': "Establishment's country",
 		'cafe_filters_establishment_environment': "In the environment",
 		'cafe_filters_reset': "Reset filters",
+		'select_facets_and_columns_label': "selected columns",
+		'select_facets_and_columns_placeholder': "Columns to display",
 	},
 	"es": {
 		'front_hello_world': "¡Hola, mundo!",
@@ -6403,6 +6415,8 @@
 		'cafe_filters_establishment_country': "Establishment's country",
 		'cafe_filters_establishment_environment': "In the environment",
 		'cafe_filters_reset': "Reset filters",
+		'select_facets_and_columns_label': "selected columns",
+		'select_facets_and_columns_placeholder': "Columns to display",
 	},
 	"pt": {
 		'front_hello_world': "Olá mundo!",
@@ -7318,5 +7332,7 @@
 		'cafe_filters_establishment_country': "Establishment's country",
 		'cafe_filters_establishment_environment': "In the environment",
 		'cafe_filters_reset': "Reset filters",
+		'select_facets_and_columns_label': "selected columns",
+		'select_facets_and_columns_placeholder': "Columns to display",
 	},
 };

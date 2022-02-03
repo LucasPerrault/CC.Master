@@ -1,13 +1,11 @@
 import { Component, Input } from '@angular/core';
 import { TranslatePipe } from '@cc/aspects/translate';
 
+import { EnvironmentAdditionalColumn } from '../../../common/forms/select/facets-and-columns-api-select';
+import { IAdditionalColumn } from '../../../common/models';
 import { DistributorType, IEnvironment } from '../../../common/models/environment.interface';
 import { ILegalUnit } from '../../../common/models/legal-unit.interface';
 import { IAppInstance } from '../../models/app-instance.interface';
-import {
-  EnvironmentAdditionalColumn,
-  IEnvironmentAdditionalColumn,
-} from '../environment-additional-column-select/environment-additional-column.enum';
 
 @Component({
   selector: 'cc-environment-list',
@@ -16,7 +14,7 @@ import {
 })
 export class EnvironmentListComponent {
   @Input() public environments: IEnvironment[];
-  @Input() public selectedColumns: IEnvironmentAdditionalColumn[];
+  @Input() public selectedColumns: IAdditionalColumn[];
 
   public additionalColumn = EnvironmentAdditionalColumn;
 
