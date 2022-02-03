@@ -1,5 +1,13 @@
-import { Component, forwardRef, Input, OnDestroy, OnInit } from '@angular/core';
-import { ControlValueAccessor, FormControl, NG_VALUE_ACCESSOR } from '@angular/forms';
+import { Component, EventEmitter, forwardRef, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import {
+  AbstractControl,
+  ControlValueAccessor,
+  FormControl,
+  NG_VALIDATORS,
+  NG_VALUE_ACCESSOR,
+  ValidationErrors,
+  Validator,
+} from '@angular/forms';
 import { Subject } from 'rxjs';
 import { filter, map, takeUntil } from 'rxjs/operators';
 
@@ -19,17 +27,21 @@ import { AdvancedFilterFormService } from '../advanced-filter-form/advanced-filt
       useExisting: forwardRef(() => CafePageFilterTemplateComponent),
       multi: true,
     },
+    {
+      provide: NG_VALIDATORS,
+      multi: true,
+      useExisting: CafePageFilterTemplateComponent,
+    },
   ],
 })
-export class CafePageFilterTemplateComponent implements OnInit, OnDestroy, ControlValueAccessor {
+export class CafePageFilterTemplateComponent implements OnInit, OnDestroy, ControlValueAccessor, Validator {
   @Input() public advancedFilterConfig: IAdvancedFilterConfiguration;
+  @Input() public submitDisabled: boolean;
+  // eslint-disable-next-line @angular-eslint/no-output-native
+  @Output() public submit = new EventEmitter<void>();
 
   public get filterCount(): number {
     return this.advancedFilter.value?.criterionForms?.filter(c => !!c)?.length ?? 0;
-  }
-
-  public get filterValid(): boolean {
-    return this.advancedFilter.dirty && this.advancedFilter.valid;
   }
 
   public categories: ICategory[] = categories;
@@ -57,6 +69,10 @@ export class CafePageFilterTemplateComponent implements OnInit, OnDestroy, Contr
     this.category.valueChanges
       .pipe(takeUntil(this.destroy$), filter(c => !!c))
       .subscribe(category => this.categoryService.update(category.id));
+
+    this.advancedFilter.valueChanges
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(f => this.onChange(f));
   }
 
   public ngOnDestroy(): void {
@@ -81,6 +97,12 @@ export class CafePageFilterTemplateComponent implements OnInit, OnDestroy, Contr
     }
   }
 
+  public validate(control: AbstractControl): ValidationErrors | null {
+    if (!this.advancedFilter.dirty || !this.advancedFilter.valid) {
+      return { invalid: true };
+    }
+  }
+
   public toggleFilterDisplay(): void {
     this.showAdvancedFilter = !this.showAdvancedFilter;
   }
@@ -89,8 +111,8 @@ export class CafePageFilterTemplateComponent implements OnInit, OnDestroy, Contr
     this.showAdvancedFilter = false;
   }
 
-  public submit(): void {
-    this.onChange(this.advancedFilter.value);
+  public submitForm(): void {
+    this.submit.emit();
   }
 
   public reset(): void {

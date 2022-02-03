@@ -35,7 +35,7 @@
     <div class="u-marginLeftAuto">
       <ng-content select="[footer-right-actions]"></ng-content>
 
-      <button class="button palette-grey" (click)="submit()" [disabled]="!filterValid">
+      <button class="button palette-grey" (click)="submitForm()" [disabled]="submitDisabled">
         {{ 'cafe_filters_submit_button_label' | translate }}
       </button>
 
