@@ -1,3 +1,5 @@
+import { IAdditionalColumn } from '../../../../models';
+
 export enum EnvironmentAdditionalColumn {
   Environment = 'environment',
   AppInstances = 'appInstances',
@@ -8,12 +10,7 @@ export enum EnvironmentAdditionalColumn {
   DistributorType = 'distributorType',
 }
 
-export interface IEnvironmentAdditionalColumn {
-  id: EnvironmentAdditionalColumn;
-  name: string;
-}
-
-export const environmentAdditionalColumns: IEnvironmentAdditionalColumn[] = [
+export const environmentAdditionalColumns: IAdditionalColumn[] = [
   {
     id: EnvironmentAdditionalColumn.Environment,
     name: 'cafe_environments_list_environment',
@@ -44,5 +41,5 @@ export const environmentAdditionalColumns: IEnvironmentAdditionalColumn[] = [
   },
 ];
 
-export const getAdditionalColumnByIds = (ids: EnvironmentAdditionalColumn[]): IEnvironmentAdditionalColumn[] =>
-    environmentAdditionalColumns.filter(c => ids.includes(c.id));
+export const getAdditionalColumnByIds = (ids: EnvironmentAdditionalColumn[]): IAdditionalColumn[] =>
+    environmentAdditionalColumns.filter(c => ids.includes(c.id as EnvironmentAdditionalColumn));

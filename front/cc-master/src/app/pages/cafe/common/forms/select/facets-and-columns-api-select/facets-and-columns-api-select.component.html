@@ -1,0 +1,29 @@
+<lu-select [formControl]="formControl"
+           class="textfield-input"
+           [placeholder]="placeholder"
+           [multiple]="true"
+           (blur)="onTouch()">
+
+  <ng-container *luDisplayer="let value; multiple: true">
+      <ng-container *ngIf="value?.length !== 1; else: singleView">
+        <span class="label">{{ value.length }}</span>
+        {{ 'select_facets_and_columns_label' | translate }}
+      </ng-container>
+
+      <ng-template #singleView>{{ value[0].name }}</ng-template>
+  </ng-container>
+
+  <lu-option-picker-advanced [option-comparer]="compareWithFn">
+    <header class="lu-picker-header">
+      <lu-api-paged-searcher standard="v4"></lu-api-paged-searcher>
+    </header>
+
+    <lu-option *luForOptions="let facetOrColumn; trackBy: trackBy" [value]="facetOrColumn">
+      {{ facetOrColumn.name }}
+    </lu-option>
+
+  </lu-option-picker-advanced>
+
+  <lu-input-clearer></lu-input-clearer>
+</lu-select>
+
