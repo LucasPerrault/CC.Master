@@ -37,14 +37,13 @@ export class ClientContactsComponent implements OnInit, OnDestroy {
     return this.paginatedContacts.state$.pipe(map(state => state === PaginatedListState.Update));
   }
 
-  public get canExport(): boolean {
-    return !!this.filters?.value?.criterionForms?.length;
+  public get submitDisabled(): boolean {
+    return !this.filters.dirty || !this.filters.valid;
   }
 
   public filters: FormControl = new FormControl();
   public advancedFilter$ = new BehaviorSubject<AdvancedFilter>(null);
   public exportButtonClass$ = new ReplaySubject<string>(1);
-
 
   public selectedColumns: FormControl = new FormControl(getAdditionalColumnByIds([
     ClientContactAdditionalColumn.Environment,
@@ -68,12 +67,8 @@ export class ClientContactsComponent implements OnInit, OnDestroy {
   }
 
   public ngOnInit(): void {
-    this.advancedFilter$
-      .pipe(takeUntil(this.destroy$), filter(f => !!f))
-      .subscribe(() => this.refresh());
-
     this.filters.valueChanges
-      .pipe(takeUntil(this.destroy$), this.toAdvancedFilter)
+      .pipe(takeUntil(this.destroy$), filter(() => !this.submitDisabled), this.toAdvancedFilter)
       .subscribe(advancedFilter => this.advancedFilter$.next(advancedFilter));
   }
 
@@ -86,14 +81,14 @@ export class ClientContactsComponent implements OnInit, OnDestroy {
     this.paginatedContacts.nextPage();
   }
 
+  public submit(): void {
+    this.paginatedContacts.updateHttpParams(new HttpParams());
+  }
+
   public export(): void {
     this.contactsService.exportClientContacts$(this.advancedFilter$.value)
       .pipe(take(1), toSubmissionState(), map(state => getButtonState(state)))
       .subscribe(c => this.exportButtonClass$.next(c));
-  }
-
-  private refresh(): void {
-    this.paginatedContacts.updateHttpParams(new HttpParams());
   }
 
   private getPaginatedClientContacts$(): PaginatedList<IClientContact> {
