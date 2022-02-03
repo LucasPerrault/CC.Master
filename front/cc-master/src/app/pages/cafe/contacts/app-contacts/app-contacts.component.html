@@ -1,15 +1,23 @@
 <cc-cafe-page-template>
   <ng-container page-header-right>
     <button class="button primary u-marginBottomStandard" type="button"
-            [class]="exportButtonClass$ | async" [disabled]="!canExport" (click)="export()">
+            [class]="exportButtonClass$ | async" [disabled]="submitDisabled" (click)="export()">
       {{ 'cafe_export_button' | translate }}
     </button>
   </ng-container>
 
   <ng-container page-subheader>
-    <cc-cafe-page-filter-template [advancedFilterConfig]="configuration" [formControl]="filters">
+    <cc-cafe-page-filter-template [advancedFilterConfig]="configuration" [formControl]="filters"
+                                  [submitDisabled]="submitDisabled" (submit)="submit()">
       <ng-container main-filters>
         <cc-contact-category-select></cc-contact-category-select>
+      </ng-container>
+
+      <ng-container footer-right-actions>
+        <cc-contact-additional-column-select textfieldClass="palette-grey mod-outlined mod-long mod-inline"
+                                             [additionalColumns]="additionalColumns"
+                                             [formControl]="selectedColumns">
+        </cc-contact-additional-column-select>
       </ng-container>
     </cc-cafe-page-filter-template>
   </ng-container>
@@ -20,10 +28,6 @@
     <ng-template #isNotLoading>
       <h4 class="page-content page-resultsCount u-displayFlex u-alignItemsCenter u-justifyContentSpaceBetween">
         {{ 'cafe_contacts_count' | translate : { count: contactsCount$ | async } }}
-        <cc-contact-additional-column-select textfieldClass="palette-grey mod-outlined mod-long"
-                                             [additionalColumns]="additionalColumns"
-                                             [formControl]="selectedColumns">
-        </cc-contact-additional-column-select>
       </h4>
 
       <cc-app-contact-list ccInfiniteScroll
