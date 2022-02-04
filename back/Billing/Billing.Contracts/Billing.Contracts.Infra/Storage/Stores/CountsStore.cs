@@ -26,7 +26,8 @@ namespace Billing.Contracts.Infra.Storage.Stores
                 .ToListAsync();
         }
 
-        private IQueryable<Count> Counts => _dbContext.Set<Count>();
+        private IQueryable<Count> Counts => _dbContext.Set<Count>()
+            .Include(c => c.Contract);
     }
 
     internal static class CountsQueryableExtensions
@@ -36,7 +37,9 @@ namespace Billing.Contracts.Infra.Storage.Stores
             return counts
                 .WhenNotNullOrEmpty(filter.Ids).ApplyWhere(c => filter.Ids.Contains(c.Id))
                 .WhenNotNullOrEmpty(filter.CommercialOfferIds).ApplyWhere(c => filter.CommercialOfferIds.Contains(c.CommercialOfferId))
-                .WhenNotNullOrEmpty(filter.ContractIds).ApplyWhere(c => filter.ContractIds.Contains(c.ContractId));
+                .WhenNotNullOrEmpty(filter.ContractIds).ApplyWhere(c => filter.ContractIds.Contains(c.ContractId))
+                .WhenNotNullOrEmpty(filter.Codes).ApplyWhere(c => filter.Codes.Contains(c.Code))
+                .WhenNotNullOrEmpty(filter.Periods).ApplyWhere(c => filter.Periods.Contains(c.CountPeriod));
         }
     }
 }
