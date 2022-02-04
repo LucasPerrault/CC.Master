@@ -116,9 +116,9 @@ namespace Instances.Web
 
             services.AddScoped<ICodeSourcesRepository, CodeSourcesRepository>();
             services.AddHttpClient<ICodeSourceFetcherService, CodeSourceFetcherService>(c =>
-            {
-                c.WithUserAgent(nameof(CodeSourceFetcherService));
-            });
+                c.WithUserAgent(nameof(CodeSourceFetcherService))
+                .WithBaseAddress(configuration.SqlScriptPicker.JenkinsBaseUri)
+            );
             services.AddScoped<IGithubBranchesRepository, GithubBranchesRepository>();
             services.AddScoped<IGithubPullRequestsRepository, GithubPullRequestsRepository>();
             services.AddScoped<IPreviewConfigurationsRepository, PreviewConfigurationsRepository>();

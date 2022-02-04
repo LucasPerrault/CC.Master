@@ -99,7 +99,7 @@ namespace Instances.Infra.CodeSources
                 {
                     return _cacheRawJenkinsJobs;
                 }
-                var response = await _httpClient.GetAsync("http://jenkins2.lucca.local:8080/api/json/?tree=jobs[name,url,jobs[name,url]]");
+                var response = await _httpClient.GetAsync("/api/json/?tree=jobs[name,url,jobs[name,url]]");
                 if (!response.IsSuccessStatusCode)
                 {
                     _logger.LogError($"Failed to get jenkins jobs, response {response.StatusCode} : {await response.Content.ReadAsStringAsync()} ");
