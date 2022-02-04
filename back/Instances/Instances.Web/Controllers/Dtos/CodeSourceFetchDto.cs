@@ -1,7 +1,9 @@
+using System;
+
 namespace Instances.Web.Controllers.Dtos
 {
     public class CodeSourceFetchDto
     {
-        public string RepoUrl { get; set; }
+        public Uri RepoUrl { get; set; }
     }
 }

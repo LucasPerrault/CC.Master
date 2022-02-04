@@ -24,7 +24,7 @@ namespace Instances.Application.Instances
         public Task CreateByBranchAsync(IEnumerable<GithubBranch> branches)
         {
             var previewConfigurations = branches.SelectMany(branch =>
-               branch.CodeSources.Select(
+               branch.Repo.CodeSources.Select(
                    codeSource => CreatePreviewConfigurationObject(branch, codeSource, $"{codeSource.Name} - {branch.Name}")
             ));
             return _previewConfigurationsStore.CreateAsync(previewConfigurations);
@@ -32,7 +32,7 @@ namespace Instances.Application.Instances
 
         public Task CreateByPullRequestAsync(GithubPullRequest pullRequest, GithubBranch originBranch)
         {
-            var previewConfigurations = originBranch.CodeSources.Select(
+            var previewConfigurations = originBranch.Repo.CodeSources.Select(
                 codeSource => CreatePreviewConfigurationObject(originBranch, codeSource, $"{codeSource.Name} - #{pullRequest.Number} : {pullRequest.Title}")
             );
             return _previewConfigurationsStore.CreateAsync(previewConfigurations);

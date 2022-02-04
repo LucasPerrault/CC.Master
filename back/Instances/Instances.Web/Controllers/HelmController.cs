@@ -39,7 +39,17 @@ namespace Instances.Web.Controllers
                 throw new BadRequestException($"{nameof(query.LastStable)} and {nameof(query.GitRef)} cannot not be defined at the same time");
             }
 
-            return _helmRepository.GetAllReleasesAsync(query.ReleaseName, query.GitRef, query.LastStable);
+            if (!query.LastStable && string.IsNullOrEmpty(query.ReleaseName))
+            {
+                throw new BadRequestException($"Either {nameof(query.ReleaseName)} should be given or {nameof(query.LastStable)} should be true");
+            }
+
+            if (query.LastStable && string.IsNullOrEmpty(query.ReleaseName))
+            {
+                return _helmRepository.GetAllReleasesAsync(HelmRequest.ForAllRepos());
+            }
+
+            return _helmRepository.GetAllReleasesAsync(HelmRequest.ForRepo(query.ReleaseName, query.GitRef, query.LastStable));
         }
     }
 }

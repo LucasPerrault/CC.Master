@@ -1,6 +1,7 @@
 using FluentAssertions;
 using Instances.Application.CodeSources;
 using Instances.Application.Instances;
+using Instances.Application.Instances.Dtos;
 using Instances.Domain.CodeSources;
 using Instances.Domain.CodeSources.Filtering;
 using Instances.Domain.Github;
@@ -30,12 +31,13 @@ namespace Instances.Application.Tests.CodeSources
         private readonly Mock<IArtifactsService> _artifactsServiceMock;
         private readonly Mock<IGithubService> _githubServiceMock;
         private readonly Mock<IPreviewConfigurationsRepository> _previewConfigurationsRepositoryMock;
+        private readonly Mock<IGithubReposStore> _githubReposStoreMock;
 
         private readonly CodeSourcesRepository _codeSourcesRepository;
 
         public CodeSourcesRepositoryTests()
         {
-            _githubBranchesStoreMock = new Mock<IGithubBranchesStore>();
+            _githubBranchesStoreMock = new Mock<IGithubBranchesStore>(MockBehavior.Strict);
             _queryPagerMock = new Mock<IQueryPager>();
             _queryPagerMock
                 .Setup(p => p.ToPageAsync(It.IsAny<IQueryable<CodeSource>>(), It.IsAny<IPageToken>()))
@@ -48,6 +50,7 @@ namespace Instances.Application.Tests.CodeSources
             _artifactsServiceMock = new Mock<IArtifactsService>(MockBehavior.Strict);
             _githubServiceMock = new Mock<IGithubService>(MockBehavior.Strict);
             _previewConfigurationsRepositoryMock = new Mock<IPreviewConfigurationsRepository>(MockBehavior.Strict);
+            _githubReposStoreMock = new(MockBehavior.Strict);
 
             _codeSourcesRepository = new CodeSourcesRepository(
                 new CodeSourcesStore(_instancesDbContext, _queryPagerMock.Object),
@@ -56,7 +59,8 @@ namespace Instances.Application.Tests.CodeSources
                 _codeSourceBuildUrlServiceMock.Object,
                 _artifactsServiceMock.Object,
                 _githubServiceMock.Object,
-                _previewConfigurationsRepositoryMock.Object
+                _previewConfigurationsRepositoryMock.Object,
+                _githubReposStoreMock.Object
             );
         }
 
@@ -101,7 +105,7 @@ namespace Instances.Application.Tests.CodeSources
         [Fact]
         public async Task ShouldCallFetcherWhenFetchingRepo()
         {
-            var repoUrl = "https://github.com/aperture-science/glados";
+            var repoUrl = new Uri("https://github.com/aperture-science/glados");
 
             await _codeSourcesRepository.FetchFromRepoAsync(repoUrl);
 
@@ -287,86 +291,65 @@ namespace Instances.Application.Tests.CodeSources
         }
         #endregion GetArtifactsAsync
 
-        #region GetNonDeletedByRepositoryUrlAsync
-        [Fact]
-        public async Task GetNonDeletedByRepositoryUrlAsync_Ok()
-        {
-            var repositoryUrl = "https://github.com/LuccaSA/myRepo";
-
-            await _instancesDbContext.AddAsync(new CodeSource { Id = 10, Lifecycle = CodeSourceLifecycleStep.Preview, GithubRepo = repositoryUrl });
-            await _instancesDbContext.AddAsync(new CodeSource { Id = 11, Lifecycle = CodeSourceLifecycleStep.Deleted, GithubRepo = repositoryUrl });
-            await _instancesDbContext.AddAsync(new CodeSource { Id = 13, Lifecycle = CodeSourceLifecycleStep.Referenced, GithubRepo = "http://github.com/LuccaSA/BadRepo" });
-            await _instancesDbContext.SaveChangesAsync();
-
-            var result = await _codeSourcesRepository.GetNonDeletedByRepositoryUrlAsync(repositoryUrl);
-
-            result.Should().HaveCount(1);
-        }
-        #endregion
-
         #region CreateAsync
         [Fact]
         public async Task Existing_CreateAsync()
         {
-            var githubRepo = "https://github.com/LuccaSA/repo";
-            var githubBranch = new GithubBranch()
-            {
-                CodeSources = new List<CodeSource>()
-            };
+            var githubRepoUrl = new Uri("https://github.com/LuccaSA/repo");
+            var githubRepo = new GithubRepo { Id = 10, Name = "repo", Url = githubRepoUrl };
 
-            await _instancesDbContext.AddAsync(new CodeSource { Id = 1, Lifecycle = CodeSourceLifecycleStep.InProduction, GithubRepo = githubRepo });
+            await _instancesDbContext.AddAsync(githubRepo);
+            await _instancesDbContext.AddAsync(new CodeSource { Id = 1, Lifecycle = CodeSourceLifecycleStep.InProduction, RepoId = 10 });
             await _instancesDbContext.SaveChangesAsync();
 
-            _githubBranchesStoreMock
-                .Setup(gb => gb.GetAsync(It.IsAny<GithubBranchFilter>()))
-                .ReturnsAsync(new List<GithubBranch> { githubBranch });
-            _githubBranchesStoreMock
-                .Setup(gb => gb.UpdateAsync(It.IsAny<List<GithubBranch>>()))
-                .Returns(Task.CompletedTask);
+            _githubReposStoreMock
+                .Setup(gr => gr.GetByUriAsync(It.IsAny<Uri>()))
+                .ReturnsAsync(githubRepo);
 
-            await _codeSourcesRepository.CreateAsync(new CodeSource
+            var createdCodeSource = await _codeSourcesRepository.CreateAsync(new CreateCodeSourceDto
             {
-                Id = 2,
-                GithubRepo = githubRepo
+                RepoUrl = githubRepoUrl
             });
 
-            githubBranch.CodeSources.Should().NotBeEmpty();
+            createdCodeSource.Should().NotBeNull();
+            createdCodeSource.RepoId.Should().Be(githubRepo.Id);
         }
 
         [Fact]
         public async Task New_CreateAsync()
         {
-            var githubRepo = "https://github.com/LuccaSA/repo";
-            GithubBranch captured = null;
-            _githubBranchesStoreMock
-                .Setup(gb => gb.CreateAsync(It.IsAny<IEnumerable<GithubBranch>>()))
-                .Returns<IEnumerable<GithubBranch>>(gb => {
-                    captured = gb.First();
-                    return Task.FromResult(gb.ToList());
+            var githubRepoUrl = new Uri("https://github.com/LuccaSA/repo");
+            var branchName = "myBranch";
+
+            _githubReposStoreMock
+                .Setup(gr => gr.GetByUriAsync(It.IsAny<Uri>()))
+                .ReturnsAsync((GithubRepo)null);
+            _githubReposStoreMock
+                .Setup(gr => gr.CreateAsync(It.IsAny<Uri>()))
+                .ReturnsAsync(new GithubRepo
+                {
+                    Id = 10,
+                    Url = githubRepoUrl
                 });
             _githubServiceMock
-                .Setup(g => g.GetGithubBranchHeadCommitInfoAsync(It.IsAny<string>(), It.IsAny<string>()))
-                .ReturnsAsync(new GithubApiCommit());
+                .Setup(gs => gs.GetBranchNamesAsync(It.IsAny<Uri>()))
+                .ReturnsAsync(new List<string> { branchName });
             _githubServiceMock
-                .Setup(g => g.GetBranchNamesAsync(It.IsAny<string>()))
-                .ReturnsAsync(new List<string> { "main" });
+                .Setup(gs => gs.GetGithubBranchHeadCommitInfoAsync(It.IsAny<Uri>(), It.IsAny<string>()))
+                .ReturnsAsync(new GithubApiCommit());
+            _githubBranchesStoreMock
+                .Setup(gb => gb.CreateAsync(It.IsAny<IEnumerable<GithubBranch>>()))
+                .ReturnsAsync(new List<GithubBranch>() );
             _previewConfigurationsRepositoryMock
-                .Setup(p => p.CreateByBranchAsync(It.IsAny<IEnumerable<GithubBranch>>()))
+                .Setup(pc => pc.CreateByBranchAsync(It.IsAny<IEnumerable<GithubBranch>>()))
                 .Returns(Task.CompletedTask);
 
-            await _codeSourcesRepository.CreateAsync(new CodeSource
+            await _codeSourcesRepository.CreateAsync(new CreateCodeSourceDto
             {
-                Id = 2,
-                GithubRepo = githubRepo
+                RepoUrl = githubRepoUrl
             });
 
-            captured.Should().NotBeNull();
-            captured.CodeSources.Should().NotBeNullOrEmpty();
-
-            _githubServiceMock.Verify(g => g.GetBranchNamesAsync(githubRepo));
-            _githubServiceMock.Verify(g => g.GetGithubBranchHeadCommitInfoAsync(githubRepo, "main"));
-            _previewConfigurationsRepositoryMock
-                .Verify(p => p.CreateByBranchAsync(It.Is<IEnumerable<GithubBranch>>(l => l.Count() == 1)));
+            _githubServiceMock.Verify(gs => gs.GetGithubBranchHeadCommitInfoAsync(githubRepoUrl, branchName));
         }
         #endregion
     }

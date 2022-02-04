@@ -112,7 +112,7 @@ namespace Instances.Infra.Storage.Stores
             return codeSources
                 .WhenNotNullOrEmpty(filter.Search).ApplyWhere(cs => cs.Name.Contains(filter.Search))
                 .WhenNotNullOrEmpty(filter.Code).ApplyWhere(cs => cs.Code == filter.Code)
-                .WhenNotNullOrEmpty(filter.GithubRepo).ApplyWhere(cs => cs.GithubRepo == filter.GithubRepo)
+                .WhenNotNullOrEmpty(filter.RepoIds).ApplyWhere(cs => filter.RepoIds.Contains(cs.RepoId))
                 .WhenNotNullOrEmpty(filter.Lifecycle).ApplyWhere(cs => filter.Lifecycle.Contains(cs.Lifecycle))
                 .WhenNotNullOrEmpty(filter.ExcludedLifecycle).ApplyWhere(cs => !filter.ExcludedLifecycle.Contains(cs.Lifecycle))
                 .WhenNotNullOrEmpty(filter.Type).ApplyWhere(cs => filter.Type.Contains(cs.Type))

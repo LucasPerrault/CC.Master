@@ -6,10 +6,8 @@ using Instances.Domain.Github;
 using Instances.Domain.Github.Models;
 using Lucca.Core.Shared.Domain.Exceptions;
 using Moq;
-using Moq.Protected;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -19,17 +17,18 @@ namespace Instances.Application.Tests.Instances
     {
         private readonly HelmRepository _helmRepository;
 
-        private readonly Mock<ICodeSourcesStore> _codeSourceStoreMock;
         private readonly Mock<IGithubBranchesStore> _githubBranchesStoreMock;
+        private readonly Mock<IGithubReposStore> _githubReposStoreMock;
 
         public HelmRepositoryTests()
         {
-            _codeSourceStoreMock = new(MockBehavior.Strict);
             _githubBranchesStoreMock = new(MockBehavior.Strict);
+            _githubReposStoreMock = new(MockBehavior.Strict);
+
 
             _helmRepository = new HelmRepository(
-                _codeSourceStoreMock.Object,
-                _githubBranchesStoreMock.Object
+                _githubBranchesStoreMock.Object,
+                _githubReposStoreMock.Object
             );
         }
 
@@ -41,22 +40,15 @@ namespace Instances.Application.Tests.Instances
             var branchName = "myBranch";
             var helmChart = "helmChart";
 
-            CodeSourceFilter codeSourceFilterCaught = null;
-            _codeSourceStoreMock
-                .Setup(c => c.GetAsync(It.IsAny<CodeSourceFilter>()))
-                .Returns<CodeSourceFilter>(c =>
-                {
-                    codeSourceFilterCaught = c;
-                    return Task.FromResult(new List<CodeSource>());
-                });
+            _githubReposStoreMock
+                .Setup(g => g.GetByUriAsync(It.IsAny<Uri>()))
+                .ReturnsAsync((GithubRepo)null);
 
             Func<Task> act = () => _helmRepository.CreateHelmAsync(releaseName, branchName, helmChart);
 
             await act.Should().ThrowAsync<BadRequestException>();
 
-            _codeSourceStoreMock.Verify(c => c.GetAsync(It.IsAny<CodeSourceFilter>()));
-            codeSourceFilterCaught.Should().NotBeNull();
-            codeSourceFilterCaught.GithubRepo.Should().Be("https://github.com/LuccaSA/" + releaseName);
+            _githubReposStoreMock.Verify(c => c.GetByUriAsync(new Uri("https://github.com/LuccaSA/MyRepo")));
         }
 
         [Fact]
@@ -69,9 +61,9 @@ namespace Instances.Application.Tests.Instances
             var githubBranch = new GithubBranch();
             GithubBranchFilter githubBranchFilterCaught = null;
 
-            _codeSourceStoreMock
-                .Setup(c => c.GetAsync(It.IsAny<CodeSourceFilter>()))
-                .ReturnsAsync(new List<CodeSource> { new CodeSource() });
+            _githubReposStoreMock
+                .Setup(g => g.GetByUriAsync(It.IsAny<Uri>()))
+                .ReturnsAsync(new GithubRepo());
             _githubBranchesStoreMock
                 .Setup(gb => gb.GetAsync(It.IsAny<GithubBranchFilter>()))
                 .Returns<GithubBranchFilter>(g =>
@@ -85,7 +77,7 @@ namespace Instances.Application.Tests.Instances
 
             await _helmRepository.CreateHelmAsync(releaseName, branchName, helmChart);
 
-            _codeSourceStoreMock.Verify(c => c.GetAsync(It.IsAny<CodeSourceFilter>()));
+            _githubReposStoreMock.Verify(g => g.GetByUriAsync(It.IsAny<Uri>()));
             _githubBranchesStoreMock.Verify(g => g.GetAsync(It.IsAny<GithubBranchFilter>()));
             _githubBranchesStoreMock.Verify(g => g.UpdateAsync(It.IsAny<IEnumerable<GithubBranch>>()));
 
@@ -99,132 +91,58 @@ namespace Instances.Application.Tests.Instances
 
         #region GetAllReleasesAsync
         [Fact]
-        public async Task StableWithoutCodeSource_GetAllReleaseAsync()
+        public async Task GetAllReleasesAsync_AllStables()
         {
-            var codeSourceEmailApi = new CodeSource { Id = 1, Code = "EmailApi", GithubRepo = "https://github.com/LuccaSA/Lucca.Emails" };
-            var codeSourceEmailWorker = new CodeSource { Id = 2, Code = "EmailWorker", GithubRepo = "https://github.com/LuccaSA/Lucca.Emails" };
-            var codeSourceFiggo = new CodeSource { Id = 3, Code = "Figgo", GithubRepo = "https://github.com/LuccaSA/Figgo" };
-            var codeSourceCleemy = new CodeSource { Id = 4, Code = "Cleemy", GithubRepo = "https://github.com/LuccaSA/Cleemy.Expenses" };
-            var githubBranchEmailApi = new GithubBranch { Id = 1, HelmChart = "http://myHelmEmail", Name = "myProductionBranch", CodeSources = new List<CodeSource> { codeSourceEmailApi } };
-            var githubBranchEmailWorker = new GithubBranch { Id = 2, HelmChart = "http://myHelmEmail", Name = "myProductionBranch2",CodeSources = new List<CodeSource> { codeSourceEmailWorker } };
-            var githubBranchFiggo = new GithubBranch { Id = 3, HelmChart = "http://myFiggo", Name = "figgoTempBranch", CodeSources = new List<CodeSource> { codeSourceFiggo } };
-            var githubBranchCleemy = new GithubBranch { Id = 4, HelmChart = "http://cleemy", Name = "cleemyBranch", CodeSources = new List<CodeSource> { codeSourceCleemy } };
+            var repo1 = new GithubRepo { Id = 1, Name = "repo1", Url = new Uri("https://github.com/LuccaSA/repo2") };
+            var repo2 = new GithubRepo { Id = 2, Name = "repo2", Url = new Uri("https://github.com/LuccaSA/repo2") };
+
+            var codeSource1_1 = new CodeSource { Id = 1, Name = "code1.1", Repo = repo1, RepoId = repo1.Id };
+            var codeSource1_2 = new CodeSource { Id = 2, Name = "code1.2", Repo = repo1, RepoId = repo1.Id };
+            var codeSource2_1 = new CodeSource { Id = 3, Name = "code2.1", Repo = repo2, RepoId = repo2.Id };
+
+            var githubBranch1_1 = new GithubBranch { Id = 1, Repo = repo1, RepoId = repo1.Id, Name = "branch1", CreatedAt = DateTime.Now, HelmChart = "abc" }; // prod codeSource 1_1
+            var githubBranch1_2 = new GithubBranch { Id = 2, Repo = repo1, RepoId = repo1.Id, Name = "branch2", CreatedAt = DateTime.Now, HelmChart = "def" }; // nothing
+            var githubBranch1_3 = new GithubBranch { Id = 3, Repo = repo1, RepoId = repo1.Id, Name = "branch3", CreatedAt = DateTime.Now, HelmChart = "ght", }; // prod codeSource 1_2
+            var githubBranch2_1 = new GithubBranch { Id = 4, Repo = repo2, RepoId = repo2.Id, Name = "branch1", CreatedAt = DateTime.Now, HelmChart = "ijk" }; // prod codeSource 2_1
 
             _githubBranchesStoreMock
-                .Setup(g => g.GetProductionBranchesAsync(It.IsAny<IEnumerable<CodeSource>>()))
-                .ReturnsAsync(new Dictionary<CodeSource, GithubBranch>
+                .Setup(g => g.GetProductionBranchesAsync(It.IsAny<GithubBranchFilter>()))
+                .ReturnsAsync(new List<GithubBranch>
                 {
-                    { codeSourceEmailApi, githubBranchEmailApi },
-                    { codeSourceEmailWorker, githubBranchEmailWorker },
-                    { codeSourceFiggo, githubBranchFiggo },
+                    githubBranch1_1,
+                    githubBranch2_1
                 });
-            _githubBranchesStoreMock
-                .Setup(g => g.GetAsync(It.IsAny<GithubBranchFilter>()))
-                .ReturnsAsync(new List<GithubBranch>()
-                {
-                    githubBranchFiggo,
-                    githubBranchEmailWorker,
-                    githubBranchCleemy
-                });
-
-            var result = await _helmRepository.GetAllReleasesAsync(null, null, true);
-
-            result.Should().HaveCount(3);
-            result.Where(r => r.IsProductionVersion).Should().HaveCount(2);
-            result.Where(r => !r.IsProductionVersion).Should().HaveCount(1);
-
-            result.First().GitRef.Should().Be(githubBranchEmailWorker.Name);
-
-            _githubBranchesStoreMock.Verify(
-                g => g.GetProductionBranchesAsync(It.Is<IEnumerable<CodeSource>>(c => c == null))
-            );
-        }
-
-        [Fact]
-        public async Task StableWithCodeSource_GetAllReleaseAsync()
-        {
-            var codeSourceEmailApi = new CodeSource { Code = "EmailApi", GithubRepo = "https://github.com/LuccaSA/Lucca.Emails" };
-            var codeSourceEmailWorker = new CodeSource { Code = "EmailWorker", GithubRepo = "https://github.com/LuccaSA/Lucca.Emails" };
-            var githubBranchEmailApi = new GithubBranch { Id = 1, HelmChart = "http://myHelmEmail", Name = "myProductionBranch" };
-            var githubBranchEmailWorker = new GithubBranch { Id = 2, HelmChart = "http://myHelmEmail", Name = "myProductionBranch2" };
-
-            CodeSourceFilter codeSourceFilterCaptured = null;
-            _codeSourceStoreMock
-                .Setup(g => g.GetAsync(It.IsAny<CodeSourceFilter>()))
-                .Returns<CodeSourceFilter>(c =>
-                {
-                    codeSourceFilterCaptured = c;
-                    return Task.FromResult(new List<CodeSource>
-                    {
-                        codeSourceEmailApi,
-                        codeSourceEmailWorker
-                    });
-                });
-
-            _githubBranchesStoreMock
-                .Setup(g => g.GetProductionBranchesAsync(It.IsAny<IEnumerable<CodeSource>>()))
-                .ReturnsAsync(new Dictionary<CodeSource, GithubBranch>
-                {
-                    { codeSourceEmailApi, githubBranchEmailApi },
-                    { codeSourceEmailWorker, githubBranchEmailWorker }
-                });
+            _githubReposStoreMock
+                .Setup(g => g.GetAllAsync())
+                .ReturnsAsync(new List<GithubRepo> { repo1, repo2 });
             _githubBranchesStoreMock
                 .Setup(g => g.GetAsync(It.IsAny<GithubBranchFilter>()))
                 .ReturnsAsync(new List<GithubBranch>());
 
-            var result = await _helmRepository.GetAllReleasesAsync("Lucca.Emails", null, true);
+            var releases = await _helmRepository.GetAllReleasesAsync(HelmRequest.ForAllRepos());
 
-            result.Should().HaveCount(1);
-            result.First().GitRef.Should().Be(githubBranchEmailWorker.Name);
-            codeSourceFilterCaptured.Should().NotBeNull();
-            codeSourceFilterCaptured.GithubRepo.Should().Be("https://github.com/LuccaSA/Lucca.Emails");
-
-            _githubBranchesStoreMock.Verify(
-                g => g.GetProductionBranchesAsync(It.Is<IEnumerable<CodeSource>>(c => c.Contains(codeSourceEmailApi) && c.Contains(codeSourceEmailWorker)))
-            );
-            _githubBranchesStoreMock.Verify(g => g.GetAsync(It.Is<GithubBranchFilter>(
-                g => g.IsDeleted == false && g.Name == null && g.HasHelmChart == true
-            )));
+            releases.Should().HaveCount(2);
         }
 
         [Fact]
-        public async Task GitRef_GetAllReleaseAsync()
+        public async Task GetAllReleasesAsync_ForRepo()
         {
-            var codeSourceEmailApi = new CodeSource { Code = "EmailApi", GithubRepo = "https://github.com/LuccaSA/Lucca.Emails" };
-            var codeSourceEmailWorker = new CodeSource { Code = "EmailWorker", GithubRepo = "https://github.com/LuccaSA/Lucca.Emails" };
-            var githubBranchEmailApi = new GithubBranch { Id = 1, HelmChart = "http://myHelmEmail", Name = "myProductionBranch" };
-            var githubBranchEmailWorker = new GithubBranch { Id = 2, HelmChart = "http://myHelmEmail", Name = "myProductionBranch2" };
+            var repo1 = new GithubRepo { Id = 1, Name = "repo1", Url = new Uri("https://github.com/LuccaSA/repo2") };
 
-            GithubBranchFilter githubBranchFilterCaptured = null;
-            _githubBranchesStoreMock
-                .Setup(g => g.GetProductionBranchesAsync(It.IsAny<IEnumerable<CodeSource>>()))
-                .ReturnsAsync(new Dictionary<CodeSource, GithubBranch>());
+            var codeSource1_1 = new CodeSource { Id = 1, Name = "code1.1", Repo = repo1, RepoId = repo1.Id };
 
+            var githubBranch1_1 = new GithubBranch { Id = 1, Repo = repo1, RepoId = repo1.Id, Name = "branch1", CreatedAt = DateTime.Now }; // prod codeSource 1_1
+
+            _githubReposStoreMock
+                .Setup(g => g.GetByUriAsync(It.IsAny<Uri>()))
+                .ReturnsAsync(repo1);
             _githubBranchesStoreMock
                 .Setup(g => g.GetAsync(It.IsAny<GithubBranchFilter>()))
-                .Returns<GithubBranchFilter>(b =>
-                {
-                    githubBranchFilterCaptured = b;
-                    return Task.FromResult(new List<GithubBranch>
-                    {
-                        new GithubBranch
-                        {
-                            CodeSources = new List<CodeSource>
-                            {
-                                codeSourceEmailApi
-                            }
-                        }
-                    });
-                });
+                .ReturnsAsync(new List<GithubBranch>() { githubBranch1_1 });
 
-            var result = await _helmRepository.GetAllReleasesAsync(null, "myBranch", false);
+            var releases = await _helmRepository.GetAllReleasesAsync(HelmRequest.ForRepo(repo1.Name, githubBranch1_1.Name, shouldBeStable: false));
 
-            result.Should().HaveCount(1);
-            result.First().IsProductionVersion.Should().BeFalse();
-
-            githubBranchFilterCaptured.Should().NotBeNull();
-            githubBranchFilterCaptured.HasHelmChart.Should().BeTrue();
-            githubBranchFilterCaptured.Name.Should().Be("myBranch");
+            releases.Should().HaveCount(1);
         }
         #endregion
     }

@@ -45,7 +45,7 @@ namespace Instances.Infra.Storage.Stores
         {
             return _dbContext
                 .Set<GithubBranch>()
-                .Include(g => g.CodeSources)
+                .Include(g => g.Repo)
                 .WhereMatches(filter);
         }
         public async Task<GithubBranch> UpdateAsync(GithubBranch existingBranch)
@@ -64,25 +64,21 @@ namespace Instances.Infra.Storage.Stores
             await _dbContext.SaveChangesAsync();
         }
 
-        public Task<Dictionary<CodeSource, GithubBranch>> GetProductionBranchesAsync(IEnumerable<CodeSource> codeSources)
+        public Task<List<GithubBranch>> GetProductionBranchesAsync(GithubBranchFilter githubBranchFilter)
         {
-            IQueryable<CodeSource> query = _dbContext.Set<CodeSource>();
+            var codeSourceProductionVersions =
+                _dbContext.Set<CodeSourceProductionVersion>()
+                .Where(cspv =>
+                    _dbContext.Set<CodeSourceProductionVersion>()
+                        .GroupBy(pv => pv.CodeSource.RepoId)
+                        .Select(kvp => kvp.Max(m => m.Id))
+                        .Contains(cspv.Id)
+                );
 
-            if (codeSources != null)
-            {
-                query = query.Where(c => codeSources.Select(c => c.Id).Contains(c.Id));
-            }
-
-            return query
-                .Select(c => new
-                {
-                    CodeSource = c,
-                    GithubBranch = c.GithubBranches.First(
-                        b => b.Name == c.ProductionVersions.OrderByDescending(v => v.Id).First().BranchName
-                    )
-                })
-                .Where(kvp => kvp.GithubBranch != null)
-                .ToDictionaryAsync(k => k.CodeSource, k => k.GithubBranch);
+            return _dbContext.Set<GithubBranch>()
+                .WhereMatches(githubBranchFilter)
+                .Where(gb => codeSourceProductionVersions.Any(c => c.CodeSource.RepoId == gb.RepoId && c.BranchName == gb.Name))
+                .ToListAsync();
         }
     }
 
@@ -94,8 +90,8 @@ namespace Instances.Infra.Storage.Stores
                 .WhenNotNullOrEmpty(filter.Name).ApplyWhere(gb => gb.Name == filter.Name)
                 .WhenNotNullOrEmpty(filter.HelmChart).ApplyWhere(gb => gb.HelmChart == filter.HelmChart)
                 .WhenHasValue(filter.HasHelmChart).ApplyWhere(gb => filter.HasHelmChart.Value && gb.HelmChart != null)
-                .WhenHasValue(filter.CodeSourceId).ApplyWhere(cs => cs.CodeSources.Any(c => c.Id == filter.CodeSourceId))
-                .WhenNotNullOrEmpty(filter.CodeSourceIds).ApplyWhere(cs => cs.CodeSources.Any(c => filter.CodeSourceIds.Contains(c.Id)))
+                .WhenNotNullOrEmpty(filter.RepoIds).ApplyWhere(gb => filter.RepoIds.Contains(gb.RepoId))
+                .WhenNotNullOrEmpty(filter.ExcludedRepoIds).ApplyWhere(gb => !filter.ExcludedRepoIds.Contains(gb.RepoId))
                 .WhenHasValue(filter.IsDeleted).ApplyWhere(cs => cs.IsDeleted == filter.IsDeleted);
         }
     }
