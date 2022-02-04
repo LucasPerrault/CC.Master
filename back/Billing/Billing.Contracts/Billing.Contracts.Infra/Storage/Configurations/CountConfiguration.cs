@@ -14,6 +14,7 @@ namespace Billing.Contracts.Infra.Storage.Configurations
             builder.Property(c => c.ContractId).HasColumnName("ContractId");
             builder.Property(c => c.CountPeriod).HasConversion<DateTime>(p => p, p => p).HasColumnName("CountPeriod");
             builder.Property(c => c.CommercialOfferId).HasColumnName("CommercialOfferId");
+            builder.Property(c => c.Code).HasColumnName("Code");
 
             builder
                 .HasOne(c => c.Contract)
