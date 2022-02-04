@@ -6,6 +6,7 @@ using Microsoft.Extensions.Logging;
 using Moq;
 using Moq.Protected;
 using Remote.Infra.Extensions;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -28,9 +29,11 @@ namespace Instances.Infra.Tests.Github
             _githubServiceMock = new Mock<IGithubService>(MockBehavior.Strict);
             _httpHandlerMock = new Mock<HttpClientHandler>(MockBehavior.Strict);
             var loggerMock = new Mock<ILogger<CodeSourceFetcherService>>();
+            var httpClient = new HttpClient(_httpHandlerMock.Object);
+            httpClient.BaseAddress = new Uri("http://hello-this-is-jenkins.example.org");
             _codeSourceFetcherService = new CodeSourceFetcherService(
                 _githubServiceMock.Object,
-                new HttpClient(_httpHandlerMock.Object),
+                httpClient,
                 loggerMock.Object
             );
         }
@@ -64,7 +67,7 @@ namespace Instances.Infra.Tests.Github
                 .Protected()
                 .Setup<Task<HttpResponseMessage>>(
                       "SendAsync",
-                      ItExpr.Is<HttpRequestMessage>(m => m.RequestUri.ToString() == "http://jenkins2.lucca.local:8080/api/json/?tree=jobs[name,url,jobs[name,url]]"),
+                      ItExpr.Is<HttpRequestMessage>(m => m.RequestUri.ToString() == "http://hello-this-is-jenkins.example.org/api/json/?tree=jobs[name,url,jobs[name,url]]"),
                       ItExpr.IsAny<CancellationToken>()
                 )
                 .ReturnsAsync(new HttpResponseMessage()
@@ -78,13 +81,13 @@ namespace Instances.Infra.Tests.Github
                             {
                                 _class = "com.cloudbees.hudson.plugins.folder.Folder",
                                 name = "AzureFunctions",
-                                url = "http://jenkins2.lucca.local:8080/job/AzureFunctions/",
+                                url = "http://hello-this-is-jenkins.example.org/job/AzureFunctions/",
                                 jobs = new object[] {
                                     new
                                     {
                                         _class = "org.jenkinsci.plugins.workflow.multibranch.WorkflowMultiBranchProject",
                                         name = "JenkinsProjectName",
-                                        url = "http://jenkins2.lucca.local:8080/job/AzureFunctions/job/Growth.AzureFunctions/"
+                                        url = "http://hello-this-is-jenkins.example.org/job/AzureFunctions/job/Growth.AzureFunctions/"
                                     }
                                 }
                             }
@@ -97,7 +100,7 @@ namespace Instances.Infra.Tests.Github
 
             apps.Single().Name.Should().Be("My app");
             apps.Single().Code.Should().Be("appCode");
-            apps.Single().JenkinsProjectUrl.Should().Be("http://jenkins2.lucca.local:8080/job/AzureFunctions/job/Growth.AzureFunctions/");
+            apps.Single().JenkinsProjectUrl.Should().Be("http://hello-this-is-jenkins.example.org/job/AzureFunctions/job/Growth.AzureFunctions/");
             apps.Single().JenkinsProjectName.Should().Be("JenkinsProjectName");
             apps.Single().Config.Should().BeEquivalentTo(new CodeSourceConfig
             {
