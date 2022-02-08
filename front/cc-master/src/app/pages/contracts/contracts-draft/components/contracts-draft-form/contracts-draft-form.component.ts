@@ -179,15 +179,18 @@ export class ContractsDraftFormComponent implements ControlValueAccessor, Valida
 
   private updateMinimalBilling(isEligible: boolean): void {
     const control = this.formGroup.get(DraftFormKey.MinimalBillingPercentage);
+    const hasValue = !!control.value;
 
-    if (isEligible) {
+    if (isEligible && !hasValue) {
       control.setValue(this.minimalBillingService.minimalBillingPercentage);
       control.enable();
       return;
     }
 
-    control.setValue(0);
-    control.disable();
+    if (!isEligible) {
+      control.setValue(0);
+      control.disable();
+    }
   }
 
   private getContractMinimalBillable(contract: FormGroup): IContractMinimalBillable {
