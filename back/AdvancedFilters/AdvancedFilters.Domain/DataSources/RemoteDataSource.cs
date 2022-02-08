@@ -6,6 +6,7 @@ namespace AdvancedFilters.Domain.DataSources
     {
         Countries,
         Environments,
+        Contracts,
         AppInstances,
         LegalUnits,
         Establishments,

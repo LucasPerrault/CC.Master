@@ -14,5 +14,7 @@ namespace AdvancedFilters.Domain.Filters.Builders
         IQueryableExpressionBuilder<AppContact> Create(AppContactAdvancedCriterion criterion);
         IQueryableExpressionBuilder<ClientContact> Create(ClientContactAdvancedCriterion criterion);
         IQueryableExpressionBuilder<SpecializedContact> Create(SpecializedContactAdvancedCriterion criterion);
+        IQueryableExpressionBuilder<Contract> Create(ContractAdvancedCriterion criterion);
+        IQueryableExpressionBuilder<Client> Create(ClientAdvancedCriterion criterion);
     }
 }

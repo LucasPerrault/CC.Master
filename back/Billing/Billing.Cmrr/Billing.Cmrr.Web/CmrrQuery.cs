@@ -17,6 +17,7 @@ namespace Billing.Cmrr.Web
         public HashSet<int> ClientId { get; set; } = new HashSet<int>();
         public HashSet<int> DistributorId { get; set; } = new HashSet<int>();
         public HashSet<BillingStrategy> BillingStrategy { get; set; } = new HashSet<BillingStrategy>();
+        public HashSet<BillingEntity> BillingEntity { get; set; } = new HashSet<BillingEntity>();
 
         public CmrrFilter ToCmrrFilter()
         {
@@ -39,7 +40,8 @@ namespace Billing.Cmrr.Web
                 ClientId = ClientId,
                 DistributorsId = DistributorId,
                 BillingStrategies = BillingStrategy,
-                Sections = sections
+                Sections = sections,
+                BillingEntities = BillingEntity,
             };
         }
     }

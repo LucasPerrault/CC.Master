@@ -14,6 +14,7 @@ namespace AdvancedFilters.Infra.Storage.Configurations
 
             builder.Property(c => c.ExternalId).HasColumnName("ExternalId").HasMaxLength(36).IsRequired();
             builder.Property(c => c.Name).HasColumnName("Name").IsRequired();
+            builder.Property(c => c.BillingEntity).HasColumnName("BillingEntity").IsRequired().HasDefaultValue(BillingEntity.France);
 
             builder.HasIndex(e => e.ExternalId).IsUnique();
         }

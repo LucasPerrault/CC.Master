@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using AdvancedFilters.Domain.Filters.Builders;
+using AdvancedFilters.Domain.Filters.Models;
 using Environment = AdvancedFilters.Domain.Instance.Models.Environment;
 
 namespace AdvancedFilters.Domain.Billing.Models
@@ -12,8 +14,20 @@ namespace AdvancedFilters.Domain.Billing.Models
         public int EnvironmentId { get; set; }
 
         public Client Client { get; set; }
-        public IEnumerable<EstablishmentContract> EstablishmentAttachments { get; set; }
-
+        
         public Environment Environment { get; set; }
+    }
+
+    public class ContractAdvancedCriterion : AdvancedCriterion<Contract>
+    {
+        public ClientAdvancedCriterion Client { get; set; }
+
+        public override IQueryableExpressionBuilder<Contract> GetExpressionBuilder(IQueryableExpressionBuilderFactory factory)
+            => factory.Create(this);
+    }
+
+    public class ContractsAdvancedCriterion : ContractAdvancedCriterion, IListCriterion
+    {
+        public ItemsMatching ItemsMatched { get; set; }
     }
 }

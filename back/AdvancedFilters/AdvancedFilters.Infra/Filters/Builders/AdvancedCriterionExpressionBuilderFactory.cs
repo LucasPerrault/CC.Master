@@ -54,5 +54,15 @@ namespace AdvancedFilters.Infra.Filters.Builders
         {
             return new SpecializedContactCriterionExpressionBuilder(criterion);
         }
+
+        public IQueryableExpressionBuilder<Contract> Create(ContractAdvancedCriterion criterion)
+        {
+            return new ContractCriterionExpressionBuilder(criterion);
+        }
+
+        public IQueryableExpressionBuilder<Client> Create(ClientAdvancedCriterion criterion)
+        {
+            return new ClientCriterionExpressionBuilder(criterion);
+        }
     }
 }

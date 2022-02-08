@@ -22,7 +22,6 @@ namespace AdvancedFilters.Infra.Storage
             modelBuilder.ApplyConfiguration(new DistributorsConfiguration());
             modelBuilder.ApplyConfiguration(new LegalUnitsConfiguration());
             modelBuilder.ApplyConfiguration(new EstablishmentsConfiguration());
-            modelBuilder.ApplyConfiguration(new EstablishmentContractsConfiguration());
             modelBuilder.ApplyConfiguration(new ContractsConfiguration());
 
             modelBuilder.ApplyConfiguration(new AppContactsConfiguration());
