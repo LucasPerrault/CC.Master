@@ -8,7 +8,7 @@ import {
 import { Observable, of } from 'rxjs';
 import { map } from 'rxjs/operators';
 
-import { IContractMinimalBillable } from '../models/contract-minimal-billable.interface';
+import { IContractMinimalBillable } from '@cc/domain/billing/contracts';
 
 @Injectable()
 export class MinimalBillingService {
