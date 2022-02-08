@@ -53,11 +53,11 @@ namespace AdvancedFilters.Web.Controllers
         public Task<Page<Environment>> SearchAsync
         (
             IPageToken pageToken,
-            [FromBody, ModelBinder(BinderType = typeof(AdvancedFilterModelBinder<EnvironmentAdvancedCriterion>))]
-            IAdvancedFilter criterion
+            [FromBody, ModelBinder(BinderType = typeof(AdvancedFilterModelBinder<EnvironmentSearchBody, EnvironmentAdvancedCriterion>))]
+            EnvironmentSearchBody body
         )
         {
-            return _store.SearchAsync(pageToken, criterion);
+            return _store.SearchAsync(pageToken, body.Criterion);
         }
 
         [HttpPost("export")]
@@ -74,6 +74,11 @@ namespace AdvancedFilters.Web.Controllers
             return _exportService.Export(environments, filename);
 
         }
+    }
+
+    public class EnvironmentSearchBody
+    {
+        public IAdvancedFilter Criterion { get; set; }
     }
 
     public class EnvironmentsQuery

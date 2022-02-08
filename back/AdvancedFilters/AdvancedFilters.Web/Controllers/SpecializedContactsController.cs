@@ -47,11 +47,11 @@ namespace AdvancedFilters.Web.Controllers
         public Task<Page<SpecializedContact>> SearchAsync
         (
             IPageToken pageToken,
-            [FromBody, ModelBinder(BinderType = typeof(AdvancedFilterModelBinder<SpecializedContactAdvancedCriterion>))]
-            IAdvancedFilter criterion
+            [FromBody, ModelBinder(BinderType = typeof(AdvancedFilterModelBinder<SpecializedContactSearchBody,SpecializedContactAdvancedCriterion>))]
+            SpecializedContactSearchBody body
         )
         {
-            return _store.SearchAsync(pageToken, criterion);
+            return _store.SearchAsync(pageToken, body.Criterion);
         }
 
         [HttpPost("export")]
@@ -66,6 +66,11 @@ namespace AdvancedFilters.Web.Controllers
             var filename = $"export-{System.DateTime.Now:yyyyMMdd-HHmmss}.csv";
             return _exportService.Export(contacts, filename);
         }
+    }
+
+    public class SpecializedContactSearchBody
+    {
+        public IAdvancedFilter Criterion { get; set; }
     }
 
     public class SpecializedsContactQuery
