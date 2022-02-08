@@ -19,7 +19,7 @@ export class MinimalBillingService {
   constructor(private httpClient: HttpClient) {}
 
   public isEligibleForMinimalBilling$(contract: IContractMinimalBillable): Observable<boolean> {
-    if (!contract?.distributor?.isDirectSales || this.hasTheoreticalMonthRebate(contract)) {
+    if (!contract?.distributor?.isEnforcingMinimalBilling || this.hasTheoreticalMonthRebate(contract)) {
       return of(false);
     }
 
