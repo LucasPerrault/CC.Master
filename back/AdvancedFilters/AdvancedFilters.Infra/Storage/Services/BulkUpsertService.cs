@@ -26,6 +26,8 @@ namespace AdvancedFilters.Infra.Storage.Services
         {
             var bc = new BulkConfig
             {
+                // beware: IncludeGraph = true prevents record deletion
+                // no further investigations were made ; is it by design ? is it a bug ?
                 IncludeGraph = config.IncludeSubEntities,
             };
             bc.SetSynchronizeFilter(GetSyncFilter<T>(config.Filter));
