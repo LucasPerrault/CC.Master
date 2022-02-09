@@ -6,16 +6,16 @@ namespace AdvancedFilters.Domain.DataSources
     {
         Countries,
         Environments,
-        Contracts,
         AppInstances,
         LegalUnits,
         Establishments,
         Clients,
         Distributors,
         EnvironmentAccesses,
+        Contracts,
         AppContacts,
         ClientContacts,
-        SpecializedContacts
+        SpecializedContacts,
     }
 
     public abstract class DataSource
