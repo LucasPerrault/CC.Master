@@ -45,7 +45,7 @@ export class ContractTabComponent implements OnInit, OnDestroy {
     return parseInt(this.activatedRoute.parent.snapshot.paramMap.get('id'), 10);
   }
 
-  private contractToEdit$: BehaviorSubject<IContractDetailed> = new BehaviorSubject<IContractDetailed>(null);
+  private savedForm$: BehaviorSubject<IContractForm> = new BehaviorSubject<IContractForm>(null);
   private destroy$: Subject<void> = new Subject<void>();
 
   constructor(
@@ -69,8 +69,9 @@ export class ContractTabComponent implements OnInit, OnDestroy {
     this.contractTabService.getContractDetailed$(this.contractId)
       .pipe(take(1), finalize(() => this.isLoading$.next(false)))
       .subscribe(contract => {
-        this.contractForm.setValue(this.toContractForm(contract));
-        this.contractToEdit$.next(contract);
+        const form = this.toContractForm(contract);
+        this.contractForm.setValue(form);
+        this.savedForm$.next(form);
         this.setFormInformation(contract);
       });
 
@@ -95,7 +96,10 @@ export class ContractTabComponent implements OnInit, OnDestroy {
           this.contractsListService.refresh();
         }),
       )
-      .subscribe(buttonState => this.editButtonState$.next(buttonState));
+      .subscribe(buttonState => {
+        this.editButtonState$.next(buttonState);
+        this.savedForm$.next(this.contractForm.value);
+      });
   }
 
   public close(): void {
@@ -114,8 +118,8 @@ export class ContractTabComponent implements OnInit, OnDestroy {
   }
 
   public hasFormChanged(): boolean {
-    const isInitialized = !!this.contractToEdit$.value && !!this.contractForm.value;
-    return isInitialized && !this.isEqual(this.contractToEdit$.value, this.contractForm.value);
+    const isInitialized = !!this.savedForm$.value && !!this.contractForm.value;
+    return isInitialized && !this.isEqual(this.savedForm$.value, this.contractForm.value);
   }
 
   private toContractForm(contractDetailed: IContractDetailed): IContractForm {
@@ -137,18 +141,18 @@ export class ContractTabComponent implements OnInit, OnDestroy {
     });
   }
 
-  private isEqual(contract: IContractDetailed, form: IContractForm): boolean {
+  private isEqual(contract: IContractForm, form: IContractForm): boolean {
     return contract.distributor.id === form.distributor.id
       && contract.client.id === form.client.id
       && contract.offer.id === form.offer.id
       && contract.product.id === form.product.id
       && contract.billingMonth === form.billingMonth
-      && isDateEqual(new Date(contract.theoricalStartOn), new Date(form.theoreticalStartOn))
-      && contract.clientRebate === form.clientRebate.count
-      && isDateEqual(new Date(contract.endClientRebateOn), new Date(form.clientRebate.endAt))
-      && contract.nbMonthTheorical === form.theoreticalMonthRebate
+      && isDateEqual(new Date(contract.theoreticalStartOn), new Date(form.theoreticalStartOn))
+      && contract.clientRebate.count === form.clientRebate.count
+      && isDateEqual(new Date(contract.clientRebate.endAt), new Date(form.clientRebate.endAt))
+      && contract.theoreticalMonthRebate === form.theoreticalMonthRebate
       && contract.minimalBillingPercentage === form.minimalBillingPercentage
-      && contract.unityNumberTheorical === form.theoreticalDraftCount
+      && contract.theoreticalDraftCount === form.theoreticalDraftCount
       && (contract.comment ?? '') === form.comment;
   }
 
