@@ -69,10 +69,6 @@ export class CloseContractFormService {
     return isAfter(mostRecentDate, mostRecentDateToCompare);
   }
 
-  private getRealCounts$(): Observable<ICount[]> {
-    return this.contextStoreService.realCounts$;
-  }
-
   private getAttachments$(contractId: number): Observable<IContextAttachment[]> {
     const params = new HttpParams()
       .set('fields', contextAttachmentFields)

@@ -35,7 +35,6 @@ export class AccountingRevenueComponent implements OnInit {
   }
 
   public syncRevenue(entity: BillingEntity): void {
-		console.log(entity);
     this.syncRevenueService.synchronise$(entity)
       .pipe(
         take(1),
