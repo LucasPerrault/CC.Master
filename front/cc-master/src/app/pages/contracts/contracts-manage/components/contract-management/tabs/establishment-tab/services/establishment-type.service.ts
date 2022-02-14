@@ -13,24 +13,25 @@ export class EstablishmentTypeService {
     entries: IEstablishmentWithAttachments[],
     contract: IEstablishmentContract,
   ): IEstablishmentsWithAttachmentsByType {
+    const contractSolutionIds = contract?.product?.solutions.map(s => s.id) ?? [];
     return ({
-      excluded: this.getExcludedEts(entries, contract.id, contract.productId),
-      withError: this.getEtsWithError(entries, contract.productId),
+      excluded: this.getExcludedEts(entries, contract.id, contractSolutionIds),
+      withError: this.getEtsWithError(entries, contractSolutionIds),
       linkedToContract: this.getEtsLinkedToContract(entries, contract.id),
-      linkedToAnotherContract: this.getEtsLinkedToAnotherContract(entries, contract.id, contract.productId),
+      linkedToAnotherContract: this.getEtsLinkedToAnotherContract(entries, contract.id, contractSolutionIds),
     });
   }
 
   private getExcludedEts(
     entries: IEstablishmentWithAttachments[],
     contractId: number,
-    productId: number,
+    contractSolutionIds: number[],
   ): IEstablishmentWithAttachments[] {
-    return entries.filter(e => this.isExcluded(e.establishment, productId) && !this.isLinkedToContract(e, contractId));
+    return entries.filter(e => this.isExcluded(e.establishment, contractSolutionIds) && !this.isLinkedToContract(e, contractId));
   }
 
-  private getEtsWithError(entries: IEstablishmentWithAttachments[], productId: number): IEstablishmentWithAttachments[] {
-    return entries.filter(e => this.isConsideredAsError(e) && !this.isExcluded(e.establishment, productId));
+  private getEtsWithError(entries: IEstablishmentWithAttachments[], contractSolutionIds: number[]): IEstablishmentWithAttachments[] {
+    return entries.filter(e => this.isConsideredAsError(e) && !this.isExcluded(e.establishment, contractSolutionIds));
   }
 
   private getEtsLinkedToContract(entries: IEstablishmentWithAttachments[], contractId: number): IEstablishmentWithAttachments[] {
@@ -40,13 +41,13 @@ export class EstablishmentTypeService {
   private getEtsLinkedToAnotherContract(
     entries: IEstablishmentWithAttachments[],
     contractId: number,
-    productId: number,
+    contractSolutionIds: number[],
   ): IEstablishmentWithAttachments[] {
-    return entries.filter(e => this.isLinkedToAnotherContract(e, contractId) && !this.isExcluded(e.establishment, productId));
+    return entries.filter(e => this.isLinkedToAnotherContract(e, contractId) && !this.isExcluded(e.establishment, contractSolutionIds));
   }
 
-  private isExcluded(establishment: IContractEstablishment, productId: number): boolean {
-    return !!establishment.excludedEntities.find(e => e.productId === productId);
+  private isExcluded(establishment: IContractEstablishment, contractSolutionIds: number[]): boolean {
+    return !!establishment.excludedEntities.find(e => contractSolutionIds.includes(e.solutionId));
   }
 
   private isConsideredAsError(ets: IEstablishmentWithAttachments): boolean {

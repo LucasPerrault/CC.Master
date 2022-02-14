@@ -1,3 +1,4 @@
+import { ISolution } from '@cc/domain/billing/offers';
 import { createServiceFactory, SpectatorService } from '@ngneat/spectator';
 import { addMonths, startOfMonth, subMonths } from 'date-fns';
 
@@ -10,11 +11,11 @@ import { IEstablishmentExcludedEntity } from '../models/establishment-excluded-e
 import { IEstablishmentWithAttachments } from '../models/establishment-with-attachments.interface';
 import { EstablishmentTypeService } from './establishment-type.service';
 
-const fakeContract = (id: number, productId: number): IEstablishmentContract => ({
+const fakeContract = (id: number, product: IEstablishmentContractProduct): IEstablishmentContract => ({
   id,
   name: 'fake-contract',
-  product: { id: productId } as IEstablishmentContractProduct,
-  productId,
+  product,
+  productId: product.id,
   nbMonthTheorical: 0,
   environmentId: 1,
   theoricalStartOn: '2020-01-01',
@@ -37,6 +38,11 @@ const fakeAttachment = (start: Date, end: Date, contractID: number): IEstablishm
   contractID,
   contract: {} as IEstablishmentContract,
 });
+const fakeExcludedEts = (solutionId: number, establishmentId: number): IEstablishmentExcludedEntity => ({
+  id: 1,
+  solutionId,
+  legalEntityID: establishmentId,
+});
 const fakeEtsEntry = (
   establishment: IContractEstablishment,
   currentAttachment: IEstablishmentAttachment,
@@ -48,8 +54,9 @@ const fakeEtsEntry = (
   lastAttachment: null,
 });
 
-const productId = 1;
-const contract = fakeContract(1, productId);
+const solution1: ISolution = { id: 1, name: 'solution-1' };
+const productWithOneSolution = { id: 1, name: 'product-with-one-solution', isMultiSuite: false, solutions: [solution1] };
+const contract = fakeContract(1, productWithOneSolution);
 
 const today = new Date();
 const nextMonth = addMonths(today, 1);
@@ -64,8 +71,9 @@ describe('EstablishmentTypeService', () => {
   beforeEach(() => spectator = createService());
 
   it('should get excluded establishments', () => {
-    const excludedEntityWithSameProduct: IEstablishmentExcludedEntity = ({ id: 1, productId, legalEntityID: 1 });
-    const excludedEstablishment = fakeEstablishment([excludedEntityWithSameProduct]);
+    const solutionId = contract.product.solutions[0].id;
+    const excludedEntityWithSameContractSolution = fakeExcludedEts(solutionId, 1);
+    const excludedEstablishment = fakeEstablishment([excludedEntityWithSameContractSolution]);
     const excludedEntry = fakeEtsEntry(excludedEstablishment, null, null);
 
     const result = spectator.service.getEstablishmentsByType([excludedEntry], contract);
@@ -77,8 +85,9 @@ describe('EstablishmentTypeService', () => {
   });
 
   it('should get excluded establishments with attachments linked to contract', () => {
-    const excludedEntityWithSameProduct: IEstablishmentExcludedEntity = ({ id: 1, productId, legalEntityID: 1 });
-    const excludedEstablishment = fakeEstablishment([excludedEntityWithSameProduct]);
+    const solutionId = contract.product.solutions[0].id;
+    const excludedEntityWithSameContractSolution = fakeExcludedEts(solutionId, 1);
+    const excludedEstablishment = fakeEstablishment([excludedEntityWithSameContractSolution]);
     const excludedEntry = fakeEtsEntry(excludedEstablishment, null, null);
     const currentAttachment = fakeAttachment(startOfMonth(lastMonth), null, contract.id);
     const excludedEntryWithAttachmentLinkedToContract = fakeEtsEntry(excludedEstablishment, currentAttachment, null);
@@ -93,10 +102,11 @@ describe('EstablishmentTypeService', () => {
   });
 
   it('should get excluded establishments with attachments linked to another contract', () => {
-    const excludedEntityWithSameProduct: IEstablishmentExcludedEntity = ({ id: 1, productId, legalEntityID: 1 });
-    const excludedEstablishment = fakeEstablishment([excludedEntityWithSameProduct]);
+    const solutionId = contract.product.solutions[0].id;
+    const excludedEntityWithSameContractSolution = fakeExcludedEts(solutionId, 1);
+    const excludedEstablishment = fakeEstablishment([excludedEntityWithSameContractSolution]);
     const excludedEntry = fakeEtsEntry(excludedEstablishment, null, null);
-    const anotherContract = fakeContract(2, productId);
+    const anotherContract = fakeContract(2, productWithOneSolution);
     const attachmentToAnotherContract = fakeAttachment(startOfMonth(lastMonth), null, anotherContract.id);
     const excludedEntryWithAttachmentLinkedToAnotherContract = fakeEtsEntry(excludedEstablishment, attachmentToAnotherContract, null);
     const entries = [excludedEntry, excludedEntryWithAttachmentLinkedToAnotherContract];
@@ -110,7 +120,7 @@ describe('EstablishmentTypeService', () => {
   });
 
   it('should get linked to another contract establishments', () => {
-    const anotherContract = fakeContract(2, productId);
+    const anotherContract = fakeContract(2, productWithOneSolution);
     const currentAttachmentToAnotherContract = fakeAttachment(startOfMonth(lastMonth), null, anotherContract.id);
     const nextAttachmentToAnotherContract = fakeAttachment(startOfMonth(nextMonth), null, anotherContract.id);
     const entriesLinkedToAnotherContract = [
@@ -143,12 +153,13 @@ describe('EstablishmentTypeService', () => {
   });
 
   it('should get linked to this contract establishments with excluded entities', () => {
-    const excludedEntityWithSameProduct: IEstablishmentExcludedEntity = ({ id: 1, productId, legalEntityID: 1 });
+    const solutionId = contract.product.solutions[0].id;
+    const excludedEntityWithSameContractSolution = fakeExcludedEts(solutionId, 1);
     const currentAttachment = fakeAttachment(startOfMonth(lastMonth), null, contract.id);
     const nextAttachment = fakeAttachment(startOfMonth(nextMonth), null, contract.id);
     const entriesLinkedToContract = [
       fakeEtsEntry(fakeEstablishment(), currentAttachment, null),
-      fakeEtsEntry(fakeEstablishment([excludedEntityWithSameProduct]), null, nextAttachment),
+      fakeEtsEntry(fakeEstablishment([excludedEntityWithSameContractSolution]), null, nextAttachment),
     ];
 
     const result = spectator.service.getEstablishmentsByType(entriesLinkedToContract, contract);

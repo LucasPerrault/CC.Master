@@ -1,8 +1,8 @@
 
-export const excludedEntitiesFields = 'id,productId,legalEntityID';
+export const excludedEntitiesFields = 'id,solutionId,legalEntityID';
 
 export interface IEstablishmentExcludedEntity {
   id: number;
-  productId: number;
+  solutionId: number;
   legalEntityID: number;
 }

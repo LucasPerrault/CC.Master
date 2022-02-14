@@ -112,9 +112,11 @@ export class AttachmentLinkingModalComponent implements OnInit, OnDestroy, ILuMo
   }
 
   private getExcludedEntitiesToDelete(establishments: IContractEstablishment[]): IEstablishmentExcludedEntity[] {
+    const contractSolutionIds = this.modalData?.contract?.product?.solutions.map(s => s.id) ?? [];
+
     return establishments
       .map(e => e.excludedEntities)
       .reduce((flattened, values) => [...flattened, ...values])
-      .filter(e => e.productId === this.modalData.contract.productId);
+      .filter(e => contractSolutionIds.includes(e.solutionId));
   }
 }
