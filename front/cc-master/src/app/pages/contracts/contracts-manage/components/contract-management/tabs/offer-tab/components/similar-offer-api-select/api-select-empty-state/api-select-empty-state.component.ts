@@ -1,4 +1,4 @@
-import { Component, forwardRef } from '@angular/core';
+import { Component, forwardRef, Input } from '@angular/core';
 import { ALuOptionOperator, ILuOptionOperator } from '@lucca-front/ng/option';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
@@ -15,6 +15,7 @@ import { map } from 'rxjs/operators';
   ],
 })
 export class ApiSelectEmptyStateComponent<T = any> extends ALuOptionOperator<T> implements ILuOptionOperator<T> {
+  @Input() forcedDisplay = false;
   outOptions$: Observable<T[]>;
 
   public get isEmpty$(): Observable<boolean> {
