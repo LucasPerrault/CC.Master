@@ -3,6 +3,7 @@ import { ChangeDetectionStrategy, Component, Input, OnDestroy, OnInit } from '@a
 import { FormControl } from '@angular/forms';
 import { toSubmissionState } from '@cc/common/forms';
 import { defaultPagingParams, IPaginatedResult, PaginatedList, PaginatedListState, PagingService } from '@cc/common/paging';
+import { ApiStandard } from '@cc/common/queries';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { filter, map, switchMap, take, takeUntil } from 'rxjs/operators';
 
@@ -16,7 +17,6 @@ import {
   getAdditionalColumnByIds,
 } from './client-contact-additional-column.enum';
 import { ClientContactsDataService } from './client-contacts-data.service';
-import { ApiStandard } from '@cc/common/queries';
 
 @Component({
   selector: 'cc-client-contacts',

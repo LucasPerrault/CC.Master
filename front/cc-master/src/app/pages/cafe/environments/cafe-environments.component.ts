@@ -3,6 +3,7 @@ import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { toSubmissionState } from '@cc/common/forms';
 import { defaultPagingParams, IPaginatedResult, PaginatedList, PaginatedListState, PagingService } from '@cc/common/paging';
+import { ApiStandard } from '@cc/common/queries';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { filter, map, switchMap, take, takeUntil } from 'rxjs/operators';
 
@@ -15,7 +16,6 @@ import {
 } from './components/environment-additional-column-select/environment-additional-column.enum';
 import { IEnvironment } from './models/environment.interface';
 import { EnvironmentDataService } from './services/environment-data.service';
-import { ApiStandard } from '@cc/common/queries';
 
 @Component({
   selector: 'cc-cafe-environments',

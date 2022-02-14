@@ -3,12 +3,15 @@ import { ChangeDetectionStrategy, Component, Input, OnDestroy, OnInit } from '@a
 import { FormControl } from '@angular/forms';
 import { toSubmissionState } from '@cc/common/forms';
 import { defaultPagingParams, IPaginatedResult, PaginatedList, PaginatedListState, PagingService } from '@cc/common/paging';
+import { ApiStandard } from '@cc/common/queries';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { filter, map, switchMap, take, takeUntil } from 'rxjs/operators';
 
 import { CafeExportService } from '../../cafe-export.service';
 import { AdvancedFilter, IAdvancedFilterForm } from '../../common/cafe-filters/advanced-filter-form';
-import { SpecializedContactAdvancedFilterApiMappingService, } from './advanced-filter/specialized-contact-advanced-filter-api-mapping.service';
+import {
+  SpecializedContactAdvancedFilterApiMappingService,
+} from './advanced-filter/specialized-contact-advanced-filter-api-mapping.service';
 import { ISpecializedContact } from './specialized-contact.interface';
 import {
   getAdditionalColumnByIds,
@@ -16,7 +19,6 @@ import {
   specializedContactAdditionalColumns,
 } from './specialized-contact-additional-column.enum';
 import { SpecializedContactsDataService } from './specialized-contacts-data.service';
-import { ApiStandard } from '@cc/common/queries';
 
 
 @Component({
