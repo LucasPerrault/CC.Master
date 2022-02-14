@@ -15,6 +15,7 @@ import {
 } from './components/environment-additional-column-select/environment-additional-column.enum';
 import { IEnvironment } from './models/environment.interface';
 import { EnvironmentDataService } from './services/environment-data.service';
+import { ApiStandard } from '@cc/common/queries';
 
 @Component({
   selector: 'cc-cafe-environments',
@@ -89,6 +90,7 @@ export class CafeEnvironmentsComponent implements OnInit, OnDestroy {
     return this.pagingService.paginate<IEnvironment>(
       (httpParams) => this.getEnvironments$(httpParams, this.advancedFilter$.value),
       { page: defaultPagingParams.page, limit: 50 },
+      ApiStandard.V4,
     );
   }
 

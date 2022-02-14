@@ -16,6 +16,7 @@ import { AppContactAdvancedFilterApiMappingService } from './advanced-filter/app
 import { IAppContact } from './app-contact.interface';
 import { AppContactAdditionalColumn, appContactAdditionalColumns, getAdditionalColumnByIds } from './app-contact-additional-column.enum';
 import { AppContactsDataService } from './app-contacts-data.service';
+import { ApiStandard } from '@cc/common/queries';
 
 @Component({
   selector: 'cc-app-contacts',
@@ -94,6 +95,7 @@ export class AppContactsComponent implements OnInit, OnDestroy {
     return this.pagingService.paginate<IAppContact>(
       (httpParams) => this.getAppContacts$(httpParams, this.advancedFilter$.value),
       { page: defaultPagingParams.page, limit: 50 },
+      ApiStandard.V4,
     );
   }
 

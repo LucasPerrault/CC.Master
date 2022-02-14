@@ -16,6 +16,7 @@ import {
   getAdditionalColumnByIds,
 } from './client-contact-additional-column.enum';
 import { ClientContactsDataService } from './client-contacts-data.service';
+import { ApiStandard } from '@cc/common/queries';
 
 @Component({
   selector: 'cc-client-contacts',
@@ -93,6 +94,7 @@ export class ClientContactsComponent implements OnInit, OnDestroy {
     return this.pagingService.paginate<IClientContact>(
       (httpParams) => this.getClientContacts$(httpParams, this.advancedFilter$.value),
       { page: defaultPagingParams.page, limit: 50 },
+      ApiStandard.V4,
     );
   }
 

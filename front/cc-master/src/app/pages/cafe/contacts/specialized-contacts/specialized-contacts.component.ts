@@ -8,9 +8,7 @@ import { filter, map, switchMap, take, takeUntil } from 'rxjs/operators';
 
 import { CafeExportService } from '../../cafe-export.service';
 import { AdvancedFilter, IAdvancedFilterForm } from '../../common/cafe-filters/advanced-filter-form';
-import {
-  SpecializedContactAdvancedFilterApiMappingService,
-} from './advanced-filter/specialized-contact-advanced-filter-api-mapping.service';
+import { SpecializedContactAdvancedFilterApiMappingService, } from './advanced-filter/specialized-contact-advanced-filter-api-mapping.service';
 import { ISpecializedContact } from './specialized-contact.interface';
 import {
   getAdditionalColumnByIds,
@@ -18,6 +16,7 @@ import {
   specializedContactAdditionalColumns,
 } from './specialized-contact-additional-column.enum';
 import { SpecializedContactsDataService } from './specialized-contacts-data.service';
+import { ApiStandard } from '@cc/common/queries';
 
 
 @Component({
@@ -98,6 +97,7 @@ export class SpecializedContactsComponent implements OnInit, OnDestroy {
     return this.pagingService.paginate<ISpecializedContact>(
       (httpParams) => this.getSpeContacts$(httpParams, this.advancedFilter$.value),
       { page: defaultPagingParams.page, limit: 50 },
+      ApiStandard.V4,
     );
   }
 
