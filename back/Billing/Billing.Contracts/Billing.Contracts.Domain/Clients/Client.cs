@@ -5,6 +5,12 @@ using System.Text.Json.Serialization;
 
 namespace Billing.Contracts.Domain.Clients
 {
+    public enum BillingEntity
+    {
+        Unknown = 0,
+        France = 1,
+        Iberia = 2,
+    }
     public class Client
     {
         public int Id { get; set; }
@@ -17,6 +23,7 @@ namespace Billing.Contracts.Domain.Clients
         public string BillingCity { get; set; }
         public string BillingCountry { get; set; }
         public string BillingMail { get; set; }
+        public BillingEntity BillingEntity { get; set; }
         public string Phone { get; set; }
 
         [JsonIgnore]
