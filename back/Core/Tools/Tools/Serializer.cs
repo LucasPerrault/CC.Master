@@ -17,19 +17,12 @@ namespace Tools
                 return default;
             }
 
-            return JsonSerializer.Deserialize<T>
-            (
-                content,
-                new JsonSerializerOptions
-                {
-                    PropertyNameCaseInsensitive = true
-                }
-            );
+            return JsonSerializer.Deserialize<T>(content, Options.ForDeserialization());
         }
 
         public static Task<T> DeserializeAsync<T>(Stream content)
         {
-            return DeserializeAsync<T>(content, new JsonSerializerOptions());
+            return DeserializeAsync<T>(content, Options.ForDeserialization());
         }
 
         public static async Task<T> DeserializeAsync<T>(Stream content, JsonSerializerOptions options)
@@ -45,10 +38,7 @@ namespace Tools
 
         public static string Serialize(object o)
         {
-            return JsonSerializer.Serialize(o, new JsonSerializerOptions
-            {
-                PropertyNamingPolicy = JsonNamingPolicy.CamelCase
-            });
+            return JsonSerializer.Serialize(o, Options.ForSerialization());
         }
 
         internal static string Serialize(object o, JsonSerializerOptions options) => JsonSerializer.Serialize(o, options);
