@@ -104,18 +104,17 @@ namespace Billing.Cmrr.Application.Evolution
                     continue;
                 }
 
-                var totalLine = new CmrrEvolutionBreakdownLine(currentCountPeriod)
-                {
-                    SectionName = _translations.CmrrExportTotalFormat(situationsByAxis.Key.Name),
-                };
+                var totalLine = new CmrrEvolutionBreakdownTotalLine
+                (
+                    currentCountPeriod,
+                    situationsByAxis.Key,
+                    axis => _translations.CmrrExportTotalFormat(situationsByAxis.Key.Name)
+                );
                 lines.Add(totalLine);
 
                 foreach (var situationsByBreakdown in situationsByAxis.GroupBy(s => s.Breakdown))
                 {
-                    var line = new CmrrEvolutionBreakdownLine(currentCountPeriod)
-                    {
-                        SectionName = situationsByBreakdown.Key.SubSection,
-                    };
+                    var line = new CmrrEvolutionBreakdownLine(currentCountPeriod, situationsByAxis.Key, situationsByBreakdown.Key.SubSection);
                     foreach (var situation in situationsByBreakdown)
                     {
                         totalLine.Amount += situation.EndPeriodAmount;

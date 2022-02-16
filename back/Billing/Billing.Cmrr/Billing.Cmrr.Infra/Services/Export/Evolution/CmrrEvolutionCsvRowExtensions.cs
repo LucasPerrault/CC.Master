@@ -11,7 +11,10 @@ namespace Billing.Cmrr.Infra.Services.Export.Evolution
         public static IEnumerable<CmrrEvolutionCsvRow> ToRows(this CmrrAxisEvolution evolution, ICmrrTranslations translations)
         {
             var linesBySection = evolution.Lines
-                .GroupBy(l => l.SectionName)
+                .OrderBy(l => l.Section.Order)
+                .ThenBy(l => l.Section.Id)
+                .ThenBy(l => l is CmrrEvolutionBreakdownTotalLine ? 0 : 1)
+                .GroupBy(l => l.SubSectionName)
                 .Select(g => g.OrderBy(l => l.Period));
 
             var properties = new List<(string Name, Func<CmrrEvolutionBreakdownLine, decimal> Get)>
@@ -31,7 +34,7 @@ namespace Billing.Cmrr.Infra.Services.Export.Evolution
                 rows.AddRange(properties.Select(property =>
                     new CmrrEvolutionCsvRow
                     {
-                        Name = sectionLines.First().SectionName,
+                        Name = sectionLines.First().SubSectionName,
                         AmountType = property.Name,
                         Amounts = sectionLines.Select(l => property.Get(l)).ToList()
                     }
