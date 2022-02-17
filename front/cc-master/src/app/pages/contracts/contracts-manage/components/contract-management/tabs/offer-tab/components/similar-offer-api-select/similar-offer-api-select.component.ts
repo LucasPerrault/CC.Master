@@ -38,6 +38,10 @@ export class SimilarOfferApiSelectComponent implements ControlValueAccessor, Val
   @Input() required = false;
   @Input() context: ISimilarOfferContext;
 
+  public get isVisible(): boolean {
+    return !!this.context;
+  }
+
   public get api(): string {
     return !!this.context?.offerId ? `/api/commercial-offers/${ this.context.offerId }/similar` : '';
   }

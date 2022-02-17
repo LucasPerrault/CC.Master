@@ -6,7 +6,7 @@
   <ng-container *luDisplayer="let value">{{ value.name }}</ng-container>
 
   <lu-option-picker-advanced>
-    <ng-container *ngIf="!!context">
+    <ng-container *ngIf="isVisible">
       <header class="lu-picker-header">
         <lu-api-feeder [api]="api" [filters]="filters" standard="v4"></lu-api-feeder>
       </header>
@@ -16,7 +16,7 @@
       </lu-option>
     </ng-container>
 
-    <cc-api-select-empty-state [forcedDisplay]="!context">
+    <cc-api-select-empty-state [forcedDisplay]="!isVisible">
       <div class="u-marginLeftSmall u-marginRightSmall u-marginTopSmaller u-marginBottomSmaller u-textLight">
         {{ 'front_contractPage_offerTab_similar_offers_emptyState' | translate }}
       </div>
