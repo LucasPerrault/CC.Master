@@ -28,7 +28,7 @@ export class OffersFilterRoutingService {
     ]).pipe(
       map(([product]) => ({
         search: routingParams.search,
-        tag: this.getTag(routingParams.tag),
+        tag: routingParams.tag,
         product,
         currencies: this.getCurrencies(routingParams.currencies),
         billingModes: this.getBillingModes(routingParams.billingModes),
@@ -46,13 +46,6 @@ export class OffersFilterRoutingService {
       billingModes: this.getSafeRoutingParams(filters?.billingModes?.map(c => c?.id).join(',')),
       state: this.getSafeRoutingParams(filters.state),
     };
-  }
-
-  private getTag(params: string): string {
-    // It is defined in the offer model in the back project.
-    // It is used for the default selection.
-    const defaultTag = 'Catalogues';
-    return !!params ? params : defaultTag;
   }
 
   private getProduct$(params: string): Observable<IProduct> {

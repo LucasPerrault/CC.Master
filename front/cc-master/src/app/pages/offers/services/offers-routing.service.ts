@@ -28,6 +28,19 @@ export class OffersRoutingService {
     };
   }
 
+  public setDefaultTag(): void {
+    const routingParams = this.getRoutingParams();
+    if (!!routingParams.tag) {
+      return;
+    }
+
+    // It is defined in the offer model in the back project.
+    // It is used for the default selection.
+    const defaultTag = 'Catalogues';
+    routingParams.tag = defaultTag;
+    this.updateRouterAsync(routingParams);
+  }
+
   public async updateRouterAsync(routingParams: IOfferRoutingParams): Promise<void> {
     const queryParams = {
       [OffersRoutingKey.Search]: routingParams.search,
