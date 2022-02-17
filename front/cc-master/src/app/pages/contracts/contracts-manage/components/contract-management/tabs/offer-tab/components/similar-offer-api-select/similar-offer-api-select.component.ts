@@ -39,12 +39,11 @@ export class SimilarOfferApiSelectComponent implements ControlValueAccessor, Val
   @Input() context: ISimilarOfferContext;
 
   public get api(): string {
-    return `/api/commercial-offers/${ this.context.offerId }/similar`;
+    return !!this.context?.offerId ? `/api/commercial-offers/${ this.context.offerId }/similar` : '';
   }
 
   public get filters(): string[] {
-    const until = this.apiDateService.toApiV3DateFormat(this.context.maxPeriod);
-    return [`until=${ until }`];
+    return !!this.context?.maxPeriod ? [`until=${ this.apiDateService.toApiV3DateFormat(this.context.maxPeriod) }`] : [];
   }
 
   public formControl: FormControl = new FormControl();
