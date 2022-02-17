@@ -25,8 +25,9 @@ export class CodeSourcesListComponent {
   public getSubdomainAndAppPath(codeSource: ICodeSource): string {
     const subdomain = codeSource.config.subdomain ?? '{tenant}';
     const appPath = codeSource.config.appPath ?? '';
+    const domain = codeSource.config.isPrivate ? 'lucca.local' : 'ilucca.net';
 
-    return `${ subdomain }.ilucca.net${ appPath }`;
+    return `${ subdomain }.${ domain }${ appPath }`;
   }
 
   public accessGithub(codeSource: ICodeSource): void {

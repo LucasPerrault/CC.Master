@@ -157,8 +157,7 @@ namespace AdvancedFilters.Infra.Services.Sync
             var context = new SubdomainSubsetDataSourceContext<Contract>(_environments.Select(e => e.Subdomain).ToList(), dataSource.SubdomainsParamName, "CC.Master");
             var bulkUpsertConfig = new BulkUpsertConfig
             {
-                IncludeSubEntities = true,
-                Filter = GetFilter<Contract>(c => c.EnvironmentId)
+                Filter = GetFilter<Contract>(c => c.EnvironmentId),
             };
             var synchronizer = BuildFrom<ContractsDto, Contract, EmptyDataSourceContext<Contract>>(dataSource, new List<EmptyDataSourceContext<Contract>> { context }, config: bulkUpsertConfig);
             return Task.FromResult(synchronizer);

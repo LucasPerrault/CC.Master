@@ -18,6 +18,7 @@ namespace AdvancedFilters.Web
         {
             DataSources.Countries => configuration.Country(),
             DataSources.Environments => configuration.Environment(),
+            DataSources.Contracts => configuration.Contract(),
             DataSources.AppInstances => configuration.AppInstance(),
             DataSources.LegalUnits => configuration.LegalUnit(),
             DataSources.Establishments => configuration.Establishment(),

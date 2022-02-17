@@ -52,9 +52,9 @@ namespace AdvancedFilters.Infra.Storage.Stores
         private IQueryable<ClientContact> ClientContacts => _dbContext
             .Set<ClientContact>()
             .Include(c => c.Environment).ThenInclude(e => e.AppInstances)
-            .Include(c => c.Environment).ThenInclude(e => e.Accesses)
+            .Include(c => c.Environment).ThenInclude(e => e.Accesses).ThenInclude(a => a.Distributor)
             .Include(c => c.Establishment).ThenInclude(e => e.LegalUnit).ThenInclude(lu => lu.Country)
-            .Include(c => c.Client).ThenInclude(e => e.Contracts).ThenInclude(c => c.EstablishmentAttachments).ThenInclude(a => a.Establishment);
+            .Include(c => c.Client).ThenInclude(e => e.Contracts);
     }
 
     internal static class ClientContactQueryableExtensions

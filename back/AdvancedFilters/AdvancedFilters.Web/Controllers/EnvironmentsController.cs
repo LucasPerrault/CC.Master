@@ -11,6 +11,7 @@ using Rights.Domain;
 using Rights.Web.Attributes;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using AdvancedFilters.Domain.Billing.Models;
 using Tools.Web;
 using Environment = AdvancedFilters.Domain.Instance.Models.Environment;
 
@@ -89,7 +90,6 @@ namespace AdvancedFilters.Web.Controllers
         public HashSet<string> Subdomain { get; set; } = new HashSet<string>();
         public HashSet<string> Domain { get; set; } = new HashSet<string>();
         public HashSet<bool> IsActive { get; set; } = new HashSet<bool> { true, false };
-
         public EnvironmentFilter ToFilter()
         {
             return new EnvironmentFilter
@@ -97,7 +97,7 @@ namespace AdvancedFilters.Web.Controllers
                 Search = Search,
                 Subdomains = Subdomain,
                 Domains = Domain,
-                IsActive = IsActive.ToCompareBoolean()
+                IsActive = IsActive.ToCompareBoolean(),
             };
         }
     }

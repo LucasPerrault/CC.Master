@@ -20,6 +20,7 @@ namespace AdvancedFilters.Infra.Filters.Builders.Implementations
             yield return ApplyMany(Criterion.LegalUnits).To(e => e.LegalUnits);
             yield return ApplyMany(Criterion.AppInstances).To(EnvironmentExpressions.AppInstancesAvailableForSelection);
             yield return ApplyMany(Criterion.Distributors).To(e => e.Accesses.Select(a => a.Distributor).Distinct());
+            yield return ApplyMany(Criterion.Contracts).To(e => e.Contracts);
             yield return Apply(Criterion.DistributorType).To(EnvironmentExpressions.DistributorTypeFn);
         }
 

@@ -86,6 +86,7 @@ namespace Billing.Contracts.Web
         public static CompareNullableDateTime NotArchived() => CompareDateTime.IsStrictlyAfter(DateTime.Now).OrNull();
         public HashSet<int> Id { get; set; } = new HashSet<int>();
         public HashSet<string> Search { get; set; } = new HashSet<string>();
+        public string EnvironmentSubdomain { get; set; }
         public HashSet<int> EnvironmentId { get; set; } = new HashSet<int>();
         public HashSet<bool> HasEnvironment { get; set; } = new HashSet<bool>();
         public DateTime? WasStartedOn { get; set; } = null;
@@ -99,6 +100,7 @@ namespace Billing.Contracts.Web
             Search = Search,
             ExcludedIds = ExcludedId,
             EnvironmentIds = EnvironmentId,
+            EnvironmentSubdomain = EnvironmentSubdomain,
             HasEnvironment = HasEnvironment.ToCompareBoolean(),
             Ids = Id,
             ClientIds = ClientId,
@@ -111,7 +113,7 @@ namespace Billing.Contracts.Web
             ArchivedAt = NotArchived(),
             CreatedAt = GetCreatedAt(),
             StartsOn = GetStartsOn(),
-            EndsOn = GetEndsOn()
+            EndsOn = GetEndsOn(),
         };
 
         private CompareDateTime GetCreatedAt()

@@ -20,7 +20,6 @@ namespace AdvancedFilters.Domain.Instance.Models
         public string ProductionHost { get; set; }
 
         public DistributorType DistributorType => EnvironmentExpressions.CompiledDistributorTypeFn(this);
-
         public IEnumerable<LegalUnit> LegalUnits { get; set; }
         public IEnumerable<AppInstance> AppInstances { get; set; }
         public IEnumerable<Contract> Contracts { get; set; }
@@ -36,6 +35,8 @@ namespace AdvancedFilters.Domain.Instance.Models
         public AppInstancesAdvancedCriterion AppInstances { get; set; }
         public DistributorsAdvancedCriterion Distributors { get; set; }
         public SingleEnumComparisonCriterion<DistributorType> DistributorType { get; set; }
+        public ContractsAdvancedCriterion Contracts { get; set; }
+
 
         public override IQueryableExpressionBuilder<Environment> GetExpressionBuilder(IQueryableExpressionBuilderFactory factory)
             => factory.Create(this);
@@ -57,7 +58,6 @@ namespace AdvancedFilters.Domain.Instance.Models
                     ? DistributorType.DirectAndIndirect
                     : DistributorType.DirectOnly
                 : DistributorType.IndirectOnly;
-
         public static Expression<Func<Environment, IEnumerable<AppInstance>>> AppInstancesAvailableForSelection =>
             e => e.AppInstances.Where(e => !ApplicationsCollection.SystemApplicationIds.Contains(e.ApplicationId));
         public static Func<Environment, DistributorType> CompiledDistributorTypeFn

@@ -21,6 +21,7 @@ namespace Billing.Cmrr.Infra.Storage.Configurations
 
             builder.Property(d => d.ClientId).HasColumnName("ClientId");
             builder.Property(d => d.ClientName).HasColumnName("ClientName");
+            builder.Property(d => d.ClientBillingEntity).HasColumnName("ClientBillingEntity");
 
             builder.Property(d => d.DistributorId).HasColumnName("DistributorId");
 

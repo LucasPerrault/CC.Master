@@ -87,7 +87,8 @@ namespace AdvancedFilters.Infra.Storage.Stores
             .Include(e => e.LegalUnits).ThenInclude(lu => lu.Country)
             .Include(e => e.LegalUnits).ThenInclude(lu => lu.Establishments)
             .Include(e => e.AppInstances)
-            .Include(e => e.Accesses).ThenInclude(a => a.Distributor);
+            .Include(e => e.Accesses).ThenInclude(a => a.Distributor)
+            .Include(e => e.Contracts).ThenInclude(c => c.Client);
     }
 
     internal static class EnvironmentQueryableExtensions

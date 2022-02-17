@@ -1,14 +1,13 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { IHttpApiV3Response } from '@cc/common/queries';
+import { IContractMinimalBillable } from '@cc/domain/billing/contracts';
 import {
   IProductMinimalBillingEligibility,
   productMinimalBillingEligibilityFields,
 } from '@cc/domain/billing/offers/models/product-minimal-billing-eligibility.interface';
 import { Observable, of } from 'rxjs';
 import { map } from 'rxjs/operators';
-
-import { IContractMinimalBillable } from '../models/contract-minimal-billable.interface';
 
 @Injectable()
 export class MinimalBillingService {
@@ -19,7 +18,7 @@ export class MinimalBillingService {
   constructor(private httpClient: HttpClient) {}
 
   public isEligibleForMinimalBilling$(contract: IContractMinimalBillable): Observable<boolean> {
-    if (!contract?.distributor?.isDirectSales || this.hasTheoreticalMonthRebate(contract)) {
+    if (!contract?.distributor?.isEnforcingMinimalBilling || this.hasTheoreticalMonthRebate(contract)) {
       return of(false);
     }
 

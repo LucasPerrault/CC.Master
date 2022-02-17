@@ -12,9 +12,10 @@ namespace AdvancedFilters.Domain.DataSources
         Clients,
         Distributors,
         EnvironmentAccesses,
+        Contracts,
         AppContacts,
         ClientContacts,
-        SpecializedContacts
+        SpecializedContacts,
     }
 
     public abstract class DataSource

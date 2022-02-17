@@ -3,6 +3,7 @@ import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/
 import { FormControl } from '@angular/forms';
 import { getButtonState, toSubmissionState } from '@cc/common/forms';
 import { defaultPagingParams, IPaginatedResult, PaginatedList, PaginatedListState, PagingService } from '@cc/common/paging';
+import { ApiStandard } from '@cc/common/queries';
 import { BehaviorSubject, Observable, pipe, ReplaySubject, Subject, UnaryFunction } from 'rxjs';
 import { filter, map, take, takeUntil } from 'rxjs/operators';
 
@@ -98,6 +99,7 @@ export class AppContactsComponent implements OnInit, OnDestroy {
     return this.pagingService.paginate<IAppContact>(
       (httpParams) => this.getAppContacts$(httpParams, this.advancedFilter$.value),
       { page: defaultPagingParams.page, limit: 50 },
+      ApiStandard.V4,
     );
   }
 
