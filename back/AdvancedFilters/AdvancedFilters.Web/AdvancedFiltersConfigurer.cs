@@ -22,6 +22,7 @@ using AdvancedFilters.Application;
 using Tools;
 using System.Linq;
 using System.Collections.Generic;
+using AdvancedFilters.Infra.Services.Sync.Dtos.Facets;
 
 namespace AdvancedFilters.Web
 {
@@ -116,23 +117,23 @@ namespace AdvancedFilters.Web
 
         public static void ConfigureSerializer(JsonOptions jsonOptions)
         {
-
             var facetSerializers = new List<IPolymorphicSerializer>
             {
-                Serializer.WithPolymorphism<IEnvironmentFacetValue, FacetType>(nameof(IEnvironmentFacetValue.Type))
-                    .AddMatch<EnvironmentFacetValue<int>>(FacetType.Integer)
-                    .AddMatch<EnvironmentFacetValue<string>>(FacetType.String)
-                    .AddMatch<EnvironmentFacetValue<decimal>>(FacetType.Decimal)
-                    .AddMatch<EnvironmentFacetValue<decimal>>(FacetType.Percentage)
-                    .AddMatch<EnvironmentFacetValue<DateTime>>(FacetType.DateTime)
-                    .Build(),
-                Serializer.WithPolymorphism<IEstablishmentFacetValue, FacetType>(nameof(IEstablishmentFacetValue.Type))
-                    .AddMatch<EstablishmentFacetValue<int>>(FacetType.Integer)
-                    .AddMatch<EstablishmentFacetValue<string>>(FacetType.String)
-                    .AddMatch<EstablishmentFacetValue<decimal>>(FacetType.Decimal)
-                    .AddMatch<EstablishmentFacetValue<decimal>>(FacetType.Percentage)
-                    .AddMatch<EstablishmentFacetValue<DateTime>>(FacetType.DateTime)
-                    .Build(),
+                FacetDtoExtensions.FacetDtoSerializer,
+                Serializer
+                    .WithPolymorphism<IEnvironmentFacetValue, FacetType>(nameof(IEnvironmentFacetValue.Type))
+                        .AddMatch<EnvironmentFacetValue<int>>(FacetType.Integer)
+                        .AddMatch<EnvironmentFacetValue<string>>(FacetType.String)
+                        .AddMatch<EnvironmentFacetValue<decimal>>(FacetType.Decimal)
+                        .AddMatch<EnvironmentFacetValue<decimal>>(FacetType.Percentage)
+                        .AddMatch<EnvironmentFacetValue<DateTime>>(FacetType.DateTime)
+                    .WithPolymorphism<IEstablishmentFacetValue, FacetType>(nameof(IEstablishmentFacetValue.Type))
+                        .AddMatch<EstablishmentFacetValue<int>>(FacetType.Integer)
+                        .AddMatch<EstablishmentFacetValue<string>>(FacetType.String)
+                        .AddMatch<EstablishmentFacetValue<decimal>>(FacetType.Decimal)
+                        .AddMatch<EstablishmentFacetValue<decimal>>(FacetType.Percentage)
+                        .AddMatch<EstablishmentFacetValue<DateTime>>(FacetType.DateTime)
+                    .Build()
             };
 
             foreach (var converter in facetSerializers.SelectMany(s => s.GetConverters()))

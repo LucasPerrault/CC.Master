@@ -16,6 +16,8 @@ namespace AdvancedFilters.Infra.Storage.Configurations
             builder.Property(f => f.Code).IsRequired();
             builder.Property(f => f.Type).IsRequired();
             builder.Property(f => f.Scope).IsRequired();
+
+            builder.HasIndex(f => new { f.ApplicationId, f.Code }).IsUnique();
         }
     }
 }

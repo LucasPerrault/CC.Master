@@ -71,6 +71,14 @@ namespace AdvancedFilters.Infra.Storage.Stores
                 .ToList();
         }
 
+        public async Task<IReadOnlyCollection<Facet>> GetByIdentifiersAsync(HashSet<FacetIdentifier> identifiers)
+        {
+            return await _dbContext
+                .Set<Facet>()
+                .Where(f => identifiers.Contains(f))
+                .ToListAsync();
+        }
+
         private IQueryable<Facet> Facets(FacetScope scope) => _dbContext
             .Set<Facet>()
             .Where(f => f.Scope == scope);

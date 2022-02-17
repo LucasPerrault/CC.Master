@@ -1,6 +1,7 @@
 using AdvancedFilters.Application;
 using AdvancedFilters.Domain.Core.Models;
 using AdvancedFilters.Domain.DataSources;
+using AdvancedFilters.Domain.Facets;
 using AdvancedFilters.Domain.Instance.Filters;
 using AdvancedFilters.Domain.Instance.Interfaces;
 using AdvancedFilters.Domain.Instance.Models;
@@ -27,6 +28,7 @@ namespace AdvancedFilters.Infra.Tests
     public class HugeSyncServiceTests
     {
         private readonly Mock<IEnvironmentsStore> _environmentsStoreMock;
+        private readonly Mock<IFacetsStore> _facetsStore;
         private readonly Mock<IBulkUpsertService> _upsertServiceMock;
         private readonly IDataSourceSyncCreationService _creationService;
         private readonly Mock<HttpClientHandler> _httpClientHandlerMock;
@@ -58,6 +60,8 @@ namespace AdvancedFilters.Infra.Tests
                 new FetchAuthenticator(),
                 localDataSourceServiceMock.Object
             );
+
+            _facetsStore = new Mock<IFacetsStore>();
         }
 
         [Fact]
@@ -217,7 +221,7 @@ namespace AdvancedFilters.Infra.Tests
                 _syncEmailsMock.Object,
                 _teamNotifierMock.Object
             );
-            var facetsSyncService = new FacetsSyncService();
+            var facetsSyncService = new FacetsSyncService(_upsertServiceMock.Object, _facetsStore.Object);
 
             return new Synchronizer(_environmentsStoreMock.Object, dataSyncService, facetsSyncService);
         }
