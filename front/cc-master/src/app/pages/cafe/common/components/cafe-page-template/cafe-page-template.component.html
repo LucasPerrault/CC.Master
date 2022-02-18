@@ -1,0 +1,12 @@
+<div class="page mod-fullWidth mod-withFullwidthTable">
+  <header class="page-header blockWithFixedSizeInFlex">
+    <h1>{{ "cafe_title" | translate }}</h1>
+    <ng-content select="[page-header-right]"></ng-content>
+  </header>
+
+  <div class="header blockWithFixedSizeInFlex">
+    <ng-content select="[page-subheader]"></ng-content>
+  </div>
+
+  <ng-content select="[page-content]"></ng-content>
+</div>

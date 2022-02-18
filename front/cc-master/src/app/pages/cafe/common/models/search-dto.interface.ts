@@ -1,4 +1,4 @@
-import { AdvancedFilter } from '../cafe-filters/advanced-filter-form';
+import { AdvancedFilter } from '../components/advanced-filter-form';
 
 export interface ISearchDto {
   criterion: AdvancedFilter;

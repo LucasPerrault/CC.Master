@@ -1,17 +1,16 @@
 import { HttpParams } from '@angular/common/http';
-import { ChangeDetectionStrategy, Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { toSubmissionState } from '@cc/common/forms';
+import { getButtonState, toSubmissionState } from '@cc/common/forms';
 import { defaultPagingParams, IPaginatedResult, PaginatedList, PaginatedListState, PagingService } from '@cc/common/paging';
 import { ApiStandard } from '@cc/common/queries';
-import { BehaviorSubject, Observable, Subject } from 'rxjs';
-import { filter, map, switchMap, take, takeUntil } from 'rxjs/operators';
+import { BehaviorSubject, Observable, pipe, ReplaySubject, Subject, UnaryFunction } from 'rxjs';
+import { filter, map, take, takeUntil } from 'rxjs/operators';
 
-import { CafeExportService } from '../../cafe-export.service';
 import {
   AdvancedFilter,
   IAdvancedFilterForm,
-} from '../../common/cafe-filters/advanced-filter-form';
+} from '../../common/components/advanced-filter-form';
 import { AppContactAdvancedFilterConfiguration } from './advanced-filter/app-contact-advanced-filter.configuration';
 import { AppContactAdvancedFilterApiMappingService } from './advanced-filter/app-contact-advanced-filter-api-mapping.service';
 import { IAppContact } from './app-contact.interface';
@@ -25,7 +24,6 @@ import { AppContactsDataService } from './app-contacts-data.service';
   styleUrls: ['./app-contacts.component.scss'],
 })
 export class AppContactsComponent implements OnInit, OnDestroy {
-  @Input() public set advancedFilterForm(f: IAdvancedFilterForm) { this.setAdvancedFilter(f); }
   public get contacts$(): Observable<IAppContact[]> {
     return this.paginatedContacts.items$;
   }
@@ -38,7 +36,13 @@ export class AppContactsComponent implements OnInit, OnDestroy {
     return this.paginatedContacts.state$.pipe(map(state => state === PaginatedListState.Update));
   }
 
-  public advancedFilter$: BehaviorSubject<AdvancedFilter> = new BehaviorSubject<AdvancedFilter>(null);
+  public get canExport(): boolean {
+    return !!this.filters?.value?.criterionForms?.length;
+  }
+
+  public filters: FormControl = new FormControl();
+  public advancedFilter$ = new BehaviorSubject<AdvancedFilter>(null);
+  public exportButtonClass$ = new ReplaySubject<string>(1);
 
   public selectedColumns: FormControl = new FormControl(getAdditionalColumnByIds([
     AppContactAdditionalColumn.Environment,
@@ -54,11 +58,10 @@ export class AppContactsComponent implements OnInit, OnDestroy {
   private destroy$: Subject<void> = new Subject<void>();
 
   constructor(
-    private configuration: AppContactAdvancedFilterConfiguration,
+    public configuration: AppContactAdvancedFilterConfiguration,
     private apiMappingService: AppContactAdvancedFilterApiMappingService,
     private pagingService: PagingService,
 		private contactsService: AppContactsDataService,
-		private exportService: CafeExportService,
   ) {
     this.paginatedContacts = this.getPaginatedAppContacts$();
   }
@@ -66,16 +69,11 @@ export class AppContactsComponent implements OnInit, OnDestroy {
   public ngOnInit(): void {
     this.advancedFilter$
       .pipe(takeUntil(this.destroy$), filter(f => !!f))
-			.subscribe(() => this.refresh());
+      .subscribe(() => this.refresh());
 
-		this.exportService.exportRequests$
-			.pipe(
-				takeUntil(this.destroy$),
-        filter(() => !!this.advancedFilter$.value),
-        map(() => this.advancedFilter$.value),
-        switchMap(f => this.contactsService.exportAppContacts$(f).pipe(take(1), toSubmissionState())),
-      )
-      .subscribe(s => this.exportService.notifyExport(s));
+    this.filters.valueChanges
+      .pipe(takeUntil(this.destroy$), this.toAdvancedFilter)
+      .subscribe(advancedFilter => this.advancedFilter$.next(advancedFilter));
   }
 
   public ngOnDestroy(): void {
@@ -85,6 +83,12 @@ export class AppContactsComponent implements OnInit, OnDestroy {
 
   public nextPage(): void {
     this.paginatedContacts.nextPage();
+  }
+
+  public export(): void {
+    this.contactsService.exportAppContacts$(this.advancedFilter$.value)
+      .pipe(take(1), toSubmissionState(), map(state => getButtonState(state)))
+      .subscribe(c => this.exportButtonClass$.next(c));
   }
 
   private refresh(): void {
@@ -104,8 +108,7 @@ export class AppContactsComponent implements OnInit, OnDestroy {
       .pipe(map(res => ({ items: res.items, totalCount: res.count })));
   }
 
-  private setAdvancedFilter(form: IAdvancedFilterForm) {
-    const advancedFilter = this.apiMappingService.toAdvancedFilter(form);
-    this.advancedFilter$.next(advancedFilter);
+  private get toAdvancedFilter(): UnaryFunction<Observable<IAdvancedFilterForm>, Observable<AdvancedFilter>> {
+    return pipe(map(filters => this.apiMappingService.toAdvancedFilter(filters)));
   }
 }

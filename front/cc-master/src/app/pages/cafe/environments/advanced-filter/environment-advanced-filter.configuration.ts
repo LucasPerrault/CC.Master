@@ -5,15 +5,13 @@ import {
   ComparisonOperator,
   IAdvancedFilterConfiguration,
   ICriterionConfiguration,
-} from '../../common/cafe-filters/advanced-filter-form';
-import { EnvironmentsCategory } from '../enums/environments-category.enum';
+} from '../../common/components/advanced-filter-form';
 import { EnvironmentAdvancedFilterKey } from './environment-advanced-filter-key.enum';
 import { EnvironmentCriterionKey } from './environment-criterion-key.enum';
 import { EnvironmentFormlyConfiguration } from './environment-formly-configuration.service';
 
 @Injectable()
 export class EnvironmentAdvancedFilterConfiguration implements IAdvancedFilterConfiguration {
-  public readonly categoryId = EnvironmentsCategory.Environments;
   public readonly criterions: ICriterionConfiguration[] = [
     {
       key: EnvironmentCriterionKey.AppInstances,

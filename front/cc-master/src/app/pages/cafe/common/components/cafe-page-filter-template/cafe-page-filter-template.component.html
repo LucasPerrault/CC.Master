@@ -1,0 +1,44 @@
+<div class="u-displayFlex u-flexShrink0 u-flexGrow1">
+  <cc-category-select textfieldClass="palette-grey mod-outlined"
+                      [placeholder]="'cafe_category_select_label' | translate"
+                      [categories]="categories"
+                      [formControl]="category">
+  </cc-category-select>
+
+  <ng-content select="[main-filters]"></ng-content>
+
+  <button *ngIf="!!advancedFilterConfig" class="button palette-grey mod-outlined mod-counter u-marginLeftAuto"
+          (click)="toggleFilterDisplay()">
+    {{ 'cafe_filters_button_label' | translate }} <span class="button-counter">{{ filterCount }}</span>
+  </button>
+</div>
+
+<div *ngIf="!!advancedFilterConfig" [ngClass]="{ 'mod-hidden': !showAdvancedFilter }">
+  <cc-advanced-filter-form class="u-marginTopSmaller" [formControl]="advancedFilter"
+                           [configuration]="advancedFilterConfig">
+  </cc-advanced-filter-form>
+
+  <div class="u-displayFlex u-justifyContentSpaceBetween u-paddingSmaller">
+
+    <button class="button mod-link mod-icon" (click)="openDocumentation()">
+      <span aria-hidden="true" class="button-icon lucca-icon icon-help"></span>
+      {{ 'cafe_external_documentation_button' | translate }}
+    </button>
+
+    <div class="u-marginLeftAuto">
+      <ng-content select="[footer-right-actions]"></ng-content>
+
+      <button class="button palette-grey mod-outline" (click)="reset()">
+        {{ 'cafe_filters_delete_all_button_label' | translate }}
+      </button>
+
+      <button class="button palette-grey" (click)="submit()" [disabled]="!filterValid">
+        {{ 'cafe_filters_submit_button_label' | translate }}
+      </button>
+
+      <button class="button mod-link" (click)="cancel()">
+        {{ 'cafe_filters_cancel_button_label' | translate }}
+      </button>
+    </div>
+  </div>
+</div>

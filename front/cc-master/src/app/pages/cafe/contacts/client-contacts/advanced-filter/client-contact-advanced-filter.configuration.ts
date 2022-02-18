@@ -5,16 +5,14 @@ import {
   ComparisonOperator,
   IAdvancedFilterConfiguration,
   ICriterionConfiguration,
-} from '../../../common/cafe-filters/advanced-filter-form';
+} from '../../../common/components/advanced-filter-form';
 import { EnvironmentAdvancedFilterConfiguration } from '../../../environments/advanced-filter';
-import { ContactCategory } from '../../common/enums/cafe-contacts-category.enum';
 import { ClientContactAdvancedFilterKey } from './client-contact-advanced-filter-key.enum';
 import { ClientContactCriterionKey } from './client-contact-criterion-key.enum';
 import { ClientContactFormlyConfiguration } from './client-contact-formly-configuration.service';
 
 @Injectable()
 export class ClientContactAdvancedFilterConfiguration implements IAdvancedFilterConfiguration {
-  public readonly categoryId = ContactCategory.Client;
   public readonly criterions: ICriterionConfiguration[] = [
     {
       key: ClientContactCriterionKey.Environment,

@@ -1,0 +1,16 @@
+<label class="textfield palette-grey mod-outlined mod-inline">
+  <lu-select [formControl]="formControl" class="textfield-input"
+             [placeholder]="'cafe_category_select_label' | translate">
+    <ng-container *luDisplayer="let category">{{ category.name | translate }}</ng-container>
+
+    <lu-option-picker-advanced>
+      <lu-option-feeder [options]="categories"></lu-option-feeder>
+      <header class="lu-picker-header">
+        <lu-option-searcher [searchFn]="searchFn"></lu-option-searcher>
+      </header>
+      <lu-option *luForOptions="let category; trackBy: trackBy" [value]="category">
+        {{ category.name }}
+      </lu-option>
+    </lu-option-picker-advanced>
+  </lu-select>
+</label>

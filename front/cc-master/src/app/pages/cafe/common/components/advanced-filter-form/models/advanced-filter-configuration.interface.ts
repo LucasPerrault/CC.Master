@@ -4,7 +4,6 @@ import { IComparisonOperator } from '../components/comparison-filter-criterion/c
 import { ComparisonOperator } from '../enums/comparison-operator.enum';
 
 export interface IAdvancedFilterConfiguration {
-  categoryId: string;
   criterions: ICriterionConfiguration[];
 }
 

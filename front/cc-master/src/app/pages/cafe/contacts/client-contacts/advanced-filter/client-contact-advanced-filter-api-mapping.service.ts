@@ -1,14 +1,14 @@
 import { Injectable } from '@angular/core';
 
-import { IClient } from '../../../billing/models/client.interface';
 import {
   AdvancedFilter,
   AdvancedFilterFormMapping,
   AdvancedFilterTypeMapping,
   IAdvancedFilterAttributes,
   IAdvancedFilterForm,
-} from '../../../common/cafe-filters/advanced-filter-form';
-import { AdvancedFilterOperatorMapping } from '../../../common/cafe-filters/advanced-filter-form';
+} from '../../../common/components/advanced-filter-form';
+import { AdvancedFilterOperatorMapping } from '../../../common/components/advanced-filter-form';
+import { IClient } from '../../../common/models/client.interface';
 import { EnvironmentAdvancedFilterApiMappingService } from '../../../environments/advanced-filter';
 import { ClientContactAdvancedFilterKey } from './client-contact-advanced-filter-key.enum';
 
