@@ -1,1 +1,27 @@
-{{ this.getDescription() }}
+<div class="callout palette-warning">
+  {{ getDescription() }}
+</div>
+
+<label *ngIf="hasMultiSolutions" class="textfield palette-grey mod-block is-required">
+  <lu-select class="textfield-input" multiple [formControl]="selectedSolutions" required>
+    <ng-container *luDisplayer="let values; multiple: true">
+      <span>{{ getSolutionNames(values) }}</span>
+    </ng-container>
+
+    <lu-option-picker-advanced>
+      <header class="lu-picker-header" [class.mod-multiple]="true">
+        <lu-option-feeder [options]="modalData.product.solutions"></lu-option-feeder>
+        <lu-option-select-all class="option-selector position-fixed"></lu-option-select-all>
+      </header>
+
+      <lu-option *luForOptions="let solution" [value]="solution">{{ solution.name }}</lu-option>
+    </lu-option-picker-advanced>
+
+  </lu-select>
+  <span class="textfield-label">
+    {{ 'establishments_exclude_modal_solutions_select_label' | translate }}
+    <span aria-hidden="true" class="lucca-icon icon-info"
+          [luTooltip]="'establishments_exclude_modal_solutions_info' | translate">
+    </span>
+  </span>
+</label>

@@ -60,8 +60,6 @@ export class EstablishmentsDataService {
       : createAttachment$;
   }
 
-
-
   public deleteAttachmentRange$(attachmentIds: number[]): Observable<void> {
     const requests$ = attachmentIds.map(attachmentId => this.deleteAttachment$(attachmentId));
     return forkJoin(...requests$);
@@ -108,15 +106,18 @@ export class EstablishmentsDataService {
     });
   }
 
-  public excludeEstablishmentRange$(establishmentIds: number[], productId: number): Observable<void> {
-    const request$ = establishmentIds.map(establishmentId => this.excludeEstablishment$(establishmentId, productId));
+  public excludeEstablishmentRange$(establishmentIds: number[], solutionIds: number[]): Observable<void> {
+    const request$ = establishmentIds
+      .map(establishmentId => solutionIds.map(solutionId => this.excludeEstablishment$(establishmentId, solutionId)))
+      .reduce((flattened, values) => [...flattened, ...values]);
+
     return forkJoin(...request$);
   }
 
-  public excludeEstablishment$(establishmentId: number, productId: number): Observable<void> {
+  public excludeEstablishment$(establishmentId: number, solutionId: number): Observable<void> {
     return this.httpClient.post<void>(this.excludedEntitiesEndpoint, {
       legalEntityId: establishmentId,
-      productId,
+      solutionId,
     });
   }
 

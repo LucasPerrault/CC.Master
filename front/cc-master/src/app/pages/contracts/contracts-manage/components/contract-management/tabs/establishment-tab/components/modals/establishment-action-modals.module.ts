@@ -2,7 +2,18 @@ import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { TranslateModule } from '@cc/aspects/translate';
+import { ProductApiSelectModule } from '@cc/common/forms';
 import { LuDateSelectInputModule } from '@lucca-front/ng/date';
+import { LuInputDisplayerModule } from '@lucca-front/ng/input';
+import {
+  LuForOptionsModule,
+  LuOptionFeederModule,
+  LuOptionItemModule,
+  LuOptionPickerModule,
+  LuOptionSelectAllModule,
+} from '@lucca-front/ng/option';
+import { LuSelectInputModule } from '@lucca-front/ng/select';
+import { LuTooltipTriggerModule } from '@lucca-front/ng/tooltip';
 
 import { TheoreticalMonthRebateModule } from '../../../../../../../common';
 import { EndReasonSelectModule } from '../end-reason-select/end-reason-select.module';
@@ -29,6 +40,15 @@ import {
     LuDateSelectInputModule,
     EndReasonSelectModule,
     TheoreticalMonthRebateModule,
+    ProductApiSelectModule,
+    LuSelectInputModule,
+    LuInputDisplayerModule,
+    LuOptionPickerModule,
+    LuOptionItemModule,
+    LuTooltipTriggerModule,
+    LuOptionFeederModule,
+    LuOptionSelectAllModule,
+    LuForOptionsModule,
 
   ],
 })
