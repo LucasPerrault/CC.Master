@@ -16,6 +16,9 @@
         <th class="table-head-row-cell">
           {{ 'front_contractPage_establishments_column_name' | translate }}
         </th>
+        <th class="table-head-row-cell" *ngIf="isType(establishmentType.Excluded)">
+          {{ 'front_contractPage_establishments_column_excluded_solutions' | translate }}
+        </th>
         <th class="table-head-row-cell" *ngIf="isType(establishmentType.LinkedToAnotherContract)">
           {{ 'front_contractPage_establishments_column_contract' | translate }}
         </th>
@@ -47,6 +50,9 @@
           </label>
         </td>
         <td class="table-body-row-cell">{{ entry.establishment.name }}</td>
+        <td class="table-body-row-cell" *ngIf="isType(establishmentType.Excluded)">
+          {{ getExcludedSolutions(entry.establishment.excludedEntities) }}
+        </td>
         <td class="table-body-row-cell" *ngIf="isType(establishmentType.LinkedToAnotherContract)">
           {{ getAttachment(entry)?.contract?.name }}
         </td>

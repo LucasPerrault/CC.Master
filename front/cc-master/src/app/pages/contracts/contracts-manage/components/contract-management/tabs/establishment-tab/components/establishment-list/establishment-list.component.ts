@@ -9,6 +9,7 @@ import { EstablishmentType } from '../../constants/establishment-type.enum';
 import { IEstablishmentActionsContext } from '../../models/establishment-actions-context.interface';
 import { IEstablishmentAttachment } from '../../models/establishment-attachment.interface';
 import { IEstablishmentContract } from '../../models/establishment-contract.interface';
+import { IEstablishmentExcludedEntity } from '../../models/establishment-excluded-entity.interface';
 import { IEstablishmentWithAttachments } from '../../models/establishment-with-attachments.interface';
 import { AttachmentsActionRestrictionsService } from '../../services/attachments-action-restrictions.service';
 import { EstablishmentActionContextService } from '../../services/establishment-action-context.service';
@@ -103,6 +104,14 @@ export class EstablishmentListComponent {
     }
 
     return this.translatePipe.transform('front_contractPage_establishments_state_inProgress');
+  }
+
+  public getExcludedSolutions(excludedEts: IEstablishmentExcludedEntity[]): string {
+    const solutionNames = excludedEts?.map(e => e.solution.name) ?? [];
+    const distinctSolutions = solutionNames.filter((v, i, self) => self.indexOf(v) === i);
+    const sortedSolutionNames = distinctSolutions.sort((a, b) => a.localeCompare(b));
+
+    return sortedSolutionNames.join(', ');
   }
 
   private getErrorStatus(entry: IEstablishmentWithAttachments): string {
