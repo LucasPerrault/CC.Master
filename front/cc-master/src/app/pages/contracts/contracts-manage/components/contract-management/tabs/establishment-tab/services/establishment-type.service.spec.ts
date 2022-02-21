@@ -20,14 +20,18 @@ const fakeContract = (id: number, product: IEstablishmentContractProduct): IEsta
   environmentId: 1,
   theoricalStartOn: '2020-01-01',
 });
-const fakeEstablishment = (excludedEntities: IEstablishmentExcludedEntity[] = [], isActive: boolean = true): IContractEstablishment => ({
+const fakeEstablishment = (
+  excludedEntities: IEstablishmentExcludedEntity[] = [],
+  attachments: IEstablishmentAttachment[] = [],
+  isActive: boolean = true,
+): IContractEstablishment => ({
   id: 1,
   isActive,
   name: 'fake-establishment',
   excludedEntities,
-  contractEntities: [],
+  contractEntities: attachments,
 });
-const fakeAttachment = (start: Date, end: Date, contractID: number): IEstablishmentAttachment => ({
+const fakeAttachment = (start: Date, end: Date, contractID: number, contract?: IEstablishmentContract): IEstablishmentAttachment => ({
   start: start?.toString(),
   end: end?.toString(),
   id: 1,
@@ -36,11 +40,12 @@ const fakeAttachment = (start: Date, end: Date, contractID: number): IEstablishm
   endReason: AttachmentEndReason.Modification,
   legalEntityId: 1,
   contractID,
-  contract: {} as IEstablishmentContract,
+  contract,
 });
 const fakeExcludedEts = (solutionId: number, establishmentId: number): IEstablishmentExcludedEntity => ({
   id: 1,
   solutionId,
+  solution: { id: solutionId, name: 'solution-name' },
   legalEntityID: establishmentId,
 });
 const fakeEtsEntry = (
@@ -53,9 +58,14 @@ const fakeEtsEntry = (
   nextAttachment,
   lastAttachment: null,
 });
+const fakeProduct = (id: number, solutions: ISolution[]) => ({
+  id,
+  name: 'product-with-one-solution',
+  isMultiSuite: solutions.length > 1,
+  solutions,
+});
 
-const solution1: ISolution = { id: 1, name: 'solution-1' };
-const productWithOneSolution = { id: 1, name: 'product-with-one-solution', isMultiSuite: false, solutions: [solution1] };
+const productWithOneSolution = fakeProduct(1, [{ id: 1, name: 'solution-1' }]);
 const contract = fakeContract(1, productWithOneSolution);
 
 const today = new Date();
@@ -121,11 +131,14 @@ describe('EstablishmentTypeService', () => {
 
   it('should get linked to another contract establishments', () => {
     const anotherContract = fakeContract(2, productWithOneSolution);
-    const currentAttachmentToAnotherContract = fakeAttachment(startOfMonth(lastMonth), null, anotherContract.id);
-    const nextAttachmentToAnotherContract = fakeAttachment(startOfMonth(nextMonth), null, anotherContract.id);
+    const currentAttachment = fakeAttachment(startOfMonth(lastMonth), null, anotherContract.id, anotherContract);
+    const nextAttachment = fakeAttachment(startOfMonth(nextMonth), null, anotherContract.id, anotherContract);
+    const etsWithCurrentAttachment = fakeEstablishment([], [currentAttachment]);
+    const etsWithNextAttachment = fakeEstablishment([], [nextAttachment]);
+
     const entriesLinkedToAnotherContract = [
-      fakeEtsEntry(fakeEstablishment(), currentAttachmentToAnotherContract, null),
-      fakeEtsEntry(fakeEstablishment(), null, nextAttachmentToAnotherContract),
+      fakeEtsEntry(etsWithCurrentAttachment, currentAttachment, null),
+      fakeEtsEntry(etsWithNextAttachment, null, nextAttachment),
     ];
 
     const result = spectator.service.getEstablishmentsByType(entriesLinkedToAnotherContract, contract);
@@ -137,11 +150,11 @@ describe('EstablishmentTypeService', () => {
   });
 
   it('should get linked to this contract establishments', () => {
-    const currentAttachment = fakeAttachment(startOfMonth(lastMonth), null, contract.id);
-    const nextAttachment = fakeAttachment(startOfMonth(nextMonth), null, contract.id);
+    const currentAttachment = fakeAttachment(startOfMonth(lastMonth), null, contract.id, contract);
+    const nextAttachment = fakeAttachment(startOfMonth(nextMonth), null, contract.id, contract);
     const entriesLinkedToContract = [
-      fakeEtsEntry(fakeEstablishment(), currentAttachment, null),
-      fakeEtsEntry(fakeEstablishment(), null, nextAttachment),
+      fakeEtsEntry(fakeEstablishment([], [currentAttachment]), currentAttachment, null),
+      fakeEtsEntry(fakeEstablishment([], [nextAttachment]), null, nextAttachment),
     ];
 
     const result = spectator.service.getEstablishmentsByType(entriesLinkedToContract, contract);
@@ -155,11 +168,11 @@ describe('EstablishmentTypeService', () => {
   it('should get linked to this contract establishments with excluded entities', () => {
     const solutionId = contract.product.solutions[0].id;
     const excludedEntityWithSameContractSolution = fakeExcludedEts(solutionId, 1);
-    const currentAttachment = fakeAttachment(startOfMonth(lastMonth), null, contract.id);
-    const nextAttachment = fakeAttachment(startOfMonth(nextMonth), null, contract.id);
+    const currentAttachment = fakeAttachment(startOfMonth(lastMonth), null, contract.id, contract);
+    const nextAttachment = fakeAttachment(startOfMonth(nextMonth), null, contract.id, contract);
     const entriesLinkedToContract = [
-      fakeEtsEntry(fakeEstablishment(), currentAttachment, null),
-      fakeEtsEntry(fakeEstablishment([excludedEntityWithSameContractSolution]), null, nextAttachment),
+      fakeEtsEntry(fakeEstablishment([], [currentAttachment]), currentAttachment, null),
+      fakeEtsEntry(fakeEstablishment([excludedEntityWithSameContractSolution], [currentAttachment]), null, nextAttachment),
     ];
 
     const result = spectator.service.getEstablishmentsByType(entriesLinkedToContract, contract);
@@ -182,8 +195,8 @@ describe('EstablishmentTypeService', () => {
   });
 
   it('should get error establishments because it is inactive', () => {
-    const currentAttachment = fakeAttachment(startOfMonth(lastMonth), null, contract.id);
-    const inactiveEstablishment = fakeEstablishment([], false);
+    const currentAttachment = fakeAttachment(startOfMonth(lastMonth), null, contract.id, contract);
+    const inactiveEstablishment = fakeEstablishment([], [], false);
     const errorEntries = [fakeEtsEntry(inactiveEstablishment, currentAttachment, null)];
 
     const result = spectator.service.getEstablishmentsByType(errorEntries, contract);
@@ -192,5 +205,21 @@ describe('EstablishmentTypeService', () => {
     expect(result.linkedToAnotherContract).toEqual([]);
     expect(result.linkedToContract).toEqual([]);
     expect(result.withError).toEqual(errorEntries);
+  });
+
+  it('should get error establishments because it has attachment but not for this solution', () => {
+    const product = fakeProduct(22, [{ id: 4, name: 'solution-4' }, { id: 5, name: 'solution-5' }]);
+    const anotherContract = fakeContract(2, product);
+    const attachment = fakeAttachment(startOfMonth(lastMonth), null, anotherContract.id, anotherContract);
+    const establishment = fakeEstablishment([], [attachment]);
+
+    const entries = [fakeEtsEntry(establishment, null, null)];
+
+    const result = spectator.service.getEstablishmentsByType(entries, contract);
+
+    expect(result.excluded).toEqual([]);
+    expect(result.linkedToAnotherContract).toEqual([]);
+    expect(result.linkedToContract).toEqual([]);
+    expect(result.withError).toEqual(entries);
   });
 });
