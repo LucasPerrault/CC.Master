@@ -5,7 +5,10 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
+using Storage.Infra.Extensions;
+using Storage.Infra.Querying;
 
 namespace Distributors.Infra.Storage.Stores
 {
@@ -49,9 +52,44 @@ namespace Distributors.Infra.Storage.Stores
                 return cachedDistributors;
             }
 
-            var distributors = await _dbContext.Set<Distributor>().ToListAsync();
+            var distributors = await Distributors.ToListAsync();
             _distributorsCache.Cache(distributors);
             return distributors;
+        }
+
+        public async Task<List<Distributor>> GetAsync(DistributorFilter filter)
+        {
+            var distributors = await GetAllAsync();
+            return distributors.WhereMatches(filter).ToList();
+        }
+
+        private IQueryable<Distributor> Distributors => _dbContext.Set<Distributor>();
+    }
+
+    internal static class DistributorsFilterExtensions
+    {
+        public static IEnumerable<Distributor> WhereMatches(this IEnumerable<Distributor> distributors, DistributorFilter filter)
+        {
+            return distributors.Search(filter.Search);
+        }
+
+        private static IEnumerable<Distributor> Search(this IEnumerable<Distributor> distributors, HashSet<string> words)
+        {
+            var usableWords = words.Sanitize();
+            if (!usableWords.Any())
+            {
+                return distributors;
+            }
+
+            return distributors.Where(distributor => distributor.IsMatchingSearch(words));
+        }
+
+        private static bool IsMatchingSearch(this Distributor distributor, HashSet<string> words)
+        {
+            var distributorWords = distributor.Name.Split(' ');
+            return words
+                .Where(w => !string.IsNullOrEmpty(w))
+                .All(w => distributorWords.Any(t => t.ToLower().StartsWith(w.ToLower())));
         }
     }
 }

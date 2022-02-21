@@ -19,9 +19,9 @@ namespace Distributors.Application
             _principal = principal;
         }
 
-        public async Task<List<Distributor>> GetAsync()
+        public async Task<List<Distributor>> GetAsync(DistributorFilter filter)
         {
-            var distributors = await _store.GetAllAsync();
+            var distributors = await _store.GetAsync(filter);
             return _principal switch
             {
                 CloudControlApiKeyClaimsPrincipal _ => distributors,

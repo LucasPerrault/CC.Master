@@ -9,5 +9,7 @@ namespace Distributors.Domain
         Task<Distributor> GetActiveByIdAsync(int id);
         Task<Distributor> GetActiveByCodeAsync(string code);
         Task<List<Distributor>> GetAllAsync();
+        Task<List<Distributor>> GetAsync(DistributorFilter filter);
+
     }
 }
