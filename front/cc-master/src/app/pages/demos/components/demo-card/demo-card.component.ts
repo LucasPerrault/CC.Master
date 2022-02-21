@@ -4,7 +4,7 @@ import { TranslatePipe } from '@cc/aspects/translate';
 import { getButtonState, toSubmissionState } from '@cc/common/forms';
 import { isAfter } from 'date-fns';
 import { ReplaySubject, Subject } from 'rxjs';
-import { finalize, map, take, takeUntil } from 'rxjs/operators';
+import { filter, finalize, map, take, takeUntil } from 'rxjs/operators';
 
 import { getSpecificAuthor } from '../../constants/specific-author-id.enum';
 import { IDemo, IDemoAuthor, ITemplateDemo } from '../../models/demo.interface';
@@ -49,7 +49,7 @@ export class DemoCardComponent implements OnInit, OnDestroy {
 
   public ngOnInit(): void {
     this.formControl.valueChanges
-      .pipe(takeUntil(this.destroy$))
+      .pipe(takeUntil(this.destroy$), filter(user => !!user))
       .subscribe(user => this.connectAs(user));
 
     this.hidePassword();
