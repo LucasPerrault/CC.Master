@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component, Inject } from '@angular/core';
 import { TranslatePipe } from '@cc/aspects/translate';
+import { BillingEntity, getBillingEntity } from '@cc/domain/billing/clients';
 import { ILuModalContent, LU_MODAL_DATA } from '@lucca-front/ng/modal';
 
 import { IClientInfoModalData } from './client-info-modal-data.interface';
@@ -24,5 +25,10 @@ export class ClientInfoModalComponent implements ILuModalContent {
 
   public copy(text: string): void {
     void navigator.clipboard.writeText(text);
+  }
+
+  public getBillingEntityName(billingEntity: BillingEntity): string {
+    const translationKey = getBillingEntity(billingEntity)?.name;
+    return this.translatePipe.transform(translationKey);
   }
 }

@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { TranslateModule } from '@cc/aspects/translate';
-import { EnvironmentDomainSelectModule } from '@cc/common/forms';
+import { BillingEntitySelectModule, EnvironmentDomainSelectModule } from '@cc/common/forms';
 import { LuInputClearerModule, LuInputDisplayerModule } from '@lucca-front/ng/input';
 import {
   LuForOptionsModule,
@@ -23,6 +23,7 @@ import {
   SpecializedContactRoleApiSelectModule,
 } from '../index';
 import { FormlyFieldApplication } from './application/application.component';
+import { FormlyFieldBillingEntity } from './billing-entity/billing-entity.component';
 import { FormlyFieldCluster } from './cluster/cluster.component';
 import { FormlyFieldCountry } from './country/country.component';
 import { FormlyFieldDistributor } from './distributor/distributor.component';
@@ -42,6 +43,7 @@ import { FormlyFieldSpecializedContactRole } from './specialized-contact-role/sp
     FormlyFieldApplication,
     FormlyFieldDistributor,
     FormlyFieldDistributorType,
+    FormlyFieldBillingEntity,
   ],
   imports: [
     CommonModule,
@@ -55,6 +57,7 @@ import { FormlyFieldSpecializedContactRole } from './specialized-contact-role/sp
     CountryApiSelectModule,
     SpecializedContactRoleApiSelectModule,
     ClusterApiSelectModule,
+    BillingEntitySelectModule,
     LuSelectInputModule,
     LuOptionPickerModule,
     LuOptionFeederModule,

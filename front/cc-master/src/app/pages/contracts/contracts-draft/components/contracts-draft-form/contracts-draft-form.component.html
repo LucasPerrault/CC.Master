@@ -39,11 +39,18 @@
     </div>
   </div>
 
-  <cc-client-api-select [formControlName]="formGroupKey.Client"
-                        [displayMode]="selectDisplayMode.Form"
-                        [required]="true"
-                        textfieldClass="palette-grey mod-longest u-marginTopStandard">
-  </cc-client-api-select>
+  <div class="mod-widthFitContent">
+    <cc-client-api-select [formControlName]="formGroupKey.Client"
+                          [displayMode]="selectDisplayMode.Form"
+                          [required]="true"
+                          textfieldClass="palette-grey mod-longest u-marginTopStandard">
+    </cc-client-api-select>
+    <div class="textfield-messages">
+      <span *ngIf="!!draftFormInformation?.clientBillingEntity" class="textfield-messages-helper u-textSmaller u-right">
+        {{ 'contracts_client_billing_entity_info' | translate : { billingEntity: getBillingEntityName(draftFormInformation?.clientBillingEntity) } }}
+      </span>
+    </div>
+  </div>
 
   <label class="textfield palette-grey mod-longest u-marginTopStandard is-required">
     <cc-product-api-select [formControlName]="formGroupKey.Product" [required]="true">

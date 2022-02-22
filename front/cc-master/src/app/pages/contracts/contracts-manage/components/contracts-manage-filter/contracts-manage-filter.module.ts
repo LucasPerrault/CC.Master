@@ -3,11 +3,12 @@ import { NgModule } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { TranslateModule } from '@cc/aspects/translate';
 import {
-  ClientApiSelectModule, DateRangeSelectModule,
-  DistributorApiSelectModule,
-  EnvironmentApiSelectModule, EstablishmentApiSelectModule,
-  OfferApiSelectModule,
-  ProductApiSelectModule,
+    BillingEntitySelectModule,
+    ClientApiSelectModule, DateRangeSelectModule,
+    DistributorApiSelectModule,
+    EnvironmentApiSelectModule, EstablishmentApiSelectModule,
+    OfferApiSelectModule,
+    ProductApiSelectModule,
 } from '@cc/common/forms';
 import { LuDateSelectInputModule } from '@lucca-front/ng/date';
 
@@ -18,22 +19,23 @@ import { ContractsManageFilterComponent } from './contracts-manage-filter.compon
 
 @NgModule({
   declarations: [ContractsManageFilterComponent],
-  imports: [
-    CommonModule,
-    ReactiveFormsModule,
-    DistributorFilterButtonGroupModule,
-    ClientApiSelectModule,
-    TranslateModule,
-    DistributorApiSelectModule,
-    ProductApiSelectModule,
-    OfferApiSelectModule,
-    EnvironmentApiSelectModule,
-    ContractStateSelectModule,
-    LuDateSelectInputModule,
-    DateRangeSelectModule,
-    EstablishmentApiSelectModule,
-    EstablishmentHealthSelectModule,
-  ],
+    imports: [
+        CommonModule,
+        ReactiveFormsModule,
+        DistributorFilterButtonGroupModule,
+        ClientApiSelectModule,
+        TranslateModule,
+        DistributorApiSelectModule,
+        ProductApiSelectModule,
+        OfferApiSelectModule,
+        EnvironmentApiSelectModule,
+        ContractStateSelectModule,
+        LuDateSelectInputModule,
+        DateRangeSelectModule,
+        EstablishmentApiSelectModule,
+        EstablishmentHealthSelectModule,
+        BillingEntitySelectModule,
+    ],
   exports: [ContractsManageFilterComponent],
 })
 export class ContractsManageFilterModule { }

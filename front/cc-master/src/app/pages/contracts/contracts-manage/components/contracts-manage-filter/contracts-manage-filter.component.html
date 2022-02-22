@@ -43,6 +43,13 @@
     </label>
 
     <label class="textfield palette-grey mod-outlined mod-inline u-marginTopSmaller mod-long">
+      <cc-billing-entity-select [formControlName]="filterKey.BillingEntities"
+                                [placeholder]="'billingEntity_placeholder' | translate"
+                                [multiple]="true">
+      </cc-billing-entity-select>
+    </label>
+
+    <label class="textfield palette-grey mod-outlined mod-inline u-marginTopSmaller mod-long">
       <cc-environment-api-select [placeholder]="'front_select_environments_label' | translate"
                                  [multiple]="true"
                                  [formControlName]="filterKey.Environments">

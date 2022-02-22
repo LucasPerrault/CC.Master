@@ -12,6 +12,7 @@ export interface IContractsRoutingParams {
   offerIds: string;
   distributorIds: string;
   environmentIds: string;
+  billingEntityIds: string;
   establishmentIds: string;
   columns: string;
 }

@@ -1,12 +1,13 @@
-<cc-distributor-filter-button-group class="u-marginRightSmall u-marginTopSmallest"
-                                    [(ngModel)]="draftsFilter.saleType" (ngModelChange)="update()"
-                                    radioButtonsClass="palette-grey mod-outlined">
-</cc-distributor-filter-button-group>
-<label class="textfield mod-search mod-longer palette-grey mod-outlined u-marginTopSmallest">
-  <input class="textfield-input"
-         type="text"
-         [placeholder]="'front_filterLabel_contractSearch' | translate"
-         [(ngModel)]="draftsFilter.draftName"
-         (ngModelChange)="update()">
-</label>
+<form [formGroup]="formGroup" class="u-displayFlex">
+  <cc-distributor-filter-button-group class="u-marginRightSmall"
+                                      [formControlName]="formKey.SaleType"
+                                      radioButtonsClass="palette-grey mod-outlined">
+  </cc-distributor-filter-button-group>
 
+  <label class="textfield mod-search mod-longer palette-grey mod-outlined u-marginRightSmall">
+    <input class="textfield-input"
+           type="text"
+           [placeholder]="'front_filterLabel_contractSearch' | translate"
+           [formControlName]="formKey.DraftName">
+  </label>
+</form>

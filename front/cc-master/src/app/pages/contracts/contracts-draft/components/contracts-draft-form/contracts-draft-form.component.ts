@@ -9,7 +9,9 @@ import {
   ValidationErrors,
   Validator,
 } from '@angular/forms';
+import { TranslatePipe } from '@cc/aspects/translate';
 import { SelectDisplayMode } from '@cc/common/forms';
+import { BillingEntity, getBillingEntity } from '@cc/domain/billing/clients';
 import { IContractForm, IContractMinimalBillable, MinimalBillingService } from '@cc/domain/billing/contracts';
 import { DistributorsService, IDistributor } from '@cc/domain/billing/distributors';
 import { LuModal } from '@lucca-front/ng/modal';
@@ -79,6 +81,7 @@ export class ContractsDraftFormComponent implements ControlValueAccessor, Valida
   constructor(
     private distributorsService: DistributorsService,
     private minimalBillingService: MinimalBillingService,
+    private translatePipe: TranslatePipe,
     private luModal: LuModal,
   ) {
     this.formGroup = new FormGroup({
@@ -156,6 +159,11 @@ export class ContractsDraftFormComponent implements ControlValueAccessor, Valida
 
     const salesforceUrl = 'https://eu4.salesforce.com';
     window.open(`${ salesforceUrl }/${ this.distributor.salesforceId }`);
+  }
+
+  public getBillingEntityName(billingEntity: BillingEntity): string {
+    const translationKey = getBillingEntity(billingEntity)?.name;
+    return this.translatePipe.transform(translationKey);
   }
 
   public validate(control: AbstractControl): ValidationErrors | null {

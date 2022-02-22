@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import { ApiV3DateService } from '@cc/common/queries';
-import { ClientsService, IClient } from '@cc/domain/billing/clients';
+import { ClientsService, getBillingEntity, IBillingEntity, IClient } from '@cc/domain/billing/clients';
 import { DistributorsService, IDistributor } from '@cc/domain/billing/distributors';
 import { EstablishmentsService, IEstablishment } from '@cc/domain/billing/establishments';
-import { IOffer, OffersService, ProductsService } from '@cc/domain/billing/offers';
+import { IOffer, IProduct, OffersService, ProductsService } from '@cc/domain/billing/offers';
 import { EnvironmentsService, IEnvironment } from '@cc/domain/environments';
 import { forkJoin, Observable, of } from 'rxjs';
 import { map, take } from 'rxjs/operators';
@@ -63,6 +63,7 @@ export class ContractsFilterRoutingService {
         offers,
         distributors,
         environments,
+        billingEntities: this.getBillingEntities(routingParams.billingEntityIds),
         establishments,
         createdAt: !!routingParams.createdAt ? new Date(routingParams.createdAt) : null,
         periodOn: {
@@ -88,6 +89,7 @@ export class ContractsFilterRoutingService {
       offerIds: this.getSafeRoutingParams(filters.offers?.map(o => o.id).join(',')),
       distributorIds: this.getSafeRoutingParams(filters.distributors?.map(d => d.id).join(',')),
       environmentIds: this.getSafeRoutingParams(filters.environments?.map(e => e.id).join(',')),
+      billingEntityIds: this.getSafeRoutingParams(filters.billingEntities?.map(b => b.id).join(',')),
       establishmentIds: this.getSafeRoutingParams(filters.establishments?.map(e => e.id).join(',')),
       columns: this.getSafeRoutingParams(columns.join(',')),
     };
@@ -102,7 +104,7 @@ export class ContractsFilterRoutingService {
     return this.clientsService.getClientsById$(clientIds).pipe(take(1));
   }
 
-  private getProducts$(idsToString: string): Observable<IClient[]> {
+  private getProducts$(idsToString: string): Observable<IProduct[]> {
     const productIds = this.convertToNumbers(idsToString);
     if (!productIds.length) {
       return of([]);
@@ -187,6 +189,15 @@ export class ContractsFilterRoutingService {
     }
 
     return 'true,false';
+  }
+
+  private getBillingEntities(ids: string): IBillingEntity[] {
+    const billingEntityIds = !!ids ? ids.split(',') : [];
+    if (!billingEntityIds.length) {
+      return [];
+    }
+
+    return billingEntityIds.map(id => getBillingEntity(parseInt(id, 10))).filter(b => !!b);
   }
 
   private getSafeRoutingParams(queryParams: string): string {

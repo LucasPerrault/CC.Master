@@ -1,4 +1,6 @@
 import { Component, Input } from '@angular/core';
+import { TranslatePipe } from '@cc/aspects/translate';
+import { BillingEntity, getBillingEntity } from '@cc/domain/billing/clients';
 import { LuModal } from '@lucca-front/ng/modal';
 
 import { IContractDraftListEntry } from '../../models';
@@ -14,7 +16,12 @@ export class ContractsDraftListComponent {
   @Input() public contractDrafts: IContractDraftListEntry[];
   @Input() public isLoading: boolean;
 
-  constructor(private modal: LuModal) { }
+  constructor(private modal: LuModal, private translatePipe: TranslatePipe) { }
+
+  public getBillingEntityName(billingEntity: BillingEntity): string {
+    const translationKey = getBillingEntity(billingEntity)?.name;
+    return this.translatePipe.transform(translationKey);
+  }
 
   public redirectTo(externalUrl: string): void {
     window.open(externalUrl);
