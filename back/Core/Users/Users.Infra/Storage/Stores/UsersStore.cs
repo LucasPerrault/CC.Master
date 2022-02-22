@@ -78,7 +78,7 @@ namespace Users.Infra.Storage.Stores
         {
             return users
                 .Apply(filter.IsActive).To(u => u.IsActive)
-                .WhenNotNullOrEmpty(filter.Search).ApplyWhere(u => u.FirstName.Contains(filter.Search) || u.LastName.Contains(filter.Search));
+                .WhenNotNullOrEmpty(filter.Search).ApplyWhere(u => filter.Search.Contains(u.FirstName) || filter.Search.Contains(u.LastName));
         }
 
         public static IQueryable<SimpleUser> WithAccess(this IQueryable<SimpleUser> users, AccessRight accessRight)

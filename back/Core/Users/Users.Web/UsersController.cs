@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Lucca.Core.Api.Abstractions.Paging;
 using Lucca.Core.Api.Web.ModelBinding.Sorting;
 using Microsoft.AspNetCore.Mvc;
@@ -23,23 +24,22 @@ namespace Users.Web
         [HttpGet]
         public Task<Page<SimpleUser>> GetUsersAsync([FromQuery]UsersQuery query)
         {
-            var filter = ToFilter(query);
-            return _repository.GetAsync(query.Page, filter);
-        }
-
-        private UsersFilter ToFilter(UsersQuery query)
-        {
-            return new UsersFilter
-            {
-                IsActive = CompareBoolean.TrueOnly,
-                Search = query.Search
-            };
+            return _repository.GetAsync(query.Page, query.ToFilter());
         }
     }
 
     public class UsersQuery
     {
         public IPageToken Page { get; set; } = null;
-        public string Search { get; set; } = null;
+        public HashSet<string> Search { get; set; } = null;
+
+        public UsersFilter ToFilter()
+        {
+            return new UsersFilter
+            {
+                IsActive = CompareBoolean.TrueOnly,
+                Search = Search
+            };
+        }
     }
 }
