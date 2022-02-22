@@ -1,22 +1,22 @@
 <form [formGroup]="formGroup">
 
-  <label class="textfield mod-search mod-inline palette-grey mod-outlined mod-longer">
+  <label class="textfield mod-search mod-inline palette-grey mod-outlined mod-longer u-marginTopSmallest">
     <input class="textfield-input" type="text" [placeholder]="'demos_filter_search' | translate"
            [formControlName]="formKey.Search">
   </label>
 
-  <label class="textfield mod-inline palette-grey mod-outlined">
+  <label class="textfield mod-inline palette-grey mod-outlined u-marginTopSmallest">
     <cc-demo-user-api-select [formControlName]="formKey.Author"
                              [placeholder]="'demos_filter_author' | translate">
     </cc-demo-user-api-select>
   </label>
 
-  <label class="textfield palette-grey mod-outlined mod-inline">
+  <label class="textfield palette-grey mod-outlined mod-inline u-marginTopSmallest">
     <cc-distributor-api-select [placeholder]="'select_distributor_label' | translate"
                                [formControlName]="formKey.Distributor"></cc-distributor-api-select>
   </label>
 
-  <label class="checkbox mod-inline">
+  <label class="checkbox mod-inline u-marginTopSmallest">
     <input class="checkbox-input" [formControlName]="formKey.IsProtected" type="checkbox" name="isProtected" id="isProtected">
     <span class="checkbox-label" for="isProtected">{{ 'demos_filter_is_protected' | translate }}</span>
   </label>
