@@ -3,7 +3,7 @@
   <div *ngSwitchCase="mode.Readonly">{{ data?.demo.comment }}</div>
 
   <div *ngSwitchCase="mode.Edition">
-    <label class="textfield mod-multiline palette-grey mod-block">
+    <label class="textfield mod-multiline palette-grey mod-block u-marginTopSmallest">
       <textarea class="textfield-input" [formControl]="comment"></textarea>
     </label>
   </div>

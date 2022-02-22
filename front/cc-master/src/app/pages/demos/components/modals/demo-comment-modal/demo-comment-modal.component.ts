@@ -16,6 +16,7 @@ import { DemoCommentModalMode, IDemoCommentEditionModalData } from './demo-comme
 export class DemoCommentModalComponent implements ILuModalContent {
   public title: string;
   public submitLabel: string;
+  public submitAction: () => Observable<void>;
 
   public comment: FormControl;
   public mode = DemoCommentModalMode;
@@ -29,9 +30,13 @@ export class DemoCommentModalComponent implements ILuModalContent {
     this.title = this.translatePipe.transform('demos_comment_modal_submit_title', { subdomain: data?.demo?.subdomain });
     this.submitLabel = this.translatePipe.transform('demos_comment_modal_submit_label');
     this.comment = new FormControl(data?.demo?.comment ?? '');
+
+    if (data.mode === DemoCommentModalMode.Edition) {
+      this.submitAction = () => this.submit();
+    }
   }
 
-  public submitAction(): Observable<void> {
+  public submit(): Observable<void> {
     return this.dataService.editComment$(this.data.demo.id, this.comment.value)
       .pipe(tap(() => this.listService.resetOne(this.data.demo.id)));
   }
