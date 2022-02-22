@@ -13,6 +13,7 @@ using System.Net.Http;
 using System.Net.Mime;
 using System.Text;
 using System.Threading.Tasks;
+using AdvancedFilters.Application;
 using Tools;
 using Xunit;
 
@@ -26,6 +27,7 @@ namespace AdvancedFilters.Web.Tests.Controllers
         [Fact]
         public async Task GetAsync_Ok()
         {
+            var envPopulator = new Mock<IEnvironmentPopulator>();
             var envStoreMock = new Mock<IEnvironmentsStore>(MockBehavior.Strict);
             envStoreMock
                 .Setup(s => s.GetAsync(It.IsAny<IPageToken>(), It.IsAny<EnvironmentFilter>()))
@@ -38,6 +40,7 @@ namespace AdvancedFilters.Web.Tests.Controllers
 
             var exportServiceMock = new Mock<IExportService>();
             webApplicationFactory.Mocks.AddScoped(envStoreMock.Object);
+            webApplicationFactory.Mocks.AddScoped(envPopulator.Object);
             webApplicationFactory.Mocks.AddScoped(exportServiceMock.Object);
 
             var httpClient = webApplicationFactory.CreateAuthenticatedClient();
@@ -56,6 +59,7 @@ namespace AdvancedFilters.Web.Tests.Controllers
         [Fact]
         public async Task SearchAsync_Ok()
         {
+            var envPopulator = new Mock<IEnvironmentPopulator>();
             var envStoreMock = new Mock<IEnvironmentsStore>(MockBehavior.Strict);
             envStoreMock
                 .Setup(s => s.SearchAsync(It.IsAny<IPageToken>(), It.IsAny<IAdvancedFilter>()))
@@ -68,6 +72,7 @@ namespace AdvancedFilters.Web.Tests.Controllers
 
             var webApplicationFactory = new MockedWebApplicationFactory();
             webApplicationFactory.Mocks.AddScoped(envStoreMock.Object);
+            webApplicationFactory.Mocks.AddScoped(envPopulator.Object);
             webApplicationFactory.Mocks.AddScoped(exportServiceMock.Object);
 
             var httpClient = webApplicationFactory.CreateAuthenticatedClient();
