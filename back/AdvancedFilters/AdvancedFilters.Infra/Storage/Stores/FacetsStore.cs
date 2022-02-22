@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using Storage.Infra.Extensions;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 
 namespace AdvancedFilters.Infra.Storage.Stores
@@ -102,7 +103,7 @@ namespace AdvancedFilters.Infra.Storage.Stores
                 .WhenNotNullOrEmpty(filter.ApplicationIds).ApplyWhere(dao => filter.ApplicationIds.Contains(dao.Facet.ApplicationId))
                 .WhenNotNullOrEmpty(filter.FacetTypes).ApplyWhere(dao => filter.FacetTypes.Contains(dao.Facet.Type))
                 .WhenNotNullOrEmpty(filter.EnvironmentIds).ApplyWhere(dao => filter.EnvironmentIds.Contains(dao.EnvironmentId))
-                .WhenNotNullOrEmpty(filter.FacetIdentifiers).ApplyWhere(dao => filter.FacetIdentifiers.Any(id => dao.Facet.ApplicationId == id.ApplicationId && dao.Facet.Code == id.Code));
+                .WhenNotNullOrEmpty(filter.FacetIdentifiers).ApplyWhere(HasAnyIdentifiers<EnvironmentFacetValueDao>(filter.FacetIdentifiers));
         }
 
         public static IQueryable<EstablishmentFacetValueDao> WhereMatches(this IQueryable<EstablishmentFacetValueDao> daos, EstablishmentFacetValueFilter filter)
@@ -113,7 +114,7 @@ namespace AdvancedFilters.Infra.Storage.Stores
                 .WhenNotNullOrEmpty(filter.FacetTypes).ApplyWhere(dao => filter.FacetTypes.Contains(dao.Facet.Type))
                 .WhenNotNullOrEmpty(filter.EnvironmentIds).ApplyWhere(dao => filter.EnvironmentIds.Contains(dao.EnvironmentId))
                 .WhenNotNullOrEmpty(filter.EstablishmentIds).ApplyWhere(dao => filter.EstablishmentIds.Contains(dao.EstablishmentId))
-                .WhenNotNullOrEmpty(filter.FacetIdentifiers).ApplyWhere(dao => filter.FacetIdentifiers.Any(id => dao.Facet.ApplicationId == id.ApplicationId && dao.Facet.Code == id.Code));
+                .WhenNotNullOrEmpty(filter.FacetIdentifiers).ApplyWhere(HasAnyIdentifiers<EstablishmentFacetValueDao>(filter.FacetIdentifiers));
         }
 
         public static IEnumerable<IEnvironmentFacetValue> ToValues(this IEnumerable<EnvironmentFacetValueDao> daos)
@@ -154,6 +155,14 @@ namespace AdvancedFilters.Infra.Storage.Stores
         public static IEnumerable<IEstablishmentFacetValue> ToValues(this IEnumerable<EstablishmentFacetValueDao> daos)
         {
             return daos.Select(dao => dao.ToValue());
+        }
+
+        private static Expression<Func<TFacetValueDao, bool>> HasAnyIdentifiers<TFacetValueDao>(IEnumerable<FacetIdentifier> identifiers)
+            where TFacetValueDao : IFacetValueDao
+        {
+            var applicationIds = identifiers.Select(i => i.ApplicationId);
+            var codes = identifiers.Select(i => i.Code);
+            return dao => applicationIds.Contains(dao.Facet.ApplicationId) && codes.Contains(dao.Facet.Code);
         }
 
         private static IEstablishmentFacetValue ToValue(this EstablishmentFacetValueDao dao)

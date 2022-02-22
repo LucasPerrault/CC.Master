@@ -4,7 +4,7 @@ using Environment = AdvancedFilters.Domain.Instance.Models.Environment;
 
 namespace AdvancedFilters.Infra.Storage.DAO
 {
-    public class EnvironmentFacetValueDao
+    public class EnvironmentFacetValueDao : IFacetValueDao
     {
         public int Id { get; set; }
         public int FacetId { get; set; }
