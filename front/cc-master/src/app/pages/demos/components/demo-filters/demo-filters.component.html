@@ -12,9 +12,8 @@
   </label>
 
   <label class="textfield palette-grey mod-outlined mod-inline">
-    <lu-api-select class="textfield-input" api="/api/distributors" standard="v4"
-                   [placeholder]="'select_distributor_label' | translate" [formControlName]="formKey.Distributor">
-    </lu-api-select>
+    <cc-distributor-api-select [placeholder]="'select_distributor_label' | translate"
+                               [formControlName]="formKey.Distributor"></cc-distributor-api-select>
   </label>
 
   <label class="checkbox mod-inline">
