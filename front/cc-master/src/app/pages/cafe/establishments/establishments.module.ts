@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
+import { ReactiveFormsModule } from '@angular/forms';
 import { TranslateModule } from '@cc/aspects/translate';
 import { PagingModule } from '@cc/common/paging';
 
@@ -13,7 +14,6 @@ import {
 import { EstablishmentListComponent } from './components/establishment-list/establishment-list.component';
 import { EstablishmentsComponent } from './establishments.component';
 import { EstablishmentsDataService } from './services/establishments-data.service';
-import { ReactiveFormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [EstablishmentsComponent, EstablishmentListComponent],

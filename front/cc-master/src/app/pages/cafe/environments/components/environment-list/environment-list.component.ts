@@ -1,9 +1,9 @@
 import { Component, Input } from '@angular/core';
 import { TranslatePipe } from '@cc/aspects/translate';
 
-import { IAppInstance } from '../../models/app-instance.interface';
 import { DistributorType, IEnvironment } from '../../../common/models/environment.interface';
 import { ILegalUnit } from '../../../common/models/legal-unit.interface';
+import { IAppInstance } from '../../models/app-instance.interface';
 import {
   EnvironmentAdditionalColumn,
   IEnvironmentAdditionalColumn,
