@@ -1,4 +1,5 @@
-<div class="page mod-fullWidth mod-withFullwidthTable mod-withInfiniteScroll"
+<div class="page mod-fullWidth mod-withFullwidthTable"
+     [ngClass]="{ 'mod-withInfiniteScroll': hasDemos$ | async }"
      ccInfiniteScroll (bottomReached)="nextPage()">
   <header class="page-header blockWithFixedSizeInFlex">
     <h1>{{ 'demos_title' | translate }}</h1>

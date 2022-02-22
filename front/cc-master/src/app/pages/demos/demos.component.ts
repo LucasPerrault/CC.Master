@@ -28,10 +28,12 @@ import { DemosListService } from './services/demos-list.service';
 })
 export class DemosComponent implements OnInit, OnDestroy {
 
+
   public get duplicationIds$(): Observable<string[]> {
     return this.duplicationsService.duplicationIds$;
   }
 
+  public get hasDemos$(): Observable<boolean> { return this.demos$.pipe(map(demos => !!demos?.length)); }
   public get demos$(): Observable<IDemo[]> { return this.demos.asObservable(); }
   public isLoading$: ReplaySubject<boolean> = new ReplaySubject<boolean>(1);
   public isLoadingMore$: ReplaySubject<boolean> = new ReplaySubject<boolean>(1);
