@@ -24,16 +24,14 @@
       <lu-api-paged-searcher [api]="api" standard="v4"></lu-api-paged-searcher>
     </header>
 
-    <lu-option class="u-fontWeightBold" [value]="principalAsUser">
-      {{ 'select_demos_users_me' | translate : { name: principal?.name } }}
-    </lu-option>
+    <lu-option *luForOptions="let user; trackBy: trackBy" [value]="user" [ngClass]="{ 'u-fontWeightBold': isPrincipal(user.id) }">
 
-    <lu-option *ngFor="let specificUser of specificUsers; trackBy: trackBy" [value]="specificUser">
-      {{ getUserName(specificUser) }}
-    </lu-option>
+      <ng-container *ngIf="isPrincipal(user.id); else others">
+        {{ 'select_demos_users_me' | translate : { name: getUserName(user) } }}
+      </ng-container>
 
-    <lu-option *luForOptions="let user; trackBy: trackBy" [value]="user">
-      {{ getUserName(user) }}
+      <ng-template #others>{{ getUserName(user) }}</ng-template>
+
     </lu-option>
 
   </lu-option-picker-advanced>

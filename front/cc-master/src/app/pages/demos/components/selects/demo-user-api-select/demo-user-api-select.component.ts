@@ -10,10 +10,11 @@ import {
 } from '@angular/forms';
 import { IPrincipal, PRINCIPAL } from '@cc/aspects/principal';
 import { IUser } from '@cc/domain/users/v4';
+import { ALuApiService } from '@lucca-front/ng/api';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { specificAuthors } from '../../../constants/specific-author-id.enum';
+import { DemoUserApiSelectService } from './demo-user-api-select.service';
 
 @Component({
   selector: 'cc-demo-user-api-select',
@@ -21,6 +22,10 @@ import { specificAuthors } from '../../../constants/specific-author-id.enum';
   styleUrls: ['./demo-user-api-select.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [
+    {
+      provide: ALuApiService,
+      useClass: DemoUserApiSelectService,
+    },
     {
       provide: NG_VALUE_ACCESSOR,
       useExisting: forwardRef(() => DemoUserApiSelectComponent),
@@ -42,14 +47,9 @@ export class DemoUserApiSelectComponent implements ControlValueAccessor, Validat
 
   public api = '/api/users';
 
-  public principalAsUser: IUser;
-  public specificUsers: IUser[] = specificAuthors as IUser[];
-
   private destroy$: Subject<void> = new Subject();
 
-  constructor(@Inject(PRINCIPAL) public principal: IPrincipal) {
-    this.principalAsUser = { id: principal.id, firstName: principal.name, lastName: '' } as IUser;
-  }
+  constructor(@Inject(PRINCIPAL) public principal: IPrincipal) {}
 
   public ngOnInit(): void {
     this.formControl.valueChanges
@@ -91,5 +91,9 @@ export class DemoUserApiSelectComponent implements ControlValueAccessor, Validat
 
   public getUserName(user: IUser): string {
     return `${ user.firstName } ${ user.lastName }`;
+  }
+
+  public isPrincipal(userId: number): boolean {
+    return this.principal.id === userId;
   }
 }

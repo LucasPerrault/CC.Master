@@ -9,7 +9,6 @@ import { LuSelectInputModule } from '@lucca-front/ng/select';
 
 import { DemoUserApiSelectComponent } from './demo-user-api-select.component';
 
-
 @NgModule({
   declarations: [DemoUserApiSelectComponent],
   exports: [DemoUserApiSelectComponent],
