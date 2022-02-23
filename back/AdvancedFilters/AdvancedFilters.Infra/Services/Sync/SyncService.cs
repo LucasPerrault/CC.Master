@@ -2,6 +2,7 @@ using AdvancedFilters.Domain.DataSources;
 using AdvancedFilters.Domain.Instance.Filters;
 using AdvancedFilters.Domain.Instance.Interfaces;
 using Email.Domain;
+using Lucca.Core.Api.Abstractions.Paging;
 using MoreLinq;
 using System;
 using System.Collections.Generic;
@@ -61,6 +62,15 @@ namespace AdvancedFilters.Infra.Services.Sync
                 .Shuffle()
                 .Take(tenantCount)
                 .ToList();
+            await SyncTenantsDataAsync(environments, DataSyncStrategy.SyncSpecificEnvironmentsOnly);
+        }
+
+        public async Task SyncRangeMonoTenantDataAsync(IPageToken pageToken)
+        {
+            var environments = ( await _environmentsStore.GetAsync(pageToken, new EnvironmentFilter()) )
+                .Items
+                .ToList();
+
             await SyncTenantsDataAsync(environments, DataSyncStrategy.SyncSpecificEnvironmentsOnly);
         }
 
