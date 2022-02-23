@@ -2,10 +2,12 @@ import { Component, Input } from '@angular/core';
 import { TranslatePipe } from '@cc/aspects/translate';
 
 import { EnvironmentAdditionalColumn } from '../../../common/forms/select/facets-and-columns-api-select';
-import { IAdditionalColumn } from '../../../common/models';
+import { FacetType, IAdditionalColumn, IFacet } from '../../../common/models';
 import { DistributorType, IEnvironment } from '../../../common/models/environment.interface';
+import { IEnvironmentFacetValue } from '../../../common/models/facet-value.interface';
 import { ILegalUnit } from '../../../common/models/legal-unit.interface';
 import { IAppInstance } from '../../models/app-instance.interface';
+import { FacetPipeOptions, IDatePipeOptions } from '../../../common/pipes/facet.pipe';
 
 @Component({
   selector: 'cc-environment-list',
@@ -15,6 +17,7 @@ import { IAppInstance } from '../../models/app-instance.interface';
 export class EnvironmentListComponent {
   @Input() public environments: IEnvironment[];
   @Input() public selectedColumns: IAdditionalColumn[];
+  @Input() public facets: IFacet[];
 
   public additionalColumn = EnvironmentAdditionalColumn;
 
@@ -70,5 +73,16 @@ export class EnvironmentListComponent {
 
   public isHidden(column: EnvironmentAdditionalColumn): boolean {
     return !this.selectedColumns.find(c => c.id === column);
+  }
+
+  public getFacetValue(facetValues: IEnvironmentFacetValue[], facet: IFacet) {
+    return facetValues.filter(f => f.facetId === facet.id);
+  }
+
+  public getFacetOptions(facet: IFacet): FacetPipeOptions {
+    switch (facet.type) {
+      case FacetType.DateTime:
+        return { format: 'shortDate' };
+    }
   }
 }

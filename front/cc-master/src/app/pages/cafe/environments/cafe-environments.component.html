@@ -1,13 +1,21 @@
 <cc-cafe-page-template>
   <ng-container page-header-right>
     <button class="button primary u-marginBottomStandard" type="button"
-            [class]="exportButtonClass$ | async" [disabled]="!canExport" (click)="export()">
+            [class]="exportButtonClass$ | async" [disabled]="submitDisabled" (click)="export()">
       {{ 'cafe_export_button' | translate }}
     </button>
   </ng-container>
 
   <ng-container page-subheader>
-    <cc-cafe-page-filter-template [advancedFilterConfig]="advancedFilterConfig" [formControl]="filters">
+    <cc-cafe-page-filter-template [advancedFilterConfig]="advancedFilterConfig" [formControl]="advancedFilter"
+                                  [submitDisabled]="submitDisabled" (submit)="submit()">
+      <ng-container footer-right-actions>
+        <label class="textfield palette-grey mod-outlined mod-inline mod-long">
+          <cc-environment-facets-and-columns-api-select [formControl]="facetsAndColumns"
+                                                        [placeholder]="'select_facets_and_columns_placeholder' | translate">
+          </cc-environment-facets-and-columns-api-select>
+        </label>
+      </ng-container>
     </cc-cafe-page-filter-template>
   </ng-container>
 
@@ -17,16 +25,13 @@
     <ng-template #isNotLoading>
       <h4 class="page-content page-resultsCount u-displayFlex u-alignItemsCenter u-justifyContentSpaceBetween">
         {{ 'cafe_environments_count' | translate : { count: environmentsCount$ | async } }}
-
-        <cc-environment-additional-column-select textfieldClass="palette-grey mod-outlined mod-long"
-                                                 [formControl]="selectedColumns">
-        </cc-environment-additional-column-select>
       </h4>
 
       <cc-environment-list ccInfiniteScroll
                            (bottomReached)="nextPage()"
                            [environments]="environments$ | async"
-                           [selectedColumns]="selectedColumns.value">
+                           [selectedColumns]="selectedColumns$ | async"
+                           [facets]="facetColumns$ | async">
       </cc-environment-list>
     </ng-template>
   </ng-container>

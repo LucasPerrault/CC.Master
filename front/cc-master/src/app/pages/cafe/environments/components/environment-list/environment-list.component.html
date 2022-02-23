@@ -22,6 +22,9 @@
     <th class="table-head-row-cell" [ngClass]="{ 'mod-hidden': isHidden(additionalColumn.CreatedAt) }">
       {{ 'cafe_environments_list_createdAt' | translate }}
     </th>
+    <th class="table-head-row-cell" *ngFor="let facet of facets">
+      {{ facet.applicationId }} {{ facet.code }}
+    </th>
   </tr>
   </thead>
   <tbody class="table-body">
@@ -46,6 +49,9 @@
     </td>
     <td class="table-body-row-cell" [ngClass]="{ 'mod-hidden': isHidden(additionalColumn.CreatedAt) }">
       {{ environment.createdAt | date : 'shortDate' }}
+    </td>
+    <td class="table-body-row-cell" *ngFor="let facet of facets">
+      {{ getFacetValue(environment.facets, facet) | facets : getFacetOptions(facet) }}
     </td>
   </tr>
   </tbody>

@@ -1,5 +1,6 @@
 import { IAppInstance } from '../../environments/models/app-instance.interface';
 import { IEnvironmentAccess } from '../../environments/models/environment-access.interface';
+import { IEnvironmentFacetValue } from './facet-value.interface';
 import { ILegalUnit } from './legal-unit.interface';
 
 export interface IEnvironment {
@@ -15,6 +16,7 @@ export interface IEnvironment {
 
   legalUnits: ILegalUnit[];
   appInstances: IAppInstance[];
+  facets: IEnvironmentFacetValue[];
 }
 
 export enum DistributorType {
