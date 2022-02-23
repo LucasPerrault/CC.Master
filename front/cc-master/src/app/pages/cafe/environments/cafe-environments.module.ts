@@ -6,15 +6,14 @@ import { PagingModule } from '@cc/common/paging';
 
 import { CafePageFilterTemplateModule } from '../common/components/cafe-page-filter-template/cafe-page-filter-template.module';
 import { CafePageTemplateModule } from '../common/components/cafe-page-template/cafe-page-template.module';
+import { FacetsAndColumnsApiSelectModule } from '../common/forms/select/facets-and-columns-api-select';
+import { FacetPipeModule } from '../common/pipes/facet.pipe';
 import {
   EnvironmentAdvancedFilterApiMappingService,
   EnvironmentAdvancedFilterConfiguration,
   EnvironmentFormlyConfiguration,
 } from './advanced-filter';
 import { CafeEnvironmentsComponent } from './cafe-environments.component';
-import {
-  EnvironmentAdditionalColumnSelectModule,
-} from './components/environment-additional-column-select/environment-additional-column-select.module';
 import { EnvironmentListComponent } from './components/environment-list/environment-list.component';
 import { EnvironmentDataService } from './services/environment-data.service';
 
@@ -27,10 +26,11 @@ import { EnvironmentDataService } from './services/environment-data.service';
     CommonModule,
     TranslateModule,
     PagingModule,
-    EnvironmentAdditionalColumnSelectModule,
     ReactiveFormsModule,
     CafePageTemplateModule,
     CafePageFilterTemplateModule,
+    FacetsAndColumnsApiSelectModule,
+    FacetPipeModule,
   ],
   exports: [
     CafeEnvironmentsComponent,
@@ -42,4 +42,4 @@ import { EnvironmentDataService } from './services/environment-data.service';
     EnvironmentAdvancedFilterApiMappingService,
   ],
 })
-export class CafeEnvironmentsModule { }
+export class CafeEnvironmentsModule {}

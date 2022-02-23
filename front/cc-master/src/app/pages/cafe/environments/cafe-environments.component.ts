@@ -4,16 +4,17 @@ import { FormControl } from '@angular/forms';
 import { getButtonState, toSubmissionState } from '@cc/common/forms';
 import { defaultPagingParams, IPaginatedResult, PaginatedList, PaginatedListState, PagingService } from '@cc/common/paging';
 import { ApiStandard } from '@cc/common/queries';
-import { BehaviorSubject, Observable, pipe, ReplaySubject, Subject, UnaryFunction } from 'rxjs';
+import { BehaviorSubject, combineLatest, Observable, ReplaySubject, Subject } from 'rxjs';
 import { filter, map, take, takeUntil } from 'rxjs/operators';
 
-import { AdvancedFilter, IAdvancedFilterForm } from '../common/components/advanced-filter-form';
+import { AdvancedFilter } from '../common/components/advanced-filter-form';
+import {
+  EnvironmentAdditionalColumn, FacetAndColumnHelper,
+  getAdditionalColumnByIds,
+} from '../common/forms/select/facets-and-columns-api-select';
+import { IAdditionalColumn, IFacet, ISearchDto, toSearchDto } from '../common/models';
 import { IEnvironment } from '../common/models/environment.interface';
 import { EnvironmentAdvancedFilterApiMappingService, EnvironmentAdvancedFilterConfiguration } from './advanced-filter';
-import {
-  EnvironmentAdditionalColumn,
-  getAdditionalColumnByIds,
-} from './components/environment-additional-column-select/environment-additional-column.enum';
 import { EnvironmentDataService } from './services/environment-data.service';
 
 @Component({
@@ -35,21 +36,32 @@ export class CafeEnvironmentsComponent implements OnInit, OnDestroy {
       .pipe(map(state => state === PaginatedListState.Update));
   }
 
-  public get canExport(): boolean {
-    return !!this.filters?.value?.criterionForms?.length;
+  public get submitDisabled(): boolean {
+    return !this.advancedFilter.dirty || !this.advancedFilter.valid;
+  }
+
+  public get facets$(): Observable<IFacet[]> {
+    return this.facetsAndColumns.valueChanges.pipe(FacetAndColumnHelper.toFacets);
   }
 
   public exportButtonClass$ = new ReplaySubject<string>(1);
-  public selectedColumns: FormControl = new FormControl(getAdditionalColumnByIds([
+
+  public advancedFilter = new FormControl();
+  public facetsAndColumns = new FormControl();
+
+  public selectedColumns$ = new BehaviorSubject<IAdditionalColumn[]>([]);
+  public facetColumns$ = new BehaviorSubject<IFacet[]>([]);
+  private advancedFilter$ = new BehaviorSubject<AdvancedFilter>(null);
+  private searchDto$ = new BehaviorSubject<ISearchDto>(null);
+
+  private paginatedEnvironments: PaginatedList<IEnvironment>;
+
+  private defaultSelectedColumns = getAdditionalColumnByIds([
     EnvironmentAdditionalColumn.Environment,
     EnvironmentAdditionalColumn.AppInstances,
     EnvironmentAdditionalColumn.Distributors,
-  ]));
+  ]);
 
-  public filters: FormControl = new FormControl();
-  public advancedFilter$ = new BehaviorSubject<AdvancedFilter>(null);
-
-  private paginatedEnvironments: PaginatedList<IEnvironment>;
   private destroy$: Subject<void> = new Subject<void>();
 
   constructor(
@@ -62,18 +74,27 @@ export class CafeEnvironmentsComponent implements OnInit, OnDestroy {
   }
 
   public ngOnInit(): void {
-    this.advancedFilter$
-      .pipe(takeUntil(this.destroy$), filter(f => !!f))
-      .subscribe(() => this.refresh());
+    combineLatest([this.advancedFilter$, this.facets$])
+      .pipe(takeUntil(this.destroy$), map(([criterion, facets]) => toSearchDto(criterion, facets)))
+      .subscribe(searchDto => this.searchDto$.next(searchDto));
 
-    this.filters.valueChanges
-      .pipe(takeUntil(this.destroy$), this.toAdvancedFilter)
+    this.advancedFilter.valueChanges
+      .pipe(takeUntil(this.destroy$), filter(() => !this.submitDisabled), map(f => this.apiMappingService.toAdvancedFilter(f)))
       .subscribe(advancedFilter => this.advancedFilter$.next(advancedFilter));
+
+    this.facetsAndColumns.setValue(FacetAndColumnHelper.mapColumnsToFacetAndColumns(this.defaultSelectedColumns));
   }
 
   public ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
+  }
+
+  public submit(): void {
+    this.facetColumns$.next(FacetAndColumnHelper.getFacets(this.facetsAndColumns.value));
+    this.selectedColumns$.next(FacetAndColumnHelper.getColumns(this.facetsAndColumns.value));
+
+    this.paginatedEnvironments.updateHttpParams(new HttpParams());
   }
 
   public nextPage(): void {
@@ -86,25 +107,17 @@ export class CafeEnvironmentsComponent implements OnInit, OnDestroy {
       .subscribe(c => this.exportButtonClass$.next(c));
   }
 
-  private refresh(): void {
-    this.paginatedEnvironments.updateHttpParams(new HttpParams());
-  }
-
   private getPaginatedEnvironments$(): PaginatedList<IEnvironment> {
     return this.pagingService.paginate<IEnvironment>(
-      (httpParams) => this.getEnvironments$(httpParams, this.advancedFilter$.value),
+      (httpParams) => this.getEnvironments$(httpParams, this.searchDto$.value),
       { page: defaultPagingParams.page, limit: 50 },
       ApiStandard.V4,
     );
   }
 
-  private getEnvironments$(httpParams: HttpParams, advancedFilter: AdvancedFilter): Observable<IPaginatedResult<IEnvironment>> {
-    return this.environmentsDataService.getEnvironments$(httpParams, advancedFilter).pipe(
+  private getEnvironments$(httpParams: HttpParams, searchDto: ISearchDto): Observable<IPaginatedResult<IEnvironment>> {
+    return this.environmentsDataService.getEnvironments$(httpParams, searchDto).pipe(
       map(response => ({ items: response.items, totalCount: response.count })),
     );
-  }
-
-  private get toAdvancedFilter(): UnaryFunction<Observable<IAdvancedFilterForm>, Observable<AdvancedFilter>> {
-    return pipe(map(filters => this.apiMappingService.toAdvancedFilter(filters)));
   }
 }
