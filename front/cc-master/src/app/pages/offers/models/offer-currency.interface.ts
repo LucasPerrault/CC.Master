@@ -8,6 +8,7 @@ export interface IOfferCurrency extends ICurrency {
 export enum CurrencyCode {
   EUR = 978,
   CHF = 756,
+  CAD = 124,
 }
 
 export const currencies: IOfferCurrency[] = [
@@ -18,8 +19,13 @@ export const currencies: IOfferCurrency[] = [
   },
   {
     code: CurrencyCode.CHF,
-    symbol: 'CHF',
     name: 'CHF',
+    symbol: 'CHF',
+  },
+  {
+    code: CurrencyCode.CAD,
+    name: 'CAD',
+    symbol: '$C',
   },
 ];
 
