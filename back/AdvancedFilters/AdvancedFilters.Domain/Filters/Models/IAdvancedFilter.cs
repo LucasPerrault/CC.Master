@@ -9,5 +9,6 @@ namespace AdvancedFilters.Domain.Filters.Models
     {
         LogicalOperator,
         Criterion,
+        FacetCriterion,
     }
 }

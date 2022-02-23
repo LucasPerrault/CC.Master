@@ -76,7 +76,7 @@ namespace Tools
                 var options = new JsonSerializerOptions
                 {
                     PropertyNameCaseInsensitive = true,
-                    Converters = { new JsonStringEnumConverter() }
+                    Converters = { new JsonStringEnumConverter(),  }
                 };
 
                 foreach (var converter in converters)
@@ -167,7 +167,7 @@ namespace Tools
         public IReadOnlyCollection<JsonConverter> GetConverters() => _converters;
     }
 
-    internal class PolymorphicConverter<T, TKey> : JsonConverter<T> where TKey : Enum
+    public class PolymorphicConverter<T, TKey> : JsonConverter<T> where TKey : Enum
     {
         private readonly Dictionary<string, Type> _typesByName = new Dictionary<string, Type>(StringComparer.OrdinalIgnoreCase);
         private readonly Dictionary<int, Type> _typesByIntValue = new Dictionary<int, Type>();
@@ -195,6 +195,7 @@ namespace Tools
             }
 
             using var jsonDocument = JsonDocument.ParseValue(ref reader);
+
             if (!TryFind(jsonDocument, _discriminatorPropertyName, out var typeProperty))
             {
                 throw new JsonException();

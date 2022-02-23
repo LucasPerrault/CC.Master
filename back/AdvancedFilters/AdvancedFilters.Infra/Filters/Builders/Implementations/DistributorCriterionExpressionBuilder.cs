@@ -6,8 +6,8 @@ namespace AdvancedFilters.Infra.Filters.Builders.Implementations
 {
     internal class DistributorCriterionExpressionBuilder : AdvancedCriterionExpressionBuilder<Distributor, DistributorAdvancedCriterion>
     {
-        public DistributorCriterionExpressionBuilder(DistributorAdvancedCriterion criterion)
-            : base(criterion)
+        public DistributorCriterionExpressionBuilder(DistributorAdvancedCriterion criterion, IAdvancedExpressionChainer chainer)
+            : base(criterion, chainer)
         { }
 
         protected override IEnumerable<IPropertyExpressionBuilder<Distributor>> GetCriteria()

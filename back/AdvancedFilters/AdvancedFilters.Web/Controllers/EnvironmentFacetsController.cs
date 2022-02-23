@@ -1,4 +1,4 @@
-﻿using AdvancedFilters.Domain.Facets;
+using AdvancedFilters.Domain.Facets;
 using Lucca.Core.Api.Abstractions.Paging;
 using Lucca.Core.Api.Web.ModelBinding.Sorting;
 using Microsoft.AspNetCore.Mvc;

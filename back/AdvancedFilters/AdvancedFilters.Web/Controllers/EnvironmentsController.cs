@@ -63,10 +63,22 @@ namespace AdvancedFilters.Web.Controllers
             EnvironmentSearchBody body
         )
         {
+            var facets = new List<FacetDto>()
+            {
+                new FacetDto
+                {
+                    Code = "nb_miaou",
+                    Operator = ComparisonOperators.Equals,
+                    Value = 713,
+                    ApplicationId ="WEXPENSES"
+                }
+            };
+
             var page = await _store.SearchAsync(pageToken, body.Criterion);
             await _environmentPopulator.PopulateAsync(page.Items, body.FacetIds);
             return page;
         }
+
 
         [HttpPost("export")]
         [ForbidIfMissing(Operation.ReadAllCafe)]
@@ -82,6 +94,14 @@ namespace AdvancedFilters.Web.Controllers
             return _exportService.Export(environments, filename);
 
         }
+    }
+
+    public class FacetDto
+    {
+        public string Code { get; set; }
+        public ComparisonOperators Operator { get; set; }
+        public int Value { get; set; }
+        public string ApplicationId { get; set; }
     }
 
     public class EnvironmentSearchBody

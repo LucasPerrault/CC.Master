@@ -9,22 +9,24 @@ namespace AdvancedFilters.Infra.Filters.Builders.Chaining
     {
         private AdvancedCriterion<TProperty> _criterion;
         private Expression<Func<TValue, TProperty>> _getPropertyExpression;
+        private readonly IAdvancedExpressionChainer _chainer;
 
-        public AdvancedPropertyExpressionBuilder(AdvancedCriterion<TProperty> criterion, Expression<Func<TValue, TProperty>> getPropertyExpression)
+        public AdvancedPropertyExpressionBuilder(AdvancedCriterion<TProperty> criterion, Expression<Func<TValue, TProperty>> getPropertyExpression, IAdvancedExpressionChainer chainer)
         {
             _criterion = criterion;
             _getPropertyExpression = getPropertyExpression;
+            _chainer = chainer;
         }
 
         public Expression<Func<IEnumerable<TValue>, bool>> ForList(ItemsMatching matching)
         {
-            var predicate = _criterion.ChainToPropertyItem(_getPropertyExpression);
+            var predicate = _chainer.ChainToPropertyItem(_criterion, _getPropertyExpression);
             return predicate.ToExpressionForList(matching);
         }
 
         public Expression<Func<TValue, bool>> ForItem()
         {
-            return _criterion.ChainToPropertyItem(_getPropertyExpression);
+            return _chainer.ChainToPropertyItem(_criterion, _getPropertyExpression);
         }
     }
 
@@ -32,22 +34,24 @@ namespace AdvancedFilters.Infra.Filters.Builders.Chaining
     {
         private AdvancedCriterion<TProperty> _criterion;
         private Expression<Func<TValue, IEnumerable<TProperty>>> _getPropertyListExpression;
+        private readonly IAdvancedExpressionChainer _chainer;
 
-        public AdvancedPropertyListExpressionBuilder(AdvancedCriterion<TProperty> criterion, Expression<Func<TValue, IEnumerable<TProperty>>> getPropertyListExpression)
+        public AdvancedPropertyListExpressionBuilder(AdvancedCriterion<TProperty> criterion, Expression<Func<TValue, IEnumerable<TProperty>>> getPropertyListExpression, IAdvancedExpressionChainer chainer)
         {
             _criterion = criterion;
             _getPropertyListExpression = getPropertyListExpression;
+            _chainer = chainer;
         }
 
         public Expression<Func<IEnumerable<TValue>, bool>> ForList(ItemsMatching matching)
         {
-            var predicate = _criterion.ChainToPropertyList(_getPropertyListExpression);
+            var predicate = _chainer.ChainToPropertyList(_criterion, _getPropertyListExpression);
             return predicate.ToExpressionForList(matching);
         }
 
         public Expression<Func<TValue, bool>> ForItem()
         {
-            return _criterion.ChainToPropertyList(_getPropertyListExpression);
+            return _chainer.ChainToPropertyList(_criterion, _getPropertyListExpression);
         }
     }
 }

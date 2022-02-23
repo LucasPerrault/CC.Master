@@ -18,11 +18,13 @@ namespace AdvancedFilters.Infra.Storage.Stores
     {
         private readonly AdvancedFiltersDbContext _dbContext;
         private readonly IQueryPager _queryPager;
+        private readonly AdvancedFilterApplier _applier;
 
-        public ClientContactsStore(AdvancedFiltersDbContext dbContext, IQueryPager queryPager)
+        public ClientContactsStore(AdvancedFiltersDbContext dbContext, IQueryPager queryPager, AdvancedFilterApplier applier)
         {
             _dbContext = dbContext;
             _queryPager = queryPager;
+            _applier = applier;
         }
 
         public Task<Page<ClientContact>> GetAsync(IPageToken pageToken, ClientContactFilter filter)
@@ -33,12 +35,12 @@ namespace AdvancedFilters.Infra.Storage.Stores
 
         public Task<Page<ClientContact>> SearchAsync(IPageToken pageToken, IAdvancedFilter filter)
         {
-            var contacts = ClientContacts.Filter(filter).AsNoTracking();
+            var contacts = _applier.Filter(ClientContacts, filter).AsNoTracking();
             return _queryPager.ToPageAsync(contacts, pageToken);
         }
         public Task<List<ClientContact>> SearchAsync(IAdvancedFilter filter)
         {
-            var contacts = ClientContacts.Filter(filter).AsNoTracking();
+            var contacts = _applier.Filter(ClientContacts, filter).AsNoTracking();
             return contacts.ToListAsync();
         }
 

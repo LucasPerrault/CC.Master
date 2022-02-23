@@ -6,8 +6,8 @@ namespace AdvancedFilters.Infra.Filters.Builders.Implementations
 {
     internal class AppContactCriterionExpressionBuilder : AdvancedCriterionExpressionBuilder<AppContact, AppContactAdvancedCriterion>
     {
-        public AppContactCriterionExpressionBuilder(AppContactAdvancedCriterion criterion)
-            : base(criterion)
+        public AppContactCriterionExpressionBuilder(AppContactAdvancedCriterion criterion, IAdvancedExpressionChainer chainer)
+            : base(criterion, chainer)
         { }
 
         protected override IEnumerable<IPropertyExpressionBuilder<AppContact>> GetCriteria()

@@ -6,8 +6,8 @@ namespace AdvancedFilters.Infra.Filters.Builders.Implementations
 {
     internal class LegalUnitCriterionExpressionBuilder : AdvancedCriterionExpressionBuilder<LegalUnit, LegalUnitAdvancedCriterion>
     {
-        public LegalUnitCriterionExpressionBuilder(LegalUnitAdvancedCriterion criterion)
-            : base(criterion)
+        public LegalUnitCriterionExpressionBuilder(LegalUnitAdvancedCriterion criterion, IAdvancedExpressionChainer chainer)
+            : base(criterion, chainer)
         { }
 
         protected override IEnumerable<IPropertyExpressionBuilder<LegalUnit>> GetCriteria()

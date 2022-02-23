@@ -29,7 +29,13 @@ namespace AdvancedFilters.Infra.Filters.Builders.Implementations
             yield return ApplyMany(Criterion.Distributors).To(e => e.Accesses.Select(a => a.Distributor).Distinct());
             yield return ApplyMany(Criterion.Contracts).To(e => e.Contracts);
             yield return Apply(Criterion.DistributorType).To(EnvironmentExpressions.DistributorTypeFn);
+<<<<<<< Updated upstream
             yield return new EnvFacetsPropertyExpressionBuilder(Criterion.Facets, _facetsStore);
+=======
+            //yield return ApplyMany(Criterion.Facets).To(e => e.Facets);
+            yield return new EnvFacetsPropertyExpressionBuilder(Criterion.Facets); // TODO et TODO récupérer en amont les facet pour avoir le type pour savoir quelle colonne requêter
+            // TODO plutôt que de résoudre le store, on peut plutôt faire ça en amont, et balancer le iqueryable
+>>>>>>> Stashed changes
         }
     }
 
@@ -51,18 +57,16 @@ namespace AdvancedFilters.Infra.Filters.Builders.Implementations
 
     internal class EnvFacetValuePropertyExpressionBuilder : IPropertyExpressionBuilder<IEnvironmentFacetValue>
     {
-        private readonly EnvironmentFacetAdvancedCriterion _criterion;
         private readonly IFacetsStore _store;
 
         public EnvFacetValuePropertyExpressionBuilder(EnvironmentFacetAdvancedCriterion criterion, IFacetsStore store)
         {
-            _criterion = criterion;
             _store = store;
         }
 
         public Expression<System.Func<IEnvironmentFacetValue, bool>> ForItem()
         {
-            return null;//_store.GetValuesQueryable(_criterion.);
+            return _store.GetValuesQueryable(_criterion.);
         }
 
         public Expression<System.Func<IEnumerable<IEnvironmentFacetValue>, bool>> ForList(ItemsMatching matching)
@@ -84,10 +88,9 @@ namespace AdvancedFilters.Infra.Filters.Builders.Implementations
 
         public Expression<System.Func<Environment, bool>> ForItem()
         {
-            //var queryable = _store.GetValuesQueryable(_criterion.);
+            var queryable = _store.GetValuesQueryableAsync(EnvironmentRawFacetFilter.FromCriterion(_criterion));
 
-            //return e => queryable.Any(v => v.EnvironmentId == e.Id);
-            return null;
+            return e => queryable.Any(v => v.EnvironmentId == e.Id);
         }
 
         public Expression<System.Func<IEnumerable<Environment>, bool>> ForList(ItemsMatching matching)

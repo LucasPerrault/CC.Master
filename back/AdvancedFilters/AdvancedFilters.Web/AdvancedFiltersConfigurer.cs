@@ -22,6 +22,11 @@ using AdvancedFilters.Application;
 using Tools;
 using System.Linq;
 using System.Collections.Generic;
+using AdvancedFilters.Domain.Filters.Models;
+using AdvancedFilters.Infra.Filters.Builders.Chaining;
+using AdvancedFilters.Domain.Filters.Builders;
+using AdvancedFilters.Infra.Filters.Builders;
+using AdvancedFilters.Infra.Filters;
 
 namespace AdvancedFilters.Web
 {
@@ -32,6 +37,7 @@ namespace AdvancedFilters.Web
             services.AddSingleton(new DataSourcesRepository(DataSourceMapper.GetAll(configuration)));
 
             services.AddScoped<IAdvancedFiltersTranslations, AdvancedFiltersTranslations>();
+            services.ConfigureFiltering();
             services.ConfigureStorage();
             services.ConfigureSync(configuration);
 
@@ -45,6 +51,13 @@ namespace AdvancedFilters.Web
             services.AddScoped<IExportService, ExportCsvService>();
             services.AddScoped<IEnvironmentPopulator, EnvironmentPopulator>();
             services.AddScoped<IEstablishmentPopulator, EstablishmentPopulator>();
+        }
+
+        public static void ConfigureFiltering(this IServiceCollection services)
+        {
+            services.AddScoped<IAdvancedExpressionChainer, AdvancedCriterionExpressionBuilderFactory>();
+            services.AddScoped<AdvancedFilterApplier>();
+            services.AddScoped<IQueryableExpressionBuilderFactory, AdvancedCriterionExpressionBuilderFactory>();
         }
 
         public static void ConfigureStorage(this IServiceCollection services)
@@ -116,6 +129,13 @@ namespace AdvancedFilters.Web
         {
             var facetSerializers = new List<IPolymorphicSerializer>
             {
+                Serializer.WithPolymorphism<IEnvironmentFacetCriterion, FacetType>(nameof(IEnvironmentFacetCriterion.Type))
+                    .AddMatch<SingleFacetValueComparisonCriterion<int>>(FacetType.Integer)
+                    .AddMatch<SingleFacetValueComparisonCriterion<string>>(FacetType.String)
+                    .AddMatch<SingleFacetValueComparisonCriterion<decimal>>(FacetType.Decimal)
+                    .AddMatch<SingleFacetValueComparisonCriterion<decimal>>(FacetType.Percentage)
+                    .AddMatch<SingleFacetDateTimeValueComparisonCriterion>(FacetType.DateTime)
+                    .Build(),
                 Serializer.WithPolymorphism<IEnvironmentFacetValue, FacetType>(nameof(IEnvironmentFacetValue.Type))
                     .AddMatch<EnvironmentFacetValue<int>>(FacetType.Integer)
                     .AddMatch<EnvironmentFacetValue<string>>(FacetType.String)

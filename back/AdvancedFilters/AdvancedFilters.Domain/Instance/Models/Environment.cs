@@ -38,6 +38,8 @@ namespace AdvancedFilters.Domain.Instance.Models
         public DistributorsAdvancedCriterion Distributors { get; set; }
         public SingleEnumComparisonCriterion<DistributorType> DistributorType { get; set; }
         public ContractsAdvancedCriterion Contracts { get; set; }
+        public EnvironmentFacetsAdvancedCriterion Facets { get; set; }
+
 
 
         public override IQueryableExpressionBuilder<Environment> GetExpressionBuilder(IQueryableExpressionBuilderFactory factory)
@@ -65,4 +67,5 @@ namespace AdvancedFilters.Domain.Instance.Models
         public static Func<Environment, DistributorType> CompiledDistributorTypeFn
             => DistributorTypeFn.Compile();
     }
+
 }

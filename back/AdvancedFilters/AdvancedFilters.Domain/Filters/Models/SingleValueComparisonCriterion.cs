@@ -1,7 +1,11 @@
+using AdvancedFilters.Domain.Facets;
+using AdvancedFilters.Domain.Instance.Models;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq.Expressions;
 using Tools;
+using Environment = AdvancedFilters.Domain.Instance.Models.Environment;
 
 namespace AdvancedFilters.Domain.Filters.Models
 {
@@ -35,4 +39,21 @@ namespace AdvancedFilters.Domain.Filters.Models
             _ => throw new InvalidEnumArgumentException(nameof(Operator), (int) Operator, typeof(ComparisonOperators)),
         };
     }
+
+    public class SingleFacetValueComparisonCriterion<TValue> : SingleValueComparisonCriterion<TValue>, IEnvironmentFacetCriterion
+    {
+        public FacetType Type { get; set; }
+    }
+
+    public class SingleFacetDateTimeValueComparisonCriterion : SingleDateTimeComparisonCriterion, IEnvironmentFacetCriterion
+    {
+        public FacetType Type { get; set; }
+    }
+
+    public interface IEnvironmentFacetCriterion
+    {
+        FacetType Type { get; set; }
+        ComparisonOperators Operator { get; set; }
+    }
+
 }

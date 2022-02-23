@@ -6,8 +6,8 @@ namespace AdvancedFilters.Infra.Filters.Builders.Implementations
 {
     internal class ClientContactCriterionExpressionBuilder : AdvancedCriterionExpressionBuilder<ClientContact, ClientContactAdvancedCriterion>
     {
-        public ClientContactCriterionExpressionBuilder(ClientContactAdvancedCriterion criterion)
-            : base(criterion)
+        public ClientContactCriterionExpressionBuilder(ClientContactAdvancedCriterion criterion, IAdvancedExpressionChainer chainer)
+            : base(criterion, chainer)
         { }
 
         protected override IEnumerable<IPropertyExpressionBuilder<ClientContact>> GetCriteria()

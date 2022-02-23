@@ -16,11 +16,13 @@ namespace AdvancedFilters.Infra.Storage.Stores
     {
         private readonly AdvancedFiltersDbContext _dbContext;
         private readonly IQueryPager _queryPager;
+        private readonly AdvancedFilterApplier _applier;
 
-        public EstablishmentsStore(AdvancedFiltersDbContext dbContext, IQueryPager queryPager)
+        public EstablishmentsStore(AdvancedFiltersDbContext dbContext, IQueryPager queryPager, AdvancedFilterApplier applier)
         {
             _dbContext = dbContext;
             _queryPager = queryPager;
+            _applier = applier;
         }
 
         public Task<Page<Establishment>> GetAsync(IPageToken pageToken, EstablishmentFilter filter)
@@ -49,8 +51,8 @@ namespace AdvancedFilters.Infra.Storage.Stores
 
         private IQueryable<Establishment> Get(IAdvancedFilter filter)
         {
-            return Establishments
-                .Filter(filter)
+            return _applier
+                .Filter(Establishments, filter)
                 .AsNoTracking();
         }
 

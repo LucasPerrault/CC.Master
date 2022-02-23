@@ -1,5 +1,6 @@
 using AdvancedFilters.Domain.Billing.Models;
 using AdvancedFilters.Domain.Contacts.Models;
+using AdvancedFilters.Domain.Facets;
 using AdvancedFilters.Domain.Instance.Models;
 using Environment = AdvancedFilters.Domain.Instance.Models.Environment;
 
@@ -17,5 +18,6 @@ namespace AdvancedFilters.Domain.Filters.Builders
         IQueryableExpressionBuilder<SpecializedContact> Create(SpecializedContactAdvancedCriterion criterion);
         IQueryableExpressionBuilder<Contract> Create(ContractAdvancedCriterion criterion);
         IQueryableExpressionBuilder<Client> Create(ClientAdvancedCriterion criterion);
+        IQueryableExpressionBuilder<IEnvironmentFacetValue> Create(EnvironmentFacetAdvancedCriterion criterion);
     }
 }

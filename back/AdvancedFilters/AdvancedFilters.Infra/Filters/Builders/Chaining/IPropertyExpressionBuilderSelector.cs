@@ -1,3 +1,4 @@
+using AdvancedFilters.Domain.Facets;
 using AdvancedFilters.Domain.Filters.Models;
 using System;
 using System.Collections.Generic;
@@ -41,29 +42,59 @@ namespace AdvancedFilters.Infra.Filters.Builders.Chaining
             => new SingleValuePropertyListExpressionBuilder<TValue, TProperty>(_criterion, getPropertyListExpression);
     }
 
-    internal class AdvancedExpressionBuilderSelector<TValue, TProperty> : IPropertyExpressionBuilderSelector<TValue, TProperty>
+    internal class FacetValueExpressionBuilderSelector<TValue> : IPropertyExpressionBuilderSelector<TValue, IEnvironmentFacetValue>
     {
-        private readonly AdvancedCriterion<TProperty> _criterion;
+        private readonly IEnvironmentFacetCriterion _criterion;
 
-        public AdvancedExpressionBuilderSelector(AdvancedCriterion<TProperty> criterion)
+        public FacetValueExpressionBuilderSelector(IEnvironmentFacetCriterion criterion)
         {
             _criterion = criterion;
         }
 
+        public IPropertyExpressionBuilder<TValue> To(Expression<Func<TValue, IEnvironmentFacetValue>> getPropertyExpression)
+            => new FacetValuePropertyExpressionBuilder<TValue>(_criterion, getPropertyExpression);
+    }
+
+    internal class FacetValueListExpressionBuilderSelector<TValue> : IPropertyListExpressionBuilderSelector<TValue, IEnvironmentFacetValue>
+    {
+        private readonly IEnvironmentFacetCriterion _criterion;
+
+        public FacetValueListExpressionBuilderSelector(IEnvironmentFacetCriterion criterion)
+        {
+            _criterion = criterion;
+        }
+
+        public IPropertyExpressionBuilder<TValue> To(Expression<Func<TValue, IEnumerable<IEnvironmentFacetValue>>> getPropertyListExpression)
+            => new FacetValuePropertyListExpressionBuilder<TValue>(_criterion, getPropertyListExpression);
+    }
+
+    internal class AdvancedExpressionBuilderSelector<TValue, TProperty> : IPropertyExpressionBuilderSelector<TValue, TProperty>
+    {
+        private readonly AdvancedCriterion<TProperty> _criterion;
+        private readonly IAdvancedExpressionChainer _chainer;
+
+        public AdvancedExpressionBuilderSelector(AdvancedCriterion<TProperty> criterion, IAdvancedExpressionChainer chainer)
+        {
+            _criterion = criterion;
+            _chainer = chainer;
+        }
+
         public IPropertyExpressionBuilder<TValue> To(Expression<Func<TValue, TProperty>> getPropertyExpression)
-            => new AdvancedPropertyExpressionBuilder<TValue, TProperty>(_criterion, getPropertyExpression);
+            => new AdvancedPropertyExpressionBuilder<TValue, TProperty>(_criterion, getPropertyExpression, _chainer);
     }
 
     internal class AdvancedListExpressionBuilderSelector<TValue, TProperty> : IPropertyListExpressionBuilderSelector<TValue, TProperty>
     {
         private readonly AdvancedCriterion<TProperty> _criterion;
+        private readonly IAdvancedExpressionChainer _chainer;
 
-        public AdvancedListExpressionBuilderSelector(AdvancedCriterion<TProperty> criterion)
+        public AdvancedListExpressionBuilderSelector(AdvancedCriterion<TProperty> criterion, IAdvancedExpressionChainer chainer)
         {
             _criterion = criterion;
+            _chainer = chainer;
         }
 
         public IPropertyExpressionBuilder<TValue> To(Expression<Func<TValue, IEnumerable<TProperty>>> getPropertyListExpression)
-            => new AdvancedPropertyListExpressionBuilder<TValue, TProperty>(_criterion, getPropertyListExpression);
+            => new AdvancedPropertyListExpressionBuilder<TValue, TProperty>(_criterion, getPropertyListExpression, _chainer);
     }
 }
