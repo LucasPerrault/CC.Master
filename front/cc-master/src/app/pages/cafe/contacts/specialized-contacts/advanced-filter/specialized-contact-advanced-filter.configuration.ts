@@ -6,6 +6,7 @@ import {
   IAdvancedFilterConfiguration,
   ICriterionConfiguration,
 } from '../../../common/components/advanced-filter-form';
+import { CriterionFormlyConfigurationService } from '../../../common/services/criterion-formly-configuration.service';
 import { EnvironmentAdvancedFilterConfiguration } from '../../../environments/advanced-filter';
 import { SpeContactAdvancedFilterKey } from './specialized-contact-advanced-filter-key.enum';
 import { SpeContactCriterionKey } from './specialized-contact-criterion-key.enum';
@@ -18,6 +19,7 @@ export class SpecializedContactAdvancedFilterConfiguration implements IAdvancedF
       key: SpeContactCriterionKey.Environment,
       name: this.translatePipe.transform('cafe_filters_contact_environment'),
       children: this.environmentAdvancedFilterConfiguration.criterions,
+      childrenFormlyFieldConfigs: [this.commonFormlyConfiguration.criterion(this.environmentAdvancedFilterConfiguration.criterions)],
     },
     {
       key: SpeContactCriterionKey.Role,
@@ -36,9 +38,14 @@ export class SpecializedContactAdvancedFilterConfiguration implements IAdvancedF
     },
   ];
 
+  public criterionFormlyFieldConfigs = [
+    this.commonFormlyConfiguration.criterion(this.criterions),
+  ];
+
   constructor(
     private translatePipe: TranslatePipe,
     private environmentAdvancedFilterConfiguration: EnvironmentAdvancedFilterConfiguration,
     private formlyConfiguration: SpecializedContactFormlyConfiguration,
+    private commonFormlyConfiguration: CriterionFormlyConfigurationService,
   ) {}
 }

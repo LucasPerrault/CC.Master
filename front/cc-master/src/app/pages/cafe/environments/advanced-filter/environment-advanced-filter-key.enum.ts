@@ -10,4 +10,5 @@ export enum EnvironmentAdvancedFilterKey {
   Cluster = 'cluster',
   DistributorType = 'distributorType',
   BillingEntities = 'billingEntities',
+  Criterion = 'criterion',
 }

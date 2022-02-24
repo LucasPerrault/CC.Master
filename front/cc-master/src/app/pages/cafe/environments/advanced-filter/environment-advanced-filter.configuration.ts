@@ -1,11 +1,13 @@
 import { Injectable } from '@angular/core';
 import { TranslatePipe } from '@cc/aspects/translate';
+import { FormlyFieldConfig } from '@ngx-formly/core/lib/components/formly.field.config';
 
 import {
   ComparisonOperator,
   IAdvancedFilterConfiguration,
   ICriterionConfiguration,
 } from '../../common/components/advanced-filter-form';
+import { FormlyConfigurationService } from '../../common/services/formly-configuration.service';
 import { EnvironmentAdvancedFilterKey } from './environment-advanced-filter-key.enum';
 import { EnvironmentCriterionKey } from './environment-criterion-key.enum';
 import { EnvironmentFormlyConfiguration } from './environment-formly-configuration.service';
@@ -163,8 +165,13 @@ export class EnvironmentAdvancedFilterConfiguration implements IAdvancedFilterCo
     },
   ];
 
+  public readonly criterionFormlyFieldConfigs: FormlyFieldConfig[] = [
+    this.commonFormlyConfiguration.criterion(this.criterions),
+  ];
+
   constructor(
     private translatePipe: TranslatePipe,
     private formlyConfiguration: EnvironmentFormlyConfiguration,
+    private commonFormlyConfiguration: CriterionFormlyConfigurationService,
   ) {}
 }
