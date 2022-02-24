@@ -1,4 +1,5 @@
 import { IEnvironment } from './environment.interface';
+import { IEstablishmentFacetValue } from './facet-value.interface';
 import { ILegalUnit } from './legal-unit.interface';
 
 export interface IEstablishment {
@@ -16,4 +17,5 @@ export interface IEstablishment {
 
   environment: IEnvironment;
   legalUnit: ILegalUnit;
+  facets: IEstablishmentFacetValue[];
 }

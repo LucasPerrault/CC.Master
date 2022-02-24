@@ -2,13 +2,23 @@
 
   <ng-container page-header-right>
     <button class="button primary u-marginBottomStandard" type="button"
-            [class]="exportButtonClass$ | async" [disabled]="!canExport" (click)="export()">
+            [class]="exportButtonClass$ | async" [disabled]="submitDisabled" (click)="export()">
       {{ 'cafe_export_button' | translate }}
     </button>
   </ng-container>
 
   <ng-container page-subheader>
-    <cc-cafe-page-filter-template [advancedFilterConfig]="advancedFilterConfig" [formControl]="filters">
+    <cc-cafe-page-filter-template [advancedFilterConfig]="advancedFilterConfig" [formControl]="filters"
+                                  [submitDisabled]="submitDisabled" (submit)="submit()">
+
+      <ng-container footer-right-actions>
+        <label class="textfield palette-grey mod-outlined mod-inline">
+          <cc-establishment-facets-and-columns-api-select [formControl]="facetsAndColumns"
+                                                          [placeholder]="'select_facets_and_columns_placeholder' | translate">
+          </cc-establishment-facets-and-columns-api-select>
+        </label>
+      </ng-container>
+
     </cc-cafe-page-filter-template>
   </ng-container>
 
@@ -23,7 +33,8 @@
 
       <cc-establishment-list ccInfiniteScroll
                              (bottomReached)="nextPage()"
-                             [establishments]="establishments$ | async">
+                             [establishments]="establishments$ | async"
+                             [facets]="facetColumns$ | async">
       </cc-establishment-list>
 
     </ng-template>
