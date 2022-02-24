@@ -34,7 +34,7 @@ namespace Billing.Cmrr.Application
 
         public async Task<List<Breakdown>> GetBreakdownsAsync(CmrrAxis axis)
         {
-            if (_cache.TryGet(axis, out List<Breakdown> cachedBreakdowns))
+            if (_cache.TryGet(axis, out var cachedBreakdowns))
             {
                 return cachedBreakdowns;
             }
@@ -99,13 +99,13 @@ namespace Billing.Cmrr.Application
                 yield break;
             }
 
-            decimal sum = shares.Sum(s => s.Share);
+            var sum = shares.Sum(s => s.Share);
             var ratioPartialSum = 0m;
 
             for (var i = 0; i < shares.Count - 1; i++)
             {
                 var breakdownShare = shares[i];
-                var ratio = breakdownShare.Share / sum;
+                var ratio = (decimal)breakdownShare.Share / sum;
                 ratioPartialSum += ratio;
                 yield return new Breakdown
                 {
