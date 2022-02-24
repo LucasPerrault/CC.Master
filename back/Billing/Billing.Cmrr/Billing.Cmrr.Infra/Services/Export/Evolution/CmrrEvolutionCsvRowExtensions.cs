@@ -10,38 +10,50 @@ namespace Billing.Cmrr.Infra.Services.Export.Evolution
     {
         public static IEnumerable<CmrrEvolutionCsvRow> ToRows(this CmrrAxisEvolution evolution, ICmrrTranslations translations)
         {
-            var linesBySection = evolution.Lines
+            var linesBySubSection = evolution.Lines
                 .OrderBy(l => l.Section.Order)
                 .ThenBy(l => l.Section.Id)
                 .ThenBy(l => l is CmrrEvolutionBreakdownTotalLine ? 0 : 1)
-                .GroupBy(l => l.SubSectionName)
-                .Select(g => g.OrderBy(l => l.Period));
+                .GroupBy(l => l.SubSectionName);
 
-            var properties = new List<(string Name, Func<CmrrEvolutionBreakdownLine, decimal> Get)>
+            var properties = new List<(string Name, Func<IEnumerable<CmrrEvolutionBreakdownLine>, decimal> Get)>
             {
-                ( translations.CmrrExportEvolutionAmount(), l => l.Amount ),
-                ( translations.CmrrExportCreation(), l => l.Creation ),
-                ( translations.CmrrExportUpsell(), l => l.Upsell ),
-                ( translations.CmrrExportExpansion(), l => l.Expansion ),
-                ( translations.CmrrExportContraction(), l => l.Contraction ),
-                ( translations.CmrrExportTermination(), l => l.Termination ),
+                ( translations.CmrrExportEvolutionAmount(), ls => ls.Sum(s => s.Amount) ),
+                ( translations.CmrrExportCreation(), ls => ls.Sum(s => s.Creation )),
+                ( translations.CmrrExportUpsell(), ls => ls.Sum(s => s.Upsell )),
+                ( translations.CmrrExportExpansion(), ls => ls.Sum(s => s.Expansion )),
+                ( translations.CmrrExportContraction(), ls => ls.Sum(s => s.Contraction )),
+                ( translations.CmrrExportTermination(), ls => ls.Sum(s => s.Termination )),
             };
 
             var rows = new List<CmrrEvolutionCsvRow>();
 
-            foreach (var sectionLines in linesBySection)
+            foreach (var subSectionLines in linesBySubSection)
             {
+                var linesByPeriod = subSectionLines.GroupBy(l => l.Period).ToDictionary(g => g.Key, g => g.ToList());
+                var allPeriods = GetAllPeriods(evolution.StartPeriod, evolution.EndPeriod);
+
+                var allLinesByPeriod = allPeriods.Select(p => linesByPeriod.ContainsKey(p) ? linesByPeriod[p] : new List<CmrrEvolutionBreakdownLine>());
+
                 rows.AddRange(properties.Select(property =>
                     new CmrrEvolutionCsvRow
                     {
-                        Name = sectionLines.First().SubSectionName,
+                        Name = subSectionLines.First().SubSectionName,
                         AmountType = property.Name,
-                        Amounts = sectionLines.Select(l => property.Get(l)).ToList()
+                        Amounts = allLinesByPeriod.Select(g => property.Get(g)).ToList()
                     }
                 ));
             }
 
             return rows;
+        }
+
+        private static IEnumerable<DateTime> GetAllPeriods(DateTime from, DateTime to)
+        {
+            var diffMonths = ((to.Year - from.Year) * 12) + to.Month - from.Month;
+            return Enumerable
+                    .Range(0, diffMonths + 1)
+                    .Select(d => from.AddMonths(d));
         }
     }
 }
