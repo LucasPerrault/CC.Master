@@ -31,6 +31,11 @@ export class CloseContractFormService {
   ) {}
 
   public getMinContractClosedDate(context: IClosureFormValidationContext): Date {
+    const attachmentDate = this.getAttachmentDate(context);
+    if (!!context.mostRecentAttachment && !!context.lastCountPeriod) {
+      return isAfter(attachmentDate, context.lastCountPeriod) ? attachmentDate : context.lastCountPeriod;
+    }
+
     if (!!context.mostRecentAttachment) {
       const mostRecentDate = context.mostRecentAttachment?.end || context.mostRecentAttachment?.start;
       return new Date(mostRecentDate);
@@ -82,5 +87,14 @@ export class CloseContractFormService {
 
     return this.httpClient.get<IHttpApiV3CollectionResponse<IContextAttachment>>(this.attachmentsEndpoint, { params })
       .pipe(map(response => response.data.items));
+  }
+
+  private getAttachmentDate(context: IClosureFormValidationContext): Date {
+    if (!context.mostRecentAttachment) {
+      return null;
+    }
+
+    const hasEndDate = !!context.mostRecentAttachment?.end;
+    return hasEndDate? new Date(context.mostRecentAttachment.end) : new Date(context.mostRecentAttachment.start);
   }
 }
