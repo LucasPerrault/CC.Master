@@ -1,15 +1,14 @@
 <form [formGroup]="parentFormGroup" class="u-displayFlex u-flexWrapWrap u-alignItemsCenter u-flexGrow0 u-flexShrink1">
-  <cc-comparison-criterion-select textfieldClass="palette-grey mod-outlined mod-inline"
-                                  [formControlName]="formKey.Criterion"
-                                  [configurations]="configurations"
-                                  [required]="true"
-                                  (blur)="onTouch()">
+
+  <cc-comparison-criterion-select [formControlName]="formKey.Criterion" [fields]="formlyFieldConfigs">
   </cc-comparison-criterion-select>
 
   <ng-container *ngIf="configuration$ | async; let configuration">
 
     <ng-container *ngIf="!!configuration.children; else hasNoChild">
-      <cc-comparison-filter-criterion-form [configurations]="configuration.children" [formControl]="childFormControl">
+      <cc-comparison-filter-criterion-form [configurations]="configuration.children"
+                                           [formlyFieldConfigs]="configuration.childrenFormlyFieldConfigs"
+                                           [formControl]="childFormControl">
       </cc-comparison-filter-criterion-form>
     </ng-container>
 

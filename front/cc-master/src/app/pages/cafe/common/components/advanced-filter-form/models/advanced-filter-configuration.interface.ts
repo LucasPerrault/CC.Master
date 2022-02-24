@@ -5,6 +5,7 @@ import { ComparisonOperator } from '../enums/comparison-operator.enum';
 
 export interface IAdvancedFilterConfiguration {
   criterions: ICriterionConfiguration[];
+  criterionFormlyFieldConfigs?: FormlyFieldConfig[];
 }
 
 export interface IComponentConfiguration {
@@ -20,4 +21,5 @@ export interface ICriterionConfiguration {
   componentConfigs?: IComponentConfiguration[];
   fields?: FormlyFieldConfig[];
   children?: ICriterionConfiguration[];
+  childrenFormlyFieldConfigs?: FormlyFieldConfig[];
 }

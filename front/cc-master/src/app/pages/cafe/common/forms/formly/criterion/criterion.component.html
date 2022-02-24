@@ -1,0 +1,10 @@
+<label class="textfield" [ngClass]="to?.mod">
+  <cc-comparison-criterion-select [formControl]="formControl"
+                                  [formlyAttributes]="field"
+                                  [placeholder]="to?.placeholder"
+                                  [multiple]="to?.multiple"
+                                  [required]="to?.required"
+                                  [options]="to?.options">
+  </cc-comparison-criterion-select>
+  <span class="textfield-label" *ngIf="to?.label">{{ to.label }}</span>
+</label>
