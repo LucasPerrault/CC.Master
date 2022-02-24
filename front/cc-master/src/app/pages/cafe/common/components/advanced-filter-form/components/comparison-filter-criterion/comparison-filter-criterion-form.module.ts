@@ -14,12 +14,13 @@ import { ComparisonValueSelectModule } from './comparison-value-select/compariso
   exports: [
     ComparisonFilterCriterionFormComponent,
   ],
-    imports: [
-        CommonModule,
-        ReactiveFormsModule,
-        ComparisonCriterionSelectModule,
-        ComparisonOperatorSelectModule,
-        ComparisonValueSelectModule,
-    ],
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    ComparisonCriterionSelectModule,
+    ComparisonOperatorSelectModule,
+    ComparisonValueSelectModule,
+    ComparisonCriterionSelectModule,
+  ],
 })
-export class ComparisonFilterCriterionFormModule { }
+export class ComparisonFilterCriterionFormModule {}

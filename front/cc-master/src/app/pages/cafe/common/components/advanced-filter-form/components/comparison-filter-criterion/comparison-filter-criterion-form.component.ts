@@ -9,6 +9,7 @@ import {
   Validator,
   Validators,
 } from '@angular/forms';
+import { FormlyFieldConfig } from '@ngx-formly/core/lib/components/formly.field.config';
 import { BehaviorSubject, Subject } from 'rxjs';
 import { filter, map, takeUntil } from 'rxjs/operators';
 
@@ -42,6 +43,7 @@ enum ComparisonFilterCriterionFormKey {
 })
 export class ComparisonFilterCriterionFormComponent implements OnInit, OnDestroy, ControlValueAccessor, Validator {
   @Input() public configurations: ICriterionConfiguration[];
+  @Input() public formlyFieldConfigs?: FormlyFieldConfig[];
 
   public get operator(): IComparisonOperator {
     return this.parentFormGroup.get(ComparisonFilterCriterionFormKey.Operator).value;

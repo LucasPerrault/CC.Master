@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, forwardRef, Input, OnDestroy, OnIni
 import {
   AbstractControl,
   ControlValueAccessor,
-  FormGroup,
+  FormControl,
   NG_VALIDATORS,
   NG_VALUE_ACCESSOR,
   ValidationErrors,
@@ -12,11 +12,13 @@ import { FormlyFieldConfig } from '@ngx-formly/core/lib/components/formly.field.
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { IComparisonCriterion } from '../../../models/comparison-criterion.interface';
+import { ICriterionConfiguration } from '../../../components/advanced-filter-form';
+import { IComparisonCriterion } from '../../../components/advanced-filter-form';
 
 @Component({
   selector: 'cc-comparison-criterion-select',
   templateUrl: './comparison-criterion-select.component.html',
+  styleUrls: ['./comparison-criterion-select.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [
     {
@@ -31,18 +33,21 @@ import { IComparisonCriterion } from '../../../models/comparison-criterion.inter
     },
   ],
 })
-export class ComparisonCriterionSelectComponent implements OnInit, OnDestroy, Validator, ControlValueAccessor {
-  @Input() public fields: FormlyFieldConfig[];
+export class ComparisonCriterionSelectComponent implements OnInit, OnDestroy, ControlValueAccessor, Validator {
+  @Input() placeholder: string;
+  @Input() multiple = false;
+  @Input() required = false;
+  @Input() formlyAttributes: FormlyFieldConfig = {};
+  @Input() options: ICriterionConfiguration[];
 
-  public formGroup: FormGroup = new FormGroup({});
-  public model: IComparisonCriterion = {} as IComparisonCriterion;
+  public formControl: FormControl = new FormControl();
 
-  private destroy$: Subject<void> = new Subject<void>();
+  private destroy$: Subject<void> = new Subject();
 
   public ngOnInit(): void {
-    this.formGroup.valueChanges
+    this.formControl.valueChanges
       .pipe(takeUntil(this.destroy$))
-      .subscribe(form => this.onChange(form?.criterion));
+      .subscribe(criterionOperator => this.onChange(criterionOperator));
   }
 
   public ngOnDestroy(): void {
@@ -50,7 +55,7 @@ export class ComparisonCriterionSelectComponent implements OnInit, OnDestroy, Va
     this.destroy$.complete();
   }
 
-  public onChange: (configuration: IComparisonCriterion) => void = () => {};
+  public onChange: (criterion: IComparisonCriterion) => void = () => {};
   public onTouch: () => void = () => {};
 
   public registerOnChange(fn: () => void): void {
@@ -62,18 +67,22 @@ export class ComparisonCriterionSelectComponent implements OnInit, OnDestroy, Va
   }
 
   public writeValue(criterion: IComparisonCriterion): void {
-    if (!!criterion && criterion === this.formGroup.value) {
-      this.formGroup.setValue(criterion);
+    if (criterion !== this.formControl.value) {
+      this.formControl.setValue(criterion);
     }
   }
 
   public validate(control: AbstractControl): ValidationErrors | null {
-    if (!this.fields?.length) {
-      return null;
-    }
-
-    if (this.formGroup.invalid) {
+    if (this.formControl.invalid) {
       return  { invalid: true };
     }
+  }
+
+  public searchFn(criterion: IComparisonCriterion, clue: string): boolean {
+    return criterion.name.toLowerCase().includes(clue.toLowerCase());
+  }
+
+  public trackBy(index: number, criterion: IComparisonCriterion): string {
+    return criterion.key;
   }
 }

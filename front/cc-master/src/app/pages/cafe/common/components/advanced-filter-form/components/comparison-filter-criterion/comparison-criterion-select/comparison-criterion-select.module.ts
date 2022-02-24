@@ -1,36 +1,26 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
-import { TranslateModule } from '@cc/aspects/translate';
-import { LuInputClearerModule, LuInputDisplayerModule } from '@lucca-front/ng/input';
-import {
-  LuForOptionsModule,
-  LuOptionFeederModule,
-  LuOptionItemModule,
-  LuOptionPickerModule,
-  LuOptionSearcherModule,
-} from '@lucca-front/ng/option';
-import { LuSelectInputModule } from '@lucca-front/ng/select';
+import { LuFormlyModule } from '@lucca-front/ng/formly';
+import { FormlyModule } from '@ngx-formly/core';
 
+import { CCFormlyModule } from '../../../../../forms/formly';
 import { ComparisonCriterionSelectComponent } from './comparison-criterion-select.component';
 
-
-
 @NgModule({
-  declarations: [ComparisonCriterionSelectComponent],
+  declarations: [
+    ComparisonCriterionSelectComponent,
+  ],
+  exports: [
+    ComparisonCriterionSelectComponent,
+  ],
   imports: [
     CommonModule,
-    LuSelectInputModule,
+    LuFormlyModule,
+    CCFormlyModule,
+    FormlyModule.forRoot({ extras: { immutable: true } }),
     ReactiveFormsModule,
-    TranslateModule,
-    LuOptionPickerModule,
-    LuOptionFeederModule,
-    LuOptionSearcherModule,
-    LuOptionItemModule,
-    LuInputClearerModule,
-    LuForOptionsModule,
-    LuInputDisplayerModule,
   ],
-  exports: [ComparisonCriterionSelectComponent],
 })
-export class ComparisonCriterionSelectModule { }
+export class ComparisonCriterionSelectModule {
+}

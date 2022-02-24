@@ -4,6 +4,7 @@ import { FormlyFieldApplication } from './application/application.component';
 import { FormlyFieldBillingEntity } from './billing-entity/billing-entity.component';
 import { FormlyFieldCluster } from './cluster/cluster.component';
 import { FormlyFieldCountry } from './country/country.component';
+import { FormlyFieldCriterion } from './criterion/criterion.component';
 import { FormlyFieldDistributor } from './distributor/distributor.component';
 import { FormlyFieldDistributorType } from './distributor-type/distributor-type.component';
 import { FormlyFieldEnvironmentDomain } from './environment-domain/environment-domain.component';
@@ -47,6 +48,10 @@ export const luFormlyConfig: ConfigOption = {
     {
       name: 'billing-entity',
       component: FormlyFieldBillingEntity,
+    },
+    {
+      name: 'criterion',
+      component: FormlyFieldCriterion,
     },
   ],
 };
