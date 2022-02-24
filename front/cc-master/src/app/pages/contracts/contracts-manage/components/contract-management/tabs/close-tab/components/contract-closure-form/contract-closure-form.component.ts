@@ -3,7 +3,7 @@ import { FormControl, FormGroup } from '@angular/forms';
 import { startOfMonth } from 'date-fns';
 
 import { getCloseContractReason } from '../../constants/close-contract-reason.enum';
-import { IClosureFormValidationContext } from '../../models/closure-form-validation-context.interface';
+import { ICloseContractMinDateReason } from '../../models/close-contract-min-date-reason.interface';
 import { IContractClosureDetailed } from '../../models/contract-closure-detailed.interface';
 import { IContractClosureForm } from '../../models/contract-closure-form.interface';
 
@@ -18,16 +18,14 @@ enum CloseContractFormKey {
   styleUrls: ['./contract-closure-form.component.scss'],
 })
 export class ContractClosureFormComponent {
-  @Input() formValidationContext: IClosureFormValidationContext;
-  @Input() minContractClosedDate: Date;
+  @Input() minDateReason: ICloseContractMinDateReason;
   @Input() closeButtonState: string;
-  @Input() set contractClosureDetailed(contractClosureDetailed: IContractClosureDetailed) {
-    this.formGroup.patchValue({
-      [CloseContractFormKey.CloseReason]: getCloseContractReason(contractClosureDetailed.closeReason),
-      [CloseContractFormKey.CloseOn]: contractClosureDetailed.closeOn,
-    });
-  }
+  @Input() set contract(closureDetailed: IContractClosureDetailed) { this.setClosureForm(closureDetailed); }
   @Output() closeContract: EventEmitter<IContractClosureForm> = new EventEmitter<IContractClosureForm>();
+
+  public get min(): Date {
+    return !!this.minDateReason?.date ? startOfMonth(this.minDateReason.date) : null;
+  }
 
   public formGroup: FormGroup;
   public formGroupKey = CloseContractFormKey;
@@ -49,7 +47,10 @@ export class ContractClosureFormComponent {
     this.showConfirmation = isShown;
   }
 
-  public getFirstDay(date: Date): Date {
-   return startOfMonth(date);
+  private setClosureForm(closureDetailed: IContractClosureDetailed): void {
+    this.formGroup.patchValue({
+      [CloseContractFormKey.CloseReason]: getCloseContractReason(closureDetailed.closeReason),
+      [CloseContractFormKey.CloseOn]: closureDetailed.closeOn,
+    });
   }
 }

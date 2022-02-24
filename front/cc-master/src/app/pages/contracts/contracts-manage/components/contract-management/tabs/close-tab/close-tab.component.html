@@ -3,7 +3,7 @@
 <ng-template #isNotLoading>
   <ng-container *ngIf="(isContractClosed$ | async); else isContractOpened">
     <div class="page-content">
-      <cc-closure-cancellation [contractClosureDetailed]="contractClosureDetailed$ | async"
+      <cc-closure-cancellation [contractClosureDetailed]="contract$ | async"
                                [closeCancelButtonState]="cancelButtonState$ | async"
                                (cancelClosure)="cancelClosure()">
       </cc-closure-cancellation>
@@ -19,9 +19,8 @@
     </ng-container>
 
     <ng-template #canReadContext>
-      <cc-contract-closure-form [contractClosureDetailed]="contractClosureDetailed$ | async"
-                                [formValidationContext]="closureFormValidationContext$ | async"
-                                [minContractClosedDate]="minContractClosedDate$ | async"
+      <cc-contract-closure-form [contract]="contract$ | async"
+                                [minDateReason]="closeContractMinDateReason$ | async"
                                 [closeButtonState]="closeButtonState$ | async"
                                 (closeContract)="closeContract($event)">
       </cc-contract-closure-form>

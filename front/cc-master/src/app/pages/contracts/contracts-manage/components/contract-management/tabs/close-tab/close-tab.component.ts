@@ -3,15 +3,16 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { TranslatePipe } from '@cc/aspects/translate';
 import { getButtonState, toSubmissionState } from '@cc/common/forms';
-import { combineLatest, Observable, pipe, ReplaySubject, Subject, UnaryFunction } from 'rxjs';
-import { finalize, map, share, take, takeUntil } from 'rxjs/operators';
+import { combineLatest, Observable, ReplaySubject, Subject } from 'rxjs';
+import { finalize, map, take, takeUntil } from 'rxjs/operators';
 
 import { ContractsListService } from '../../../../services/contracts-list.service';
-import { IClosureFormValidationContext, IContextAttachment } from './models/closure-form-validation-context.interface';
+import { ICloseContractMinDateReason } from './models/close-contract-min-date-reason.interface';
 import { IContractClosureDetailed } from './models/contract-closure-detailed.interface';
 import { IContractClosureForm } from './models/contract-closure-form.interface';
 import { CloseContractService } from './services/close-contract.service';
-import { CloseContractFormService } from './services/close-contract-form.service';
+import { CloseContractDataService } from './services/close-contract-data.service';
+import { CloseContractRestrictionsService } from './services/close-contract-restrictions.service';
 
 @Component({
   selector: 'cc-close-tab',
@@ -19,13 +20,8 @@ import { CloseContractFormService } from './services/close-contract-form.service
   styleUrls: ['./close-tab.component.scss'],
 })
 export class CloseTabComponent implements OnInit, OnDestroy {
-  public contractClosureDetailed$: ReplaySubject<IContractClosureDetailed>
-    = new ReplaySubject<IContractClosureDetailed>(1);
-  public mostRecentAttachment$ = new ReplaySubject<IContextAttachment | null>(1);
-  public lastCountPeriod$: ReplaySubject<Date | null>
-    = new ReplaySubject<Date | null>(1);
-  public closureFormValidationContext$: Observable<IClosureFormValidationContext>;
-  public minContractClosedDate$: Observable<Date>;
+  public contract$ = new ReplaySubject<IContractClosureDetailed>(1);
+  public closeContractMinDateReason$ = new ReplaySubject<ICloseContractMinDateReason>(1);
   public isLoading$: ReplaySubject<boolean> = new ReplaySubject<boolean>(1);
 
   public isContractClosed$: Observable<boolean>;
@@ -33,7 +29,7 @@ export class CloseTabComponent implements OnInit, OnDestroy {
   public closeButtonState$: Subject<string> = new Subject<string>();
 
   public get canReadValidationContext(): boolean {
-    return this.closeContractFormService.canReadValidationContext;
+    return this.restrictionsService.canReadValidationContext;
   }
 
   private destroy$: Subject<void> = new Subject<void>();
@@ -47,25 +43,15 @@ export class CloseTabComponent implements OnInit, OnDestroy {
     private translatePipe: TranslatePipe,
     private activatedRoute: ActivatedRoute,
     private closeContractService: CloseContractService,
-    private closeContractFormService: CloseContractFormService,
+    private dataService: CloseContractDataService,
     private contractsListService: ContractsListService,
+    private restrictionsService: CloseContractRestrictionsService,
   ) {}
 
   public ngOnInit(): void {
     this.refreshContractClosureDetailed();
 
-    const closureConditions$ = [this.contractClosureDetailed$, this.lastCountPeriod$, this.mostRecentAttachment$];
-    this.closureFormValidationContext$ = combineLatest(closureConditions$).pipe(
-      takeUntil(this.destroy$),
-      this.toClosureFormValidationContext(),
-    );
-
-    this.minContractClosedDate$ = this.closureFormValidationContext$.pipe(
-      takeUntil(this.destroy$),
-      map(context => this.closeContractFormService.getMinContractClosedDate(context)),
-    );
-
-    this.isContractClosed$ = this.contractClosureDetailed$
+    this.isContractClosed$ = this.contract$
       .pipe(takeUntil(this.destroy$), map(contract => !!contract.closeReason && !!contract.closeOn));
   }
 
@@ -101,34 +87,24 @@ export class CloseTabComponent implements OnInit, OnDestroy {
   }
 
   private refreshContractClosureDetailed(): void {
-    this.isLoading$.next(true);
-
-    if (this.closeContractFormService.canReadValidationContext) {
-      this.closeContractFormService.getMostRecentAttachment$(this.contractId)
-        .pipe(take(1))
-        .subscribe(e => this.mostRecentAttachment$.next(e));
-
-      this.closeContractFormService.getLastCountPeriod$()
-        .pipe(take(1))
-        .subscribe(p => this.lastCountPeriod$.next(p));
+    if (!this.restrictionsService.canReadValidationContext) {
+      return;
     }
 
-    const contractClosureDetailed$ = this.closeContractService.getContractClosureDetailed$(this.contractId)
-      .pipe(take(1), share());
+    this.isLoading$.next(true);
 
-    contractClosureDetailed$
+    const mostRecentAttachment$ = this.dataService.getMostRecentAttachment$(this.contractId);
+    const lastCountPeriod$ = this.dataService.getLastCountPeriod$();
+    const contract$ = this.closeContractService.getContractClosureDetailed$(this.contractId);
+
+    combineLatest([contract$, lastCountPeriod$, mostRecentAttachment$])
       .pipe(take(1), finalize(() => this.isLoading$.next(false)))
-      .subscribe(c => this.contractClosureDetailed$.next(c));
-  }
-
-  private toClosureFormValidationContext(
-  ): UnaryFunction<Observable<[IContractClosureDetailed, Date, IContextAttachment]>, Observable<IClosureFormValidationContext>> {
-    return pipe(
-      map(([contract, lastCountPeriod, mostRecentAttachment]) => ({
-        theoreticalStartOn: new Date(contract.theoricalStartOn),
-        lastCountPeriod: !!lastCountPeriod ? new Date(lastCountPeriod) : null,
-        mostRecentAttachment,
-      })),
-    );
+      .subscribe(([contract, lastCountPeriod, mostRecentAttachment]) => {
+        const contractStartDate = new Date(contract.theoricalStartOn);
+        const lastCountDate = new Date(lastCountPeriod);
+        const minDateReason = this.restrictionsService.getCloseMinDateReason(contractStartDate, lastCountDate, mostRecentAttachment);
+        this.closeContractMinDateReason$.next(minDateReason);
+        this.contract$.next(contract);
+      });
   }
 }
