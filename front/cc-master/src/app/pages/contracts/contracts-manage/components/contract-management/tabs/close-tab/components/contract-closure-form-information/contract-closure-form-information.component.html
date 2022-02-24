@@ -1,16 +1,4 @@
 <div class="callout palette-grey mod-icon">
   <div class="callout-icon"><span aria-hidden="true" class="lucca-icon">info</span></div>
-  <div *ngIf="!!context.mostRecentAttachment; else othersReason">
-    {{ getAttachmentDateInformation(context.mostRecentAttachment) }}
-  </div>
-
-  <ng-template #othersReason>
-    <div *ngIf="!!context.lastCountPeriod; else isTheoreticalStartOn">
-      {{ getLastCountDateInformation() }}
-    </div>
-
-    <ng-template #isTheoreticalStartOn>
-      <div>{{ getTheoreticalStartOnInformation() }}</div>
-    </ng-template>
-  </ng-template>
+  {{ getMinDateReason() }}
 </div>
