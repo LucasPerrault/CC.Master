@@ -5,6 +5,7 @@ import { TranslateModule } from '@ngx-translate/core';
 
 import { CafeComponent } from './cafe.component';
 import { CafeCategoriesService } from './common/services/cafe-categories.service';
+import { FormlyConfigurationService } from './common/services/formly-configuration.service';
 import { CafeContactsModule } from './contacts/cafe-contacts.module';
 import { CafeEnvironmentsModule } from './environments/cafe-environments.module';
 import { EstablishmentsModule } from './establishments/establishments.module';
@@ -19,6 +20,9 @@ import { EstablishmentsModule } from './establishments/establishments.module';
     EstablishmentsModule,
     ReactiveFormsModule,
   ],
-  providers: [CafeCategoriesService],
+  providers: [
+    CafeCategoriesService,
+    FormlyConfigurationService,
+  ],
 })
 export class CafeModule { }
