@@ -68,7 +68,7 @@ namespace Billing.Cmrr.Application
                 CmrrAxis.Product =>  new BreakdownShare
                 (
                     AxisSection.ForProductFamily(ps.Product.Family),
-                    ps.Solution.Name,
+                    ps.Product.Name,
                     ps.Product,
                     ps.Share
                 ),
