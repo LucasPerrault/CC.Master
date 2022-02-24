@@ -10,6 +10,9 @@
     <th class="table-head-row-cell">
       {{ 'cafe_establishment_list_country' | translate }}
     </th>
+    <th class="table-head-row-cell" *ngFor="let facet of facets">
+      {{ facet.applicationId }} - {{ facet.code }}
+    </th>
   </tr>
   </thead>
   <tbody class="table-body">
@@ -22,6 +25,9 @@
     </td>
     <td class="table-body-row-cell">
       {{ establishment?.legalUnit?.country?.name }}
+    </td>
+    <td class="table-body-row-cell" *ngFor="let facet of facets">
+      {{ getFacetValue(establishment.facets, facet) | facets : getFacetOptions(facet) }}
     </td>
   </tr>
   </tbody>

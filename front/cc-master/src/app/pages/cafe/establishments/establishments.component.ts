@@ -3,10 +3,12 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { getButtonState, toSubmissionState } from '@cc/common/forms';
 import { defaultPagingParams, IPaginatedResult, PaginatedList, PaginatedListState, PagingService } from '@cc/common/paging';
-import { BehaviorSubject, Observable, pipe, ReplaySubject, Subject, UnaryFunction } from 'rxjs';
-import { filter, map, skip, take, takeUntil } from 'rxjs/operators';
+import { BehaviorSubject, combineLatest, Observable, pipe, ReplaySubject, Subject, UnaryFunction } from 'rxjs';
+import { filter, map, skip, startWith, take, takeUntil } from 'rxjs/operators';
 
 import { AdvancedFilter, IAdvancedFilterForm } from '../common/components/advanced-filter-form';
+import { FacetAndColumnHelper, IFacetAndColumn } from '../common/forms/select/facets-and-columns-api-select';
+import { IFacet, ISearchDto, toSearchDto } from '../common/models';
 import { IEstablishment } from '../common/models/establishment.interface';
 import { EstablishmentAdvancedFilterApiMappingService, EstablishmentAdvancedFilterConfiguration } from './advanced-filter';
 import { EstablishmentsDataService } from './services/establishments-data.service';
@@ -21,14 +23,22 @@ export class EstablishmentsComponent implements OnInit, OnDestroy {
   public get totalCount$(): Observable<number> { return this.paginatedEts.totalCount$; }
   public isLoading$ = new ReplaySubject<boolean>(1);
 
-  public get canExport(): boolean {
-    return !!this.filters?.value?.criterionForms?.length;
+  public get submitDisabled(): boolean {
+    return !this.filters.dirty || !this.filters.valid;
+  }
+
+  public get facets$(): Observable<IFacet[]> {
+    return this.facetsAndColumns?.valueChanges.pipe(FacetAndColumnHelper.toFacets, startWith([]));
   }
 
   public exportButtonClass$ = new ReplaySubject<string>(1);
 
+  public facetsAndColumns = new FormControl();
   public filters: FormControl = new FormControl();
-  public searchDto$ = new BehaviorSubject<AdvancedFilter>(null);
+
+  public facetColumns$ = new BehaviorSubject<IFacet[]>([]);
+  public searchDto$ = new BehaviorSubject<ISearchDto>(null);
+  public advancedFilter$ = new BehaviorSubject<AdvancedFilter>(null);
 
   private paginatedEts: PaginatedList<IEstablishment>;
   private destroy$: Subject<void> = new Subject<void>();
@@ -50,13 +60,13 @@ export class EstablishmentsComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.destroy$), skip(1), map(state => state === PaginatedListState.Update))
       .subscribe(isLoading => this.isLoading$.next(isLoading));
 
-    this.searchDto$
-      .pipe(takeUntil(this.destroy$), filter(f => !!f))
-      .subscribe(() => this.refresh());
+    combineLatest([this.advancedFilter$, this.facets$])
+      .pipe(takeUntil(this.destroy$), map(([criterion, facets]) => toSearchDto(criterion, facets)))
+      .subscribe(searchDto => this.searchDto$.next(searchDto));
 
     this.filters.valueChanges
-      .pipe(takeUntil(this.destroy$), this.toApiMapping)
-      .subscribe(searchDto => this.searchDto$.next(searchDto));
+      .pipe(takeUntil(this.destroy$), filter(() => !this.submitDisabled), this.toApiMapping)
+      .subscribe(searchDto => this.advancedFilter$.next(searchDto));
   }
 
   public ngOnDestroy(): void {
@@ -68,18 +78,19 @@ export class EstablishmentsComponent implements OnInit, OnDestroy {
     this.paginatedEts.nextPage();
   }
 
+  public submit(): void {
+    this.facetColumns$.next(FacetAndColumnHelper.getFacets(this.facetsAndColumns.value));
+    this.paginatedEts.updateHttpParams(new HttpParams());
+  }
+
   public export(): void {
-    this.dataService.export$(this.searchDto$.value)
+    this.dataService.export$(this.advancedFilter$.value)
       .pipe(take(1), toSubmissionState(), map(state => getButtonState(state)))
       .subscribe(c => this.exportButtonClass$.next(c));
   }
 
-  private refresh(): void {
-    this.paginatedEts.updateHttpParams(new HttpParams());
-  }
-
-  private getEstablishments$(httpParams: HttpParams, advancedFilter: AdvancedFilter): Observable<IPaginatedResult<IEstablishment>> {
-    return this.dataService.getEstablishments$(httpParams, advancedFilter)
+  private getEstablishments$(httpParams: HttpParams, searchDto: ISearchDto): Observable<IPaginatedResult<IEstablishment>> {
+    return this.dataService.getEstablishments$(httpParams, searchDto)
       .pipe(map(response => ({ items: response.items, totalCount: response.count })));
   }
 
