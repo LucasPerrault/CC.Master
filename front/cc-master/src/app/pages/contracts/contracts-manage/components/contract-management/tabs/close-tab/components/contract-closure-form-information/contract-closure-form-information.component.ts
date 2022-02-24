@@ -9,32 +9,32 @@ import { IClosureFormValidationContext, IContextAttachment } from '../../models/
   templateUrl: './contract-closure-form-information.component.html',
 })
 export class ContractClosureFormInformationComponent {
-  @Input() formValidationContext: IClosureFormValidationContext;
+  @Input() context: IClosureFormValidationContext;
 
   constructor(private translatePipe: TranslatePipe, private datePipe: DatePipe) { }
 
-  public getCloseDateInformation(mostRecentAttachment: IContextAttachment): string {
-    const hasEndDate = !!mostRecentAttachment?.end;
-    const mostRecentDate = hasEndDate ? mostRecentAttachment?.end : mostRecentAttachment?.start;
+  public getAttachmentDateInformation(attachment: IContextAttachment): string {
+    const hasEndDate = !!attachment?.end;
+    const mostRecentDate = hasEndDate ? attachment.end : attachment.start;
     const translationKey = hasEndDate ? 'contracts_closeDate_blockingAttachment_until' : 'contracts_closeDate_blockingAttachment_since';
 
     return this.translatePipe.transform(translationKey, {
-      name: mostRecentAttachment.legalEntity.name,
-      id: mostRecentAttachment.legalEntity.id,
+      name: attachment.legalEntity.name,
+      id: attachment.legalEntity.id,
       date: this.datePipe.transform(mostRecentDate, 'MMMM yyyy'),
     });
   }
 
   public getLastCountDateInformation(): string {
-    return this.translatePipe.transform('front_contractPage_closeDateCondition_lastCountDate_callout', {
-      date: this.datePipe.transform(this.formValidationContext.lastCountPeriod, 'MMMM yyyy'),
-    });
+    const lastCountDate = this.datePipe.transform(this.context.lastCountPeriod, 'MMMM yyyy');
+    const translationKey = 'front_contractPage_closeDateCondition_lastCountDate_callout';
+    return this.translatePipe.transform(translationKey, { date: lastCountDate });
   }
 
   public getTheoreticalStartOnInformation(): string {
-    return this.translatePipe.transform('front_contractPage_closeDateCondition_theoreticalStartOn_callout', {
-      date: this.datePipe.transform(this.formValidationContext.theoreticalStartOn, 'MMMM yyyy'),
-    });
+    const theoreticalStartDate = this.datePipe.transform(this.context.theoreticalStartOn, 'MMMM yyyy');
+    const translationKey = 'front_contractPage_closeDateCondition_theoreticalStartOn_callout';
+    return this.translatePipe.transform(translationKey, { date: theoreticalStartDate });
   }
 
 }
