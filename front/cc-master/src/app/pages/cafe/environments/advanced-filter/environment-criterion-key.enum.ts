@@ -7,4 +7,5 @@ export enum EnvironmentCriterionKey {
   Cluster = 'cluster',
   DistributorType = 'distributorType',
   BillingEntity = 'billingEntity',
+  Facets = 'facets',
 }

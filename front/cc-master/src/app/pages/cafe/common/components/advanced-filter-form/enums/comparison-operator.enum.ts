@@ -1,3 +1,5 @@
+import { IComparisonOperator } from '../components/comparison-filter-criterion/comparison-operator-select/comparison-operator.interface';
+
 export enum ComparisonOperator {
   Equals = 'Equals',
   NotEquals = 'NotEquals',
@@ -9,6 +11,7 @@ export enum ComparisonOperator {
   ListAreAmong = 'AreAmong',
   ListNotContains = 'NotContains',
   ListContainsOnly = 'ContainsOnly',
+  Between = 'Between',
 }
 
 export const getComparisonBooleanValue = (operator: ComparisonOperator) => {

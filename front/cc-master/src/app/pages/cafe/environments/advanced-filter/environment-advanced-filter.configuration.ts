@@ -2,15 +2,13 @@ import { Injectable } from '@angular/core';
 import { TranslatePipe } from '@cc/aspects/translate';
 import { FormlyFieldConfig } from '@ngx-formly/core/lib/components/formly.field.config';
 
-import {
-  ComparisonOperator,
-  IAdvancedFilterConfiguration,
-  ICriterionConfiguration,
-} from '../../common/components/advanced-filter-form';
-import { FormlyConfigurationService } from '../../common/services/formly-configuration.service';
+import { ComparisonOperator, IAdvancedFilterConfiguration, ICriterionConfiguration, } from '../../common/components/advanced-filter-form';
+import { CriterionFormlyConfigurationService } from '../../common/services/criterion-formly-configuration.service';
 import { EnvironmentAdvancedFilterKey } from './environment-advanced-filter-key.enum';
 import { EnvironmentCriterionKey } from './environment-criterion-key.enum';
 import { EnvironmentFormlyConfiguration } from './environment-formly-configuration.service';
+import { FacetScope } from '../../common/models';
+import { FacetAdvancedFilterConfigurationService } from '../../common/services/facets/facet-advanced-filter-configuration.service';
 
 @Injectable()
 export class EnvironmentAdvancedFilterConfiguration implements IAdvancedFilterConfiguration {
@@ -163,6 +161,12 @@ export class EnvironmentAdvancedFilterConfiguration implements IAdvancedFilterCo
         },
       ],
     },
+    {
+      key: EnvironmentCriterionKey.Facets,
+      name: this.translatePipe.transform('cafe_filters_environment_facet'),
+      children: this.facetFilterConfiguration.criterions(FacetScope.Environment),
+      childrenFormlyFieldConfigs: this.facetFilterConfiguration.criterionFormlyFieldConfigs(FacetScope.Environment),
+    },
   ];
 
   public readonly criterionFormlyFieldConfigs: FormlyFieldConfig[] = [
@@ -173,5 +177,6 @@ export class EnvironmentAdvancedFilterConfiguration implements IAdvancedFilterCo
     private translatePipe: TranslatePipe,
     private formlyConfiguration: EnvironmentFormlyConfiguration,
     private commonFormlyConfiguration: CriterionFormlyConfigurationService,
+    private facetFilterConfiguration: FacetAdvancedFilterConfigurationService,
   ) {}
 }
