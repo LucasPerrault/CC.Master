@@ -2,16 +2,19 @@ import { Injectable } from '@angular/core';
 import { TranslatePipe } from '@cc/aspects/translate';
 import { FormlyFieldConfig } from '@ngx-formly/core/lib/components/formly.field.config';
 
-import { EnvironmentAdvancedFilterKey } from '../../environments/advanced-filter/environment-advanced-filter-key.enum';
 import { ICriterionConfiguration } from '../components/advanced-filter-form';
 
+export enum AdvancedFilterKey {
+  Criterion = 'criterion',
+}
+
 @Injectable()
-export class FormlyConfigurationService {
+export class CriterionFormlyConfigurationService {
 
   constructor(private translatePipe: TranslatePipe) {}
 
   public readonly criterion = (criterions: ICriterionConfiguration[]): FormlyFieldConfig => ({
-    key: EnvironmentAdvancedFilterKey.Criterion,
+    key: AdvancedFilterKey.Criterion,
     type: 'criterion',
     templateOptions: {
       multiple: true,
