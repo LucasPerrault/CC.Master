@@ -5,7 +5,8 @@ import { TranslateModule } from '@ngx-translate/core';
 
 import { CafeComponent } from './cafe.component';
 import { CafeCategoriesService } from './common/services/cafe-categories.service';
-import { FormlyConfigurationService } from './common/services/formly-configuration.service';
+import { CriterionFormlyConfigurationService } from './common/services/criterion-formly-configuration.service';
+import { FacetAdvancedFilterModule } from './common/services/facets';
 import { CafeContactsModule } from './contacts/cafe-contacts.module';
 import { CafeEnvironmentsModule } from './environments/cafe-environments.module';
 import { EstablishmentsModule } from './establishments/establishments.module';
@@ -19,10 +20,11 @@ import { EstablishmentsModule } from './establishments/establishments.module';
     CafeContactsModule,
     EstablishmentsModule,
     ReactiveFormsModule,
+    FacetAdvancedFilterModule,
   ],
   providers: [
     CafeCategoriesService,
-    FormlyConfigurationService,
+    CriterionFormlyConfigurationService,
   ],
 })
 export class CafeModule { }
