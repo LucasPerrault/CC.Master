@@ -6,7 +6,7 @@ import { Observable } from 'rxjs';
 
 import { AdvancedFilter } from '../../common/components/advanced-filter-form';
 import { toSearchDto } from '../../common/models';
-import { IEnvironment } from '../models/environment.interface';
+import { IEnvironment } from '../../common/models/environment.interface';
 
 @Injectable()
 export class EnvironmentDataService {

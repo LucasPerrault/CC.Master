@@ -8,12 +8,12 @@ import { BehaviorSubject, Observable, pipe, ReplaySubject, Subject, UnaryFunctio
 import { filter, map, take, takeUntil } from 'rxjs/operators';
 
 import { AdvancedFilter, IAdvancedFilterForm } from '../common/components/advanced-filter-form';
+import { IEnvironment } from '../common/models/environment.interface';
 import { EnvironmentAdvancedFilterApiMappingService, EnvironmentAdvancedFilterConfiguration } from './advanced-filter';
 import {
   EnvironmentAdditionalColumn,
   getAdditionalColumnByIds,
 } from './components/environment-additional-column-select/environment-additional-column.enum';
-import { IEnvironment } from './models/environment.interface';
 import { EnvironmentDataService } from './services/environment-data.service';
 
 @Component({

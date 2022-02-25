@@ -1,4 +1,4 @@
-import { IEstablishment } from '../../environments/models/establishment.interface';
+import { IEstablishment } from './establishment.interface';
 
 export interface IEstablishmentContract {
   contractId: number;

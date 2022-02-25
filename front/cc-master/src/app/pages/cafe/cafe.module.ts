@@ -7,16 +7,16 @@ import { CafeComponent } from './cafe.component';
 import { CafeCategoriesService } from './common/services/cafe-categories.service';
 import { CafeContactsModule } from './contacts/cafe-contacts.module';
 import { CafeEnvironmentsModule } from './environments/cafe-environments.module';
+import { EstablishmentsModule } from './establishments/establishments.module';
 
 @NgModule({
-  declarations: [
-    CafeComponent,
-  ],
+  declarations: [CafeComponent],
   imports: [
     CommonModule,
     TranslateModule,
     CafeEnvironmentsModule,
     CafeContactsModule,
+    EstablishmentsModule,
     ReactiveFormsModule,
   ],
   providers: [CafeCategoriesService],

@@ -3,6 +3,7 @@ import { ICategory } from '../forms/select/category-select/category.interface';
 export enum CafeCategory {
   Environments = 'environments',
   Contacts = 'contacts',
+  Establishments = 'establishments',
 }
 
 export const categories: ICategory[] = [
@@ -13,6 +14,10 @@ export const categories: ICategory[] = [
   {
     id: CafeCategory.Contacts,
     name: 'cafe_category_contacts',
+  },
+  {
+    id: CafeCategory.Establishments,
+    name: 'cafe_category_establishments',
   },
 ];
 

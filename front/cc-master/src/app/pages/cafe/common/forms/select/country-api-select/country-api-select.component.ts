@@ -12,7 +12,7 @@ import { FormlyFieldConfig } from '@ngx-formly/core/lib/components/formly.field.
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { ICountry } from '../../../../environments/models/legal-unit.interface';
+import { ICountry } from '../../../models/legal-unit.interface';
 
 @Component({
   selector: 'cc-country-api-select',
