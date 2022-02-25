@@ -11,4 +11,5 @@ export enum EnvironmentAdvancedFilterKey {
   DistributorType = 'distributorType',
   BillingEntities = 'billingEntities',
   Criterion = 'criterion',
+  Facets = 'facets',
 }
