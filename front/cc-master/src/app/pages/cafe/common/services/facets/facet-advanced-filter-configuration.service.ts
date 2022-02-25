@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { TranslatePipe } from '@cc/aspects/translate';
 import { FormlyFieldConfig } from '@ngx-formly/core/lib/components/formly.field.config';
 
-import { ComparisonOperator, ICriterionConfiguration } from '../../components/advanced-filter-form';
+import { ComparisonOperator, ICriterionConfiguration, IFacetComparisonCriterion } from '../../components/advanced-filter-form';
 import { FacetScope, FacetType } from '../../models';
 import { FacetAdvancedFilterKey } from './facet-advanced-filter-key.enum';
 import { FacetFormlyConfigurationService } from './facet-formly-configuration.service';
@@ -23,7 +23,7 @@ export class FacetAdvancedFilterConfigurationService {
         { id: ComparisonOperator.StrictlyGreaterThan, name: this.translatePipe.transform('cafe_filters_operator_since') },
         { id: ComparisonOperator.StrictlyLessThan, name: this.translatePipe.transform('cafe_filters_operator_until') },
       ],
-      componentConfigs: [
+      componentConfigs: () => [
         {
           key: FacetAdvancedFilterKey.DateTime,
           components: [this.formlyConfiguration.date],
@@ -40,7 +40,7 @@ export class FacetAdvancedFilterConfigurationService {
         { id: ComparisonOperator.StrictlyLessThan, name: this.translatePipe.transform('cafe_filters_operator_less_than') },
         { id: ComparisonOperator.Between, name: this.translatePipe.transform('cafe_filters_operator_between') },
       ],
-      componentConfigs: [
+      componentConfigs: () => [
         {
           key: FacetAdvancedFilterKey.Integer,
           components: [this.formlyConfiguration.integer],
@@ -70,7 +70,7 @@ export class FacetAdvancedFilterConfigurationService {
         { id: ComparisonOperator.StrictlyLessThan, name: this.translatePipe.transform('cafe_filters_operator_less_than') },
         { id: ComparisonOperator.Between, name: this.translatePipe.transform('cafe_filters_operator_between') },
       ],
-      componentConfigs: [
+      componentConfigs: () => [
         {
           key: FacetAdvancedFilterKey.Decimal,
           components: [this.formlyConfiguration.integer],
@@ -100,7 +100,7 @@ export class FacetAdvancedFilterConfigurationService {
         { id: ComparisonOperator.StrictlyLessThan, name: this.translatePipe.transform('cafe_filters_operator_less_than') },
         { id: ComparisonOperator.Between, name: this.translatePipe.transform('cafe_filters_operator_between') },
       ],
-      componentConfigs: [
+      componentConfigs: () => [
         {
           key: FacetAdvancedFilterKey.Percent,
           components: [this.formlyConfiguration.percent],
@@ -129,10 +129,10 @@ export class FacetAdvancedFilterConfigurationService {
         { id: ComparisonOperator.ListContainsOnly, name: this.translatePipe.transform('cafe_filters_operator_containsOnly') },
         { id: ComparisonOperator.ListContains, name: this.translatePipe.transform('cafe_filters_operator_contains') },
       ],
-      componentConfigs: [
+      componentConfigs: (criterion: IFacetComparisonCriterion) => [
         {
           key: FacetAdvancedFilterKey.String,
-          components: [this.formlyConfiguration.facetStringValues(facetScope)],
+          components: [this.formlyConfiguration.facetStringValue(facetScope, criterion.facet, true)],
           matchingOperators: [
             ComparisonOperator.ListAreAmong,
             ComparisonOperator.ListNotContains,
@@ -141,7 +141,7 @@ export class FacetAdvancedFilterConfigurationService {
         },
         {
           key: FacetAdvancedFilterKey.String,
-          components: [this.formlyConfiguration.facetStringValue(facetScope)],
+          components: [this.formlyConfiguration.facetStringValue(facetScope, criterion.facet, false)],
           matchingOperators: [ComparisonOperator.ListContainsOnly],
         },
       ],

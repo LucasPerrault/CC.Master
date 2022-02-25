@@ -12,7 +12,8 @@ import { FormlyFieldConfig } from '@ngx-formly/core/lib/components/formly.field.
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { IComparisonCriterion } from '../../../models/comparison-criterion.interface';
+import { AdvancedFilterKey } from '../../../../../services/criterion-formly-configuration.service';
+import { ComparisonCriterion } from '../../../models/comparison-criterion.interface';
 
 @Component({
   selector: 'cc-comparison-criterion-select',
@@ -35,7 +36,7 @@ export class ComparisonCriterionSelectComponent implements OnInit, OnDestroy, Va
   @Input() public fields: FormlyFieldConfig[];
 
   public formGroup: FormGroup = new FormGroup({});
-  public model: IComparisonCriterion = {} as IComparisonCriterion;
+  public model: { [AdvancedFilterKey.Criterion]: ComparisonCriterion } = { [AdvancedFilterKey.Criterion]: null };
 
   private destroy$: Subject<void> = new Subject<void>();
 
@@ -50,7 +51,7 @@ export class ComparisonCriterionSelectComponent implements OnInit, OnDestroy, Va
     this.destroy$.complete();
   }
 
-  public onChange: (configuration: IComparisonCriterion) => void = () => {};
+  public onChange: (configuration: ComparisonCriterion) => void = () => {};
   public onTouch: () => void = () => {};
 
   public registerOnChange(fn: () => void): void {
@@ -61,10 +62,9 @@ export class ComparisonCriterionSelectComponent implements OnInit, OnDestroy, Va
     this.onTouch = fn;
   }
 
-  public writeValue(criterion: IComparisonCriterion): void {
-    if (!!criterion && criterion === this.formGroup.value) {
-      this.formGroup.setValue(criterion);
-    }
+  public writeValue(criterion: ComparisonCriterion): void {
+    this.model = { [AdvancedFilterKey.Criterion]: criterion };
+    this.formGroup.reset(criterion);
   }
 
   public validate(control: AbstractControl): ValidationErrors | null {
