@@ -2,13 +2,13 @@ import { Injectable } from '@angular/core';
 import { TranslatePipe } from '@cc/aspects/translate';
 import { FormlyFieldConfig } from '@ngx-formly/core/lib/components/formly.field.config';
 
-import { ComparisonOperator, IAdvancedFilterConfiguration, ICriterionConfiguration, } from '../../common/components/advanced-filter-form';
+import { ComparisonOperator, IAdvancedFilterConfiguration, ICriterionConfiguration } from '../../common/components/advanced-filter-form';
+import { FacetScope } from '../../common/models';
 import { CriterionFormlyConfigurationService } from '../../common/services/criterion-formly-configuration.service';
+import { FacetAdvancedFilterConfigurationService } from '../../common/services/facets';
 import { EnvironmentAdvancedFilterKey } from './environment-advanced-filter-key.enum';
 import { EnvironmentCriterionKey } from './environment-criterion-key.enum';
 import { EnvironmentFormlyConfiguration } from './environment-formly-configuration.service';
-import { FacetScope } from '../../common/models';
-import { FacetAdvancedFilterConfigurationService } from '../../common/services/facets/facet-advanced-filter-configuration.service';
 
 @Injectable()
 export class EnvironmentAdvancedFilterConfiguration implements IAdvancedFilterConfiguration {
@@ -22,7 +22,7 @@ export class EnvironmentAdvancedFilterConfiguration implements IAdvancedFilterCo
         { id: ComparisonOperator.ListContainsOnly, name: this.translatePipe.transform('cafe_filters_operator_containsOnly') },
         { id: ComparisonOperator.ListContains, name: this.translatePipe.transform('cafe_filters_operator_contains') },
       ],
-      componentConfigs: [
+      componentConfigs: () => [
         {
           key: EnvironmentAdvancedFilterKey.AppInstances,
           components: [this.formlyConfiguration.applications],
@@ -46,7 +46,7 @@ export class EnvironmentAdvancedFilterConfiguration implements IAdvancedFilterCo
         { id: ComparisonOperator.StrictlyGreaterThan, name: this.translatePipe.transform('cafe_filters_operator_since') },
         { id: ComparisonOperator.StrictlyLessThan, name: this.translatePipe.transform('cafe_filters_operator_until') },
       ],
-      componentConfigs: [
+      componentConfigs: () => [
         {
           key: EnvironmentAdvancedFilterKey.CreatedAt,
           components: [this.formlyConfiguration.createdAt],
@@ -62,7 +62,7 @@ export class EnvironmentAdvancedFilterConfiguration implements IAdvancedFilterCo
         { id: ComparisonOperator.ListContainsOnly, name: this.translatePipe.transform('cafe_filters_operator_containsOnly') },
         { id: ComparisonOperator.ListContains, name: this.translatePipe.transform('cafe_filters_operator_contains') },
       ],
-      componentConfigs: [
+      componentConfigs: () => [
         {
           key: EnvironmentAdvancedFilterKey.Countries,
           components: [this.formlyConfiguration.countries],
@@ -88,7 +88,7 @@ export class EnvironmentAdvancedFilterConfiguration implements IAdvancedFilterCo
         { id: ComparisonOperator.ListContainsOnly, name: this.translatePipe.transform('cafe_filters_operator_containsOnly') },
         { id: ComparisonOperator.ListContains, name: this.translatePipe.transform('cafe_filters_operator_contains') },
       ],
-      componentConfigs: [
+      componentConfigs: () => [
         {
           key: EnvironmentAdvancedFilterKey.Distributors,
           components: [this.formlyConfiguration.distributors],
@@ -112,7 +112,7 @@ export class EnvironmentAdvancedFilterConfiguration implements IAdvancedFilterCo
         { id: ComparisonOperator.Equals, name: this.translatePipe.transform('cafe_filters_operator_isAmong') },
         { id: ComparisonOperator.NotEquals, name: this.translatePipe.transform('cafe_filters_operator_isNotAmong') },
       ],
-      componentConfigs: [
+      componentConfigs: () => [
         {
           key: EnvironmentAdvancedFilterKey.Subdomain,
           components: [this.formlyConfiguration.subdomain],
@@ -126,7 +126,7 @@ export class EnvironmentAdvancedFilterConfiguration implements IAdvancedFilterCo
         { id: ComparisonOperator.Equals, name: this.translatePipe.transform('cafe_filters_operator_isAmong') },
         { id: ComparisonOperator.NotEquals, name: this.translatePipe.transform('cafe_filters_operator_isNotAmong') },
       ],
-      componentConfigs: [
+      componentConfigs: () => [
         {
           key: EnvironmentAdvancedFilterKey.Cluster,
           components: [this.formlyConfiguration.cluster],
@@ -140,7 +140,7 @@ export class EnvironmentAdvancedFilterConfiguration implements IAdvancedFilterCo
         { id: ComparisonOperator.Equals, name: this.translatePipe.transform('cafe_filters_operator_equals') },
         { id: ComparisonOperator.NotEquals, name: this.translatePipe.transform('cafe_filters_operator_notEqual') },
       ],
-      componentConfigs: [
+      componentConfigs: () => [
         {
           key: EnvironmentAdvancedFilterKey.DistributorType,
           components: [this.formlyConfiguration.distributorType],
@@ -154,7 +154,7 @@ export class EnvironmentAdvancedFilterConfiguration implements IAdvancedFilterCo
         { id: ComparisonOperator.Equals, name: this.translatePipe.transform('cafe_filters_operator_isAmong') },
         { id: ComparisonOperator.NotEquals, name: this.translatePipe.transform('cafe_filters_operator_isNotAmong') },
       ],
-      componentConfigs: [
+      componentConfigs: () => [
         {
           key: EnvironmentAdvancedFilterKey.BillingEntities,
           components: [this.formlyConfiguration.billingEntities],

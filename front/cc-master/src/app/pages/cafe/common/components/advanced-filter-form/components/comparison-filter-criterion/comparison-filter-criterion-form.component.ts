@@ -10,7 +10,7 @@ import {
   Validators,
 } from '@angular/forms';
 import { FormlyFieldConfig } from '@ngx-formly/core/lib/components/formly.field.config';
-import { BehaviorSubject, Subject } from 'rxjs';
+import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
 import { filter, map, takeUntil } from 'rxjs/operators';
 
 import { IComponentConfiguration, ICriterionConfiguration } from '../../models/advanced-filter-configuration.interface';
@@ -45,11 +45,12 @@ export class ComparisonFilterCriterionFormComponent implements OnInit, OnDestroy
   @Input() public configurations: ICriterionConfiguration[];
   @Input() public formlyFieldConfigs?: FormlyFieldConfig[];
 
-  public get operator(): IComparisonOperator {
-    return this.parentFormGroup.get(ComparisonFilterCriterionFormKey.Operator).value;
+  public get operator$(): Observable<IComparisonOperator> {
+    return this.parentFormGroup.get(ComparisonFilterCriterionFormKey.Operator).valueChanges;
   }
 
   public configuration$: BehaviorSubject<ICriterionConfiguration> = new BehaviorSubject<ICriterionConfiguration>(null);
+  public componentConfiguration$ = new BehaviorSubject<IComponentConfiguration>(null);
 
   public parentFormGroup: FormGroup;
   public formKey = ComparisonFilterCriterionFormKey;
@@ -71,15 +72,18 @@ export class ComparisonFilterCriterionFormComponent implements OnInit, OnDestroy
       .pipe(takeUntil(this.destroy$), map(criterion => this.configurations?.find(c => c.key === criterion?.key)))
       .subscribe(configuration => this.configuration$.next(configuration));
 
-    this.parentFormGroup.get(ComparisonFilterCriterionFormKey.Operator).valueChanges
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(operator => this.resetComparisonValues(operator));
-
     this.configuration$
       .pipe(takeUntil(this.destroy$))
       .subscribe(configuration => {
         this.updateValuesValidator(configuration);
         this.setDefaultOperator(configuration?.operators);
+      });
+
+    combineLatest([this.configuration$, this.operator$])
+      .pipe(takeUntil(this.destroy$), map(([config, operator]) => this.getComponentConfiguration(config, operator)))
+      .subscribe(configuration => {
+        this.componentConfiguration$.next(configuration);
+        this.resetComparisonValues(configuration);
       });
 
     this.parentFormGroup.valueChanges
@@ -129,21 +133,6 @@ export class ComparisonFilterCriterionFormComponent implements OnInit, OnDestroy
     }
   }
 
-  public getComponentConfiguration(configuration: ICriterionConfiguration, operator?: IComparisonOperator): IComponentConfiguration {
-    const configurations = configuration?.componentConfigs ?? [];
-    const isDependedOnOperator = !!configurations.find(c => !!c.matchingOperators?.length);
-
-    if (!!isDependedOnOperator && !operator) {
-      return;
-    }
-
-    if (!isDependedOnOperator) {
-      return configurations[0];
-    }
-
-    return configurations.find(c => c.matchingOperators.includes(operator.id));
-  }
-
   private initCriterionChild(criterion: ICriterionConfiguration): void {
     const defaultChildCriterion = criterion.children[0];
     this.childFormControl.patchValue({ [ComparisonFilterCriterionFormKey.Criterion]: defaultChildCriterion });
@@ -162,18 +151,36 @@ export class ComparisonFilterCriterionFormComponent implements OnInit, OnDestroy
   }
 
   private updateValuesValidator(configuration: ICriterionConfiguration): void {
-    const validators = !!configuration?.componentConfigs?.length ? [Validators.required] : [];
+    const validators = !!this.getComponentConfigs(configuration).length ? [Validators.required] : [];
     this.parentFormGroup.get(ComparisonFilterCriterionFormKey.Values).setValidators(validators);
   }
 
-  private resetComparisonValues(operator: IComparisonOperator) {
-    const currentKey = this.parentFormGroup.get(ComparisonFilterCriterionFormKey.Values)?.value?.key;
-    const nextKey = this.getComponentConfiguration(this.configuration$.value, operator)?.key;
-
-    if (nextKey === currentKey) {
+  private resetComparisonValues(config: IComponentConfiguration) {
+    const previousKey = this.parentFormGroup.get(ComparisonFilterCriterionFormKey.Values)?.value?.key;
+    if (config?.key === previousKey) {
       return;
     }
 
     this.parentFormGroup.get(ComparisonFilterCriterionFormKey.Values).reset();
+  }
+
+  private getComponentConfigs(config: ICriterionConfiguration): IComponentConfiguration[] {
+    const criterion = this.parentFormGroup.get(ComparisonFilterCriterionFormKey.Criterion).value;
+    return !!config?.componentConfigs ? config?.componentConfigs(criterion) : [];
+  }
+
+  private getComponentConfiguration(configuration: ICriterionConfiguration, operator?: IComparisonOperator): IComponentConfiguration {
+    const configurations = this.getComponentConfigs(configuration) ?? [];
+    const isDependedOnOperator = !!configurations.find(c => !!c.matchingOperators?.length);
+
+    if (!!isDependedOnOperator && !operator) {
+      return;
+    }
+
+    if (!isDependedOnOperator) {
+      return configurations[0];
+    }
+
+    return configurations.find(c => c.matchingOperators.includes(operator.id));
   }
 }

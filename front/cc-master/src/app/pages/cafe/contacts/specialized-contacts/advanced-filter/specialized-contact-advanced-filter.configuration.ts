@@ -29,7 +29,7 @@ export class SpecializedContactAdvancedFilterConfiguration implements IAdvancedF
         { id: ComparisonOperator.NotEquals, name: this.translatePipe.transform('cafe_filters_operator_isNotAmong') },
       ],
       fields: [this.formlyConfiguration.roles],
-      componentConfigs: [
+      componentConfigs: () => [
         {
           key: SpeContactAdvancedFilterKey.Role,
           components: [this.formlyConfiguration.roles],

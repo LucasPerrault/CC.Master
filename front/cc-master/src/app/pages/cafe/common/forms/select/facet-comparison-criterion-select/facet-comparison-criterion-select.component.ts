@@ -12,7 +12,7 @@ import { FormlyFieldConfig } from '@ngx-formly/core/lib/components/formly.field.
 import { Observable, pipe, Subject, UnaryFunction } from 'rxjs';
 import { map, takeUntil } from 'rxjs/operators';
 
-import { IComparisonCriterion } from '../../../components/advanced-filter-form';
+import { IFacetComparisonCriterion } from '../../../components/advanced-filter-form';
 import { FacetScope, IFacet } from '../../../models';
 
 @Component({
@@ -55,7 +55,7 @@ export class FacetComparisonCriterionSelectComponent implements OnInit, OnDestro
     this.destroy$.complete();
   }
 
-  public onChange: (criterion: IComparisonCriterion) => void = () => {};
+  public onChange: (criterion: IFacetComparisonCriterion) => void = () => {};
   public onTouch: () => void = () => {};
 
   public registerOnChange(fn: () => void): void {
@@ -66,9 +66,9 @@ export class FacetComparisonCriterionSelectComponent implements OnInit, OnDestro
     this.onTouch = fn;
   }
 
-  public writeValue(criterion: IComparisonCriterion): void {
+  public writeValue(criterion: IFacetComparisonCriterion): void {
     if (criterion !== this.formControl.value) {
-      this.formControl.setValue(criterion);
+      this.formControl.setValue(criterion.facet);
     }
   }
 
@@ -78,15 +78,11 @@ export class FacetComparisonCriterionSelectComponent implements OnInit, OnDestro
     }
   }
 
-  public searchFn(criterion: IComparisonCriterion, clue: string): boolean {
-    return criterion.name.toLowerCase().includes(clue.toLowerCase());
-  }
-
-  public trackBy(index: number, criterion: IComparisonCriterion): string {
-    return criterion.key;
-  }
-
-  public get toComparisonCriterion(): UnaryFunction<Observable<IFacet>, Observable<IComparisonCriterion>> {
-    return pipe(map(facet => ({ key: facet.type, name: `${ facet.applicationId } - ${ facet.code }` })));
+  public get toComparisonCriterion(): UnaryFunction<Observable<IFacet>, Observable<IFacetComparisonCriterion>> {
+    return pipe(map(facet => ({
+      key: facet.type,
+      name: facet.type,
+      facet,
+    })));
   }
 }

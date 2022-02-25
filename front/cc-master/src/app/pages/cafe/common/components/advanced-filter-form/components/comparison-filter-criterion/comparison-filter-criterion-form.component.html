@@ -23,7 +23,7 @@
       </ng-container>
 
       <cc-comparison-value-select [formControlName]="formKey.Values"
-                                  [configuration]="getComponentConfiguration(configuration, operator)"
+                                  [configuration]="componentConfiguration$ | async"
                                   (blur)="onTouch()">
       </cc-comparison-value-select>
     </ng-template>

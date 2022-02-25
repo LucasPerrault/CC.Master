@@ -2,6 +2,7 @@ import { FormlyFieldConfig } from '@ngx-formly/core/lib/components/formly.field.
 
 import { IComparisonOperator } from '../components/comparison-filter-criterion/comparison-operator-select/comparison-operator.interface';
 import { ComparisonOperator } from '../enums/comparison-operator.enum';
+import { ComparisonCriterion } from './comparison-criterion.interface';
 
 export interface IAdvancedFilterConfiguration {
   criterions: ICriterionConfiguration[];
@@ -18,8 +19,8 @@ export interface ICriterionConfiguration {
   key: string;
   name: string;
   operators?: IComparisonOperator[];
-  componentConfigs?: IComponentConfiguration[];
   fields?: FormlyFieldConfig[];
   children?: ICriterionConfiguration[];
   childrenFormlyFieldConfigs?: FormlyFieldConfig[];
+  componentConfigs?(criterion?: ComparisonCriterion): IComponentConfiguration[];
 }

@@ -28,7 +28,7 @@ export class AppContactAdvancedFilterConfiguration implements IAdvancedFilterCon
         { id: ComparisonOperator.Equals, name: this.translatePipe.transform('cafe_filters_operator_isAmong') },
         { id: ComparisonOperator.NotEquals, name: this.translatePipe.transform('cafe_filters_operator_isNotAmong') },
       ],
-      componentConfigs: [
+      componentConfigs: () => [
         {
           key: AppContactAdvancedFilterKey.AppInstance,
           components: [this.formlyConfiguration.applications],

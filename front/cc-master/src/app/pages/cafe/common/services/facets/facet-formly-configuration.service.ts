@@ -2,23 +2,12 @@ import { Injectable } from '@angular/core';
 import { TranslatePipe } from '@cc/aspects/translate';
 import { FormlyFieldConfig } from '@ngx-formly/core/lib/components/formly.field.config';
 
-import { FacetScope } from '../../models';
+import { FacetScope, FacetType, IFacet } from '../../models';
 import { AdvancedFilterKey } from '../criterion-formly-configuration.service';
 import { FacetAdvancedFilterKey } from './facet-advanced-filter-key.enum';
 
 @Injectable()
 export class FacetFormlyConfigurationService {
-
-  public readonly facetCriterion = (facetScope: FacetScope): FormlyFieldConfig => ({
-    key: AdvancedFilterKey.Criterion,
-    type: 'facet-criterion',
-    templateOptions: {
-      required: true,
-      facetScope,
-      mod: 'palette-grey mod-outlined mod-inline is-required',
-      placeholder: this.translatePipe.transform('facets_placeholder'),
-    },
-  });
 
   public readonly date: FormlyFieldConfig = {
     key: FacetAdvancedFilterKey.DateTime,
@@ -82,28 +71,30 @@ export class FacetFormlyConfigurationService {
 
   constructor(private translatePipe: TranslatePipe) {}
 
-  public facetStringValue = (facetScope: FacetScope): FormlyFieldConfig => ({
-    key: FacetAdvancedFilterKey.String,
-    type: 'facet-value',
+  public readonly facetCriterion = (facetScope: FacetScope): FormlyFieldConfig => ({
+    key: AdvancedFilterKey.Criterion,
+    type: 'facet-criterion',
     templateOptions: {
       required: true,
       facetScope,
-      mod: 'palette-grey mod-outlined mod-inline mod-longer',
-      filters: ['type=String'],
-      placeholder: this.translatePipe.transform('cafe_filters_facets_string_placeholder'),
+      mod: 'palette-grey mod-outlined mod-inline is-required',
+      placeholder: this.translatePipe.transform('facets_placeholder'),
     },
   });
 
-  public facetStringValues = (facetScope: FacetScope): FormlyFieldConfig => ({
-    key: FacetAdvancedFilterKey.String,
-    type: 'facet-value',
-    templateOptions: {
-      multiple: true,
-      required: true,
-      facetScope,
-      mod: 'palette-grey mod-outlined mod-inline mod-longer',
-      filters: ['type=String'],
-      placeholder: this.translatePipe.transform('cafe_filters_facets_string_placeholder'),
-    },
-  });
+  public facetStringValue = (facetScope: FacetScope, facet: IFacet, multiple: boolean): FormlyFieldConfig => {
+    const filters = [`applicationId=${ facet.applicationId }`, `code=${ facet.code }`, `type=${ FacetType.String }`];
+    return {
+      key: FacetAdvancedFilterKey.String,
+      type: 'facet-value',
+      templateOptions: {
+        required: true,
+        multiple,
+        facetScope,
+        mod: 'palette-grey mod-outlined mod-inline mod-longer',
+        filters,
+        placeholder: this.translatePipe.transform('cafe_filters_facets_string_placeholder'),
+      },
+    };
+  };
 }
