@@ -8,10 +8,10 @@ export interface ISearchDto {
 
 export const toSearchDto = (criterion: AdvancedFilter, f?: IFacet[]): ISearchDto => ({
   criterion,
-  facets: toFacetIdentifiers(f),
+  facets: toFacetIdentifiers(f) ?? [],
 });
 
-const toFacetIdentifiers = (facets: IFacet[]): IFacetIdentifier[] => facets.map(facet => ({
+const toFacetIdentifiers = (facets: IFacet[]): IFacetIdentifier[] => facets?.map(facet => ({
   code: facet.code,
   applicationId: facet.applicationId,
 }));
