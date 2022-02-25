@@ -3,6 +3,7 @@ import { NgModule } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { TranslateModule } from '@cc/aspects/translate';
 import { BillingEntitySelectModule, EnvironmentDomainSelectModule } from '@cc/common/forms';
+import { RangeModule } from '@cc/common/forms/input/range/range.module';
 import { LuInputClearerModule, LuInputDisplayerModule } from '@lucca-front/ng/input';
 import {
   LuForOptionsModule,
@@ -23,6 +24,9 @@ import {
   SpecializedContactRoleApiSelectModule,
 } from '../index';
 import { ComparisonCriterionSelectModule } from '../select/comparison-criterion-select/comparison-criterion-select.module';
+import { FacetApiSelectModule } from '../select/facet-api-select/facet-api-select.module';
+import { FacetComparisonCriterionSelectModule } from '../select/facet-comparison-criterion-select/facet-comparison-criterion-select.module';
+import { FacetValueApiSelectModule } from '../select/facet-value-api-select/facet-value-api-select.module';
 import { FormlyFieldApplication } from './application/application.component';
 import { FormlyFieldBillingEntity } from './billing-entity/billing-entity.component';
 import { FormlyFieldCluster } from './cluster/cluster.component';
@@ -32,7 +36,11 @@ import { FormlyFieldDistributor } from './distributor/distributor.component';
 import { FormlyFieldDistributorType } from './distributor-type/distributor-type.component';
 import { FormlyFieldEnvironmentDomain } from './environment-domain/environment-domain.component';
 import { FormlyFieldEnvironmentSubdomain } from './environment-subdomain/environment-subdomain.component';
+import { FormlyFieldFacet } from './facet/facet.component';
+import { FormlyFieldFacetCriterion } from './facet-criterion/facet-criterion.component';
+import { FormlyFieldFacetValue } from './facet-value/facet-value.component';
 import { luFormlyConfig } from './formly.config';
+import { FormlyFieldRange } from './range/range.component';
 import { FormlyFieldSpecializedContactRole } from './specialized-contact-role/specialized-contact-role.component';
 
 @NgModule({
@@ -47,6 +55,10 @@ import { FormlyFieldSpecializedContactRole } from './specialized-contact-role/sp
     FormlyFieldDistributorType,
     FormlyFieldBillingEntity,
     FormlyFieldCriterion,
+    FormlyFieldFacet,
+    FormlyFieldFacetCriterion,
+    FormlyFieldRange,
+    FormlyFieldFacetValue,
   ],
   imports: [
     CommonModule,
@@ -70,6 +82,10 @@ import { FormlyFieldSpecializedContactRole } from './specialized-contact-role/sp
     LuForOptionsModule,
     LuInputDisplayerModule,
     ComparisonCriterionSelectModule,
+    FacetApiSelectModule,
+    FacetComparisonCriterionSelectModule,
+    RangeModule,
+    FacetValueApiSelectModule,
   ],
 })
 export class CCFormlyModule {}
