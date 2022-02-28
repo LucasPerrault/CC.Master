@@ -166,8 +166,8 @@ describe('EstablishmentTypeService', () => {
   });
 
   it('should get linked to this contract establishments with excluded entities', () => {
-    const solutionId = contract.product.solutions[0].id;
-    const excludedEntityWithSameContractSolution = fakeExcludedEts(solutionId, 1);
+    const anotherSolutionId = 2;
+    const excludedEntityWithSameContractSolution = fakeExcludedEts(anotherSolutionId, 1);
     const currentAttachment = fakeAttachment(startOfMonth(lastMonth), null, contract.id, contract);
     const nextAttachment = fakeAttachment(startOfMonth(nextMonth), null, contract.id, contract);
     const entriesLinkedToContract = [

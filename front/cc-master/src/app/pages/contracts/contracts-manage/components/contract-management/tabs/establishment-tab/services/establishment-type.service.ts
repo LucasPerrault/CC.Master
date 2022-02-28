@@ -18,7 +18,7 @@ export class EstablishmentTypeService {
     const contractSolutionIds = contract?.product?.solutions.map(s => s.id) ?? [];
     return ({
       excluded: this.getExcludedEts(entries, contract.id, contractSolutionIds),
-      withError: entries.filter(e => this.isConsideredAsError(e.establishment, contract.productId, contractSolutionIds)),
+      withError: entries.filter(e => this.isConsideredAsError(e.establishment, contractSolutionIds)),
       linkedToContract: this.getEtsLinkedToContract(entries, contract.id),
       linkedToAnotherContract: this.getEtsLinkedToAnotherContract(entries, contract.id, contractSolutionIds),
     });
@@ -65,14 +65,13 @@ export class EstablishmentTypeService {
     return !!ets.currentAttachment ? ets.currentAttachment : ets.nextAttachment;
   }
 
-  private isConsideredAsError(establishment: IContractEstablishment, productId: number, solutionIds: number[]): boolean {
-    return !this.hasNotFinishedAttachments(establishment, productId, solutionIds)
+  private isConsideredAsError(establishment: IContractEstablishment, solutionIds: number[]): boolean {
+    return !this.hasNotFinishedAttachments(establishment, solutionIds)
       && !this.isExcluded(establishment, solutionIds);
   }
 
-  private hasNotFinishedAttachments(establishment: IContractEstablishment, productId: number, solutionIds: number[]): boolean {
+  private hasNotFinishedAttachments(establishment: IContractEstablishment, solutionIds: number[]): boolean {
     const attachmentsForThisSolutions = establishment.contractEntities
-      .filter(a => a.contract.productId === productId)
       .filter(a => !this.hasMultiSolutions(a.contract.product) || this.hasSomeSolutions(a.contract.product, solutionIds));
 
     const notFinishedAttachments = attachmentsForThisSolutions.filter(a => !!a?.start && (!a?.end || isFuture(new Date(a.end))));
