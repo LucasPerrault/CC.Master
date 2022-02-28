@@ -189,6 +189,18 @@ namespace Instances.Application.CodeSources
             return await _codeSourcesStore.GetArtifactsAsync(monotenantSources.Select(s => s.Id), CodeSourceArtifactType.AnonymizationScript);
         }
 
+        public async Task<List<CodeSourceArtifacts>> GetInstancePreRestoreArtifactsAsync()
+        {
+            var monotenantSources = await _codeSourcesStore.GetAsync(CodeSourceFilter.MonotenantInProduction);
+            return await _codeSourcesStore.GetArtifactsAsync(monotenantSources.Select(s => s.Id), CodeSourceArtifactType.PreRestoreScript);
+        }
+
+        public async Task<List<CodeSourceArtifacts>> GetInstancePostRestoreArtifactsAsync()
+        {
+            var monotenantSources = await _codeSourcesStore.GetAsync(CodeSourceFilter.MonotenantInProduction);
+            return await _codeSourcesStore.GetArtifactsAsync(monotenantSources.Select(s => s.Id), CodeSourceArtifactType.PostRestoreScript);
+        }
+
         public async Task<List<CodeSourceArtifacts>> GetMonolithArtifactsAsync()
         {
             var monolith = await GetSingleOrDefaultAsync(new CodeSourceFilter

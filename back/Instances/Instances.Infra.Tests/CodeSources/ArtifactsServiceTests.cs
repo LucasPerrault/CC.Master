@@ -78,6 +78,16 @@ namespace Instances.Infra.Tests.CodeSources
                                 relativePath= ".cd/sql/clean.sql"
                             },
                             new {
+                                displayPath= "before.prerestore.sql",
+                                fileName= "before.prerestore.sql",
+                                relativePath= ".cd/sql/before.prerestore.sql"
+                            },
+                            new {
+                                displayPath= "after.postrestore.sql",
+                                fileName= "after.postrestore.sql",
+                                relativePath= ".cd/sql/after.postrestore.sql"
+                            },
+                            new {
                                 displayPath= "Figgo.e2e.zip",
                                 fileName= "Figgo.e2e.zip",
                                 relativePath= ".jenkins/zips/Figgo.e2e.zip"
@@ -94,6 +104,8 @@ namespace Instances.Infra.Tests.CodeSources
             result.Where(a => a.ArtifactType == CodeSourceArtifactType.FrontZip).Should().HaveCount(1);
             result.Where(a => a.ArtifactType == CodeSourceArtifactType.AnonymizationScript).Should().HaveCount(1);
             result.Where(a => a.ArtifactType == CodeSourceArtifactType.CleanScript).Should().HaveCount(1);
+            result.Where(a => a.ArtifactType == CodeSourceArtifactType.PreRestoreScript).Should().HaveCount(1);
+            result.Where(a => a.ArtifactType == CodeSourceArtifactType.PostRestoreScript).Should().HaveCount(1);
             result.Where(a => a.ArtifactType == CodeSourceArtifactType.Other).Should().HaveCount(1);
         }
 

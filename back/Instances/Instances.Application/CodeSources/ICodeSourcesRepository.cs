@@ -20,6 +20,8 @@ namespace Instances.Application.CodeSources
         Task<List<CodeSourceArtifacts>> GetArtifactsAsync(int codeSourceId);
         Task<List<CodeSourceArtifacts>> GetInstanceCleaningArtifactsAsync();
         Task<List<CodeSourceArtifacts>> GetInstanceAnonymizationArtifactsAsync();
+        Task<List<CodeSourceArtifacts>> GetInstancePreRestoreArtifactsAsync();
+        Task<List<CodeSourceArtifacts>> GetInstancePostRestoreArtifactsAsync();
         Task<List<CodeSourceArtifacts>> GetMonolithArtifactsAsync();
     }
 }
