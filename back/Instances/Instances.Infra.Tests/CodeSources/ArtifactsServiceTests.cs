@@ -100,7 +100,7 @@ namespace Instances.Infra.Tests.CodeSources
 
             result.Should().NotBeNullOrEmpty();
             result.Where(a => a.ArtifactType == CodeSourceArtifactType.ProductionJson).Should().HaveCount(1);
-            result.Where(a => a.ArtifactType == CodeSourceArtifactType.FrontZip).Should().HaveCount(1);
+            result.Where(a => a.ArtifactType == CodeSourceArtifactType.BackZip).Should().HaveCount(1);
             result.Where(a => a.ArtifactType == CodeSourceArtifactType.FrontZip).Should().HaveCount(1);
             result.Where(a => a.ArtifactType == CodeSourceArtifactType.AnonymizationScript).Should().HaveCount(1);
             result.Where(a => a.ArtifactType == CodeSourceArtifactType.CleanScript).Should().HaveCount(1);
