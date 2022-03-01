@@ -17,7 +17,8 @@ namespace Instances.Domain.Instances
 
     public class DnsEntry
     {
-        public string Subdomain { get; private init; }
+        private readonly string _subdomain;
+        public string Subdomain { get => _subdomain ; private init => _subdomain = value.ToLowerInvariant(); }
         public string Cluster { get; private init; }
         public DnsEntryZone Zone { get; private init; }
 
