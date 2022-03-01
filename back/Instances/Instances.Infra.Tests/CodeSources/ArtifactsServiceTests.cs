@@ -96,7 +96,7 @@ namespace Instances.Infra.Tests.CodeSources
                     }.ToJsonPayload()
                 });
 
-            var result = await _artifactsService.GetArtifactsAsync(codeSource, "myBranch", 1234);
+            var result = (await _artifactsService.GetArtifactsAsync(codeSource, "myBranch", 1234)).ToList();
 
             result.Should().NotBeNullOrEmpty();
             result.Where(a => a.ArtifactType == CodeSourceArtifactType.ProductionJson).Should().HaveCount(1);
