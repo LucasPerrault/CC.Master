@@ -12,7 +12,7 @@ import { map } from 'rxjs/operators';
 @Injectable()
 export class MinimalBillingService {
 
-  public readonly minimalBillingPercentage = 75;
+  public readonly defaultPercentage = 75;
   private readonly productsEndPoint = '/api/v3/products';
 
   constructor(private httpClient: HttpClient) {}

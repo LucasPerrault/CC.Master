@@ -179,19 +179,19 @@ export class ContractsDraftFormComponent implements ControlValueAccessor, Valida
   }
 
   private updateMinimalBilling(isEligible: boolean): void {
-    const control = this.formGroup.get(DraftFormKey.MinimalBillingPercentage);
-    const hasValue = !!control.value;
+    const minimalBillingPercentage = this.formGroup.get(DraftFormKey.MinimalBillingPercentage);
 
-    if (isEligible) {
-      control.enable();
-      if (!hasValue) {
-        control.setValue(this.minimalBillingService.minimalBillingPercentage);
-      }
+    if (!isEligible) {
+      minimalBillingPercentage.setValue(0);
+      minimalBillingPercentage.disable();
       return;
     }
 
-    control.setValue(0);
-    control.disable();
+    minimalBillingPercentage.enable();
+    const hasPercentage = !!minimalBillingPercentage.value && minimalBillingPercentage.value !== 0;
+    if (!hasPercentage) {
+      minimalBillingPercentage.setValue(this.minimalBillingService.defaultPercentage);
+    }
   }
 
   private updateDistributorRebate(): void {
