@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 namespace Instances.Web.Controllers
 {
     [ApiController, Route("/api/branches")]
-    class BranchesController : ControllerBase
+    public class BranchesController : ControllerBase
     {
         private readonly ICodeSourcesRepository _codeSourceRepository;
         private readonly IGithubBranchesRepository _githubBranchesRepository;
