@@ -15,7 +15,7 @@ import { BillingEntity, getBillingEntity } from '@cc/domain/billing/clients';
 import { IContractForm, IContractMinimalBillable, MinimalBillingService } from '@cc/domain/billing/contracts';
 import { DistributorsService, IDistributor } from '@cc/domain/billing/distributors';
 import { LuModal } from '@lucca-front/ng/modal';
-import { BehaviorSubject, merge, Subject } from 'rxjs';
+import { BehaviorSubject, combineLatest, merge, Subject } from 'rxjs';
 import { filter, take, takeUntil } from 'rxjs/operators';
 
 import { PriceGridModalComponent } from '../../../common/price-grid-modal/price-grid-modal.component';
@@ -115,11 +115,11 @@ export class ContractsDraftFormComponent implements ControlValueAccessor, Valida
       .pipe(takeUntil(this.destroy$))
       .subscribe(() => this.updateDistributorRebate());
 
-    merge(
+    combineLatest([
       this.formGroup.get(DraftFormKey.Product).valueChanges,
       this.formGroup.get(DraftFormKey.Distributor).valueChanges,
       this.formGroup.get(DraftFormKey.TheoreticalMonthRebate).valueChanges,
-    )
+    ])
       .pipe(takeUntil(this.destroy$))
       .subscribe(() => this.updateMinimalBillingEligibility());
   }
