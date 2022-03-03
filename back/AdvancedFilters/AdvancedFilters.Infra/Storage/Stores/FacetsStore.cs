@@ -103,7 +103,7 @@ namespace AdvancedFilters.Infra.Storage.Stores
                 .WhenNotNullOrEmpty(filter.ApplicationIds).ApplyWhere(dao => filter.ApplicationIds.Contains(dao.Facet.ApplicationId))
                 .WhenNotNullOrEmpty(filter.FacetTypes).ApplyWhere(dao => filter.FacetTypes.Contains(dao.Facet.Type))
                 .WhenNotNullOrEmpty(filter.EnvironmentIds).ApplyWhere(dao => filter.EnvironmentIds.Contains(dao.EnvironmentId))
-                .WhenNotNullOrEmpty(filter.FacetIdentifiers).ApplyWhere(HasAnyIdentifiers<EnvironmentFacetValueDao>(filter.FacetIdentifiers));
+                .WhenNotNullOrEmpty(filter.FacetIds).ApplyWhere(dao => filter.FacetIds.Contains(dao.FacetId));
         }
 
         public static IQueryable<EstablishmentFacetValueDao> WhereMatches(this IQueryable<EstablishmentFacetValueDao> daos, EstablishmentFacetValueFilter filter)
@@ -114,7 +114,7 @@ namespace AdvancedFilters.Infra.Storage.Stores
                 .WhenNotNullOrEmpty(filter.FacetTypes).ApplyWhere(dao => filter.FacetTypes.Contains(dao.Facet.Type))
                 .WhenNotNullOrEmpty(filter.EnvironmentIds).ApplyWhere(dao => filter.EnvironmentIds.Contains(dao.EnvironmentId))
                 .WhenNotNullOrEmpty(filter.EstablishmentIds).ApplyWhere(dao => filter.EstablishmentIds.Contains(dao.EstablishmentId))
-                .WhenNotNullOrEmpty(filter.FacetIdentifiers).ApplyWhere(HasAnyIdentifiers<EstablishmentFacetValueDao>(filter.FacetIdentifiers));
+                .WhenNotNullOrEmpty(filter.FacetIds).ApplyWhere(dao => filter.FacetIds.Contains(dao.FacetId));
         }
 
         public static IEnumerable<IEnvironmentFacetValue> ToValues(this IEnumerable<EnvironmentFacetValueDao> daos)
@@ -155,14 +155,6 @@ namespace AdvancedFilters.Infra.Storage.Stores
         public static IEnumerable<IEstablishmentFacetValue> ToValues(this IEnumerable<EstablishmentFacetValueDao> daos)
         {
             return daos.Select(dao => dao.ToValue());
-        }
-
-        private static Expression<Func<TFacetValueDao, bool>> HasAnyIdentifiers<TFacetValueDao>(IEnumerable<FacetIdentifier> identifiers)
-            where TFacetValueDao : IFacetValueDao
-        {
-            var applicationIds = identifiers.Select(i => i.ApplicationId);
-            var codes = identifiers.Select(i => i.Code);
-            return dao => applicationIds.Contains(dao.Facet.ApplicationId) && codes.Contains(dao.Facet.Code);
         }
 
         private static IEstablishmentFacetValue ToValue(this EstablishmentFacetValueDao dao)

@@ -64,7 +64,7 @@ namespace AdvancedFilters.Web.Controllers
         )
         {
             var page = await _store.SearchAsync(pageToken, body.Criterion);
-            await _environmentPopulator.PopulateAsync(page.Items, body.Facets);
+            await _environmentPopulator.PopulateAsync(page.Items, body.FacetIds);
             return page;
         }
 
@@ -86,7 +86,7 @@ namespace AdvancedFilters.Web.Controllers
 
     public class EnvironmentSearchBody
     {
-        public HashSet<FacetIdentifier> Facets { get; set; } = new();
+        public HashSet<int> FacetIds { get; set; } = new();
         public IAdvancedFilter Criterion { get; set; }
     }
 

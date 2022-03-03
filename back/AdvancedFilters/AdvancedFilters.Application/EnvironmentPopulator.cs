@@ -8,7 +8,7 @@ namespace AdvancedFilters.Application;
 
 public interface IEnvironmentPopulator
 {
-    Task PopulateAsync(IEnumerable<Environment> environments, HashSet<FacetIdentifier> facetIdentifiers);
+    Task PopulateAsync(IEnumerable<Environment> environments, HashSet<int> facetIds);
 }
 
 public class EnvironmentPopulator : IEnvironmentPopulator
@@ -20,16 +20,16 @@ public class EnvironmentPopulator : IEnvironmentPopulator
         _facetsStore = facetsStore;
     }
 
-    public async Task PopulateAsync(IEnumerable<Environment> environments, HashSet<FacetIdentifier> facetIdentifiers)
+    public async Task PopulateAsync(IEnumerable<Environment> environments, HashSet<int> facetIds)
     {
-        if (!facetIdentifiers.Any())
+        if (!facetIds.Any())
         {
             return;
         }
 
         var environmentIds = environments.Select(e => e.Id).ToHashSet();
 
-        var filter = EnvironmentFacetValueFilter.ForEnvironments(environmentIds, facetIdentifiers);
+        var filter = EnvironmentFacetValueFilter.ForEnvironments(environmentIds, facetIds);
         var facetValues = await _facetsStore.GetValuesAsync(filter);
 
         var group = facetValues

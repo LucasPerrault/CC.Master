@@ -8,7 +8,7 @@ namespace AdvancedFilters.Application;
 
 public interface IEstablishmentPopulator
 {
-    Task PopulateAsync(IEnumerable<Establishment> establishments, HashSet<FacetIdentifier> facetIdentifiers);
+    Task PopulateAsync(IEnumerable<Establishment> establishments, HashSet<int> facetIds);
 }
 
 public class EstablishmentPopulator : IEstablishmentPopulator
@@ -20,16 +20,16 @@ public class EstablishmentPopulator : IEstablishmentPopulator
         _facetsStore = facetsStore;
     }
 
-    public async Task PopulateAsync(IEnumerable<Establishment> establishments, HashSet<FacetIdentifier> facetIdentifiers)
+    public async Task PopulateAsync(IEnumerable<Establishment> establishments, HashSet<int> facetIds)
     {
-        if (!facetIdentifiers.Any())
+        if (!facetIds.Any())
         {
             return;
         }
 
         var establishmentIds = establishments.Select(e => e.Id).ToHashSet();
 
-        var filter = EstablishmentFacetValueFilter.ForEstablishments(establishmentIds, facetIdentifiers);
+        var filter = EstablishmentFacetValueFilter.ForEstablishments(establishmentIds, facetIds);
         var facetValues = await _facetsStore.GetValuesAsync(filter);
 
         var group = facetValues

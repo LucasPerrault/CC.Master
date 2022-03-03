@@ -48,7 +48,7 @@ public class EstablishmentsController
     )
     {
         var page = await _store.SearchAsync(pageToken, body.Criterion);
-        await _populator.PopulateAsync(page.Items, body.Facets);
+        await _populator.PopulateAsync(page.Items, body.FacetIds);
         return page;
     }
 
@@ -69,7 +69,7 @@ public class EstablishmentsController
 
     public class EstablishmentSearchBody
     {
-        public HashSet<FacetIdentifier> Facets { get; set; } = new();
+        public HashSet<int> FacetIds { get; set; } = new();
         public IAdvancedFilter Criterion { get; set; }
     }
 

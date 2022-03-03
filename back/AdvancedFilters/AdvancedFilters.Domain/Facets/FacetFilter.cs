@@ -24,7 +24,7 @@ public class FacetFilter
 public class EnvironmentFacetValueFilter
 {
     public HashSet<int> EnvironmentIds { get; set; } = new();
-    public HashSet<FacetIdentifier> FacetIdentifiers { get; set; } = new();
+    public HashSet<int> FacetIds { get; set; } = new();
     public HashSet<FacetType> FacetTypes { get; set; } = new();
     public HashSet<string> ApplicationIds { get; set; } = new();
     public HashSet<string> Codes { get; set; } = new();
@@ -33,10 +33,10 @@ public class EnvironmentFacetValueFilter
     { }
 
     public static EnvironmentFacetValueFilter All() => new EnvironmentFacetValueFilter();
-    public static EnvironmentFacetValueFilter ForEnvironments(HashSet<int> envIds, HashSet<FacetIdentifier> identifiers) => new EnvironmentFacetValueFilter
+    public static EnvironmentFacetValueFilter ForEnvironments(HashSet<int> envIds, HashSet<int> facetIds) => new EnvironmentFacetValueFilter
     {
         EnvironmentIds = envIds,
-        FacetIdentifiers = identifiers,
+        FacetIds = facetIds,
     };
 
     public static EnvironmentFacetValueFilter ForSearch(HashSet<int> envIds, HashSet<FacetType> types, HashSet<string> codes, string applicationId) => new EnvironmentFacetValueFilter
@@ -52,7 +52,7 @@ public class EstablishmentFacetValueFilter
 {
     public HashSet<int> EnvironmentIds { get; set; } = new();
     public HashSet<int> EstablishmentIds { get; set; } = new();
-    public HashSet<FacetIdentifier> FacetIdentifiers { get; set; } = new();
+    public HashSet<int> FacetIds { get; set; } = new();
     public HashSet<FacetType> FacetTypes { get; set; } = new();
     public HashSet<string> ApplicationIds { get; set; } = new();
     public HashSet<string> Codes { get; set; } = new();
@@ -61,11 +61,11 @@ public class EstablishmentFacetValueFilter
     { }
 
     public static EstablishmentFacetValueFilter All() => new EstablishmentFacetValueFilter();
-    public static EstablishmentFacetValueFilter ForEstablishments(HashSet<int> establishmentIds, HashSet<FacetIdentifier> identifiers)
+    public static EstablishmentFacetValueFilter ForEstablishments(HashSet<int> establishmentIds, HashSet<int> facetIds)
         => new EstablishmentFacetValueFilter
         {
             EstablishmentIds = establishmentIds,
-            FacetIdentifiers = identifiers,
+            FacetIds = facetIds,
         };
 
     public static EstablishmentFacetValueFilter ForSearch(HashSet<int> environmentIds, HashSet<int> establishmentIds, HashSet<FacetType> types, HashSet<string> codes, string applicationId)
