@@ -32,6 +32,7 @@ namespace AdvancedFilters.Infra.Tests
         private readonly Mock<IBulkUpsertService> _upsertServiceMock;
         private readonly IDataSourceSyncCreationService _creationService;
         private readonly Mock<HttpClientHandler> _httpClientHandlerMock;
+        private readonly HttpClient _httpClientMock;
         private readonly Mock<IEmailService> _emailServiceMock;
         private readonly Mock<ISyncEmails> _syncEmailsMock;
         private readonly Mock<ITeamNotifier> _teamNotifierMock;
@@ -49,12 +50,12 @@ namespace AdvancedFilters.Infra.Tests
             _syncEmailsMock
                 .Setup(e => e.GetSyncReportEmail(It.IsAny<List<Exception>>()));
 
-            var client = new HttpClient(_httpClientHandlerMock.Object);
+            _httpClientMock = new HttpClient(_httpClientHandlerMock.Object);
             var localDataSourceServiceMock = new Mock<ILocalDataSourceService>();
             localDataSourceServiceMock.Setup(s => s.GetAllCountriesAsync()).ReturnsAsync(new List<Country>());
             _creationService = new DataSourceSyncCreationService
             (
-                client,
+                _httpClientMock,
                 _upsertServiceMock.Object,
                 new HttpConfiguration { MaxParallelCalls = 42 },
                 new FetchAuthenticator(),
@@ -221,7 +222,7 @@ namespace AdvancedFilters.Infra.Tests
                 _syncEmailsMock.Object,
                 _teamNotifierMock.Object
             );
-            var facetsSyncService = new FacetsSyncService(_upsertServiceMock.Object, _facetsStore.Object);
+            var facetsSyncService = new FacetsSyncService(_upsertServiceMock.Object, _httpClientMock, _facetsStore.Object);
 
             return new Synchronizer(_environmentsStoreMock.Object, dataSyncService, facetsSyncService);
         }

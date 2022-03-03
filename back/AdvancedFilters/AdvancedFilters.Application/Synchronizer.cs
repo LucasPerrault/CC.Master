@@ -32,7 +32,7 @@ namespace AdvancedFilters.Application
         {
             //await SyncMultiTenantAsync();
             //await SyncMonoTenantAsync(new HashSet<string>());
-            var environments = await _environmentsStore.GetAsync(new EnvironmentFilter { Subdomains = new HashSet<string>() });
+            var environments = await _environmentsStore.GetAsync(new EnvironmentFilter { Subdomains = new HashSet<string>{ "actronika" } });
             await _facetsSyncService.SyncTenantsFacetsAsync(environments, SyncStrategy.SyncEverything);
         }
 

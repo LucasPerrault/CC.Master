@@ -1,4 +1,3 @@
-using System;
 using AdvancedFilters.Domain.Facets;
 using AdvancedFilters.Infra.Storage.DAO;
 using Lucca.Core.Api.Abstractions.Paging;
@@ -7,7 +6,6 @@ using Microsoft.EntityFrameworkCore;
 using Storage.Infra.Extensions;
 using System.Collections.Generic;
 using System.Linq;
-using System.Linq.Expressions;
 using System.Threading.Tasks;
 
 namespace AdvancedFilters.Infra.Storage.Stores
@@ -27,6 +25,12 @@ namespace AdvancedFilters.Infra.Storage.Stores
         {
             var queryable = Facets(scope).WhereMatches(filter);
             return _queryPager.ToPageAsync(queryable, pageToken);
+        }
+
+        public Task<List<Facet>> GetAsync(FacetFilter filter)
+        {
+            var queryable = _dbContext.Set<Facet>().WhereMatches(filter);
+            return queryable.ToListAsync();
         }
 
         public async Task<Page<IEnvironmentFacetValue>> GetValuesAsync(IPageToken pageToken, EnvironmentFacetValueFilter filter)
@@ -71,12 +75,11 @@ namespace AdvancedFilters.Infra.Storage.Stores
                 .ToList();
         }
 
-        public async Task<IReadOnlyCollection<Facet>> GetByIdentifiersAsync(HashSet<FacetIdentifier> identifiers)
+        public async Task<IReadOnlyCollection<Facet>> CreateManyAsync(IReadOnlyCollection<Facet> facets)
         {
-            return await _dbContext
-                .Set<Facet>()
-                .Where(f => identifiers.Contains(f))
-                .ToListAsync();
+            _dbContext.AddRange(facets);
+            await _dbContext.SaveChangesAsync();
+            return facets;
         }
 
         private IQueryable<Facet> Facets(FacetScope scope) => _dbContext

@@ -7,8 +7,8 @@ namespace AdvancedFilters.Infra.Services.Sync.Dtos.Facets
     {
         FacetScope Scope { get; }
         string Code { get; }
+        string Module { get; set; }
         string CultureKey { get; }
-
         FacetType Type { get; }
     }
 
@@ -20,6 +20,7 @@ namespace AdvancedFilters.Infra.Services.Sync.Dtos.Facets
     {
         public FacetScope Scope { get; internal set; } // TODO enlever le internal set;
         public string Code { get; internal set; }
+        public string Module { get; set; }
         public string CultureKey { get; internal set; }
         public TResult Result { get; internal set; }
 

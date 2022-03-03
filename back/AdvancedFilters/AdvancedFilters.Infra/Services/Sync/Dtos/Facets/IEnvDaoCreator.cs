@@ -17,11 +17,12 @@ namespace AdvancedFilters.Infra.Services.Sync.Dtos.Facets
             Value = value;
         }
 
-        public EnvironmentFacetValueDao Create(int envId, Facet facet)
+        public EnvironmentFacetValueDao Create(int environmentId, Facet facet)
         {
             var dao = new EnvironmentFacetValueDao
             {
-                EnvironmentId = envId,
+                EnvironmentId = environmentId,
+                FacetId = facet.Id,
                 Facet = facet,
             };
             return dao.Fill(Value);
