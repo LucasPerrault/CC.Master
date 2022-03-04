@@ -206,7 +206,7 @@ namespace Tools
 
             using var jsonDocument = JsonDocument.ParseValue(ref reader);
 
-            if (!TryFind(jsonDocument, _discriminatorPropertyName, out var typeProperty))
+            if (!SerializerHelper.TryFind(jsonDocument, _discriminatorPropertyName, out var typeProperty))
             {
                 throw new JsonException();
             }
@@ -228,16 +228,6 @@ namespace Tools
             JsonSerializer.Serialize(writer, (object)value, options);
         }
 
-        private static bool TryFind(JsonDocument jsonDocument, string propertyName, out JsonElement jsonElement)
-        {
-
-            var typeProperty = jsonDocument.RootElement.EnumerateObject()
-                .FirstOrDefault(p => string.Equals(p.Name, propertyName, StringComparison.OrdinalIgnoreCase));
-
-            jsonElement = typeProperty.Value;
-            return jsonElement.ValueKind != JsonValueKind.Undefined;
-        }
-
         private Type GetDeserializationType(JsonElement typeProperty)
         {
             Type type = null;
@@ -255,4 +245,17 @@ namespace Tools
             return type;
         }
     }
+
+    public static class SerializerHelper
+    {
+        public static bool TryFind(JsonDocument jsonDocument, string propertyName, out JsonElement jsonElement)
+        {
+            var typeProperty = jsonDocument.RootElement.EnumerateObject()
+                .FirstOrDefault(p => string.Equals(p.Name, propertyName, StringComparison.OrdinalIgnoreCase));
+
+            jsonElement = typeProperty.Value;
+            return jsonElement.ValueKind != JsonValueKind.Undefined;
+        }
+    }
+
 }

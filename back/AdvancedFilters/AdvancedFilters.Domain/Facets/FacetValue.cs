@@ -2,6 +2,7 @@ using AdvancedFilters.Domain.Filters.Builders;
 using AdvancedFilters.Domain.Filters.Models;
 using System;
 using System.Diagnostics;
+using System.Linq;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using Tools;
@@ -34,65 +35,45 @@ public class EnvironmentFacetValue<T> : IEnvironmentFacetValue
 public class EnvironmentFacetAdvancedCriterion : AdvancedCriterion<IEnvironmentFacetValue>
 {
     public FacetIdentifier Identifier { get; set; }
-    //[JsonConverter(typeof(EnvironmentFacetsCriterionConverter))]
+    [JsonConverter(typeof(EnvironmentFacetsCriterionConverter))]
     public IEnvironmentFacetCriterion Value { get; set; }
     public override IQueryableExpressionBuilder<IEnvironmentFacetValue> GetExpressionBuilder(IQueryableExpressionBuilderFactory factory)
         => factory.Create(this);
 
 }
-//public class EnvironmentFacetsCriterionConverter : JsonConverter<IEnvironmentFacetCriterion>
-//{
+public class EnvironmentFacetsCriterionConverter : JsonConverter<IEnvironmentFacetCriterion>
+{
+    public override IEnvironmentFacetCriterion Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+    {
+        using var jsonDocument = JsonDocument.ParseValue(ref reader);
+        SerializerHelper.TryFind(jsonDocument, nameof(IEnvironmentFacetCriterion.Type), out var typeProperty);
 
-//    public override IEnvironmentFacetCriterion Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
-//    {
-//        Console.WriteLine($"TokenType={reader.TokenType}");
-//        IEnvironmentFacetCriterion result = null;
-//        ComparisonOperators comparison = ComparisonOperators.Equals;
-//        FacetType facetType = FacetType.Unknown;
-//        int facetValue = 0;
+        if (!Enum.TryParse<FacetType>(typeProperty.GetString(), true, out var facetType))
+            throw new JsonException();
 
-//        while (reader.Read())
-//        {
-//            if (reader.TokenType != JsonTokenType.PropertyName)
-//                break;
+        var environmentFacetType = GetEnvironmentFacetType(facetType);
 
-//            var propName = reader.GetString();
-//            reader.Read();
+        var jsonObject = jsonDocument.RootElement.GetRawText();
+        var result = (IEnvironmentFacetCriterion)JsonSerializer.Deserialize(jsonObject, environmentFacetType, options);
 
-//            switch (char.ToUpper(propName[0]) + propName.Substring(1))
-//            {
-//                case nameof(IEnvironmentFacetCriterion.Operator):
-//                    {
-//                        var value = reader.GetString();
-//                        comparison = (ComparisonOperators)Enum.Parse(typeof(ComparisonOperators), value);
-//                        break;
-//                    }
-//                case nameof(IEnvironmentFacetCriterion.Type):
-//                    {
-//                        var value = reader.GetString();
-//                        facetType = (FacetType)Enum.Parse(typeof(FacetType), value); // TODO
-//                    }
+        return result;
+    }
 
-//                    break;
-//                case "Value":
-//                    {
-//                        facetValue = reader.GetInt32();
-//                    }
-//                    break;
-//            }
-//        }
+    public override void Write(Utf8JsonWriter writer, IEnvironmentFacetCriterion value, JsonSerializerOptions options)
+    {
+        JsonSerializer.Serialize(writer, value, options);
+    }
 
-//        if (facetType == FacetType.Integer)
-//            return new SingleFacetValueComparisonCriterion<int> { Value = facetValue, Operator = comparison, Type = facetType };
-
-//        return result;
-//    }
-
-//    public override void Write(Utf8JsonWriter writer, IEnvironmentFacetCriterion value, JsonSerializerOptions options)
-//    {
-//        throw new NotImplementedException();
-//    }
-//}
+    private Type GetEnvironmentFacetType(FacetType type) => type switch
+    {
+        FacetType.Integer => typeof(SingleFacetValueComparisonCriterion<int>),
+        FacetType.DateTime => typeof(SingleFacetValueComparisonCriterion<DateTime>),
+        FacetType.Decimal => typeof(SingleFacetValueComparisonCriterion<decimal>),
+        FacetType.Percentage => typeof(SingleFacetValueComparisonCriterion<decimal>),
+        FacetType.String => typeof(SingleFacetValueComparisonCriterion<string>),
+        _ => throw new JsonException()
+    };
+}
 public class EnvironmentFacetsAdvancedCriterion : EnvironmentFacetAdvancedCriterion, IListCriterion
 {
     public ItemsMatching ItemsMatched { get; set; }
