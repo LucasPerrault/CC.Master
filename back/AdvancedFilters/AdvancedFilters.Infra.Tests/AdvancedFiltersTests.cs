@@ -1,9 +1,11 @@
 using AdvancedFilters.Domain.Billing.Models;
 using AdvancedFilters.Domain.Contacts.Models;
 using AdvancedFilters.Domain.Core.Collections;
+using AdvancedFilters.Domain.Facets;
 using AdvancedFilters.Domain.Filters.Models;
 using AdvancedFilters.Domain.Instance.Models;
 using AdvancedFilters.Infra.Filters;
+using AdvancedFilters.Infra.Filters.Builders;
 using AdvancedFilters.Infra.Filters.Builders.Exceptions;
 using FluentAssertions;
 using Moq;
@@ -19,6 +21,15 @@ namespace AdvancedFilters.Infra.Tests
     public class AdvancedFiltersTests
     {
         private const int _luccaDistributorId = 123456;
+        private readonly AdvancedFilterApplier _applier;
+
+        public AdvancedFiltersTests()
+        {
+            var facetsStore = new Mock<IFacetsStore>();
+            var factory = new AdvancedCriterionExpressionBuilderFactory(facetsStore.Object);
+            _applier = new AdvancedFilterApplier(factory);
+        }
+
         #region Environments
         public static IEnumerable<object[]> GetEnvironmentTestData()
         {
@@ -180,7 +191,7 @@ namespace AdvancedFilters.Infra.Tests
         [MemberData(nameof(GetEnvironmentTestData))]
         public void Environments_ShouldBeFoundBy_Search(AdvancedFilterTestEntry<Environment> testEntry)
         {
-            var searchResult = GetEnvironments().Filter(testEntry.Filter);
+            var searchResult = _applier.Filter(GetEnvironments(), testEntry.Filter);
 
             searchResult.Should().NotBeEmpty();
             searchResult.Should().OnlyContain(testEntry.Check);
@@ -190,7 +201,7 @@ namespace AdvancedFilters.Infra.Tests
         [MemberData(nameof(GetEnvironmentTestDataForEmptyResult))]
         public void Environments_ShouldBeEmpty_WhenSearching(AdvancedFilterEmptyResultTestEntry<Environment> testEntry)
         {
-            var searchResult = GetEnvironments().Filter(testEntry.Filter);
+            var searchResult = _applier.Filter(GetEnvironments(), testEntry.Filter);
 
             searchResult.Should().HaveCount(testEntry.ExpectedCount);
         }
@@ -200,13 +211,13 @@ namespace AdvancedFilters.Infra.Tests
         {
             var appCriterion = new EnvironmentAdvancedCriterion()
                 .WithApplicationId(It.IsAny<ComparisonOperators>(), It.IsAny<string>(), null);
-            Func<IQueryable<Environment>> appFilterFn = () => GetEnvironments().Filter(appCriterion);
+            Func<IQueryable<Environment>> appFilterFn = () => _applier.Filter(GetEnvironments(), appCriterion);
 
             appFilterFn.Should().ThrowExactly<MissingItemsMatchedFieldException<AppInstance>>();
 
             var luCriterion = new EnvironmentAdvancedCriterion()
                 .WithApplicationId(It.IsAny<ComparisonOperators>(), It.IsAny<string>(), null);
-            Func<IQueryable<Environment>> luFilterFn = () => GetEnvironments().Filter(luCriterion);
+            Func<IQueryable<Environment>> luFilterFn = () => _applier.Filter(GetEnvironments(), luCriterion);
 
             luFilterFn.Should().ThrowExactly<MissingItemsMatchedFieldException<AppInstance>>();
         }
@@ -380,7 +391,7 @@ namespace AdvancedFilters.Infra.Tests
         [MemberData(nameof(GetAppContactTestData))]
         public void AppContacts_ShouldBeFoundBy_Search(AdvancedFilterTestEntry<AppContact> testEntry)
         {
-            var searchResult = GetAppContacts().Filter(testEntry.Filter);
+            var searchResult = _applier.Filter(GetAppContacts(), testEntry.Filter);
 
             searchResult.Should().NotBeEmpty();
             searchResult.Should().OnlyContain(testEntry.Check);
@@ -501,7 +512,7 @@ namespace AdvancedFilters.Infra.Tests
         [MemberData(nameof(GetClientContactTestData))]
         public void ClientContacts_ShouldBeFoundBy_Search(AdvancedFilterTestEntry<ClientContact> testEntry)
         {
-            var searchResult = GetClientContacts().Filter(testEntry.Filter);
+            var searchResult = _applier.Filter(GetClientContacts(), testEntry.Filter);
 
             searchResult.Should().NotBeEmpty();
             searchResult.Should().OnlyContain(testEntry.Check);
@@ -614,7 +625,7 @@ namespace AdvancedFilters.Infra.Tests
         [MemberData(nameof(GetSpecializedContactTestData))]
         public void SpecializedContacts_ShouldBeFoundBy_Search(AdvancedFilterTestEntry<SpecializedContact> testEntry)
         {
-            var searchResult = GetSpecializedContacts().Filter(testEntry.Filter);
+            var searchResult = _applier.Filter(GetSpecializedContacts(), testEntry.Filter);
 
             searchResult.Should().NotBeEmpty();
             searchResult.Should().OnlyContain(testEntry.Check);
