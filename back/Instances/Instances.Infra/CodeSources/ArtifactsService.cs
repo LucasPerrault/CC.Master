@@ -74,6 +74,8 @@ namespace Instances.Infra.CodeSources
             string f when f.EndsWith(".front.zip") => CodeSourceArtifactType.FrontZip,
             string f when f.EndsWith("anonymization.sql") => CodeSourceArtifactType.AnonymizationScript,
             string f when f.EndsWith("clean.sql") => CodeSourceArtifactType.CleanScript,
+            string f when f.EndsWith("prerestore.sql") => CodeSourceArtifactType.PreRestoreScript,
+            string f when f.EndsWith("postrestore.sql") => CodeSourceArtifactType.PostRestoreScript,
             _ => CodeSourceArtifactType.Other
         };
     }

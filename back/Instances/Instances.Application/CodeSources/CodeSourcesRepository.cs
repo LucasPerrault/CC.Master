@@ -177,6 +177,40 @@ namespace Instances.Application.CodeSources
             return _codeSourcesStore.GetArtifactsAsync(codeSourceId);
         }
 
+        public async Task<List<CodeSourceArtifacts>> GetInstanceCleaningArtifactsAsync()
+        {
+            var monotenantSources = await _codeSourcesStore.GetAsync(CodeSourceFilter.MonotenantInProduction);
+            return await _codeSourcesStore.GetArtifactsAsync(monotenantSources.Select(s => s.Id), CodeSourceArtifactType.CleanScript);
+        }
+
+        public async Task<List<CodeSourceArtifacts>> GetInstanceAnonymizationArtifactsAsync()
+        {
+            var monotenantSources = await _codeSourcesStore.GetAsync(CodeSourceFilter.MonotenantInProduction);
+            return await _codeSourcesStore.GetArtifactsAsync(monotenantSources.Select(s => s.Id), CodeSourceArtifactType.AnonymizationScript);
+        }
+
+        public async Task<List<CodeSourceArtifacts>> GetInstancePreRestoreArtifactsAsync()
+        {
+            var monotenantSources = await _codeSourcesStore.GetAsync(CodeSourceFilter.MonotenantInProduction);
+            return await _codeSourcesStore.GetArtifactsAsync(monotenantSources.Select(s => s.Id), CodeSourceArtifactType.PreRestoreScript);
+        }
+
+        public async Task<List<CodeSourceArtifacts>> GetInstancePostRestoreArtifactsAsync()
+        {
+            var monotenantSources = await _codeSourcesStore.GetAsync(CodeSourceFilter.MonotenantInProduction);
+            return await _codeSourcesStore.GetArtifactsAsync(monotenantSources.Select(s => s.Id), CodeSourceArtifactType.PostRestoreScript);
+        }
+
+        public async Task<List<CodeSourceArtifacts>> GetMonolithArtifactsAsync()
+        {
+            var monolith = await GetSingleOrDefaultAsync(new CodeSourceFilter
+            {
+                Type = new HashSet<CodeSourceType> { CodeSourceType.Monolithe }
+            });
+
+            return await _codeSourcesStore.GetArtifactsAsync(monolith.Id);
+        }
+
         private async Task<CodeSource> GetSingleOrDefaultAsync(CodeSourceFilter filter)
         {
             var codeSources = await _codeSourcesStore.GetAsync(filter);
@@ -188,5 +222,6 @@ namespace Instances.Application.CodeSources
 
             return source;
         }
+
     }
 }

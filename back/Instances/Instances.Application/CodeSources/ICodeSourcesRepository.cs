@@ -18,5 +18,10 @@ namespace Instances.Application.CodeSources
         Task UpdateProductionVersionAsync(CodeSourceProductionVersionDto dto);
         Task<string> GetBuildUrlAsync(string codeSourceCode, string branchName, string buildNumber);
         Task<List<CodeSourceArtifacts>> GetArtifactsAsync(int codeSourceId);
+        Task<List<CodeSourceArtifacts>> GetInstanceCleaningArtifactsAsync();
+        Task<List<CodeSourceArtifacts>> GetInstanceAnonymizationArtifactsAsync();
+        Task<List<CodeSourceArtifacts>> GetInstancePreRestoreArtifactsAsync();
+        Task<List<CodeSourceArtifacts>> GetInstancePostRestoreArtifactsAsync();
+        Task<List<CodeSourceArtifacts>> GetMonolithArtifactsAsync();
     }
 }
