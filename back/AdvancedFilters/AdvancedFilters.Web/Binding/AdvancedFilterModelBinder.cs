@@ -1,4 +1,5 @@
 using AdvancedFilters.Domain.Filters.Models;
+using AdvancedFilters.Web.Serialization;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using System;
 using System.Threading.Tasks;
@@ -44,10 +45,9 @@ namespace AdvancedFilters.Web.Binding
 
         private IPolymorphicSerializer BuildPolymorphicSerializer()
         {
-            return Serializer
-                .WithPolymorphism<IAdvancedFilter, FilterElementTypes>(nameof(IAdvancedFilter.FilterElementType))
-                    .AddMatch<TCriterion>(FilterElementTypes.Criterion)
-                    .AddMatch<FilterCombination>(FilterElementTypes.LogicalOperator)
+            return new EmptyPolymorphicSerializerBuilder()
+                .ConfigureBase()
+                .ConfigureCriterions<TCriterion>()
                 .Build();
         }
     }

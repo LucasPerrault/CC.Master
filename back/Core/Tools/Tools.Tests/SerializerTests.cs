@@ -90,7 +90,7 @@ namespace Tools.Tests
                 }
             };
 
-            var serializer = Serializer
+            var serializer = new EmptyPolymorphicSerializerBuilder()
                 .WithPolymorphism<ITestSubject, TestSubjectTypes>(nameof(ITestSubject.Type))
                     .AddMatch<HumanTestSubject>(TestSubjectTypes.Human)
                     .AddMatch<RobotTestSubject>(TestSubjectTypes.Robot)
@@ -127,7 +127,7 @@ namespace Tools.Tests
                 }
             };
 
-            var serializer = Serializer
+            var serializer = new EmptyPolymorphicSerializerBuilder()
                 .WithPolymorphism<ITestSubject, TestSubjectTypes>(nameof(ITestSubject.Type))
                     .AddMatch<HumanTestSubject>(TestSubjectTypes.Human)
                     .AddMatch<RobotTestSubject>(TestSubjectTypes.Robot)
@@ -154,7 +154,7 @@ namespace Tools.Tests
                 }
             };
 
-            var serializer = Serializer
+            var serializer = new EmptyPolymorphicSerializerBuilder()
                 .WithPolymorphism<ITestSubject, TestSubjectTypes>(nameof(ITestSubject.Type))
                 .AddMatch<HumanTestSubject>(TestSubjectTypes.Human)
                 .Build();

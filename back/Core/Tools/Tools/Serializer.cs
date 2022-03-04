@@ -44,13 +44,6 @@ namespace Tools
         internal static string Serialize(object o, JsonSerializerOptions options) => JsonSerializer.Serialize(o, options);
         internal static T Deserialize<T>(string content, JsonSerializerOptions options) => JsonSerializer.Deserialize<T>(content, options);
 
-
-        public static IPolymorphicSerializerBuilder<TPolymorphic, TDiscriminator> WithPolymorphism<TPolymorphic, TDiscriminator>(string nameOfProperty)
-            where TDiscriminator : Enum
-        {
-            return new PolymorphicSerializerBuilder<TPolymorphic,TDiscriminator>(nameOfProperty);
-        }
-
         internal static class Options
         {
             public static JsonSerializerOptions ForSerialization() => ForSerialization(new List<JsonConverter>());
@@ -88,14 +81,31 @@ namespace Tools
         }
     }
 
-    public interface IPolymorphicSerializerBuilder<in TPolymorphic, in TDiscriminator>
+    public interface IPolymorphicSerializerBuilder
     {
-        public IPolymorphicSerializerBuilder<TPolymorphic, TDiscriminator> AddMatch<T>(TDiscriminator discriminator) where T : TPolymorphic;
-
         IPolymorphicSerializerBuilder<TPoly, TDiscr> WithPolymorphism<TPoly, TDiscr>(string nameOfProperty)
             where TDiscr : Enum;
 
         IPolymorphicSerializer Build();
+    }
+
+    public interface IPolymorphicSerializerBuilder<in TPolymorphic, in TDiscriminator> : IPolymorphicSerializerBuilder
+    {
+        public IPolymorphicSerializerBuilder<TPolymorphic, TDiscriminator> AddMatch<T>(TDiscriminator discriminator) where T : TPolymorphic;
+    }
+
+    public class EmptyPolymorphicSerializerBuilder : IPolymorphicSerializerBuilder
+    {
+        public IPolymorphicSerializer Build()
+        {
+            throw new NotImplementedException();
+        }
+
+        public IPolymorphicSerializerBuilder<TPoly, TDiscr> WithPolymorphism<TPoly, TDiscr>(string nameOfProperty)
+            where TDiscr : Enum
+        {
+            return new PolymorphicSerializerBuilder<TPoly, TDiscr>(nameOfProperty);
+        }
     }
 
     internal class PolymorphicSerializerBuilder<TPolymorphic, TDiscriminator> : IPolymorphicSerializerBuilder<TPolymorphic, TDiscriminator>
