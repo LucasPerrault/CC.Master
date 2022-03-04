@@ -1,6 +1,4 @@
-﻿using AdvancedFilters.Domain.Facets;
-
-namespace AdvancedFilters.Infra.Storage.DAO;
+namespace AdvancedFilters.Domain.Facets.DAO;
 
 public interface IFacetValueDao
 {

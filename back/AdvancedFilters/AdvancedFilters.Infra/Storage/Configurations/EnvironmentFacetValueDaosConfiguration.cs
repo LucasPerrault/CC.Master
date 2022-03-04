@@ -1,4 +1,4 @@
-using AdvancedFilters.Infra.Storage.DAO;
+using AdvancedFilters.Domain.Facets.DAO;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 

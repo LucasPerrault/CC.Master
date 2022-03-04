@@ -84,10 +84,11 @@ namespace AdvancedFilters.Infra.Filters.Builders.Implementations
 
         public Expression<System.Func<Environment, bool>> ForItem()
         {
-            //var queryable = _store.GetValuesQueryable(_criterion.);
+            if (_criterion == null)
+                return e => true;
+            var queryable = _store.GetValuesQueryable(_criterion);
 
-            //return e => queryable.Any(v => v.EnvironmentId == e.Id);
-            return null;
+            return e => queryable.Any(v => v.EnvironmentId == e.Id);
         }
 
         public Expression<System.Func<IEnumerable<Environment>, bool>> ForList(ItemsMatching matching)

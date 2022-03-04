@@ -1,6 +1,5 @@
 using System;
 using AdvancedFilters.Domain.Facets;
-using AdvancedFilters.Infra.Storage.DAO;
 using Lucca.Core.Api.Abstractions.Paging;
 using Lucca.Core.Api.Queryable.Paging;
 using Microsoft.EntityFrameworkCore;
@@ -9,6 +8,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
+using AdvancedFilters.Domain.Facets.DAO;
+using AdvancedFilters.Domain.Filters.Models;
+using Lucca.Core.Shared.Domain.Exceptions;
 
 namespace AdvancedFilters.Infra.Storage.Stores
 {
@@ -75,6 +77,11 @@ namespace AdvancedFilters.Infra.Storage.Stores
             .Set<Facet>()
             .Where(f => f.Scope == scope);
 
+        public IQueryable<EnvironmentFacetValueDao> GetValuesQueryable(EnvironmentFacetsAdvancedCriterion criterion)
+        {
+            return EnvironmentValues.WhereMatches(criterion);
+        }
+
         private IQueryable<EnvironmentFacetValueDao> EnvironmentValues => _dbContext
             .Set<EnvironmentFacetValueDao>()
             .Where(v => v.Facet.Type != FacetType.Unknown)
@@ -116,6 +123,23 @@ namespace AdvancedFilters.Infra.Storage.Stores
                 .WhenNotNullOrEmpty(filter.EstablishmentIds).ApplyWhere(dao => filter.EstablishmentIds.Contains(dao.EstablishmentId))
                 .WhenNotNullOrEmpty(filter.FacetIds).ApplyWhere(dao => filter.FacetIds.Contains(dao.FacetId));
         }
+
+        public static IQueryable<EnvironmentFacetValueDao> WhereMatches(this IQueryable<EnvironmentFacetValueDao> daos, EnvironmentFacetAdvancedCriterion criterion)
+        {
+            return daos
+                .WhenNotNullOrEmpty(criterion.Identifier.Code).ApplyWhere(dao => dao.Facet.Code == criterion.Identifier.Code)
+                .WhenNotNullOrEmpty(criterion.Identifier.ApplicationId).ApplyWhere(dao => dao.Facet.ApplicationId == criterion.Identifier.ApplicationId)
+                .When(criterion.Value.Type != FacetType.Unknown).ApplyWhere(GetEnvironmentFacetValueExpressionAccordingToFacetType(criterion.Value));
+        }
+        private static Expression<Func<EnvironmentFacetValueDao, bool>> GetEnvironmentFacetValueExpressionAccordingToFacetType(IEnvironmentFacetCriterion value) => value.Type switch
+        {
+            FacetType.Integer => (EnvironmentFacetValueDao dao) => dao.IntValue == ((SingleFacetValueComparisonCriterion<int>)value).Value,
+            FacetType.DateTime => (EnvironmentFacetValueDao dao) => dao.DateTimeValue == ((SingleFacetValueComparisonCriterion<DateTime>)value).Value,
+            FacetType.Decimal => (EnvironmentFacetValueDao dao) => dao.DecimalValue == ((SingleFacetValueComparisonCriterion<decimal>)value).Value,
+            FacetType.Percentage => (EnvironmentFacetValueDao dao) => dao.DecimalValue == ((SingleFacetValueComparisonCriterion<decimal>)value).Value,
+            FacetType.String => (EnvironmentFacetValueDao dao) => dao.StringValue == ((SingleFacetValueComparisonCriterion<string>) value).Value,
+            _ => throw new BadRequestException()
+        };
 
         public static IEnumerable<IEnvironmentFacetValue> ToValues(this IEnumerable<EnvironmentFacetValueDao> daos)
         {
