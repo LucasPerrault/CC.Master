@@ -188,8 +188,7 @@ export class ContractsDraftFormComponent implements ControlValueAccessor, Valida
     }
 
     minimalBillingPercentage.enable();
-    const hasPercentage = !!minimalBillingPercentage.value && minimalBillingPercentage.value !== 0;
-    if (!hasPercentage) {
+    if (!this.isMoreThanZero(minimalBillingPercentage.value)) {
       minimalBillingPercentage.setValue(this.minimalBillingService.defaultPercentage);
     }
   }
@@ -204,6 +203,10 @@ export class ContractsDraftFormComponent implements ControlValueAccessor, Valida
 
     const activeRebateForProduct$ = this.distributorsService.getActiveRebate$(distributorId, productId);
     activeRebateForProduct$.subscribe(r => this.distributorRebate$.next(r));
+  }
+
+  private isMoreThanZero(minimalBillingPercentage: number): boolean {
+    return !!minimalBillingPercentage;
   }
 
   private get toMinimalBillingEligibility(): UnaryFunction<Observable<[IProduct, IDistributor, number]>, Observable<boolean>> {
