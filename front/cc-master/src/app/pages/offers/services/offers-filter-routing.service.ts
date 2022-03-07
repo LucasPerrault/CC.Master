@@ -7,43 +7,35 @@ import { OfferState, offerStates } from '../components/offer-filters/offer-state
 import { billingModes, IBillingMode } from '../enums/billing-mode.enum';
 import { currencies, IOfferCurrency } from '../models/offer-currency.interface';
 import { IOfferFiltersForm } from '../models/offer-filters-form.interface';
-
-export interface IOfferRoutingParams {
-  search: string;
-  tag: string;
-  productId: string;
-  currencies: string;
-  billingModes: string;
-  state: string;
-}
+import { IOfferQueryParams } from '../models/offer-query-params.interface';
 
 @Injectable()
 export class OffersFilterRoutingService {
 
   constructor(private productsService: ProductsService) { }
 
-  public toFilters$(routingParams: IOfferRoutingParams): Observable<IOfferFiltersForm> {
+  public toFilters$(queryParams: IOfferQueryParams): Observable<IOfferFiltersForm> {
     return forkJoin([
-      this.getProduct$(routingParams.productId),
+      this.getProduct$(queryParams.productId),
     ]).pipe(
       map(([product]) => ({
-        search: routingParams.search,
-        tag: routingParams.tag,
+        search: queryParams.search,
+        tag: queryParams.tag,
         product,
-        currencies: this.getCurrencies(routingParams.currencies),
-        billingModes: this.getBillingModes(routingParams.billingModes),
-        state: this.getState(routingParams.state),
+        currencies: this.getCurrencies(queryParams.currency),
+        billingModes: this.getBillingModes(queryParams.billingMode),
+        state: this.getState(queryParams.state),
       }),
     ));
   }
 
-  public toRoutingParams(filters: IOfferFiltersForm): IOfferRoutingParams {
+  public toRoutingParams(filters: IOfferFiltersForm): IOfferQueryParams {
     return {
       search: this.getSafeRoutingParams(filters?.search),
       tag: this.getSafeRoutingParams(filters?.tag),
       productId: this.getSafeRoutingParams(filters?.product?.id?.toString()),
-      currencies: this.getSafeRoutingParams(filters?.currencies?.map(c => c?.code).join(',')),
-      billingModes: this.getSafeRoutingParams(filters?.billingModes?.map(c => c?.id).join(',')),
+      currency: this.getSafeRoutingParams(filters?.currencies?.map(c => c?.code).join(',')),
+      billingMode: this.getSafeRoutingParams(filters?.billingModes?.map(c => c?.id).join(',')),
       state: this.getSafeRoutingParams(filters.state),
     };
   }
