@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
+using TeamNotification.Abstractions;
 using Environment = AdvancedFilters.Domain.Instance.Models.Environment;
 
 namespace AdvancedFilters.Infra.Services.Sync
@@ -18,7 +19,7 @@ namespace AdvancedFilters.Infra.Services.Sync
         private readonly HttpClient _httpClient;
         private readonly IFacetsStore _facetsStore;
 
-        public FacetsSyncService(IBulkUpsertService bulkUpsertService, HttpClient httpClient, IFacetsStore facetsStore)
+        public FacetsSyncService(IBulkUpsertService bulkUpsertService, HttpClient httpClient, IFacetsStore facetsStore, ITeamNotifier teamNotifier)
         {
             _bulkUpsertService = bulkUpsertService;
             _httpClient = httpClient;
@@ -32,22 +33,21 @@ namespace AdvancedFilters.Infra.Services.Sync
                 await PurgeEverythingAsync();
             }
 
-            var nonExistingFacets = new List<Facet>();
             var facets = await _facetsStore.GetAsync(FacetFilter.All());
-            var facetValueBuilder = new FacetValuesBuilder();
+            var syncResult = new SyncTenantFacetResult();
 
             foreach (var environment in environments)
             {
-                await SyncTenantFacetsAsync(environment, facets, nonExistingFacets, facetValueBuilder);
+                await SyncTenantFacetDaosAsync(environment, facets, syncResult);
             }
 
-            await _facetsStore.CreateManyAsync(nonExistingFacets);
+            await _facetsStore.CreateManyAsync(syncResult.MissingFacets);
 
             var environmentIds = environments.Select(e => e.Id).ToHashSet();
             var envUpsertConfig = GetValuesUpsertConfig<EnvironmentFacetValueDao>(syncStrategy, environmentIds);
             var etsUpsertConfig = GetValuesUpsertConfig<EstablishmentFacetValueDao>(syncStrategy, environmentIds);
-            await _bulkUpsertService.InsertOrUpdateOrDeleteAsync(facetValueBuilder.EnvironmentDaos, envUpsertConfig);
-            await _bulkUpsertService.InsertOrUpdateOrDeleteAsync(facetValueBuilder.EstablishmentDaos, etsUpsertConfig);
+            await _bulkUpsertService.InsertOrUpdateOrDeleteAsync(syncResult.EnvironmentDaos, envUpsertConfig);
+            await _bulkUpsertService.InsertOrUpdateOrDeleteAsync(syncResult.EstablishmentDaos, etsUpsertConfig);
         }
 
         public async Task PurgeEverythingAsync()
@@ -69,78 +69,45 @@ namespace AdvancedFilters.Infra.Services.Sync
             await _bulkUpsertService.InsertOrUpdateOrDeleteAsync(new List<EstablishmentFacetValueDao>(), etsUpsertConfig);
         }
 
-        public async Task SyncTenantFacetsAsync(Environment environment, List<Facet> facets, List<Facet> nonExistingFacets, FacetValuesBuilder builder)
+        private async Task SyncTenantFacetDaosAsync(Environment environment, List<Facet> facets, SyncTenantFacetResult syncResult)
         {
-            foreach (var dto in await FetchFacetDtosAsync(environment))
+            foreach (var facetDto in await FetchFacetDtosAsync(environment))
             {
-                var facet = facets.SingleOrDefault(f => f.ApplicationId == dto.Module && f.Code == dto.Code);
-                if (facet is null)
-                {
-                    facet = new Facet
-                    {
-                        Code = dto.Code,
-                        ApplicationId = dto.Module,
-                        Scope = dto.Scope,
-                        Type = dto.Type
-                    };
-                    nonExistingFacets.Add(facet);
-                }
+                var facet = SyncTenantFacet(environment, facetDto, facets, syncResult);
 
-                switch (dto.Scope)
+                switch (facetDto.Scope)
                 {
                     case FacetScope.Environment:
-                        builder.EnvironmentDaos.AddRange(dto.ToEnvironmentDaos(environment.Id, facet));
+                        syncResult.EnvironmentDaos.AddRange(facetDto.ToEnvironmentDaos(environment.Id, facet));
                         break;
                     case FacetScope.Establishment:
-                        builder.EstablishmentDaos.AddRange(dto.ToEstablishmentDaos(environment.Id, facet));
+                        syncResult.EstablishmentDaos.AddRange(facetDto.ToEstablishmentDaos(environment.Id, facet));
                         break;
                     default:
-                        // TODO : log error
+                        syncResult.Exceptions.Add(new ApplicationException($"Scope { facetDto.Scope } is not referenced"));
                         break;
                 }
             }
         }
 
-
-        private async Task BuildFacetValuesAsync(List<Environment> environments, List<Facet> nonExistingFacets, FacetValuesBuilder builder)
+        private Facet SyncTenantFacet(Environment environment, IFacetDto dto, List<Facet> facets, SyncTenantFacetResult syncResult)
         {
-            var existingFacets = await _facetsStore.GetAsync(FacetFilter.All());
-
-            foreach (var environment in environments)
+            var facet = facets.SingleOrDefault(f => f.ApplicationId == dto.Module && f.Code == dto.Code);
+            if (facet is null)
             {
-                var dtos = await FetchFacetDtosAsync(environment);
-
-                foreach (var dto in dtos)
+                facet = new Facet
                 {
-                    var facet = existingFacets.SingleOrDefault(f => f.ApplicationId == dto.Module && f.Code == dto.Code);
-                    if (facet is null)
-                    {
-                        facet = new Facet
-                        {
-                            Code = dto.Code,
-                            ApplicationId = dto.Module,
-                            Scope = dto.Scope,
-                            Type = dto.Type
-                        };
-                        nonExistingFacets.Add(facet);
-                    }
-
-                    switch (dto.Scope)
-                    {
-                        case FacetScope.Environment:
-                            builder.EnvironmentDaos.AddRange(dto.ToEnvironmentDaos(environment.Id, facet));
-                            break;
-                        case FacetScope.Establishment:
-                            builder.EstablishmentDaos.AddRange(dto.ToEstablishmentDaos(environment.Id, facet));
-                            break;
-                        default:
-                            // TODO : log error
-                            break;
-                    }
-                }
-
+                    Code = dto.Code,
+                    ApplicationId = dto.Module,
+                    Scope = dto.Scope,
+                    Type = dto.Type
+                };
+                syncResult.MissingFacets.Add(facet);
             }
+
+            return facet;
         }
+
 
         private async Task<List<IFacetDto>> FetchFacetDtosAsync(Environment environment)
         {
@@ -203,15 +170,10 @@ namespace AdvancedFilters.Infra.Services.Sync
             where T : class, IFacetValueDao
             => new BulkUpsertConfig { Filter = UpsertFilter.ForStrategy<T>(syncStrategy, envIds, v => v.EnvironmentId) };
 
-        private class FacetBuilder
+        public class SyncTenantFacetResult
         {
-            public Environment Environment { get; set; }
-            public List<Facet> Facets { get; set; }
-            public List<IFacetDto> FacetDtos { get; set; }
-        }
-
-        public class FacetValuesBuilder
-        {
+            public List<Exception> Exceptions { get; set; }
+            public List<Facet> MissingFacets { get; set; }
             public List<EnvironmentFacetValueDao> EnvironmentDaos { get; } = new();
             public List<EstablishmentFacetValueDao> EstablishmentDaos { get; } = new();
         }
