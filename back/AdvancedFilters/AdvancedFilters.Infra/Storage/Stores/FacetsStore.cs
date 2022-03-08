@@ -79,12 +79,17 @@ namespace AdvancedFilters.Infra.Storage.Stores
 
         public IQueryable<EnvironmentFacetValueDao> GetValuesQueryable(EnvironmentFacetsAdvancedCriterion criterion)
         {
-            return EnvironmentValues.WhereMatches(criterion);
+            return EnvironmentValuesWithType(criterion.Value.Type).WhereMatches(criterion);
         }
 
         private IQueryable<EnvironmentFacetValueDao> EnvironmentValues => _dbContext
             .Set<EnvironmentFacetValueDao>()
             .Where(v => v.Facet.Type != FacetType.Unknown)
+            .Include(v => v.Facet);
+
+        private IQueryable<EnvironmentFacetValueDao> EnvironmentValuesWithType(FacetType facetType) => _dbContext
+            .Set<EnvironmentFacetValueDao>()
+            .Where(v => v.Facet.Type == facetType)
             .Include(v => v.Facet);
 
         private IQueryable<EstablishmentFacetValueDao> EstablishmentValues => _dbContext
