@@ -55,5 +55,4 @@ namespace AdvancedFilters.Domain.Filters.Models
         FacetType Type { get; set; }
         ComparisonOperators Operator { get; set; }
     }
-
 }

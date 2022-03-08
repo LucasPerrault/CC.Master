@@ -134,7 +134,7 @@ namespace AdvancedFilters.Infra.Storage.Stores
         private static Expression<Func<EnvironmentFacetValueDao, bool>> GetEnvironmentFacetValueExpressionAccordingToFacetType(IEnvironmentFacetCriterion value) => value.Type switch
         {
             FacetType.Integer => (EnvironmentFacetValueDao dao) => dao.IntValue == ((SingleFacetValueComparisonCriterion<int>)value).Value,
-            FacetType.DateTime => (EnvironmentFacetValueDao dao) => dao.DateTimeValue == ((SingleFacetValueComparisonCriterion<DateTime>)value).Value,
+            FacetType.DateTime => (EnvironmentFacetValueDao dao) => dao.DateTimeValue == ((SingleFacetDateTimeValueComparisonCriterion)value).Value,
             FacetType.Decimal => (EnvironmentFacetValueDao dao) => dao.DecimalValue == ((SingleFacetValueComparisonCriterion<decimal>)value).Value,
             FacetType.Percentage => (EnvironmentFacetValueDao dao) => dao.DecimalValue == ((SingleFacetValueComparisonCriterion<decimal>)value).Value,
             FacetType.String => (EnvironmentFacetValueDao dao) => dao.StringValue == ((SingleFacetValueComparisonCriterion<string>) value).Value,

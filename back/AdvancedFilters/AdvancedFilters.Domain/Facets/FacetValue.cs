@@ -35,45 +35,12 @@ public class EnvironmentFacetValue<T> : IEnvironmentFacetValue
 public class EnvironmentFacetAdvancedCriterion : AdvancedCriterion<IEnvironmentFacetValue>
 {
     public FacetIdentifier Identifier { get; set; }
-    [JsonConverter(typeof(EnvironmentFacetsCriterionConverter))]
     public IEnvironmentFacetCriterion Value { get; set; }
     public override IQueryableExpressionBuilder<IEnvironmentFacetValue> GetExpressionBuilder(IQueryableExpressionBuilderFactory factory)
         => factory.Create(this);
 
 }
-public class EnvironmentFacetsCriterionConverter : JsonConverter<IEnvironmentFacetCriterion>
-{
-    public override IEnvironmentFacetCriterion Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
-    {
-        using var jsonDocument = JsonDocument.ParseValue(ref reader);
-        SerializerHelper.TryFind(jsonDocument, nameof(IEnvironmentFacetCriterion.Type), out var typeProperty);
 
-        if (!Enum.TryParse<FacetType>(typeProperty.GetString(), true, out var facetType))
-            throw new JsonException();
-
-        var environmentFacetType = GetEnvironmentFacetType(facetType);
-
-        var jsonObject = jsonDocument.RootElement.GetRawText();
-        var result = (IEnvironmentFacetCriterion)JsonSerializer.Deserialize(jsonObject, environmentFacetType, options);
-
-        return result;
-    }
-
-    public override void Write(Utf8JsonWriter writer, IEnvironmentFacetCriterion value, JsonSerializerOptions options)
-    {
-        JsonSerializer.Serialize(writer, value, options);
-    }
-
-    private Type GetEnvironmentFacetType(FacetType type) => type switch
-    {
-        FacetType.Integer => typeof(SingleFacetValueComparisonCriterion<int>),
-        FacetType.DateTime => typeof(SingleFacetValueComparisonCriterion<DateTime>),
-        FacetType.Decimal => typeof(SingleFacetValueComparisonCriterion<decimal>),
-        FacetType.Percentage => typeof(SingleFacetValueComparisonCriterion<decimal>),
-        FacetType.String => typeof(SingleFacetValueComparisonCriterion<string>),
-        _ => throw new JsonException()
-    };
-}
 public class EnvironmentFacetsAdvancedCriterion : EnvironmentFacetAdvancedCriterion, IListCriterion
 {
     public ItemsMatching ItemsMatched { get; set; }
