@@ -1,0 +1,11 @@
+<label class="textfield" [ngClass]="to?.mod">
+  <cc-range-input [formControl]="formControl"
+                                  [formlyAttributes]="field"
+                                  [placeholder]="to?.placeholder"
+                                  [multiple]="to?.multiple"
+                                  [required]="to?.required"
+                                  [configuration]="to?.configuration"
+                                  [suffix]="to?.suffix">
+  </cc-range-input>
+  <span class="textfield-label" *ngIf="to?.label">{{ to.label }}</span>
+</label>
