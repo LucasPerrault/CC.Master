@@ -11,6 +11,7 @@ import {
 } from '@angular/forms';
 import { TranslatePipe } from '@cc/aspects/translate';
 import { SelectDisplayMode } from '@cc/common/forms';
+import { ApiV3DateService } from '@cc/common/queries';
 import { BillingEntity, getBillingEntity } from '@cc/domain/billing/clients';
 import { IContractForm, IContractMinimalBillable, MinimalBillingService } from '@cc/domain/billing/contracts';
 import { DistributorsService, IDistributor } from '@cc/domain/billing/distributors';
@@ -73,6 +74,11 @@ export class ContractsDraftFormComponent implements ControlValueAccessor, Valida
       filters.push(`productId=${product.id}`);
     }
 
+    const startsOn = this.formGroup.get(DraftFormKey.TheoreticalStartOn).value;
+    if (!!startsOn) {
+      filters.push(`coversPeriod=${ this.apiDateService.toApiV3DateFormat(startsOn) }`);
+    }
+
     return filters;
   }
 
@@ -81,6 +87,7 @@ export class ContractsDraftFormComponent implements ControlValueAccessor, Valida
   constructor(
     private distributorsService: DistributorsService,
     private minimalBillingService: MinimalBillingService,
+    private apiDateService: ApiV3DateService,
     private translatePipe: TranslatePipe,
     private luModal: LuModal,
   ) {
@@ -122,6 +129,10 @@ export class ContractsDraftFormComponent implements ControlValueAccessor, Valida
     )
       .pipe(takeUntil(this.destroy$))
       .subscribe(() => this.updateMinimalBillingEligibility());
+
+    this.formGroup.get(DraftFormKey.TheoreticalStartOn).valueChanges
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(() => this.formGroup.get(DraftFormKey.Offer).reset());
   }
 
   public ngOnDestroy(): void {
