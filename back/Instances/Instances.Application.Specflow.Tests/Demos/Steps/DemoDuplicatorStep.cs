@@ -180,7 +180,7 @@ namespace Instances.Application.Specflow.Tests.Demos.Steps
             return new DemoDuplicator
                 (
                     _testContext.Principal,
-                    new InstancesDuplicator(new SqlScriptPicker(
+                    new InstancesManipulator(new SqlScriptPicker(
                         new SqlScriptPickerConfiguration
                         {
                             JenkinsBaseUri = new Uri("http://localhost"),
@@ -222,7 +222,7 @@ namespace Instances.Application.Specflow.Tests.Demos.Steps
                 .Returns(Task.FromResult(new Instance { Id = 1 }));
 
             instancesStoreMock
-                .Setup(s => s.DeleteForDemoAsync(It.IsAny<Instance>()))
+                .Setup(s => s.DeleteAsync(It.IsAny<Instance>()))
                 .Callback<Instance>(
                     instance =>
                     {

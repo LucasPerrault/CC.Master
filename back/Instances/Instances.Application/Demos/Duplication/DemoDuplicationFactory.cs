@@ -1,11 +1,11 @@
-﻿using Instances.Domain.Demos;
+using Instances.Domain.Demos;
 using Instances.Domain.Instances;
 using Instances.Domain.Instances.Models;
 using System;
 
 namespace Instances.Application.Demos.Duplication
 {
-    public static class DuplicationFactory
+    public static class DemoDuplicationFactory
     {
         public static DemoDuplication New
         (

@@ -163,7 +163,7 @@ namespace Instances.Application.Tests.Demos
                     _subdomainGeneratorMock.Object,
                     _clusterSelectorMock.Object,
                     _demoDuplicationsStore.Object,
-                    new InstancesDuplicator
+                    new InstancesManipulator
                         (
                             _sqlScriptPickerMock.Object,
                             _ccDataServiceMock.Object

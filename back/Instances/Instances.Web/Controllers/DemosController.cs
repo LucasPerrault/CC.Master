@@ -72,7 +72,7 @@ namespace Instances.Web.Controllers
         public Task DuplicationReport
         (
             [FromRoute]Guid duplicationId,
-            [FromBody]DuplicationCallbackPayload payload
+            [FromBody]DemoDuplicationCallbackPayload payload
         )
         {
             return _duplicationCompleter.MarkDuplicationAsCompletedAsync(duplicationId, payload.Success);
