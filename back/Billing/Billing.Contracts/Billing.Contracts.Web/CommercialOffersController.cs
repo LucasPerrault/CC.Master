@@ -13,6 +13,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
+using Tools;
 using Tools.Web;
 
 namespace Billing.Contracts.Web
@@ -144,6 +145,7 @@ namespace Billing.Contracts.Web
         public HashSet<int> ProductId { get; set; } = new HashSet<int>();
         public HashSet<int> CurrencyId { get; set; } = new HashSet<int>();
         public HashSet<bool> IsArchived { get; set; } = new HashSet<bool> { true, false };
+        public DateTime? CoversPeriod { get; set; } = null;
 
         public IPageToken PageToken { get; set; } = null;
 
@@ -158,7 +160,15 @@ namespace Billing.Contracts.Web
                 ProductIds = ProductId,
                 CurrencyIds = CurrencyId,
                 IsArchived = IsArchived.ToCompareBoolean(),
+                StartsOn = GetCoveredPeriod()
             };
+        }
+
+        private CompareDateTime GetCoveredPeriod()
+        {
+            return CoversPeriod.HasValue
+                ? CompareDateTime.IsBeforeOrEqual(CoversPeriod.Value)
+                : CompareDateTime.Bypass();
         }
     }
 

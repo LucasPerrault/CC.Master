@@ -1,6 +1,8 @@
 using Billing.Products.Domain;
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Linq.Expressions;
 
 namespace Billing.Contracts.Domain.Offers
 {
@@ -59,6 +61,8 @@ namespace Billing.Contracts.Domain.Offers
 
         public bool IsArchived { get; set; }
 
+        public DateTime StartsOn => CommercialOffersExpressions.StartsOnCompiled(this);
+
         public List<PriceList> PriceLists { get; set; }
     }
 
@@ -77,5 +81,15 @@ namespace Billing.Contracts.Domain.Offers
         public int MaxIncludedCount { get; set; }
         public decimal UnitPrice { get; set; }
         public decimal FixedPrice { get; set; }
+    }
+
+    public static class CommercialOffersExpressions
+    {
+        public static readonly Expression<Func<CommercialOffer, DateTime>> StartsOn = o =>
+            o.PriceLists
+                .Select(p => p.StartsOn)
+                .Min();
+
+        public static readonly Func<CommercialOffer, DateTime> StartsOnCompiled = StartsOn.Compile();
     }
 }

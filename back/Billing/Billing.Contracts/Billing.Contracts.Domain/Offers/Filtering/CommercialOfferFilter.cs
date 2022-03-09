@@ -14,6 +14,7 @@ namespace Billing.Contracts.Domain.Offers.Filtering
         public HashSet<int> ProductIds { get; set; } = new HashSet<int>();
         public HashSet<int> CurrencyIds { get; set; } = new HashSet<int>();
         public CompareBoolean IsArchived { get; set; } = CompareBoolean.Bypass;
+        public CompareDateTime StartsOn { get; set; } = CompareDateTime.Bypass();
 
         public static CommercialOfferFilter All => new CommercialOfferFilter();
 
