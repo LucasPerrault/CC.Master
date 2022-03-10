@@ -153,7 +153,7 @@ export class ContractsDraftFormComponent implements ControlValueAccessor, Valida
 
   writeValue(contractForm: IContractForm): void {
     if (!!contractForm && contractForm !== this.formGroup.value) {
-      this.formGroup.setValue(contractForm);
+      this.formGroup.setValue(contractForm, { emitEvent: false });
     }
   }
 
