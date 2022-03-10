@@ -22,6 +22,7 @@ namespace Billing.Contracts.Domain.Tests
                 nameof(CommercialOffer.PriceLists),
                 nameof(CommercialOffer.Product),
                 nameof(CommercialOffer.IsArchived),
+                nameof(CommercialOffer.StartsOn),
             };
 
             var diff = offerProps
