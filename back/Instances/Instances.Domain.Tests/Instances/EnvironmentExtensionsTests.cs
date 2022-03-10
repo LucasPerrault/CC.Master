@@ -1,6 +1,7 @@
 using Environments.Domain;
 using Instances.Domain.Instances;
 using Instances.Domain.Instances.Models;
+using Instances.Domain.Trainings;
 using System;
 using System.Collections.Generic;
 using Tools;
@@ -35,7 +36,7 @@ namespace Instances.Domain.Tests.Instances
             };
 
             Assert.Equal(domain.GetDescription(), env.GetInstanceDomain(InstanceType.Prod));
-            Assert.Equal(EnvironmentExtensions.TrainingDomain, env.GetInstanceDomain(InstanceType.Training));
+            Assert.Equal(Training.TrainingDomain, env.GetInstanceDomain(InstanceType.Training));
             Assert.Equal(EnvironmentExtensions.PreviewDomain, env.GetInstanceDomain(InstanceType.Preview));
             Assert.Throws<NotSupportedException>(() => env.GetInstanceDomain(InstanceType.Demo));
         }
@@ -63,7 +64,7 @@ namespace Instances.Domain.Tests.Instances
 
             Assert.DoesNotContain("://", env.GetInstanceHost(InstanceType.Training));
             Assert.StartsWith(env.Subdomain, env.GetInstanceHost(InstanceType.Training));
-            Assert.Contains(EnvironmentExtensions.TrainingDomain, env.GetInstanceHost(InstanceType.Training));
+            Assert.Contains(Training.TrainingDomain, env.GetInstanceHost(InstanceType.Training));
 
             Assert.DoesNotContain("://", env.GetInstanceHost(InstanceType.Preview));
             Assert.StartsWith(env.Subdomain, env.GetInstanceHost(InstanceType.Preview));

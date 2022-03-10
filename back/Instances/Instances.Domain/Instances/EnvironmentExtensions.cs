@@ -1,5 +1,6 @@
 
 using Instances.Domain.Instances.Models;
+using Instances.Domain.Trainings;
 using System;
 using Tools;
 using CCEnvironment = Environments.Domain.Environment;
@@ -9,7 +10,6 @@ namespace Instances.Domain.Instances
     public static class EnvironmentExtensions
     {
         public const string PreviewDomain = "ilucca-preview.net";
-        public const string TrainingDomain = "ilucca-test.net";
 
         public static string GetInstanceExecutingCluster(this CCEnvironment environment, InstanceType instanceType)
         {
@@ -27,7 +27,7 @@ namespace Instances.Domain.Instances
             return instanceType switch
             {
                 InstanceType.Prod => environment.Domain.GetDescription(),
-                InstanceType.Training => TrainingDomain,
+                InstanceType.Training => Training.TrainingDomain,
                 InstanceType.Preview => PreviewDomain,
                 _ => throw new NotSupportedException()
         };
