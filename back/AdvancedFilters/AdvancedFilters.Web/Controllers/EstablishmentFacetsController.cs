@@ -55,8 +55,9 @@ public class EstablishmentFacetValueQuery
     public HashSet<string> Code { get; set; } = new();
     public string ApplicationId { get; set; }
     public HashSet<FacetType> Type { get; set; } = new();
+    public string Search { get; set; }
 
     public IPageToken Page { get; set; }
 
-    public EstablishmentFacetValueFilter ToFilter() => EstablishmentFacetValueFilter.ForSearch(EnvironmentId, EstablishmentId, Type, Code, ApplicationId);
+    public EstablishmentFacetValueFilter ToFilter() => EstablishmentFacetValueFilter.ForSearch(EnvironmentId, EstablishmentId, Type, Code, ApplicationId, Search);
 }

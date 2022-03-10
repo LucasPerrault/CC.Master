@@ -28,6 +28,7 @@ public class EnvironmentFacetValueFilter
     public HashSet<FacetType> FacetTypes { get; set; } = new();
     public HashSet<string> ApplicationIds { get; set; } = new();
     public HashSet<string> Codes { get; set; } = new();
+    public string Search { get; set; }
 
     private EnvironmentFacetValueFilter()
     { }
@@ -39,12 +40,13 @@ public class EnvironmentFacetValueFilter
         FacetIds = facetIds,
     };
 
-    public static EnvironmentFacetValueFilter ForSearch(HashSet<int> envIds, HashSet<FacetType> types, HashSet<string> codes, string applicationId) => new EnvironmentFacetValueFilter
+    public static EnvironmentFacetValueFilter ForSearch(HashSet<int> envIds, HashSet<FacetType> types, HashSet<string> codes, string applicationId, string search) => new EnvironmentFacetValueFilter
     {
         EnvironmentIds = envIds,
         FacetTypes = types,
         Codes = codes,
-        ApplicationIds = string.IsNullOrEmpty(applicationId) ? new HashSet<string>() : new HashSet<string> { applicationId }
+        ApplicationIds = string.IsNullOrEmpty(applicationId) ? new HashSet<string>() : new HashSet<string> { applicationId },
+        Search = search
     };
 }
 
@@ -56,6 +58,7 @@ public class EstablishmentFacetValueFilter
     public HashSet<FacetType> FacetTypes { get; set; } = new();
     public HashSet<string> ApplicationIds { get; set; } = new();
     public HashSet<string> Codes { get; set; } = new();
+    public string Search { get; set; }
 
     private EstablishmentFacetValueFilter()
     { }
@@ -68,13 +71,14 @@ public class EstablishmentFacetValueFilter
             FacetIds = facetIds,
         };
 
-    public static EstablishmentFacetValueFilter ForSearch(HashSet<int> environmentIds, HashSet<int> establishmentIds, HashSet<FacetType> types, HashSet<string> codes, string applicationId)
+    public static EstablishmentFacetValueFilter ForSearch(HashSet<int> environmentIds, HashSet<int> establishmentIds, HashSet<FacetType> types, HashSet<string> codes, string applicationId, string search)
         => new EstablishmentFacetValueFilter
         {
             EnvironmentIds = environmentIds,
             EstablishmentIds = establishmentIds,
             FacetTypes = types,
             Codes = codes,
-            ApplicationIds = string.IsNullOrEmpty(applicationId) ? new HashSet<string>() : new HashSet<string> { applicationId }
+            ApplicationIds = string.IsNullOrEmpty(applicationId) ? new HashSet<string>() : new HashSet<string> { applicationId },
+            Search = search
         };
 }
