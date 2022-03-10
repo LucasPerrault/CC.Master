@@ -8,12 +8,14 @@ import {
   ValidationErrors,
   Validator,
 } from '@angular/forms';
+import { ALuApiService } from '@lucca-front/ng/api';
 import { FormlyFieldConfig } from '@ngx-formly/core/lib/components/formly.field.config';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
 import { FacetScope } from '../../../models';
 import { FacetValue } from '../../../models/facet-value.interface';
+import { FacetValueApiSelectService } from './facet-value-api-select.service';
 
 @Component({
   selector: 'cc-facet-value-api-select',
@@ -21,6 +23,10 @@ import { FacetValue } from '../../../models/facet-value.interface';
   styleUrls: ['./facet-value-api-select.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [
+    {
+      provide: ALuApiService,
+      useClass: FacetValueApiSelectService,
+    },
     {
       provide: NG_VALUE_ACCESSOR,
       useExisting: forwardRef(() => FacetValueApiSelectComponent),
