@@ -40,7 +40,6 @@ namespace Instances.Application.Demos.Duplication
     {
         private const int DefaultSourceDemoId = 385;
         private const int DefaultAuthorId = 0;
-        private const int DefaultDistributorId = 37;
         private const string DefaultHubspotPassword = "test";
 
         private readonly ICacheService _cacheService;
@@ -108,7 +107,7 @@ namespace Instances.Application.Demos.Duplication
 
             var duplication = DemoDuplicationFactory.New
                 (
-                    DefaultDistributorId,
+                    Distributor.DefaultDistributorId,
                     DefaultAuthorId,
                     demoToDuplicate,
                     targetCluster,
