@@ -188,7 +188,7 @@
         <div class="loading u-left0"></div>
       </td>
     </tr>
-    <tr class="table-body-row mod-stickyFooter u-fontWeightBold">
+    <tr class="table-body-row mod-stickyFooter u-fontWeightBold" *ngIf="!isEmpty">
       <td class="table-body-row-cell mod-layoutFixed-xs16 mod-stickyColumn-leftOffset0">
         {{ 'counts_summary_clients' | translate : { count: summary?.numberOfClient } }}
       </td>
