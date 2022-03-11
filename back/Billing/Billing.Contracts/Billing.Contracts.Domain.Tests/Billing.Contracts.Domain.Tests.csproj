@@ -22,7 +22,9 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\..\..\Core\Testing\Testing.Infra\Testing.Infra.csproj" />
       <ProjectReference Include="..\Billing.Contracts.Domain\Billing.Contracts.Domain.csproj" />
+      <ProjectReference Include="..\Billing.Contracts.Infra\Billing.Contracts.Infra.csproj" />
     </ItemGroup>
 
 </Project>
