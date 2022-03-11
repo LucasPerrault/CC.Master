@@ -2,16 +2,16 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import {
   ApiSortHelper,
-  ApiV3DateService, IHttpApiV3CollectionCount,
-  IHttpApiV3CollectionCountResponse, IHttpApiV3CountResponse,
+  ApiV3DateService,
+  IHttpApiV3CollectionCountResponse, IHttpApiV3CollectionResponse, IHttpApiV3CountResponse, IHttpApiV4CollectionCountResponse,
 } from '@cc/common/queries';
-import { contractFields, IContract } from '@cc/domain/billing/contracts';
 import { CountCode } from '@cc/domain/billing/counts';
 import { addDays } from 'date-fns';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 import { countWithContractFields, ICountWithContract } from '../models/count-with-contract.interface';
+import { IMissingCount } from '../models/missing-count.interface';
 
 @Injectable()
 export class CountsDataService {
@@ -44,45 +44,36 @@ export class CountsDataService {
       .pipe(map(res => res.data.count));
   }
 
-  public getDraftCounts$(httpParams: HttpParams, countPeriod: Date): Observable<IHttpApiV3CollectionCount<ICountWithContract>> {
+  public getDraftCounts$(countPeriod: Date): Observable<ICountWithContract[]> {
     const url = '/api/v3/counts';
-    const params = httpParams
-      .set('fields', `collection.count,${ countWithContractFields }`)
+    const params = new HttpParams()
+      .set('fields', countWithContractFields)
       .set('countPeriod', this.apiDateService.toApiV3DateFormat(countPeriod))
       .set('code', CountCode.Draft)
       .set(ApiSortHelper.v3SortKey, `contract.id,${ApiSortHelper.v3AscKey}`);
 
-    return this.httpClient.get<IHttpApiV3CollectionCountResponse<ICountWithContract>>(url, { params })
-      .pipe(map(res => res.data));
+    return this.httpClient.get<IHttpApiV3CollectionResponse<ICountWithContract>>(url, { params })
+      .pipe(map(res => res.data.items));
   }
 
-  public getRealCountsWithoutAccountingEntries(
-    httpParams: HttpParams,
-    countPeriod: Date,
-  ): Observable<IHttpApiV3CollectionCount<ICountWithContract>> {
+  public getRealCountsWithoutAccountingEntries(countPeriod: Date): Observable<ICountWithContract[]> {
     const url = '/api/v3/counts';
-    const params = httpParams
-      .set('fields', `collection.count,${ countWithContractFields }`)
+    const params = new HttpParams()
+      .set('fields', countWithContractFields)
       .set('countPeriod', this.apiDateService.toApiV3DateFormat(countPeriod))
       .set('code', CountCode.Count)
       .set('entryNumber', 'null');
 
-    return this.httpClient.get<IHttpApiV3CollectionCountResponse<ICountWithContract>>(url, { params })
-      .pipe(map(res => res.data));
+    return this.httpClient.get<IHttpApiV3CollectionResponse<ICountWithContract>>(url, { params })
+      .pipe(map(res => res.data.items));
   }
 
-  public getContracts$(countPeriod: Date): Observable<IContract[]> {
-    const url = '/api/v3/newcontracts';
-    const params = new HttpParams()
-      .set('fields', contractFields)
-      .set('environmentId', 'notequal,null')
-      .set('archivedAt', 'null')
-      .set('startOn', `until,${ this.apiDateService.toApiV3DateFormat(this.toMiddleOfMonth(countPeriod))}`)
-      .set('closeOn', `since,${ this.apiDateService.toApiV3DateFormat(this.toMiddleOfMonth(countPeriod))},null`)
-      .set(ApiSortHelper.v3SortKey, `id,${ ApiSortHelper.v3AscKey }`);
+  public getMissingCounts$(countPeriod: Date): Observable<IMissingCount[]> {
+    const url = '/api/counts/missing';
+    const params = new HttpParams().set('period', this.apiDateService.toApiV3DateFormat(countPeriod));
 
-    return this.httpClient.get<IHttpApiV3CollectionCountResponse<IContract>>(url, { params })
-      .pipe(map(res => res.data.items));
+    return this.httpClient.get<IHttpApiV4CollectionCountResponse<IMissingCount>>(url, { params })
+      .pipe(map(res => res.items));
   }
 
   public getActiveContractsNumber$(countPeriod: Date): Observable<number> {
@@ -101,6 +92,5 @@ export class CountsDataService {
   private toMiddleOfMonth(countPeriod: Date): Date {
     return addDays(countPeriod, 14);
   }
-
 }
 

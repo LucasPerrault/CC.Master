@@ -1,4 +1,4 @@
-﻿export const Translations = {
+export const Translations = {
 	"en": {
 		'front_hello_world': "Hello, world!",
 		'front_errorPages_forbidden_link': "Back to previous page",
@@ -909,6 +909,8 @@
 		'cafe_establishment_list_country': "Country",
 		'cafe_establishment_list_emptyState_title': "Shhh, it's quiet here",
 		'cafe_establishment_list_emptyState_description': "Add filters to show a set of establishments.",
+		'counts_cannot_redirect_too_many_contracts': "Impossible to be redirected due to contract number",
+		'counts_copy_contract_ids_to_clipboard': "Copy contract ids",
 	},
 	"de": {
 		'front_hello_world': "Hallo Welt!",
@@ -1820,6 +1822,8 @@
 		'cafe_establishment_list_country': "Country",
 		'cafe_establishment_list_emptyState_title': "Shhh, it's quiet here",
 		'cafe_establishment_list_emptyState_description': "Add filters to show a set of establishments.",
+		'counts_cannot_redirect_too_many_contracts': "Impossible to be redirected due to contract number",
+		'counts_copy_contract_ids_to_clipboard': "Copy contract ids",
 	},
 	"fr": {
 		'front_hello_world': "Bonjour, monde !",
@@ -2731,6 +2735,8 @@
 		'cafe_establishment_list_country': "Pays",
 		'cafe_establishment_list_emptyState_title': "Shhh, c'est calme ici",
 		'cafe_establishment_list_emptyState_description': "Ajouter des filtres pour visualiser un ensemble d'établissements.",
+		'counts_cannot_redirect_too_many_contracts': "Impossible d'effectuer une redirection avec autant de contract",
+		'counts_copy_contract_ids_to_clipboard': "Copier les ids des contrats",
 	},
 	"it": {
 		'front_hello_world': "Ciao mondo!",
@@ -3642,6 +3648,8 @@
 		'cafe_establishment_list_country': "Country",
 		'cafe_establishment_list_emptyState_title': "Shhh, it's quiet here",
 		'cafe_establishment_list_emptyState_description': "Add filters to show a set of establishments.",
+		'counts_cannot_redirect_too_many_contracts': "Impossible to be redirected due to contract number",
+		'counts_copy_contract_ids_to_clipboard': "Copy contract ids",
 	},
 	"nl": {
 		'front_hello_world': "Hallo, wereld!",
@@ -4553,6 +4561,8 @@
 		'cafe_establishment_list_country': "Country",
 		'cafe_establishment_list_emptyState_title': "Shhh, it's quiet here",
 		'cafe_establishment_list_emptyState_description': "Add filters to show a set of establishments.",
+		'counts_cannot_redirect_too_many_contracts': "Impossible to be redirected due to contract number",
+		'counts_copy_contract_ids_to_clipboard': "Copy contract ids",
 	},
 	"nl-BE": {
 		'front_hello_world': "Hallo wereld!",
@@ -5464,6 +5474,8 @@
 		'cafe_establishment_list_country': "Country",
 		'cafe_establishment_list_emptyState_title': "Shhh, it's quiet here",
 		'cafe_establishment_list_emptyState_description': "Add filters to show a set of establishments.",
+		'counts_cannot_redirect_too_many_contracts': "Impossible to be redirected due to contract number",
+		'counts_copy_contract_ids_to_clipboard': "Copy contract ids",
 	},
 	"es": {
 		'front_hello_world': "¡Hola, mundo!",
@@ -6375,6 +6387,8 @@
 		'cafe_establishment_list_country': "Country",
 		'cafe_establishment_list_emptyState_title': "Shhh, it's quiet here",
 		'cafe_establishment_list_emptyState_description': "Add filters to show a set of establishments.",
+		'counts_cannot_redirect_too_many_contracts': "Impossible to be redirected due to contract number",
+		'counts_copy_contract_ids_to_clipboard': "Copy contract ids",
 	},
 	"pt": {
 		'front_hello_world': "Olá mundo!",
@@ -7286,5 +7300,7 @@
 		'cafe_establishment_list_country': "Country",
 		'cafe_establishment_list_emptyState_title': "Shhh, it's quiet here",
 		'cafe_establishment_list_emptyState_description': "Add filters to show a set of establishments.",
+		'counts_cannot_redirect_too_many_contracts': "Impossible to be redirected due to contract number",
+		'counts_copy_contract_ids_to_clipboard': "Copy contract ids",
 	},
 };

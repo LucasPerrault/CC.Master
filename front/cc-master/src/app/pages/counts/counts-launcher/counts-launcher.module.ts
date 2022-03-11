@@ -13,7 +13,6 @@ import { CountsDashboardContractsTableModule } from './components/counts-dashboa
 import { CountsProcessLauncherModalModule } from './components/counts-process-launcher-modal/counts-process-launcher-modal.module';
 import { CountsLauncherComponent } from './counts-launcher.component';
 import { CountsDataService } from './services/counts-data.service';
-import { CountsLauncherService } from './services/counts-launcher.service';
 import { CountsProcessDataService } from './services/counts-process-data.service';
 
 @NgModule({
@@ -33,7 +32,6 @@ import { CountsProcessDataService } from './services/counts-process-data.service
     LuDropdownTriggerModule,
     LuDropdownItemModule,
   ],
-  providers: [CountsDataService, CountsLauncherService, CountsProcessDataService],
+  providers: [CountsDataService, CountsProcessDataService],
 })
-export class CountsLauncherModule {
-}
+export class CountsLauncherModule {}

@@ -1,14 +1,30 @@
-<div class="card {{ mod }}" [ngClass]="{ 'is-selected': isSelected }" (click)="showMoreDetails.emit()">
+<div class="card">
+  <div class="card-content u-displayBlock">
+    <div class="u-displayFlex u-alignItemsCenter">
 
-  <div class="card-content">
-    <ng-container *ngIf="isLoading; else isNotLoading">
-      <div class="loading">{{ 'counts_launcher_dashboard_card_loading' | translate }}</div>
-    </ng-container>
+      <div class="u-displayFlex">
+        <span class="label mod-number">{{ totalCount ?? '?' }}</span>
+        <div>{{ title }}</div>
+      </div>
 
-    <ng-template #isNotLoading>
-      <span class="label mod-number">{{ totalCount ?? '?' }}</span>
-      <div>{{ title }}</div>
-    </ng-template>
+      <div class="u-marginLeftAuto">
+        <button *ngIf="!!contractIds?.length" type="button" class="actionIcon" (click)="copyToClipboard()">
+          <span aria-hidden="true" class="lucca-icon icon-copy"
+                (mouseover)="resetCopyTooltip()" [luTooltip]="copyTooltip$ | async" luTooltipPosition="after"></span>
+          <span class="u-mask">{{ copyTooltip$ | async }}</span>
+        </button>
+
+        <span [luTooltip]="'counts_cannot_redirect_too_many_contracts' | translate" [luTooltipDisabled]="!hasTooManyContracts">
+          <button *ngIf="!!contractIds?.length" [disabled]="hasTooManyContracts"
+                  type="button" class="actionIcon" (click)="redirect()">
+            <span aria-hidden="true" class="lucca-icon icon-outside"
+                  [luTooltip]="'counts_launcher_show_all_contracts' | translate"
+                  luTooltipPosition="after"></span>
+            <span class="u-mask">{{ 'counts_cannot_redirect_too_many_contracts' | translate }}</span>
+          </button>
+        </span>
+      </div>
+
+    </div>
   </div>
-
 </div>

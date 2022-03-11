@@ -1,27 +1,39 @@
-import { SubmissionState } from '@cc/common/forms';
-import { IContract } from '@cc/domain/billing/contracts';
-import { ReplaySubject } from 'rxjs';
+import { Observable, pipe, UnaryFunction } from 'rxjs';
+import { map } from 'rxjs/operators';
 
-export class CountsDashboard {
+export interface ICountsDashboard {
   countPeriod: Date;
 
-  numberOfContracts$ = new ReplaySubject<number>(1);
-  isNumberOfContractsLoading$ = new ReplaySubject<boolean>(1);
+  numberOfContracts: number;
+  numberOfRealCounts: number;
 
-  numberOfRealCounts$ = new ReplaySubject<number>(1);
-  isNumberOfRealCountsLoading$ = new ReplaySubject<boolean>(1);
+  contractIdsWithoutCounts: number[];
+  numberOfContractsWithoutCount: number;
 
-  contractsWithoutCounts$ = new ReplaySubject<IContract[]>(1);
-  numberOfContractsWithoutCount$ = new ReplaySubject<number>(1);
-  isContractsWithoutCountLoading$ = new ReplaySubject<boolean>(1);
+  contractIdsWithDraftCount: number[];
+  numberOfContractsWithDraftCount: number;
 
-  contractsWithDraftCount$ = new ReplaySubject<IContract[]>(1);
-  numberOfContractsWithDraftCount$ = new ReplaySubject<number>(1);
-  isContractsWithDraftCountLoading$ = new ReplaySubject<boolean>(1);
-  withDraftCountRedirectionState$ = new ReplaySubject<SubmissionState>(1);
-
-  contractsWithCountWithoutAccountingEntry$ = new ReplaySubject<IContract[]>(1);
-  numberOfContractsWithCountWithoutAccountingEntry$ = new ReplaySubject<number>(1);
-  isContractsWithCountWithoutAccountingEntryLoading$ = new ReplaySubject<boolean>(1);
-  withCountWithoutAccountingEntryRedirectionState$ = new ReplaySubject<SubmissionState>(1);
+  contractIdsWithCountWithoutAccountingEntry: number[];
+  numberOfContractsWithCountWithoutAccountingEntry: number;
 }
+
+
+export const toDashboard = (countPeriod: Date):
+  UnaryFunction<Observable<[number, number, number[], number[], number[]]>, Observable<ICountsDashboard>> => pipe(
+    map(([
+      numberOfContracts,
+      numberOfRealCounts,
+      contractIdsWithoutCounts,
+      contractIdsWithDraftCount,
+      contractIdsWithCountWithoutAccountingEntry,
+    ]) => ({
+      countPeriod,
+      numberOfContracts,
+      numberOfRealCounts,
+      contractIdsWithoutCounts,
+      numberOfContractsWithoutCount: contractIdsWithoutCounts.length,
+      contractIdsWithDraftCount,
+      numberOfContractsWithDraftCount: contractIdsWithDraftCount.length,
+      contractIdsWithCountWithoutAccountingEntry,
+      numberOfContractsWithCountWithoutAccountingEntry: contractIdsWithCountWithoutAccountingEntry.length,
+    })));

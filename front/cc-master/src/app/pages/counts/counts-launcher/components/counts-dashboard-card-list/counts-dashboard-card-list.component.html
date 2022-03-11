@@ -1,42 +1,27 @@
-<div class="mod-stickyTop">
+<cc-counts-dashboard-card class="grid-xs6"
+                          [title]="'counts_launcher_number_of_contracts' | translate : { count: dashboard?.numberOfContracts } "
+                          [totalCount]="dashboard?.numberOfContracts">
+</cc-counts-dashboard-card>
 
-  <h4 class="u-marginLeftStandard u-marginTopSmall">{{ 'counts_launcher_info_numbers' | translate }}</h4>
+<cc-counts-dashboard-card class="grid-xs6"
+                          [title]="'counts_launcher_number_of_real_counts' | translate : { count: dashboard?.numberOfRealCounts }"
+                          [totalCount]="dashboard?.numberOfRealCounts">
+</cc-counts-dashboard-card>
 
-  <cc-counts-dashboard-card [title]="contractsTitle$ | async"
-                            [totalCount]="dashboard?.numberOfContracts$ | async"
-                            [isLoading]="dashboard?.isNumberOfContractsLoading$ | async">
-  </cc-counts-dashboard-card>
+<cc-counts-dashboard-card class="grid-xs6"
+                          [title]="'counts_launcher_missing_counts' | translate : { count: dashboard?.numberOfContractsWithoutCount }"
+                          [totalCount]="dashboard?.numberOfContractsWithoutCount"
+                          [contractIds]="dashboard.contractIdsWithoutCounts">
+</cc-counts-dashboard-card>
 
-  <cc-counts-dashboard-card [title]="realCountsTitle$ | async"
-                            [totalCount]="dashboard?.numberOfRealCounts$ | async"
-                            [isLoading]="dashboard?.isNumberOfRealCountsLoading$ | async">
-  </cc-counts-dashboard-card>
+<cc-counts-dashboard-card class="grid-xs6"
+                          [title]="'counts_launcher_draft_counts' | translate : { count: dashboard?.numberOfContractsWithDraftCount }"
+                          [totalCount]="dashboard?.numberOfContractsWithDraftCount"
+                          [contractIds]="dashboard.contractIdsWithDraftCount">
+</cc-counts-dashboard-card>
 
-
-  <h4 class="u-marginLeftStandard u-marginTopSmall">{{ 'counts_launcher_info_with_details' | translate }}</h4>
-
-  <cc-counts-dashboard-card mod="mod-clickable"
-                            [title]="missingCountsTitle$ | async"
-                            [totalCount]="dashboard?.numberOfContractsWithoutCount$ | async"
-                            [isLoading]="dashboard?.isContractsWithoutCountLoading$ | async"
-                            [isSelected]="isSelected(section.WithoutCount)"
-                            (showMoreDetails)="showDetails(section.WithoutCount)">
-  </cc-counts-dashboard-card>
-
-  <cc-counts-dashboard-card mod="mod-clickable"
-                            [title]="draftCountsTitle$ | async"
-                            [totalCount]="dashboard?.numberOfContractsWithDraftCount$ | async"
-                            [isLoading]="dashboard?.isContractsWithDraftCountLoading$ | async"
-                            [isSelected]="isSelected(section.WithDraftCount)"
-                            (showMoreDetails)="showDetails(section.WithDraftCount)">
-  </cc-counts-dashboard-card>
-
-  <cc-counts-dashboard-card mod="mod-clickable"
-                            [title]="countsWithoutAccountingEntryTitle$ | async"
-                            [totalCount]="dashboard?.numberOfContractsWithCountWithoutAccountingEntry$ | async"
-                            [isLoading]="dashboard?.isContractsWithCountWithoutAccountingEntryLoading$ | async"
-                            [isSelected]="isSelected(section.WithCountWithoutAccountingEntry)"
-                            (showMoreDetails)="showDetails(section.WithCountWithoutAccountingEntry)">
-  </cc-counts-dashboard-card>
-
-</div>
+<cc-counts-dashboard-card class="grid-xs6"
+                          [title]="'counts_launcher_without_accounting_entry' | translate : { count: dashboard?.numberOfContractsWithCountWithoutAccountingEntry }"
+                          [totalCount]="dashboard?.numberOfContractsWithCountWithoutAccountingEntry"
+                          [contractIds]="dashboard.contractIdsWithCountWithoutAccountingEntry">
+</cc-counts-dashboard-card>

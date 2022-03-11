@@ -1,4 +1,10 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, Input } from '@angular/core';
+import { TranslatePipe } from '@cc/aspects/translate';
+import { NavigationPath } from '@cc/common/navigation';
+import { ReplaySubject } from 'rxjs';
+
+import { ContractState } from '../../../../../contracts/contracts-manage/constants/contract-state.enum';
+import { ContractsRoutingKey } from '../../../../../contracts/contracts-manage/services/contracts-routing.service';
 
 @Component({
   selector: 'cc-counts-dashboard-card',
@@ -6,14 +12,40 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
   styleUrls: ['./counts-dashboard-card.component.scss'],
 })
 export class CountsDashboardCardComponent {
-  @Input() public mod: string;
   @Input() public title: string;
   @Input() public totalCount: number;
-  @Input() public isLoading: boolean;
-  @Input() public isSelected: boolean;
+  @Input() public contractIds: number[];
 
-  @Output() public showMoreDetails: EventEmitter<void> = new EventEmitter();
+  public copyTooltip$ = new ReplaySubject<string>(1);
 
-  constructor() { }
+  public get hasContracts(): boolean {
+    return !!this.contractIds?.length;
+  }
 
+  public get hasTooManyContracts(): boolean {
+    const maxQueryString = 100;
+    return this.contractIds?.length > maxQueryString;
+  }
+
+  constructor(private translatePipe: TranslatePipe) {}
+
+  public copyToClipboard(): void {
+    navigator.clipboard.writeText(this.contractIds.join(','));
+    this.copyTooltip$.next('✅');
+  }
+
+  public redirect(): void {
+    const url = `${ NavigationPath.Contracts}/${ NavigationPath.ContractsManage }`;
+    const query = [
+      `${ContractsRoutingKey.Ids}=${this.contractIds.join(',')}`,
+      `${ContractsRoutingKey.State}=${ ContractState.NotStarted },${ ContractState.InProgress},${ ContractState.Closed }`,
+    ];
+
+    const redirectionUrl = !!this.contractIds?.length ? `${url}?${ query.join('&') }` : url;
+    window.open(redirectionUrl);
+  }
+
+  public resetCopyTooltip(): void {
+    this.copyTooltip$.next(this.translatePipe.transform('counts_copy_contract_ids_to_clipboard'));
+  }
 }
