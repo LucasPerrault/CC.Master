@@ -1,3 +1,4 @@
+@demo
 Feature: Demos access
 
 Scenario: Get a list of demos as a user with scope "AllDepartments"
