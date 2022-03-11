@@ -4,8 +4,8 @@ import { FormControl } from '@angular/forms';
 import { getButtonState, toSubmissionState } from '@cc/common/forms';
 import { IPaginatedResult, PaginatedList, PaginatedListState, PagingService } from '@cc/common/paging';
 import { ISortParams, SortOrder } from '@cc/common/sort';
-import { BehaviorSubject, combineLatest, Observable, ReplaySubject, Subject } from 'rxjs';
-import { debounceTime, map, skip, switchMap, take, takeUntil } from 'rxjs/operators';
+import { BehaviorSubject, combineLatest, Observable, of, ReplaySubject, Subject } from 'rxjs';
+import { map, skip, switchMap, take, takeUntil } from 'rxjs/operators';
 
 import { CountAdditionalColumn } from './components/count-additional-column-select/count-additional-column.enum';
 import { CountsSortParamKey } from './enums/count-sort-param-key.enum';
@@ -41,10 +41,7 @@ export class CountsTablePageComponent implements OnInit, OnDestroy {
 
   public isLoading$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(true);
   public filters: FormControl = new FormControl(null);
-  public sortParams$: BehaviorSubject<ISortParams> = new BehaviorSubject<ISortParams>({
-    field: CountsSortParamKey.CountPeriod,
-    order: SortOrder.Desc,
-  });
+  public sortParams$: ReplaySubject<ISortParams> = new ReplaySubject<ISortParams>(1);
 
   public exportButtonClass$ = new ReplaySubject<string>(1);
 
@@ -67,7 +64,6 @@ export class CountsTablePageComponent implements OnInit, OnDestroy {
     combineLatest([this.filters.valueChanges, this.sortParams$])
       .pipe(
         takeUntil(this.destroy$),
-        debounceTime(300),
         map(([filters, sort]) => ({ filters, sort })),
         map(attributes => this.apiMappingService.toHttpParams(attributes)),
       )
@@ -88,13 +84,7 @@ export class CountsTablePageComponent implements OnInit, OnDestroy {
       .pipe(map(columns => !!columns ? columns.map(c => c.id) : []))
       .subscribe(this.columnsSelected$);
 
-    const routingParams = this.routingService.getRoutingParams();
-    this.filtersRoutingService.toFilter$(routingParams)
-      .pipe(take(1))
-      .subscribe(filters => this.filters.setValue(filters, { emitEvent: false }));
-
-    const routingColumnsSelected = this.filtersRoutingService.toColumnsSelected(routingParams);
-    this.columnsSelectedFormControl.setValue(routingColumnsSelected);
+    this.setFiltersAndColumnsAndSort();
 
     this.paginatedCounts = this.pagingService.paginate<IDetailedCount>(
       (httpParams) => this.getPaginatedCounts$(httpParams),
@@ -120,12 +110,15 @@ export class CountsTablePageComponent implements OnInit, OnDestroy {
 
   public export(): void {
     const filters = this.filters.value;
-    const sort = this.sortParams$.value;
-    const httpParams = this.apiMappingService.toHttpParams({ filters, sort });
-
-    this.dataService.export$(httpParams)
-      .pipe(take(1), toSubmissionState(), map(state => getButtonState(state)))
+    this.sortParams$
+      .pipe(take(1), map(sort => this.apiMappingService.toHttpParams({ filters, sort })),
+        switchMap(p => this.export$(p)))
       .subscribe(this.exportButtonClass$);
+  }
+
+  private export$(httpParams: HttpParams): Observable<string> {
+    return this.dataService.export$(httpParams)
+      .pipe(take(1), toSubmissionState(), map(state => getButtonState(state)));
   }
 
   private getPaginatedCounts$(httpParams: HttpParams): Observable<IPaginatedResult<IDetailedCount>> {
@@ -137,5 +130,21 @@ export class CountsTablePageComponent implements OnInit, OnDestroy {
   private async updateRoutingParamsAsync(filters: ICountsFilterForm, columns: CountAdditionalColumn[]): Promise<void> {
     const routingParams = this.filtersRoutingService.toRoutingParams(filters, columns);
     await this.routingService.updateRouterAsync(routingParams);
+  }
+
+  private setFiltersAndColumnsAndSort(): void {
+    const routingParams = this.routingService.getRoutingParams();
+
+    combineLatest([
+      this.filtersRoutingService.toFilter$(routingParams),
+      of(this.filtersRoutingService.toColumnsSelected(routingParams)),
+      of({ field: CountsSortParamKey.CountPeriod, order: SortOrder.Desc }),
+    ])
+      .pipe(take(1))
+      .subscribe(([filters, columns, sort]) => {
+        this.filters.setValue(filters, { emitEvent: false });
+        this.columnsSelectedFormControl.setValue(columns);
+        this.sortParams$.next(sort);
+      });
   }
 }
