@@ -12,6 +12,7 @@ export enum CountsRoutingKey {
   EnvironmentGroupIds = 'environmentgroupids',
   ProductIds = 'productids',
   Columns = 'columns',
+  EnvironmentIds = 'environmentids',
 }
 
 @Injectable()
@@ -29,6 +30,7 @@ export class CountsRoutingService {
       environmentGroupIds: params.get(CountsRoutingKey.EnvironmentGroupIds),
       productIds: params.get(CountsRoutingKey.ProductIds),
       columns: params.get(CountsRoutingKey.Columns),
+      environmentIds: params.get(CountsRoutingKey.EnvironmentIds),
     };
   }
 
@@ -41,6 +43,7 @@ export class CountsRoutingService {
       [CountsRoutingKey.DistributorIds]: params.distributorIds,
       [CountsRoutingKey.EnvironmentGroupIds]: params.environmentGroupIds,
       [CountsRoutingKey.Columns]: params.columns,
+      [CountsRoutingKey.EnvironmentIds]: params.environmentIds,
     };
 
     await this.router.navigate([], {

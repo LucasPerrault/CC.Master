@@ -6,7 +6,7 @@ import { ISortParams } from '@cc/common/sort';
 import { IClient } from '@cc/domain/billing/clients';
 import { IDistributor } from '@cc/domain/billing/distributors';
 import { IOffer, IProduct } from '@cc/domain/billing/offers';
-import { IEnvironmentGroup } from '@cc/domain/environments';
+import { IEnvironment, IEnvironmentGroup } from '@cc/domain/environments';
 
 import { ICountsFilterForm } from '../models/counts-filter-form.interface';
 
@@ -22,6 +22,7 @@ enum CountsQueryParamKey {
   Offer = 'offerId',
   EnvironmentGroup = 'contract.environment.groupId',
   Product = 'offer.productId',
+  EnvironmentId = 'contract.environment.id'
 }
 
 @Injectable()
@@ -53,6 +54,7 @@ export class CountsApiMappingService {
     params = this.getOffersHttpParams(params, filters.offers);
     params = this.getEnvironmentGroupsHttpParams(params, filters.environmentGroups);
     params = this.getProductsHttpParams(params, filters.products);
+    params = this.getEnvironmentsHttpParams(params, filters.environments);
     return params;
   }
 
@@ -93,5 +95,11 @@ export class CountsApiMappingService {
     return !!products?.length
       ? params.set(CountsQueryParamKey.Product, products.map(c => c.id).join(','))
       : params.delete(CountsQueryParamKey.Product);
+  }
+
+  private getEnvironmentsHttpParams(params: HttpParams, environments: IEnvironment[]) {
+    return !!environments?.length
+      ? params.set(CountsQueryParamKey.EnvironmentId, environments.map(c => c.id).join(','))
+      : params.delete(CountsQueryParamKey.EnvironmentId);
   }
 }

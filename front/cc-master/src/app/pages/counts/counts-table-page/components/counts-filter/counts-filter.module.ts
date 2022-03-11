@@ -3,11 +3,11 @@ import { NgModule } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { TranslateModule } from '@cc/aspects/translate';
 import {
-  ClientApiSelectModule,
-  DateRangeSelectModule,
-  DistributorApiSelectModule, EnvironmentGroupApiSelectModule,
-  OfferApiSelectModule,
-  ProductApiSelectModule,
+    ClientApiSelectModule,
+    DateRangeSelectModule,
+    DistributorApiSelectModule, EnvironmentApiSelectModule, EnvironmentGroupApiSelectModule,
+    OfferApiSelectModule,
+    ProductApiSelectModule,
 } from '@cc/common/forms';
 
 import { CountsFilterComponent } from './counts-filter.component';
@@ -15,16 +15,17 @@ import { CountsFilterComponent } from './counts-filter.component';
 @NgModule({
   declarations: [CountsFilterComponent],
   exports: [CountsFilterComponent],
-  imports: [
-    CommonModule,
-    ReactiveFormsModule,
-    DateRangeSelectModule,
-    ClientApiSelectModule,
-    DistributorApiSelectModule,
-    OfferApiSelectModule,
-    TranslateModule,
-    ProductApiSelectModule,
-    EnvironmentGroupApiSelectModule,
-  ],
+    imports: [
+        CommonModule,
+        ReactiveFormsModule,
+        DateRangeSelectModule,
+        ClientApiSelectModule,
+        DistributorApiSelectModule,
+        OfferApiSelectModule,
+        TranslateModule,
+        ProductApiSelectModule,
+        EnvironmentGroupApiSelectModule,
+        EnvironmentApiSelectModule,
+    ],
 })
 export class CountsFilterModule {}

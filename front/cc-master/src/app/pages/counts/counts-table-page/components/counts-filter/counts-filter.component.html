@@ -16,6 +16,12 @@
 
   <div *ngIf="showAdditionalFilters" class="u-displayFlex u-alignItemsCenter u-flexWrapWrap">
 
+    <label class="textfield palette-grey mod-outlined mod-inline u-marginTopSmallest">
+      <cc-environment-api-select [formControlName]="formKey.Environments" [multiple]="true"
+                                 [placeholder]="'environments_select_label' | translate">
+      </cc-environment-api-select>
+    </label>
+
     <cc-client-api-select [formControlName]="formKey.Clients" [displayMode]="selectMode.Filter" [multiple]="true"
                           textfieldClass="palette-grey mod-outlined mod-inline u-marginTopSmallest">
     </cc-client-api-select>

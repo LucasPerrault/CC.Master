@@ -2,7 +2,7 @@ import { IDateRange } from '@cc/common/date';
 import { IClient } from '@cc/domain/billing/clients';
 import { IDistributor } from '@cc/domain/billing/distributors';
 import { IOffer, IProduct } from '@cc/domain/billing/offers';
-import { IEnvironmentGroup } from '@cc/domain/environments';
+import { IEnvironment, IEnvironmentGroup } from '@cc/domain/environments';
 
 export enum CountsFilterFormKey {
   CountPeriod = 'countPeriod',
@@ -11,6 +11,7 @@ export enum CountsFilterFormKey {
   EnvironmentGroups = 'environmentGroups',
   Products = 'products',
   Clients = 'clients',
+  Environments = 'environments',
 }
 
 export interface ICountsFilterForm {
@@ -20,4 +21,5 @@ export interface ICountsFilterForm {
   environmentGroups: IEnvironmentGroup[];
   products: IProduct[];
   clients: IClient[];
+  environments: IEnvironment[];
 }

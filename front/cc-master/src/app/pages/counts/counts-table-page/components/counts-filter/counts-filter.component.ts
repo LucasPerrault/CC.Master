@@ -39,6 +39,7 @@ export class CountsFilterComponent implements OnInit, OnDestroy, ControlValueAcc
     CountsFilterFormKey.EnvironmentGroups,
     CountsFilterFormKey.Products,
     CountsFilterFormKey.Clients,
+    CountsFilterFormKey.Environments,
   ];
 
   private destroy$: Subject<void> = new Subject();
@@ -54,6 +55,7 @@ export class CountsFilterComponent implements OnInit, OnDestroy, ControlValueAcc
       [CountsFilterFormKey.Offers]: new FormControl([]),
       [CountsFilterFormKey.EnvironmentGroups]: new FormControl([]),
       [CountsFilterFormKey.Products]: new FormControl([]),
+      [CountsFilterFormKey.Environments]: new FormControl([]),
     });
   }
 

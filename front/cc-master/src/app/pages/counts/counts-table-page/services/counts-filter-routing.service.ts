@@ -4,7 +4,7 @@ import { ApiV3DateService } from '@cc/common/queries';
 import { ClientsService, IClient } from '@cc/domain/billing/clients';
 import { DistributorsService, IDistributor } from '@cc/domain/billing/distributors';
 import { IOffer, OffersService, ProductsService } from '@cc/domain/billing/offers';
-import { EnvironmentGroupsService } from '@cc/domain/environments';
+import { EnvironmentGroupsService, EnvironmentsService, IEnvironment } from '@cc/domain/environments';
 import { IEnvironmentGroup } from '@cc/domain/environments/models/environment-group.interface';
 import { endOfMonth, startOfMonth, subMonths } from 'date-fns';
 import { forkJoin, Observable, of } from 'rxjs';
@@ -26,6 +26,7 @@ export interface ICountsRoutingParams {
   environmentGroupIds: string;
   productIds: string;
   columns: string;
+  environmentIds: string;
 }
 
 @Injectable()
@@ -37,6 +38,7 @@ export class CountsFilterRoutingService {
     private productsService: ProductsService,
     private distributorsService: DistributorsService,
     private environmentGroupsService: EnvironmentGroupsService,
+    private environmentsService: EnvironmentsService,
     private apiV3DateService: ApiV3DateService,
   ) { }
 
@@ -54,14 +56,16 @@ export class CountsFilterRoutingService {
       this.getProducts$(routingParams.productIds),
       this.getDistributors$(routingParams.distributorIds),
       this.getEnvironmentGroups$(routingParams.environmentGroupIds),
+      this.getEnvironments$(routingParams.environmentIds),
     ]).pipe(
-      map(([offers, clients, products, distributors, environmentGroups]) => ({
+      map(([offers, clients, products, distributors, environmentGroups, environments]) => ({
         countPeriod: this.getCountPeriod(routingParams?.countPeriod),
         offers,
         clients,
         products,
         distributors,
         environmentGroups,
+        environments,
       }),
     ));
   }
@@ -75,6 +79,7 @@ export class CountsFilterRoutingService {
       environmentGroupIds: this.getSafeRoutingParams(filters.environmentGroups?.map(e => e.id).join(',')),
       productIds: this.getSafeRoutingParams(filters.products?.map(p => p.id).join(',')),
       columns: this.getSafeRoutingParams(columns.join(',')),
+      environmentIds: this.getSafeRoutingParams(filters?.environments?.map(e => e.id).join(',')),
     };
   }
 
@@ -120,6 +125,13 @@ export class CountsFilterRoutingService {
     const groupIds = this.convertToNumbers(idsToString);
     return !!groupIds.length
       ? this.environmentGroupsService.getEnvironmentGroupsByIds$(groupIds).pipe(take(1))
+      : of([]);
+  }
+
+  private getEnvironments$(idsToString: string): Observable<IEnvironment[]> {
+    const environmentIds = this.convertToNumbers(idsToString);
+    return !!environmentIds.length
+      ? this.environmentsService.getEnvironmentsByIds$(environmentIds).pipe(take(1))
       : of([]);
   }
 
