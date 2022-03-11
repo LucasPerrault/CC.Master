@@ -7,7 +7,8 @@
       <th class=" table-head-row-cell mod-stickyColumn-leftOffset16 mod-stickyColumn-shadow" role="presentation" >
         <div class="stickyColumn-shadow-wrapper"></div>
       </th>
-      <th class="table-head-row-cell" colspan="1"></th>
+      <th class="table-head-row-cell" colspan="1"
+          [ngClass]="{ 'mod-hidden': isHidden([column.Distributor]) }"></th>
       <th class="table-head-row-cell" colspan="1"
           [ngClass]="{ 'mod-hidden': isHidden([column.Offer]) }">
         {{ 'counts_column_product' | translate }}
