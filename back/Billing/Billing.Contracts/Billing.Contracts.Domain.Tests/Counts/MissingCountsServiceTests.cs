@@ -5,7 +5,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using Authentication.Domain;
 using Billing.Contracts.Domain.Clients;
-using Billing.Contracts.Domain.Common;
 using Billing.Contracts.Domain.Contracts;
 using Billing.Contracts.Domain.Counts;
 using Billing.Contracts.Domain.Counts.Services;
@@ -17,7 +16,6 @@ using Billing.Products.Domain;
 using Distributors.Domain.Models;
 using Lucca.Core.Api.Abstractions.Paging;
 using Lucca.Core.Api.Queryable.Paging;
-using Lucca.Core.Shared.Domain.Exceptions;
 using Moq;
 using NExtends.Primitives.DateTimes;
 using Rights.Domain.Abstractions;
@@ -93,16 +91,7 @@ namespace Billing.Contracts.Domain.Tests.Counts
             var countsOverPeriod = new List<Count> { new() {Id = 1, ContractId = contractWithCount.Id, CountPeriod = period} };
             var missingCounts = await _missingCountsService.GetAsync(countsOverPeriod, period);
 
-            missingCounts.Items.Single().Contract.Id.Should().Be(contractWithoutCount.Id);
-        }
-
-        [Fact]
-        public async Task ShouldThrow_BadRequest_If_PeriodIsInvalid()
-        {
-            AccountingPeriod period = null;
-            Func<Task<Page<MissingCount>>> func = () => _missingCountsService.GetAsync(new List<Count>(), period);
-
-            await func.Should().ThrowAsync<BadRequestException>().WithMessage("Month and years query params are mandatory");
+            missingCounts.Single().ContractId.Should().Be(contractWithoutCount.Id);
         }
     }
 }

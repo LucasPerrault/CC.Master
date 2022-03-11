@@ -1,21 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Billing.Contracts.Domain.Common;
 using Billing.Contracts.Domain.Contracts;
 using Billing.Contracts.Domain.Contracts.Interfaces;
-using Lucca.Core.Api.Abstractions.Paging;
-using Lucca.Core.Shared.Domain.Exceptions;
-using NExtends.Primitives.DateTimes;
 using Tools;
 
 namespace Billing.Contracts.Domain.Counts.Services;
 
 public interface IMissingCountsService
 {
-    Task<Page<MissingCount>> GetAsync(IReadOnlyCollection<Count> countsOverPeriod, AccountingPeriod period);
+    Task<List<MissingCount>> GetAsync(IReadOnlyCollection<Count> countsOverPeriod, AccountingPeriod period);
 }
 
 public class MissingCountsService : IMissingCountsService
@@ -31,39 +27,29 @@ public class MissingCountsService : IMissingCountsService
         _principal = principal;
     }
 
-    public async Task<Page<MissingCount>> GetAsync(IReadOnlyCollection<Count> countsOverPeriod, AccountingPeriod period)
+    public async Task<List<MissingCount>> GetAsync(IReadOnlyCollection<Count> countsOverPeriod, AccountingPeriod period)
     {
-        if (period is null)
-        {
-            throw new BadRequestException("Month and years query params are mandatory");
-        }
+        var contractIdsWithCount = countsOverPeriod.Select(c => c.ContractId).ToHashSet();
+        var contractIds = await GetContractIdsThatShouldHaveCount(period);
 
-        var contractsShouldBeCount = await GetContractsShouldBeCount(period);
-        var contractIdsWithCount = countsOverPeriod.Select(c => c.ContractId).ToList();
-        var contractsWithoutCount = contractsShouldBeCount
-            .Where(c => !contractIdsWithCount.Contains(c.Id))
+        return contractIds
+            .Where(id => !contractIdsWithCount.Contains(id))
+            .Select(id => new MissingCount { ContractId = id, Period = period })
             .ToList();
-
-        var missingCounts = contractsWithoutCount
-            .Select(contract => new MissingCount { Contract = contract, Period = period })
-            .ToList();
-
-        return new Page<MissingCount> { Count = missingCounts.Count, Items = missingCounts };
     }
 
-    private async Task<List<Contract>> GetContractsShouldBeCount(AccountingPeriod period)
+    private async Task<List<int>> GetContractIdsThatShouldHaveCount(AccountingPeriod period)
     {
         var accessRight = await _contractsRightsFilter.GetReadAccessAsync(_principal);
-        var periodToDate = new DateTime(period.Year, period.Month, 1);
         var filter = new ContractFilter
         {
-            StartsOn = CompareDateTime.IsBeforeOrEqual(periodToDate.FirstOfMonth()),
-            TheoreticalEndsOn = CompareDateTime.IsAfterOrEqual(periodToDate.LastOfMonth()).OrNull(),
+            StartsOn = CompareDateTime.IsBeforeOrEqual(period),
+            TheoreticalEndsOn = CompareDateTime.IsAfterOrEqual(period.LastOfMonth()).OrNull(),
             HasEnvironment = CompareBoolean.TrueOnly,
             ArchivedAt = CompareNullableDateTime.IsNull(),
             HasAttachments = CompareBoolean.TrueOnly,
         };
 
-        return await _contractsStore.GetAsync(accessRight, filter);
+        return await _contractsStore.GetIdsAsync(accessRight, filter);
     }
 }

@@ -48,6 +48,16 @@ namespace Billing.Contracts.Infra.Storage.Stores
                 .ToListAsync();
         }
 
+        public async Task<List<int>> GetIdsAsync(AccessRight accessRight, ContractFilter filter)
+        {
+            var queryable = await Set(accessRight, filter)
+                .AsNoTracking()
+                .Select(c => new { c.Id })
+                .ToListAsync();
+
+            return queryable.Select(c => c.Id).ToList();
+        }
+
         public async Task<List<OfferUsageContract>> GetOfferUsageContractAsync(AccessRight accessRight, ContractFilter filter)
         {
             var contractsExtract = await Set(accessRight, filter)

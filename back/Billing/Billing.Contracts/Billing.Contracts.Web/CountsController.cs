@@ -6,8 +6,8 @@ using Rights.Domain;
 using Rights.Web.Attributes;
 using System.Threading.Tasks;
 using Billing.Contracts.Application.Counts;
-using Billing.Contracts.Domain.Common;
 using Billing.Contracts.Domain.Counts;
+using Lucca.Core.Shared.Domain.Exceptions;
 
 namespace Billing.Contracts.Web
 {
@@ -24,20 +24,20 @@ namespace Billing.Contracts.Web
 
         [HttpGet("missing")]
         [ForbidIfMissing(Operation.ReadContracts)]
-        public Task<Page<MissingCount>> GetMissingAsync([FromQuery] MissingCountQuery query)
+        public async Task<Page<MissingCount>> GetMissingCountsAsync([FromQuery] MissingCountsQuery query)
         {
-            return _countsRepository.GetMissingCountsAsync(query.ToAccountPeriod());
+            if (!query.Period.HasValue)
+            {
+                throw new BadRequestException($"{nameof(MissingCountsQuery.Period)} query param is mandatory");
+            }
+            var missingCounts = await _countsRepository.GetMissingCountsAsync(query.Period.Value);
+            return new Page<MissingCount> { Count = missingCounts.Count, Items = missingCounts };
+
         }
 
-        public class MissingCountQuery
+        public class MissingCountsQuery
         {
-            public int? Month { get; set; }
-            public int? Year { get; set; }
-
-            public AccountingPeriod ToAccountPeriod()
-            {
-                return Year.HasValue && Month.HasValue ? new DateTime(Year.Value, Month.Value, 1) : null;
-            }
+            public DateTime? Period { get; set; }
         }
     }
 }

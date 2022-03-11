@@ -7,8 +7,6 @@ using Billing.Contracts.Domain.Counts;
 using Billing.Contracts.Domain.Counts.Filtering;
 using Billing.Contracts.Domain.Counts.Interfaces;
 using Billing.Contracts.Domain.Counts.Services;
-using Lucca.Core.Api.Abstractions.Paging;
-using Lucca.Core.Shared.Domain.Exceptions;
 
 namespace Billing.Contracts.Application.Counts;
 
@@ -32,7 +30,7 @@ public class CountsRepository
         _principal = principal;
     }
 
-    public async Task<Page<MissingCount>> GetMissingCountsAsync(AccountingPeriod period)
+    public async Task<List<MissingCount>> GetMissingCountsAsync(AccountingPeriod period)
     {
         var accessRight = await _rightsFilter.GetReadAccessAsync(_principal);
         var filter = new CountFilter { Periods = new HashSet<AccountingPeriod> { period } };

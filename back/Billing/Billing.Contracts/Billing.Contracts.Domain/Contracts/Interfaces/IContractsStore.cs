@@ -11,6 +11,7 @@ namespace Billing.Contracts.Domain.Contracts.Interfaces
         Task<Contract> GetSingleAsync(AccessRight accessRight, ContractFilter contractFilter);
         Task<Page<Contract>> GetPageAsync(AccessRight accessRight, ContractFilter filter, IPageToken pageToken);
         Task<List<Contract>> GetAsync(AccessRight accessRight, ContractFilter filter);
+        Task<List<int>> GetIdsAsync(AccessRight accessRight, ContractFilter filter);
         Task<List<OfferUsageContract>> GetOfferUsageContractAsync(AccessRight accessRight, ContractFilter filter);
         Task<ContractComment> GetCommentAsync(AccessRight accessRight, int contractId);
     }
