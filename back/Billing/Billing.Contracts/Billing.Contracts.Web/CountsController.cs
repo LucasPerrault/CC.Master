@@ -5,8 +5,9 @@ using Microsoft.AspNetCore.Mvc;
 using Rights.Domain;
 using Rights.Web.Attributes;
 using System.Threading.Tasks;
+using Billing.Contracts.Application.Counts;
+using Billing.Contracts.Domain.Common;
 using Billing.Contracts.Domain.Counts;
-using Billing.Contracts.Domain.Counts.Services;
 
 namespace Billing.Contracts.Web
 {
@@ -14,18 +15,29 @@ namespace Billing.Contracts.Web
     [ApiSort(nameof(Count.Id))]
     public class CountsController
     {
-        private readonly IMissingCountsService _missingCountsService;
+        private readonly CountsRepository _countsRepository;
 
-        public CountsController(IMissingCountsService missingCountsService)
+        public CountsController(CountsRepository countsRepository)
         {
-            _missingCountsService = missingCountsService;
+            _countsRepository = countsRepository;
         }
 
         [HttpGet("missing")]
         [ForbidIfMissing(Operation.ReadContracts)]
-        public Task<Page<MissingCount>> GetMissingAsync([FromQuery] int Month, int Year)
+        public Task<Page<MissingCount>> GetMissingAsync([FromQuery] MissingCountQuery query)
         {
-            return _missingCountsService.GetAsync(new DateTime(Year, Month, 01));
+            return _countsRepository.GetMissingCountsAsync(query.ToAccountPeriod());
+        }
+
+        public class MissingCountQuery
+        {
+            public int? Month { get; set; }
+            public int? Year { get; set; }
+
+            public AccountingPeriod ToAccountPeriod()
+            {
+                return Year.HasValue && Month.HasValue ? new DateTime(Year.Value, Month.Value, 1) : null;
+            }
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using Billing.Contracts.Application;
 using Billing.Contracts.Application.Clients;
+using Billing.Contracts.Application.Counts;
 using Billing.Contracts.Application.Offers;
 using Billing.Contracts.Domain.Clients;
 using Billing.Contracts.Domain.Clients.Interfaces;
@@ -57,6 +58,7 @@ namespace Billing.Contracts.Web
             services.AddSingleton<ParsedOffersService>();
 
             services.AddScoped<IMissingCountsService, MissingCountsService>();
+            services.AddScoped<CountsRepository>();
 
             services.AddScoped<IOfferRowsService, OfferRowsService>();
             services.AddSingleton<ParsedOffersService>();
