@@ -6,8 +6,6 @@ using System.Threading.Tasks;
 using Billing.Contracts.Domain.Common;
 using Billing.Contracts.Domain.Contracts;
 using Billing.Contracts.Domain.Contracts.Interfaces;
-using Billing.Contracts.Domain.Counts.Filtering;
-using Billing.Contracts.Domain.Counts.Interfaces;
 using Lucca.Core.Api.Abstractions.Paging;
 using NExtends.Primitives.DateTimes;
 using Tools;
@@ -16,28 +14,25 @@ namespace Billing.Contracts.Domain.Counts.Services;
 
 public interface IMissingCountsService
 {
-    Task<Page<MissingCount>> GetAsync(AccountingPeriod period);
+    Task<Page<MissingCount>> GetAsync(IReadOnlyCollection<Count> countsOverPeriod, AccountingPeriod period);
 }
 
 public class MissingCountsService : IMissingCountsService
 {
     private readonly IContractsStore _contractsStore;
     private readonly ContractsRightsFilter _contractsRightsFilter;
-    private readonly ICountsStore _countsStore;
     private readonly ClaimsPrincipal _principal;
 
-    public MissingCountsService(IContractsStore contractsStore, ContractsRightsFilter contractsRightsFilter, ClaimsPrincipal principal, ICountsStore countsStore)
+    public MissingCountsService(IContractsStore contractsStore, ContractsRightsFilter contractsRightsFilter, ClaimsPrincipal principal)
     {
         _contractsStore = contractsStore;
         _contractsRightsFilter = contractsRightsFilter;
         _principal = principal;
-        _countsStore = countsStore;
     }
 
-    public async Task<Page<MissingCount>> GetAsync(AccountingPeriod period)
+    public async Task<Page<MissingCount>> GetAsync(IReadOnlyCollection<Count> countsOverPeriod, AccountingPeriod period)
     {
-        var counts = await GetCountsAsync(period);
-        var contractIdsWithCount = counts.Select(c => c.Contract.Id).ToList();
+        var contractIdsWithCount = countsOverPeriod.Select(c => c.Contract.Id).ToList();
         var contractsShouldBeCount = await GetContractsShouldBeCount(period);
         var contractsWithoutCount = contractsShouldBeCount
             .Where(c => !contractIdsWithCount.Contains(c.Id))
@@ -64,15 +59,5 @@ public class MissingCountsService : IMissingCountsService
         };
 
         return await _contractsStore.GetAsync(accessRight, filter);
-    }
-
-    private Task<IReadOnlyCollection<Count>> GetCountsAsync(AccountingPeriod period)
-    {
-        var filter = new CountFilter
-        {
-            Periods = new HashSet<AccountingPeriod> { period },
-        };
-
-        return _countsStore.GetAsync(filter);
     }
 }

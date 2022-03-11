@@ -59,6 +59,7 @@ namespace Billing.Contracts.Web
 
             services.AddScoped<IMissingCountsService, MissingCountsService>();
             services.AddScoped<CountsRepository>();
+            services.AddScoped<CountsRightsFilter>();
 
             services.AddScoped<IOfferRowsService, OfferRowsService>();
             services.AddSingleton<ParsedOffersService>();
