@@ -44,7 +44,8 @@ namespace Billing.Contracts.Infra.Storage.Stores
             return counts
                 .WhenNotNullOrEmpty(filter.Ids).ApplyWhere(c => filter.Ids.Contains(c.Id))
                 .WhenNotNullOrEmpty(filter.CommercialOfferIds).ApplyWhere(c => filter.CommercialOfferIds.Contains(c.CommercialOfferId))
-                .WhenNotNullOrEmpty(filter.ContractIds).ApplyWhere(c => filter.ContractIds.Contains(c.ContractId));
+                .WhenNotNullOrEmpty(filter.ContractIds).ApplyWhere(c => filter.ContractIds.Contains(c.ContractId))
+                .WhenNotNullOrEmpty(filter.Periods).ApplyWhere(c => filter.Periods.Contains(c.CountPeriod));
         }
 
         public static IQueryable<Count> WhereHasRight(this IQueryable<Count> counts, AccessRight accessRight)
