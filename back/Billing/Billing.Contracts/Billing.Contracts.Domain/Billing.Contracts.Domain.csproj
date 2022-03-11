@@ -8,6 +8,7 @@
     <PackageReference Include="Microsoft.Extensions.Localization.Abstractions" Version="3.1.11" />
     <PackageReference Include="Lucca.Core.Shared.Domain" Version="2.1.0" />
     <PackageReference Include="Microsoft.Extensions.Localization.Abstractions" Version="6.0.0" />
+    <PackageReference Include="NExtends" Version="2.3.2" />
   </ItemGroup>
 
   <ItemGroup>

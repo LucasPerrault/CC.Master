@@ -104,6 +104,7 @@ namespace Billing.Contracts.Infra.Storage.Stores
                 .Apply(filter.ArchivedAt).To(c => c.ArchivedAt)
                 .Apply(filter.StartsOn).To(ContractExpressions.StartsOn)
                 .Apply(filter.EndsOn).To(ContractExpressions.EndsOn)
+                .Apply(filter.TheoreticalEndsOn).To(c => c.TheoreticalEndOn)
                 .WhenNotNullOrEmpty(filter.ExcludedIds).ApplyWhere(c => !filter.ExcludedIds.Contains(c.Id))
                 .Apply(filter.CreatedAt).To(c => c.CreatedAt)
                 .WhenNotNullOrEmpty(filter.EnvironmentSubdomain).ApplyWhere(c => c.Environment.Subdomain == filter.EnvironmentSubdomain)

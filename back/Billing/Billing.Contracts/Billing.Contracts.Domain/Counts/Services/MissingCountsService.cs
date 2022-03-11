@@ -9,6 +9,7 @@ using Billing.Contracts.Domain.Contracts.Interfaces;
 using Billing.Contracts.Domain.Counts.Filtering;
 using Billing.Contracts.Domain.Counts.Interfaces;
 using Lucca.Core.Api.Abstractions.Paging;
+using NExtends.Primitives.DateTimes;
 using Tools;
 
 namespace Billing.Contracts.Domain.Counts.Services;
@@ -52,10 +53,11 @@ public class MissingCountsService : IMissingCountsService
     private async Task<List<Contract>> GetContractsShouldBeCount(AccountingPeriod period)
     {
         var accessRight = await _contractsRightsFilter.GetReadAccessAsync(_principal);
+        var periodToDate = new DateTime(period.Year, period.Month, 1);
         var filter = new ContractFilter
         {
-            StartsOn = CompareDateTime.IsStrictlyBefore(new DateTime(period.Year, period.Month, 15)),
-            EndsOn = CompareDateTime.IsStrictlyAfter(new DateTime(period.Year, period.Month, 15)).OrNull(),
+            StartsOn = CompareDateTime.IsBeforeOrEqual(periodToDate.FirstOfMonth()),
+            TheoreticalEndsOn = CompareDateTime.IsAfterOrEqual(periodToDate.LastOfMonth()).OrNull(),
             HasEnvironment = CompareBoolean.TrueOnly,
             ArchivedAt = CompareNullableDateTime.IsNull(),
             HasAttachments = CompareBoolean.TrueOnly,
