@@ -1,6 +1,7 @@
 ﻿using Lucca.Core.Shared.Domain.Exceptions;
 using System;
 using System.Collections.Generic;
+using NExtends.Primitives.DateTimes;
 using Tools;
 
 namespace Billing.Contracts.Domain.Common
@@ -28,6 +29,8 @@ namespace Billing.Contracts.Domain.Common
         public static implicit operator AccountingPeriod(DateTime d) => d.Day == 1
             ? new AccountingPeriod { Year = d.Year, Month = d.Month }
             : throw new InvalidCountPeriodDayException();
+
+        public DateTime LastOfMonth() => ( (DateTime) this ).LastOfMonth();
 
         public int CompareTo(object? obj)
         {

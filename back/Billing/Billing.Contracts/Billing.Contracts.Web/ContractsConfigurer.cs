@@ -7,6 +7,7 @@ using Billing.Contracts.Domain.Contracts;
 using Billing.Contracts.Domain.Contracts.Health;
 using Billing.Contracts.Domain.Contracts.Interfaces;
 using Billing.Contracts.Domain.Counts.Interfaces;
+using Billing.Contracts.Domain.Counts.Services;
 using Billing.Contracts.Domain.Offers;
 using Billing.Contracts.Domain.Offers.Filtering;
 using Billing.Contracts.Domain.Offers.Interfaces;
@@ -55,6 +56,7 @@ namespace Billing.Contracts.Web
             services.AddScoped<IOfferRowsService, OfferRowsService>();
             services.AddSingleton<ParsedOffersService>();
 
+            services.AddScoped<IMissingCountsService, MissingCountsService>();
 
             services.AddScoped<IOfferRowsService, OfferRowsService>();
             services.AddSingleton<ParsedOffersService>();

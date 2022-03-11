@@ -48,6 +48,16 @@ namespace Billing.Contracts.Infra.Storage.Stores
                 .ToListAsync();
         }
 
+        public async Task<List<int>> GetIdsAsync(AccessRight accessRight, ContractFilter filter)
+        {
+            var queryable = await Set(accessRight, filter)
+                .AsNoTracking()
+                .Select(c => new { c.Id })
+                .ToListAsync();
+
+            return queryable.Select(c => c.Id).ToList();
+        }
+
         public async Task<List<OfferUsageContract>> GetOfferUsageContractAsync(AccessRight accessRight, ContractFilter filter)
         {
             var contractsExtract = await Set(accessRight, filter)
@@ -104,6 +114,7 @@ namespace Billing.Contracts.Infra.Storage.Stores
                 .Apply(filter.ArchivedAt).To(c => c.ArchivedAt)
                 .Apply(filter.StartsOn).To(ContractExpressions.StartsOn)
                 .Apply(filter.EndsOn).To(ContractExpressions.EndsOn)
+                .Apply(filter.TheoreticalEndsOn).To(c => c.TheoreticalEndOn)
                 .WhenNotNullOrEmpty(filter.ExcludedIds).ApplyWhere(c => !filter.ExcludedIds.Contains(c.Id))
                 .Apply(filter.CreatedAt).To(c => c.CreatedAt)
                 .WhenNotNullOrEmpty(filter.EnvironmentSubdomain).ApplyWhere(c => c.Environment.Subdomain == filter.EnvironmentSubdomain)
@@ -116,7 +127,8 @@ namespace Billing.Contracts.Infra.Storage.Stores
                 .WhenNotNullOrEmpty(filter.ExcludedDistributorIds).ApplyWhere(c => !filter.ExcludedDistributorIds.Contains(c.DistributorId))
                 .WhenNotNullOrEmpty(filter.CommercialOfferIds).ApplyWhere(c => filter.CommercialOfferIds.Contains(c.CommercialOfferId))
                 .WhenNotNullOrEmpty(filter.EnvironmentIds).ApplyWhere(c => c.EnvironmentId.HasValue &&  filter.EnvironmentIds.Contains(c.EnvironmentId.Value))
-                .When(filter.ClientExternalId.HasValue).ApplyWhere(c => c.ClientExternalId == filter.ClientExternalId.Value);
+                .When(filter.ClientExternalId.HasValue).ApplyWhere(c => c.ClientExternalId == filter.ClientExternalId.Value)
+                .Apply(filter.HasAttachments).To(c => c.Attachments.Count != 0);
         }
 
         private static IQueryable<Contract> Search(this IQueryable<Contract> contracts, HashSet<string> words)
