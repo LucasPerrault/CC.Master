@@ -86,9 +86,8 @@ namespace AdvancedFilters.Infra.Filters.Builders.Implementations
         {
             if (_criterion == null)
                 return e => true;
-            var queryable = _store.GetValuesQueryable(_criterion);
 
-            return e => queryable.Any(v => v.EnvironmentId == e.Id);
+            return _store.GetEnvFacetFilter(_criterion);
         }
 
         public Expression<System.Func<IEnumerable<Environment>, bool>> ForList(ItemsMatching matching)

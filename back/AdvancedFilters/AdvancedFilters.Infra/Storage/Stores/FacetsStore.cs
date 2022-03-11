@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 using AdvancedFilters.Domain.Facets.DAO;
 using AdvancedFilters.Domain.Filters.Models;
 using Lucca.Core.Shared.Domain.Exceptions;
+using Environment = AdvancedFilters.Domain.Instance.Models.Environment;
 
 namespace AdvancedFilters.Infra.Storage.Stores
 {
@@ -77,9 +78,11 @@ namespace AdvancedFilters.Infra.Storage.Stores
             .Set<Facet>()
             .Where(f => f.Scope == scope);
 
-        public IQueryable<EnvironmentFacetValueDao> GetValuesQueryable(EnvironmentFacetsAdvancedCriterion criterion)
+        public Expression<Func<Environment, bool>> GetEnvFacetFilter(EnvironmentFacetsAdvancedCriterion criterion)
         {
-            return EnvironmentValuesWithType(criterion.Value.Type).WhereMatches(criterion);
+            var queryable = EnvironmentValuesWithType(criterion.Value.Type).WhereMatches(criterion);
+
+            return e => queryable.Any(dao => e.Id == dao.EnvironmentId);
         }
 
         private IQueryable<EnvironmentFacetValueDao> EnvironmentValues => _dbContext
@@ -138,13 +141,18 @@ namespace AdvancedFilters.Infra.Storage.Stores
         }
         private static Expression<Func<EnvironmentFacetValueDao, bool>> GetEnvironmentFacetValueExpressionAccordingToFacetType(IEnvironmentFacetCriterion value) => value.Type switch
         {
-            FacetType.Integer => (EnvironmentFacetValueDao dao) => dao.IntValue == ((SingleFacetValueComparisonCriterion<int>)value).Value,
-            FacetType.DateTime => (EnvironmentFacetValueDao dao) => dao.DateTimeValue == ((SingleFacetDateTimeValueComparisonCriterion)value).Value,
-            FacetType.Decimal => (EnvironmentFacetValueDao dao) => dao.DecimalValue == ((SingleFacetValueComparisonCriterion<decimal>)value).Value,
-            FacetType.Percentage => (EnvironmentFacetValueDao dao) => dao.DecimalValue == ((SingleFacetValueComparisonCriterion<decimal>)value).Value,
-            FacetType.String => (EnvironmentFacetValueDao dao) => dao.StringValue == ((SingleFacetValueComparisonCriterion<string>) value).Value,
+            FacetType.Integer => GetIntValue.Chain(((SingleFacetValueComparisonCriterion<int>)value).Expression),
+            FacetType.DateTime => GetDateTimeValue.Chain(((SingleFacetDateTimeValueComparisonCriterion)value).Expression),
+            FacetType.Decimal => GetDecimalValue.Chain(((SingleFacetValueComparisonCriterion<decimal>)value).Expression),
+            FacetType.Percentage => GetDecimalValue.Chain(((SingleFacetValueComparisonCriterion<decimal>)value).Expression),
+            FacetType.String => GetStringValue.Chain(((SingleFacetValueComparisonCriterion<string>)value).Expression),
             _ => throw new BadRequestException()
         };
+
+        private static Expression<Func<EnvironmentFacetValueDao, int>> GetIntValue => dao => dao.IntValue.Value;
+        private static Expression<Func<EnvironmentFacetValueDao, decimal>> GetDecimalValue => dao => dao.DecimalValue.Value;
+        private static Expression<Func<EnvironmentFacetValueDao, string>> GetStringValue => dao => dao.StringValue;
+        private static Expression<Func<EnvironmentFacetValueDao, DateTime>> GetDateTimeValue => dao => dao.DateTimeValue.Value;
 
         public static IEnumerable<IEnvironmentFacetValue> ToValues(this IEnumerable<EnvironmentFacetValueDao> daos)
         {
