@@ -17,17 +17,7 @@ import {
   ICountAdditionalColumn,
 } from '../components/count-additional-column-select/count-additional-column.enum';
 import { ICountsFilterForm } from '../models/counts-filter-form.interface';
-
-export interface ICountsRoutingParams {
-  countPeriod: string;
-  clientIds: string;
-  distributorIds: string;
-  offerIds: string;
-  environmentGroupIds: string;
-  productIds: string;
-  columns: string;
-  environmentIds: string;
-}
+import { ICountsQueryParams } from '../models/counts-query-params.interface';
 
 @Injectable()
 export class CountsFilterRoutingService {
@@ -42,21 +32,21 @@ export class CountsFilterRoutingService {
     private apiV3DateService: ApiV3DateService,
   ) { }
 
-  public toColumnsSelected(routingParams: ICountsRoutingParams): ICountAdditionalColumn[] {
+  public toColumnsSelected(routingParams: ICountsQueryParams): ICountAdditionalColumn[] {
     const defaultColumnIds = defaultColumnsDisplayed.map(c => c.id);
-    const columnsDisplayed = routingParams?.columns?.split(',') ?? defaultColumnIds;
+    const columnsDisplayed = routingParams?.column?.split(',') ?? defaultColumnIds;
 
     return countAdditionalColumns.filter(column => !!columnsDisplayed.find(c => c === column.id));
   }
 
-  public toFilter$(routingParams: ICountsRoutingParams): Observable<ICountsFilterForm> {
+  public toFilter$(routingParams: ICountsQueryParams): Observable<ICountsFilterForm> {
     return forkJoin([
-      this.getOffers$(routingParams.offerIds),
-      this.getClients$(routingParams.clientIds),
-      this.getProducts$(routingParams.productIds),
-      this.getDistributors$(routingParams.distributorIds),
-      this.getEnvironmentGroups$(routingParams.environmentGroupIds),
-      this.getEnvironments$(routingParams.environmentIds),
+      this.getOffers$(routingParams.offerId),
+      this.getClients$(routingParams.clientId),
+      this.getProducts$(routingParams.productId),
+      this.getDistributors$(routingParams.distributorId),
+      this.getEnvironmentGroups$(routingParams.environmentGroupId),
+      this.getEnvironments$(routingParams.environmentId),
     ]).pipe(
       map(([offers, clients, products, distributors, environmentGroups, environments]) => ({
         countPeriod: this.getCountPeriod(routingParams?.countPeriod),
@@ -70,16 +60,16 @@ export class CountsFilterRoutingService {
     ));
   }
 
-  public toRoutingParams(filters: ICountsFilterForm, columns: CountAdditionalColumn[]): ICountsRoutingParams {
+  public toRoutingParams(filters: ICountsFilterForm, columns: CountAdditionalColumn[]): ICountsQueryParams {
     return {
       countPeriod: this.getSafeRoutingParams(this.apiV3DateService.toApiDateRangeFormat(filters?.countPeriod)),
-      clientIds: this.getSafeRoutingParams(filters.clients?.map(c => c.id).join(',')),
-      distributorIds: this.getSafeRoutingParams(filters.distributors?.map(d => d.id).join(',')),
-      offerIds: this.getSafeRoutingParams(filters.offers?.map(o => o.id).join(',')),
-      environmentGroupIds: this.getSafeRoutingParams(filters.environmentGroups?.map(e => e.id).join(',')),
-      productIds: this.getSafeRoutingParams(filters.products?.map(p => p.id).join(',')),
-      columns: this.getSafeRoutingParams(columns.join(',')),
-      environmentIds: this.getSafeRoutingParams(filters?.environments?.map(e => e.id).join(',')),
+      clientId: this.getSafeRoutingParams(filters.clients?.map(c => c.id).join(',')),
+      distributorId: this.getSafeRoutingParams(filters.distributors?.map(d => d.id).join(',')),
+      offerId: this.getSafeRoutingParams(filters.offers?.map(o => o.id).join(',')),
+      environmentGroupId: this.getSafeRoutingParams(filters.environmentGroups?.map(e => e.id).join(',')),
+      productId: this.getSafeRoutingParams(filters.products?.map(p => p.id).join(',')),
+      column: this.getSafeRoutingParams(columns.join(',')),
+      environmentId: this.getSafeRoutingParams(filters?.environments?.map(e => e.id).join(',')),
     };
   }
 

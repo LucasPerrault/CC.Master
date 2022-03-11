@@ -1,51 +1,27 @@
 import { Injectable } from '@angular/core';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 
-import { ICountsRoutingParams } from './counts-filter-routing.service';
-
-
-export enum CountsRoutingKey {
-  CountPeriod = 'countperiod',
-  ClientIds = 'clientids',
-  DistributorIds = 'distributorids',
-  OfferIds = 'offerids',
-  EnvironmentGroupIds = 'environmentgroupids',
-  ProductIds = 'productids',
-  Columns = 'columns',
-  EnvironmentIds = 'environmentids',
-}
+import { CountsQueryParamsKey, ICountsQueryParams } from '../models/counts-query-params.interface';
 
 @Injectable()
 export class CountsRoutingService {
-  constructor(private activatedRoute: ActivatedRoute, private router: Router) {
-  }
+  constructor(private activatedRoute: ActivatedRoute, private router: Router) {}
 
-  public getRoutingParams(): ICountsRoutingParams {
+  public getRoutingParams(): ICountsQueryParams {
     const params: ParamMap = this.activatedRoute.snapshot.queryParamMap;
     return {
-      countPeriod: params.get(CountsRoutingKey.CountPeriod),
-      clientIds: params.get(CountsRoutingKey.ClientIds),
-      distributorIds: params.get(CountsRoutingKey.DistributorIds),
-      offerIds: params.get(CountsRoutingKey.OfferIds),
-      environmentGroupIds: params.get(CountsRoutingKey.EnvironmentGroupIds),
-      productIds: params.get(CountsRoutingKey.ProductIds),
-      columns: params.get(CountsRoutingKey.Columns),
-      environmentIds: params.get(CountsRoutingKey.EnvironmentIds),
+      countPeriod: params.get(CountsQueryParamsKey.CountPeriod),
+      clientId: params.get(CountsQueryParamsKey.ClientId),
+      distributorId: params.get(CountsQueryParamsKey.DistributorId),
+      offerId: params.get(CountsQueryParamsKey.OfferId),
+      environmentGroupId: params.get(CountsQueryParamsKey.EnvironmentGroupId),
+      productId: params.get(CountsQueryParamsKey.ProductId),
+      column: params.get(CountsQueryParamsKey.Column),
+      environmentId: params.get(CountsQueryParamsKey.EnvironmentId),
     };
   }
 
-  public async updateRouterAsync(params: ICountsRoutingParams): Promise<void> {
-    const queryParams = {
-      [CountsRoutingKey.CountPeriod]: params.countPeriod,
-      [CountsRoutingKey.ClientIds]: params.clientIds,
-      [CountsRoutingKey.ProductIds]: params.productIds,
-      [CountsRoutingKey.OfferIds]: params.offerIds,
-      [CountsRoutingKey.DistributorIds]: params.distributorIds,
-      [CountsRoutingKey.EnvironmentGroupIds]: params.environmentGroupIds,
-      [CountsRoutingKey.Columns]: params.columns,
-      [CountsRoutingKey.EnvironmentIds]: params.environmentIds,
-    };
-
+  public async updateRouterAsync(queryParams: ICountsQueryParams): Promise<void> {
     await this.router.navigate([], {
       queryParams,
       queryParamsHandling: 'merge',
