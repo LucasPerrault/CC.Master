@@ -7,6 +7,7 @@ using Billing.Contracts.Domain.Common;
 using Billing.Contracts.Domain.Contracts;
 using Billing.Contracts.Domain.Contracts.Interfaces;
 using Lucca.Core.Api.Abstractions.Paging;
+using Lucca.Core.Shared.Domain.Exceptions;
 using NExtends.Primitives.DateTimes;
 using Tools;
 
@@ -32,8 +33,13 @@ public class MissingCountsService : IMissingCountsService
 
     public async Task<Page<MissingCount>> GetAsync(IReadOnlyCollection<Count> countsOverPeriod, AccountingPeriod period)
     {
-        var contractIdsWithCount = countsOverPeriod.Select(c => c.Contract.Id).ToList();
+        if (period is null)
+        {
+            throw new BadRequestException("Month and years query params are mandatory");
+        }
+
         var contractsShouldBeCount = await GetContractsShouldBeCount(period);
+        var contractIdsWithCount = countsOverPeriod.Select(c => c.ContractId).ToList();
         var contractsWithoutCount = contractsShouldBeCount
             .Where(c => !contractIdsWithCount.Contains(c.Id))
             .ToList();

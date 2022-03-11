@@ -34,11 +34,6 @@ public class CountsRepository
 
     public async Task<Page<MissingCount>> GetMissingCountsAsync(AccountingPeriod period)
     {
-        if (period is null)
-        {
-            throw new BadRequestException("Month and years query params are mandatory");
-        }
-
         var accessRight = await _rightsFilter.GetReadAccessAsync(_principal);
         var filter = new CountFilter { Periods = new HashSet<AccountingPeriod> { period } };
 
