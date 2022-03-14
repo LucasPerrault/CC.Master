@@ -12,6 +12,6 @@ export class OfferNotFoundTabComponent {
   }
 
   public redirectToOffers(): void {
-    this.router.navigate([NavigationPath.Offers]).then(() => null);
+    this.router.navigate([NavigationPath.Offers, { queryParamsHandling: 'preserve' }]).then(() => null);
   }
 }
