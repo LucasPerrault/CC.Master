@@ -1,0 +1,32 @@
+<div class="lu-modal-panel-inner" cdkTrapFocus="true" cdkTrapFocusAutoCapture="true" role="dialog" aria-modal="true">
+  <div class="lu-modal-content">
+    <button class="lu-modal-header-close" (click)="close()">
+      <span aria-hidden="true" class="lucca-icon icon-cross"></span>
+    </button>
+
+    <ng-container *ngIf="hasAccountManagers$ | async; else hasNoAccountManagers">
+      <div class="loading mod-big mod-absolute"></div>
+
+      <iframe
+        width="100%"
+        height="100%"
+        loading="eager"
+        [frameBorder]="0"
+        [title]="title"
+        [src]="calendlyUrl$ | async"
+      ></iframe>
+    </ng-container>
+
+    <ng-template #hasNoAccountManagers>
+      <section class="emptyState">
+        <p class="emptyState-description">
+          Impossible de nous contacter, aucun responsable de suivi de compte n'a été configuré
+        </p>
+      </section>
+    </ng-template>
+
+  </div>
+  <div class="lu-modal-footer">
+    <button class="button mod-link" (click)="close()">Fermer</button>
+  </div>
+</div>

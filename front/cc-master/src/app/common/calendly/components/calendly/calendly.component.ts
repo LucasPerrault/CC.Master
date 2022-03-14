@@ -1,4 +1,5 @@
 import { ChangeDetectionStrategy, Component, HostListener, Input } from '@angular/core';
+import { CalendlyModalService } from '@cc/common/calendly/services/calendly-modal.service';
 
 @Component({
   selector: 'cc-calendly',
@@ -8,10 +9,12 @@ import { ChangeDetectionStrategy, Component, HostListener, Input } from '@angula
 export class CalendlyComponent {
   @Input() enableOpenContactModalEvent = false;
 
+  constructor(private modalService: CalendlyModalService) {}
+
   @HostListener('document:contact-us', ['$event'])
   openCalendlyModal() {
     if (this.enableOpenContactModalEvent) {
-      console.log('open calendly modal');
+      this.modalService.openCalendlyModal();
     }
   }
 }
