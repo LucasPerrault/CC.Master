@@ -12,11 +12,12 @@ import { ToastsModule } from '@cc/common/toasts';
 
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
+import { CalendlyModule } from '@cc/common/calendly';
 
 @NgModule({
-	declarations: [
-		AppComponent,
-	],
+  declarations: [
+    AppComponent,
+  ],
   imports: [
     AppRoutingModule,
     BrowserModule,
@@ -29,6 +30,7 @@ import { AppRoutingModule } from './app-routing.module';
     BannerModule,
     TitleModule,
     NavigationModule,
+    CalendlyModule,
   ],
   bootstrap: [AppComponent, BannerComponent],
 })
