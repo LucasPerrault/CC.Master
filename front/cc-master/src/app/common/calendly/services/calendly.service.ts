@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { CalendlyEmbedType, CalendlyQueryMapping, ICalendlyPrefill } from '@cc/common/calendly/model/calendly-format-url.interface';
-import { IAccountManager } from '@cc/common/calendly/services/account-managers-data.service';
+import { IAccountManager } from '@cc/common/calendly/services/account-managers/account-managers-data.service';
 
 @Injectable()
 export class CalendlyService {
