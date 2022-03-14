@@ -46,6 +46,7 @@ namespace Core.Proxy.Infra.Extensions
             "/contracts",
             "/ip",
             "/invalid-email-domain",
+            "/counts"
         };
 
         private static readonly HashSet<string> BetaNonRedirectableSegments = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
