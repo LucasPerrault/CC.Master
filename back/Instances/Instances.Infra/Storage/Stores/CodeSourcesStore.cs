@@ -83,6 +83,7 @@ namespace Instances.Infra.Storage.Stores
         {
             return _dbContext
                 .Set<CodeSource>()
+                .Include(cs => cs.Repo)
                 .Include(cs => cs.ProductionVersions)
                 .Include(cs => cs.Config)
                 .WhereMatches(filter);
