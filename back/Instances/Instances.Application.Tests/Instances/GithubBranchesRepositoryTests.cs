@@ -115,7 +115,7 @@ namespace Instances.Application.Tests.Instances
 
             _githubBranchesStoreMock.Verify(gb => gb.GetFirstAsync(It.Is<GithubBranchFilter>(g =>
                 g.RepoIds.Contains(repoId) &&
-                g.IsDeleted == false &&
+                g.IsDeleted == Tools.CompareBoolean.FalseOnly &&
                 g.Name == "myBranch"
             )));
         }

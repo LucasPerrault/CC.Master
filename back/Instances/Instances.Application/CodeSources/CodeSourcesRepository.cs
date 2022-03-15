@@ -80,7 +80,7 @@ namespace Instances.Application.CodeSources
             var createdCodeSource = await _codeSourcesStore.CreateAsync(codeSource);
             var githubBranches = await _githubBranchesStore.GetAsync(new GithubBranchFilter
             {
-                IsDeleted = false,
+                IsDeleted = Tools.CompareBoolean.FalseOnly,
                 RepoIds = new HashSet<int> { repo.Id }
             });
 

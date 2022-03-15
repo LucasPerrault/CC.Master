@@ -31,7 +31,7 @@ namespace Instances.Application.Instances
             {
                 RepoIds = new HashSet<int> { repo.Id },
                 Name = branchName,
-                IsDeleted = false,
+                IsDeleted = Tools.CompareBoolean.FalseOnly,
             });
 
             foreach (var branch in branches)
@@ -62,7 +62,7 @@ namespace Instances.Application.Instances
         public async Task<List<HelmRelease>> GetAllReleasesAsync(HelmRequest helmRequest)
         {
             var repoIdsFilter = new HashSet<int>();
-            var githubBranchFilter = new GithubBranchFilter { RepoIds = repoIdsFilter, HasHelmChart = true, IsDeleted = false };
+            var githubBranchFilter = new GithubBranchFilter { RepoIds = repoIdsFilter, HasHelmChart = Tools.CompareBoolean.TrueOnly, IsDeleted = Tools.CompareBoolean.FalseOnly };
             if (helmRequest is SpecificRepoHelmRequest specificRepoHelmRequest)
             {
                 var repo = await GetRepoByReleaseNameAsync(specificRepoHelmRequest.RepoName);
@@ -135,8 +135,8 @@ namespace Instances.Application.Instances
             var missingBranchesFilter = githubBranchFilter with
             {
                 ExcludedRepoIds = alreadyHandledRepoIds,
-                HasHelmChart = true,
-                IsDeleted = false
+                HasHelmChart = Tools.CompareBoolean.TrueOnly,
+                IsDeleted = Tools.CompareBoolean.FalseOnly
             };
             var missingBranchesCandidates = await _githubBranchesStore.GetAsync(missingBranchesFilter);
 

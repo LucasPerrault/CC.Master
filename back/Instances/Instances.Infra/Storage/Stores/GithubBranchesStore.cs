@@ -89,10 +89,10 @@ namespace Instances.Infra.Storage.Stores
             return githubBranches
                 .WhenNotNullOrEmpty(filter.Name).ApplyWhere(gb => gb.Name == filter.Name)
                 .WhenNotNullOrEmpty(filter.HelmChart).ApplyWhere(gb => gb.HelmChart == filter.HelmChart)
-                .WhenHasValue(filter.HasHelmChart).ApplyWhere(gb => filter.HasHelmChart.Value && gb.HelmChart != null)
+                .Apply(filter.HasHelmChart).To(gb => gb.HelmChart != null)
                 .WhenNotNullOrEmpty(filter.RepoIds).ApplyWhere(gb => filter.RepoIds.Contains(gb.RepoId))
                 .WhenNotNullOrEmpty(filter.ExcludedRepoIds).ApplyWhere(gb => !filter.ExcludedRepoIds.Contains(gb.RepoId))
-                .WhenHasValue(filter.IsDeleted).ApplyWhere(cs => cs.IsDeleted == filter.IsDeleted);
+                .Apply(filter.IsDeleted).To(gb => gb.IsDeleted);
         }
     }
 }

@@ -84,7 +84,7 @@ namespace Instances.Application.Tests.Instances
             githubBranch.HelmChart.Should().Be(helmChart);
             githubBranchFilterCaught.Should().NotBeNull();
             githubBranchFilterCaught.Name.Should().Be(branchName);
-            githubBranchFilterCaught.IsDeleted.Should().BeFalse();
+            githubBranchFilterCaught.IsDeleted.Should().Be(Tools.CompareBoolean.FalseOnly);
         }
 
         #endregion

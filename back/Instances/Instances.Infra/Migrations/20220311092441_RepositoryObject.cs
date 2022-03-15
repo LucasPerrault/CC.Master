@@ -118,7 +118,7 @@ namespace Instances.Infra.Migrations
                         cs.JenkinsProjectUrl
                     from
                         [instances].[CodeSources] cs
-						inner join [instances].[GithubRepos] gr on gr.Id = cs.RepoId
+                        inner join [instances].[GithubRepos] gr on gr.Id = cs.RepoId
             ");
 
 

@@ -59,7 +59,7 @@ namespace Instances.Application.Instances
             {
                 RepoIds = new HashSet<int> { repoId },
                 Name = GithubBranch.NormalizeName(branchName),
-                IsDeleted = false,
+                IsDeleted = Tools.CompareBoolean.FalseOnly,
             });
 
         public Task<GithubBranch> UpdateAsync(GithubBranch existingBranch)

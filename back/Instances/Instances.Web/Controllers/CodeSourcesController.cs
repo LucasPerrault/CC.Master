@@ -112,20 +112,28 @@ namespace Instances.Web.Controllers
 
         public string Search { get; set; }
 
-        public HashSet<int> ReposIds { get; set; } = new HashSet<int>();
+        public int? RepoId { get; set; }
 
         public HashSet<int> Id { get; set; } = new HashSet<int>();
 
         public string Code { get; set; }
 
-        public CodeSourceFilter ToFilter() => new CodeSourceFilter
+        public CodeSourceFilter ToFilter()
         {
-            Code = Code,
-            Id = Id,
-            Search = Search,
-            Lifecycle = Lifecycle,
-            Type = Type,
-            RepoIds = ReposIds
-        };
+            var reposId = new HashSet<int>();
+            if (RepoId != null)
+            {
+                reposId.Add(RepoId.Value);
+            }
+            return new CodeSourceFilter
+            {
+                Code = Code,
+                Id = Id,
+                Search = Search,
+                Lifecycle = Lifecycle,
+                Type = Type,
+                RepoIds = reposId
+            };
+        }
     }
 }
