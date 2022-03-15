@@ -10,6 +10,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Lucca.Core.Shared.Domain.Exceptions;
 using Xunit;
 using MissingFieldException = CsvHelper.MissingFieldException;
 
@@ -78,6 +79,27 @@ namespace Billing.Contracts.Infra.Tests
         }
 
         [Fact]
+        public async Task ShouldThrowWhenUploadWithBadDelimiter()
+        {
+            var s = new StringBuilder();
+            var badDelimiter = ";";
+            s.AppendLine($"{HeaderRow.Name}{badDelimiter}{HeaderRow.Product}{badDelimiter}toto{badDelimiter}{HeaderRow.Currency}{badDelimiter}{HeaderRow.Tag}{badDelimiter}{HeaderRow.BillingMode}{badDelimiter}{HeaderRow.PricingMethod}{badDelimiter}{HeaderRow.ForecastMethod}{badDelimiter}{HeaderRow.ListStartsOn}{badDelimiter}{HeaderRow.RowMin}{badDelimiter}{HeaderRow.RowMax}{badDelimiter}{HeaderRow.RowUnitPrice}{badDelimiter}{HeaderRow.RowFixedPrice}");
+            s.AppendLine($"Cleemy template 2021{ badDelimiter }2{ badDelimiter }1{ badDelimiter }978{ badDelimiter }catalogues{ badDelimiter }3{ badDelimiter }Linear{ badDelimiter }LastRealMonth{ badDelimiter }15/12/2021{ badDelimiter }0{ badDelimiter }10{ badDelimiter }0{ badDelimiter }50");
+            var myByteArray = Encoding.UTF8.GetBytes(s.ToString());
+            var ms = new MemoryStream(myByteArray);
+
+            using var reader = new StringReader(s.ToString());
+            var productsStoreMock = new Mock<IProductsStore>();
+            productsStoreMock.Setup(x => x.GetAsync(It.IsAny<ProductsFilter>(), It.IsAny<ProductsIncludes>())).ReturnsAsync(new List<Product>());
+
+            var sut = new OfferRowsService(productsStoreMock.Object, new ParsedOffersService());
+
+            Func<Task<List<ParsedOffer>>> func = () => sut.UploadAsync(ms);
+
+            await func.Should().ThrowAsync<BadRequestException>().WithMessage("*Csv delimiter must be*");
+        }
+
+        [Fact]
         public async Task ShouldUploadTemplate()
         {
             var productsStoreMock = new Mock<IProductsStore>();
@@ -111,6 +133,25 @@ namespace Billing.Contracts.Infra.Tests
             Func<Task<List<ParsedOffer>>> func = () => sut.UploadAsync(new MemoryStream(Encoding.UTF8.GetBytes(stringTemplate)));
 
             await func.Should().ThrowAsync<MissingFieldException>().WithMessage("*unité de décompte*");
+        }
+
+        [Fact]
+        public async Task ShouldThrowWhenUploadTemplateWithBadDelimiter()
+        {
+            var productsStoreMock = new Mock<IProductsStore>();
+            productsStoreMock.Setup(x => x.GetAsync(It.IsAny<ProductsFilter>(), It.IsAny<ProductsIncludes>())).ReturnsAsync(new List<Product>());
+
+            var sut = new OfferRowsService(productsStoreMock.Object, new ParsedOffersService());
+
+            var template = await sut.GetTemplateStreamAsync();
+            using var reader = new StreamReader(template);
+            var stringTemplate = reader.ReadToEnd();
+
+            var badDelimiter = ";";
+            stringTemplate = stringTemplate.Replace(",", badDelimiter, StringComparison.CurrentCultureIgnoreCase);
+            Func<Task<List<ParsedOffer>>> func = () => sut.UploadAsync(new MemoryStream(Encoding.UTF8.GetBytes(stringTemplate)));
+
+            await func.Should().ThrowAsync<BadRequestException>().WithMessage("*Csv delimiter must be*");
         }
     }
 }
