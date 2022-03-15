@@ -102,6 +102,7 @@ namespace Billing.Contracts.Infra.Offers
             }
             csv.ReadHeader();
             csv.ValidateHeader<OfferRow>();
+            csv.ValidateHeaderDelimiter<OfferRow>();
 
             return csv.GetRecords<OfferRow>().ToList();
         }
@@ -121,6 +122,11 @@ namespace Billing.Contracts.Infra.Offers
                     if (line.StartsWith(HeaderRow.LimitWarning, StringComparison.OrdinalIgnoreCase))
                     {
                         return true;
+                    }
+
+                    if (!string.IsNullOrEmpty(line) && !line.Contains(_config.Delimiter))
+                    {
+                        throw new BadRequestException($"Csv delimiter must be '{_config.Delimiter}'");
                     }
                 }
                 return false;
@@ -261,6 +267,17 @@ namespace Billing.Contracts.Infra.Offers
                 throw new BadRequestException($"The field '{memberMapData.Names.First()}' is mandatory. Raw line : {row.Parser.RawRecord}");
 
             return base.ConvertFromString(text, row, memberMapData);
+        }
+    }
+
+    internal static class CsvReaderExtension
+    {
+        public static void ValidateHeaderDelimiter<T>(this CsvReader reader)
+        {
+            if (reader.ColumnCount == 0 && !reader.Parser.RawRecord.Contains(reader.Configuration.Delimiter))
+            {
+                throw new BadRequestException($"Csv delimiter must be '{reader.Configuration.Delimiter}'");
+            }
         }
     }
 }
