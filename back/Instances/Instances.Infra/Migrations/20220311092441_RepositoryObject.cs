@@ -113,7 +113,7 @@ namespace Instances.Infra.Migrations
                         cs.code,
                         cs.jenkinsProjectName,
                         cs.type,
-                        gr.url,
+                        gr.url as githubRepo,
                         cs.lifecycle,
                         cs.JenkinsProjectUrl
                     from
