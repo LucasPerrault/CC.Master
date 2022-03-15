@@ -3,8 +3,10 @@ using Instances.Application.CodeSources;
 using Instances.Application.Instances;
 using Instances.Application.Webhooks.Github;
 using Instances.Domain.CodeSources;
+using Instances.Domain.CodeSources.Filtering;
 using Instances.Domain.Github;
 using Instances.Domain.Github.Models;
+using Instances.Infra.Storage.Stores;
 using Moq;
 using System;
 using System.Collections.Generic;
@@ -26,20 +28,22 @@ namespace Instances.Application.Tests.Webhooks.Github
         private readonly Mock<IGithubPullRequestsRepository> _githubPullRequestRepositoryMock;
         private readonly Mock<IPreviewConfigurationsRepository> _previewConfigurationRepositoryMock;
         private readonly Mock<IGithubReposStore> _githubReposStoreMock;
-
+        private readonly Mock<ICodeSourcesStore> _codeSourcesStoreMock;
 
         public PullRequestWebhookServiceTests()
         {
             _githubBranchesRepositoryMock = new(MockBehavior.Strict);
             _githubPullRequestRepositoryMock = new(MockBehavior.Strict);
             _previewConfigurationRepositoryMock = new(MockBehavior.Strict);
-            _githubReposStoreMock = new(MockBehavior.Strict); 
+            _githubReposStoreMock = new(MockBehavior.Strict);
+            _codeSourcesStoreMock = new(MockBehavior.Strict);
 
             _pullRequestWebhookService = new PullRequestWebhookService(
                 _githubBranchesRepositoryMock.Object,
                 _githubPullRequestRepositoryMock.Object,
                 _previewConfigurationRepositoryMock.Object,
-                _githubReposStoreMock.Object
+                _githubReposStoreMock.Object,
+                _codeSourcesStoreMock.Object
             );
         }
 
@@ -105,8 +109,11 @@ namespace Instances.Application.Tests.Webhooks.Github
                 .Setup(p => p.CreateAsync(It.IsAny<GithubPullRequest>()))
                 .Returns<GithubPullRequest>(p => Task.FromResult(p));
             _previewConfigurationRepositoryMock
-                .Setup(p => p.CreateByPullRequestAsync(It.IsAny<GithubPullRequest>(), It.IsAny<GithubBranch>()))
+                .Setup(p => p.CreateByPullRequestAsync(It.IsAny<GithubPullRequest>(), It.IsAny<GithubBranch>(), It.IsAny<IEnumerable<CodeSource>>()))
                 .Returns(Task.CompletedTask);
+            _codeSourcesStoreMock
+                .Setup(cs => cs.GetAsync(It.IsAny<CodeSourceFilter>()))
+                .ReturnsAsync(new List<CodeSource>());
 
             await using var stream = new MemoryStream(Encoding.UTF8.GetBytes(json));
             await _pullRequestWebhookService.HandleEventAsync(stream);
@@ -114,7 +121,7 @@ namespace Instances.Application.Tests.Webhooks.Github
             _githubReposStoreMock.Verify(c => c.GetByUriAsync(_repositoryUrl));
             _githubBranchesRepositoryMock.Verify(g => g.GetNonDeletedBranchByNameAsync(42, "changes"));
             _githubPullRequestRepositoryMock.Verify(p => p.CreateAsync(It.IsAny<GithubPullRequest>()));
-            _previewConfigurationRepositoryMock.Verify(p => p.CreateByPullRequestAsync(It.IsAny<GithubPullRequest>(), githubBranch));
+            _previewConfigurationRepositoryMock.Verify(p => p.CreateByPullRequestAsync(It.IsAny<GithubPullRequest>(), githubBranch, It.IsAny<IEnumerable<CodeSource>>()));
         }
         #endregion
 
@@ -179,8 +186,11 @@ namespace Instances.Application.Tests.Webhooks.Github
                 .Setup(p => p.UpdateAsync(It.IsAny<GithubPullRequest>()))
                 .Returns<GithubPullRequest>(p => Task.FromResult(p));
             _previewConfigurationRepositoryMock
-                .Setup(p => p.CreateByPullRequestAsync(It.IsAny<GithubPullRequest>(), It.IsAny<GithubBranch>()))
+                .Setup(p => p.CreateByPullRequestAsync(It.IsAny<GithubPullRequest>(), It.IsAny<GithubBranch>(), It.IsAny<IEnumerable<CodeSource>>()))
                 .Returns(Task.CompletedTask);
+            _codeSourcesStoreMock
+                .Setup(cs => cs.GetAsync(It.IsAny<CodeSourceFilter>()))
+                .ReturnsAsync(new List<CodeSource>());
 
             await using var stream = new MemoryStream(Encoding.UTF8.GetBytes(json));
             await _pullRequestWebhookService.HandleEventAsync(stream);
@@ -189,7 +199,7 @@ namespace Instances.Application.Tests.Webhooks.Github
             _githubBranchesRepositoryMock.Verify(g => g.GetNonDeletedBranchByNameAsync(21, "changes"));
             _githubPullRequestRepositoryMock.Verify(p => p.GetByNumberAsync(21, 42));
             _githubPullRequestRepositoryMock.Verify(p => p.UpdateAsync(pullRequest));
-            _previewConfigurationRepositoryMock.Verify(p => p.CreateByPullRequestAsync(pullRequest, githubBranch));
+            _previewConfigurationRepositoryMock.Verify(p => p.CreateByPullRequestAsync(pullRequest, githubBranch, It.IsAny<IEnumerable<CodeSource>>()));
         }
         #endregion
 

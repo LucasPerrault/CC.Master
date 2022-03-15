@@ -18,6 +18,7 @@ namespace Instances.Application.Tests.Instances
         private readonly Mock<IGithubReposStore> _githubReposStoreMock;
         private readonly Mock<IPreviewConfigurationsRepository> _previewConfigurationsRepositoryMock;
         private readonly Mock<IGithubService> _githubServiceMock;
+        private readonly Mock<ICodeSourcesStore> _codeSourcesStoreMock;
         private readonly GithubBranchesRepository _githubBranchesRepository;
 
         public GithubBranchesRepositoryTests()
@@ -26,12 +27,14 @@ namespace Instances.Application.Tests.Instances
             _githubReposStoreMock = new(MockBehavior.Strict);
             _previewConfigurationsRepositoryMock = new(MockBehavior.Strict);
             _githubServiceMock = new(MockBehavior.Strict);
+            _codeSourcesStoreMock = new(MockBehavior.Strict);
 
             _githubBranchesRepository = new GithubBranchesRepository(
                 _githubBranchesStoreMock.Object,
                 _githubReposStoreMock.Object,
                 _previewConfigurationsRepositoryMock.Object,
-                _githubServiceMock.Object
+                _githubServiceMock.Object,
+                _codeSourcesStoreMock.Object
             );
         }
 
@@ -54,8 +57,11 @@ namespace Instances.Application.Tests.Instances
                 .Setup(gb => gb.CreateAsync(It.IsAny<GithubBranch>()))
                 .Returns<GithubBranch>(b => Task.FromResult(b));
             _previewConfigurationsRepositoryMock
-                .Setup(pc => pc.CreateByBranchAsync(It.IsAny<GithubBranch>()))
+                .Setup(pc => pc.CreateByBranchAsync(It.IsAny<IEnumerable<GithubBranch>>(), It.IsAny<IEnumerable<CodeSource>>()))
                 .Returns(Task.CompletedTask);
+            _codeSourcesStoreMock
+                .Setup(cs => cs.GetAsync(It.IsAny<CodeSourceFilter>()))
+                .ReturnsAsync(new List<CodeSource>());
 
             var result = await _githubBranchesRepository.CreateAsync(10, "myBranch", githubApiCommit);
 
@@ -88,8 +94,11 @@ namespace Instances.Application.Tests.Instances
                 .Setup(gb => gb.CreateAsync(It.IsAny<GithubBranch>()))
                 .Returns<GithubBranch>(b => Task.FromResult(b));
             _previewConfigurationsRepositoryMock
-                .Setup(pc => pc.CreateByBranchAsync(It.IsAny<GithubBranch>()))
+                .Setup(pc => pc.CreateByBranchAsync(It.IsAny<IEnumerable<GithubBranch>>(), It.IsAny<IEnumerable<CodeSource>>()))
                 .Returns(Task.CompletedTask);
+            _codeSourcesStoreMock
+                .Setup(cs => cs.GetAsync(It.IsAny<CodeSourceFilter>()))
+                .ReturnsAsync(new List<CodeSource>());
 
             var result = await _githubBranchesRepository.CreateAsync(10, "myBranch", null);
 

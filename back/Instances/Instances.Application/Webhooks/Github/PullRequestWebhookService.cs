@@ -1,4 +1,6 @@
 using Instances.Application.Instances;
+using Instances.Domain.CodeSources;
+using Instances.Domain.CodeSources.Filtering;
 using Instances.Domain.Github;
 using Instances.Domain.Github.Models;
 using System;
@@ -21,17 +23,19 @@ namespace Instances.Application.Webhooks.Github
         private readonly IGithubPullRequestsRepository _githubPullRequestsRepository;
         private readonly IPreviewConfigurationsRepository _previewConfigurationsRepository;
         private readonly IGithubReposStore _githubReposStore;
+        private readonly ICodeSourcesStore _codeSourcesStore;
 
         public PullRequestWebhookService(
             IGithubBranchesRepository githubBranchesRepository,
             IGithubPullRequestsRepository githubPullRequestRepository, IPreviewConfigurationsRepository previewConfigurationRepository,
-            IGithubReposStore githubReposStore
+            IGithubReposStore githubReposStore, ICodeSourcesStore codeSourcesStore
         )
         {
             _githubBranchesRepository = githubBranchesRepository;
             _githubPullRequestsRepository = githubPullRequestRepository;
             _previewConfigurationsRepository = previewConfigurationRepository;
             _githubReposStore = githubReposStore;
+            _codeSourcesStore = codeSourcesStore;
         }
 
         protected override async Task HandleEventAsync(PullRequestWebhookPayload pullRequestEventPayload)
@@ -81,11 +85,17 @@ namespace Instances.Application.Webhooks.Github
                 Title = pullRequestEventPayload.PullRequest.Title,
                 IsOpened = true,
                 OpenedAt = DateTime.Now,
-                OriginBranchId = originBranch.Id
+                OriginBranchId = originBranch.Id,
+                Repo = repo
             };
 
             pullRequest = await _githubPullRequestsRepository.CreateAsync(pullRequest);
-            await _previewConfigurationsRepository.CreateByPullRequestAsync(pullRequest, originBranch);
+            var codeSources = await _codeSourcesStore.GetAsync(new CodeSourceFilter
+            {
+                RepoIds = new HashSet<int> { repo.Id },
+                ExcludedLifecycle = new HashSet<CodeSourceLifecycleStep> { CodeSourceLifecycleStep.ToDelete, CodeSourceLifecycleStep.Deleted }
+            });
+            await _previewConfigurationsRepository.CreateByPullRequestAsync(pullRequest, originBranch, codeSources);
         }
 
         private async Task HandleReopenedActionAsync(PullRequestWebhookPayload pullRequestEventPayload, GithubRepo repo)
@@ -105,7 +115,12 @@ namespace Instances.Application.Webhooks.Github
 
             pullRequest.IsOpened = true;
             pullRequest = await _githubPullRequestsRepository.UpdateAsync(pullRequest);
-            await _previewConfigurationsRepository.CreateByPullRequestAsync(pullRequest, originBranch);
+            var codeSources = await _codeSourcesStore.GetAsync(new CodeSourceFilter
+            {
+                RepoIds = new HashSet<int> { repo.Id },
+                ExcludedLifecycle = new HashSet<CodeSourceLifecycleStep> { CodeSourceLifecycleStep.ToDelete, CodeSourceLifecycleStep.Deleted }
+            });
+            await _previewConfigurationsRepository.CreateByPullRequestAsync(pullRequest, originBranch, codeSources);
         }
 
         private async Task HandleClosedActionAsync(PullRequestWebhookPayload pullRequestEventPayload, GithubRepo repo)

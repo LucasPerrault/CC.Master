@@ -18,18 +18,6 @@ namespace Instances.Application.Instances
             _previewConfigurationsStore = previewConfigurationsStore;
         }
 
-        public Task CreateByBranchAsync(GithubBranch branch)
-            => CreateByBranchAsync(new GithubBranch[] { branch });
-
-        public Task CreateByBranchAsync(IEnumerable<GithubBranch> branches)
-        {
-            var previewConfigurations = branches.SelectMany(branch =>
-               branch.Repo.CodeSources.Select(
-                   codeSource => CreatePreviewConfigurationObject(branch, codeSource, $"{codeSource.Name} - {branch.Name}")
-            ));
-            return _previewConfigurationsStore.CreateAsync(previewConfigurations);
-        }
-
         public Task CreateByBranchAsync(IEnumerable<GithubBranch> branches, CodeSource codeSource)
         {
             var previewConfigurations = branches.Select(branch =>
@@ -38,9 +26,17 @@ namespace Instances.Application.Instances
             return _previewConfigurationsStore.CreateAsync(previewConfigurations);
         }
 
-        public Task CreateByPullRequestAsync(GithubPullRequest pullRequest, GithubBranch originBranch)
+        public Task CreateByBranchAsync(IEnumerable<GithubBranch> branches, IEnumerable<CodeSource> codeSources)
         {
-            var previewConfigurations = originBranch.Repo.CodeSources.Select(
+            var previewConfigurations = branches.SelectMany(branch =>
+                codeSources.Select(codeSource => CreatePreviewConfigurationObject(branch, codeSource, $"{codeSource.Name} - {branch.Name}"))
+            );
+            return _previewConfigurationsStore.CreateAsync(previewConfigurations);
+        }
+
+        public Task CreateByPullRequestAsync(GithubPullRequest pullRequest, GithubBranch originBranch, IEnumerable<CodeSource> codeSources)
+        {
+            var previewConfigurations = codeSources.Select(
                 codeSource => CreatePreviewConfigurationObject(originBranch, codeSource, $"{codeSource.Name} - #{pullRequest.Number} : {pullRequest.Title}")
             );
             return _previewConfigurationsStore.CreateAsync(previewConfigurations);

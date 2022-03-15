@@ -1,3 +1,4 @@
+using Instances.Domain.CodeSources;
 using Instances.Domain.CodeSources.Filtering;
 using Instances.Domain.Github;
 using Instances.Domain.Github.Models;
@@ -13,19 +14,22 @@ namespace Instances.Application.Instances
         private readonly IGithubReposStore _githubReposStore;
         private readonly IPreviewConfigurationsRepository _previewConfigurationsRepository;
         private readonly IGithubService _githubService;
+        private readonly ICodeSourcesStore _codeSourcesStore;
 
         public GithubBranchesRepository
         (
             IGithubBranchesStore githubBranchesStore,
             IGithubReposStore githubReposStore,
             IPreviewConfigurationsRepository previewConfigurationsRepository,
-            IGithubService githubService
+            IGithubService githubService,
+            ICodeSourcesStore codeSourcesStore
         )
         {
             _githubBranchesStore = githubBranchesStore;
             _githubReposStore = githubReposStore;
             _githubService = githubService;
             _previewConfigurationsRepository = previewConfigurationsRepository;
+            _codeSourcesStore = codeSourcesStore;
         }
 
         public async Task<GithubBranch> CreateAsync(int repoId, string branchName, GithubApiCommit commit)
@@ -50,6 +54,7 @@ namespace Instances.Application.Instances
                 LastPushedAt = commit.CommitedOn,
                 HeadCommitMessage = commit.Message,
                 HeadCommitHash = commit.Sha,
+                Repo = repo
             });
             return branch;
         }
@@ -68,7 +73,12 @@ namespace Instances.Application.Instances
         private async Task<GithubBranch> CreateAsync(GithubBranch branch)
         {
             var createdBranch = await _githubBranchesStore.CreateAsync(branch);
-            await _previewConfigurationsRepository.CreateByBranchAsync(createdBranch);
+            var codeSources = await _codeSourcesStore.GetAsync(new CodeSourceFilter
+            {
+                RepoIds = new HashSet<int> { createdBranch.RepoId },
+                ExcludedLifecycle = new HashSet<CodeSourceLifecycleStep> { CodeSourceLifecycleStep.ToDelete, CodeSourceLifecycleStep.Deleted },
+            });
+            await _previewConfigurationsRepository.CreateByBranchAsync(new[] { createdBranch }, codeSources);
             return createdBranch;
         }
     }
