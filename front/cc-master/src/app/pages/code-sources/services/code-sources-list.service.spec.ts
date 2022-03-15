@@ -16,8 +16,8 @@ const fakeCodeSource = (lifecycle: LifecycleStep) => ({
   type: CodeSourceType.InternalTool,
   repo: {
     id: 2,
-    name: "name",
-    url: "*****"
+    name: 'name',
+    url: '*****',
   },
   lifecycle,
   config: {
