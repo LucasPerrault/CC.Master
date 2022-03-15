@@ -68,6 +68,8 @@ namespace Instances.Application.CodeSources
 
             var codeSource = new CodeSource
             {
+                Code = codeSourceDto.Code,
+                Name = codeSourceDto.Name,
                 JenkinsProjectName = codeSourceDto.JenkinsProjectName,
                 JenkinsProjectUrl = codeSourceDto.JenkinsProjectUrl,
                 Type = codeSourceDto.Type,
@@ -75,7 +77,18 @@ namespace Instances.Application.CodeSources
                 Config = codeSourceDto.Config,
                 RepoId = repo.Id
             };
-            return await _codeSourcesStore.CreateAsync(codeSource);
+            var createdCodeSource = await _codeSourcesStore.CreateAsync(codeSource);
+            var githubBranches = await _githubBranchesStore.GetAsync(new GithubBranchFilter
+            {
+                IsDeleted = false,
+                RepoIds = new HashSet<int> { repo.Id }
+            });
+
+            if (githubBranches.Any())
+            {
+                await _previewConfigurationsRepository.CreateByBranchAsync(githubBranches, createdCodeSource);
+            }
+            return createdCodeSource;
         }
 
         private async Task<GithubRepo> CreateAndPopulateRepoAsync(Uri repoUrl)
@@ -98,12 +111,12 @@ namespace Instances.Application.CodeSources
                         LastPushedAt = headCommitInfo.CommitedOn,
                         HeadCommitMessage = headCommitInfo.Message,
                         HeadCommitHash = headCommitInfo.Sha,
+                        Repo = repo
                     }
                 );
             }
 
-            githubBranches = await _githubBranchesStore.CreateAsync(githubBranches);
-            await _previewConfigurationsRepository.CreateByBranchAsync(githubBranches);
+            await _githubBranchesStore.CreateAsync(githubBranches);
             return repo;
         }
 
