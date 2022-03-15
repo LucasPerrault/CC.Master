@@ -14,7 +14,11 @@ const fakeCodeSource = (lifecycle: LifecycleStep) => ({
   jenkinsProjectName: 'CC',
   jenkinsProjectUrl: '******',
   type: CodeSourceType.InternalTool,
-  githubRepo: '*****',
+  repo: {
+    id: 2,
+    name: "name",
+    url: "*****"
+  },
   lifecycle,
   config: {
     appPath: '',
