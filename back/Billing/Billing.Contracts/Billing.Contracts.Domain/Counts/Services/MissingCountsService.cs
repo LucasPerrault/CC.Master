@@ -44,7 +44,7 @@ public class MissingCountsService : IMissingCountsService
         var filter = new ContractFilter
         {
             StartsOn = CompareDateTime.IsBeforeOrEqual(period),
-            TheoreticalEndsOn = CompareDateTime.IsAfterOrEqual(period.LastOfMonth()).OrNull(),
+            TheoreticalEndOn = CompareDateTime.IsAfterOrEqual(period.LastOfMonth()).OrNull(),
             HasEnvironment = CompareBoolean.TrueOnly,
             ArchivedAt = CompareNullableDateTime.IsNull(),
             HasAttachments = CompareBoolean.TrueOnly,
