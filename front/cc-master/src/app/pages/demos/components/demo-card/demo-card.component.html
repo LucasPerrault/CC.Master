@@ -54,14 +54,14 @@
         <button *ngIf="!demo?.instance?.isProtected" type="button" class="actionIcon"
                 [luTooltip]="'demos_card_protect' | translate"
                 [ngClass]="protectionButtonClass$ | async" (click)="lock(demo)">
-          <span aria-hidden="true" class="lucca-icon icon-lock"></span>
+          <span aria-hidden="true" class="lucca-icon icon-unlock"></span>
           <span class="u-mask">{{ 'demos_card_protect' | translate }}</span>
         </button>
 
         <button *ngIf="demo?.instance?.isProtected" type="button" class="actionIcon"
                 [luTooltip]="'demos_card_unprotect' | translate"
                 [ngClass]="protectionButtonClass$ | async" (click)="unlock(demo)">
-          <span aria-hidden="true" class="lucca-icon icon-unlock"></span>
+          <span aria-hidden="true" class="lucca-icon icon-lock"></span>
           <span class="u-mask">{{ 'demos_card_unprotect' | translate }}</span>
         </button>
 
