@@ -35,15 +35,15 @@
     <div class="card-content-right grid-xs6">
       <div class="u-displayFlex u-flexDirectionColumn u-justifyContentCenter">
         <div class="u-displayFlex u-alignItemsCenter">
-          <span aria-hidden="true" class="lucca-icon icon-info u-marginLeftSmaller u-marginRightSmallest"
-                  [luTooltip]="'demos_card_users_example' | translate">
-          </span>
           <label class="textfield palette-grey mod-outlined mod-long">
             <cc-demo-instance-user-api-select [instanceId]="demo?.instanceID"
                                               [placeholder]="'demos_card_connect_as' | translate"
                                               [formControl]="formControl">
             </cc-demo-instance-user-api-select>
           </label>
+          <span aria-hidden="true" class="lucca-icon icon-info u-marginLeftSmaller u-marginRightSmallest"
+                [luTooltip]="'demos_card_users_example' | translate">
+          </span>
         </div>
         <button class="button palette-grey mod-outline u-marginLeftBig u-marginTopSmaller" (click)="connectAsMasterKey()">
           {{ 'demos_card_connect_as_master_key' | translate }}
