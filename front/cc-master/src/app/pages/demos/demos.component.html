@@ -28,6 +28,13 @@
       </cc-demo-card>
     </div>
 
+    <ng-container *ngIf="isEmpty$ | async">
+      <section class="emptyState">
+        <h3 class="emptyState-title">{{ 'demos_emptyState_title' | translate }}</h3>
+        <p class="emptyState-description">{{ 'demos_emptyState_description' | translate }}</p>
+      </section>
+    </ng-container>
+
     <div *ngIf="isLoadingMore$ | async" class="loading u-marginLeftStandard u-marginBottomStandard">
       {{ 'demos_loading' | translate }}
     </div>

@@ -6,7 +6,7 @@ import { defaultPagingParams, IPaginatedResult, PaginatedList, PaginatedListStat
 import { ApiStandard } from '@cc/common/queries';
 import { IUser } from '@cc/domain/users/v4';
 import { LuModal } from '@lucca-front/ng/modal';
-import { BehaviorSubject, Observable, ReplaySubject, Subject } from 'rxjs';
+import { BehaviorSubject, combineLatest, Observable, ReplaySubject, Subject } from 'rxjs';
 import { map, skip, take, takeUntil } from 'rxjs/operators';
 
 import { DemoCommentModalComponent } from './components/modals/demo-comment-modal/demo-comment-modal.component';
@@ -28,9 +28,13 @@ import { DemosListService } from './services/demos-list.service';
 })
 export class DemosComponent implements OnInit, OnDestroy {
 
-
   public get duplicationIds$(): Observable<string[]> {
     return this.duplicationsService.duplicationIds$;
+  }
+
+  public get isEmpty$(): Observable<boolean> {
+    return combineLatest([this.demos$, this.duplicationIds$])
+      .pipe(map(([demos, duplicationIds]) => !demos?.length && !duplicationIds.length));
   }
 
   public get hasDemos$(): Observable<boolean> { return this.demos$.pipe(map(demos => !!demos?.length)); }

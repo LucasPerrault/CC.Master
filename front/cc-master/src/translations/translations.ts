@@ -923,6 +923,8 @@ export const Translations = {
 		'front_contractPage_establishments_column_excluded_solutions': "Excluded solutions",
 		'establishments_exclude_button_label': "Exclude",
 		'demos_card_delete_disable': "Impossible de supprimer une démo protégée",
+		'demos_emptyState_title': "Shhh, it's quiet here",
+		'demos_emptyState_description': "No demo to display",
 	},
 	"de": {
 		'front_hello_world': "Hallo Welt!",
@@ -1848,6 +1850,8 @@ export const Translations = {
 		'front_contractPage_establishments_column_excluded_solutions': "Excluded solutions",
 		'establishments_exclude_button_label': "Exclude",
 		'demos_card_delete_disable': "Impossible de supprimer une démo protégée",
+		'demos_emptyState_title': "Shhh, it's quiet here",
+		'demos_emptyState_description': "No demo to display",
 	},
 	"fr": {
 		'front_hello_world': "Bonjour, monde !",
@@ -2773,6 +2777,8 @@ export const Translations = {
 		'front_contractPage_establishments_column_excluded_solutions': "Solutions exclues",
 		'establishments_exclude_button_label': "Exclure",
 		'demos_card_delete_disable': "Impossible de supprimer une démo protégée",
+		'demos_emptyState_title': "Shhh, c'est calme ici",
+		'demos_emptyState_description': "Aucune démo à visualiser",
 	},
 	"it": {
 		'front_hello_world': "Ciao mondo!",
@@ -3698,6 +3704,8 @@ export const Translations = {
 		'front_contractPage_establishments_column_excluded_solutions': "Excluded solutions",
 		'establishments_exclude_button_label': "Exclude",
 		'demos_card_delete_disable': "Impossible de supprimer une démo protégée",
+		'demos_emptyState_title': "Shhh, it's quiet here",
+		'demos_emptyState_description': "No demo to display",
 	},
 	"nl": {
 		'front_hello_world': "Hallo, wereld!",
@@ -4623,6 +4631,8 @@ export const Translations = {
 		'front_contractPage_establishments_column_excluded_solutions': "Excluded solutions",
 		'establishments_exclude_button_label': "Exclude",
 		'demos_card_delete_disable': "Impossible de supprimer une démo protégée",
+		'demos_emptyState_title': "Shhh, it's quiet here",
+		'demos_emptyState_description': "No demo to display",
 	},
 	"nl-BE": {
 		'front_hello_world': "Hallo wereld!",
@@ -5548,6 +5558,8 @@ export const Translations = {
 		'front_contractPage_establishments_column_excluded_solutions': "Excluded solutions",
 		'establishments_exclude_button_label': "Exclude",
 		'demos_card_delete_disable': "Impossible de supprimer une démo protégée",
+		'demos_emptyState_title': "Shhh, it's quiet here",
+		'demos_emptyState_description': "No demo to display",
 	},
 	"es": {
 		'front_hello_world': "¡Hola, mundo!",
@@ -6473,6 +6485,8 @@ export const Translations = {
 		'front_contractPage_establishments_column_excluded_solutions': "Excluded solutions",
 		'establishments_exclude_button_label': "Exclude",
 		'demos_card_delete_disable': "Impossible de supprimer une démo protégée",
+		'demos_emptyState_title': "Shhh, it's quiet here",
+		'demos_emptyState_description': "No demo to display",
 	},
 	"pt": {
 		'front_hello_world': "Olá mundo!",
@@ -7398,5 +7412,7 @@ export const Translations = {
 		'front_contractPage_establishments_column_excluded_solutions': "Excluded solutions",
 		'establishments_exclude_button_label': "Exclude",
 		'demos_card_delete_disable': "Impossible de supprimer une démo protégée",
+		'demos_emptyState_title': "Shhh, it's quiet here",
+		'demos_emptyState_description': "No demo to display",
 	},
 };
