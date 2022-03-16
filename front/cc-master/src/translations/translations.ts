@@ -2725,7 +2725,7 @@ export const Translations = {
 		'demos_filter_search': "Rechercher une démo",
 		'demos_filter_author': "Auteur",
 		'select_distributor_label': "Distributeur",
-		'demos_filter_is_protected': "Protégée uniquement",
+		'demos_filter_is_protected': "Protégées uniquement",
 		'demos_title': "Demos",
 		'demos_loading': "Chargement en cours...",
 		'demos_password_label': "Mot de passe",

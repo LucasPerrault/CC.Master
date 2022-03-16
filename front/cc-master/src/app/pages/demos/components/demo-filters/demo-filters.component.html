@@ -1,4 +1,4 @@
-<form [formGroup]="formGroup">
+<form [formGroup]="formGroup" class="u-displayFlex u-flexWrapWrap u-alignItemsCenter">
 
   <label class="textfield mod-search mod-inline palette-grey mod-outlined mod-longer u-marginTopSmallest">
     <input class="textfield-input" type="text" [placeholder]="'demos_filter_search' | translate"
@@ -16,7 +16,7 @@
                                [formControlName]="formKey.Distributor"></cc-distributor-api-select>
   </label>
 
-  <label class="checkbox mod-inline u-marginTopSmallest">
+  <label class="checkbox u-marginLeftSmallest u-marginTopSmallest">
     <input class="checkbox-input" [formControlName]="formKey.IsProtected" type="checkbox" name="isProtected" id="isProtected">
     <span class="checkbox-label" for="isProtected">{{ 'demos_filter_is_protected' | translate }}</span>
   </label>
