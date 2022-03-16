@@ -128,7 +128,7 @@ namespace Billing.Contracts.Infra.Storage.Stores
                 .WhenNotNullOrEmpty(filter.CommercialOfferIds).ApplyWhere(c => filter.CommercialOfferIds.Contains(c.CommercialOfferId))
                 .WhenNotNullOrEmpty(filter.EnvironmentIds).ApplyWhere(c => c.EnvironmentId.HasValue &&  filter.EnvironmentIds.Contains(c.EnvironmentId.Value))
                 .When(filter.ClientExternalId.HasValue).ApplyWhere(c => c.ClientExternalId == filter.ClientExternalId.Value)
-                .Apply(filter.HasAttachments).To(c => c.Attachments.Count != 0);
+                .Apply(filter.HasAttachments).To(c => c.Attachments.Any());
         }
 
         private static IQueryable<Contract> Search(this IQueryable<Contract> contracts, HashSet<string> words)
