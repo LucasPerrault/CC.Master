@@ -20,14 +20,18 @@ namespace Instances.Application.Instances
         }
 
         internal async Task RequestRemoteDuplicationAsync
-            (InstanceDuplication duplication, bool withAnonymization, bool skipBufferServer, string callbackPath)
+            (InstanceDuplication duplication, InstanceDuplicationOptions duplicationOptions)
         {
-            var scripts = (await _scriptPicker.GetForCleaningAsync(duplication))
+            var postBufferServerRestoreScripts = (await _scriptPicker.GetForCleaningAsync(duplication))
                 .Union(await _scriptPicker.GetExtraForDuplicationAsync(duplication));
-            if(withAnonymization)
+
+            if (duplicationOptions.WithAnonymization)
             {
-                scripts = scripts.Union(await _scriptPicker.GetForAnonymizationAsync(duplication));
+                postBufferServerRestoreScripts = postBufferServerRestoreScripts.Union(await _scriptPicker.GetForAnonymizationAsync(duplication));
             }
+
+            var preRestoreScripts = await _scriptPicker.GetPreRestoreScriptsAsync(duplication, duplicationOptions);
+            var postRestoreScripts = await _scriptPicker.GetPostRestoreScriptsAsync(duplication, duplicationOptions);
 
             var sourceClusterUri = duplication.SourceCluster == duplication.TargetCluster
                 ? null
@@ -40,18 +44,18 @@ namespace Instances.Application.Instances
                     Tenant = duplication.SourceSubdomain,
                     CcDataServerUri = sourceClusterUri
                 },
-                SkipBufferServer = skipBufferServer,
+                SkipBufferServer = duplicationOptions.SkipBufferServer,
                 TargetTenant = duplication.TargetSubdomain,
-                PostBufferServerRestoreScripts = new List<UriLinkDto>(),
-                PreRestoreScripts = new List<UriLinkDto>(),
-                PostRestoreScripts = scripts.Select(uri => new UriLinkDto { Uri = uri }).ToList()
+                PostBufferServerRestoreScripts = postBufferServerRestoreScripts.Select(uri => new UriLinkDto { Uri = uri }).ToList(),
+                PreRestoreScripts = preRestoreScripts.Select(uri => new UriLinkDto { Uri = uri }).ToList(),
+                PostRestoreScripts = postRestoreScripts.Select(uri => new UriLinkDto { Uri = uri }).ToList(),
             };
 
             await _ccDataService.StartDuplicateInstanceAsync
             (
                 duplicateInstanceRequest,
                 duplication.TargetCluster,
-                callbackPath
+                duplicationOptions.CallbackPath
             );
         }
 

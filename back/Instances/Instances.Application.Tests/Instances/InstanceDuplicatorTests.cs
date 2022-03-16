@@ -34,36 +34,41 @@ namespace Instances.Application.Tests
             _ccDataServiceMock.Setup(ccDataService => ccDataService.StartDuplicateInstanceAsync(It.IsAny<DuplicateInstanceRequestDto>(), It.IsAny<string>(), It.IsAny<string>())).Verifiable();
             _codeSourceRepositoryMock.Setup(csr => csr.GetInstanceCleaningArtifactsAsync()).ReturnsAsync(new List<CodeSourceArtifacts>());
             _codeSourceRepositoryMock.Setup(csr => csr.GetMonolithArtifactsAsync()).ReturnsAsync(new List<CodeSourceArtifacts>());
+            _codeSourceRepositoryMock.Setup(csr => csr.GetInstancePreRestoreArtifactsAsync()).ReturnsAsync(new List<CodeSourceArtifacts>());
+            _codeSourceRepositoryMock.Setup(csr => csr.GetInstancePostRestoreArtifactsAsync()).ReturnsAsync(new List<CodeSourceArtifacts>());
 
             var instanceDuplicator = new InstancesManipulator(
                 new SqlScriptPicker(_codeSourceRepositoryMock.Object),
                 _ccDataServiceMock.Object
             );
-            await instanceDuplicator.RequestRemoteDuplicationAsync(duplication, withAnonymization: false, skipBufferServer: false, "callback/path");
+            await instanceDuplicator.RequestRemoteDuplicationAsync(duplication, InstanceDuplicationOptions.ForDemo("callback/path"));
 
             _ccDataServiceMock.Verify(ccDataService => ccDataService.StartDuplicateInstanceAsync(It.IsAny<DuplicateInstanceRequestDto>(), duplication.TargetCluster, It.IsAny<string>()), Times.Once);
         }
 
-        [Theory]
-        [InlineData(false)]
-        [InlineData(true)]
-        public async Task RequestRemoteDuplicationAsync_ShouldIndicateCorrectlyIfWeNeedToSkipTheBufferServer(bool skipBufferServer)
+        // Le cas "False" n'existe pas encore, viendra avec les formations
+        [Fact]
+        public async Task RequestRemoteDuplicationAsync_ShouldIndicateCorrectlyIfWeNeedToSkipTheBufferServerWithTrue()
         {
             var duplication = new InstanceDuplication
             {
                 SourceCluster = "demo1",
                 TargetCluster = "demo2",
             };
+            var duplicationOptions = InstanceDuplicationOptions.ForDemo("callback/path");
+            Assert.True(duplicationOptions.SkipBufferServer);
             _ccDataServiceMock.Setup(ccDataService => ccDataService.StartDuplicateInstanceAsync(It.IsAny<DuplicateInstanceRequestDto>(), It.IsAny<string>(), It.IsAny<string>())).Verifiable();
             _codeSourceRepositoryMock.Setup(csr => csr.GetInstanceCleaningArtifactsAsync()).ReturnsAsync(new List<CodeSourceArtifacts>());
             _codeSourceRepositoryMock.Setup(csr => csr.GetMonolithArtifactsAsync()).ReturnsAsync(new List<CodeSourceArtifacts>());
+            _codeSourceRepositoryMock.Setup(csr => csr.GetInstancePreRestoreArtifactsAsync()).ReturnsAsync(new List<CodeSourceArtifacts>());
+            _codeSourceRepositoryMock.Setup(csr => csr.GetInstancePostRestoreArtifactsAsync()).ReturnsAsync(new List<CodeSourceArtifacts>());
 
             var instanceDuplicator = new InstancesManipulator(
                 new SqlScriptPicker(_codeSourceRepositoryMock.Object),
                 _ccDataServiceMock.Object);
-            await instanceDuplicator.RequestRemoteDuplicationAsync(duplication, withAnonymization: false, skipBufferServer: skipBufferServer, "callback/path");
+            await instanceDuplicator.RequestRemoteDuplicationAsync(duplication, duplicationOptions);
 
-            _ccDataServiceMock.Verify(ccDataService => ccDataService.StartDuplicateInstanceAsync(It.Is<DuplicateInstanceRequestDto>(dir => dir.SkipBufferServer == skipBufferServer), It.IsAny<string>(), It.IsAny<string>()), Times.Once);
+            _ccDataServiceMock.Verify(ccDataService => ccDataService.StartDuplicateInstanceAsync(It.Is<DuplicateInstanceRequestDto>(dir => dir.SkipBufferServer == duplicationOptions.SkipBufferServer), It.IsAny<string>(), It.IsAny<string>()), Times.Once);
         }
 
     }

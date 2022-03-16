@@ -169,6 +169,8 @@ namespace Instances.Application.Specflow.Tests.Demos.Steps
             var codeSourcesRepositoryMock = new Mock<ICodeSourcesRepository>();
             codeSourcesRepositoryMock.Setup(csr => csr.GetInstanceCleaningArtifactsAsync()).ReturnsAsync(new List<CodeSourceArtifacts>());
             codeSourcesRepositoryMock.Setup(csr => csr.GetMonolithArtifactsAsync()).ReturnsAsync(new List<CodeSourceArtifacts>());
+            codeSourcesRepositoryMock.Setup(csr => csr.GetInstancePreRestoreArtifactsAsync()).ReturnsAsync(new List<CodeSourceArtifacts>());
+            codeSourcesRepositoryMock.Setup(csr => csr.GetInstancePostRestoreArtifactsAsync()).ReturnsAsync(new List<CodeSourceArtifacts>());
             var ccDataServiceMock = new Mock<ICcDataService>();
             var clusterSelectorMock = new Mock<IClusterSelector>();
             clusterSelectorMock.Setup(s => s.GetFillingClusterAsync(It.IsAny<string>())).ReturnsAsync("mocked-cluster");

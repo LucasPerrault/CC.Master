@@ -119,9 +119,8 @@ namespace Instances.Application.Demos.Duplication
             await _duplicationsStore.CreateAsync(duplication);
             await _instancesDuplicator.RequestRemoteDuplicationAsync(
                 duplication.InstanceDuplication,
-                withAnonymization: false,
-                skipBufferServer: true,
-                $"/api/hubspot/duplications/{duplication.InstanceDuplicationId}/notify");
+                InstanceDuplicationOptions.ForDemo($"/api/hubspot/duplications/{duplication.InstanceDuplicationId}/notify")
+            );
 
             return duplication;
         }

@@ -38,4 +38,29 @@ namespace Instances.Domain.Instances
             StartedAt = DateTime.Now;
         }
     }
+
+    public class InstanceDuplicationOptions
+    {
+        private InstanceDuplicationOptions() { }
+
+        private const string KeepExistingPasswordsScriptKeyword = "KeepExistingPasswords";
+
+        public bool WithAnonymization { get; init; }
+        public bool SkipBufferServer { get; init; }
+        public string[] SpecificPreRestoreScriptKeywordSelector { get; init; }
+        public string[] SpecificPostRestoreScriptKeywordSelector { get; init; }
+        public string CallbackPath { get; init; }
+
+        public static InstanceDuplicationOptions ForDemo(string callBackPath)
+        {
+            return new InstanceDuplicationOptions
+            {
+                WithAnonymization = false,
+                SkipBufferServer = true,
+                SpecificPreRestoreScriptKeywordSelector = Array.Empty<string>(),
+                SpecificPostRestoreScriptKeywordSelector = Array.Empty<string>(),
+                CallbackPath = callBackPath,
+            };
+        }
+    }
 }

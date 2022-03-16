@@ -156,6 +156,10 @@ namespace Instances.Application.Tests.Demos
                 .ReturnsAsync(new List<Uri>());
             _sqlScriptPickerMock.Setup(p => p.GetExtraForDuplicationAsync(It.IsAny<InstanceDuplication>()))
                 .ReturnsAsync(new List<Uri>());
+            _sqlScriptPickerMock.Setup(p => p.GetPreRestoreScriptsAsync(It.IsAny<InstanceDuplication>(), It.IsAny<InstanceDuplicationOptions>()))
+                .ReturnsAsync(new List<Uri>());
+            _sqlScriptPickerMock.Setup(p => p.GetPostRestoreScriptsAsync(It.IsAny<InstanceDuplication>(), It.IsAny<InstanceDuplicationOptions>()))
+                .ReturnsAsync(new List<Uri>());
 
             var duplicator = new HubspotDemoDuplicator
                 (
