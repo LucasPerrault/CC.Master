@@ -12,7 +12,10 @@
     </span>
   </label>
 
-  <cc-demo-password-input class="u-marginTopSmall" [formControlName]="formKey.Password"></cc-demo-password-input>
+  <label class="u-marginTopSmall textfield palette-grey mod-block mod-password is-required">
+    <input class="textfield-input" type="text" [required]="true" [formControlName]="formKey.Password">
+    <span class="textfield-label">{{ 'demos_password_label' | translate }}</span>
+  </label>
 
   <label class="checkbox u-marginTopSmall">
     <input class="checkbox-input" type="checkbox" name="show-distributor" [formControl]="showDistributor">

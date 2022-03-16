@@ -8,7 +8,6 @@ import { LuSidepanelModule } from '@lucca-front/ng/sidepanel';
 
 import { DemoClientSubdomainInputModule } from '../../selects';
 import { DemoApiSelectModule } from '../../selects/demo-api-select/demo-api-select.module';
-import { DemoPasswordInputModule } from '../../selects/demo-password-input/demo-password-input.module';
 import { DemoCreationEntryModalComponent, DemoCreationModalComponent } from './demo-creation-modal.component';
 
 @NgModule({
@@ -17,7 +16,6 @@ import { DemoCreationEntryModalComponent, DemoCreationModalComponent } from './d
     CommonModule,
     ReactiveFormsModule,
     DemoClientSubdomainInputModule,
-    DemoPasswordInputModule,
     DistributorApiSelectModule,
     DemoApiSelectModule,
     LuApiSelectInputModule,
