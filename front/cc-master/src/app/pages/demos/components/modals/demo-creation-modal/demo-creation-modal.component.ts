@@ -5,7 +5,7 @@ import { TranslatePipe } from '@cc/aspects/translate';
 import { SelectDisplayMode } from '@cc/common/forms';
 import { ILuSidepanelContent, LuSidepanel } from '@lucca-front/ng/sidepanel';
 import { Observable, Subject } from 'rxjs';
-import { filter, map, takeUntil } from 'rxjs/operators';
+import { filter, map, take, takeUntil } from 'rxjs/operators';
 
 import { DemoFormKey } from '../../../models/demo-creation-dto.interface';
 import { DemoDuplicationsService } from '../../../services/demo-duplications.service';
@@ -79,6 +79,10 @@ export class DemoCreationModalComponent implements ILuSidepanelContent, OnInit, 
     this.showDistributor.valueChanges
       .pipe(takeUntil(this.destroy$), filter(showDistributor => !showDistributor))
       .subscribe(() => this.resetDistributor());
+
+    this.dataService.getDefaultTemplateDemo$()
+      .pipe(take(1))
+      .subscribe(s => this.formGroup.get(DemoFormKey.Source).setValue(s));
   }
 
   public ngOnDestroy(): void {

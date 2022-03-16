@@ -31,6 +31,11 @@ export class DemosDataService {
       .pipe(map(res => res.items));
   }
 
+  public getDefaultTemplateDemo$(): Observable<ITemplateDemo> {
+    const masterDemoId = 385;
+    return this.httpClient.get<ITemplateDemo>(DemosApiRoute.id(masterDemoId));
+  }
+
   public create$(form: IDemoCreationForm): Observable<IDemoDuplication> {
     const body = this.getCreationDto(form);
     return this.httpClient.post<IDemoDuplication>(DemosApiRoute.duplicate, body);
