@@ -33,7 +33,7 @@
     </div>
 
     <div class="card-content-right grid-xs6">
-      <div class="u-displayFlex u-flexDirectionColumn u-justifyContentCenter">
+      <div class="u-displayFlex u-flexDirectionColumn u-justifyContentCenter u-alignItemsFlexStart u-marginLeftSmall">
         <div class="u-displayFlex u-alignItemsCenter">
           <label class="textfield palette-grey mod-outlined mod-long">
             <cc-demo-instance-user-api-select [instanceId]="demo?.instanceID"
@@ -45,7 +45,7 @@
                 [luTooltip]="'demos_card_users_example' | translate">
           </span>
         </div>
-        <button class="button palette-grey mod-outline u-marginLeftBig u-marginTopSmaller" (click)="connectAsMasterKey()">
+        <button class="link u-marginTopSmaller" (click)="connectAsMasterKey()">
           {{ 'demos_card_connect_as_master_key' | translate }}
         </button>
       </div>
