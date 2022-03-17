@@ -63,7 +63,7 @@ namespace Instances.Application.CodeSources
 
         public async Task<CodeSource> CreateAsync(CreateCodeSourceDto codeSourceDto)
         {
-            var repo = await CreateAndPopulateRepoAsync(codeSourceDto.RepoUrl);
+            var repo = await GetOrCreateAndPopulateRepoAsync(codeSourceDto.RepoUrl);
 
             var codeSource = new CodeSource
             {
@@ -90,7 +90,7 @@ namespace Instances.Application.CodeSources
             return createdCodeSource;
         }
 
-        private async Task<GithubRepo> CreateAndPopulateRepoAsync(Uri repoUrl)
+        private async Task<GithubRepo> GetOrCreateAndPopulateRepoAsync(Uri repoUrl)
         {
             var repo = await _githubReposStore.GetByUriAsync(repoUrl);
             if (repo != null)
