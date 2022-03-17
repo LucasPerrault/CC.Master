@@ -50,7 +50,7 @@ namespace Instances.Application.Tests.Instances
             await _githubBranchesRepository.GetByNumberAsync(repoId, pullRequestNumber);
 
             _mockGithubPullRequestsStore.Verify(gb => gb.GetFirstAsync(It.Is<GithubPullRequestFilter>(g =>
-                g.RepoIds.Contains(repoId) &&
+                g.RepoId == repoId &&
                 g.Number == pullRequestNumber
             )));
         }

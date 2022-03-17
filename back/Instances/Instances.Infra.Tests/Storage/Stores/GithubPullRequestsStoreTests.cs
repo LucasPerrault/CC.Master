@@ -54,12 +54,12 @@ namespace Instances.Infra.Tests.Storage.Stores
             var first = await _githubPullRequestsStore.GetFirstAsync(new GithubPullRequestFilter
             {
                 Number = 42,
-                RepoIds = new HashSet<int> { repo1.Id }
+                RepoId = repo1.Id
             });
             var second = await _githubPullRequestsStore.GetFirstAsync(new GithubPullRequestFilter
             {
                 Number = 42,
-                RepoIds = new HashSet<int> { repo2.Id }
+                RepoId = repo2.Id
             });
 
             first.Should().NotBeNull();
@@ -77,7 +77,7 @@ namespace Instances.Infra.Tests.Storage.Stores
             var third = await _githubPullRequestsStore.GetFirstAsync(new GithubPullRequestFilter
             {
                 Number = 42,
-                RepoIds = new HashSet<int> { repo1.Id }
+                RepoId = repo1.Id
             });
 
             third.Should().NotBeNull();

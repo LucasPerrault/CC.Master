@@ -21,7 +21,7 @@ namespace Instances.Application.Instances
         public Task<GithubPullRequest> GetByNumberAsync(int repoId, int pullRequestNumber)
             => _githubPullRequestsStore.GetFirstAsync(new GithubPullRequestFilter
             {
-                RepoIds = new HashSet<int> { repoId },
+                RepoId = repoId,
                 Number = pullRequestNumber
             });
 
