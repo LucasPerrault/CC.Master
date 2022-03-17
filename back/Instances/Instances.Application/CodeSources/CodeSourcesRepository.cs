@@ -63,8 +63,7 @@ namespace Instances.Application.CodeSources
 
         public async Task<CodeSource> CreateAsync(CreateCodeSourceDto codeSourceDto)
         {
-            var repo = await _githubReposStore.GetByUriAsync(codeSourceDto.RepoUrl)
-                       ?? await CreateAndPopulateRepoAsync(codeSourceDto.RepoUrl);
+            var repo = await CreateAndPopulateRepoAsync(codeSourceDto.RepoUrl);
 
             var codeSource = new CodeSource
             {
@@ -93,7 +92,12 @@ namespace Instances.Application.CodeSources
 
         private async Task<GithubRepo> CreateAndPopulateRepoAsync(Uri repoUrl)
         {
-            var repo = await _githubReposStore.CreateAsync(repoUrl);
+            var repo = await _githubReposStore.GetByUriAsync(repoUrl);
+            if (repo != null)
+            {
+                return repo;
+            }
+            repo = await _githubReposStore.CreateAsync(repoUrl);
 
             var branchNames = await _githubService.GetBranchNamesAsync(repoUrl);
             var githubBranches = new List<GithubBranch>(capacity: branchNames.Count());
