@@ -31,7 +31,7 @@ namespace Instances.Application.CodeSources
     {
         private readonly ICodeSourcesStore _codeSourcesStore;
         private readonly IGithubBranchesStore _githubBranchesStore;
-        private readonly ICodeSourceFetcherService _fetcherService;
+        private readonly ICodeSourceFetcherService _codeSourceFetcherService;
         private readonly ICodeSourceBuildUrlService _codeSourceBuildUrl;
         private readonly IArtifactsService _artifactsService;
         private readonly IGithubService _githubService;
@@ -41,14 +41,14 @@ namespace Instances.Application.CodeSources
         public CodeSourcesRepository
         (
             ICodeSourcesStore codeSourcesStore, IGithubBranchesStore githubBranchesStore,
-            ICodeSourceFetcherService fetcherService, ICodeSourceBuildUrlService codeSourceBuildUrl,
+            ICodeSourceFetcherService codeSourceFetcherService, ICodeSourceBuildUrlService codeSourceBuildUrl,
             IArtifactsService artifactsService, IGithubService githubService,
             IPreviewConfigurationsRepository previewConfigurationsRepository, IGithubReposStore githubReposStore
         )
         {
             _codeSourcesStore = codeSourcesStore;
             _githubBranchesStore = githubBranchesStore;
-            _fetcherService = fetcherService;
+            _codeSourceFetcherService = codeSourceFetcherService;
             _codeSourceBuildUrl = codeSourceBuildUrl;
             _artifactsService = artifactsService;
             _githubService = githubService;
@@ -133,7 +133,7 @@ namespace Instances.Application.CodeSources
 
         public async Task<IEnumerable<CodeSource>> FetchFromRepoAsync(Uri repoUrl)
         {
-            return await _fetcherService.FetchAsync(repoUrl);
+            return await _codeSourceFetcherService.FetchAsync(repoUrl);
         }
 
         public async Task<CodeSource> GetByIdAsync(int id)
