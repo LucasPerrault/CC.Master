@@ -1,5 +1,6 @@
 using Instances.Domain.CodeSources;
 using Instances.Domain.Github;
+using Instances.Domain.Github.Models;
 using Instances.Infra.CodeSources.Models;
 using Microsoft.Extensions.Logging;
 using System;
@@ -64,10 +65,10 @@ namespace Instances.Infra.CodeSources
             {
                 result.Add(new CodeSource
                 {
-                    Repo = new Domain.Github.Models.GithubRepo
+                    Repo = new GithubRepo
                     {
                         Url = repoUrl,
-                        Name = repoUrl.PathAndQuery.Split('/').Last()
+                        Name = GithubRepo.ConvertUrlToName(repoUrl)
                     },
                     Name = app.FriendlyName,
                     Code = app.Name,

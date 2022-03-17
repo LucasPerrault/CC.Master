@@ -21,8 +21,8 @@ public class GithubReposStore : IGithubReposStore
     {
         var repo = _dbContext.Add(new GithubRepo
         {
-            Name = url.PathAndQuery.Split("/").Last(),
-            Url = url
+            Url = url,
+            Name = GithubRepo.ConvertUrlToName(url)
         });
         await _dbContext.SaveChangesAsync();
         return repo.Entity;
