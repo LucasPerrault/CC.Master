@@ -8,11 +8,13 @@ import {
   ValidationErrors,
   Validator,
 } from '@angular/forms';
+import { ALuApiService } from '@lucca-front/ng/api';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
 import { InstancesApiRoute } from '../../../constants/instance-api-route.const';
 import { IDemoInstanceUser } from './demo-instance-user.interface';
+import { DemoInstanceUserApiSelectService } from './demo-instance-user-api-select.service';
 
 @Component({
   selector: 'cc-demo-instance-user-api-select',
@@ -20,6 +22,10 @@ import { IDemoInstanceUser } from './demo-instance-user.interface';
   styleUrls: ['./demo-instance-user-api-select.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [
+    {
+      provide: ALuApiService,
+      useClass: DemoInstanceUserApiSelectService,
+    },
     {
       provide: NG_VALUE_ACCESSOR,
       useExisting: forwardRef(() => DemoInstanceUserApiSelectComponent),

@@ -8,7 +8,7 @@
 
   <lu-option-picker-advanced>
     <header class="lu-picker-header">
-      <lu-api-paged-searcher [api]="api" standard="v3"></lu-api-paged-searcher>
+      <lu-api-searcher [api]="api" standard="v3"></lu-api-searcher>
     </header>
 
     <lu-option *luForOptions="let user; trackBy: trackBy" [value]="user">
