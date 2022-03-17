@@ -7,6 +7,8 @@ namespace Instances.Domain.Github.Models;
 
 public class GithubRepo
 {
+    public const string LuccaGithubOrganisationUrl = "https://github.com/LuccaSA/";
+
     public int Id { get; set; }
     public string Name { get; set; }
     public Uri Url { get; set; }

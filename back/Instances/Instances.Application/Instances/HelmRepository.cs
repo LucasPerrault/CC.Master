@@ -12,8 +12,6 @@ namespace Instances.Application.Instances
 {
     public class HelmRepository : IHelmRepository
     {
-        private const string GithubOrganisationUrl = "https://github.com/LuccaSA/";
-
         private readonly IGithubBranchesStore _githubBranchesStore;
         private readonly IGithubReposStore _githubReposStore;
 
@@ -43,7 +41,7 @@ namespace Instances.Application.Instances
 
         private async Task<GithubRepo> GetRepoByReleaseNameAsync(string releaseName)
         {
-            var repoUri = new Uri(new Uri(GithubOrganisationUrl), releaseName);
+            var repoUri = new Uri(new Uri(GithubRepo.LuccaGithubOrganisationUrl), releaseName);
             var repo = await _githubReposStore.GetByUriAsync(repoUri);
             if (repo is null)
             {
@@ -112,7 +110,7 @@ namespace Instances.Application.Instances
                 {
                     GitRef = b.Branch.Name,
                     HelmChart = b.Branch.HelmChart,
-                    ReleaseName = b.Branch.Repo.Url.ToString().Substring(GithubOrganisationUrl.Length),
+                    ReleaseName = b.Branch.Repo.Url.ToString().Substring(GithubRepo.LuccaGithubOrganisationUrl.Length),
                     IsProductionVersion = b.IsProd,
                 })
                 .ToList();
