@@ -34,7 +34,7 @@ namespace Instances.Application.Webhooks.Github
 
             if (pushEventPayload.Created)
             {
-                await _githubBranchesRepository.CreateAsync(repo.Id, branchName, new GithubApiCommit
+                await _githubBranchesRepository.CreateAsync(repo, branchName, new GithubApiCommit
                 {
                     CommitedOn = DateTime.Now,
                     Message = pushEventPayload.HeadCommit.Message,

@@ -7,6 +7,7 @@ namespace Instances.Application.Instances
     {
         Task<GithubBranch> GetNonDeletedBranchByNameAsync(int repoId, string branchName);
         Task<GithubBranch> CreateAsync(int repoId, string branchName, GithubApiCommit commit = null);
+        Task<GithubBranch> CreateAsync(GithubRepo repo, string branchName, GithubApiCommit commit = null);
         Task<GithubBranch> UpdateAsync(GithubBranch existingBranch);
     }
 }

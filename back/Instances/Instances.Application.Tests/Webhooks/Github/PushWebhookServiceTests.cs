@@ -58,14 +58,14 @@ namespace Instances.Application.Tests.Webhooks.Github
                     Id = 42
                 });
             _githubBranchesRepositoryMock
-                .Setup(g => g.CreateAsync(It.IsAny<int>(), It.IsAny<string>(), It.IsAny<GithubApiCommit>()))
+                .Setup(g => g.CreateAsync(It.IsAny<GithubRepo>(), It.IsAny<string>(), It.IsAny<GithubApiCommit>()))
                 .ReturnsAsync((GithubBranch)null);
 
             await using var stream = new MemoryStream(Encoding.UTF8.GetBytes(json));
             await _pushWebhookService.HandleEventAsync(stream);
 
             _githubReposStoreMock.Verify(c => c.GetByUriAsync(_repositoryUrl));
-            _githubBranchesRepositoryMock.Verify(g => g.CreateAsync(42, "main", It.IsAny<GithubApiCommit>()));
+            _githubBranchesRepositoryMock.Verify(g => g.CreateAsync(It.IsAny<GithubRepo>(), "main", It.IsAny<GithubApiCommit>()));
         }
 
         [Fact]

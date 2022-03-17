@@ -48,6 +48,7 @@ namespace Instances.Application.Tests.Instances
                 .Setup(gr => gr.GetByIdAsync(It.IsAny<int>()))
                 .ReturnsAsync(new GithubRepo
                 {
+                    Id = 10,
                     Url = repoUri
                 });
             _githubBranchesStoreMock
@@ -82,6 +83,7 @@ namespace Instances.Application.Tests.Instances
                 .Setup(gr => gr.GetByIdAsync(It.IsAny<int>()))
                 .ReturnsAsync(new GithubRepo
                 {
+                    Id= 10,
                     Url = repoUri
                 });
             _githubServiceMock

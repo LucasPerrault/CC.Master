@@ -35,10 +35,19 @@ namespace Instances.Application.Instances
         public async Task<GithubBranch> CreateAsync(int repoId, string branchName, GithubApiCommit commit)
         {
             var repo = await _githubReposStore.GetByIdAsync(repoId);
-            var existingBranch = await GetNonDeletedBranchByNameAsync(repoId, branchName);
+            if (repo == null)
+            {
+                throw new BadRequestException($"Repo {repoId} not found");
+            }
+            return await CreateAsync(repo, branchName, commit);
+        }
+
+        public async Task<GithubBranch> CreateAsync(GithubRepo repo, string branchName, GithubApiCommit commit)
+        {
+            var existingBranch = await GetNonDeletedBranchByNameAsync(repo.Id, branchName);
             if (existingBranch != null)
             {
-                throw new BadRequestException($"Les sources de code du repo {repoId} contiennent déjà la branche {branchName}");
+                throw new BadRequestException($"Les sources de code du repo {repo.Id} '{repo.Name}' contiennent déjà la branche {branchName}");
             }
 
             if (commit == null)
@@ -49,7 +58,7 @@ namespace Instances.Application.Instances
             var branch = await CreateAsync(new GithubBranch
             {
                 Name = branchName,
-                RepoId = repoId,
+                RepoId = repo.Id,
                 CreatedAt = commit.CommitedOn,
                 LastPushedAt = commit.CommitedOn,
                 HeadCommitMessage = commit.Message,
