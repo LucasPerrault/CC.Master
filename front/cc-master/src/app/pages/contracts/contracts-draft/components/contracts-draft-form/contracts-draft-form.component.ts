@@ -211,7 +211,7 @@ export class ContractsDraftFormComponent implements ControlValueAccessor, Valida
 
   private get toMinimalBillingEligibility(): UnaryFunction<Observable<[IProduct, IDistributor, number]>, Observable<boolean>> {
     return pipe(
-      map(([product, distributor, theoreticalMonthRebate]) => ({ theoreticalMonthRebate, distributor, productId: product.id })),
+      map(([product, distributor, theoreticalMonthRebate]) => ({ theoreticalMonthRebate, distributor, productId: product?.id })),
       switchMap(minimalBillable => this.minimalBillingService.isEligibleForMinimalBilling$(minimalBillable)),
     );
   }
