@@ -167,4 +167,25 @@ namespace Billing.Cmrr.Domain.Situation
             };
         }
     }
+
+    public class CmrrClient
+    {
+        public int ClientId { get; set; }
+        public string Client { get; set; }
+        public int ContractId { get; set; }
+        public string Product { get; set; }
+        public decimal UserCount { get; set; }
+        public decimal Amount { get; set; }
+
+        public static CmrrClient FromCmrrAmountTopElement(CmrrAmountTopElement topElement)
+            => new CmrrClient
+            {
+                ClientId = topElement.Contract.ClientId,
+                Client = topElement.Contract.ClientName,
+                ContractId = topElement.Contract.Id,
+                Product = topElement.Breakdown.SubSection,
+                UserCount = topElement.UserCount,
+                Amount = topElement.Amount,
+            };
+    }
 }
