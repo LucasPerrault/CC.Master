@@ -1,8 +1,6 @@
-using Instances.Domain.CodeSources;
 using Instances.Domain.Github.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using System.Collections.Generic;
 
 namespace Instances.Infra.Storage.Configurations
 {
@@ -22,13 +20,9 @@ namespace Instances.Infra.Storage.Configurations
             builder.Property(b => b.HelmChart).HasColumnName("helmChart");
 
             builder
-                .HasMany(b => b.CodeSources)
-                .WithMany(c => c.GithubBranches)
-                .UsingEntity<Dictionary<string, object>>(
-                    "GithubBranchesCodeSources",
-                    b => b.HasOne<CodeSource>().WithMany().HasForeignKey("codeSourceId"),
-                    c => c.HasOne<GithubBranch>().WithMany().HasForeignKey("githubBranchId")
-                );
+                .HasOne(b => b.Repo)
+                .WithMany(r => r.GithubBranches)
+                .HasForeignKey(b => b.RepoId);
         }
     }
 }

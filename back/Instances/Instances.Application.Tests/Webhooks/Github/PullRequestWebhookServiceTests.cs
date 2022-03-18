@@ -3,7 +3,10 @@ using Instances.Application.CodeSources;
 using Instances.Application.Instances;
 using Instances.Application.Webhooks.Github;
 using Instances.Domain.CodeSources;
+using Instances.Domain.CodeSources.Filtering;
+using Instances.Domain.Github;
 using Instances.Domain.Github.Models;
+using Instances.Infra.Storage.Stores;
 using Moq;
 using System;
 using System.Collections.Generic;
@@ -16,29 +19,31 @@ namespace Instances.Application.Tests.Webhooks.Github
 {
     public class PullRequestWebhookServiceTests
     {
-        private const string RepositoryUrl = "https://github.com/LuccaSA/repo";
+        private readonly Uri _repositoryUrl = new("https://github.com/LuccaSA/repo");
         private const int PullRequestNumber = 42;
 
         private readonly PullRequestWebhookService _pullRequestWebhookService;
 
-        private readonly Mock<ICodeSourcesRepository> _codeSourcesRepositoryMock;
         private readonly Mock<IGithubBranchesRepository> _githubBranchesRepositoryMock;
         private readonly Mock<IGithubPullRequestsRepository> _githubPullRequestRepositoryMock;
         private readonly Mock<IPreviewConfigurationsRepository> _previewConfigurationRepositoryMock;
-
+        private readonly Mock<IGithubReposStore> _githubReposStoreMock;
+        private readonly Mock<ICodeSourcesStore> _codeSourcesStoreMock;
 
         public PullRequestWebhookServiceTests()
         {
-            _codeSourcesRepositoryMock = new Mock<ICodeSourcesRepository>(MockBehavior.Strict);
-            _githubBranchesRepositoryMock = new Mock<IGithubBranchesRepository>(MockBehavior.Strict);
-            _githubPullRequestRepositoryMock = new Mock<IGithubPullRequestsRepository>(MockBehavior.Strict);
-            _previewConfigurationRepositoryMock = new Mock<IPreviewConfigurationsRepository>(MockBehavior.Strict);
+            _githubBranchesRepositoryMock = new(MockBehavior.Strict);
+            _githubPullRequestRepositoryMock = new(MockBehavior.Strict);
+            _previewConfigurationRepositoryMock = new(MockBehavior.Strict);
+            _githubReposStoreMock = new(MockBehavior.Strict);
+            _codeSourcesStoreMock = new(MockBehavior.Strict);
 
             _pullRequestWebhookService = new PullRequestWebhookService(
-                _codeSourcesRepositoryMock.Object,
                 _githubBranchesRepositoryMock.Object,
                 _githubPullRequestRepositoryMock.Object,
-                _previewConfigurationRepositoryMock.Object
+                _previewConfigurationRepositoryMock.Object,
+                _githubReposStoreMock.Object,
+                _codeSourcesStoreMock.Object
             );
         }
 
@@ -56,14 +61,14 @@ namespace Instances.Application.Tests.Webhooks.Github
         public async Task HandleEventAsync_Empty()
         {
             var json = BuildValidJson("opened");
-            _codeSourcesRepositoryMock
-                .Setup(c => c.GetNonDeletedByRepositoryUrlAsync(It.IsAny<string>()))
-                .ReturnsAsync(new List<CodeSource>());
+            _githubReposStoreMock
+                .Setup(c => c.GetByUriAsync(It.IsAny<Uri>()))
+                .ReturnsAsync((GithubRepo)null);
 
             await using var stream = new MemoryStream(Encoding.UTF8.GetBytes(json));
             await _pullRequestWebhookService.HandleEventAsync(stream);
 
-            _codeSourcesRepositoryMock.Verify(c => c.GetNonDeletedByRepositoryUrlAsync(RepositoryUrl));
+            _githubReposStoreMock.Verify(c => c.GetByUriAsync(_repositoryUrl));
         }
         #endregion
 
@@ -72,47 +77,51 @@ namespace Instances.Application.Tests.Webhooks.Github
         public async Task HandleOpenedActionAsync_NotFound()
         {
             var json = BuildValidJson("opened");
-            var codeSource = new CodeSource();
-            _codeSourcesRepositoryMock
-                .Setup(c => c.GetNonDeletedByRepositoryUrlAsync(It.IsAny<string>()))
-                .ReturnsAsync(new List<CodeSource> { codeSource });
+            _githubReposStoreMock
+                .Setup(c => c.GetByUriAsync(It.IsAny<Uri>()))
+                .ReturnsAsync(new GithubRepo
+                {
+                    Id = 42
+                });
             _githubBranchesRepositoryMock
-                .Setup(g => g.GetNonDeletedBranchByNameAsync(It.IsAny<CodeSource>(), It.IsAny<string>()))
+                .Setup(g => g.GetNonDeletedBranchByNameAsync(It.IsAny<int>(), It.IsAny<string>()))
                 .ReturnsAsync((GithubBranch)null);
 
             await using var stream = new MemoryStream(Encoding.UTF8.GetBytes(json));
             await _pullRequestWebhookService.HandleEventAsync(stream);
 
-            _codeSourcesRepositoryMock.Verify(c => c.GetNonDeletedByRepositoryUrlAsync(RepositoryUrl));
-            _githubBranchesRepositoryMock.Verify(g => g.GetNonDeletedBranchByNameAsync(codeSource, "changes"));
+            _githubReposStoreMock.Verify(c => c.GetByUriAsync(_repositoryUrl));
+            _githubBranchesRepositoryMock.Verify(g => g.GetNonDeletedBranchByNameAsync(42, "changes"));
         }
 
         [Fact]
         public async Task HandleOpenedActionAsync()
         {
             var json = BuildValidJson("opened");
-            var codeSource = new CodeSource();
             var githubBranch = new GithubBranch();
-            _codeSourcesRepositoryMock
-                .Setup(c => c.GetNonDeletedByRepositoryUrlAsync(It.IsAny<string>()))
-                .ReturnsAsync(new List<CodeSource> { codeSource });
+            _githubReposStoreMock
+                .Setup(c => c.GetByUriAsync(It.IsAny<Uri>()))
+                .ReturnsAsync(new GithubRepo { Id = 42 });
             _githubBranchesRepositoryMock
-                .Setup(g => g.GetNonDeletedBranchByNameAsync(It.IsAny<CodeSource>(), It.IsAny<string>()))
+                .Setup(g => g.GetNonDeletedBranchByNameAsync(It.IsAny<int>(), It.IsAny<string>()))
                 .ReturnsAsync(githubBranch);
             _githubPullRequestRepositoryMock
                 .Setup(p => p.CreateAsync(It.IsAny<GithubPullRequest>()))
                 .Returns<GithubPullRequest>(p => Task.FromResult(p));
             _previewConfigurationRepositoryMock
-                .Setup(p => p.CreateByPullRequestAsync(It.IsAny<GithubPullRequest>(), It.IsAny<GithubBranch>()))
+                .Setup(p => p.CreateByPullRequestAsync(It.IsAny<GithubPullRequest>(), It.IsAny<GithubBranch>(), It.IsAny<IEnumerable<CodeSource>>()))
                 .Returns(Task.CompletedTask);
+            _codeSourcesStoreMock
+                .Setup(cs => cs.GetAsync(It.IsAny<CodeSourceFilter>()))
+                .ReturnsAsync(new List<CodeSource>());
 
             await using var stream = new MemoryStream(Encoding.UTF8.GetBytes(json));
             await _pullRequestWebhookService.HandleEventAsync(stream);
 
-            _codeSourcesRepositoryMock.Verify(c => c.GetNonDeletedByRepositoryUrlAsync(RepositoryUrl));
-            _githubBranchesRepositoryMock.Verify(g => g.GetNonDeletedBranchByNameAsync(codeSource, "changes"));
+            _githubReposStoreMock.Verify(c => c.GetByUriAsync(_repositoryUrl));
+            _githubBranchesRepositoryMock.Verify(g => g.GetNonDeletedBranchByNameAsync(42, "changes"));
             _githubPullRequestRepositoryMock.Verify(p => p.CreateAsync(It.IsAny<GithubPullRequest>()));
-            _previewConfigurationRepositoryMock.Verify(p => p.CreateByPullRequestAsync(It.IsAny<GithubPullRequest>(), githubBranch));
+            _previewConfigurationRepositoryMock.Verify(p => p.CreateByPullRequestAsync(It.IsAny<GithubPullRequest>(), githubBranch, It.IsAny<IEnumerable<CodeSource>>()));
         }
         #endregion
 
@@ -121,76 +130,76 @@ namespace Instances.Application.Tests.Webhooks.Github
         public async Task HandleRepoenedActionAsync_NotFound()
         {
             var json = BuildValidJson("reopened");
-            var codeSource = new CodeSource();
-            _codeSourcesRepositoryMock
-                .Setup(c => c.GetNonDeletedByRepositoryUrlAsync(It.IsAny<string>()))
-                .ReturnsAsync(new List<CodeSource> { codeSource });
+            _githubReposStoreMock
+                .Setup(c => c.GetByUriAsync(It.IsAny<Uri>()))
+                .ReturnsAsync(new GithubRepo { Id = 42 });
             _githubBranchesRepositoryMock
-                .Setup(g => g.GetNonDeletedBranchByNameAsync(It.IsAny<CodeSource>(), It.IsAny<string>()))
+                .Setup(g => g.GetNonDeletedBranchByNameAsync(It.IsAny<int>(), It.IsAny<string>()))
                 .ReturnsAsync((GithubBranch)null);
 
             await using var stream = new MemoryStream(Encoding.UTF8.GetBytes(json));
             await _pullRequestWebhookService.HandleEventAsync(stream);
 
-            _codeSourcesRepositoryMock.Verify(c => c.GetNonDeletedByRepositoryUrlAsync(RepositoryUrl));
-            _githubBranchesRepositoryMock.Verify(g => g.GetNonDeletedBranchByNameAsync(codeSource, "changes"));
+            _githubReposStoreMock.Verify(c => c.GetByUriAsync(_repositoryUrl));
+            _githubBranchesRepositoryMock.Verify(g => g.GetNonDeletedBranchByNameAsync(42, "changes"));
         }
 
         [Fact]
         public async Task HandleRepoenedActionAsync_PrNotFound()
         {
             var json = BuildValidJson("reopened");
-            var codeSource = new CodeSource();
             var githubBranch = new GithubBranch();
-            _codeSourcesRepositoryMock
-                .Setup(c => c.GetNonDeletedByRepositoryUrlAsync(It.IsAny<string>()))
-                .ReturnsAsync(new List<CodeSource> { codeSource });
+            _githubReposStoreMock
+                .Setup(c => c.GetByUriAsync(It.IsAny<Uri>()))
+                .ReturnsAsync(new GithubRepo { Id = 44 });
             _githubBranchesRepositoryMock
-                .Setup(g => g.GetNonDeletedBranchByNameAsync(It.IsAny<CodeSource>(), It.IsAny<string>()))
+                .Setup(g => g.GetNonDeletedBranchByNameAsync(It.IsAny<int>(), It.IsAny<string>()))
                 .ReturnsAsync(githubBranch);
             _githubPullRequestRepositoryMock
-                .Setup(p => p.GetByNumberAsync(It.IsAny<CodeSource>(), It.IsAny<int>()))
+                .Setup(p => p.GetByNumberAsync(It.IsAny<int>(), It.IsAny<int>()))
                 .ReturnsAsync((GithubPullRequest)null);
 
             await using var stream = new MemoryStream(Encoding.UTF8.GetBytes(json));
             await _pullRequestWebhookService.HandleEventAsync(stream);
 
-            _codeSourcesRepositoryMock.Verify(c => c.GetNonDeletedByRepositoryUrlAsync(RepositoryUrl));
-            _githubBranchesRepositoryMock.Verify(g => g.GetNonDeletedBranchByNameAsync(codeSource, "changes"));
-            _githubPullRequestRepositoryMock.Verify(p => p.GetByNumberAsync(codeSource, 42));
+            _githubReposStoreMock.Verify(c => c.GetByUriAsync(_repositoryUrl));
+            _githubBranchesRepositoryMock.Verify(g => g.GetNonDeletedBranchByNameAsync(44, "changes"));
+            _githubPullRequestRepositoryMock.Verify(p => p.GetByNumberAsync(44, 42));
         }
 
         [Fact]
         public async Task HandleRepoenedActionAsync_Ok()
         {
             var json = BuildValidJson("reopened");
-            var codeSource = new CodeSource();
             var githubBranch = new GithubBranch();
             var pullRequest = new GithubPullRequest();
-            _codeSourcesRepositoryMock
-                .Setup(c => c.GetNonDeletedByRepositoryUrlAsync(It.IsAny<string>()))
-                .ReturnsAsync(new List<CodeSource> { codeSource });
+            _githubReposStoreMock
+                .Setup(c => c.GetByUriAsync(It.IsAny<Uri>()))
+                .ReturnsAsync(new GithubRepo { Id = 21 });
             _githubBranchesRepositoryMock
-                .Setup(g => g.GetNonDeletedBranchByNameAsync(It.IsAny<CodeSource>(), It.IsAny<string>()))
+                .Setup(g => g.GetNonDeletedBranchByNameAsync(It.IsAny<int>(), It.IsAny<string>()))
                 .ReturnsAsync(githubBranch);
             _githubPullRequestRepositoryMock
-                .Setup(p => p.GetByNumberAsync(It.IsAny<CodeSource>(), It.IsAny<int>()))
+                .Setup(p => p.GetByNumberAsync(It.IsAny<int>(), It.IsAny<int>()))
                 .ReturnsAsync(pullRequest);
             _githubPullRequestRepositoryMock
                 .Setup(p => p.UpdateAsync(It.IsAny<GithubPullRequest>()))
                 .Returns<GithubPullRequest>(p => Task.FromResult(p));
             _previewConfigurationRepositoryMock
-                .Setup(p => p.CreateByPullRequestAsync(It.IsAny<GithubPullRequest>(), It.IsAny<GithubBranch>()))
+                .Setup(p => p.CreateByPullRequestAsync(It.IsAny<GithubPullRequest>(), It.IsAny<GithubBranch>(), It.IsAny<IEnumerable<CodeSource>>()))
                 .Returns(Task.CompletedTask);
+            _codeSourcesStoreMock
+                .Setup(cs => cs.GetAsync(It.IsAny<CodeSourceFilter>()))
+                .ReturnsAsync(new List<CodeSource>());
 
             await using var stream = new MemoryStream(Encoding.UTF8.GetBytes(json));
             await _pullRequestWebhookService.HandleEventAsync(stream);
 
-            _codeSourcesRepositoryMock.Verify(c => c.GetNonDeletedByRepositoryUrlAsync(RepositoryUrl));
-            _githubBranchesRepositoryMock.Verify(g => g.GetNonDeletedBranchByNameAsync(codeSource, "changes"));
-            _githubPullRequestRepositoryMock.Verify(p => p.GetByNumberAsync(codeSource, 42));
+            _githubReposStoreMock.Verify(c => c.GetByUriAsync(_repositoryUrl));
+            _githubBranchesRepositoryMock.Verify(g => g.GetNonDeletedBranchByNameAsync(21, "changes"));
+            _githubPullRequestRepositoryMock.Verify(p => p.GetByNumberAsync(21, 42));
             _githubPullRequestRepositoryMock.Verify(p => p.UpdateAsync(pullRequest));
-            _previewConfigurationRepositoryMock.Verify(p => p.CreateByPullRequestAsync(pullRequest, githubBranch));
+            _previewConfigurationRepositoryMock.Verify(p => p.CreateByPullRequestAsync(pullRequest, githubBranch, It.IsAny<IEnumerable<CodeSource>>()));
         }
         #endregion
 
@@ -199,37 +208,35 @@ namespace Instances.Application.Tests.Webhooks.Github
         public async Task HandleClosedActionAsync_PrNotFound()
         {
             var json = BuildValidJson("closed");
-            var codeSource = new CodeSource();
             var githubBranch = new GithubBranch();
-            _codeSourcesRepositoryMock
-                .Setup(c => c.GetNonDeletedByRepositoryUrlAsync(It.IsAny<string>()))
-                .ReturnsAsync(new List<CodeSource> { codeSource });
+            _githubReposStoreMock
+                .Setup(c => c.GetByUriAsync(It.IsAny<Uri>()))
+                .ReturnsAsync(new GithubRepo { Id = 60 });
             _githubPullRequestRepositoryMock
-                .Setup(p => p.GetByNumberAsync(It.IsAny<CodeSource>(), It.IsAny<int>()))
+                .Setup(p => p.GetByNumberAsync(It.IsAny<int>(), It.IsAny<int>()))
                 .ReturnsAsync((GithubPullRequest)null);
 
             await using var stream = new MemoryStream(Encoding.UTF8.GetBytes(json));
             await _pullRequestWebhookService.HandleEventAsync(stream);
 
-            _codeSourcesRepositoryMock.Verify(c => c.GetNonDeletedByRepositoryUrlAsync(RepositoryUrl));
-            _githubPullRequestRepositoryMock.Verify(p => p.GetByNumberAsync(codeSource, 42));
+            _githubReposStoreMock.Verify(c => c.GetByUriAsync(_repositoryUrl));
+            _githubPullRequestRepositoryMock.Verify(p => p.GetByNumberAsync(60, 42));
         }
 
         [Fact]
         public async Task HandleClosedActionAsync_Merged()
         {
             var json = BuildValidJson("closed", merged: true);
-            var codeSource = new CodeSource();
             var githubBranch = new GithubBranch();
             var pullRequest = new GithubPullRequest
             {
                 IsOpened = true
             };
-            _codeSourcesRepositoryMock
-                .Setup(c => c.GetNonDeletedByRepositoryUrlAsync(It.IsAny<string>()))
-                .ReturnsAsync(new List<CodeSource> { codeSource });
+            _githubReposStoreMock
+                .Setup(c => c.GetByUriAsync(It.IsAny<Uri>()))
+                .ReturnsAsync(new GithubRepo { Id = 80 });
             _githubPullRequestRepositoryMock
-                .Setup(p => p.GetByNumberAsync(It.IsAny<CodeSource>(), It.IsAny<int>()))
+                .Setup(p => p.GetByNumberAsync(It.IsAny<int>(), It.IsAny<int>()))
                 .ReturnsAsync(pullRequest);
             _githubPullRequestRepositoryMock
                 .Setup(p => p.UpdateAsync(It.IsAny<GithubPullRequest>()))
@@ -238,8 +245,8 @@ namespace Instances.Application.Tests.Webhooks.Github
             await using var stream = new MemoryStream(Encoding.UTF8.GetBytes(json));
             await _pullRequestWebhookService.HandleEventAsync(stream);
 
-            _codeSourcesRepositoryMock.Verify(c => c.GetNonDeletedByRepositoryUrlAsync(RepositoryUrl));
-            _githubPullRequestRepositoryMock.Verify(p => p.GetByNumberAsync(codeSource, 42));
+            _githubReposStoreMock.Verify(c => c.GetByUriAsync(_repositoryUrl));
+            _githubPullRequestRepositoryMock.Verify(p => p.GetByNumberAsync(80, 42));
             _githubPullRequestRepositoryMock.Verify(p => p.UpdateAsync(pullRequest));
 
             pullRequest.IsOpened.Should().BeFalse();
@@ -251,17 +258,16 @@ namespace Instances.Application.Tests.Webhooks.Github
         public async Task HandleClosedActionAsync_Closed()
         {
             var json = BuildValidJson("closed", closed: true);
-            var codeSource = new CodeSource();
             var githubBranch = new GithubBranch();
             var pullRequest = new GithubPullRequest
             {
                 IsOpened = true
             };
-            _codeSourcesRepositoryMock
-                .Setup(c => c.GetNonDeletedByRepositoryUrlAsync(It.IsAny<string>()))
-                .ReturnsAsync(new List<CodeSource> { codeSource });
+            _githubReposStoreMock
+                .Setup(c => c.GetByUriAsync(It.IsAny<Uri>()))
+                .ReturnsAsync(new GithubRepo { Id = 90 });
             _githubPullRequestRepositoryMock
-                .Setup(p => p.GetByNumberAsync(It.IsAny<CodeSource>(), It.IsAny<int>()))
+                .Setup(p => p.GetByNumberAsync(It.IsAny<int>(), It.IsAny<int>()))
                 .ReturnsAsync(pullRequest);
             _githubPullRequestRepositoryMock
                 .Setup(p => p.UpdateAsync(It.IsAny<GithubPullRequest>()))
@@ -270,8 +276,8 @@ namespace Instances.Application.Tests.Webhooks.Github
             await using var stream = new MemoryStream(Encoding.UTF8.GetBytes(json));
             await _pullRequestWebhookService.HandleEventAsync(stream);
 
-            _codeSourcesRepositoryMock.Verify(c => c.GetNonDeletedByRepositoryUrlAsync(RepositoryUrl));
-            _githubPullRequestRepositoryMock.Verify(p => p.GetByNumberAsync(codeSource, 42));
+            _githubReposStoreMock.Verify(c => c.GetByUriAsync(_repositoryUrl));
+            _githubPullRequestRepositoryMock.Verify(p => p.GetByNumberAsync(90, 42));
             _githubPullRequestRepositoryMock.Verify(p => p.UpdateAsync(pullRequest));
 
             pullRequest.IsOpened.Should().BeFalse();
@@ -285,61 +291,58 @@ namespace Instances.Application.Tests.Webhooks.Github
         public async Task HandleEditedActionAsync_BranchNotFound()
         {
             var json = BuildValidJson("edited");
-            var codeSource = new CodeSource();
-            _codeSourcesRepositoryMock
-                .Setup(c => c.GetNonDeletedByRepositoryUrlAsync(It.IsAny<string>()))
-                .ReturnsAsync(new List<CodeSource> { codeSource });
+            _githubReposStoreMock
+                .Setup(c => c.GetByUriAsync(It.IsAny<Uri>()))
+                .ReturnsAsync(new GithubRepo { Id = 42 });
             _githubBranchesRepositoryMock
-                .Setup(p => p.GetNonDeletedBranchByNameAsync(It.IsAny<CodeSource>(), It.IsAny<string>()))
+                .Setup(p => p.GetNonDeletedBranchByNameAsync(It.IsAny<int>(), It.IsAny<string>()))
                 .ReturnsAsync((GithubBranch)null);
 
             await using var stream = new MemoryStream(Encoding.UTF8.GetBytes(json));
             await _pullRequestWebhookService.HandleEventAsync(stream);
 
-            _codeSourcesRepositoryMock.Verify(c => c.GetNonDeletedByRepositoryUrlAsync(RepositoryUrl));
-            _githubBranchesRepositoryMock.Verify(p => p.GetNonDeletedBranchByNameAsync(codeSource, "changes"));
+            _githubReposStoreMock.Verify(c => c.GetByUriAsync(_repositoryUrl));
+            _githubBranchesRepositoryMock.Verify(p => p.GetNonDeletedBranchByNameAsync(42, "changes"));
         }
 
         [Fact]
         public async Task HandleEditedActionAsync_PullRequestNotFound()
         {
             var json = BuildValidJson("edited");
-            var codeSource = new CodeSource();
             var githubBranch = new GithubBranch();
             var pullRequest = new GithubPullRequest();
-            _codeSourcesRepositoryMock
-                .Setup(c => c.GetNonDeletedByRepositoryUrlAsync(It.IsAny<string>()))
-                .ReturnsAsync(new List<CodeSource> { codeSource });
+            _githubReposStoreMock
+                .Setup(c => c.GetByUriAsync(It.IsAny<Uri>()))
+                .ReturnsAsync(new GithubRepo { Id = 24 });
             _githubBranchesRepositoryMock
-                .Setup(p => p.GetNonDeletedBranchByNameAsync(It.IsAny<CodeSource>(), It.IsAny<string>()))
+                .Setup(p => p.GetNonDeletedBranchByNameAsync(It.IsAny<int>(), It.IsAny<string>()))
                 .ReturnsAsync(githubBranch);
             _githubPullRequestRepositoryMock
-                .Setup(p => p.GetByNumberAsync(It.IsAny<CodeSource>(), It.IsAny<int>()))
+                .Setup(p => p.GetByNumberAsync(It.IsAny<int>(), It.IsAny<int>()))
                 .ReturnsAsync((GithubPullRequest)null);
 
             await using var stream = new MemoryStream(Encoding.UTF8.GetBytes(json));
             await _pullRequestWebhookService.HandleEventAsync(stream);
 
-            _codeSourcesRepositoryMock.Verify(c => c.GetNonDeletedByRepositoryUrlAsync(RepositoryUrl));
-            _githubBranchesRepositoryMock.Verify(p => p.GetNonDeletedBranchByNameAsync(codeSource, "changes"));
-            _githubPullRequestRepositoryMock.Verify(p => p.GetByNumberAsync(codeSource, 42));
+            _githubReposStoreMock.Verify(c => c.GetByUriAsync(_repositoryUrl));
+            _githubBranchesRepositoryMock.Verify(p => p.GetNonDeletedBranchByNameAsync(24, "changes"));
+            _githubPullRequestRepositoryMock.Verify(p => p.GetByNumberAsync(24, 42));
         }
 
         [Fact]
         public async Task HandleEditedActionAsync_Ok()
         {
             var json = BuildValidJson("edited");
-            var codeSource = new CodeSource();
             var githubBranch = new GithubBranch();
             var pullRequest = new GithubPullRequest();
-            _codeSourcesRepositoryMock
-                .Setup(c => c.GetNonDeletedByRepositoryUrlAsync(It.IsAny<string>()))
-                .ReturnsAsync(new List<CodeSource> { codeSource });
+            _githubReposStoreMock
+                .Setup(c => c.GetByUriAsync(It.IsAny<Uri>()))
+                .ReturnsAsync(new GithubRepo { Id = 24 });
             _githubBranchesRepositoryMock
-                .Setup(p => p.GetNonDeletedBranchByNameAsync(It.IsAny<CodeSource>(), It.IsAny<string>()))
+                .Setup(p => p.GetNonDeletedBranchByNameAsync(It.IsAny<int>(), It.IsAny<string>()))
                 .ReturnsAsync(githubBranch);
             _githubPullRequestRepositoryMock
-                .Setup(p => p.GetByNumberAsync(It.IsAny<CodeSource>(), It.IsAny<int>()))
+                .Setup(p => p.GetByNumberAsync(It.IsAny<int>(), It.IsAny<int>()))
                 .ReturnsAsync(pullRequest);
             _githubPullRequestRepositoryMock
                 .Setup(p => p.UpdateAsync(It.IsAny<GithubPullRequest>()))
@@ -348,9 +351,9 @@ namespace Instances.Application.Tests.Webhooks.Github
             await using var stream = new MemoryStream(Encoding.UTF8.GetBytes(json));
             await _pullRequestWebhookService.HandleEventAsync(stream);
 
-            _codeSourcesRepositoryMock.Verify(c => c.GetNonDeletedByRepositoryUrlAsync(RepositoryUrl));
-            _githubBranchesRepositoryMock.Verify(p => p.GetNonDeletedBranchByNameAsync(codeSource, "changes"));
-            _githubPullRequestRepositoryMock.Verify(p => p.GetByNumberAsync(codeSource, 42));
+            _githubReposStoreMock.Verify(c => c.GetByUriAsync(_repositoryUrl));
+            _githubBranchesRepositoryMock.Verify(p => p.GetNonDeletedBranchByNameAsync(24, "changes"));
+            _githubPullRequestRepositoryMock.Verify(p => p.GetByNumberAsync(24, 42));
             _githubPullRequestRepositoryMock.Verify(p => p.UpdateAsync(pullRequest));
 
             pullRequest.Title.Should().Be("Adding a .gitignore file");
@@ -370,7 +373,7 @@ namespace Instances.Application.Tests.Webhooks.Github
            },
            ""repository"" : {
                 ""id"": 1296269,
-                ""html_url"": """ + RepositoryUrl + @"""
+                ""html_url"": """ + _repositoryUrl + @"""
            },
            ""sender"": {
                 ""login"": ""octocat"",

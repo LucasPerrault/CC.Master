@@ -1,6 +1,4 @@
-using Instances.Domain.CodeSources;
 using System;
-using System.Collections.Generic;
 
 namespace Instances.Domain.Github.Models
 {
@@ -10,7 +8,6 @@ namespace Instances.Domain.Github.Models
         public string Name => $"PR #{Number}";
         public int Number { get; set; }
         public string Title { get; set; }
-        public List<CodeSource> CodeSources { get; set; }
         public bool IsOpened { get; set; }
         public DateTime OpenedAt { get; set; }
         public DateTime? MergedAt { get; set; }
@@ -18,6 +15,9 @@ namespace Instances.Domain.Github.Models
 
         public int OriginBranchId { get; set; }
         public GithubBranch OriginBranch { get; set; }
+
+        public int RepoId { get; set; }
+        public GithubRepo Repo { get; set; }
 
     }
 }

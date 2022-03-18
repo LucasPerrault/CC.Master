@@ -99,6 +99,6 @@ export class CodeSourceEditionModalComponent implements OnInit, OnDestroy, ILuSi
   }
 
   public get githubRepo(): string {
-    return this.codeSourceSelected.value?.githubRepo;
+    return this.codeSourceSelected.value?.repo.url;
   }
 }

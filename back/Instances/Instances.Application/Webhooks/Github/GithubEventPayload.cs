@@ -1,3 +1,4 @@
+using System;
 using System.Text.Json.Serialization;
 
 namespace Instances.Application.Webhooks.Github
@@ -10,6 +11,6 @@ namespace Instances.Application.Webhooks.Github
     public class GithubRepository
     {
         [JsonPropertyName("html_url")]
-        public string HtmlUrl { get; init; }
+        public Uri HtmlUrl { get; init; }
     }
 }

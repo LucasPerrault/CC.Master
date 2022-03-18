@@ -40,7 +40,7 @@
         </button>
         <button class="actionIcon palette-grey"
                 (click)="accessGithub(codeSource)"
-                [luTooltip]="'front_sourcePage_action_redirectToGithubPath' | translate : { githubPath: getRepoName(codeSource.githubRepo) }"
+                [luTooltip]="'front_sourcePage_action_redirectToGithubPath' | translate : { githubPath: codeSource.repo.name }"
                 luTooltipPosition="before">
           <span aria-hidden="true" class="lucca-icon icon-outside"></span>
         </button>

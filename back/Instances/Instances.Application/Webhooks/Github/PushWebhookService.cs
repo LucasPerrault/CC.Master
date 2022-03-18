@@ -1,41 +1,40 @@
-using Instances.Application.CodeSources;
 using Instances.Application.Instances;
+using Instances.Domain.Github;
 using Instances.Domain.Github.Models;
 using System;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace Instances.Application.Webhooks.Github
 {
     public class PushWebhookService : GithubWebhookBaseService<PushWebhookPayload>
     {
-        private readonly ICodeSourcesRepository _codeSourcesRepository;
         private readonly IGithubBranchesRepository _githubBranchesRepository;
         private readonly IPreviewConfigurationsRepository _previewConfigurationsRepository;
+        private readonly IGithubReposStore _githubReposStore;
 
         public PushWebhookService(
-            ICodeSourcesRepository codeSourcesRepository, IGithubBranchesRepository githubBranchesRepository,
-            IPreviewConfigurationsRepository previewConfigurationsRepository)
+            IGithubBranchesRepository githubBranchesRepository,
+            IPreviewConfigurationsRepository previewConfigurationsRepository,
+            IGithubReposStore githubReposStore
+        )
         {
-            _codeSourcesRepository = codeSourcesRepository;
             _githubBranchesRepository = githubBranchesRepository;
             _previewConfigurationsRepository = previewConfigurationsRepository;
+            _githubReposStore = githubReposStore;
         }
 
         protected override async Task HandleEventAsync(PushWebhookPayload pushEventPayload)
         {
-            var codeSources = await _codeSourcesRepository.GetNonDeletedByRepositoryUrlAsync(pushEventPayload.Repository.HtmlUrl);
-            if (codeSources.Count == 0)
+            var repo = await _githubReposStore.GetByUriAsync(pushEventPayload.Repository.HtmlUrl);
+            if (repo is null)
             {
                 return;
             }
-            var firstCodeSource = codeSources.First();
-
             var branchName = pushEventPayload.Ref.GetBranchNameFromFullRef();
 
             if (pushEventPayload.Created)
             {
-                await _githubBranchesRepository.CreateAsync(codeSources, branchName, new GithubApiCommit
+                await _githubBranchesRepository.CreateAsync(repo, branchName, new GithubApiCommit
                 {
                     CommitedOn = DateTime.Now,
                     Message = pushEventPayload.HeadCommit.Message,
@@ -43,7 +42,7 @@ namespace Instances.Application.Webhooks.Github
                 });
                 return;
             }
-            var existingBranch = await _githubBranchesRepository.GetNonDeletedBranchByNameAsync(firstCodeSource, branchName);
+            var existingBranch = await _githubBranchesRepository.GetNonDeletedBranchByNameAsync(repo.Id, branchName);
             if (pushEventPayload.Deleted)
             {
                 if (existingBranch == null)
@@ -60,7 +59,7 @@ namespace Instances.Application.Webhooks.Github
             {
                 if (existingBranch == null)
                 {
-                    // Branche inconnue 
+                    // Branche inconnue
                     return;
                 }
                 existingBranch.HeadCommitHash = pushEventPayload.After;
@@ -70,5 +69,4 @@ namespace Instances.Application.Webhooks.Github
             }
         }
     }
-
 }

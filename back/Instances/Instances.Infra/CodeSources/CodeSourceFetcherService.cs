@@ -1,5 +1,6 @@
 using Instances.Domain.CodeSources;
 using Instances.Domain.Github;
+using Instances.Domain.Github.Models;
 using Instances.Infra.CodeSources.Models;
 using Microsoft.Extensions.Logging;
 using System;
@@ -49,7 +50,7 @@ namespace Instances.Infra.CodeSources
             _logger = logger;
         }
 
-        public async Task<IEnumerable<CodeSource>> FetchAsync(string repoUrl)
+        public async Task<IEnumerable<CodeSource>> FetchAsync(Uri repoUrl)
         {
             var productionFileAsString = await _githubService.GetFileContentAsync(repoUrl, CodeSourceConfigFilePath);
             var productionFile = Serializer.Deserialize<ContinuousDeploymentProductionFile>(productionFileAsString);
@@ -57,14 +58,18 @@ namespace Instances.Infra.CodeSources
             return await CreateCodeSourcesFromFetchedAppsAsync(productionFile.Apps, repoUrl);
         }
 
-        private async Task<List<CodeSource>> CreateCodeSourcesFromFetchedAppsAsync(IEnumerable<ProductionApp> apps, string repoUrl)
+        private async Task<List<CodeSource>> CreateCodeSourcesFromFetchedAppsAsync(IEnumerable<ProductionApp> apps, Uri repoUrl)
         {
             var result = new List<CodeSource>();
             foreach (var app in apps)
             {
                 result.Add(new CodeSource
                 {
-                    GithubRepo = repoUrl,
+                    Repo = new GithubRepo
+                    {
+                        Url = repoUrl,
+                        Name = GithubRepo.ConvertUrlToName(repoUrl)
+                    },
                     Name = app.FriendlyName,
                     Code = app.Name,
                     Type = GetCodeSourceTypeFromProjectType(app.ProjectType),

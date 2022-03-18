@@ -28,25 +28,27 @@ namespace Instances.Infra.Tests.Storage.Stores
         [Fact]
         public async Task Create_Update_Get_Async()
         {
-            var codeSource1 = new CodeSource { Id = 1 };
-            var codeSource2 = new CodeSource { Id = 2 };
-            await _dbContext.AddAsync(new CodeSource { Id = codeSource1.Id, Lifecycle = CodeSourceLifecycleStep.InProduction });
-            await _dbContext.AddAsync(new CodeSource { Id = codeSource2.Id, Lifecycle = CodeSourceLifecycleStep.InProduction });
+            var codeSource1 = await _dbContext.AddAsync(new CodeSource { Id = 1, Lifecycle = CodeSourceLifecycleStep.InProduction });
+            var codeSource2 = await _dbContext.AddAsync(new CodeSource { Id = 2, Lifecycle = CodeSourceLifecycleStep.InProduction });
             await _dbContext.AddAsync(new CodeSource { Id = 3, Lifecycle = CodeSourceLifecycleStep.InProduction });
-            await _dbContext.SaveChangesAsync();
 
-            codeSource1 = await _dbContext.Set<CodeSource>().FindAsync(codeSource1.Id);
-            codeSource2 = await _dbContext.Set<CodeSource>().FindAsync(codeSource2.Id);
+            var githubRepo = new GithubRepo
+            {
+                Id = 10,
+                CodeSources = new List<CodeSource>
+                {
+                    codeSource1.Entity,
+                    codeSource2.Entity
+                }
+            };
+            await _dbContext.AddAsync(githubRepo);
+            await _dbContext.SaveChangesAsync();
 
             var githubBranch = new GithubBranch
             {
                 Id = 42,
                 Name = "myBranch",
-                CodeSources = new List<CodeSource>
-                {
-                    codeSource1,
-                    codeSource2
-                },
+                Repo = githubRepo,
                 IsDeleted = false,
                 CreatedAt = DateTime.Now
             };
@@ -57,17 +59,17 @@ namespace Instances.Infra.Tests.Storage.Stores
             // GET
             var first = await _githubBranchesStore.GetFirstAsync(new GithubBranchFilter
             {
-                CodeSourceId = codeSource1.Id,
+                RepoIds = new HashSet<int> { githubRepo.Id },
                 Name = "myBranch"
             });
             var second = await _githubBranchesStore.GetFirstAsync(new GithubBranchFilter
             {
-                CodeSourceId = codeSource2.Id,
+                RepoIds = new HashSet<int> { githubRepo.Id },
                 Name = "myBranch"
             });
             var third = await _githubBranchesStore.GetFirstAsync(new GithubBranchFilter
             {
-                CodeSourceId = codeSource2.Id,
+                RepoIds = new HashSet<int> { githubRepo.Id },
                 Name = "badBranch"
             });
 
@@ -85,7 +87,7 @@ namespace Instances.Infra.Tests.Storage.Stores
             // GET
             var fourth = await _githubBranchesStore.GetFirstAsync(new GithubBranchFilter
             {
-                CodeSourceId = codeSource2.Id,
+                RepoIds = new HashSet<int> { githubRepo.Id },
                 Name = "myBranch"
             });
 
@@ -98,10 +100,25 @@ namespace Instances.Infra.Tests.Storage.Stores
         {
             var codeSource1 = new CodeSource { Id = 1, Lifecycle = CodeSourceLifecycleStep.InProduction };
             var codeSource2 = new CodeSource { Id = 2, Lifecycle = CodeSourceLifecycleStep.InProduction };
+            var repo1 = new GithubRepo
+            {
+                Id = 10,
+                CodeSources = new() { codeSource1 }
+            };
+            var repo2 = new GithubRepo
+            {
+                Id = 11,
+                CodeSources = new() { codeSource2 }
+            };
             await _dbContext.AddRangeAsync(new[]
             {
                 codeSource1,
                 codeSource2
+            });
+            await _dbContext.AddRangeAsync(new[]
+            {
+                repo1,
+                repo2
             });
             await _dbContext.AddRangeAsync(new[]
             {
@@ -112,22 +129,22 @@ namespace Instances.Infra.Tests.Storage.Stores
             });
             await _dbContext.AddRangeAsync(new[]
             {
-                new GithubBranch { Id= 1, Name = "branch1", HelmChart = "helm1", CodeSources = new List<CodeSource> { codeSource1 } },
-                new GithubBranch { Id= 2, Name = "v0.1.0", HelmChart = "helm2", CodeSources = new List<CodeSource> { codeSource1 } },
-                new GithubBranch { Id= 3, Name = "v0.2.0", HelmChart = "helm3", CodeSources = new List<CodeSource> { codeSource1 } },
-                new GithubBranch { Id= 4, Name = "v1.0.0", HelmChart = "helm4", CodeSources = new List<CodeSource> { codeSource2 } },
-                new GithubBranch { Id= 5, Name = "v0.3.0", HelmChart = "helm5", CodeSources = new List<CodeSource> { codeSource1 } },
-
-            }) ;
+                new GithubBranch { Id= 1, Name = "branch1", HelmChart = "helm1", RepoId = repo1.Id },
+                new GithubBranch { Id= 2, Name = "v0.1.0", HelmChart = "helm2", RepoId = repo1.Id },
+                new GithubBranch { Id= 3, Name = "v0.2.0", HelmChart = "helm3", RepoId = repo1.Id },
+                new GithubBranch { Id= 4, Name = "v1.0.0", HelmChart = "helm4", RepoId = repo1.Id },
+                new GithubBranch { Id= 5, Name = "v0.3.0", HelmChart = "helm5", RepoId = repo1.Id },
+            });
 
             await _dbContext.SaveChangesAsync();
 
-            codeSource1 = await _dbContext.Set<CodeSource>().FindAsync(codeSource1.Id);
-
-            var result = await _githubBranchesStore.GetProductionBranchesAsync(new List<CodeSource> { codeSource1 });
+            var result = await _githubBranchesStore.GetProductionBranchesAsync(new GithubBranchFilter
+            {
+                RepoIds = new HashSet<int> { repo1.Id },
+            });
 
             result.Should().HaveCount(1);
-            result.First().Value.HelmChart.Should().Be("helm5");
+            result.First().HelmChart.Should().Be("helm5");
         }
     }
 }

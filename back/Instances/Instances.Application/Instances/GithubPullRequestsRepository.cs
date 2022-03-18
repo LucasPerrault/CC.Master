@@ -1,7 +1,7 @@
-using Instances.Domain.CodeSources;
 using Instances.Domain.CodeSources.Filtering;
 using Instances.Domain.Github;
 using Instances.Domain.Github.Models;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Instances.Application.Instances
@@ -18,10 +18,10 @@ namespace Instances.Application.Instances
         public Task<GithubPullRequest> CreateAsync(GithubPullRequest pullRequest)
             => _githubPullRequestsStore.CreateAsync(pullRequest);
 
-        public Task<GithubPullRequest> GetByNumberAsync(CodeSource codeSource, int pullRequestNumber)
+        public Task<GithubPullRequest> GetByNumberAsync(int repoId, int pullRequestNumber)
             => _githubPullRequestsStore.GetFirstAsync(new GithubPullRequestFilter
             {
-                CodeSourceId = codeSource.Id,
+                RepoId = repoId,
                 Number = pullRequestNumber
             });
 

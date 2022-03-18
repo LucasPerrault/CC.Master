@@ -23,13 +23,9 @@ namespace Instances.Infra.Storage.Configurations
             builder.HasOne(pr => pr.OriginBranch).WithMany().HasForeignKey(pr => pr.OriginBranchId);
 
             builder
-                .HasMany(pr => pr.CodeSources)
-                .WithMany(c => c.GithubPullRequests)
-                .UsingEntity<Dictionary<string, object>>(
-                    "GithubPullRequestsCodeSources",
-                    b => b.HasOne<CodeSource>().WithMany().HasForeignKey("codeSourceId"),
-                    c => c.HasOne<GithubPullRequest>().WithMany().HasForeignKey("githubPullRequestId")
-                );
+                .HasOne(pr => pr.Repo)
+                .WithMany()
+                .HasForeignKey(pr => pr.RepoId);
         }
     }
 }

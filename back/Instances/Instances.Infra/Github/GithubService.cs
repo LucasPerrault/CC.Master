@@ -25,7 +25,7 @@ namespace Instances.Infra.Github
             _gitHubClient = gitHubClient;
         }
 
-        public async Task<string> GetFileContentAsync(string repoUrl, string filepath)
+        public async Task<string> GetFileContentAsync(Uri repoUrl, string filepath)
         {
             var (owner, repositoryName) = GetOwnerAndRepoNameFromRepoUrl(repoUrl);
 
@@ -50,9 +50,9 @@ namespace Instances.Infra.Github
             return file.Content;
         }
 
-        public async Task<GithubApiCommit> GetGithubBranchHeadCommitInfoAsync(string githubRepo, string branchName)
+        public async Task<GithubApiCommit> GetGithubBranchHeadCommitInfoAsync(Uri repoUrl, string branchName)
         {
-            var (owner, repositoryName) = GetOwnerAndRepoNameFromRepoUrl(githubRepo);
+            var (owner, repositoryName) = GetOwnerAndRepoNameFromRepoUrl(repoUrl);
 
             var commitInfo = await _gitHubClient.Repository.Commit.Get(owner, repositoryName, branchName);
             return new GithubApiCommit()
@@ -64,27 +64,27 @@ namespace Instances.Infra.Github
             };
         }
 
-        public async Task<IEnumerable<string>> GetBranchNamesAsync(string githubRepo)
+        public async Task<IEnumerable<string>> GetBranchNamesAsync(Uri repoUrl)
         {
-            var (owner, repositoryName) = GetOwnerAndRepoNameFromRepoUrl(githubRepo);
+            var (owner, repositoryName) = GetOwnerAndRepoNameFromRepoUrl(repoUrl);
 
             var branches = await _gitHubClient.Repository.Branch.GetAll(owner, repositoryName);
             return branches.Select(b => b.Name);
         }
 
-        private static (string owner, string repositoryName) GetOwnerAndRepoNameFromRepoUrl(string repoUrl)
+        private static (string owner, string repositoryName) GetOwnerAndRepoNameFromRepoUrl(Uri repoUrl)
         {
             if (repoUrl == null)
             {
                 throw new BadRequestException("Veuillez préciser une adresse vers le repository ciblé.");
             }
 
-            if (!repoUrl.StartsWith(GithubUrlBaseSecured))
+            if (!repoUrl.AbsoluteUri.StartsWith(GithubUrlBaseSecured))
             {
                 throw new BadRequestException($"L'adresse vers le repository doit commencer par {GithubUrlBaseSecured}.");
             }
 
-            var repoInformation = repoUrl.Substring(GithubUrlBaseSecured.Length).Split(UrlSeparator);
+            var repoInformation = repoUrl.AbsoluteUri.Substring(GithubUrlBaseSecured.Length).Split(UrlSeparator);
 
             if (repoInformation.Length != 2)
             {

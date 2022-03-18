@@ -30,7 +30,7 @@ namespace Instances.Application.Webhooks.Harbor
                 var githubBranches = await _githubBranchesStore.GetAsync(new GithubBranchFilter
                 {
                     HelmChart = resource.ResourceUrl,
-                    IsDeleted = false,
+                    IsDeleted = Tools.CompareBoolean.FalseOnly,
                 });
 
                 if (githubBranches.Any())

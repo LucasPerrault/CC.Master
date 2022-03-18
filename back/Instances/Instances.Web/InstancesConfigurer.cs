@@ -137,6 +137,7 @@ namespace Instances.Web
             services.AddScoped<ICodeSourcesStore, CodeSourcesStore>();
             services.AddScoped<IGithubPullRequestsStore, GithubPullRequestsStore>();
             services.AddScoped<IGithubBranchesStore, GithubBranchesStore>();
+            services.AddScoped<IGithubReposStore, GithubReposStore>();
 
             services.AddScoped<ISubdomainValidationTranslator, SubdomainValidationTranslator>();
             services.AddScoped<ISubdomainValidator, SubdomainValidator>();
