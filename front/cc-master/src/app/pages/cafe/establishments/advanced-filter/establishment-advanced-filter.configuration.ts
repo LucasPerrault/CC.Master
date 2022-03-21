@@ -6,8 +6,11 @@ import {
   IAdvancedFilterConfiguration,
   ICriterionConfiguration,
 } from '../../common/components/advanced-filter-form';
+import { FacetScope } from '../../common/models';
 import { CriterionFormlyConfigurationService } from '../../common/services/criterion-formly-configuration.service';
+import { FacetAdvancedFilterConfigurationService } from '../../common/services/facets';
 import { EnvironmentAdvancedFilterConfiguration } from '../../environments/advanced-filter';
+import { EnvironmentCriterionKey } from '../../environments/advanced-filter/environment-criterion-key.enum';
 import { EstablishmentAdvancedFilterKey } from './establishment-advanced-filter-key.enum';
 import { EstablishmentCriterionKey } from './establishment-criterion-key.enum';
 import { EstablishmentFormlyConfiguration } from './establishment-formly-configuration.service';
@@ -35,6 +38,12 @@ export class EstablishmentAdvancedFilterConfiguration implements IAdvancedFilter
         },
       ],
     },
+    {
+      key: EnvironmentCriterionKey.Facets,
+      name: this.translatePipe.transform('cafe_filters_environment_facet'),
+      children: this.facetFilterConfiguration.criterions(FacetScope.Establishment),
+      childrenFormlyFieldConfigs: this.facetFilterConfiguration.criterionFormlyFieldConfigs(FacetScope.Establishment),
+    },
   ];
 
   public criterionFormlyFieldConfigs = [
@@ -46,5 +55,6 @@ export class EstablishmentAdvancedFilterConfiguration implements IAdvancedFilter
     private formlyConfiguration: EstablishmentFormlyConfiguration,
     private environmentFilterConfiguration: EnvironmentAdvancedFilterConfiguration,
     private commonFormlyConfiguration: CriterionFormlyConfigurationService,
+    private facetFilterConfiguration: FacetAdvancedFilterConfigurationService,
   ) {}
 }
