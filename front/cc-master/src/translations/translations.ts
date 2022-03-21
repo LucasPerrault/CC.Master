@@ -1,4 +1,4 @@
-﻿export const Translations = {
+export const Translations = {
 	"en": {
 		'front_hello_world': "Hello, world!",
 		'front_errorPages_forbidden_link': "Back to previous page",
@@ -928,6 +928,9 @@
 		'cafe_filters_operator_notEqual_number': "Not equal to",
 		'cafe_filters_operator_equals_number': "Equal to",
 		'cafe_filters_operator_between': "Between",
+		'facets_placeholder': "Type",
+		'facets_string_placeholder': "Select facet values",
+		'facets_date_placeholder': "Select a date",
 	},
 	"de": {
 		'front_hello_world': "Hallo Welt!",
@@ -1858,6 +1861,9 @@
 		'cafe_filters_operator_notEqual_number': "Not equal to",
 		'cafe_filters_operator_equals_number': "Equal to",
 		'cafe_filters_operator_between': "Between",
+		'facets_placeholder': "Type",
+		'facets_string_placeholder': "Select facet values",
+		'facets_date_placeholder': "Select a date",
 	},
 	"fr": {
 		'front_hello_world': "Bonjour, monde !",
@@ -2788,6 +2794,9 @@
 		'cafe_filters_operator_notEqual_number': "N'est pas égal à",
 		'cafe_filters_operator_equals_number': "Est égal à",
 		'cafe_filters_operator_between': "Est entre",
+		'facets_placeholder': "Type",
+		'facets_string_placeholder': "Sélectionner des valeurs de facet",
+		'facets_date_placeholder': "Sélectionner une date",
 	},
 	"it": {
 		'front_hello_world': "Ciao mondo!",
@@ -3718,6 +3727,9 @@
 		'cafe_filters_operator_notEqual_number': "Not equal to",
 		'cafe_filters_operator_equals_number': "Equal to",
 		'cafe_filters_operator_between': "Between",
+		'facets_placeholder': "Type",
+		'facets_string_placeholder': "Select facet values",
+		'facets_date_placeholder': "Select a date",
 	},
 	"nl": {
 		'front_hello_world': "Hallo, wereld!",
@@ -4648,6 +4660,9 @@
 		'cafe_filters_operator_notEqual_number': "Not equal to",
 		'cafe_filters_operator_equals_number': "Equal to",
 		'cafe_filters_operator_between': "Between",
+		'facets_placeholder': "Type",
+		'facets_string_placeholder': "Select facet values",
+		'facets_date_placeholder': "Select a date",
 	},
 	"nl-BE": {
 		'front_hello_world': "Hallo wereld!",
@@ -5578,6 +5593,9 @@
 		'cafe_filters_operator_notEqual_number': "Not equal to",
 		'cafe_filters_operator_equals_number': "Equal to",
 		'cafe_filters_operator_between': "Between",
+		'facets_placeholder': "Type",
+		'facets_string_placeholder': "Select facet values",
+		'facets_date_placeholder': "Select a date",
 	},
 	"es": {
 		'front_hello_world': "¡Hola, mundo!",
@@ -6508,6 +6526,9 @@
 		'cafe_filters_operator_notEqual_number': "Not equal to",
 		'cafe_filters_operator_equals_number': "Equal to",
 		'cafe_filters_operator_between': "Between",
+		'facets_placeholder': "Type",
+		'facets_string_placeholder': "Select facet values",
+		'facets_date_placeholder': "Select a date",
 	},
 	"pt": {
 		'front_hello_world': "Olá mundo!",
@@ -7438,5 +7459,8 @@
 		'cafe_filters_operator_notEqual_number': "Not equal to",
 		'cafe_filters_operator_equals_number': "Equal to",
 		'cafe_filters_operator_between': "Between",
+		'facets_placeholder': "Type",
+		'facets_string_placeholder': "Select facet values",
+		'facets_date_placeholder': "Select a date",
 	},
 };

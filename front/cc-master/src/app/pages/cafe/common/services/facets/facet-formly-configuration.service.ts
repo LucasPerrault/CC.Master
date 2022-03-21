@@ -15,7 +15,7 @@ export class FacetFormlyConfigurationService {
     templateOptions: {
       required: true,
       mod: 'palette-grey mod-outlined mod-inline mod-longer is-required',
-      placeholder: this.translatePipe.transform('cafe_filters_facets_date_placeholder'),
+      placeholder: this.translatePipe.transform('facets_date_placeholder'),
     },
   };
 
@@ -92,7 +92,7 @@ export class FacetFormlyConfigurationService {
         facetScope,
         mod: 'palette-grey mod-outlined mod-inline mod-longer',
         filters,
-        placeholder: this.translatePipe.transform('cafe_filters_facets_string_placeholder'),
+        placeholder: this.translatePipe.transform('facets_string_placeholder'),
       },
     };
   };
