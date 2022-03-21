@@ -1,17 +1,12 @@
 import { AdvancedFilter } from '../components/advanced-filter-form';
-import { IFacet, IFacetIdentifier } from './facet.interface';
+import { IFacet } from './facet.interface';
 
 export interface ISearchDto {
   criterion: AdvancedFilter;
-  facets?: IFacetIdentifier[];
+  facetIds?: number[];
 }
 
-export const toSearchDto = (criterion: AdvancedFilter, f?: IFacet[]): ISearchDto => ({
+export const toSearchDto = (criterion: AdvancedFilter, facets?: IFacet[]): ISearchDto => ({
   criterion,
-  facets: toFacetIdentifiers(f) ?? [],
+  facetIds: facets?.map(f => f.id) ?? null,
 });
-
-const toFacetIdentifiers = (facets: IFacet[]): IFacetIdentifier[] => facets?.map(facet => ({
-  code: facet.code,
-  applicationId: facet.applicationId,
-}));
