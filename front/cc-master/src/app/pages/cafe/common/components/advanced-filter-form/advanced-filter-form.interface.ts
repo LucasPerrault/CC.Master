@@ -2,6 +2,7 @@ import { IComparisonFilterCriterionForm, IComparisonValue } from './components/c
 import { ILogicalOperator } from './components/logical-operator-select/logical-operator.interface';
 import { ComparisonOperator } from './enums/comparison-operator.enum';
 import { AdvancedFilter, AdvancedFilterTypeMapping } from './models/advanced-filter.interface';
+import { ComparisonCriterion } from './models/comparison-criterion.interface';
 
 export interface IAdvancedFilterForm {
   logicalOperator: ILogicalOperator;
@@ -10,6 +11,7 @@ export interface IAdvancedFilterForm {
 
 export interface IAdvancedFilterAttributes {
   filterKey: string;
+  criterion: ComparisonCriterion;
   operator: ComparisonOperator;
   value?: IComparisonValue;
 }
@@ -37,6 +39,10 @@ export class AdvancedFilterFormMapping {
     return AdvancedFilterTypeMapping.toFilterCombination(advancedFilterForm.logicalOperator.id, filtersCriterion);
   }
 
-  private static toAdvancedFilterAttributes = (form: IComparisonFilterCriterionForm): IAdvancedFilterAttributes =>
-      ({ filterKey: form?.values?.key ?? form?.criterion?.key, operator: form?.operator?.id, value: form?.values });
+  private static toAdvancedFilterAttributes = (form: IComparisonFilterCriterionForm): IAdvancedFilterAttributes => ({
+    filterKey: form?.values?.key ?? form?.criterion?.key,
+    criterion: form.criterion,
+    operator: form?.operator?.id,
+    value: form?.values,
+  });
 }

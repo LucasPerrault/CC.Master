@@ -52,11 +52,9 @@ export class FacetAdvancedFilterConfigurationService {
           ],
         },
         {
-          key: FacetAdvancedFilterKey.Between,
+          key: FacetAdvancedFilterKey.IntegerRange,
           components: [this.formlyConfiguration.range],
-          matchingOperators: [
-            ComparisonOperator.Between,
-          ],
+          matchingOperators: [ComparisonOperator.Between],
         },
       ],
     },
@@ -82,11 +80,9 @@ export class FacetAdvancedFilterConfigurationService {
           ],
         },
         {
-          key: FacetAdvancedFilterKey.Between,
+          key: FacetAdvancedFilterKey.DecimalRange,
           components: [this.formlyConfiguration.range],
-          matchingOperators: [
-            ComparisonOperator.Between,
-          ],
+          matchingOperators: [ComparisonOperator.Between],
         },
       ],
     },
@@ -112,11 +108,9 @@ export class FacetAdvancedFilterConfigurationService {
           ],
         },
         {
-          key: FacetAdvancedFilterKey.Between,
+          key: FacetAdvancedFilterKey.PercentRange,
           components: [this.formlyConfiguration.percentRange],
-          matchingOperators: [
-            ComparisonOperator.Between,
-          ],
+          matchingOperators: [ComparisonOperator.Between],
         },
       ],
     },
@@ -131,8 +125,8 @@ export class FacetAdvancedFilterConfigurationService {
       ],
       componentConfigs: (criterion: IFacetComparisonCriterion) => [
         {
-          key: FacetAdvancedFilterKey.String,
-          components: [this.formlyConfiguration.facetStringValue(facetScope, criterion.facet, true)],
+          key: FacetAdvancedFilterKey.ListString,
+          components: [this.formlyConfiguration.facetListStringValue(facetScope, criterion.facet)],
           matchingOperators: [
             ComparisonOperator.ListAreAmong,
             ComparisonOperator.ListNotContains,
@@ -141,7 +135,7 @@ export class FacetAdvancedFilterConfigurationService {
         },
         {
           key: FacetAdvancedFilterKey.String,
-          components: [this.formlyConfiguration.facetStringValue(facetScope, criterion.facet, false)],
+          components: [this.formlyConfiguration.facetStringValue(facetScope, criterion.facet)],
           matchingOperators: [ComparisonOperator.ListContainsOnly],
         },
       ],

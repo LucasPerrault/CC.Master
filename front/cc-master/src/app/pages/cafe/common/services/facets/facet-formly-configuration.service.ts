@@ -30,7 +30,7 @@ export class FacetFormlyConfigurationService {
   };
 
   public readonly range: FormlyFieldConfig = {
-    key: FacetAdvancedFilterKey.Between,
+    key: FacetAdvancedFilterKey.IntegerRange,
     type: 'range',
     templateOptions: {
       configuration: {
@@ -82,14 +82,29 @@ export class FacetFormlyConfigurationService {
     },
   });
 
-  public facetStringValue = (facetScope: FacetScope, facet: IFacet, multiple: boolean): FormlyFieldConfig => {
+  public facetStringValue = (facetScope: FacetScope, facet: IFacet): FormlyFieldConfig => {
     const filters = [`applicationId=${ facet.applicationId }`, `code=${ facet.code }`, `type=${ FacetType.String }`];
     return {
       key: FacetAdvancedFilterKey.String,
       type: 'facet-value',
       templateOptions: {
         required: true,
-        multiple,
+        facetScope,
+        mod: 'palette-grey mod-outlined mod-inline mod-longer',
+        filters,
+        placeholder: this.translatePipe.transform('cafe_filters_facets_string_placeholder'),
+      },
+    };
+  };
+
+  public facetListStringValue = (facetScope: FacetScope, facet: IFacet): FormlyFieldConfig => {
+    const filters = [`applicationId=${ facet.applicationId }`, `code=${ facet.code }`, `type=${ FacetType.String }`];
+    return {
+      key: FacetAdvancedFilterKey.ListString,
+      type: 'facet-value',
+      templateOptions: {
+        required: true,
+        multiple: true,
         facetScope,
         mod: 'palette-grey mod-outlined mod-inline mod-longer',
         filters,

@@ -13,10 +13,14 @@ import {
   ItemsMatchedDto,
 } from '../../common/components/advanced-filter-form';
 import { IEnvironment } from '../../common/models/environment.interface';
+import { FacetAdvancedFilterApiMappingService } from '../../common/services/facets/facet-advanced-filter-api-mapping.service';
 import { EnvironmentAdvancedFilterKey } from './environment-advanced-filter-key.enum';
 
 @Injectable()
 export class EnvironmentAdvancedFilterApiMappingService {
+
+  constructor(private facetFiltersApiMapping: FacetAdvancedFilterApiMappingService) {}
+
   public toAdvancedFilter(advancedFilterForm: IAdvancedFilterForm): AdvancedFilter {
     return AdvancedFilterFormMapping.toAdvancedFilter(advancedFilterForm, a => this.getAdvancedFilter(a));
   }
@@ -54,6 +58,8 @@ export class EnvironmentAdvancedFilterApiMappingService {
         return this.getClusterAdvancedFilter(attributes, encapsulate);
       case EnvironmentAdvancedFilterKey.DistributorType:
         return this.getDistributorTypeAdvancedFilter(attributes, encapsulate);
+      default:
+        return this.getFacetAdvancedFilter(attributes, encapsulate);
     }
   }
 
@@ -155,5 +161,9 @@ export class EnvironmentAdvancedFilterApiMappingService {
     }));
 
     return AdvancedFilterTypeMapping.toAdvancedFilter(billingEntities, operator, toFilterCriterion, logicalOperator);
+  }
+
+  private getFacetAdvancedFilter(attributes: IAdvancedFilterAttributes, encapsulate: IFilterCriterionEncapsulation): AdvancedFilter {
+    return this.facetFiltersApiMapping.getAdvancedFilter(attributes, encapsulate);
   }
 }

@@ -1,3 +1,4 @@
+import { FacetType, IFacetIdentifier } from '../../../models';
 import { LogicalOperator } from '../enums/logical-operator.enum';
 import { IComparisonFilterCriterionEncapsulation } from './advanced-filter-mapping.interface';
 
@@ -27,9 +28,15 @@ interface IFilterCombination {
   values: IFilter[];
 }
 
+export type IComparisonFilterCriterionValue = string | number | boolean;
+
 export interface IComparisonFilterCriterion {
   operator: ComparisonOperatorDto;
-  value?: string | number | boolean;
+  value?: IComparisonFilterCriterionValue;
+}
+
+export interface IFacetComparisonFilterCriterion extends IComparisonFilterCriterion {
+  type: FacetType;
 }
 
 export interface IFilterCriterion {
@@ -41,13 +48,32 @@ export interface IListFilterCriterion {
   itemsMatched: ItemsMatchedDto;
 }
 
+export interface IFacetFilterCriterion {
+  facets: {
+    value:  IFacetComparisonFilterCriterion;
+    identifier: IFacetIdentifier;
+  };
+}
+
+export interface IFacetListFilterCriterion {
+  facets: {
+    value:  IFacetComparisonFilterCriterion;
+    identifier: IFacetIdentifier;
+    itemsMatched: ItemsMatchedDto;
+  };
+}
+
+export type FilterCriterion = IFilterCriterion | IListFilterCriterion | IFacetFilterCriterion | IFacetListFilterCriterion;
+
+export type AdvancedFacetFilterCriterion = IFilter & IFacetFilterCriterion;
 export type AdvancedFilterCriterion = IFilter & IFilterCriterion;
 export type AdvancedFilterCombination = IFilter & IFilterCombination;
-export type AdvancedFilter = AdvancedFilterCriterion | AdvancedFilterCombination;
+export type AdvancedFilter = AdvancedFilterCriterion | AdvancedFilterCombination | AdvancedFacetFilterCriterion;
 
 export class AdvancedFilterTypeMapping {
+
   public static toAdvancedFilter(
-    values: string[] | number[] | boolean[],
+    values: IComparisonFilterCriterionValue[],
     operator: ComparisonOperatorDto,
     toIFilterCriterion: IComparisonFilterCriterionEncapsulation,
     logicalOperator: LogicalOperator,
@@ -60,7 +86,7 @@ export class AdvancedFilterTypeMapping {
     return { filterElementType: AdvancedFilterType.Logical, operator, values } as AdvancedFilterCombination;
   };
 
-  public static toFilterCriterion(criterion: IFilterCriterion | IListFilterCriterion): AdvancedFilterCriterion {
+  public static toFilterCriterion(criterion: FilterCriterion): AdvancedFilterCriterion {
     return { filterElementType: AdvancedFilterType.Criterion, ...criterion } as AdvancedFilterCriterion;
   };
 
@@ -76,7 +102,7 @@ export class AdvancedFilterTypeMapping {
 
   private static toCriterion(
     operator: ComparisonOperatorDto,
-    value: string | number | boolean,
+    value: IComparisonFilterCriterionValue,
     toIFilterCriterion: IComparisonFilterCriterionEncapsulation,
   ): AdvancedFilterCriterion {
     const comparisonFilterCriterion = AdvancedFilterTypeMapping.toComparisonFilterCriterion(operator, value);
