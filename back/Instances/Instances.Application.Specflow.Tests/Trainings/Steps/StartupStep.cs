@@ -191,20 +191,20 @@ namespace Instances.Application.Specflow.Tests.Trainings.Steps
 
             instancesDbContext.Add(inactiveTrainingInstance);
 
-            var figgoCleanCommonUri = "http://127.0.0.1/figgo/clean.common.sql";
-            var figgoCleanTrainingUri = "http://127.0.0.1/figgo/clean.training.sql";
+            var figgoCleanCommonUri = new Uri("http://127.0.0.1/figgo/clean.common.sql");
+            var figgoCleanTrainingUri = new Uri("http://127.0.0.1/figgo/clean.training.sql");
             trainingRestorationTestResults.TrainingCleaningScriptsUri.Add(figgoCleanCommonUri);
             trainingRestorationTestResults.TrainingCleaningScriptsUri.Add(figgoCleanTrainingUri);
 
-            var figgoAnonUri = "http://127.0.0.1/figgo/anon.sql";
+            var figgoAnonUri = new Uri("http://127.0.0.1/figgo/anon.sql");
             trainingRestorationTestResults.AnonymizationScriptsUri.Add(figgoAnonUri);
 
-            var monolithCleanCommonUri = "http://127.0.0.1/monolith/clean.common.sql";
-            var monolithCleanTrainingUri = "http://127.0.0.1/monolith/clean.training.sql";
+            var monolithCleanCommonUri = new Uri("http://127.0.0.1/monolith/clean.common.sql");
+            var monolithCleanTrainingUri = new Uri("http://127.0.0.1/monolith/clean.training.sql");
             trainingRestorationTestResults.TrainingCleaningScriptsUri.Add(monolithCleanCommonUri);
             trainingRestorationTestResults.TrainingCleaningScriptsUri.Add(monolithCleanTrainingUri);
 
-            var monolithAnonUri = "http://127.0.0.1/monolith/anon.sql";
+            var monolithAnonUri = new Uri("http://127.0.0.1/monolith/anon.sql");
             trainingRestorationTestResults.AnonymizationScriptsUri.Add(monolithAnonUri);
 
             var codeSources = new List<CodeSource>{
@@ -241,7 +241,7 @@ namespace Instances.Application.Specflow.Tests.Trainings.Steps
                         new CodeSourceArtifacts
                         {
                             ArtifactType = CodeSourceArtifactType.CleanScript,
-                            ArtifactUrl = "http://127.0.0.1/figgo/clean.preview.sql",
+                            ArtifactUrl = new Uri("http://127.0.0.1/figgo/clean.preview.sql"),
                             CodeSourceId = 1,
                             FileName = "clean.preview.sql",
                             Id = 15,
@@ -257,7 +257,7 @@ namespace Instances.Application.Specflow.Tests.Trainings.Steps
                         new CodeSourceArtifacts
                         {
                             ArtifactType = CodeSourceArtifactType.BackZip,
-                            ArtifactUrl = "http://127.0.0.1/figgo/back.zip",
+                            ArtifactUrl = new Uri("http://127.0.0.1/figgo/back.zip"),
                             CodeSourceId = 1,
                             FileName = "back.zip",
                             Id = 13,
@@ -265,7 +265,7 @@ namespace Instances.Application.Specflow.Tests.Trainings.Steps
                         new CodeSourceArtifacts
                         {
                             ArtifactType = CodeSourceArtifactType.FrontZip,
-                            ArtifactUrl = "http://127.0.0.1/figgo/front.zip",
+                            ArtifactUrl = new Uri("http://127.0.0.1/figgo/front.zip"),
                             CodeSourceId = 1,
                             FileName = "front.zip",
                             Id = 14,
@@ -273,7 +273,7 @@ namespace Instances.Application.Specflow.Tests.Trainings.Steps
                         new CodeSourceArtifacts
                         {
                             ArtifactType = CodeSourceArtifactType.Other,
-                            ArtifactUrl = "http://127.0.0.1/figgo/random.sql",
+                            ArtifactUrl = new Uri("http://127.0.0.1/figgo/random.sql"),
                             CodeSourceId = 1,
                             FileName = "random.sql",
                             Id = 16,
@@ -313,7 +313,7 @@ namespace Instances.Application.Specflow.Tests.Trainings.Steps
                         new CodeSourceArtifacts
                         {
                             ArtifactType = CodeSourceArtifactType.CleanScript,
-                            ArtifactUrl = "http://127.0.0.1/monolith/clean.preview.sql",
+                            ArtifactUrl = new Uri("http://127.0.0.1/monolith/clean.preview.sql"),
                             CodeSourceId = 2,
                             FileName = "clean.preview.sql",
                             Id = 25,
@@ -329,7 +329,7 @@ namespace Instances.Application.Specflow.Tests.Trainings.Steps
                         new CodeSourceArtifacts
                         {
                             ArtifactType = CodeSourceArtifactType.BackZip,
-                            ArtifactUrl = "http://127.0.0.1/monolith/back.zip",
+                            ArtifactUrl = new Uri("http://127.0.0.1/monolith/back.zip"),
                             CodeSourceId = 2,
                             FileName = "back.zip",
                             Id = 23,
@@ -337,7 +337,7 @@ namespace Instances.Application.Specflow.Tests.Trainings.Steps
                         new CodeSourceArtifacts
                         {
                             ArtifactType = CodeSourceArtifactType.FrontZip,
-                            ArtifactUrl = "http://127.0.0.1/monolith/front.zip",
+                            ArtifactUrl = new Uri("http://127.0.0.1/monolith/front.zip"),
                             CodeSourceId = 2,
                             FileName = "front.zip",
                             Id = 24,
@@ -361,7 +361,7 @@ namespace Instances.Application.Specflow.Tests.Trainings.Steps
                         new CodeSourceArtifacts
                         {
                             ArtifactType = CodeSourceArtifactType.BackZip,
-                            ArtifactUrl = "http://127.0.0.1/ws/back.zip",
+                            ArtifactUrl = new Uri("http://127.0.0.1/ws/back.zip"),
                             CodeSourceId = 2,
                             FileName = "back.zip",
                             Id = 31,
@@ -369,7 +369,7 @@ namespace Instances.Application.Specflow.Tests.Trainings.Steps
                         new CodeSourceArtifacts
                         {
                             ArtifactType = CodeSourceArtifactType.FrontZip,
-                            ArtifactUrl = "http://127.0.0.1/ws/front.zip",
+                            ArtifactUrl = new Uri("http://127.0.0.1/ws/front.zip"),
                             CodeSourceId = 3,
                             FileName = "front.zip",
                             Id = 32,

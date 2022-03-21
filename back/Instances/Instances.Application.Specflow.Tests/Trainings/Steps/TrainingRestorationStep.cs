@@ -201,28 +201,28 @@ namespace Instances.Application.Specflow.Tests.Trainings.Steps
         [Then("cleaning scripts should be applied")]
         public void ThenCleaningScriptsShouldBeApplied()
         {
-            var allScripts = _results.DuplicateRequestParameters.request.PostBufferServerRestoreScripts.Select(prs => prs.Uri.ToString());
+            var allScripts = _results.DuplicateRequestParameters.request.PostBufferServerRestoreScripts.Select(prs => prs.Uri);
             Assert.All(_results.TrainingCleaningScriptsUri, (uri) => Assert.Contains(uri, allScripts));
         }
 
         [Then("anonymization scripts should be applied")]
         public void ThenAnonymizationScriptsShouldBeApplied()
         {
-            var allScripts = _results.DuplicateRequestParameters.request.PostBufferServerRestoreScripts.Select(prs => prs.Uri.ToString());
+            var allScripts = _results.DuplicateRequestParameters.request.PostBufferServerRestoreScripts.Select(prs => prs.Uri);
             Assert.All(_results.AnonymizationScriptsUri, (uri) => Assert.Contains(uri, allScripts));
         }
 
         [Then("no anonymization scripts should be applied")]
         public void ThenNoAnonymizationScriptsShouldBeApplied()
         {
-            var allScripts = _results.DuplicateRequestParameters.request.PostBufferServerRestoreScripts.Select(prs => prs.Uri.ToString());
+            var allScripts = _results.DuplicateRequestParameters.request.PostBufferServerRestoreScripts.Select(prs => prs.Uri);
             Assert.All(_results.AnonymizationScriptsUri, (uri) => Assert.DoesNotContain(uri, allScripts));
         }
 
         [Then("no other scripts should be applied on the buffer server")]
         public void ThenNoOtherScriptsShouldBeApplied()
         {
-            var allScripts = _results.DuplicateRequestParameters.request.PostBufferServerRestoreScripts.Select(prs => prs.Uri.ToString());
+            var allScripts = _results.DuplicateRequestParameters.request.PostBufferServerRestoreScripts.Select(prs => prs.Uri);
             Assert.All(allScripts, (uri) => Assert.True(_results.TrainingCleaningScriptsUri.Contains(uri) || _results.AnonymizationScriptsUri.Contains(uri)));
         }
 

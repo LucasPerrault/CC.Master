@@ -21,7 +21,7 @@ namespace Instances.Infra.DataDuplication
 
         public async Task<List<Uri>> GetForAnonymizationAsync(InstanceDuplication duplication)
         {
-            return (await _codeSourcesRepository.GetInstanceAnonymizationArtifactsAsync()).Select(a => new Uri(a.ArtifactUrl)).ToList();
+            return (await _codeSourcesRepository.GetInstanceAnonymizationArtifactsAsync()).Select(a => a.ArtifactUrl).ToList();
         }
 
         public async Task<List<Uri>> GetForCleaningAsync(InstanceDuplication duplication)
@@ -31,7 +31,7 @@ namespace Instances.Infra.DataDuplication
             var artifacts = await _codeSourcesRepository.GetInstanceCleaningArtifactsAsync();
             return artifacts
                 .Where(a => a.FileName.Contains(CommonSqlScriptKeyword) || a.FileName.Contains(instanceTypeAsString))
-                .Select(a => new Uri(a.ArtifactUrl)).ToList();
+                .Select(a => a.ArtifactUrl).ToList();
 
         }
 
@@ -45,7 +45,7 @@ namespace Instances.Infra.DataDuplication
                 var mprh = monolithArtifacts.FirstOrDefault(a => a.FileName == "MPRH_Demo.login.uniqueness.sql");
                 if(mprh != null)
                 {
-                    result.Add(new Uri(mprh.ArtifactUrl));
+                    result.Add(mprh.ArtifactUrl);
                 }
             }
             if (duplication.TargetType == InstanceType.Prod)
@@ -53,7 +53,7 @@ namespace Instances.Infra.DataDuplication
                 var newInstance = monolithArtifacts.FirstOrDefault(a => a.FileName == "clean_db_for_new_instance.sql");
                 if (newInstance != null)
                 {
-                    result.Add(new Uri(newInstance.ArtifactUrl));
+                    result.Add(newInstance.ArtifactUrl);
                 }
             }
             return result;
@@ -67,7 +67,7 @@ namespace Instances.Infra.DataDuplication
 
             return duplicationOptions.SpecificPreRestoreScriptKeywordSelector.SelectMany(keyword =>
                     artifacts.Where(a => a.FileName.Contains($"{keyword}.{CommonSqlScriptKeyword}") || a.FileName.Contains($"{keyword}.{instanceTypeAsString}")))
-                .Select(a => new Uri(a.ArtifactUrl)).ToList();
+                .Select(a => a.ArtifactUrl).ToList();
         }
 
         public async Task<List<Uri>> GetPostRestoreScriptsAsync(InstanceDuplication duplication, InstanceDuplicationOptions duplicationOptions)
@@ -78,7 +78,7 @@ namespace Instances.Infra.DataDuplication
 
             return duplicationOptions.SpecificPostRestoreScriptKeywordSelector.SelectMany(keyword =>
                     artifacts.Where(a => a.FileName.Contains($"{keyword}.{CommonSqlScriptKeyword}") || a.FileName.Contains($"{keyword}.{instanceTypeAsString}")))
-                .Select(a => new Uri(a.ArtifactUrl)).ToList();
+                .Select(a => a.ArtifactUrl).ToList();
         }
     }
 }

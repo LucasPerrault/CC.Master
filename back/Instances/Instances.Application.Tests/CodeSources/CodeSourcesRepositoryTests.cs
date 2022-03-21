@@ -281,10 +281,10 @@ namespace Instances.Application.Tests.CodeSources
                 new CodeSource { Id = 2, Code = "source-code-2" }
             );
             await _instancesDbContext.AddRangeAsync(
-                new CodeSourceArtifacts { CodeSourceId = 1, ArtifactType = CodeSourceArtifactType.AnonymizationScript, FileName = "abc.txt", ArtifactUrl = "http://test.com/abc" },
-                new CodeSourceArtifacts { CodeSourceId = 1, ArtifactType = CodeSourceArtifactType.CleanScript, FileName = "efg.txt", ArtifactUrl = "http://test.com/efg" },
-                new CodeSourceArtifacts { CodeSourceId = 1, ArtifactType = CodeSourceArtifactType.BackZip, FileName = "hij.txt", ArtifactUrl = "http://test.com/hij" },
-                new CodeSourceArtifacts { CodeSourceId = 2, ArtifactType = CodeSourceArtifactType.FrontZip, FileName = "klm.txt", ArtifactUrl = "http://test.com/klm" }
+                new CodeSourceArtifacts { CodeSourceId = 1, ArtifactType = CodeSourceArtifactType.AnonymizationScript, FileName = "abc.txt", ArtifactUrl = new Uri("http://test.com/abc") },
+                new CodeSourceArtifacts { CodeSourceId = 1, ArtifactType = CodeSourceArtifactType.CleanScript, FileName = "efg.txt", ArtifactUrl = new Uri("http://test.com/efg") },
+                new CodeSourceArtifacts { CodeSourceId = 1, ArtifactType = CodeSourceArtifactType.BackZip, FileName = "hij.txt", ArtifactUrl = new Uri("http://test.com/hij") },
+                new CodeSourceArtifacts { CodeSourceId = 2, ArtifactType = CodeSourceArtifactType.FrontZip, FileName = "klm.txt", ArtifactUrl = new Uri("http://test.com/klm") }
             );
             await _instancesDbContext.SaveChangesAsync();
 
