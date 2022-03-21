@@ -107,13 +107,6 @@ namespace AdvancedFilters.Infra.Tests
                 ExpectedCount = 1,
             }};
 
-            //Greater
-            yield return new object[] { new AdvancedFacetFilterEmptyResultTestEntry()
-            {
-                Filter = GetCriterion(FacetType.DateTime, new DateTime(2022, 01,02), ComparisonOperators.StrictlyGreaterThan),
-                ExpectedCount = 1,
-            }};
-
             //StricklyGreater
             yield return new object[] { new AdvancedFacetFilterEmptyResultTestEntry()
             {
@@ -121,11 +114,28 @@ namespace AdvancedFilters.Infra.Tests
                 ExpectedCount = 1,
             }};
 
-            //Less
             yield return new object[] { new AdvancedFacetFilterEmptyResultTestEntry()
             {
-                Filter = GetCriterion(FacetType.DateTime, new DateTime(2022, 01,02), ComparisonOperators.StrictlyLessThan),
+                Filter = GetCriterion(FacetType.DateTime, new DateTime(2022, 01,02), ComparisonOperators.StrictlyGreaterThan),
                 ExpectedCount = 1,
+            }};
+
+            yield return new object[] { new AdvancedFacetFilterEmptyResultTestEntry()
+            {
+                Filter = GetCriterion(FacetType.Integer, 2, ComparisonOperators.StrictlyGreaterThan),
+                ExpectedCount = 0,
+            }};
+
+            yield return new object[] { new AdvancedFacetFilterEmptyResultTestEntry()
+            {
+                Filter = GetCriterion(FacetType.Decimal, 0.12m,ComparisonOperators.StrictlyGreaterThan),
+                ExpectedCount = 3,
+            }};
+
+            yield return new object[] { new AdvancedFacetFilterEmptyResultTestEntry()
+            {
+                Filter = GetCriterion(FacetType.Percentage, 0.10m,ComparisonOperators.StrictlyGreaterThan),
+                ExpectedCount = 2,
             }};
 
             //StricklyLess
@@ -133,6 +143,30 @@ namespace AdvancedFilters.Infra.Tests
             {
                 Filter = GetCriterion(FacetType.DateTime, new DateTime(2022, 01,01), ComparisonOperators.StrictlyLessThan),
                 ExpectedCount = 0,
+            }};
+
+            yield return new object[] { new AdvancedFacetFilterEmptyResultTestEntry()
+            {
+                Filter = GetCriterion(FacetType.DateTime, new DateTime(2022, 01,02), ComparisonOperators.StrictlyLessThan),
+                ExpectedCount = 1,
+            }};
+
+            yield return new object[] { new AdvancedFacetFilterEmptyResultTestEntry()
+            {
+                Filter = GetCriterion(FacetType.Integer, 3, ComparisonOperators.StrictlyLessThan),
+                ExpectedCount = 2,
+            }};
+
+            yield return new object[] { new AdvancedFacetFilterEmptyResultTestEntry()
+            {
+                Filter = GetCriterion(FacetType.Decimal, 2.15m,ComparisonOperators.StrictlyLessThan),
+                ExpectedCount = 1,
+            }};
+
+            yield return new object[] { new AdvancedFacetFilterEmptyResultTestEntry()
+            {
+                Filter = GetCriterion(FacetType.Percentage, 0.13m,ComparisonOperators.StrictlyLessThan),
+                ExpectedCount = 1,
             }};
         }
         public class AdvancedFacetFilterEmptyResultTestEntry
@@ -331,10 +365,10 @@ namespace AdvancedFilters.Infra.Tests
 
         private static IEnvironmentFacetCriterion GetEnvironmentFacetValueExpressionAccordingToFacetType(FacetType facetType, string value, ComparisonOperators op) => facetType switch
         {
-            FacetType.Integer => new SingleFacetValueComparisonCriterion<int> { Value = int.Parse(value), Type = facetType, Operator = op },
+            FacetType.Integer => new SingleFacetIntValueComparisonCriterion { Value = int.Parse(value), Type = facetType, Operator = op },
             FacetType.DateTime => new SingleFacetDateTimeValueComparisonCriterion { Value = DateTime.Parse(value), Type = facetType, Operator = op },
-            FacetType.Decimal => new SingleFacetValueComparisonCriterion<decimal>() { Value = decimal.Parse(value), Type = facetType, Operator = op },
-            FacetType.Percentage => new SingleFacetValueComparisonCriterion<decimal> { Value = decimal.Parse(value), Type = facetType, Operator = op },
+            FacetType.Decimal => new SingleFacetDecimalValueComparisonCriterion { Value = decimal.Parse(value), Type = facetType, Operator = op },
+            FacetType.Percentage => new SingleFacetDecimalValueComparisonCriterion { Value = decimal.Parse(value), Type = facetType, Operator = op },
             FacetType.String => new SingleFacetValueComparisonCriterion<string>() { Value = value, Type = facetType, Operator = op },
             _ => throw new BadRequestException()
         };
