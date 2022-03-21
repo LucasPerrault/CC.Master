@@ -54,8 +54,19 @@ public class EnvironmentFacetValueQuery
     public HashSet<string> Code { get; set; } = new();
     public string ApplicationId { get; set; }
     public HashSet<FacetType> Type { get; set; } = new();
+    public string Search { get; set; }
 
     public IPageToken Page { get; set; }
 
-    public EnvironmentFacetValueFilter ToFilter() => EnvironmentFacetValueFilter.ForSearch(EnvironmentId, Type, Code, ApplicationId);
+    public EnvironmentFacetValueFilter ToFilter() =>
+        EnvironmentFacetValueFilter.ForSearch
+        (
+            EnvironmentId,
+            Type,
+            Code,
+            ApplicationId,
+            Search
+        );
+
+
 }

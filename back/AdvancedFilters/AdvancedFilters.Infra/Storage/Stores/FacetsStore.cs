@@ -118,7 +118,8 @@ namespace AdvancedFilters.Infra.Storage.Stores
                 .WhenNotNullOrEmpty(filter.ApplicationIds).ApplyWhere(dao => filter.ApplicationIds.Contains(dao.Facet.ApplicationId))
                 .WhenNotNullOrEmpty(filter.FacetTypes).ApplyWhere(dao => filter.FacetTypes.Contains(dao.Facet.Type))
                 .WhenNotNullOrEmpty(filter.EnvironmentIds).ApplyWhere(dao => filter.EnvironmentIds.Contains(dao.EnvironmentId))
-                .WhenNotNullOrEmpty(filter.FacetIds).ApplyWhere(dao => filter.FacetIds.Contains(dao.FacetId));
+                .WhenNotNullOrEmpty(filter.FacetIds).ApplyWhere(dao => filter.FacetIds.Contains(dao.FacetId))
+                .WhenNotNullOrEmpty(filter.Search).ApplyWhere(dao => dao.StringValue.Contains(filter.Search));
         }
 
         public static IQueryable<EstablishmentFacetValueDao> WhereMatches(this IQueryable<EstablishmentFacetValueDao> daos, EstablishmentFacetValueFilter filter)
@@ -129,7 +130,8 @@ namespace AdvancedFilters.Infra.Storage.Stores
                 .WhenNotNullOrEmpty(filter.FacetTypes).ApplyWhere(dao => filter.FacetTypes.Contains(dao.Facet.Type))
                 .WhenNotNullOrEmpty(filter.EnvironmentIds).ApplyWhere(dao => filter.EnvironmentIds.Contains(dao.EnvironmentId))
                 .WhenNotNullOrEmpty(filter.EstablishmentIds).ApplyWhere(dao => filter.EstablishmentIds.Contains(dao.EstablishmentId))
-                .WhenNotNullOrEmpty(filter.FacetIds).ApplyWhere(dao => filter.FacetIds.Contains(dao.FacetId));
+                .WhenNotNullOrEmpty(filter.FacetIds).ApplyWhere(dao => filter.FacetIds.Contains(dao.FacetId))
+                .WhenNotNullOrEmpty(filter.Search).ApplyWhere(dao => dao.StringValue.Contains(filter.Search));
         }
 
         public static IQueryable<EnvironmentFacetValueDao> WhereMatches(this IQueryable<EnvironmentFacetValueDao> daos, EnvironmentFacetAdvancedCriterion criterion)
