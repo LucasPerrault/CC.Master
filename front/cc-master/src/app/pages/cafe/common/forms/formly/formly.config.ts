@@ -11,9 +11,9 @@ import { FormlyFieldEnvironmentDomain } from './environment-domain/environment-d
 import { FormlyFieldEnvironmentSubdomain } from './environment-subdomain/environment-subdomain.component';
 import { FormlyFieldFacet } from './facet/facet.component';
 import { FormlyFieldFacetCriterion } from './facet-criterion/facet-criterion.component';
+import { FormlyFieldFacetValue } from './facet-value/facet-value.component';
 import { FormlyFieldRange } from './range/range.component';
 import { FormlyFieldSpecializedContactRole } from './specialized-contact-role/specialized-contact-role.component';
-import { FormlyFieldFacetValue } from './facet-value/facet-value.component';
 
 export const luFormlyConfig: ConfigOption = {
   types: [

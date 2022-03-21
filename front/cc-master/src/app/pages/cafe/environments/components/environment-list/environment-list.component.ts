@@ -6,8 +6,8 @@ import { FacetType, IAdditionalColumn, IFacet } from '../../../common/models';
 import { DistributorType, IEnvironment } from '../../../common/models/environment.interface';
 import { IEnvironmentFacetValue } from '../../../common/models/facet-value.interface';
 import { ILegalUnit } from '../../../common/models/legal-unit.interface';
+import { FacetPipeOptions } from '../../../common/pipes/facet.pipe';
 import { IAppInstance } from '../../models/app-instance.interface';
-import { FacetPipeOptions, IDatePipeOptions } from '../../../common/pipes/facet.pipe';
 
 @Component({
   selector: 'cc-environment-list',

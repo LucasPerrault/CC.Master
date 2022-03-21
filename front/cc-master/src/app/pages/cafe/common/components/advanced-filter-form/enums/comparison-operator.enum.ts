@@ -1,5 +1,3 @@
-import { IComparisonOperator } from '../components/comparison-filter-criterion/comparison-operator-select/comparison-operator.interface';
-
 export enum ComparisonOperator {
   Equals = 'Equals',
   NotEquals = 'NotEquals',

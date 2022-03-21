@@ -7,7 +7,7 @@ import { BehaviorSubject, combineLatest, Observable, pipe, ReplaySubject, Subjec
 import { filter, map, skip, startWith, take, takeUntil } from 'rxjs/operators';
 
 import { AdvancedFilter, IAdvancedFilterForm } from '../common/components/advanced-filter-form';
-import { FacetAndColumnHelper, IFacetAndColumn } from '../common/forms/select/facets-and-columns-api-select';
+import { FacetAndColumnHelper } from '../common/forms/select/facets-and-columns-api-select';
 import { IFacet, ISearchDto, toSearchDto } from '../common/models';
 import { IEstablishment } from '../common/models/establishment.interface';
 import { EstablishmentAdvancedFilterApiMappingService, EstablishmentAdvancedFilterConfiguration } from './advanced-filter';

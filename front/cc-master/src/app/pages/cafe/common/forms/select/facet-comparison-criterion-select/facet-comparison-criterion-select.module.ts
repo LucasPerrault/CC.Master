@@ -13,8 +13,8 @@ import {
 import { LuSelectInputModule } from '@lucca-front/ng/select';
 import { FormlyModule } from '@ngx-formly/core';
 
-import { FacetComparisonCriterionSelectComponent } from './facet-comparison-criterion-select.component';
 import { FacetApiSelectModule } from '../facet-api-select/facet-api-select.module';
+import { FacetComparisonCriterionSelectComponent } from './facet-comparison-criterion-select.component';
 
 
 
