@@ -1,0 +1,23 @@
+<form [formGroup]="formGroup" class="u-displayFlex u-alignItemsCenter" [ngClass]="configuration.textfieldGroupClass">
+
+  <label class="textfield u-marginRightSmaller {{ configuration.textfieldClass }}"
+         [ngClass]="{ 'mod-withSuffix': !!suffix }">
+    <input class="textfield-input" type="number"
+           [placeholder]="placeholder"
+           [formControlName]="formKey.Min"
+           [min]="configuration.range.min"
+           [max]="formGroup.get(formKey.Max).value">
+    <span class="textfield-suffix" *ngIf="!!suffix">{{ suffix }}</span>
+  </label>
+  {{ configuration.separator }}
+  <label class="textfield u-marginLeftSmaller {{ configuration.textfieldClass }}"
+         [ngClass]="{ 'mod-withSuffix': !!suffix }">
+    <input class="textfield-input" type="number"
+           [placeholder]="placeholder"
+           [formControlName]="formKey.Max"
+           [min]="formGroup.get(formKey.Min).value"
+           [max]="configuration.range.max">
+    <span class="textfield-suffix" *ngIf="!!suffix">{{ suffix }}</span>
+  </label>
+
+</form>
