@@ -141,10 +141,10 @@ namespace AdvancedFilters.Infra.Storage.Stores
         }
         private static Expression<Func<EnvironmentFacetValueDao, bool>> GetEnvironmentFacetValueExpressionAccordingToFacetType(IEnvironmentFacetCriterion value) => value.Type switch
         {
-            FacetType.Integer => GetIntValue.Chain(((SingleFacetValueComparisonCriterion<int>)value).Expression),
+            FacetType.Integer => GetIntValue.Chain(((SingleFacetIntValueComparisonCriterion)value).Expression),
             FacetType.DateTime => GetDateTimeValue.Chain(((SingleFacetDateTimeValueComparisonCriterion)value).Expression),
-            FacetType.Decimal => GetDecimalValue.Chain(((SingleFacetValueComparisonCriterion<decimal>)value).Expression),
-            FacetType.Percentage => GetDecimalValue.Chain(((SingleFacetValueComparisonCriterion<decimal>)value).Expression),
+            FacetType.Decimal => GetDecimalValue.Chain(((SingleFacetDecimalValueComparisonCriterion)value).Expression),
+            FacetType.Percentage => GetDecimalValue.Chain(((SingleFacetDecimalValueComparisonCriterion)value).Expression),
             FacetType.String => GetStringValue.Chain(((SingleFacetValueComparisonCriterion<string>)value).Expression),
             _ => throw new BadRequestException()
         };

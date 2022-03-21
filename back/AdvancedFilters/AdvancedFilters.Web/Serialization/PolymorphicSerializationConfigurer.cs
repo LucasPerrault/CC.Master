@@ -32,10 +32,10 @@ namespace AdvancedFilters.Web.Serialization
                     .AddMatch<TCriterion>(FilterElementTypes.Criterion)
                     .AddMatch<FilterCombination>(FilterElementTypes.LogicalOperator)
                 .WithPolymorphism<IEnvironmentFacetCriterion, FacetType>(nameof(IEnvironmentFacetCriterion.Type))
-                    .AddMatch<SingleFacetValueComparisonCriterion<int>>(FacetType.Integer)
+                    .AddMatch<SingleFacetIntValueComparisonCriterion>(FacetType.Integer)
                     .AddMatch<SingleFacetValueComparisonCriterion<string>>(FacetType.String)
-                    .AddMatch<SingleFacetValueComparisonCriterion<decimal>>(FacetType.Decimal)
-                    .AddMatch<SingleFacetValueComparisonCriterion<decimal>>(FacetType.Percentage)
+                    .AddMatch<SingleFacetDecimalValueComparisonCriterion>(FacetType.Decimal)
+                    .AddMatch<SingleFacetDecimalValueComparisonCriterion>(FacetType.Percentage)
                     .AddMatch<SingleFacetDateTimeValueComparisonCriterion>(FacetType.DateTime);
         }
     }

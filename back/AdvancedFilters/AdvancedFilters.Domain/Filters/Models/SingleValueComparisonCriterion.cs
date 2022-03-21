@@ -9,7 +9,29 @@ using Environment = AdvancedFilters.Domain.Instance.Models.Environment;
 
 namespace AdvancedFilters.Domain.Filters.Models
 {
-    public class SingleIntComparisonCriterion : SingleValueComparisonCriterion<int> { }
+    public class SingleIntComparisonCriterion : SingleValueComparisonCriterion<int>
+    {
+        public override Expression<Func<int, bool>> Expression => Operator switch
+        {
+            ComparisonOperators.Equals => item => item == Value,
+            ComparisonOperators.NotEquals => GetExpression(ComparisonOperators.Equals).Inverse(),
+            ComparisonOperators.StrictlyGreaterThan => item => item > Value,
+            ComparisonOperators.StrictlyLessThan => item => item < Value,
+            _ => base.Expression
+        };
+    }
+
+    public class SingleDecimalComparisonCriterion : SingleValueComparisonCriterion<decimal>
+    {
+        public override Expression<Func<decimal, bool>> Expression => Operator switch
+        {
+            ComparisonOperators.Equals => item => item == Value,
+            ComparisonOperators.NotEquals => GetExpression(ComparisonOperators.Equals).Inverse(),
+            ComparisonOperators.StrictlyGreaterThan => item => item > Value,
+            ComparisonOperators.StrictlyLessThan => item => item < Value,
+            _ => base.Expression
+        };
+    }
     public class SingleStringComparisonCriterion : SingleValueComparisonCriterion<string> { }
     public class SingleBooleanComparisonCriterion : SingleValueComparisonCriterion<bool> { }
     public class SingleDateTimeComparisonCriterion : SingleValueComparisonCriterion<DateTime>
@@ -46,6 +68,16 @@ namespace AdvancedFilters.Domain.Filters.Models
     }
 
     public class SingleFacetDateTimeValueComparisonCriterion : SingleDateTimeComparisonCriterion, IEnvironmentFacetCriterion
+    {
+        public FacetType Type { get; set; }
+    }
+
+    public class SingleFacetIntValueComparisonCriterion : SingleIntComparisonCriterion, IEnvironmentFacetCriterion
+    {
+        public FacetType Type { get; set; }
+    }
+    
+    public class SingleFacetDecimalValueComparisonCriterion : SingleDecimalComparisonCriterion, IEnvironmentFacetCriterion
     {
         public FacetType Type { get; set; }
     }
