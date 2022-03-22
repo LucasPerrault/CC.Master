@@ -11,10 +11,10 @@ export class EstablishmentFacetsAndColumnsApiSelectService {
   }
 
   public getPaged(page?: number): Observable<IFacetAndColumn[]> {
-    return this.service.getPaged(FacetScope.Environment, [], page);
+    return this.service.getPaged(FacetScope.Establishment, [], page);
   }
 
   public searchPaged(clue?: string, page?: number, filters: string[] = []): Observable<IFacetAndColumn[]> {
-   return this.service.searchPaged(FacetScope.Environment, [], clue, page);
+   return this.service.searchPaged(FacetScope.Establishment, [], clue, page);
   }
 }
