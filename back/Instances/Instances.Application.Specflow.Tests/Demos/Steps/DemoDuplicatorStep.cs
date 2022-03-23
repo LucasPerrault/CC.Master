@@ -2,11 +2,13 @@ using Distributors.Domain;
 using Distributors.Domain.Models;
 using Environments.Domain.Storage;
 using FluentAssertions;
+using Instances.Application.CodeSources;
 using Instances.Application.Demos;
 using Instances.Application.Demos.Duplication;
 using Instances.Application.Instances;
 using Instances.Application.Specflow.Tests.Demos.Models;
 using Instances.Application.Specflow.Tests.Shared.Tooling;
+using Instances.Domain.CodeSources;
 using Instances.Domain.Demos;
 using Instances.Domain.Demos.Cleanup;
 using Instances.Domain.Demos.Validation;
@@ -163,6 +165,12 @@ namespace Instances.Application.Specflow.Tests.Demos.Steps
                 .Returns<string>(distributor => Task.FromResult(_dbContext.Set<Distributor>().Single(d => d.Code == distributor)));
 
             var rightsService = _testContext.GetRightsService();
+
+            var codeSourcesRepositoryMock = new Mock<ICodeSourcesRepository>();
+            codeSourcesRepositoryMock.Setup(csr => csr.GetInstanceCleaningArtifactsAsync()).ReturnsAsync(new List<CodeSourceArtifacts>());
+            codeSourcesRepositoryMock.Setup(csr => csr.GetMonolithArtifactsAsync()).ReturnsAsync(new List<CodeSourceArtifacts>());
+            codeSourcesRepositoryMock.Setup(csr => csr.GetInstancePreRestoreArtifactsAsync()).ReturnsAsync(new List<CodeSourceArtifacts>());
+            codeSourcesRepositoryMock.Setup(csr => csr.GetInstancePostRestoreArtifactsAsync()).ReturnsAsync(new List<CodeSourceArtifacts>());
             var ccDataServiceMock = new Mock<ICcDataService>();
             var clusterSelectorMock = new Mock<IClusterSelector>();
             clusterSelectorMock.Setup(s => s.GetFillingClusterAsync(It.IsAny<string>())).ReturnsAsync("mocked-cluster");
@@ -180,12 +188,7 @@ namespace Instances.Application.Specflow.Tests.Demos.Steps
             return new DemoDuplicator
                 (
                     _testContext.Principal,
-                    new InstancesManipulator(new SqlScriptPicker(
-                        new SqlScriptPickerConfiguration
-                        {
-                            JenkinsBaseUri = new Uri("http://localhost"),
-                            MonolithJobPath = "ilucca",
-                        }),
+                    new InstancesManipulator(new SqlScriptPicker(codeSourcesRepositoryMock.Object),
                         ccDataServiceMock.Object
                     ),
                     demosStore,

@@ -82,8 +82,7 @@ namespace Instances.Application.Demos.Duplication
             await _instancesDuplicator.RequestRemoteDuplicationAsync
             (
                 duplication.InstanceDuplication,
-                skipBufferServer: true,
-                $"/api/demos/duplications/{duplication.InstanceDuplicationId}/notify"
+                InstanceDuplicationOptions.ForDemo($"/api/demos/duplications/{duplication.InstanceDuplicationId}/notify")
             );
 
             return duplication;

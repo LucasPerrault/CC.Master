@@ -153,6 +153,76 @@ namespace Environments.Infra.Migrations
                     b.ToTable("EnvironmentAccesses", "shared");
                 });
 
+            modelBuilder.Entity("Environments.Domain.EnvironmentLog", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("ActivityId")
+                        .HasColumnType("int")
+                        .HasColumnName("activityId");
+
+                    b.Property<DateTime>("CreatedOn")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("createdOn");
+
+                    b.Property<int>("EnvironmentId")
+                        .HasColumnType("int")
+                        .HasColumnName("environmentId");
+
+                    b.Property<bool>("IsAnonymizedData")
+                        .HasColumnType("bit")
+                        .HasColumnName("IsAnonymizedData");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int")
+                        .HasColumnName("userId");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("EnvironmentLogs", "shared");
+                });
+
+            modelBuilder.Entity("Environments.Domain.EnvironmentLogMessage", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<DateTime>("CreatedOn")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("createdOn");
+
+                    b.Property<int>("EnvironmentLogId")
+                        .HasColumnType("int")
+                        .HasColumnName("environmentLogId");
+
+                    b.Property<DateTime?>("ExpiredOn")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("expiredOn");
+
+                    b.Property<string>("Message")
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("message");
+
+                    b.Property<string>("TypeString")
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("type");
+
+                    b.Property<int?>("UserId")
+                        .HasColumnType("int")
+                        .HasColumnName("userId");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("EnvironmentLogId");
+
+                    b.ToTable("EnvironmentLogMessages", "shared");
+                });
+
             modelBuilder.Entity("Environments.Domain.EnvironmentRenaming", b =>
                 {
                     b.Property<int>("Id")
@@ -164,6 +234,9 @@ namespace Environments.Infra.Migrations
                     b.Property<string>("ApiKeyStorageId")
                         .HasColumnType("nvarchar(max)")
                         .HasColumnName("apiKeyStorageId");
+
+
+
 
                     b.Property<int>("EnvironmentId")
                         .HasColumnType("int")
@@ -188,6 +261,26 @@ namespace Environments.Infra.Migrations
                     b.Property<int>("Status")
                         .HasColumnType("int")
                         .HasColumnName("status");
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
                     b.Property<int?>("UserId")
                         .HasColumnType("int")
@@ -222,6 +315,15 @@ namespace Environments.Infra.Migrations
                     b.ToTable("EnvironmentSharedAccesses", "shared");
                 });
 
+            modelBuilder.Entity("Environments.Domain.EnvironmentLogMessage", b =>
+                {
+                    b.HasOne("Environments.Domain.EnvironmentLog", null)
+                        .WithMany("Messages")
+                        .HasForeignKey("EnvironmentLogId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+                
             modelBuilder.Entity("Environments.Domain.EnvironmentRenaming", b =>
                 {
                     b.HasOne("Environments.Domain.Environment", "Environment")
@@ -232,7 +334,7 @@ namespace Environments.Infra.Migrations
 
                     b.Navigation("Environment");
                 });
-
+                
             modelBuilder.Entity("Environments.Domain.EnvironmentSharedAccess", b =>
                 {
                     b.HasOne("Distributors.Domain.Models.Distributor", "Consumer")
@@ -261,6 +363,11 @@ namespace Environments.Infra.Migrations
             modelBuilder.Entity("Environments.Domain.Environment", b =>
                 {
                     b.Navigation("ActiveAccesses");
+                });
+
+            modelBuilder.Entity("Environments.Domain.EnvironmentLog", b =>
+                {
+                    b.Navigation("Messages");
                 });
 #pragma warning restore 612, 618
         }

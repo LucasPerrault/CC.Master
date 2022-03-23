@@ -60,7 +60,7 @@ namespace Instances.Infra.CodeSources
                 new CodeSourceArtifacts
                 {
                     CodeSourceId = source.Id,
-                    ArtifactUrl = $"{jenkinsBaseUrl}/artifact/{artifact.RelativePath}",
+                    ArtifactUrl = new Uri($"{jenkinsBaseUrl}/artifact/{artifact.RelativePath}"),
                     FileName = artifact.FileName,
                     ArtifactType = GetArtifactTypeFromFileName(artifact.FileName)
                 }

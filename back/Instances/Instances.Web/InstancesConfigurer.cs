@@ -5,6 +5,8 @@ using Instances.Application.Demos.Deletion;
 using Instances.Application.Demos.Duplication;
 using Instances.Application.Demos.Emails;
 using Instances.Application.Instances;
+using Instances.Application.Trainings;
+using Instances.Application.Trainings.Restoration;
 using Instances.Application.Webhooks.Github;
 using Instances.Application.Webhooks.Harbor;
 using Instances.Domain.CodeSources;
@@ -17,6 +19,7 @@ using Instances.Domain.Instances;
 using Instances.Domain.Preview;
 using Instances.Domain.Renaming;
 using Instances.Domain.Shared;
+using Instances.Domain.Trainings;
 using Instances.Infra.CodeSources;
 using Instances.Infra.DataDuplication;
 using Instances.Infra.Demos;
@@ -58,8 +61,8 @@ namespace Instances.Web
             public IdentityAuthenticationConfig Identity { get; set; }
             public CcDataConfiguration CcData { get; set; }
             public WsAuthConfiguration WsAuth { get; set; }
+            public JenkinsConfiguration Jenkins { get; set; }
             public HubspotConfiguration Hubspot { get; set; }
-            public SqlScriptPickerConfiguration SqlScriptPicker { get; set; }
             public ClusterSelectorConfiguration DemoClusterSelection { get; set; }
             public GithubConfiguration Github { get; set; }
             public DnsConfiguration Dns { get; set; }
@@ -72,7 +75,6 @@ namespace Instances.Web
             services.AddSingleton(configuration.Identity);
             services.AddSingleton(configuration.CcData);
             services.AddSingleton(configuration.Hubspot);
-            services.AddSingleton(configuration.SqlScriptPicker);
             services.AddSingleton(configuration.DemoClusterSelection);
             services.AddSingleton(configuration.Dns.Internal);
             services.AddSingleton(configuration.Dns.Ovh);
@@ -80,7 +82,6 @@ namespace Instances.Web
             services.AddSingleton<DeletionCallbackNotifier>();
             services.AddSingleton<IUsersPasswordHelper, UsersPasswordHelper>();
             services.AddSingleton<IDemoDeletionCalculator, DemoDeletionCalculator>();
-            services.AddSingleton<ISqlScriptPicker, SqlScriptPicker>();
 
             services.AddSingleton<IDnsService, DnsService>();
             services.AddSingleton<IWmiWrapper, WmiWrapper>();
@@ -104,6 +105,8 @@ namespace Instances.Web
                 });
             services.AddSingleton<IGithubService, GithubService>();
 
+            services.AddScoped<ISqlScriptPicker, SqlScriptPicker>();
+
             services.AddScoped<InstancesWebhookHandler>();
             services.AddScoped<GithubWebhookHandler>();
             services.AddScoped<HarborWebhookHandler>();
@@ -114,10 +117,13 @@ namespace Instances.Web
             services.AddScoped<HubspotDemoDuplicator>();
             services.AddScoped<IDemoDuplicationCompleter, DemoDuplicationCompleter>();
 
+            services.AddScoped<TrainingRestorer>();
+            services.AddScoped<ITrainingRestorationCompleter, TrainingRestorationCompleter>();
+
             services.AddScoped<ICodeSourcesRepository, CodeSourcesRepository>();
             services.AddHttpClient<ICodeSourceFetcherService, CodeSourceFetcherService>(c =>
                 c.WithUserAgent(nameof(CodeSourceFetcherService))
-                .WithBaseAddress(configuration.SqlScriptPicker.JenkinsBaseUri)
+                .WithBaseAddress(configuration.Jenkins.BaseUri)
             );
             services.AddScoped<IGithubBranchesRepository, GithubBranchesRepository>();
             services.AddScoped<IGithubPullRequestsRepository, GithubPullRequestsRepository>();
@@ -131,13 +137,17 @@ namespace Instances.Web
             services.AddScoped<DemoRightsFilter>();
             services.AddScoped<DemosRepository>();
             services.AddScoped<InstanceDuplicationsRepository>();
-            services.AddScoped<InstanceDuplicationsRepository>();
             services.AddScoped<ISubdomainGenerator, SubdomainGenerator>();
             services.AddScoped<IClusterSelector, ClusterSelector>();
             services.AddScoped<ICodeSourcesStore, CodeSourcesStore>();
             services.AddScoped<IGithubPullRequestsStore, GithubPullRequestsStore>();
             services.AddScoped<IGithubBranchesStore, GithubBranchesStore>();
             services.AddScoped<IGithubReposStore, GithubReposStore>();
+
+            services.AddScoped<ITrainingsStore, TrainingsStore>();
+            services.AddScoped<ITrainingRestorationsStore, TrainingRestorationsStore>();
+            services.AddScoped<TrainingsRepository>();
+            services.AddScoped<TrainingRestorationLogsRepository>();
 
             services.AddScoped<ISubdomainValidationTranslator, SubdomainValidationTranslator>();
             services.AddScoped<ISubdomainValidator, SubdomainValidator>();

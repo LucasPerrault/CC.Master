@@ -1,7 +1,7 @@
-﻿using Instances.Domain.Instances;
+using Instances.Domain.Instances;
 using Xunit;
 
-namespace Instances.Domain.Tests
+namespace Instances.Domain.Tests.Instances
 {
     public class SubdomainExtensionsTests
     {
