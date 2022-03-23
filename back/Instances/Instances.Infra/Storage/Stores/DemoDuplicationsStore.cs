@@ -18,7 +18,7 @@ namespace Instances.Infra.Storage.Stores
 
         public async Task<DemoDuplication> CreateAsync(DemoDuplication duplication)
         {
-            await _dbContext.Set<DemoDuplication>().AddAsync(duplication);
+            _dbContext.Set<DemoDuplication>().Add(duplication);
             await _dbContext.SaveChangesAsync();
             return duplication;
         }

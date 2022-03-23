@@ -13,11 +13,12 @@ import { TranslatePipe } from '@cc/aspects/translate';
 import { SelectDisplayMode } from '@cc/common/forms';
 import { ApiV3DateService } from '@cc/common/queries';
 import { BillingEntity, getBillingEntity } from '@cc/domain/billing/clients';
-import { IContractForm, IContractMinimalBillable, MinimalBillingService } from '@cc/domain/billing/contracts';
+import { IContractForm, MinimalBillingService } from '@cc/domain/billing/contracts';
 import { DistributorsService, IDistributor } from '@cc/domain/billing/distributors';
+import { IProduct } from '@cc/domain/billing/offers';
 import { LuModal } from '@lucca-front/ng/modal';
-import { BehaviorSubject, merge, Subject } from 'rxjs';
-import { filter, take, takeUntil } from 'rxjs/operators';
+import { BehaviorSubject, combineLatest, merge, Observable, pipe, Subject, UnaryFunction } from 'rxjs';
+import { filter, map, switchMap, takeUntil } from 'rxjs/operators';
 
 import { PriceGridModalComponent } from '../../../common/price-grid-modal/price-grid-modal.component';
 import { IContractDraftFormInformation } from '../../models';
@@ -122,13 +123,13 @@ export class ContractsDraftFormComponent implements ControlValueAccessor, Valida
       .pipe(takeUntil(this.destroy$))
       .subscribe(() => this.updateDistributorRebate());
 
-    merge(
+    combineLatest([
       this.formGroup.get(DraftFormKey.Product).valueChanges,
       this.formGroup.get(DraftFormKey.Distributor).valueChanges,
       this.formGroup.get(DraftFormKey.TheoreticalMonthRebate).valueChanges,
-    )
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(() => this.updateMinimalBillingEligibility());
+    ])
+      .pipe(takeUntil(this.destroy$), this.toMinimalBillingEligibility)
+      .subscribe(isEligible => this.updateMinimalBilling(isEligible));
 
     this.formGroup.get(DraftFormKey.TheoreticalStartOn).valueChanges
       .pipe(takeUntil(this.destroy$))
@@ -188,36 +189,19 @@ export class ContractsDraftFormComponent implements ControlValueAccessor, Valida
     return ctrl.touched && ctrl.hasError('required');
   }
 
-  private updateMinimalBillingEligibility(): void {
-    const contractMinimalBillable = this.getContractMinimalBillable(this.formGroup);
-
-    this.minimalBillingService.isEligibleForMinimalBilling$(contractMinimalBillable)
-      .pipe(take(1))
-      .subscribe(isEligible => this.updateMinimalBilling(isEligible));
-  }
-
   private updateMinimalBilling(isEligible: boolean): void {
-    const control = this.formGroup.get(DraftFormKey.MinimalBillingPercentage);
-    const hasValue = !!control.value;
+    const minimalBillingPercentage = this.formGroup.get(DraftFormKey.MinimalBillingPercentage);
 
-    if (isEligible) {
-      control.enable();
-      if (!hasValue) {
-        control.setValue(this.minimalBillingService.minimalBillingPercentage);
-      }
+    if (!isEligible) {
+      minimalBillingPercentage.setValue(0);
+      minimalBillingPercentage.disable();
       return;
     }
 
-    control.setValue(0);
-    control.disable();
-  }
-
-  private getContractMinimalBillable(contract: FormGroup): IContractMinimalBillable {
-    return {
-      theoreticalMonthRebate: contract.get(DraftFormKey.TheoreticalMonthRebate).value,
-      productId: contract.get(DraftFormKey.Product).value?.id,
-      distributor: contract.get(DraftFormKey.Distributor).value,
-    };
+    minimalBillingPercentage.enable();
+    if (!this.isMoreThanZero(minimalBillingPercentage.value)) {
+      minimalBillingPercentage.setValue(this.minimalBillingService.defaultPercentage);
+    }
   }
 
   private updateDistributorRebate(): void {
@@ -230,5 +214,16 @@ export class ContractsDraftFormComponent implements ControlValueAccessor, Valida
 
     const activeRebateForProduct$ = this.distributorsService.getActiveRebate$(distributorId, productId);
     activeRebateForProduct$.subscribe(r => this.distributorRebate$.next(r));
+  }
+
+  private isMoreThanZero(minimalBillingPercentage: number): boolean {
+    return !!minimalBillingPercentage;
+  }
+
+  private get toMinimalBillingEligibility(): UnaryFunction<Observable<[IProduct, IDistributor, number]>, Observable<boolean>> {
+    return pipe(
+      map(([product, distributor, theoreticalMonthRebate]) => ({ theoreticalMonthRebate, distributor, productId: product?.id })),
+      switchMap(minimalBillable => this.minimalBillingService.isEligibleForMinimalBilling$(minimalBillable)),
+    );
   }
 }

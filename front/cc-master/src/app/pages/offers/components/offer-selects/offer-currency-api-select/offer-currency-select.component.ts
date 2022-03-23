@@ -58,7 +58,7 @@ export class OfferCurrencySelectComponent implements OnInit, OnDestroy, ControlV
     this.destroy$.complete();
   }
 
-  public onChange: (currency: IOfferCurrency) => void = () => {};
+  public onChange: (currency: IOfferCurrency | IOfferCurrency[]) => void = () => {};
   public onTouch: () => void = () => {};
 
   public registerOnChange(fn: () => void): void {
@@ -69,7 +69,7 @@ export class OfferCurrencySelectComponent implements OnInit, OnDestroy, ControlV
     this.onTouch = fn;
   }
 
-  public writeValue(currency: IOfferCurrency): void {
+  public writeValue(currency: IOfferCurrency | IOfferCurrency[]): void {
     if (!!currency && this.formControl.value !== currency) {
       this.formControl.setValue(currency);
     }

@@ -1,4 +1,4 @@
-﻿using Instances.Application.Instances;
+using Instances.Application.Instances;
 using Instances.Domain.Demos;
 using Instances.Domain.Demos.Cleanup;
 using Instances.Domain.Instances;
@@ -91,7 +91,7 @@ namespace Instances.Application.Demos.Duplication
             catch (Exception e)
             {
                 _logger.LogError(e, "Could not create demo, following instance duplication");
-                await _instancesStore.DeleteForDemoAsync(instance);
+                await _instancesStore.DeleteByIdAsync(instance.Id);
                 await _dnsService.DeleteAsync(DnsEntry.ForDemo(demo.Subdomain, demo.Cluster));
                 await _demosStore.DeleteAsync(demo);
                 throw;

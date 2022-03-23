@@ -109,7 +109,7 @@ namespace Instances.Web
             services.AddScoped<HarborWebhookHandler>();
 
             services.AddScoped<InactiveDemosCleaner>();
-            services.AddScoped<InstancesDuplicator>();
+            services.AddScoped<InstancesManipulator>();
             services.AddScoped<DemoDuplicator>();
             services.AddScoped<HubspotDemoDuplicator>();
             services.AddScoped<IDemoDuplicationCompleter, DemoDuplicationCompleter>();
@@ -125,6 +125,7 @@ namespace Instances.Web
             services.AddScoped<IHelmRepository, HelmRepository>();
 
             services.AddScoped<IDemosStore, DemosStore>();
+            services.AddScoped<IInstancesStore, InstancesStore>();
             services.AddScoped<IInstanceDuplicationsStore, InstanceDuplicationsStore>();
             services.AddScoped<IDemoDuplicationsStore, DemoDuplicationsStore>();
             services.AddScoped<DemoRightsFilter>();
@@ -136,6 +137,7 @@ namespace Instances.Web
             services.AddScoped<ICodeSourcesStore, CodeSourcesStore>();
             services.AddScoped<IGithubPullRequestsStore, GithubPullRequestsStore>();
             services.AddScoped<IGithubBranchesStore, GithubBranchesStore>();
+            services.AddScoped<IGithubReposStore, GithubReposStore>();
 
             services.AddScoped<ISubdomainValidationTranslator, SubdomainValidationTranslator>();
             services.AddScoped<ISubdomainValidator, SubdomainValidator>();
@@ -155,7 +157,7 @@ namespace Instances.Web
                     .WithBaseAddress(configuration.Hubspot.ServerUri);
             });
 
-            services.AddHttpClient<IInstancesStore, InstancesRemoteStore>(client =>
+            services.AddHttpClient<IInstancesRemoteStore, InstancesRemoteStore>(client =>
             {
                 client.WithUserAgent(nameof(InstancesRemoteStore))
                     .WithBaseAddress(configuration.InstancesStore.Host, configuration.InstancesStore.Endpoint)

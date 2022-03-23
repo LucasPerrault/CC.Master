@@ -60,36 +60,6 @@ namespace Instances.Infra.Migrations
                     b.ToTable("Distributors", "shared");
                 });
 
-            modelBuilder.Entity("GithubBranchesCodeSources", b =>
-                {
-                    b.Property<int>("codeSourceId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("githubBranchId")
-                        .HasColumnType("int");
-
-                    b.HasKey("codeSourceId", "githubBranchId");
-
-                    b.HasIndex("githubBranchId");
-
-                    b.ToTable("GithubBranchesCodeSources", "instances");
-                });
-
-            modelBuilder.Entity("GithubPullRequestsCodeSources", b =>
-                {
-                    b.Property<int>("codeSourceId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("githubPullRequestId")
-                        .HasColumnType("int");
-
-                    b.HasKey("codeSourceId", "githubPullRequestId");
-
-                    b.HasIndex("githubPullRequestId");
-
-                    b.ToTable("GithubPullRequestsCodeSources", "instances");
-                });
-
             modelBuilder.Entity("Instances.Domain.CodeSources.CodeSource", b =>
                 {
                     b.Property<int>("Id")
@@ -101,10 +71,6 @@ namespace Instances.Infra.Migrations
                     b.Property<string>("Code")
                         .HasColumnType("nvarchar(max)")
                         .HasColumnName("Code");
-
-                    b.Property<string>("GithubRepo")
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("GithubRepo");
 
                     b.Property<string>("JenkinsProjectName")
                         .HasColumnType("nvarchar(max)")
@@ -122,11 +88,16 @@ namespace Instances.Infra.Migrations
                         .HasColumnType("nvarchar(max)")
                         .HasColumnName("Name");
 
+                    b.Property<int>("RepoId")
+                        .HasColumnType("int");
+
                     b.Property<int>("Type")
                         .HasColumnType("int")
                         .HasColumnName("Type");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("RepoId");
 
                     b.ToTable("CodeSources", "instances");
                 });
@@ -364,7 +335,12 @@ namespace Instances.Infra.Migrations
                         .HasColumnType("nvarchar(max)")
                         .HasColumnName("name");
 
+                    b.Property<int>("RepoId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("RepoId");
 
                     b.ToTable("GithubBranches", "instances");
                 });
@@ -401,6 +377,9 @@ namespace Instances.Infra.Migrations
                         .HasColumnType("int")
                         .HasColumnName("originBranchId");
 
+                    b.Property<int>("RepoId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Title")
                         .HasColumnType("nvarchar(max)")
                         .HasColumnName("title");
@@ -409,7 +388,30 @@ namespace Instances.Infra.Migrations
 
                     b.HasIndex("OriginBranchId");
 
+                    b.HasIndex("RepoId");
+
                     b.ToTable("GithubPullRequests", "instances");
+                });
+
+            modelBuilder.Entity("Instances.Domain.Github.Models.GithubRepo", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("Name");
+
+                    b.Property<string>("Url")
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("Url");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("GithubRepos", "instances");
                 });
 
             modelBuilder.Entity("Instances.Domain.Instances.InstanceDuplication", b =>
@@ -544,34 +546,15 @@ namespace Instances.Infra.Migrations
                     b.ToTable("Users", "shared");
                 });
 
-            modelBuilder.Entity("GithubBranchesCodeSources", b =>
+            modelBuilder.Entity("Instances.Domain.CodeSources.CodeSource", b =>
                 {
-                    b.HasOne("Instances.Domain.CodeSources.CodeSource", null)
-                        .WithMany()
-                        .HasForeignKey("codeSourceId")
+                    b.HasOne("Instances.Domain.Github.Models.GithubRepo", "Repo")
+                        .WithMany("CodeSources")
+                        .HasForeignKey("RepoId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Instances.Domain.Github.Models.GithubBranch", null)
-                        .WithMany()
-                        .HasForeignKey("githubBranchId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("GithubPullRequestsCodeSources", b =>
-                {
-                    b.HasOne("Instances.Domain.CodeSources.CodeSource", null)
-                        .WithMany()
-                        .HasForeignKey("codeSourceId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Instances.Domain.Github.Models.GithubPullRequest", null)
-                        .WithMany()
-                        .HasForeignKey("githubPullRequestId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.Navigation("Repo");
                 });
 
             modelBuilder.Entity("Instances.Domain.CodeSources.CodeSourceArtifacts", b =>
@@ -639,6 +622,17 @@ namespace Instances.Infra.Migrations
                     b.Navigation("InstanceDuplication");
                 });
 
+            modelBuilder.Entity("Instances.Domain.Github.Models.GithubBranch", b =>
+                {
+                    b.HasOne("Instances.Domain.Github.Models.GithubRepo", "Repo")
+                        .WithMany("GithubBranches")
+                        .HasForeignKey("RepoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Repo");
+                });
+
             modelBuilder.Entity("Instances.Domain.Github.Models.GithubPullRequest", b =>
                 {
                     b.HasOne("Instances.Domain.Github.Models.GithubBranch", "OriginBranch")
@@ -647,7 +641,15 @@ namespace Instances.Infra.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("Instances.Domain.Github.Models.GithubRepo", "Repo")
+                        .WithMany()
+                        .HasForeignKey("RepoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("OriginBranch");
+
+                    b.Navigation("Repo");
                 });
 
             modelBuilder.Entity("Instances.Domain.Instances.InstanceDuplication", b =>
@@ -668,6 +670,13 @@ namespace Instances.Infra.Migrations
                     b.Navigation("Config");
 
                     b.Navigation("ProductionVersions");
+                });
+
+            modelBuilder.Entity("Instances.Domain.Github.Models.GithubRepo", b =>
+                {
+                    b.Navigation("CodeSources");
+
+                    b.Navigation("GithubBranches");
                 });
 #pragma warning restore 612, 618
         }

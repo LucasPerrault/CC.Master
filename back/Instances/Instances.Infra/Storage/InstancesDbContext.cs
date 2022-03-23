@@ -28,6 +28,7 @@ namespace Instances.Infra.Storage
 
             modelBuilder.ApplyConfiguration(new GithubBranchesConfiguration());
             modelBuilder.ApplyConfiguration(new GithubPullRequestsConfiguration());
+            modelBuilder.ApplyConfiguration(new GithubReposConfiguration());
 
             // shared
             modelBuilder.ApplyConfiguration(new DistributorsConfiguration());

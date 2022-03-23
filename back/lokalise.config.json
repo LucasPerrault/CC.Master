@@ -2,7 +2,8 @@
     "includes": [
       "Instances",
       "AdvancedFilters",
-      "Core/IpFilter",
-      "Billing/Billing.Contracts"
+      "Billing/Billing.Contracts",
+      "Billing/Billing.Cmrr",
+      "Core/IpFilter"
     ]
   }

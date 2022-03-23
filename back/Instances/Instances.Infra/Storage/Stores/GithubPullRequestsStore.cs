@@ -47,7 +47,7 @@ namespace Instances.Infra.Storage.Stores
         public static IQueryable<GithubPullRequest> WhereMatches(this IQueryable<GithubPullRequest> githubPullRequests, GithubPullRequestFilter filter)
         {
             return githubPullRequests
-                .WhenHasValue(filter.CodeSourceId).ApplyWhere(pr => pr.CodeSources.Any(c => c.Id == filter.CodeSourceId))
+                .WhenHasValue(filter.RepoId).ApplyWhere(pr => pr.RepoId == filter.RepoId)
                 .WhenHasValue(filter.Number).ApplyWhere(pr => pr.Number == filter.Number);
         }
     }

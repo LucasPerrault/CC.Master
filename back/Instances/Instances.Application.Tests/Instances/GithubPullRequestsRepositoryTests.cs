@@ -5,10 +5,6 @@ using Instances.Domain.CodeSources.Filtering;
 using Instances.Domain.Github;
 using Instances.Domain.Github.Models;
 using Moq;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -45,16 +41,16 @@ namespace Instances.Application.Tests.Instances
         [Fact]
         public async Task GetByNumberAsync()
         {
-            var codeSource = new CodeSource { Id = 42 };
             var pullRequestNumber = 123;
+            var repoId = 10;
             _mockGithubPullRequestsStore
                 .Setup(gb => gb.GetFirstAsync(It.IsAny<GithubPullRequestFilter>()))
                 .ReturnsAsync(new GithubPullRequest());
 
-            await _githubBranchesRepository.GetByNumberAsync(codeSource, pullRequestNumber);
+            await _githubBranchesRepository.GetByNumberAsync(repoId, pullRequestNumber);
 
             _mockGithubPullRequestsStore.Verify(gb => gb.GetFirstAsync(It.Is<GithubPullRequestFilter>(g =>
-                g.CodeSourceId == 42 &&
+                g.RepoId == repoId &&
                 g.Number == pullRequestNumber
             )));
         }

@@ -54,7 +54,7 @@ namespace Instances.Infra.Shared
                 "demo" => "dm",
                 "preview" => "pw",
                 "formation" => "fm",
-                "green" => "ch",
+                "test" => "fm",
                 "security" => "se",
                 "recette" => "re",
                 _ => throw new NotSupportedException($"Cluster name is not supported : {context.Name}")
@@ -65,7 +65,7 @@ namespace Instances.Infra.Shared
         {
             return context.Name switch
             {
-                "green" => string.Empty,
+                "test" => string.Empty,
                 "demo" when !context.Number.HasValue => "1",
                 _ => context.Number.HasValue ? context.Number.ToString() : string.Empty
             };

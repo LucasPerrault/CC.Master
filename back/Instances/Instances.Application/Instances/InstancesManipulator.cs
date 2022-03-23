@@ -1,4 +1,6 @@
+using Environments.Domain;
 using Instances.Domain.Instances;
+using Instances.Domain.Instances.Models;
 using Instances.Domain.Shared;
 using System.Collections.Generic;
 using System.Linq;
@@ -6,12 +8,12 @@ using System.Threading.Tasks;
 
 namespace Instances.Application.Instances
 {
-    public class InstancesDuplicator
+    public class InstancesManipulator
     {
         private readonly ICcDataService _ccDataService;
         private readonly ISqlScriptPicker _scriptPicker;
 
-        public InstancesDuplicator(ISqlScriptPicker scriptPicker, ICcDataService ccDataService)
+        public InstancesManipulator(ISqlScriptPicker scriptPicker, ICcDataService ccDataService)
         {
             _scriptPicker = scriptPicker;
             _ccDataService = ccDataService;
@@ -47,5 +49,24 @@ namespace Instances.Application.Instances
                 callbackPath
             );
         }
+
+        internal Task RequestRemoteBackupAsync(Environment environment, InstanceType instanceType)
+        {
+            return _ccDataService.CreateInstanceBackupAsync
+            (
+                new CreateInstanceBackupRequestDto(environment.Subdomain),
+                environment.GetInstanceExecutingCluster(instanceType)
+            );
+        }
+
+        internal Task RequestResetInstanceCacheAsync(Environment environment, InstanceType instanceType)
+        {
+            return _ccDataService.ResetInstanceCacheAsync
+            (
+                new ResetInstanceCacheRequestDto { TenantHost = environment.GetInstanceHost(instanceType) },
+                environment.GetInstanceExecutingCluster(instanceType)
+            );
+        }
+
     }
 }

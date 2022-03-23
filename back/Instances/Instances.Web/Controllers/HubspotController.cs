@@ -24,7 +24,7 @@ namespace Instances.Web.Controllers
         public async Task<ActionResult> NotifyDuplicationEndAsync
         (
             [FromRoute]Guid instanceDuplicationId,
-            [FromBody]DuplicationCallbackPayload payload
+            [FromBody]DemoDuplicationCallbackPayload payload
         )
         {
             await _duplicationCompleter.MarkDuplicationAsCompletedAsync(instanceDuplicationId, payload.Success);

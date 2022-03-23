@@ -83,6 +83,7 @@ namespace Instances.Infra.Storage.Stores
         {
             return _dbContext
                 .Set<CodeSource>()
+                .Include(cs => cs.Repo)
                 .Include(cs => cs.ProductionVersions)
                 .Include(cs => cs.Config)
                 .WhereMatches(filter);
@@ -95,6 +96,14 @@ namespace Instances.Infra.Storage.Stores
                 .Where(c => c.CodeSourceId == codeSourceId)
                 .ToListAsync();
         }
+
+        public Task<List<CodeSourceArtifacts>> GetArtifactsAsync(IEnumerable<int> codeSourceIds, CodeSourceArtifactType codeSourceArtifactType)
+        {
+            return _dbContext
+                .Set<CodeSourceArtifacts>()
+                .Where(c => c.ArtifactType == codeSourceArtifactType && codeSourceIds.Contains(c.CodeSourceId))
+                .ToListAsync();
+        }
     }
 
     internal static class CodeSourceQueryableExtensions
@@ -104,7 +113,7 @@ namespace Instances.Infra.Storage.Stores
             return codeSources
                 .WhenNotNullOrEmpty(filter.Search).ApplyWhere(cs => cs.Name.Contains(filter.Search))
                 .WhenNotNullOrEmpty(filter.Code).ApplyWhere(cs => cs.Code == filter.Code)
-                .WhenNotNullOrEmpty(filter.GithubRepo).ApplyWhere(cs => cs.GithubRepo == filter.GithubRepo)
+                .WhenNotNullOrEmpty(filter.RepoIds).ApplyWhere(cs => filter.RepoIds.Contains(cs.RepoId))
                 .WhenNotNullOrEmpty(filter.Lifecycle).ApplyWhere(cs => filter.Lifecycle.Contains(cs.Lifecycle))
                 .WhenNotNullOrEmpty(filter.ExcludedLifecycle).ApplyWhere(cs => !filter.ExcludedLifecycle.Contains(cs.Lifecycle))
                 .WhenNotNullOrEmpty(filter.Type).ApplyWhere(cs => filter.Type.Contains(cs.Type))

@@ -1,13 +1,22 @@
-﻿using Instances.Domain.Instances;
+using Instances.Domain.Instances;
 using Instances.Domain.Instances.Models;
 using Remote.Infra.Services;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace Instances.Infra.Instances.Services
 {
-    public class InstancesRemoteStore : IInstancesStore
+    public interface IInstancesRemoteStore
+    {
+        Task<Instance> CreateForTrainingAsync(int environmentId, bool isAnonymized);
+        Task<Instance> CreateForDemoAsync(string password);
+        Task DeleteByIdAsync(int instanceId);
+        Task DeleteByIdsAsync(IEnumerable<int> instanceIds);
+    }
+
+    public class InstancesRemoteStore : IInstancesRemoteStore
     {
 
         private readonly RestApiV3HttpClientHelper _httpClientHelper;
@@ -20,6 +29,25 @@ namespace Instances.Infra.Instances.Services
         private class CreateForDemoDto
         {
             public string Password { get; set; }
+        }
+
+        private class CreateForTrainingDto
+        {
+            public int EnvironmentId { get; set; }
+            public bool IsAnonymized { get; set; }
+        }
+
+        public async Task<Instance> CreateForTrainingAsync(int environmentId, bool isAnonymized)
+        {
+            var dto = new CreateForTrainingDto { EnvironmentId = environmentId, IsAnonymized = isAnonymized };
+            var response = await _httpClientHelper.PostObjectResponseAsync<CreateForTrainingDto, Instance>
+            (
+                "createForTraining",
+                dto,
+                new Dictionary<string, string>()
+            );
+
+            return response.Data;
         }
 
         public async Task<Instance> CreateForDemoAsync(string password)
@@ -35,26 +63,26 @@ namespace Instances.Infra.Instances.Services
             return response.Data;
         }
 
-        public class DeleteForDemoDto
+        public class DeleteDto
         {
             public int Id { get; set; }
         }
 
-        public async Task DeleteForDemoAsync(Instance demoInstance)
+        public async Task DeleteByIdAsync(int instanceId)
         {
-            await _httpClientHelper.PostObjectResponseAsync<DeleteForDemoDto, Instance>
+            await _httpClientHelper.PostObjectResponseAsync<DeleteDto, Instance>
             (
-                "deleteForDemo",
-                new DeleteForDemoDto { Id =  demoInstance.Id },
+                "deleteForCCMaster",
+                new DeleteDto { Id =  instanceId },
                 new Dictionary<string, string>()
             );
         }
 
-        public async Task DeleteForDemoAsync(IEnumerable<Instance> demoInstances)
+        public async Task DeleteByIdsAsync(IEnumerable<int> instanceIds)
         {
-            foreach (var demoInstance in demoInstances)
+            foreach (var instanceId in instanceIds)
             {
-                await DeleteForDemoAsync(demoInstance);
+                await DeleteByIdAsync(instanceId);
             }
         }
     }

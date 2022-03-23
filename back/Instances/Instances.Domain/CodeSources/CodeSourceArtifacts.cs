@@ -7,6 +7,8 @@ namespace Instances.Domain.CodeSources
         FrontZip = 2,
         CleanScript = 3,
         AnonymizationScript = 4,
+        PreRestoreScript = 5,
+        PostRestoreScript = 6,
         Other = 99
     }
 

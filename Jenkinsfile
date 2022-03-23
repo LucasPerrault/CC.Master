@@ -80,7 +80,7 @@ node(label: CI.getSelectedNode(script: this)) {
 						sonar(
 							repoName: repoName,
 							sonarProjectName: projectTechnicalName,
-							exclusions: "**/Migrations/**",
+							exclusions: "**/Migrations/**,**/Core/Testing/**",
 						) {
 							cleanBack(slnFilepath: slnFilepath)
 							buildBack(slnFilepath: slnFilepath)

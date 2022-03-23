@@ -1,14 +1,15 @@
 using System.Collections.Generic;
+using Tools;
 
 namespace Instances.Domain.CodeSources.Filtering
 {
-    public class GithubBranchFilter
+    public record GithubBranchFilter
     {
-        public int? CodeSourceId { get; set; }
-        public List<int> CodeSourceIds { get; set; }
-        public string Name { get; set; }
-        public bool? IsDeleted { get; set; }
-        public string HelmChart { get; set; }
-        public bool? HasHelmChart { get; set; }
+        public string Name { get; init; }
+        public CompareBoolean IsDeleted { get; init; } = CompareBoolean.Bypass;
+        public string HelmChart { get; init; }
+        public CompareBoolean HasHelmChart { get; init; } = CompareBoolean.Bypass;
+        public HashSet<int> RepoIds { get; init; } = new HashSet<int>();
+        public HashSet<int> ExcludedRepoIds { get; init; } = new HashSet<int>();
     }
 }

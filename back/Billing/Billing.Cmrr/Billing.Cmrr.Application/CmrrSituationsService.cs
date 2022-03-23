@@ -33,7 +33,30 @@ namespace Billing.Cmrr.Application
             _claimsPrincipal = claimsPrincipal;
         }
 
-        public async Task<CmrrSituation> GetSituationAsync(CmrrFilter filter)
+        public Task<CmrrSituation> GetSituationAsync(CmrrFilter filter)
+        {
+            return GetSituationAsync(filter, hasTopLimit: true);
+        }
+
+        public async Task<IReadOnlyCollection<CmrrClient>> GetAcquiredClientsAsync(CmrrFilter filter)
+        {
+            var situation = await GetSituationAsync(filter, hasTopLimit: false);
+
+            return situation.Total.Creation.Top
+                .Select(c => CmrrClient.FromCmrrAmountTopElement(c))
+                .ToList();
+        }
+
+        public async Task<IReadOnlyCollection<CmrrClient>> GetTerminatedClientsAsync(CmrrFilter filter)
+        {
+            var situation = await GetSituationAsync(filter, hasTopLimit: false);
+
+            return situation.Total.Termination.Top
+                .Select(c => CmrrClient.FromCmrrAmountTopElement(c))
+                .ToList();
+        }
+
+        private async Task<CmrrSituation> GetSituationAsync(CmrrFilter filter, bool hasTopLimit)
         {
             var contractSituations = await GetContractSituationsAsync(filter);
 
@@ -57,12 +80,12 @@ namespace Billing.Cmrr.Application
                 Clients = new CmrrClientSituation(),
             };
 
-            PopulateSituation(situation, axisSectionSituations);
+            var linesPerName = situation.Lines.ToDictionary(l => l.Name, l => l);
+            PopulateSituation(situation, axisSectionSituations, linesPerName, hasTopLimit: hasTopLimit);
+            PopulateClientsSituation(situation, axisSectionSituations, linesPerName, hasTopLimit);
 
             return situation;
         }
-
-
 
         private async Task<List<CmrrContractSituation>> GetContractSituationsAsync(CmrrFilter filter)
         {
@@ -112,10 +135,8 @@ namespace Billing.Cmrr.Application
             }
         }
 
-        private void PopulateSituation(CmrrSituation cmrrSituation, IReadOnlyCollection<ContractAxisSectionSituation> situations)
+        private void PopulateSituation(CmrrSituation cmrrSituation, IReadOnlyCollection<ContractAxisSectionSituation> situations, Dictionary<string, CmrrLine> linesPerName, bool hasTopLimit)
         {
-            var linesPerName = cmrrSituation.Lines.ToDictionary(l => l.Name, l => l);
-
             foreach (var situation in situations.OrderByDescending(s => Math.Abs(s.PartialDiff)))
             {
                 if (!linesPerName.TryGetValue(situation.Breakdown.AxisSection.Name, out var line))
@@ -125,13 +146,13 @@ namespace Billing.Cmrr.Application
 
                 var subLine = GetSubLine(line, situation);
                 var amount = GetAmount(subLine, situation);
-                UpdateLifecycleAmount(amount, situation);
+                UpdateLifecycleAmount(amount, situation, hasTopLimit);
 
                 var totalAmount = GetAmount(line.Total, situation);
-                UpdateLifecycleAmount(totalAmount, situation);
+                UpdateLifecycleAmount(totalAmount, situation, hasTopLimit);
 
                 var grandTotalAmount = GetAmount(cmrrSituation.Total, situation);
-                UpdateLifecycleAmount(grandTotalAmount, situation);
+                UpdateLifecycleAmount(grandTotalAmount, situation, hasTopLimit);
             }
 
             foreach (var situation in situations.OrderByDescending(s => Math.Abs(s.StartPeriodAmount)))
@@ -142,9 +163,9 @@ namespace Billing.Cmrr.Application
                 }
 
                 var subLine = GetSubLine(line, situation);
-                UpdateStartAmount(subLine.TotalFrom, situation);
-                UpdateStartAmount(line.Total.TotalFrom, situation);
-                UpdateStartAmount(cmrrSituation.Total.TotalFrom, situation);
+                UpdateStartAmount(subLine.TotalFrom, situation, hasTopLimit);
+                UpdateStartAmount(line.Total.TotalFrom, situation, hasTopLimit);
+                UpdateStartAmount(cmrrSituation.Total.TotalFrom, situation, hasTopLimit);
             }
 
             foreach (var situation in situations.OrderByDescending(s => Math.Abs(s.EndPeriodAmount)))
@@ -155,16 +176,15 @@ namespace Billing.Cmrr.Application
                 }
 
                 var subLine = GetSubLine(line, situation);
-                UpdateEndAmount(subLine.TotalTo, situation);
-                UpdateEndAmount(line.Total.TotalTo, situation);
-                UpdateEndAmount(cmrrSituation.Total.TotalTo, situation);
+                UpdateEndAmount(subLine.TotalTo, situation, hasTopLimit);
+                UpdateEndAmount(line.Total.TotalTo, situation, hasTopLimit);
+                UpdateEndAmount(cmrrSituation.Total.TotalTo, situation, hasTopLimit);
             }
-
-            PopulateClientsSituation(cmrrSituation, situations, linesPerName.Keys);
         }
 
-        private void PopulateClientsSituation(CmrrSituation cmrrSituation, IReadOnlyCollection<ContractAxisSectionSituation> situations, Dictionary<string, CmrrLine>.KeyCollection sections)
+        private void PopulateClientsSituation(CmrrSituation cmrrSituation, IReadOnlyCollection<ContractAxisSectionSituation> situations, Dictionary<string, CmrrLine> linesPerName, bool hasTopLimit)
         {
+            var sections = linesPerName.Keys;
             var clientSituations = situations
                 .Where(s => sections.Contains(s.Breakdown.AxisSection.Name))
                 .GroupBy(s => s.ContractSituation.Contract.ClientId)
@@ -185,7 +205,8 @@ namespace Billing.Cmrr.Application
                     clientSituation.ClientId,
                     CmrrAmountTopElementContract.FromRaw(0, clientSituation.ClientId, clientSituation.ClientName)
                 );
-                UpdateCmrrAmount(amount, clientSituation.Amount, clientSituation.UserCount, clientSituation.ClientId, null, topElement);
+
+                UpdateCmrrAmount(amount, clientSituation.Amount, clientSituation.UserCount, clientSituation.ClientId, null, topElement, hasTopLimit);
             }
         }
 
@@ -253,19 +274,19 @@ namespace Billing.Cmrr.Application
             return line.SubLines[subSectionName];
         }
 
-        private void UpdateLifecycleAmount(CmrrAmount amount, ContractAxisSectionSituation situation)
+        private void UpdateLifecycleAmount(CmrrAmount amount, ContractAxisSectionSituation situation, bool hasTopLimit)
         {
-            UpdateCmrrAmount(amount, situation, s => s.PartialDiff, s => s.UserCountDiff, _ => true);
+            UpdateCmrrAmount(amount, situation, s => s.PartialDiff, s => s.UserCountDiff, _ => true, hasTopLimit);
         }
 
-        private void UpdateStartAmount(CmrrAmount startAmount, ContractAxisSectionSituation situation)
+        private void UpdateStartAmount(CmrrAmount startAmount, ContractAxisSectionSituation situation, bool hasTopLimit)
         {
-            UpdateCmrrAmount(startAmount, situation, s => s.StartPeriodAmount, s => s.StartPeriodUserCount, s => s.ContractSituation.StartPeriodCount != null);
+            UpdateCmrrAmount(startAmount, situation, s => s.StartPeriodAmount, s => s.StartPeriodUserCount, s => s.ContractSituation.StartPeriodCount != null, hasTopLimit);
         }
 
-        private void UpdateEndAmount(CmrrAmount startAmount, ContractAxisSectionSituation situation)
+        private void UpdateEndAmount(CmrrAmount startAmount, ContractAxisSectionSituation situation, bool hasTopLimit)
         {
-            UpdateCmrrAmount(startAmount, situation, s => s.EndPeriodAmount, s => s.EndPeriodUserCount, s => s.ContractSituation.EndPeriodCount != null);
+            UpdateCmrrAmount(startAmount, situation, s => s.EndPeriodAmount, s => s.EndPeriodUserCount, s => s.ContractSituation.EndPeriodCount != null, hasTopLimit);
         }
 
         private void UpdateCmrrAmount
@@ -274,7 +295,8 @@ namespace Billing.Cmrr.Application
             ContractAxisSectionSituation axisSectionSituation,
             Func<ContractAxisSectionSituation, decimal> amountFunc,
             Func<ContractAxisSectionSituation, int> userCountFunc,
-            Func<ContractAxisSectionSituation, bool> shouldCountClientAndContracts
+            Func<ContractAxisSectionSituation, bool> shouldCountClientAndContracts,
+            bool hasTopLimit
         )
         {
             var amount = amountFunc(axisSectionSituation);
@@ -293,7 +315,8 @@ namespace Billing.Cmrr.Application
                 userCount,
                 clientId,
                 contractId,
-                CmrrAmountTopElement.FromSituation(axisSectionSituation, amount, userCount)
+                CmrrAmountTopElement.FromSituation(axisSectionSituation, amount, userCount),
+                hasTopLimit
             );
         }
 
@@ -304,7 +327,8 @@ namespace Billing.Cmrr.Application
             int userCount,
             int? clientId,
             int? contractId,
-            CmrrAmountTopElement topElement
+            CmrrAmountTopElement topElement,
+            bool hasTopLimit
         )
         {
             cmrrAmount.Amount += amount;
@@ -320,12 +344,11 @@ namespace Billing.Cmrr.Application
                 cmrrAmount.AddContract(contractId.Value);
             }
 
-            if (cmrrAmount.Top.Count < CmrrAmountTopElement.TopCount)
+            if (!hasTopLimit || cmrrAmount.Top.Count < CmrrAmountTopElement.TopCount)
             {
                 cmrrAmount.Top.Add(topElement);
             }
         }
-
 
         private CmrrAmount GetAmount(CmrrSituation cmrrSituation, ClientSituation clientSituation)
         {
