@@ -146,7 +146,7 @@
         {{ count?.offer?.name }}
       </td>
       <td class="table-body-row-cell size-small" [ngClass]="{ 'mod-hidden': isHidden([column.CountPeriod]) }">
-        {{ count?.countPeriod | date : 'MMMM YYYY' }}
+        {{ count?.countPeriod | date : 'MMMM yyyy' }}
       </td>
       <td class="table-body-row-cell mod-alignRight" [ngClass]="{ 'mod-hidden': isHidden([column.NormalCount]) }">
         {{ count?.number | number }}
