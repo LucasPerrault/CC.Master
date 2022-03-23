@@ -140,7 +140,7 @@
         <div class="stickyColumn-shadow-wrapper"></div>
       </td>
       <td class="table-body-row-cell size-medium" [ngClass]="{ 'mod-hidden': isHidden([column.Distributor]) }">
-        {{ count?.contract?.distributor?.name }}
+        {{ getOnlyDistributorName(count?.contract?.distributor?.name) }}
       </td>
       <td class="table-body-row-cell size-biggest" [ngClass]="{ 'mod-hidden': isHidden([column.Offer]) }">
         {{ count?.offer?.name }}

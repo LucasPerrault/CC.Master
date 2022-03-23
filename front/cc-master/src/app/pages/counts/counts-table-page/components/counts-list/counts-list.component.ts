@@ -4,6 +4,7 @@ import { TranslatePipe } from '@cc/aspects/translate';
 import { NavigationPath } from '@cc/common/navigation';
 import { PaginatedListState } from '@cc/common/paging';
 import { ISortParams, SortOrder, SortService } from '@cc/common/sort';
+import { DistributorUtilsService } from '@cc/domain/billing/distributors/services/distributor-utils.service';
 import { CurrencyName, ICurrency } from '@cc/domain/billing/offers';
 
 import { CountsSortParamKey } from '../../enums/count-sort-param-key.enum';
@@ -96,5 +97,9 @@ export class CountsListComponent implements OnInit {
 
   public getActiveColumns(columns: CountAdditionalColumn[]): number {
     return columns.filter(c => !this.isHidden([c]))?.length;
+  }
+
+  public getOnlyDistributorName(codeAndName: string) {
+    return DistributorUtilsService.getOnlyName(codeAndName);
   }
 }

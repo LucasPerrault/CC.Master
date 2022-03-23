@@ -4,6 +4,7 @@ import { TranslatePipe } from '@cc/aspects/translate';
 import { PaginatedListState } from '@cc/common/paging';
 import { ISortParams, SortOrder, SortService } from '@cc/common/sort';
 import { BillingEntity, getBillingEntity } from '@cc/domain/billing/clients';
+import { DistributorUtilsService } from '@cc/domain/billing/distributors/services/distributor-utils.service';
 import { IEstablishment } from '@cc/domain/billing/establishments';
 import { Subject } from 'rxjs';
 
@@ -73,9 +74,7 @@ export class ContractsManageListComponent {
   }
 
   public getOnlyDistributorName(codeAndName: string): string {
-    const codeAndNameSeparator = '-';
-    const separatorIndex = codeAndName.indexOf(codeAndNameSeparator);
-    return codeAndName.slice(separatorIndex + 1);
+    return DistributorUtilsService.getOnlyName(codeAndName);
   }
 
   public getEstablishmentHealthName(contract: IContractListEntry): string {
