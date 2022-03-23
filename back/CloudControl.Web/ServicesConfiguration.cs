@@ -1,7 +1,5 @@
 using AdvancedFilters.Infra.Storage;
 using AdvancedFilters.Web;
-using AdvancedFilters.Web.Configuration;
-using AngleSharp;
 using Authentication.Web;
 using Billing.Cmrr.Infra.Storage;
 using Billing.Cmrr.Web;
@@ -47,8 +45,10 @@ using Storage.Infra.Context;
 using Storage.Web;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Globalization;
 using System.Text.Json.Serialization;
+using Billing.Contracts.Domain.Common;
 using TeamNotification.Web;
 using Tools.Web;
 using Users.Infra.Storage;
@@ -148,7 +148,10 @@ namespace CloudControl.Web
         public virtual void ConfigureApi(IServiceCollection services)
         {
             services
-                .AddControllers()
+                .AddControllers(o =>
+                {
+                    o.AddAccountingPeriodTypeConverter();
+                })
                 .AddJsonOptions(o =>
                 {
                     o.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
