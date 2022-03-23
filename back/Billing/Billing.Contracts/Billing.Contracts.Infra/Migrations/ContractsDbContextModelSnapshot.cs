@@ -212,6 +212,8 @@ namespace Billing.Contracts.Infra.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("ContractId");
+
                     b.ToTable("Counts", "billing");
                 });
 
@@ -676,6 +678,17 @@ namespace Billing.Contracts.Infra.Migrations
                     b.Navigation("Distributor");
 
                     b.Navigation("Environment");
+                });
+
+            modelBuilder.Entity("Billing.Contracts.Domain.Counts.Count", b =>
+                {
+                    b.HasOne("Billing.Contracts.Domain.Contracts.Contract", "Contract")
+                        .WithMany()
+                        .HasForeignKey("ContractId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Contract");
                 });
 
             modelBuilder.Entity("Billing.Contracts.Domain.Environments.Establishment", b =>

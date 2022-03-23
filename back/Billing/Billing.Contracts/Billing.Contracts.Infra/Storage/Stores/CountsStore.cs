@@ -50,15 +50,10 @@ namespace Billing.Contracts.Infra.Storage.Stores
 
         public static IQueryable<Count> WhereHasRight(this IQueryable<Count> counts, AccessRight accessRight)
         {
-            return counts.Where(accessRight.ToRightExpression());
-        }
-
-        private static Expression<Func<Count, bool>> ToRightExpression(this AccessRight accessRight)
-        {
             return accessRight switch
             {
-                NoAccessRight _ => _ => false,
-                AllAccessRight _ => _ => true,
+                AllAccessRight _ => counts,
+                DistributorAccessRight user => counts.Where(c => c.Contract.DistributorId == user.DistributorId),
                 _ => throw new ApplicationException($"Unknown type of count filter right {accessRight}")
             };
         }

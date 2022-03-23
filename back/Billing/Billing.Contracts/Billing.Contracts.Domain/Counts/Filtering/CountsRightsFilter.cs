@@ -11,10 +11,12 @@ namespace Billing.Contracts.Domain.Contracts
     public class CountsRightsFilter
     {
         private readonly IRightsService _rightsService;
+        private readonly RightsFilter _rightsFilter;
 
-        public CountsRightsFilter(IRightsService rightsService)
+        public CountsRightsFilter(IRightsService rightsService, RightsFilter rightsFilter)
         {
             _rightsService = rightsService;
+            _rightsFilter = rightsFilter;
         }
 
         public Task<AccessRight> GetReadAccessAsync(ClaimsPrincipal principal)
@@ -26,22 +28,11 @@ namespace Billing.Contracts.Domain.Contracts
         {
             return principal switch
             {
-                CloudControlUserClaimsPrincipal _ => await GetUserReadAccessAsync(op),
+                CloudControlUserClaimsPrincipal user => await _rightsFilter.FilterByDistributorAsync(Operation.ReadContracts, user.User.Distributor.Id),
                 CloudControlApiKeyClaimsPrincipal _ => await GetApiKeyReadAccessAsync(op),
                 _ => throw new ApplicationException("Unhandled ClaimsPrincipal type")
             };
         }
-
-        private async Task<AccessRight> GetUserReadAccessAsync(Operation op)
-        {
-            var currentUserScope = await _rightsService.GetUserOperationHighestScopeAsync(op);
-            return currentUserScope switch
-            {
-                AccessRightScope.AllDistributors => AccessRight.All,
-                _ => throw new ApplicationException($"Unhandled scope : {currentUserScope}")
-            };
-        }
-
         private async Task<AccessRight> GetApiKeyReadAccessAsync(Operation op)
         {
             var hasOp = await _rightsService.HasOperationAsync(op);
