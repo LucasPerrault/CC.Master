@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@angular/core';
 import { ApiV3DateService } from '@cc/common/queries';
-import { BILLING_CORE_DATA, IBillingCoreData } from '@cc/domain/billing/billling-core-data';
+import { BILLING_CORE_DATA, IBillingCoreData } from '@cc/domain/billing/billing-core-data';
 import { ClientsService, IBillingEntity, IClient } from '@cc/domain/billing/clients';
 import { DistributorsService, IDistributor } from '@cc/domain/billing/distributors';
 import { EstablishmentsService, IEstablishment } from '@cc/domain/billing/establishments';

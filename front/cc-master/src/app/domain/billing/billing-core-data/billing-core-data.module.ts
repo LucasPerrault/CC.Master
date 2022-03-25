@@ -3,8 +3,8 @@ import { APP_INITIALIZER, ModuleWithProviders, NgModule } from '@angular/core';
 import {
   BillingCoreDataInitializer, getBillingCoreData,
   initBillingCoreData,
-} from '@cc/domain/billing/billling-core-data/billing-core-data.initializer';
-import { BILLING_CORE_DATA } from '@cc/domain/billing/billling-core-data/billing-core-data.token';
+} from '@cc/domain/billing/billing-core-data/billing-core-data.initializer';
+import { BILLING_CORE_DATA } from '@cc/domain/billing/billing-core-data/billing-core-data.token';
 
 @NgModule({
   imports: [

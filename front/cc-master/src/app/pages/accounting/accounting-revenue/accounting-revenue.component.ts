@@ -1,7 +1,7 @@
 import { Component, Inject, OnInit, ViewEncapsulation } from '@angular/core';
 import { TranslatePipe } from '@cc/aspects/translate';
 import { getButtonState, toSubmissionState } from '@cc/common/forms';
-import { BILLING_CORE_DATA, getNameById, IBillingCoreData } from '@cc/domain/billing/billling-core-data';
+import { BILLING_CORE_DATA, getNameById, IBillingCoreData } from '@cc/domain/billing/billing-core-data';
 import { Observable,ReplaySubject, Subject } from 'rxjs';
 import { finalize, map, take } from 'rxjs/operators';
 

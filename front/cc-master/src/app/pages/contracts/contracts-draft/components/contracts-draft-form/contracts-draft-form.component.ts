@@ -11,7 +11,7 @@ import {
 } from '@angular/forms';
 import { TranslatePipe } from '@cc/aspects/translate';
 import { SelectDisplayMode } from '@cc/common/forms';
-import { BILLING_CORE_DATA, getNameById, IBillingCoreData } from '@cc/domain/billing/billling-core-data';
+import { BILLING_CORE_DATA, getNameById, IBillingCoreData } from '@cc/domain/billing/billing-core-data';
 import { IContractForm, MinimalBillingService } from '@cc/domain/billing/contracts';
 import { DistributorsService, IDistributor } from '@cc/domain/billing/distributors';
 import { IProduct } from '@cc/domain/billing/offers';

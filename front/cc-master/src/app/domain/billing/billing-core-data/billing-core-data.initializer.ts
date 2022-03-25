@@ -1,7 +1,7 @@
 ﻿import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { IHttpApiV4CollectionResponse } from '@cc/common/queries';
-import { IBillingCoreData } from '@cc/domain/billing/billling-core-data/billing-core-data.interface';
+import { IBillingCoreData } from '@cc/domain/billing/billing-core-data/billing-core-data.interface';
 import { IBillingEntity } from '@cc/domain/billing/clients';
 import { forkJoin, Observable } from 'rxjs';
 import { map, tap } from 'rxjs/operators';

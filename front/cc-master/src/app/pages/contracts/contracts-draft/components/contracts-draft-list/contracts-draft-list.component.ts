@@ -1,6 +1,6 @@
 import { Component, Inject, Input } from '@angular/core';
 import { TranslatePipe } from '@cc/aspects/translate';
-import { BILLING_CORE_DATA, getNameByCode, IBillingCoreData } from '@cc/domain/billing/billling-core-data';
+import { BILLING_CORE_DATA, getNameByCode, IBillingCoreData } from '@cc/domain/billing/billing-core-data';
 import { LuModal } from '@lucca-front/ng/modal';
 
 import { IContractDraftListEntry } from '../../models';

@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, Inject } from '@angular/core';
 import { TranslatePipe } from '@cc/aspects/translate';
-import { BILLING_CORE_DATA, getNameById, IBillingCoreData } from '@cc/domain/billing/billling-core-data';
+import { BILLING_CORE_DATA, getNameById, IBillingCoreData } from '@cc/domain/billing/billing-core-data';
 import { ILuModalContent, LU_MODAL_DATA } from '@lucca-front/ng/modal';
 
 import { IClientInfoModalData } from './client-info-modal-data.interface';

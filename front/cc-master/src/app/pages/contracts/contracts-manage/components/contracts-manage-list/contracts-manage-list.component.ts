@@ -3,7 +3,7 @@ import { Component, ElementRef, EventEmitter, HostListener, Inject, Input, Outpu
 import { TranslatePipe } from '@cc/aspects/translate';
 import { PaginatedListState } from '@cc/common/paging';
 import { ISortParams, SortOrder, SortService } from '@cc/common/sort';
-import { BILLING_CORE_DATA, getNameByCode, IBillingCoreData } from '@cc/domain/billing/billling-core-data';
+import { BILLING_CORE_DATA, getNameByCode, IBillingCoreData } from '@cc/domain/billing/billing-core-data';
 import { IEstablishment } from '@cc/domain/billing/establishments';
 import { Subject } from 'rxjs';
 
