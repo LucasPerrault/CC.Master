@@ -3,8 +3,8 @@ import { Injectable } from '@angular/core';
 import { IHttpApiV4CollectionResponse } from '@cc/common/queries';
 import { IBillingCoreData } from '@cc/domain/billing/billing-core-data/billing-core-data.interface';
 import { IBillingEntity } from '@cc/domain/billing/clients';
-import { forkJoin, Observable } from 'rxjs';
-import { map, tap } from 'rxjs/operators';
+import { forkJoin, Observable, of } from 'rxjs';
+import { catchError, map, tap } from 'rxjs/operators';
 
 export const initBillingCoreData = (initializer: BillingCoreDataInitializer): () => Promise<IBillingCoreData> =>
   () => initializer.init().toPromise();
@@ -17,7 +17,16 @@ export class BillingCoreDataInitializer {
 
   init(): Observable<IBillingCoreData> {
     return forkJoin({
-      billingEntities: this.http.get<IHttpApiV4CollectionResponse<IBillingEntity>>('/api/billing-entities').pipe(map(r => r.items)),
+      billingEntities: this.getBillingEntities$(),
     }).pipe(tap(coreData => this.coreData = coreData));
+  }
+
+  getBillingEntities$(): Observable<IBillingEntity[]> {
+    return this.http
+      .get<IHttpApiV4CollectionResponse<IBillingEntity>>('/api/billing-entities')
+      .pipe(
+        map(r => r.items),
+        catchError(e => of([])),
+      );
   }
 }
