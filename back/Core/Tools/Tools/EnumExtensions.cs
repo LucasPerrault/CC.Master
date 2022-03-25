@@ -29,5 +29,20 @@ namespace Tools
             var allValues = Enum.GetValues(typeof(T)).Cast<T>().ToHashSet();
             return allValues.All(enums.Contains);
         }
+
+        public static string[] GetAllEnumValuesExcept<T>(params T[] exception) where T : Enum
+        {
+            return EnumerateAllEnumsExcept(exception).Select(value => $"{value}").ToArray();
+        }
+
+        public static T[] GetAllEnumsExcept<T>(params T[] exception) where T : Enum
+        {
+            return EnumerateAllEnumsExcept(exception).ToArray();
+        }
+
+        private static IEnumerable<T> EnumerateAllEnumsExcept<T>(params T[] exception) where T : Enum
+        {
+            return Enum.GetValues(typeof(T)).Cast<T>().Except(exception);
+        }
     }
 }

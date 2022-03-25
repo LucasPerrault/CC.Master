@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Tools;
 
 namespace Billing.Contracts.Infra.Offers
 {
@@ -13,11 +14,11 @@ namespace Billing.Contracts.Infra.Offers
         {
             var csvBuilder = new CsvBuilder(builder);
             var productNames = products.Select(p => p.Name).ToArray().ToCells();
-            var billingUnit = GetAllEnumValuesExcept(ParsedBillingUnit.Unknown).ToCells();
-            var billingMode = GetAllEnumValuesExcept(ParsedBillingMode.Unknown).ToCells();
-            var forecastMethod = GetAllEnumValuesExcept(ParsedForecastMethod.Unknown).ToCells();
-            var pricingMethod = GetAllEnumValuesExcept(ParsedPricingMethod.Unknown).ToCells();
-            var currency = GetAllEnumValuesExcept(ParsedCurrency.Unknown).ToCells();
+            var billingUnit = EnumExtensions.GetAllEnumValuesExcept(ParsedBillingUnit.Unknown).ToCells();
+            var billingMode = EnumExtensions.GetAllEnumValuesExcept(ParsedBillingMode.Unknown).ToCells();
+            var forecastMethod = EnumExtensions.GetAllEnumValuesExcept(ParsedForecastMethod.Unknown).ToCells();
+            var pricingMethod = EnumExtensions.GetAllEnumValuesExcept(ParsedPricingMethod.Unknown).ToCells();
+            var currency = EnumExtensions.GetAllEnumValuesExcept(ParsedCurrency.Unknown).ToCells();
 
             var maxLength = productNames.Length
                 .MaxLength(billingUnit)
@@ -84,12 +85,6 @@ namespace Billing.Contracts.Infra.Offers
             {
                 return _stringBuilder.ToString();
             }
-        }
-
-
-        private static string[] GetAllEnumValuesExcept<T>(params T[] exception) where T : Enum
-        {
-            return Enum.GetValues(typeof(T)).Cast<T>().Except(exception).Select(value => $"{value}").ToArray();
         }
 
         public static List<OfferRow> GetExamples()
