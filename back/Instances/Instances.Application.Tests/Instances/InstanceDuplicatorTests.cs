@@ -78,7 +78,7 @@ namespace Instances.Application.Tests
                 SourceCluster = "cluster1",
                 TargetCluster = "formation",
             };
-            var duplicationOptions = InstanceDuplicationOptions.ForTraining(withAnonymization: false, keepExistingPasswords: false, callBackPath: "callback/path");
+            var duplicationOptions = InstanceDuplicationOptions.ForTraining(withAnonymization: false, keepExistingPasswords: false, withFiles: false, callBackPath: "callback/path");
             Assert.False(duplicationOptions.SkipBufferServer);
             _ccDataServiceMock.Setup(ccDataService => ccDataService.StartDuplicateInstanceAsync(It.IsAny<DuplicateInstanceRequestDto>(), It.IsAny<string>(), It.IsAny<string>())).Verifiable();
             _codeSourceRepositoryMock.Setup(csr => csr.GetInstanceCleaningArtifactsAsync()).ReturnsAsync(new List<CodeSourceArtifacts>());

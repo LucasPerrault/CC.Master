@@ -77,6 +77,7 @@ namespace Instances.Application.Trainings.Restoration
                 InstanceDuplicationOptions.ForTraining(
                     withAnonymization: restoration.Anonymize,
                     keepExistingPasswords: restoration.KeepExistingTrainingPasswords,
+                    withFiles: restoration.RestoreFiles,
                     callBackPath: $"/api/trainings/restorations/{restoration.InstanceDuplicationId}/notify"
                 )
             );

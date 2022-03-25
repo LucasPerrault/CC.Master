@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Text.Json.Serialization;
 
 namespace Instances.Domain.Shared
 {
@@ -11,6 +12,26 @@ namespace Instances.Domain.Shared
         public List<UriLinkDto> PostBufferServerRestoreScripts { get; init; }
         public List<UriLinkDto> PreRestoreScripts { get; init; }
         public List<UriLinkDto> PostRestoreScripts { get; init; }
+        // TODO : DuplicateInstanceScope
+        public int Scope { get; init; }
+        // TODO : DuplicateInstanceFileOptions 
+        public int FileOptions { get; init; }
+    }
+
+    [Flags]
+    public enum DuplicateInstanceScope
+    {
+        NONE = 0,
+        DATABASE = 1,
+        FILES = 2
+    }
+
+    [Flags]
+    public enum DuplicateInstanceFileOptions
+    {
+        NONE = 0,
+        DIFF = 1,
+        CLEAN = 2
     }
 
     public class CreateInstanceBackupRequestDto

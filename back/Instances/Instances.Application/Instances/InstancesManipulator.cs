@@ -49,6 +49,8 @@ namespace Instances.Application.Instances
                 PostBufferServerRestoreScripts = postBufferServerRestoreScripts.Select(uri => new UriLinkDto { Uri = uri }).ToList(),
                 PreRestoreScripts = preRestoreScripts.Select(uri => new UriLinkDto { Uri = uri }).ToList(),
                 PostRestoreScripts = postRestoreScripts.Select(uri => new UriLinkDto { Uri = uri }).ToList(),
+                Scope =  (int)duplicationOptions.Scope,
+                FileOptions = (int)duplicationOptions.FilesOptions,
             };
 
             await _ccDataService.StartDuplicateInstanceAsync

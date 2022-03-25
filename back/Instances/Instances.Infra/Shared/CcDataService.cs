@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace Instances.Infra.Shared
@@ -27,6 +28,10 @@ namespace Instances.Infra.Shared
         public List<UriLinkDto> PostBufferServerRestoreScripts { get; init; }
         public List<UriLinkDto> PreRestoreScripts { get; init; }
         public List<UriLinkDto> PostRestoreScripts { get; init; }
+        // TODO : DuplicateInstanceScope 
+        public int Scope { get; init; }
+        // TODO : DuplicateInstanceFileOptions 
+        public int FileOptions { get; init; }
         public Uri CallbackUri { get; set; }
         public string CallbackAuthorizationHeader { get; set; }
 
@@ -38,6 +43,8 @@ namespace Instances.Infra.Shared
             PostBufferServerRestoreScripts = dto.PostBufferServerRestoreScripts;
             PreRestoreScripts = dto.PreRestoreScripts;
             PostRestoreScripts = dto.PostRestoreScripts;
+            Scope = dto.Scope;
+            FileOptions = dto.FileOptions;
         }
     }
 
