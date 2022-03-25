@@ -1,5 +1,6 @@
 ﻿using Billing.Cmrr.Domain;
 using Billing.Cmrr.Domain.Situation;
+using Billing.Contracts.Domain.Clients;
 using System;
 using System.Collections.Generic;
 
