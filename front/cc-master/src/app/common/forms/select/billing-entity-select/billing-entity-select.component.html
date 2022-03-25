@@ -20,7 +20,7 @@
 
   <lu-option-picker-advanced>
     <header class="lu-picker-header" [class.mod-multiple]="multiple">
-      <lu-option-feeder [options]="billingEntities"></lu-option-feeder>
+      <lu-api-feeder [api]="api" standard="v4" ></lu-api-feeder>
       <lu-option-select-all class="option-selector position-fixed"></lu-option-select-all>
     </header>
 

@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, Inject } from '@angular/core';
 import { TranslatePipe } from '@cc/aspects/translate';
-import { BillingEntity, getBillingEntity } from '@cc/domain/billing/clients';
+import { BILLING_CORE_DATA, getNameById, IBillingCoreData } from '@cc/domain/billing/billing-core-data';
 import { ILuModalContent, LU_MODAL_DATA } from '@lucca-front/ng/modal';
 
 import { IClientInfoModalData } from './client-info-modal-data.interface';
@@ -15,6 +15,7 @@ export class ClientInfoModalComponent implements ILuModalContent {
 
   constructor(
     @Inject(LU_MODAL_DATA) public data: IClientInfoModalData,
+    @Inject(BILLING_CORE_DATA) private billingCoreData: IBillingCoreData,
     private translatePipe: TranslatePipe,
   ) { }
 
@@ -27,8 +28,7 @@ export class ClientInfoModalComponent implements ILuModalContent {
     void navigator.clipboard.writeText(text);
   }
 
-  public getBillingEntityName(billingEntity: BillingEntity): string {
-    const translationKey = getBillingEntity(billingEntity)?.name;
-    return this.translatePipe.transform(translationKey);
+  public getBillingEntityName(id: number): string {
+    return getNameById(this.billingCoreData.billingEntities, id);
   }
 }

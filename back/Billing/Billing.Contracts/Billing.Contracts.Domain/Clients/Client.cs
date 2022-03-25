@@ -1,16 +1,19 @@
 using Billing.Contracts.Domain.Contracts;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Text.Json.Serialization;
 
 namespace Billing.Contracts.Domain.Clients
 {
     public enum BillingEntity
     {
-        Unknown = 0,
-        France = 1,
-        Iberia = 2,
+        [Description("Inconnue")] Unknown = 0,
+        [Description("Lucca France")] France = 1,
+        [Description("Lucca Iberia")] Iberia = 2,
+        [Description("Lucca Suisse")] Switzerland = 3,
     }
+
     public class Client
     {
         public int Id { get; set; }

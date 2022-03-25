@@ -1,14 +1,10 @@
+using Billing.Contracts.Domain.Clients;
 using Distributors.Domain.Models;
 using System;
 
 namespace Billing.Cmrr.Domain
 {
-    public enum BillingEntity
-    {
-        Unknown = 0,
-        France = 1,
-        Iberia = 2,
-    }
+
     public class CmrrContract
     {
         public int Id { get; set; }
