@@ -35,6 +35,7 @@ export class AccountingRevenueComponent implements OnInit {
     this.refreshSyncRevenueInfo();
   }
 
+
   public syncRevenue(entityCode: string): void {
     this.syncRevenueService.synchronise$(entityCode)
       .pipe(
