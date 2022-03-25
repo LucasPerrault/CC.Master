@@ -1,6 +1,7 @@
-import { Injectable } from '@angular/core';
+import { Inject, Injectable } from '@angular/core';
 import { ApiV3DateService } from '@cc/common/queries';
-import { ClientsService, getBillingEntity, IBillingEntity, IClient } from '@cc/domain/billing/clients';
+import { BILLING_CORE_DATA, IBillingCoreData } from '@cc/domain/billing/billling-core-data';
+import { ClientsService, IBillingEntity, IClient } from '@cc/domain/billing/clients';
 import { DistributorsService, IDistributor } from '@cc/domain/billing/distributors';
 import { EstablishmentsService, IEstablishment } from '@cc/domain/billing/establishments';
 import { IOffer, IProduct, OffersService, ProductsService } from '@cc/domain/billing/offers';
@@ -26,6 +27,7 @@ import { IContractsRoutingParams } from '../models/contracts-routing-params.inte
 export class ContractsFilterRoutingService {
 
   constructor(
+    @Inject(BILLING_CORE_DATA) private billingCoreData: IBillingCoreData,
     private clientsService: ClientsService,
     private productsService: ProductsService,
     private offersService: OffersService,
@@ -89,7 +91,7 @@ export class ContractsFilterRoutingService {
       offerIds: this.getSafeRoutingParams(filters.offers?.map(o => o.id).join(',')),
       distributorIds: this.getSafeRoutingParams(filters.distributors?.map(d => d.id).join(',')),
       environmentIds: this.getSafeRoutingParams(filters.environments?.map(e => e.id).join(',')),
-      billingEntityIds: this.getSafeRoutingParams(filters.billingEntities?.map(b => b.id).join(',')),
+      billingEntityIds: this.getSafeRoutingParams(filters.billingEntities?.map(b => b.code).join(',')),
       establishmentIds: this.getSafeRoutingParams(filters.establishments?.map(e => e.id).join(',')),
       columns: this.getSafeRoutingParams(columns.join(',')),
     };
@@ -191,13 +193,14 @@ export class ContractsFilterRoutingService {
     return 'true,false';
   }
 
-  private getBillingEntities(ids: string): IBillingEntity[] {
-    const billingEntityIds = !!ids ? ids.split(',') : [];
+  private getBillingEntities(idsAsString: string): IBillingEntity[] {
+    const billingEntityIds = !!idsAsString ? idsAsString.split(',') : [];
     if (!billingEntityIds.length) {
       return [];
     }
 
-    return billingEntityIds.map(id => getBillingEntity(parseInt(id, 10))).filter(b => !!b);
+    const ids = billingEntityIds.map(id => parseInt(id, 10));
+    return this.billingCoreData.billingEntities.filter(b => ids.includes(b.id));
   }
 
   private getSafeRoutingParams(queryParams: string): string {

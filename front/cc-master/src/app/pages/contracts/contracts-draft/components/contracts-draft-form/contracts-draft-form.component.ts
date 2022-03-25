@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Inject, Input, OnDestroy, OnInit } from '@angular/core';
 import {
   AbstractControl,
   ControlValueAccessor,
@@ -11,7 +11,7 @@ import {
 } from '@angular/forms';
 import { TranslatePipe } from '@cc/aspects/translate';
 import { SelectDisplayMode } from '@cc/common/forms';
-import { BillingEntity, getBillingEntity } from '@cc/domain/billing/clients';
+import { BILLING_CORE_DATA, getNameById, IBillingCoreData } from '@cc/domain/billing/billling-core-data';
 import { IContractForm, MinimalBillingService } from '@cc/domain/billing/contracts';
 import { DistributorsService, IDistributor } from '@cc/domain/billing/distributors';
 import { IProduct } from '@cc/domain/billing/offers';
@@ -84,6 +84,7 @@ export class ContractsDraftFormComponent implements ControlValueAccessor, Valida
     private minimalBillingService: MinimalBillingService,
     private translatePipe: TranslatePipe,
     private luModal: LuModal,
+    @Inject(BILLING_CORE_DATA) private billingCoreData: IBillingCoreData,
   ) {
     this.formGroup = new FormGroup({
       [DraftFormKey.BillingMonth]: new FormControl(null),
@@ -162,9 +163,8 @@ export class ContractsDraftFormComponent implements ControlValueAccessor, Valida
     window.open(`${ salesforceUrl }/${ this.distributor.salesforceId }`);
   }
 
-  public getBillingEntityName(billingEntity: BillingEntity): string {
-    const translationKey = getBillingEntity(billingEntity)?.name;
-    return this.translatePipe.transform(translationKey);
+  public getBillingEntityName(id: number): string {
+    return getNameById(this.billingCoreData.billingEntities, id);
   }
 
   public validate(control: AbstractControl): ValidationErrors | null {

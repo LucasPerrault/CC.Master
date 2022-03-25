@@ -1,6 +1,6 @@
-import { Component, Input } from '@angular/core';
+import { Component, Inject, Input } from '@angular/core';
 import { TranslatePipe } from '@cc/aspects/translate';
-import { BillingEntity, getBillingEntity } from '@cc/domain/billing/clients';
+import { BILLING_CORE_DATA, getNameByCode, IBillingCoreData } from '@cc/domain/billing/billling-core-data';
 import { LuModal } from '@lucca-front/ng/modal';
 
 import { IContractDraftListEntry } from '../../models';
@@ -16,11 +16,14 @@ export class ContractsDraftListComponent {
   @Input() public contractDrafts: IContractDraftListEntry[];
   @Input() public isLoading: boolean;
 
-  constructor(private modal: LuModal, private translatePipe: TranslatePipe) { }
+  constructor(
+    private modal: LuModal,
+    private translatePipe: TranslatePipe,
+    @Inject(BILLING_CORE_DATA) private billingCoreData: IBillingCoreData,
+    ) { }
 
-  public getBillingEntityName(billingEntity: BillingEntity): string {
-    const translationKey = getBillingEntity(billingEntity)?.name;
-    return this.translatePipe.transform(translationKey);
+  public getBillingEntityName(code: string): string {
+    return getNameByCode(this.billingCoreData.billingEntities, code);
   }
 
   public redirectTo(externalUrl: string): void {

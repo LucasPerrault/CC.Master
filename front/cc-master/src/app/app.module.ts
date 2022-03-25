@@ -9,6 +9,7 @@ import { TranslateModule } from '@cc/aspects/translate';
 import { BannerComponent, BannerModule } from '@cc/common/banner';
 import { NavigationModule } from '@cc/common/navigation/navigation.module';
 import { ToastsModule } from '@cc/common/toasts';
+import { BillingCoreDataModule } from '@cc/domain/billing/billling-core-data';
 
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
@@ -22,6 +23,7 @@ import { AppRoutingModule } from './app-routing.module';
     BrowserModule,
     BrowserAnimationsModule,
     PrincipalModule.forRoot(),
+    BillingCoreDataModule.forRoot(),
     ErrorsModule.forRoot(),
     TranslateModule.forRoot(),
     ToastsModule,

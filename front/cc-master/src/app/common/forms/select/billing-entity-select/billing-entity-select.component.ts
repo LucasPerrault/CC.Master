@@ -8,8 +8,7 @@ import {
   ValidationErrors,
   Validator,
 } from '@angular/forms';
-import { TranslatePipe } from '@cc/aspects/translate';
-import { billingEntities, IBillingEntity } from '@cc/domain/billing/clients';
+import { IBillingEntity } from '@cc/domain/billing/clients';
 import { FormlyFieldConfig } from '@ngx-formly/core/lib/components/formly.field.config';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
@@ -38,14 +37,10 @@ export class BillingEntitySelectComponent implements ControlValueAccessor, Valid
   @Input() required = false;
   @Input() formlyAttributes: FormlyFieldConfig = {};
 
+  public readonly api = '/api/billing-entities';
+
   public formControl: FormControl = new FormControl();
-  public billingEntities: IBillingEntity[];
-
   private destroy$: Subject<void> = new Subject();
-
-  constructor(private translatePipe: TranslatePipe) {
-    this.billingEntities = this.getTranslatedBillingEntities(billingEntities);
-  }
 
   public ngOnInit(): void {
     this.formControl.valueChanges
@@ -71,12 +66,7 @@ export class BillingEntitySelectComponent implements ControlValueAccessor, Valid
 
   public writeValue(billingEntity: IBillingEntity | IBillingEntity[]): void {
     if (!!billingEntity && billingEntity !== this.formControl.value) {
-
-      const translatedValues = this.multiple
-        ? this.getTranslatedBillingEntities(billingEntity as IBillingEntity[])
-        : this.getTranslatedBillingEntity(billingEntity as IBillingEntity);
-
-      this.formControl.patchValue(translatedValues);
+      this.formControl.patchValue(billingEntity);
     }
   }
 
@@ -86,15 +76,7 @@ export class BillingEntitySelectComponent implements ControlValueAccessor, Valid
     }
   }
 
-  public trackBy(index: number, billingEntity: IBillingEntity): number {
-    return billingEntity.id;
-  }
-
-  private getTranslatedBillingEntities(entities: IBillingEntity[]): IBillingEntity[] {
-    return entities?.map(b => this.getTranslatedBillingEntity(b));
-  }
-
-  private getTranslatedBillingEntity(billingEntity: IBillingEntity): IBillingEntity {
-    return { ...billingEntity, name: this.translatePipe.transform(billingEntity?.name) };
+  public trackBy(index: number, billingEntity: IBillingEntity): string {
+    return billingEntity.code;
   }
 }

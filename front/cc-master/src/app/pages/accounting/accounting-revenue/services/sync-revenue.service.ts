@@ -1,7 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { IHttpApiV3CollectionResponse } from '@cc/common/queries';
-import { BillingEntity } from '@cc/domain/billing/clients';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
@@ -9,7 +8,7 @@ import { ISyncRevenueInfo } from '../models/sync-revenue-info.interface';
 
 export class CurrentSyncRevenueInfo {
 	syncRevenue: ISyncRevenueInfo;
-	entity: BillingEntity;
+	entity: string;
 }
 
 @Injectable()
@@ -24,8 +23,8 @@ export class SyncRevenueService {
 			.pipe(map(res => res.data.items));
 	}
 
-  public synchronise$(billingEntity: BillingEntity): Observable<void> {
-		const body = { billingEntity };
+  public synchronise$(code: string): Observable<void> {
+		const body = { billingEntity: code };
 
     return this.httpClient.post<void>(this.syncEndPoint, body);
 	}
