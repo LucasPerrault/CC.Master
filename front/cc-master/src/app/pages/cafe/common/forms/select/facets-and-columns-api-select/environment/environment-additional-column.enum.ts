@@ -1,4 +1,5 @@
 import { IAdditionalColumn } from '../../../../models';
+import { EnvironmentCriterionKey } from '../../../../../environments/advanced-filter/environment-criterion-key.enum';
 
 export enum EnvironmentAdditionalColumn {
   Environment = 'environment',
@@ -41,5 +42,17 @@ export const environmentAdditionalColumns: IAdditionalColumn[] = [
   },
 ];
 
+export const getAdditionalColumnById = (id: EnvironmentAdditionalColumn): IAdditionalColumn =>
+  environmentAdditionalColumns.find(c => c.id === id);
+
 export const getAdditionalColumnByIds = (ids: EnvironmentAdditionalColumn[]): IAdditionalColumn[] =>
     environmentAdditionalColumns.filter(c => ids.includes(c.id as EnvironmentAdditionalColumn));
+
+export const environmentCriterionAndColumnMapping = [
+  {
+    criterionKey: EnvironmentCriterionKey.AppInstances,
+    columnKey: EnvironmentAdditionalColumn.AppInstances,
+    column: getAdditionalColumnById(EnvironmentAdditionalColumn.AppInstances),
+  },
+];
+

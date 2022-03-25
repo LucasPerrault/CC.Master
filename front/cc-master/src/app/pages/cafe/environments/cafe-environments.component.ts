@@ -5,11 +5,13 @@ import { getButtonState, toSubmissionState } from '@cc/common/forms';
 import { defaultPagingParams, IPaginatedResult, PaginatedList, PaginatedListState, PagingService } from '@cc/common/paging';
 import { ApiStandard } from '@cc/common/queries';
 import { BehaviorSubject, combineLatest, Observable, ReplaySubject, Subject } from 'rxjs';
-import { filter, map, take, takeUntil } from 'rxjs/operators';
+import { debounceTime, filter, map, pairwise, take, takeUntil, tap } from 'rxjs/operators';
 
-import { AdvancedFilter } from '../common/components/advanced-filter-form';
 import {
-  EnvironmentAdditionalColumn, FacetAndColumnHelper,
+  AdvancedFilter,
+} from '../common/components/advanced-filter-form';
+import {
+  EnvironmentAdditionalColumn, environmentCriterionAndColumnMapping, FacetAndColumnHelper, getAdditionalColumnById,
   getAdditionalColumnByIds,
 } from '../common/forms/select/facets-and-columns-api-select';
 import { IAdditionalColumn, IFacet, ISearchDto, toSearchDto } from '../common/models';
@@ -46,7 +48,7 @@ export class CafeEnvironmentsComponent implements OnInit, OnDestroy {
 
   public exportButtonClass$ = new ReplaySubject<string>(1);
 
-  public advancedFilter = new FormControl();
+  public advancedFilter = new FormControl({ criterionForms: [] });
   public facetsAndColumns = new FormControl();
 
   public selectedColumns$ = new BehaviorSubject<IAdditionalColumn[]>([]);
@@ -61,6 +63,8 @@ export class CafeEnvironmentsComponent implements OnInit, OnDestroy {
     EnvironmentAdditionalColumn.AppInstances,
     EnvironmentAdditionalColumn.Distributors,
   ]);
+  private addedCriterion$ = new BehaviorSubject(null);
+  private removedCriterion$ = new BehaviorSubject(null);
 
   private destroy$: Subject<void> = new Subject<void>();
 
@@ -83,6 +87,37 @@ export class CafeEnvironmentsComponent implements OnInit, OnDestroy {
       .subscribe(advancedFilter => this.advancedFilter$.next(advancedFilter));
 
     this.facetsAndColumns.setValue(FacetAndColumnHelper.mapColumnsToFacetAndColumns(this.defaultSelectedColumns));
+
+    this.advancedFilter.valueChanges
+      .pipe(takeUntil(this.destroy$), tap(console.log), map(f => f.criterionForms.map(c => c.criterion.key)), pairwise())
+      .subscribe(([acc, curr]: [string[], string[]]) => {
+        if (curr?.length === 1) {
+          this.addedCriterion$.next(acc[0]);
+          return;
+        }
+
+        const addedCriterion = curr.filter(x => !acc.includes(x))[0];
+        if (!!addedCriterion && addedCriterion !== this.addedCriterion$.value) {
+          this.addedCriterion$.next(addedCriterion);
+        }
+
+        const removedCriterion = acc.filter(x => !curr.includes(x))[0];
+        if (!!removedCriterion && removedCriterion !== this.removedCriterion$.value) {
+          this.removedCriterion$.next(removedCriterion);
+        }
+      });
+
+    this.addedCriterion$
+      .pipe(debounceTime(100), filter(a => !!a))
+      .subscribe(a => {
+        console.log('added criterion', a);
+        const mapping = environmentCriterionAndColumnMapping.find(e => e.criterionKey === a);
+        this.facetsAndColumns.setValue();
+      });
+    this.removedCriterion$
+      .pipe(debounceTime(100), filter(a => !!a))
+      .subscribe(a => console.log('removed criterion', a));
+
   }
 
   public ngOnDestroy(): void {
@@ -120,4 +155,13 @@ export class CafeEnvironmentsComponent implements OnInit, OnDestroy {
       map(response => ({ items: response.items, totalCount: response.count })),
     );
   }
+  //
+  // private getCriterionKeys(f: IAdvancedFilterForm) {
+  //   return f.criterionForms.map(form =>
+  //     this.isFacet(form) ? `${ (form.criterion as IFacetComparisonCriterion).facet.applicationId } - ${ }`)
+  // }
+  //
+  // private isFacet(form: IComparisonFilterCriterionForm | IFacetComparisonCriterion): form is IFacetComparisonCriterion {
+  //   return !!(form as IFacetComparisonCriterion).facet;
+  // }
 }
