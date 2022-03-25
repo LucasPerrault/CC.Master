@@ -27,31 +27,39 @@ namespace Instances.Infra.Tests.Storage.Stores
         [Fact]
         public async Task Create_Update_Get_Async()
         {
-            var codeSource = new CodeSource { Id = 2 };
-            await _dbContext.AddAsync(new CodeSource { Id = 1, Lifecycle = CodeSourceLifecycleStep.InProduction });
-            await _dbContext.AddAsync(new CodeSource { Id = codeSource.Id, Lifecycle = CodeSourceLifecycleStep.InProduction });
+            var codeSource1 =  await _dbContext.AddAsync(new CodeSource { Id = 1, Lifecycle = CodeSourceLifecycleStep.InProduction });
+            var codeSource2 = await _dbContext.AddAsync(new CodeSource { Id = 2, Lifecycle = CodeSourceLifecycleStep.InProduction });
+            var repo1 = new GithubRepo
+            {
+                Id = 10,
+                CodeSources = new List<CodeSource> { codeSource1.Entity, codeSource2.Entity }
+            };
+            var repo2 = new GithubRepo
+            {
+                Id = 11,
+                CodeSources = new List<CodeSource>()
+            };
+            await _dbContext.AddRangeAsync(new[] { repo1, repo2 });
             await _dbContext.SaveChangesAsync();
-
-            codeSource = await _dbContext.Set<CodeSource>().FindAsync(codeSource.Id);
 
             // CREATE
             await _githubPullRequestsStore.CreateAsync(new GithubPullRequest
             {
                 IsOpened = true,
                 Number = 42,
-                CodeSources = new List<CodeSource> { codeSource }
+                RepoId = repo1.Id
             });
 
             // GET
             var first = await _githubPullRequestsStore.GetFirstAsync(new GithubPullRequestFilter
             {
-                CodeSourceId = codeSource.Id,
-                Number = 42
+                Number = 42,
+                RepoId = repo1.Id
             });
             var second = await _githubPullRequestsStore.GetFirstAsync(new GithubPullRequestFilter
             {
-                CodeSourceId = 42,
-                Number = 42
+                Number = 42,
+                RepoId = repo2.Id
             });
 
             first.Should().NotBeNull();
@@ -68,8 +76,8 @@ namespace Instances.Infra.Tests.Storage.Stores
             // GET
             var third = await _githubPullRequestsStore.GetFirstAsync(new GithubPullRequestFilter
             {
-                CodeSourceId = codeSource.Id,
-                Number = 42
+                Number = 42,
+                RepoId = repo1.Id
             });
 
             third.Should().NotBeNull();

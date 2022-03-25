@@ -1,19 +1,17 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { ApiV3DateService, IHttpApiV3CollectionResponse } from '@cc/common/queries';
-import { BillingEntity } from '@cc/domain/billing/clients';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
-
 export class CurrentAccountingPeriod {
 	date: Date;
-	entity: BillingEntity;
+	entity: number;
 }
 
 class AccountingPeriodsDto {
 	date: string;
-	entity: BillingEntity;
+	entity: number;
 }
 
 @Injectable()
@@ -28,7 +26,7 @@ export class AccountingPeriodService {
 			.pipe(map(res => !!res.data ? res.data.items.map(x=> ({ ...x, date: new Date(x.date) })) : null));
 	}
 
-	public closePeriod$(period: Date, entity: BillingEntity): Observable<void> {
+	public closePeriod$(period: Date, entity: string): Observable<void> {
 		const body = { period: this.apiV3DateService.toApiV3DateFormat(period), billingEntity: entity };
 		return this.httpClient.post<void>(this.countsClosePeriodEndPoint, body);
 	}

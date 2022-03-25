@@ -35,15 +35,19 @@ namespace Instances.Domain.CodeSources
             .Except(new[] { CodeSourceLifecycleStep.Deleted, CodeSourceLifecycleStep.ToDelete })
             .ToHashSet();
 
+        public static HashSet<CodeSourceType> MonotenantTypes => new HashSet<CodeSourceType> { CodeSourceType.Monolithe, CodeSourceType.App };
+
         public int Id { get; set; }
         public string Name { get; set; }
         public string Code { get; set; }
         public string JenkinsProjectName { get; set; }
         public string JenkinsProjectUrl { get; set; }
         public CodeSourceType Type { get; set; }
-        public string GithubRepo { get; set; }
         public CodeSourceLifecycleStep Lifecycle { get; set; }
         public CodeSourceConfig Config { get; set; }
+
+        public int RepoId { get; set; }
+        public GithubRepo Repo { get; set; }
 
         public CodeSourceProductionVersion CurrentProductionVersion => ProductionVersions?.OrderByDescending(v => v.Id)?.FirstOrDefault();
 
@@ -51,9 +55,5 @@ namespace Instances.Domain.CodeSources
         public List<CodeSourceArtifacts> CodeSourceArtifacts { get; set; }
         [JsonIgnore]
         public List<CodeSourceProductionVersion> ProductionVersions { get; set; }
-        [JsonIgnore]
-        public List<GithubBranch> GithubBranches { get; set; }
-        [JsonIgnore]
-        public List<GithubPullRequest> GithubPullRequests { get; set; }
     }
 }

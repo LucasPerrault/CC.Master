@@ -16,7 +16,7 @@ namespace Instances.Application.Tests.Webhooks.Github
         {
             _serviceProvider = new ServiceCollection()
                 .AddSingleton(new PushWebhookService(null, null, null))
-                .AddSingleton(new PullRequestWebhookService(null, null, null, null))
+                .AddSingleton(new PullRequestWebhookService(null, null, null, null, null))
                 .BuildServiceProvider();
             _githubWebhookServiceProvider = new GithubWebhookServiceProvider(_serviceProvider);
         }

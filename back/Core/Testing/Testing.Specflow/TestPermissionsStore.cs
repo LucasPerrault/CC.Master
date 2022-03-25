@@ -1,4 +1,5 @@
-﻿using Lucca.Core.Rights.Abstractions;
+using Environments.Domain;
+using Lucca.Core.Rights.Abstractions;
 using Lucca.Core.Rights.Abstractions.Permissions;
 using Rights.Domain;
 using Rights.Infra.Stores;
@@ -65,6 +66,25 @@ namespace Testing.Specflow
             });
         }
 
+        public void AddUserPermission(int userId, Operation operation, Scope scope, EnvironmentPurpose purpose)
+        {
+            UserPermissions.Add(new TestStoredPermission
+            {
+                Id = userId,
+                OperationId = (int)operation,
+                TestPermission = new TestPermission
+                {
+                    Scope = scope,
+                    OperationId = (int)operation,
+                    ExternalEntityId = (int)purpose,
+                }
+            });
+        }
+
+        public bool HasNotAnyOperation(int userId, Operation operation)
+        {
+            return !UserPermissions.Any(up => up.Id == userId && up.OperationId == (int)operation);
+        }
 
         public void AddApiKeyPermission(int apiKeyId, Operation operation, Scope scope)
         {
@@ -93,7 +113,7 @@ namespace Testing.Specflow
             public int OperationId { get; init; }
             public Scope Scope { get; init; }
 
-            public int ExternalEntityId => throw new NotImplementedException();
+            public int ExternalEntityId { get; init; }
             public int? EstablishmentId => throw new NotImplementedException();
             public int? SpecificDepartmentId => throw new NotImplementedException();
             public int? SpecificUserId => throw new NotImplementedException();

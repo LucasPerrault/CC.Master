@@ -2,9 +2,9 @@ import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 
 import { AppContactsModule } from './app-contacts/app-contacts.module';
-import { CafeContactConfiguration } from './cafe-contact-configuration.service';
 import { CafeContactsComponent } from './cafe-contacts.component';
 import { ClientContactsModule } from './client-contacts/client-contacts.module';
+import { CafeContactCategoryService } from './common/services/cafe-contact-category.service';
 import { SpecializedContactsModule } from './specialized-contacts/specialized-contacts.module';
 
 @NgModule({
@@ -15,7 +15,7 @@ import { SpecializedContactsModule } from './specialized-contacts/specialized-co
     ClientContactsModule,
     SpecializedContactsModule,
   ],
-  providers: [CafeContactConfiguration],
+  providers: [CafeContactCategoryService],
   exports: [CafeContactsComponent],
 })
 export class CafeContactsModule { }

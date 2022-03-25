@@ -40,7 +40,6 @@ namespace Instances.Application.Demos.Duplication
     {
         private const int DefaultSourceDemoId = 385;
         private const int DefaultAuthorId = 0;
-        private const int DefaultDistributorId = 37;
         private const string DefaultHubspotPassword = "test";
 
         private readonly ICacheService _cacheService;
@@ -50,7 +49,7 @@ namespace Instances.Application.Demos.Duplication
         private readonly IClusterSelector _clusterSelector;
         private readonly IDnsService _dnsService;
         private readonly IDemoDuplicationsStore _duplicationsStore;
-        private readonly InstancesDuplicator _instancesDuplicator;
+        private readonly InstancesManipulator _instancesDuplicator;
 
         public HubspotDemoDuplicator
         (
@@ -60,7 +59,7 @@ namespace Instances.Application.Demos.Duplication
             ISubdomainGenerator subdomainGenerator,
             IClusterSelector clusterSelector,
             IDemoDuplicationsStore duplicationsStore,
-            InstancesDuplicator instancesDuplicator,
+            InstancesManipulator instancesDuplicator,
             IDnsService dnsService
         )
         {
@@ -106,9 +105,9 @@ namespace Instances.Application.Demos.Duplication
             var demoToDuplicate = await _demosStore.GetActiveByIdAsync(DefaultSourceDemoId, AccessRight.All);
             var targetCluster = await _clusterSelector.GetFillingClusterAsync(targetSubdomain);
 
-            var duplication = DuplicationFactory.New
+            var duplication = DemoDuplicationFactory.New
                 (
-                    DefaultDistributorId,
+                    Distributor.DefaultDistributorId,
                     DefaultAuthorId,
                     demoToDuplicate,
                     targetCluster,
@@ -118,7 +117,10 @@ namespace Instances.Application.Demos.Duplication
 
             await _dnsService.CreateAsync(DnsEntry.ForDemo(targetSubdomain, targetCluster));
             await _duplicationsStore.CreateAsync(duplication);
-            await _instancesDuplicator.RequestRemoteDuplicationAsync(duplication.InstanceDuplication, skipBufferServer:true, $"/api/hubspot/duplications/{duplication.InstanceDuplicationId}/notify");
+            await _instancesDuplicator.RequestRemoteDuplicationAsync(
+                duplication.InstanceDuplication,
+                InstanceDuplicationOptions.ForDemo($"/api/hubspot/duplications/{duplication.InstanceDuplicationId}/notify")
+            );
 
             return duplication;
         }

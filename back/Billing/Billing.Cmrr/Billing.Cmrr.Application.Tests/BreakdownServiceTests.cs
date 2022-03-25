@@ -73,16 +73,18 @@ namespace Billing.Cmrr.Application.Tests
 
             var figgoBreakdowns = allBreakdowns.Where(b => b.AxisSection.Id == figgo.Id);
             figgoBreakdowns.Should().HaveCount(1);
-            figgoBreakdowns.Single(b => b.SubSection == solutionFiggo.Name).Ratio.Should().Be(1m);
+            figgoBreakdowns.Single(b => b.SubSection == figgo.Name).Ratio.Should().Be(1m);
 
             var cleemyBreakdowns = allBreakdowns.Where(b => b.AxisSection.Id == cleemy.Id);
             cleemyBreakdowns.Should().HaveCount(1);
-            cleemyBreakdowns.Single(b => b.SubSection == solutionCleemy.Name).Ratio.Should().Be(1m);
+            cleemyBreakdowns.Single(b => b.SubSection == cleemy.Name).Ratio.Should().Be(1m);
 
             var suiteBreakdowns = allBreakdowns.Where(b => b.AxisSection.Id == suite.Id);
             suiteBreakdowns.Should().HaveCount(2);
-            suiteBreakdowns.Single(b => b.SubSection == solutionFiggo.Name).Ratio.Should().Be(0.5m);
-            suiteBreakdowns.Single(b => b.SubSection == solutionCleemy.Name).Ratio.Should().Be(0.5m);
+            foreach (var b in suiteBreakdowns)
+            {
+                b.Ratio.Should().Be(0.5m);
+            }
         }
 
         [Fact]
@@ -120,9 +122,10 @@ namespace Billing.Cmrr.Application.Tests
 
             var suiteBreakdowns = allBreakdowns.Where(b => b.AxisSection.Id == suite.Id);
             suiteBreakdowns.Should().HaveCount(3);
-            suiteBreakdowns.Single(b => b.SubSection == solutionFiggo.Name).Ratio.Should().BeApproximately(0.333m, 0.001m);
-            suiteBreakdowns.Single(b => b.SubSection == solutionCleemyProc.Name).Ratio.Should().BeApproximately(0.333m, 0.001m);
-            suiteBreakdowns.Single(b => b.SubSection == solutionCleemy.Name).Ratio.Should().BeApproximately(0.333m, 0.001m);
+            foreach (var b in suiteBreakdowns)
+            {
+                b.Ratio.Should().BeApproximately(0.333m, 0.001m);
+            }
         }
 
         [Fact]
@@ -162,9 +165,8 @@ namespace Billing.Cmrr.Application.Tests
 
             var suiteBreakdowns = allBreakdowns.Where(b => b.AxisSection.Id == suite.Id);
             suiteBreakdowns.Should().HaveCount(3);
-            suiteBreakdowns.Single(b => b.SubSection == solutionFiggo.Name).Ratio.Should().Be(100m/totalShare);
-            suiteBreakdowns.Single(b => b.SubSection == solutionCleemy.Name).Ratio.Should().Be(10m / totalShare);
-            suiteBreakdowns.Single(b => b.SubSection == solutionCleemyProc.Name).Ratio.Should().Be(1m / totalShare);
+            var expectedRatios = new List<decimal> { 100m / totalShare, 10m / totalShare, 1m / totalShare };
+            suiteBreakdowns.Select(b => b.Ratio).Should().BeEquivalentTo(expectedRatios);
         }
 
         [Fact]

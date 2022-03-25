@@ -14,6 +14,6 @@ export class OfferPageTemplateComponent {
   constructor(private router: Router) { }
 
   public redirectToOffers(): void {
-    this.router.navigate([NavigationPath.Offers]);
+    this.router.navigate([NavigationPath.Offers], { queryParamsHandling: 'preserve' });
   }
 }

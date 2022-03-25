@@ -2,9 +2,7 @@
 {
     public class GithubBranchCreationDto
     {
-        public string RepoUrl { get; set; }
-
         public string BranchName { get; set; }
+        public int RepoId { get; set; }
     }
-
 }

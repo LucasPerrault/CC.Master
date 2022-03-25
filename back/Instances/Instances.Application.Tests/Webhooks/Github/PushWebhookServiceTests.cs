@@ -1,13 +1,9 @@
-using FluentAssertions;
-using Instances.Application.CodeSources;
 using Instances.Application.Instances;
 using Instances.Application.Webhooks.Github;
-using Instances.Domain.CodeSources;
+using Instances.Domain.Github;
 using Instances.Domain.Github.Models;
-using Lucca.Core.Shared.Domain.Exceptions;
 using Moq;
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Threading.Tasks;
@@ -17,22 +13,22 @@ namespace Instances.Application.Tests.Webhooks.Github
 {
     public class PushWebhookServiceTests
     {
-        private const string RepositoryUrl = "https://github.com/LuccaSA/repo";
+        private readonly Uri _repositoryUrl = new("https://github.com/LuccaSA/repo");
         private readonly PushWebhookService _pushWebhookService;
-        private readonly Mock<ICodeSourcesRepository> _codeSourcesRepositoryMock;
         private readonly Mock<IGithubBranchesRepository> _githubBranchesRepositoryMock;
         private readonly Mock<IPreviewConfigurationsRepository> _previewConfigurationRepositoryMock;
+        private readonly Mock<IGithubReposStore> _githubReposStoreMock;
 
         public PushWebhookServiceTests()
         {
-            _codeSourcesRepositoryMock = new Mock<ICodeSourcesRepository>(MockBehavior.Strict);
-            _githubBranchesRepositoryMock = new Mock<IGithubBranchesRepository>(MockBehavior.Strict);
-            _previewConfigurationRepositoryMock = new Mock<IPreviewConfigurationsRepository>(MockBehavior.Strict);
+            _githubBranchesRepositoryMock = new(MockBehavior.Strict);
+            _previewConfigurationRepositoryMock = new(MockBehavior.Strict);
+            _githubReposStoreMock = new(MockBehavior.Strict);
 
             _pushWebhookService = new PushWebhookService(
-                _codeSourcesRepositoryMock.Object,
                 _githubBranchesRepositoryMock.Object,
-                _previewConfigurationRepositoryMock.Object
+                _previewConfigurationRepositoryMock.Object,
+                _githubReposStoreMock.Object
             );
         }
 
@@ -41,59 +37,56 @@ namespace Instances.Application.Tests.Webhooks.Github
         public async Task HandleEventAsync_NoSources()
         {
             var json = BuildValidJson();
-            _codeSourcesRepositoryMock
-                .Setup(c => c.GetNonDeletedByRepositoryUrlAsync(It.IsAny<string>()))
-                .ReturnsAsync(new List<CodeSource>());
+            _githubReposStoreMock
+                .Setup(c => c.GetByUriAsync(It.IsAny<Uri>()))
+                .ReturnsAsync((GithubRepo)null);
 
             await using var stream = new MemoryStream(Encoding.UTF8.GetBytes(json));
             await _pushWebhookService.HandleEventAsync(stream);
 
-            _codeSourcesRepositoryMock.Verify(c => c.GetNonDeletedByRepositoryUrlAsync(RepositoryUrl));
+            _githubReposStoreMock.Verify(c => c.GetByUriAsync(_repositoryUrl));
         }
 
         [Fact]
         public async Task HandleEventAsync_Created()
         {
             var json = BuildValidJson(created: true);
-            var codeSource = new CodeSource
-            {
-                GithubRepo = RepositoryUrl
-            };
-            _codeSourcesRepositoryMock
-                .Setup(c => c.GetNonDeletedByRepositoryUrlAsync(It.IsAny<string>()))
-                .ReturnsAsync(new List<CodeSource> { codeSource });
+            _githubReposStoreMock
+                .Setup(c => c.GetByUriAsync(It.IsAny<Uri>()))
+                .ReturnsAsync(new GithubRepo
+                {
+                    Id = 42
+                });
             _githubBranchesRepositoryMock
-                .Setup(g => g.CreateAsync(It.IsAny<List<CodeSource>>(), It.IsAny<string>(), It.IsAny<GithubApiCommit>()))
+                .Setup(g => g.CreateAsync(It.IsAny<GithubRepo>(), It.IsAny<string>(), It.IsAny<GithubApiCommit>()))
                 .ReturnsAsync((GithubBranch)null);
 
             await using var stream = new MemoryStream(Encoding.UTF8.GetBytes(json));
             await _pushWebhookService.HandleEventAsync(stream);
 
-            _codeSourcesRepositoryMock.Verify(c => c.GetNonDeletedByRepositoryUrlAsync(RepositoryUrl));
-
-            _githubBranchesRepositoryMock.Verify(g => g.CreateAsync(It.IsAny<List<CodeSource>>(), "main", It.IsAny<GithubApiCommit>()));
+            _githubReposStoreMock.Verify(c => c.GetByUriAsync(_repositoryUrl));
+            _githubBranchesRepositoryMock.Verify(g => g.CreateAsync(It.IsAny<GithubRepo>(), "main", It.IsAny<GithubApiCommit>()));
         }
 
         [Fact]
         public async Task HandleEventAsync_Deleted_notfound()
         {
             var json = BuildValidJson(deleted: true);
-            var codeSource = new CodeSource
-            {
-                GithubRepo = RepositoryUrl
-            };
-            _codeSourcesRepositoryMock
-                .Setup(c => c.GetNonDeletedByRepositoryUrlAsync(It.IsAny<string>()))
-                .ReturnsAsync(new List<CodeSource> { codeSource });
+            _githubReposStoreMock
+                .Setup(c => c.GetByUriAsync(It.IsAny<Uri>()))
+                .ReturnsAsync(new GithubRepo
+                {
+                    Id = 42
+                });
             _githubBranchesRepositoryMock
-                .Setup(g => g.GetNonDeletedBranchByNameAsync(It.IsAny<CodeSource>(), It.IsAny<string>()))
+                .Setup(g => g.GetNonDeletedBranchByNameAsync(It.IsAny<int>(), It.IsAny<string>()))
                 .ReturnsAsync((GithubBranch)null);
 
             await using var stream = new MemoryStream(Encoding.UTF8.GetBytes(json));
             await _pushWebhookService.HandleEventAsync(stream);
 
-            _codeSourcesRepositoryMock.Verify(c => c.GetNonDeletedByRepositoryUrlAsync(RepositoryUrl));
-            _githubBranchesRepositoryMock.Verify(g => g.GetNonDeletedBranchByNameAsync(codeSource, "main"));
+            _githubReposStoreMock.Verify(c => c.GetByUriAsync(_repositoryUrl));
+            _githubBranchesRepositoryMock.Verify(g => g.GetNonDeletedBranchByNameAsync(42, "main"));
         }
 
         [Fact]
@@ -101,15 +94,14 @@ namespace Instances.Application.Tests.Webhooks.Github
         {
             var json = BuildValidJson(deleted: true);
             var githubBranch = new GithubBranch();
-            var codeSource = new CodeSource
-            {
-                GithubRepo = RepositoryUrl
-            };
-            _codeSourcesRepositoryMock
-                .Setup(c => c.GetNonDeletedByRepositoryUrlAsync(It.IsAny<string>()))
-                .ReturnsAsync(new List<CodeSource> { codeSource });
+            _githubReposStoreMock
+                .Setup(c => c.GetByUriAsync(It.IsAny<Uri>()))
+                .ReturnsAsync(new GithubRepo
+                {
+                    Id= 42
+                });
             _githubBranchesRepositoryMock
-                .Setup(g => g.GetNonDeletedBranchByNameAsync(It.IsAny<CodeSource>(), It.IsAny<string>()))
+                .Setup(g => g.GetNonDeletedBranchByNameAsync(It.IsAny<int>(), It.IsAny<string>()))
                 .ReturnsAsync(githubBranch);
             _githubBranchesRepositoryMock
                 .Setup(g => g.UpdateAsync(It.IsAny<GithubBranch>()))
@@ -121,9 +113,9 @@ namespace Instances.Application.Tests.Webhooks.Github
             await using var stream = new MemoryStream(Encoding.UTF8.GetBytes(json));
             await _pushWebhookService.HandleEventAsync(stream);
 
-            _codeSourcesRepositoryMock.Verify(c => c.GetNonDeletedByRepositoryUrlAsync(RepositoryUrl));
+            _githubReposStoreMock.Verify(c => c.GetByUriAsync(_repositoryUrl));
 
-            _githubBranchesRepositoryMock.Verify(g => g.GetNonDeletedBranchByNameAsync(codeSource, "main"));
+            _githubBranchesRepositoryMock.Verify(g => g.GetNonDeletedBranchByNameAsync(42, "main"));
             _githubBranchesRepositoryMock.Verify(g => g.UpdateAsync(It.Is<GithubBranch>(b => b.IsDeleted == true)));
             _previewConfigurationRepositoryMock.Verify(p => p.DeleteByBranchAsync(githubBranch));
         }
@@ -134,15 +126,14 @@ namespace Instances.Application.Tests.Webhooks.Github
         {
             var json = BuildValidJson();
             var githubBranch = new GithubBranch();
-            var codeSource = new CodeSource
-            {
-                GithubRepo = RepositoryUrl
-            };
-            _codeSourcesRepositoryMock
-                .Setup(c => c.GetNonDeletedByRepositoryUrlAsync(It.IsAny<string>()))
-                .ReturnsAsync(new List<CodeSource> { codeSource });
+            _githubReposStoreMock
+                .Setup(c => c.GetByUriAsync(It.IsAny<Uri>()))
+                .ReturnsAsync(new GithubRepo
+                {
+                    Id = 42
+                });
             _githubBranchesRepositoryMock
-                .Setup(g => g.GetNonDeletedBranchByNameAsync(It.IsAny<CodeSource>(), It.IsAny<string>()))
+                .Setup(g => g.GetNonDeletedBranchByNameAsync(It.IsAny<int>(), It.IsAny<string>()))
                 .ReturnsAsync(githubBranch);
             _githubBranchesRepositoryMock
                 .Setup(g => g.UpdateAsync(It.IsAny<GithubBranch>()))
@@ -150,9 +141,9 @@ namespace Instances.Application.Tests.Webhooks.Github
             await using var stream = new MemoryStream(Encoding.UTF8.GetBytes(json));
             await _pushWebhookService.HandleEventAsync(stream);
 
-            _codeSourcesRepositoryMock.Verify(c => c.GetNonDeletedByRepositoryUrlAsync(RepositoryUrl));
+            _githubReposStoreMock.Verify(c => c.GetByUriAsync(_repositoryUrl));
 
-            _githubBranchesRepositoryMock.Verify(g => g.GetNonDeletedBranchByNameAsync(codeSource, "main"));
+            _githubBranchesRepositoryMock.Verify(g => g.GetNonDeletedBranchByNameAsync(42, "main"));
             _githubBranchesRepositoryMock.Verify(g => g.UpdateAsync(githubBranch));
         }
 
@@ -168,7 +159,7 @@ namespace Instances.Application.Tests.Webhooks.Github
            },
            ""repository"" : {
                 ""id"": 1296269,
-                ""html_url"": """ + RepositoryUrl + @"""
+                ""html_url"": """ + _repositoryUrl + @"""
            },
            ""sender"": {
                 ""login"": ""octocat"",

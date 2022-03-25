@@ -1,4 +1,5 @@
 using Instances.Application.CodeSources;
+using Instances.Application.Instances.Dtos;
 using Instances.Domain.CodeSources;
 using Instances.Domain.CodeSources.Filtering;
 using Instances.Web.Controllers.Dtos;
@@ -41,7 +42,7 @@ namespace Instances.Web.Controllers
 
         [HttpPost]
         [ForbidIfMissing(Operation.EditCodeSources)]
-        public async Task<CodeSource> CreateAsync([FromBody]CodeSource codeSource)
+        public async Task<CodeSource> CreateAsync([FromBody]CreateCodeSourceDto codeSource)
         {
             return await _repository.CreateAsync(codeSource);
         }
@@ -111,20 +112,28 @@ namespace Instances.Web.Controllers
 
         public string Search { get; set; }
 
-        public string GithubRepo { get; set; }
+        public int? RepoId { get; set; }
 
         public HashSet<int> Id { get; set; } = new HashSet<int>();
 
         public string Code { get; set; }
 
-        public CodeSourceFilter ToFilter() => new CodeSourceFilter
+        public CodeSourceFilter ToFilter()
         {
-            Code = Code,
-            Id = Id,
-            Search = Search,
-            Lifecycle = Lifecycle,
-            Type = Type,
-            GithubRepo = GithubRepo,
-        };
+            var reposId = new HashSet<int>();
+            if (RepoId != null)
+            {
+                reposId.Add(RepoId.Value);
+            }
+            return new CodeSourceFilter
+            {
+                Code = Code,
+                Id = Id,
+                Search = Search,
+                Lifecycle = Lifecycle,
+                Type = Type,
+                RepoIds = reposId
+            };
+        }
     }
 }

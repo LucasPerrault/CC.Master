@@ -1,10 +1,19 @@
 using Billing.Contracts.Domain.Contracts;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Text.Json.Serialization;
 
 namespace Billing.Contracts.Domain.Clients
 {
+    public enum BillingEntity
+    {
+        [Description("Inconnue")] Unknown = 0,
+        [Description("Lucca France")] France = 1,
+        [Description("Lucca Iberia")] Iberia = 2,
+        [Description("Lucca Suisse")] Switzerland = 3,
+    }
+
     public class Client
     {
         public int Id { get; set; }
@@ -17,6 +26,7 @@ namespace Billing.Contracts.Domain.Clients
         public string BillingCity { get; set; }
         public string BillingCountry { get; set; }
         public string BillingMail { get; set; }
+        public BillingEntity BillingEntity { get; set; }
         public string Phone { get; set; }
 
         [JsonIgnore]

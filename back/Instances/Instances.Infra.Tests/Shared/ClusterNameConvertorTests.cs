@@ -9,9 +9,8 @@ namespace Instances.Infra.Tests.Shared
     {
 
         [Theory]
-        [InlineData("green")]
-        [InlineData("green3")]
-        public void GetShortName_DoesNotGiveNumberForGreen(string clusterName)
+        [InlineData("test")]
+        public void GetShortName_DoesNotGiveNumberForTraining(string clusterName)
         {
             Assert.DoesNotMatch(".*\\d.*", ClusterNameConvertor.GetShortName(clusterName));
         }
@@ -30,7 +29,6 @@ namespace Instances.Infra.Tests.Shared
         [InlineData("demo")]
         [InlineData("preview")]
         [InlineData("formation")]
-        [InlineData("green")]
         [InlineData("security")]
         [InlineData("recette")]
         [InlineData("ch1")]

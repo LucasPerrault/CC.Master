@@ -10,18 +10,22 @@ import { OfferArchivingModule } from './components/offer-archiving/offer-archivi
 import { OfferFiltersModule } from './components/offer-filters/offer-filters.module';
 import { OfferListComponent } from './components/offer-list/offer-list.component';
 import { OffersComponent } from './offers.component';
+import { OffersPageComponent } from './offers-page.component';
 import { OffersRoutingModule } from './offers-routing.module';
 import { OfferListService } from './services/offer-list.service';
 import { OfferRestrictionsService } from './services/offer-restrictions.service';
 import { OfferUsageStoreService } from './services/offer-usage-store.service';
 import { OffersApiMappingService } from './services/offers-api-mapping.service';
 import { OffersDataService } from './services/offers-data.service';
+import { OffersFilterRoutingService } from './services/offers-filter-routing.service';
+import { OffersRoutingService } from './services/offers-routing.service';
 import { PriceListsDataService } from './services/price-lists-data.service';
 
 @NgModule({
   declarations: [
     OffersComponent,
     OfferListComponent,
+    OffersPageComponent,
   ],
   imports: [
     CommonModule,
@@ -43,6 +47,8 @@ import { PriceListsDataService } from './services/price-lists-data.service';
     OfferListService,
     OfferRestrictionsService,
     OfferUsageStoreService,
+    OffersRoutingService,
+    OffersFilterRoutingService,
   ],
 })
 export class OffersModule { }

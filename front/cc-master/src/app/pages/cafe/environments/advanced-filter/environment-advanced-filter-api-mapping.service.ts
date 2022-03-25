@@ -3,13 +3,15 @@ import { Injectable } from '@angular/core';
 import {
   AdvancedFilter,
   AdvancedFilterFormMapping,
-  AdvancedFilterTypeMapping, ComparisonOperator,
+  AdvancedFilterOperatorMapping,
+  AdvancedFilterTypeMapping,
+  ComparisonOperator,
   defaultEncapsulation,
   IAdvancedFilterAttributes,
   IAdvancedFilterForm,
   IFilterCriterionEncapsulation,
-} from '../../common/cafe-filters/advanced-filter-form';
-import { AdvancedFilterOperatorMapping } from '../../common/cafe-filters/advanced-filter-form';
+  ItemsMatchedDto,
+} from '../../common/components/advanced-filter-form';
 import { IEnvironment } from '../models/environment.interface';
 import { EnvironmentAdvancedFilterKey } from './environment-advanced-filter-key.enum';
 
@@ -46,6 +48,8 @@ export class EnvironmentAdvancedFilterApiMappingService {
       case EnvironmentAdvancedFilterKey.Distributors:
         const distributors = attributes.value.fieldValues[attributes.filterKey];
         return this.getDistributorsAdvancedFilter(distributors.map(d => d.id), attributes.operator, encapsulate);
+      case EnvironmentAdvancedFilterKey.BillingEntities:
+        return this.getBillingEntitiesAdvancedFilter(attributes, encapsulate);
       case EnvironmentAdvancedFilterKey.Cluster:
         return this.getClusterAdvancedFilter(attributes, encapsulate);
       case EnvironmentAdvancedFilterKey.DistributorType:
@@ -133,5 +137,23 @@ export class EnvironmentAdvancedFilterApiMappingService {
     const toFilterCriterion = c => (encapsulate({ distributorType: c }));
 
     return AdvancedFilterTypeMapping.toAdvancedFilter([distributorType], operator, toFilterCriterion, logicalOperator);
+  }
+
+  private getBillingEntitiesAdvancedFilter(
+    attributes: IAdvancedFilterAttributes,
+    encapsulate: IFilterCriterionEncapsulation,
+  ): AdvancedFilter {
+    const billingEntities = attributes.value.fieldValues[attributes.filterKey]?.map(b => b.id);
+    const { operator, logicalOperator } = AdvancedFilterOperatorMapping.getComparisonOperatorDto(attributes.operator);
+    const toFilterCriterion = c => (encapsulate({
+      contracts: {
+        client: {
+          billingEntity: c,
+        },
+        itemsMatched: ItemsMatchedDto.All,
+      },
+    }));
+
+    return AdvancedFilterTypeMapping.toAdvancedFilter(billingEntities, operator, toFilterCriterion, logicalOperator);
   }
 }

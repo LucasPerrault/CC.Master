@@ -1,4 +1,5 @@
 using Authentication.Domain;
+using Authentication.Domain.Helpers;
 using Distributors.Domain;
 using Instances.Application.Instances;
 using Instances.Domain.Demos;
@@ -17,7 +18,7 @@ namespace Instances.Application.Demos.Duplication
     public class DemoDuplicator
     {
         private readonly ClaimsPrincipal _principal;
-        private readonly InstancesDuplicator _instancesDuplicator;
+        private readonly InstancesManipulator _instancesDuplicator;
         private readonly IDemosStore _demosStore;
         private readonly IDemoDuplicationsStore _duplicationsStore;
         private readonly IRightsService _rightsService;
@@ -31,7 +32,7 @@ namespace Instances.Application.Demos.Duplication
         public DemoDuplicator
         (
             ClaimsPrincipal principal,
-            InstancesDuplicator instancesDuplicator,
+            InstancesManipulator instancesDuplicator,
             IDemosStore demosStore,
             IDemoDuplicationsStore duplicationsStore,
             IRightsService rightsService,
@@ -65,7 +66,7 @@ namespace Instances.Application.Demos.Duplication
             var distributor = await _distributorsStore.GetActiveByCodeAsync(request.DistributorCode);
             var targetCluster = await _clusterSelector.GetFillingClusterAsync(request.Subdomain);
 
-            var duplication = DuplicationFactory.New
+            var duplication = DemoDuplicationFactory.New
             (
                 distributor.Id,
                 GetAuthorId(_principal),
@@ -81,8 +82,7 @@ namespace Instances.Application.Demos.Duplication
             await _instancesDuplicator.RequestRemoteDuplicationAsync
             (
                 duplication.InstanceDuplication,
-                skipBufferServer: true,
-                $"/api/demos/duplications/{duplication.InstanceDuplicationId}/notify"
+                InstanceDuplicationOptions.ForDemo($"/api/demos/duplications/{duplication.InstanceDuplicationId}/notify")
             );
 
             return duplication;
@@ -90,12 +90,13 @@ namespace Instances.Application.Demos.Duplication
 
         private int GetAuthorId(ClaimsPrincipal principal)
         {
-            if (!(principal is CloudControlUserClaimsPrincipal user))
+            var authorId = _principal.GetAuthorIdOnlyWhenUser();
+            if (authorId == null)
             {
                 throw new BadRequestException("Duplication api is opened to users only");
             }
 
-            return user.UserId.Value;
+            return authorId.Value;
         }
 
         private void ThrowIfInvalid(DemoDuplicationRequest request)

@@ -39,7 +39,8 @@
   </tr>
   </thead>
   <tbody class="table-body">
-  <tr *ngFor="let offer of offers" class="table-body-row" [routerLink]="[offer.id, 'edit']">
+  <tr *ngFor="let offer of offers" class="table-body-row" [routerLink]="[offer.id, 'edit']"
+      queryParamsHandling="preserve">
     <td class="table-body-row-cell mod-alignRight">{{ offer.id }}</td>
     <td class="table-body-row-cell">{{ offer.name }}</td>
     <td class="table-body-row-cell">{{ offer.product?.name }}</td>

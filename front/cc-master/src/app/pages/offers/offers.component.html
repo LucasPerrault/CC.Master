@@ -2,7 +2,7 @@
   <header class="page-header blockWithFixedSizeInFlex">
     <h1>{{ "offers_page_title" | translate }}</h1>
     <div class="button-group" *ngIf="canCreateOffer">
-      <button class="button" routerLink="create">
+      <button class="button" routerLink="create" queryParamsHandling="preserve">
         {{ "offers_page_button_create" | translate }}
       </button>
       <button class="button mod-more" [luDropdown]="offerActions"></button>
@@ -11,7 +11,7 @@
 
   <lu-dropdown #offerActions>
     <li class="lu-dropdown-options-item">
-      <a [routerLink]="['import']" class="lu-dropdown-options-item-action" luDropdownItem>
+      <a [routerLink]="['import']" queryParamsHandling="preserve" class="lu-dropdown-options-item-action" luDropdownItem>
         {{ 'offers_page_button_import' | translate }}
       </a>
     </li>

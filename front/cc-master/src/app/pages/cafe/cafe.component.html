@@ -1,23 +1,6 @@
-<div class="page mod-fullWidth mod-withFullwidthTable">
-  <header class="page-header blockWithFixedSizeInFlex">
-		<h1>{{ "cafe_title" | translate }}</h1>
-		<button class="button primary u-marginBottomStandard" type="button"
-                [class]="buttonState$ | async"
-                [disabled]="!canExport"
-                (click)="export()">
-			{{ 'cafe_export_button' | translate }}
-		</button>
-  </header>
+<ng-container [ngSwitch]="category$ | async">
 
-  <div class="header blockWithFixedSizeInFlex">
-    <cc-cafe-filters class="u-displayFlex u-flexDirectionColumn u-flexWrapWrap u-flexGrow1"
-                     [categories]="configuration.categories"
-                     [configurations]="configuration.advancedFilters"
-                     [formControl]="cafeFilters">
-    </cc-cafe-filters>
-  </div>
+  <cc-cafe-environments *ngSwitchCase="category.Environments"></cc-cafe-environments>
+  <cc-cafe-contacts *ngSwitchCase="category.Contacts"></cc-cafe-contacts>
 
-  <cc-cafe-contacts *ngIf="isContactCategory" [category]="category" [advancedFilterForm]="advancedFilterForm"></cc-cafe-contacts>
-
-  <cc-cafe-environments *ngIf="isEnvironmentCategory" [advancedFilterForm]="advancedFilterForm"></cc-cafe-environments>
-</div>
+</ng-container>

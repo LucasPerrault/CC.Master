@@ -2,6 +2,7 @@ using Instances.Domain.CodeSources;
 using Instances.Domain.Github.Models;
 using System;
 using System.Collections.Generic;
+using System.Text.Json.Serialization;
 
 namespace Instances.Domain.Preview.Models
 {
@@ -20,6 +21,7 @@ namespace Instances.Domain.Preview.Models
     public class CodeSourceMapping
     {
         public int Id { get; set; }
+        [JsonIgnore]
         public string Name => $"{Id}";
 
         public int PreviewConfigurationId { get; set; }

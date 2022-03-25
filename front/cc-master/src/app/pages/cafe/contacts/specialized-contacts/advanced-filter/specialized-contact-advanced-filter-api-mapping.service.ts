@@ -6,8 +6,8 @@ import {
   AdvancedFilterTypeMapping,
   IAdvancedFilterAttributes,
   IAdvancedFilterForm,
-} from '../../../common/cafe-filters/advanced-filter-form';
-import { AdvancedFilterOperatorMapping } from '../../../common/cafe-filters/advanced-filter-form';
+} from '../../../common/components/advanced-filter-form';
+import { AdvancedFilterOperatorMapping } from '../../../common/components/advanced-filter-form';
 import { EnvironmentAdvancedFilterApiMappingService } from '../../../environments/advanced-filter';
 import { SpeContactAdvancedFilterKey } from './specialized-contact-advanced-filter-key.enum';
 

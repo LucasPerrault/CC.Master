@@ -164,7 +164,7 @@ namespace Billing.Cmrr.Application.Tests
 
             var line = cmrrContractSituations.Lines.First(s => s.Name == family.Name);
             Assert.Single(line.SubLines);
-            var section = line.SubLines.Single(s => s.Key == product.ProductSolutions.Single().Solution.Name).Value;
+            var section = line.SubLines.Single(s => s.Key.Equals(product.ProductSolutions.Single().Solution.Name, StringComparison.OrdinalIgnoreCase)).Value;
 
             section.TotalFrom.Amount.Should().Be(startCmrrCounts.Sum(c => c.EuroTotal));
             section.TotalTo.Amount.Should().Be(endCmrrCounts.Sum(c => c.EuroTotal));
@@ -330,7 +330,7 @@ namespace Billing.Cmrr.Application.Tests
 
             var line = cmrrContractSituations.Lines.First(s => s.Name == family.Name);
             Assert.Single(line.SubLines);
-            var section = line.SubLines.Single(s => s.Key == product.ProductSolutions.Single().Solution.Name).Value;
+            var section = line.SubLines.Single(s => s.Key.Equals(product.ProductSolutions.Single().Solution.Name, StringComparison.OrdinalIgnoreCase)).Value;
 
             section.Termination.Top.Should().NotContain(c => c.Contract.Id == 11);
             section.Contraction.Top.Should().NotContain(c => c.Contract.Id == 11);
@@ -430,7 +430,7 @@ namespace Billing.Cmrr.Application.Tests
 
             var line = cmrrContractSituations.Lines.First(s => s.Name == family.Name);
             Assert.Single(line.SubLines);
-            var section = line.SubLines.Single(s => s.Key == product.ProductSolutions.Single().Solution.Name).Value;
+            var section = line.SubLines.Single(s => s.Key.Equals(product.ProductSolutions.Single().Solution.Name, StringComparison.OrdinalIgnoreCase)).Value;
 
             section.Termination.Top.Should().NotContain(c => c.Contract.Id == 11);
             section.Contraction.Top.Should().NotContain(c => c.Contract.Id == 11);

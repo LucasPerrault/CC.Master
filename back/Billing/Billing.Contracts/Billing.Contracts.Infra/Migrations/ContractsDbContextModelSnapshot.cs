@@ -39,6 +39,10 @@ namespace Billing.Contracts.Infra.Migrations
                         .HasColumnType("nvarchar(max)")
                         .HasColumnName("BillingCountry");
 
+                    b.Property<int>("BillingEntity")
+                        .HasColumnType("int")
+                        .HasColumnName("BillingEntity");
+
                     b.Property<string>("BillingMail")
                         .HasColumnType("nvarchar(max)")
                         .HasColumnName("BillingMail");

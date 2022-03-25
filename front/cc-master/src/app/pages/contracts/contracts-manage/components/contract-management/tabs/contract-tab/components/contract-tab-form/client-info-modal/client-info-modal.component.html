@@ -18,4 +18,8 @@
       <span class="u-mask">{{ 'contracts_client_business_central_action_info' | translate }}</span>
     </button>
   </div>
+
+  <div>
+    {{ 'contracts_client_billing_entity_info' | translate : { billingEntity: getBillingEntityName(data.billingEntity) } }}
+  </div>
 </div>

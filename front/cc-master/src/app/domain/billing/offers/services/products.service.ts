@@ -1,6 +1,6 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { IHttpApiV3CollectionResponse } from '@cc/common/queries';
+import { IHttpApiV3CollectionResponse, IHttpApiV3Response } from '@cc/common/queries';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
@@ -20,5 +20,11 @@ export class ProductsService {
       map(response => response.data),
       map(data => data.items),
     );
+  }
+
+  public getProductById$(id: number): Observable<IProduct> {
+    const url = `${ this.productsEndPoint }/${ id }`;
+    return this.httpClient.get<IHttpApiV3Response<IProduct>>(url)
+      .pipe(map(res => res.data));
   }
 }

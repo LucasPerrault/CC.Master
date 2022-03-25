@@ -1,7 +1,7 @@
-import { Component, OnInit, ViewEncapsulation } from '@angular/core';
+import { Component, Inject, OnInit, ViewEncapsulation } from '@angular/core';
 import { TranslatePipe } from '@cc/aspects/translate';
 import { getButtonState, toSubmissionState } from '@cc/common/forms';
-import { BillingEntity, getBillingEntity } from '@cc/domain/billing/clients';
+import { BILLING_CORE_DATA, getNameById, IBillingCoreData } from '@cc/domain/billing/billing-core-data';
 import { Observable,ReplaySubject, Subject } from 'rxjs';
 import { finalize, map, take } from 'rxjs/operators';
 
@@ -27,6 +27,7 @@ export class AccountingRevenueComponent implements OnInit {
     private accountingPeriodService: AccountingPeriodService,
 		private syncRevenueService: SyncRevenueService,
 		private translatePipe: TranslatePipe,
+    @Inject(BILLING_CORE_DATA) private billingCoreData: IBillingCoreData,
   ) { }
 
   public ngOnInit(): void {
@@ -34,8 +35,9 @@ export class AccountingRevenueComponent implements OnInit {
     this.refreshSyncRevenueInfo();
   }
 
-  public syncRevenue(entity: BillingEntity): void {
-    this.syncRevenueService.synchronise$(entity)
+
+  public syncRevenue(entityCode: string): void {
+    this.syncRevenueService.synchronise$(entityCode)
       .pipe(
         take(1),
         toSubmissionState(),
@@ -45,8 +47,8 @@ export class AccountingRevenueComponent implements OnInit {
       .subscribe(buttonState => this.syncButtonState$.next(buttonState));
   }
 
-  public closeCurrentPeriod(currentPeriod: Date, entity: BillingEntity): void {
-    this.accountingPeriodService.closePeriod$(currentPeriod, entity)
+  public closeCurrentPeriod(currentPeriod: Date, entityCode: string): void {
+    this.accountingPeriodService.closePeriod$(currentPeriod, entityCode)
       .pipe(
         take(1),
         toSubmissionState(),
@@ -56,13 +58,12 @@ export class AccountingRevenueComponent implements OnInit {
       .subscribe(buttonState => this.closePeriodButtonState$.next(buttonState));
   }
 
-	public getSyncRevenueInfo$(billingEntity: BillingEntity): Observable<CurrentSyncRevenueInfo> {
-		return this.syncRevenueInfos$.pipe(map(syncRevenuesInfos => syncRevenuesInfos.find(s => s.entity === billingEntity)));
+  public getSyncRevenueInfo$(entityCode: string): Observable<CurrentSyncRevenueInfo> {
+    return this.syncRevenueInfos$.pipe(map(syncRevenuesInfos => syncRevenuesInfos.find(s => s.entity === entityCode)));
 	}
 
-	public getBillingEntityName(billingEntity: BillingEntity): string {
-		const translationKey = getBillingEntity(billingEntity)?.name;
-		return this.translatePipe.transform(translationKey);
+	public getBillingEntityName(id: number): string {
+    return getNameById(this.billingCoreData.billingEntities, id);
 	}
 
   private refreshAccountingPeriod(): void {

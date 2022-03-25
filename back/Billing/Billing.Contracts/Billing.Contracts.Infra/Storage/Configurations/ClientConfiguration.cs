@@ -20,6 +20,7 @@ namespace Billing.Contracts.Infra.Storage.Configurations
             builder.Property(d => d.BillingCountry).HasColumnName("BillingCountry");
             builder.Property(d => d.BillingMail).HasColumnName("BillingMail");
             builder.Property(d => d.Phone).HasColumnName("Phone");
+            builder.Property(d => d.BillingEntity).HasColumnName("BillingEntity");
         }
     }
 }
