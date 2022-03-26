@@ -63,6 +63,7 @@ export class FacetsAndColumnsApiSelectComponent implements ControlValueAccessor,
   }
 
   public writeValue(facetsAndColumns: IFacetAndColumn[]): void {
+    console.log(facetsAndColumns);
     if (!!facetsAndColumns && facetsAndColumns !== this.formControl.value) {
       const translated = facetsAndColumns.map(f => ({ ...f, name: this.translatePipe.transform(f?.name) }));
       this.formControl.patchValue(translated);

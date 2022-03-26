@@ -23,11 +23,15 @@ export class FacetAndColumnHelper {
     return fAndC?.filter(f => !!f?.column)?.map(f => f.column) ?? [];
   }
 
+  public static getFacetAndColumn(column: IAdditionalColumn): IFacetAndColumn {
+    return { id: column.id, name: column.name, column };
+  }
+
   public static get mapFacetsToFacetAndColumns(): UnaryFunction<Observable<IFacet[]>, Observable<IFacetAndColumn[]>> {
     return pipe(map(facets => facets.map(facet => ({ id: facet.id, name: getFacetName(facet), facet }))));
   }
 
   public static mapColumnsToFacetAndColumns(columns: IAdditionalColumn[]): IFacetAndColumn[] {
-    return columns.map(column => ({ id: column.id, name: column.name, column }));
+    return columns.map(column => FacetAndColumnHelper.getFacetAndColumn(column));
   }
 }

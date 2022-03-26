@@ -5,15 +5,20 @@ import { getButtonState, toSubmissionState } from '@cc/common/forms';
 import { defaultPagingParams, IPaginatedResult, PaginatedList, PaginatedListState, PagingService } from '@cc/common/paging';
 import { ApiStandard } from '@cc/common/queries';
 import { BehaviorSubject, combineLatest, Observable, ReplaySubject, Subject } from 'rxjs';
-import { debounceTime, filter, map, pairwise, take, takeUntil, tap } from 'rxjs/operators';
+import { filter, map, take, takeUntil } from 'rxjs/operators';
 
+import { AdvancedFilter, } from '../common/components/advanced-filter-form';
 import {
-  AdvancedFilter,
-} from '../common/components/advanced-filter-form';
-import {
-  EnvironmentAdditionalColumn, environmentCriterionAndColumnMapping, FacetAndColumnHelper, getAdditionalColumnById,
+  EnvironmentAdditionalColumn,
+  environmentCriterionAndColumnMapping,
+  FacetAndColumnHelper,
   getAdditionalColumnByIds,
 } from '../common/forms/select/facets-and-columns-api-select';
+import {
+  ColumnAutoSelectionOrchestrator,
+  CriterionSelectionState,
+  IColumnAutoSelectionOrchestratorData,
+} from '../common/forms/select/facets-and-columns-api-select/environment/column-auto-selection-orchestrator';
 import { IAdditionalColumn, IFacet, ISearchDto, toSearchDto } from '../common/models';
 import { IEnvironment } from '../common/models/environment.interface';
 import { EnvironmentAdvancedFilterApiMappingService, EnvironmentAdvancedFilterConfiguration } from './advanced-filter';
@@ -55,6 +60,7 @@ export class CafeEnvironmentsComponent implements OnInit, OnDestroy {
   public facetColumns$ = new BehaviorSubject<IFacet[]>([]);
   private advancedFilter$ = new BehaviorSubject<AdvancedFilter>(null);
   private searchDto$ = new BehaviorSubject<ISearchDto>(null);
+  private autoSelectionOrchestrator = new ColumnAutoSelectionOrchestrator(this.advancedFilter.valueChanges);
 
   private paginatedEnvironments: PaginatedList<IEnvironment>;
 
@@ -88,36 +94,9 @@ export class CafeEnvironmentsComponent implements OnInit, OnDestroy {
 
     this.facetsAndColumns.setValue(FacetAndColumnHelper.mapColumnsToFacetAndColumns(this.defaultSelectedColumns));
 
-    this.advancedFilter.valueChanges
-      .pipe(takeUntil(this.destroy$), tap(console.log), map(f => f.criterionForms.map(c => c.criterion.key)), pairwise())
-      .subscribe(([acc, curr]: [string[], string[]]) => {
-        if (curr?.length === 1) {
-          this.addedCriterion$.next(acc[0]);
-          return;
-        }
-
-        const addedCriterion = curr.filter(x => !acc.includes(x))[0];
-        if (!!addedCriterion && addedCriterion !== this.addedCriterion$.value) {
-          this.addedCriterion$.next(addedCriterion);
-        }
-
-        const removedCriterion = acc.filter(x => !curr.includes(x))[0];
-        if (!!removedCriterion && removedCriterion !== this.removedCriterion$.value) {
-          this.removedCriterion$.next(removedCriterion);
-        }
-      });
-
-    this.addedCriterion$
-      .pipe(debounceTime(100), filter(a => !!a))
-      .subscribe(a => {
-        console.log('added criterion', a);
-        const mapping = environmentCriterionAndColumnMapping.find(e => e.criterionKey === a);
-        this.facetsAndColumns.setValue();
-      });
-    this.removedCriterion$
-      .pipe(debounceTime(100), filter(a => !!a))
-      .subscribe(a => console.log('removed criterion', a));
-
+    this.autoSelectionOrchestrator.valueChanges$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(d => this.updateFacetAndColumns(d));
   }
 
   public ngOnDestroy(): void {
@@ -164,4 +143,26 @@ export class CafeEnvironmentsComponent implements OnInit, OnDestroy {
   // private isFacet(form: IComparisonFilterCriterionForm | IFacetComparisonCriterion): form is IFacetComparisonCriterion {
   //   return !!(form as IFacetComparisonCriterion).facet;
   // }
+  private updateFacetAndColumns(selection: IColumnAutoSelectionOrchestratorData) {
+    console.log(selection)
+    const selectedKey = selection?.criterion?.key;
+    const mapping = environmentCriterionAndColumnMapping.find(e => e.criterionKey === selectedKey);
+
+    if (selection.state === CriterionSelectionState.Idle || !mapping?.column) {
+      return;
+    }
+
+    const isAlreadySelected = this.facetsAndColumns.value.find(c => c.id === selectedKey);
+    if (selection.state === CriterionSelectionState.WasAdded && !isAlreadySelected) {
+      this.facetsAndColumns.patchValue([
+        ...this.facetsAndColumns.value,
+        FacetAndColumnHelper.getFacetAndColumn(mapping.column),
+      ]);
+    }
+
+    if (selection.state === CriterionSelectionState.WasRemoved) {
+      const values = this.facetsAndColumns.value.filter(v => v.id !== selectedKey);
+      this.facetsAndColumns.patchValue(values);
+    }
+  }
 }

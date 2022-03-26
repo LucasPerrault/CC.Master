@@ -54,5 +54,30 @@ export const environmentCriterionAndColumnMapping = [
     columnKey: EnvironmentAdditionalColumn.AppInstances,
     column: getAdditionalColumnById(EnvironmentAdditionalColumn.AppInstances),
   },
+  {
+    criterionKey: EnvironmentCriterionKey.Distributors,
+    columnKey: EnvironmentAdditionalColumn.Distributors,
+    column: getAdditionalColumnById(EnvironmentAdditionalColumn.Distributors),
+  },
+  {
+    criterionKey: EnvironmentCriterionKey.CreatedAt,
+    columnKey: EnvironmentAdditionalColumn.CreatedAt,
+    column: getAdditionalColumnById(EnvironmentAdditionalColumn.CreatedAt),
+  },
+  {
+    criterionKey: EnvironmentCriterionKey.Countries,
+    columnKey: EnvironmentAdditionalColumn.Countries,
+    column: getAdditionalColumnById(EnvironmentAdditionalColumn.Countries),
+  },
+  {
+    criterionKey: EnvironmentCriterionKey.Cluster,
+    columnKey: EnvironmentAdditionalColumn.Cluster,
+    column: getAdditionalColumnById(EnvironmentAdditionalColumn.Cluster),
+  },
+  {
+    criterionKey: EnvironmentCriterionKey.DistributorType,
+    columnKey: EnvironmentAdditionalColumn.DistributorType,
+    column: getAdditionalColumnById(EnvironmentAdditionalColumn.DistributorType),
+  },
 ];
 
