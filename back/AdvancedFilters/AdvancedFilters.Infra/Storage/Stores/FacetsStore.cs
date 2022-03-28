@@ -12,6 +12,7 @@ using AdvancedFilters.Domain.Facets.DAO;
 using AdvancedFilters.Domain.Filters.Models;
 using Lucca.Core.Shared.Domain.Exceptions;
 using Environment = AdvancedFilters.Domain.Instance.Models.Environment;
+using AdvancedFilters.Domain.Instance.Models;
 
 namespace AdvancedFilters.Infra.Storage.Stores
 {
@@ -85,6 +86,13 @@ namespace AdvancedFilters.Infra.Storage.Stores
             return e => queryable.Any(dao => e.Id == dao.EnvironmentId);
         }
 
+        public Expression<Func<Establishment, bool>> GetEstablishmentFacetFilter(EstablishmentFacetsAdvancedCriterion criterion)
+        {
+            var queryable = EstablishmentValuesWithType(criterion.Value.Type).WhereMatches(criterion);
+
+            return e => queryable.Any(dao => e.Id == dao.EnvironmentId);
+        }
+
         private IQueryable<EnvironmentFacetValueDao> EnvironmentValues => _dbContext
             .Set<EnvironmentFacetValueDao>()
             .Where(v => v.Facet.Type != FacetType.Unknown)
@@ -94,6 +102,11 @@ namespace AdvancedFilters.Infra.Storage.Stores
             .Set<EnvironmentFacetValueDao>()
             .Where(v => v.Facet.Type == facetType)
             .Include(v => v.Facet);
+        private IQueryable<EstablishmentFacetValueDao> EstablishmentValuesWithType(FacetType facetType) => _dbContext
+            .Set<EstablishmentFacetValueDao>()
+            .Where(v => v.Facet.Type == facetType)
+            .Include(v => v.Facet);
+
 
         private IQueryable<EstablishmentFacetValueDao> EstablishmentValues => _dbContext
             .Set<EstablishmentFacetValueDao>()
@@ -151,10 +164,32 @@ namespace AdvancedFilters.Infra.Storage.Stores
             _ => throw new BadRequestException()
         };
 
+        public static IQueryable<EstablishmentFacetValueDao> WhereMatches(this IQueryable<EstablishmentFacetValueDao> daos, EstablishmentFacetAdvancedCriterion criterion)
+        {
+            return daos
+                .WhenNotNullOrEmpty(criterion.Identifier.Code).ApplyWhere(dao => dao.Facet.Code == criterion.Identifier.Code)
+                .WhenNotNullOrEmpty(criterion.Identifier.ApplicationId).ApplyWhere(dao => dao.Facet.ApplicationId == criterion.Identifier.ApplicationId)
+                .When(criterion.Value.Type != FacetType.Unknown).ApplyWhere(GetEstablishmentFacetValueExpressionAccordingToFacetType(criterion.Value));
+        }
+        private static Expression<Func<EstablishmentFacetValueDao, bool>> GetEstablishmentFacetValueExpressionAccordingToFacetType(IEnvironmentFacetCriterion value) => value.Type switch
+        {
+            FacetType.Integer => GetEstablishmentIntValue.Chain(((SingleFacetIntValueComparisonCriterion)value).Expression),
+            FacetType.DateTime => GetEstablishmentDateTimeValue.Chain(((SingleFacetDateTimeValueComparisonCriterion)value).Expression),
+            FacetType.Decimal => GetEstablishmentDecimalValue.Chain(((SingleFacetDecimalValueComparisonCriterion)value).Expression),
+            FacetType.Percentage => GetEstablishmentDecimalValue.Chain(((SingleFacetDecimalValueComparisonCriterion)value).Expression),
+            FacetType.String => GetEstablishmentStringValue.Chain(((SingleFacetValueComparisonCriterion<string>)value).Expression),
+            _ => throw new BadRequestException()
+        };
+
         private static Expression<Func<EnvironmentFacetValueDao, int>> GetIntValue => dao => dao.IntValue.Value;
         private static Expression<Func<EnvironmentFacetValueDao, decimal>> GetDecimalValue => dao => dao.DecimalValue.Value;
         private static Expression<Func<EnvironmentFacetValueDao, string>> GetStringValue => dao => dao.StringValue;
         private static Expression<Func<EnvironmentFacetValueDao, DateTime>> GetDateTimeValue => dao => dao.DateTimeValue.Value;
+
+        private static Expression<Func<EstablishmentFacetValueDao, int>> GetEstablishmentIntValue => dao => dao.IntValue.Value;
+        private static Expression<Func<EstablishmentFacetValueDao, decimal>> GetEstablishmentDecimalValue => dao => dao.DecimalValue.Value;
+        private static Expression<Func<EstablishmentFacetValueDao, string>> GetEstablishmentStringValue => dao => dao.StringValue;
+        private static Expression<Func<EstablishmentFacetValueDao, DateTime>> GetEstablishmentDateTimeValue => dao => dao.DateTimeValue.Value;
 
         public static IEnumerable<IEnvironmentFacetValue> ToValues(this IEnumerable<EnvironmentFacetValueDao> daos)
         {

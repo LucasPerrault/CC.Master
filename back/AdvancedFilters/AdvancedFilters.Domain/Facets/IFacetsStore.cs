@@ -18,4 +18,5 @@ public interface IFacetsStore
     Task<List<IEnvironmentFacetValue>> GetValuesAsync(EnvironmentFacetValueFilter filter);
     Task<List<IEstablishmentFacetValue>> GetValuesAsync(EstablishmentFacetValueFilter filter);
     Expression<Func<Environment, bool>> GetEnvFacetFilter(EnvironmentFacetsAdvancedCriterion criterion);
+    Expression<Func<Establishment, bool>> GetEstablishmentFacetFilter(EstablishmentFacetsAdvancedCriterion criterion);
 }

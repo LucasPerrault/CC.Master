@@ -54,7 +54,7 @@ namespace AdvancedFilters.Infra.Filters.Builders
 
         public IQueryableExpressionBuilder<Establishment> Create(EstablishmentAdvancedCriterion criterion)
         {
-            return new EstablishmentCriterionExpressionBuilder(criterion, this);
+            return new EstablishmentCriterionExpressionBuilder(criterion, this, _facetsStore);
         }
 
         public IQueryableExpressionBuilder<AppInstance> Create(AppInstanceAdvancedCriterion criterion)
@@ -100,6 +100,11 @@ namespace AdvancedFilters.Infra.Filters.Builders
         public IQueryableExpressionBuilder<IEnvironmentFacetValue> Create(EnvironmentFacetAdvancedCriterion criterion)
         {
             return new FacetCriterionExpressionBuilder(criterion, this, _facetsStore);
+        }
+
+        public IQueryableExpressionBuilder<IEstablishmentFacetValue> Create(EstablishmentFacetAdvancedCriterion criterion)
+        {
+            return new EstablishmentFacetCriterionExpressionBuilder(criterion, this, _facetsStore);
         }
 
         public Expression<Func<TItem, bool>> ChainToPropertyList<TItem, TProperty>

@@ -33,7 +33,7 @@ namespace AdvancedFilters.Infra.Filters.Builders.Implementations
         }
     }
 
-    internal class FacetCriterionExpressionBuilder : AdvancedCriterionExpressionBuilder<IEnvironmentFacetValue, EnvironmentFacetAdvancedCriterion> // TODO utile ?
+    internal class FacetCriterionExpressionBuilder : AdvancedCriterionExpressionBuilder<IEnvironmentFacetValue, EnvironmentFacetAdvancedCriterion>
     {
         private readonly IFacetsStore _store;
 

@@ -19,5 +19,6 @@ namespace AdvancedFilters.Domain.Filters.Builders
         IQueryableExpressionBuilder<Contract> Create(ContractAdvancedCriterion criterion);
         IQueryableExpressionBuilder<Client> Create(ClientAdvancedCriterion criterion);
         IQueryableExpressionBuilder<IEnvironmentFacetValue> Create(EnvironmentFacetAdvancedCriterion criterion);
+        IQueryableExpressionBuilder<IEstablishmentFacetValue> Create(EstablishmentFacetAdvancedCriterion criterion);
     }
 }

@@ -63,3 +63,17 @@ public class EstablishmentFacetValue<T> : IEstablishmentFacetValue
     public FacetIdentifier Facet { get; set; }
     public FacetType Type { get; set; }
 }
+
+public class EstablishmentFacetAdvancedCriterion : AdvancedCriterion<IEstablishmentFacetValue>
+{
+    public FacetIdentifier Identifier { get; set; }
+    public IEnvironmentFacetCriterion Value { get; set; }
+    public override IQueryableExpressionBuilder<IEstablishmentFacetValue> GetExpressionBuilder(IQueryableExpressionBuilderFactory factory)
+        => factory.Create(this);
+
+}
+
+public class EstablishmentFacetsAdvancedCriterion : EstablishmentFacetAdvancedCriterion, IListCriterion
+{
+    public ItemsMatching ItemsMatched { get; set; }
+}

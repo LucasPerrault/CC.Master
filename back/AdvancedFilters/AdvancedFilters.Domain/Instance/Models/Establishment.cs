@@ -29,6 +29,7 @@ namespace AdvancedFilters.Domain.Instance.Models
     {
         public EnvironmentAdvancedCriterion Environment { get; set; }
         public LegalUnitAdvancedCriterion LegalUnit { get; set; }
+        public EstablishmentFacetsAdvancedCriterion Facets { get; set; }
 
         public override IQueryableExpressionBuilder<Establishment> GetExpressionBuilder(IQueryableExpressionBuilderFactory factory)
             => factory.Create(this);

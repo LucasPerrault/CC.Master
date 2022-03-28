@@ -29,10 +29,9 @@ namespace AdvancedFilters.Infra.Tests
             PopulateDatabase();
         }
 
-
         [Theory]
         [MemberData(nameof(GetEnvironmentFacetTestData))]
-        public void ShouldReturnFilteredEnvironment(AdvancedFacetFilterEmptyResultTestEntry entry)
+        public void ShouldReturnFilteredEnvironment(AdvancedEnvironmentFacetFilterEmptyResultTestEntry entry)
         {
             var sut = new FacetsStore(_dbContext, new DummyQueryPager());
 
@@ -43,147 +42,300 @@ namespace AdvancedFilters.Infra.Tests
             environment.Where(func).Should().HaveCount(entry.ExpectedCount);
         }
 
+        [Theory]
+        [MemberData(nameof(GetEstablishmentFacetTestData))]
+        public void ShouldReturnFilteredEstablishment(AdvancedEstablishmentFacetFilterEmptyResultTestEntry entry)
+        {
+            var sut = new FacetsStore(_dbContext, new DummyQueryPager());
+
+            var func = sut.GetEstablishmentFacetFilter(entry.Filter).Compile();
+
+            var establishment = _dbContext.Set<Establishment>().ToList();
+
+            establishment.Where(func).Should().HaveCount(entry.ExpectedCount);
+        }
+
         public static IEnumerable<object[]> GetEnvironmentFacetTestData()
         {
             // Equals
-            yield return new object[] { new AdvancedFacetFilterEmptyResultTestEntry()
+            yield return new object[] { new AdvancedEnvironmentFacetFilterEmptyResultTestEntry()
             {
-                Filter = GetCriterion(FacetType.Integer, 2, ComparisonOperators.Equals),
+                Filter = GetEnvironmentCriterion(FacetType.Integer, 2, ComparisonOperators.Equals),
                 ExpectedCount = 1,
             }};
 
-            yield return new object[] { new AdvancedFacetFilterEmptyResultTestEntry()
+            yield return new object[] { new AdvancedEnvironmentFacetFilterEmptyResultTestEntry()
             {
-                Filter = GetCriterion(FacetType.Decimal, 3.14,ComparisonOperators.Equals),
+                Filter = GetEnvironmentCriterion(FacetType.Decimal, 3.14,ComparisonOperators.Equals),
                 ExpectedCount = 2,
             }};
 
-            yield return new object[] { new AdvancedFacetFilterEmptyResultTestEntry()
+            yield return new object[] { new AdvancedEnvironmentFacetFilterEmptyResultTestEntry()
             {
-                Filter = GetCriterion(FacetType.String, "toto", ComparisonOperators.Equals),
+                Filter = GetEnvironmentCriterion(FacetType.String, "toto", ComparisonOperators.Equals),
                 ExpectedCount = 1,
             }};
 
-            yield return new object[] { new AdvancedFacetFilterEmptyResultTestEntry()
+            yield return new object[] { new AdvancedEnvironmentFacetFilterEmptyResultTestEntry()
             {
-                Filter = GetCriterion(FacetType.Percentage, 0.12m, ComparisonOperators.Equals),
+                Filter = GetEnvironmentCriterion(FacetType.Percentage, 0.12m, ComparisonOperators.Equals),
                 ExpectedCount = 1,
             }};
 
-            yield return new object[] { new AdvancedFacetFilterEmptyResultTestEntry()
+            yield return new object[] { new AdvancedEnvironmentFacetFilterEmptyResultTestEntry()
             {
-                Filter = GetCriterion(FacetType.DateTime, new DateTime(2022, 01,01), ComparisonOperators.Equals),
+                Filter = GetEnvironmentCriterion(FacetType.DateTime, new DateTime(2022, 01,01), ComparisonOperators.Equals),
                 ExpectedCount = 1,
             }};
 
             // Not Equals
-            yield return new object[] { new AdvancedFacetFilterEmptyResultTestEntry()
+            yield return new object[] { new AdvancedEnvironmentFacetFilterEmptyResultTestEntry()
             {
-                Filter = GetCriterion(FacetType.Integer, 2, ComparisonOperators.NotEquals),
+                Filter = GetEnvironmentCriterion(FacetType.Integer, 2, ComparisonOperators.NotEquals),
                 ExpectedCount = 1,
             }};
 
-            yield return new object[] { new AdvancedFacetFilterEmptyResultTestEntry()
+            yield return new object[] { new AdvancedEnvironmentFacetFilterEmptyResultTestEntry()
             {
-                Filter = GetCriterion(FacetType.Decimal, 3.14,ComparisonOperators.NotEquals),
+                Filter = GetEnvironmentCriterion(FacetType.Decimal, 3.14,ComparisonOperators.NotEquals),
                 ExpectedCount = 1,
             }};
 
-            yield return new object[] { new AdvancedFacetFilterEmptyResultTestEntry()
+            yield return new object[] { new AdvancedEnvironmentFacetFilterEmptyResultTestEntry()
             {
-                Filter = GetCriterion(FacetType.String, "toto", ComparisonOperators.NotEquals),
+                Filter = GetEnvironmentCriterion(FacetType.String, "toto", ComparisonOperators.NotEquals),
                 ExpectedCount = 1,
             }};
 
-            yield return new object[] { new AdvancedFacetFilterEmptyResultTestEntry()
+            yield return new object[] { new AdvancedEnvironmentFacetFilterEmptyResultTestEntry()
             {
-                Filter = GetCriterion(FacetType.Percentage, 0.12m, ComparisonOperators.NotEquals),
+                Filter = GetEnvironmentCriterion(FacetType.Percentage, 0.12m, ComparisonOperators.NotEquals),
                 ExpectedCount = 1,
             }};
 
-            yield return new object[] { new AdvancedFacetFilterEmptyResultTestEntry()
+            yield return new object[] { new AdvancedEnvironmentFacetFilterEmptyResultTestEntry()
             {
-                Filter = GetCriterion(FacetType.DateTime, new DateTime(2022, 01,01), ComparisonOperators.NotEquals),
+                Filter = GetEnvironmentCriterion(FacetType.DateTime, new DateTime(2022, 01,01), ComparisonOperators.NotEquals),
                 ExpectedCount = 1,
             }};
 
             //StricklyGreater
-            yield return new object[] { new AdvancedFacetFilterEmptyResultTestEntry()
+            yield return new object[] { new AdvancedEnvironmentFacetFilterEmptyResultTestEntry()
             {
-                Filter = GetCriterion(FacetType.DateTime, new DateTime(2022, 01,01), ComparisonOperators.StrictlyGreaterThan),
+                Filter = GetEnvironmentCriterion(FacetType.DateTime, new DateTime(2022, 01,01), ComparisonOperators.StrictlyGreaterThan),
                 ExpectedCount = 1,
             }};
 
-            yield return new object[] { new AdvancedFacetFilterEmptyResultTestEntry()
+            yield return new object[] { new AdvancedEnvironmentFacetFilterEmptyResultTestEntry()
             {
-                Filter = GetCriterion(FacetType.DateTime, new DateTime(2022, 01,02), ComparisonOperators.StrictlyGreaterThan),
+                Filter = GetEnvironmentCriterion(FacetType.DateTime, new DateTime(2022, 01,02), ComparisonOperators.StrictlyGreaterThan),
                 ExpectedCount = 1,
             }};
 
-            yield return new object[] { new AdvancedFacetFilterEmptyResultTestEntry()
+            yield return new object[] { new AdvancedEnvironmentFacetFilterEmptyResultTestEntry()
             {
-                Filter = GetCriterion(FacetType.Integer, 2, ComparisonOperators.StrictlyGreaterThan),
+                Filter = GetEnvironmentCriterion(FacetType.Integer, 2, ComparisonOperators.StrictlyGreaterThan),
                 ExpectedCount = 0,
             }};
 
-            yield return new object[] { new AdvancedFacetFilterEmptyResultTestEntry()
+            yield return new object[] { new AdvancedEnvironmentFacetFilterEmptyResultTestEntry()
             {
-                Filter = GetCriterion(FacetType.Decimal, 0.12m,ComparisonOperators.StrictlyGreaterThan),
+                Filter = GetEnvironmentCriterion(FacetType.Decimal, 0.12m,ComparisonOperators.StrictlyGreaterThan),
                 ExpectedCount = 3,
             }};
 
-            yield return new object[] { new AdvancedFacetFilterEmptyResultTestEntry()
+            yield return new object[] { new AdvancedEnvironmentFacetFilterEmptyResultTestEntry()
             {
-                Filter = GetCriterion(FacetType.Percentage, 0.10m,ComparisonOperators.StrictlyGreaterThan),
+                Filter = GetEnvironmentCriterion(FacetType.Percentage, 0.10m,ComparisonOperators.StrictlyGreaterThan),
                 ExpectedCount = 2,
             }};
 
             //StricklyLess
-            yield return new object[] { new AdvancedFacetFilterEmptyResultTestEntry()
+            yield return new object[] { new AdvancedEnvironmentFacetFilterEmptyResultTestEntry()
             {
-                Filter = GetCriterion(FacetType.DateTime, new DateTime(2022, 01,01), ComparisonOperators.StrictlyLessThan),
+                Filter = GetEnvironmentCriterion(FacetType.DateTime, new DateTime(2022, 01,01), ComparisonOperators.StrictlyLessThan),
                 ExpectedCount = 0,
             }};
 
-            yield return new object[] { new AdvancedFacetFilterEmptyResultTestEntry()
+            yield return new object[] { new AdvancedEnvironmentFacetFilterEmptyResultTestEntry()
             {
-                Filter = GetCriterion(FacetType.DateTime, new DateTime(2022, 01,02), ComparisonOperators.StrictlyLessThan),
+                Filter = GetEnvironmentCriterion(FacetType.DateTime, new DateTime(2022, 01,02), ComparisonOperators.StrictlyLessThan),
                 ExpectedCount = 1,
             }};
 
-            yield return new object[] { new AdvancedFacetFilterEmptyResultTestEntry()
+            yield return new object[] { new AdvancedEnvironmentFacetFilterEmptyResultTestEntry()
             {
-                Filter = GetCriterion(FacetType.Integer, 3, ComparisonOperators.StrictlyLessThan),
+                Filter = GetEnvironmentCriterion(FacetType.Integer, 3, ComparisonOperators.StrictlyLessThan),
                 ExpectedCount = 2,
             }};
 
-            yield return new object[] { new AdvancedFacetFilterEmptyResultTestEntry()
+            yield return new object[] { new AdvancedEnvironmentFacetFilterEmptyResultTestEntry()
             {
-                Filter = GetCriterion(FacetType.Decimal, 2.15m,ComparisonOperators.StrictlyLessThan),
+                Filter = GetEnvironmentCriterion(FacetType.Decimal, 2.15m,ComparisonOperators.StrictlyLessThan),
                 ExpectedCount = 1,
             }};
 
-            yield return new object[] { new AdvancedFacetFilterEmptyResultTestEntry()
+            yield return new object[] { new AdvancedEnvironmentFacetFilterEmptyResultTestEntry()
             {
-                Filter = GetCriterion(FacetType.Percentage, 0.13m,ComparisonOperators.StrictlyLessThan),
+                Filter = GetEnvironmentCriterion(FacetType.Percentage, 0.13m,ComparisonOperators.StrictlyLessThan),
                 ExpectedCount = 1,
             }};
         }
-        public class AdvancedFacetFilterEmptyResultTestEntry
+
+        public static IEnumerable<object[]> GetEstablishmentFacetTestData()
+        {
+            // Equals
+            yield return new object[] { new AdvancedEstablishmentFacetFilterEmptyResultTestEntry()
+            {
+                Filter = GetEstablishmentCriterion(FacetType.Integer, 2, ComparisonOperators.Equals),
+                ExpectedCount = 1,
+            }};
+
+            yield return new object[] { new AdvancedEstablishmentFacetFilterEmptyResultTestEntry()
+            {
+                Filter = GetEstablishmentCriterion(FacetType.Decimal, 3.14,ComparisonOperators.Equals),
+                ExpectedCount = 2,
+            }};
+
+            yield return new object[] { new AdvancedEstablishmentFacetFilterEmptyResultTestEntry()
+            {
+                Filter = GetEstablishmentCriterion(FacetType.String, "toto", ComparisonOperators.Equals),
+                ExpectedCount = 1,
+            }};
+
+            yield return new object[] { new AdvancedEstablishmentFacetFilterEmptyResultTestEntry()
+            {
+                Filter = GetEstablishmentCriterion(FacetType.Percentage, 0.12m, ComparisonOperators.Equals),
+                ExpectedCount = 1,
+            }};
+
+            yield return new object[] { new AdvancedEstablishmentFacetFilterEmptyResultTestEntry()
+            {
+                Filter = GetEstablishmentCriterion(FacetType.DateTime, new DateTime(2022, 01,01), ComparisonOperators.Equals),
+                ExpectedCount = 1,
+            }};
+
+            // Not Equals
+            yield return new object[] { new AdvancedEstablishmentFacetFilterEmptyResultTestEntry()
+            {
+                Filter = GetEstablishmentCriterion(FacetType.Integer, 2, ComparisonOperators.NotEquals),
+                ExpectedCount = 1,
+            }};
+
+            yield return new object[] { new AdvancedEstablishmentFacetFilterEmptyResultTestEntry()
+            {
+                Filter = GetEstablishmentCriterion(FacetType.Decimal, 3.14,ComparisonOperators.NotEquals),
+                ExpectedCount = 1,
+            }};
+
+            yield return new object[] { new AdvancedEstablishmentFacetFilterEmptyResultTestEntry()
+            {
+                Filter = GetEstablishmentCriterion(FacetType.String, "toto", ComparisonOperators.NotEquals),
+                ExpectedCount = 1,
+            }};
+
+            yield return new object[] { new AdvancedEstablishmentFacetFilterEmptyResultTestEntry()
+            {
+                Filter = GetEstablishmentCriterion(FacetType.Percentage, 0.12m, ComparisonOperators.NotEquals),
+                ExpectedCount = 1,
+            }};
+
+            yield return new object[] { new AdvancedEstablishmentFacetFilterEmptyResultTestEntry()
+            {
+                Filter = GetEstablishmentCriterion(FacetType.DateTime, new DateTime(2022, 01,01), ComparisonOperators.NotEquals),
+                ExpectedCount = 1,
+            }};
+
+            //StricklyGreater
+            yield return new object[] { new AdvancedEstablishmentFacetFilterEmptyResultTestEntry()
+            {
+                Filter = GetEstablishmentCriterion(FacetType.DateTime, new DateTime(2022, 01,01), ComparisonOperators.StrictlyGreaterThan),
+                ExpectedCount = 1,
+            }};
+
+            yield return new object[] { new AdvancedEstablishmentFacetFilterEmptyResultTestEntry()
+            {
+                Filter = GetEstablishmentCriterion(FacetType.DateTime, new DateTime(2022, 01,02), ComparisonOperators.StrictlyGreaterThan),
+                ExpectedCount = 1,
+            }};
+
+            yield return new object[] { new AdvancedEstablishmentFacetFilterEmptyResultTestEntry()
+            {
+                Filter = GetEstablishmentCriterion(FacetType.Integer, 2, ComparisonOperators.StrictlyGreaterThan),
+                ExpectedCount = 0,
+            }};
+
+            yield return new object[] { new AdvancedEstablishmentFacetFilterEmptyResultTestEntry()
+            {
+                Filter = GetEstablishmentCriterion(FacetType.Decimal, 0.12m,ComparisonOperators.StrictlyGreaterThan),
+                ExpectedCount = 3,
+            }};
+
+            yield return new object[] { new AdvancedEstablishmentFacetFilterEmptyResultTestEntry()
+            {
+                Filter = GetEstablishmentCriterion(FacetType.Percentage, 0.10m,ComparisonOperators.StrictlyGreaterThan),
+                ExpectedCount = 2,
+            }};
+
+            //StricklyLess
+            yield return new object[] { new AdvancedEstablishmentFacetFilterEmptyResultTestEntry()
+            {
+                Filter = GetEstablishmentCriterion(FacetType.DateTime, new DateTime(2022, 01,01), ComparisonOperators.StrictlyLessThan),
+                ExpectedCount = 0,
+            }};
+
+            yield return new object[] { new AdvancedEstablishmentFacetFilterEmptyResultTestEntry()
+            {
+                Filter = GetEstablishmentCriterion(FacetType.DateTime, new DateTime(2022, 01,02), ComparisonOperators.StrictlyLessThan),
+                ExpectedCount = 1,
+            }};
+
+            yield return new object[] { new AdvancedEstablishmentFacetFilterEmptyResultTestEntry()
+            {
+                Filter = GetEstablishmentCriterion(FacetType.Integer, 3, ComparisonOperators.StrictlyLessThan),
+                ExpectedCount = 2,
+            }};
+
+            yield return new object[] { new AdvancedEstablishmentFacetFilterEmptyResultTestEntry()
+            {
+                Filter = GetEstablishmentCriterion(FacetType.Decimal, 2.15m,ComparisonOperators.StrictlyLessThan),
+                ExpectedCount = 1,
+            }};
+
+            yield return new object[] { new AdvancedEstablishmentFacetFilterEmptyResultTestEntry()
+            {
+                Filter = GetEstablishmentCriterion(FacetType.Percentage, 0.13m,ComparisonOperators.StrictlyLessThan),
+                ExpectedCount = 1,
+            }};
+        }
+        public class AdvancedEnvironmentFacetFilterEmptyResultTestEntry
         {
             public EnvironmentFacetsAdvancedCriterion Filter { get; set; }
+            public int ExpectedCount { get; set; }
+        }
+        public class AdvancedEstablishmentFacetFilterEmptyResultTestEntry
+        {
+            public EstablishmentFacetsAdvancedCriterion Filter { get; set; }
             public int ExpectedCount { get; set; }
         }
 
         private void PopulateDatabase()
         {
-            var environment1 = new Environment() { Id = 1, Cluster ="cluster", Domain = "domain", ProductionHost = "host", Subdomain = "subdomain"};
+            var environment1 = new Environment() { Id = 1, Cluster = "cluster", Domain = "domain", ProductionHost = "host", Subdomain = "subdomain", };
             var environment2 = new Environment() { Id = 2, Cluster = "cluster", Domain = "domain", ProductionHost = "host", Subdomain = "subdomain" };
             var environment3 = new Environment() { Id = 3, Cluster = "cluster", Domain = "domain", ProductionHost = "host", Subdomain = "subdomain" };
 
             _dbContext.AddRange(environment1, environment2, environment3);
+
+            var establishment1 = new Establishment { Id = 1, Environment = environment1, Name = "test1", TimeZoneId = "1" };
+            var establishment2 = new Establishment { Id = 2, Environment = environment2, Name = "test1", TimeZoneId = "1" };
+            var establishment3 = new Establishment { Id = 3, Environment = environment3, Name = "test1", TimeZoneId = "1" };
+
+            _dbContext.AddRange(establishment1, establishment2, establishment3);
             _dbContext.SaveChanges();
 
+
+            #region EnvironmentFacet
             var facet1 = new Facet
             {
                 Type = FacetType.Integer,
@@ -339,21 +491,203 @@ namespace AdvancedFilters.Infra.Tests
             var facetValue10 = new EnvironmentFacetValueDao
             {
                 EnvironmentId = environment3.Id,
-                DateTimeValue = new DateTime(2022, 01,01),
+                DateTimeValue = new DateTime(2022, 01, 01),
                 FacetId = facet10.Id,
             };
             var facetValue11 = new EnvironmentFacetValueDao
             {
                 EnvironmentId = environment2.Id,
-                DateTimeValue = new DateTime(2022, 01,05),
+                DateTimeValue = new DateTime(2022, 01, 05),
                 FacetId = facet11.Id,
             };
 
             _dbContext.AddRange(facetValue1, facetValue2, facetValue3, facetValue4, facetValue5, facetValue6, facetValue7, facetValue8, facetValue9, facetValue10, facetValue11);
             _dbContext.SaveChanges();
+            #endregion
+
+            #region EstablishmentFacet
+            var facet51 = new Facet
+            {
+                Type = FacetType.Integer,
+                Scope = FacetScope.Establishment,
+                Code = "code",
+                ApplicationId = "applicationId"
+            };
+
+            var facet52 = new Facet
+            {
+                Type = FacetType.Integer,
+                Scope = FacetScope.Establishment,
+                Code = "code",
+                ApplicationId = "applicationId"
+            };
+
+            var facet53 = new Facet
+            {
+                Type = FacetType.Decimal,
+                Scope = FacetScope.Establishment,
+                Code = "code",
+                ApplicationId = "applicationId"
+            };
+            var facet54 = new Facet
+            {
+                Type = FacetType.Decimal,
+                Scope = FacetScope.Establishment,
+                Code = "code",
+                ApplicationId = "applicationId"
+            };
+            var facet55 = new Facet
+            {
+                Type = FacetType.Decimal,
+                Scope = FacetScope.Establishment,
+                Code = "code",
+                ApplicationId = "applicationId"
+            };
+
+            var facet56 = new Facet
+            {
+                Type = FacetType.String,
+                Scope = FacetScope.Establishment,
+                Code = "code",
+                ApplicationId = "applicationId"
+            };
+
+            var facet57 = new Facet
+            {
+                Type = FacetType.String,
+                Scope = FacetScope.Establishment,
+                Code = "code",
+                ApplicationId = "applicationId"
+            };
+
+            var facet58 = new Facet
+            {
+                Type = FacetType.Percentage,
+                Scope = FacetScope.Establishment,
+                Code = "code",
+                ApplicationId = "applicationId"
+            };
+
+            var facet59 = new Facet
+            {
+                Type = FacetType.Percentage,
+                Scope = FacetScope.Establishment,
+                Code = "code",
+                ApplicationId = "applicationId"
+            };
+
+            var facet60 = new Facet
+            {
+                Type = FacetType.DateTime,
+                Scope = FacetScope.Establishment,
+                Code = "code",
+                ApplicationId = "applicationId"
+            };
+
+            var facet61 = new Facet
+            {
+                Type = FacetType.DateTime,
+                Scope = FacetScope.Establishment,
+                Code = "code",
+                ApplicationId = "applicationId"
+            };
+
+            _dbContext.AddRange(facet51, facet52, facet53, facet54, facet55, facet56, facet57, facet58, facet59, facet60, facet61);
+            _dbContext.SaveChanges();
+
+            var facetValue51 = new EstablishmentFacetValueDao
+            {
+                EstablishmentId = establishment1.Id,
+                EnvironmentId = environment1.Id,
+                IntValue = 1,
+                FacetId = facet51.Id,
+            };
+
+            var facetValue52 = new EstablishmentFacetValueDao
+            {
+                EstablishmentId = establishment2.Id,
+                EnvironmentId = environment2.Id,
+                IntValue = 2,
+                FacetId = facet52.Id,
+            };
+
+            var facetValue53 = new EstablishmentFacetValueDao
+            {
+                EstablishmentId = establishment2.Id,
+                EnvironmentId = environment2.Id,
+                DecimalValue = 3.14m,
+                FacetId = facet53.Id,
+            };
+
+            var facetValue54 = new EstablishmentFacetValueDao
+            {
+                EstablishmentId = establishment1.Id,
+                EnvironmentId = environment1.Id,
+                DecimalValue = 3.14m,
+                FacetId = facet54.Id,
+            };
+
+            var facetValue55 = new EstablishmentFacetValueDao
+            {
+                EstablishmentId = establishment3.Id,
+                EnvironmentId = environment3.Id,
+                DecimalValue = 2m,
+                FacetId = facet55.Id,
+            };
+
+            var facetValue56 = new EstablishmentFacetValueDao
+            {
+                EstablishmentId = establishment3.Id,
+                EnvironmentId = environment3.Id,
+                StringValue = "toto",
+                FacetId = facet56.Id,
+            };
+
+            var facetValue57 = new EstablishmentFacetValueDao
+            {
+                EstablishmentId = establishment2.Id,
+                EnvironmentId = environment2.Id,
+                StringValue = "toto2",
+                FacetId = facet57.Id,
+            };
+
+            var facetValue58 = new EstablishmentFacetValueDao
+            {
+                EstablishmentId = establishment2.Id,
+                EnvironmentId = environment2.Id,
+                DecimalValue = 0.12m,
+                FacetId = facet58.Id,
+            };
+
+            var facetValue59 = new EstablishmentFacetValueDao
+            {
+                EstablishmentId = establishment3.Id,
+                EnvironmentId = environment3.Id,
+                DecimalValue = 0.13m,
+                FacetId = facet59.Id,
+            };
+
+            var facetValue60 = new EstablishmentFacetValueDao
+            {
+                EstablishmentId = establishment3.Id,
+                EnvironmentId = environment3.Id,
+                DateTimeValue = new DateTime(2022, 01, 01),
+                FacetId = facet60.Id,
+            };
+            var facetValue61 = new EstablishmentFacetValueDao
+            {
+                EstablishmentId = establishment2.Id,
+                EnvironmentId = environment2.Id,
+                DateTimeValue = new DateTime(2022, 01, 05),
+                FacetId = facet61.Id,
+            };
+
+            _dbContext.AddRange(facetValue51, facetValue52, facetValue53, facetValue54, facetValue55, facetValue56, facetValue57, facetValue58, facetValue59, facetValue60, facetValue61);
+            _dbContext.SaveChanges();
+            #endregion
         }
 
-        public static EnvironmentFacetsAdvancedCriterion GetCriterion<T>(FacetType facetType, T value, ComparisonOperators op)
+        public static EnvironmentFacetsAdvancedCriterion GetEnvironmentCriterion<T>(FacetType facetType, T value, ComparisonOperators op)
         {
             return new EnvironmentFacetsAdvancedCriterion
             {
@@ -372,6 +706,16 @@ namespace AdvancedFilters.Infra.Tests
             FacetType.String => new SingleFacetValueComparisonCriterion<string>() { Value = value, Type = facetType, Operator = op },
             _ => throw new BadRequestException()
         };
+
+        public static EstablishmentFacetsAdvancedCriterion GetEstablishmentCriterion<T>(FacetType facetType, T value, ComparisonOperators op)
+        {
+            return new EstablishmentFacetsAdvancedCriterion
+            {
+                Value = GetEnvironmentFacetValueExpressionAccordingToFacetType(facetType, value.ToString(), op),
+                ItemsMatched = ItemsMatching.Any,
+                Identifier = new FacetIdentifier { ApplicationId = "applicationId", Code = "code" }
+            };
+        }
     }
 
     internal class DummyQueryPager : IQueryPager
@@ -394,5 +738,5 @@ namespace AdvancedFilters.Infra.Tests
         }
     }
 
-   
+
 }
