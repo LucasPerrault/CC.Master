@@ -10,7 +10,9 @@ namespace AdvancedFilters.Domain.Billing.Models
         Unknown = 0,
         France = 1,
         Iberia = 2,
+        Switzerland = 3,
     }
+
     public class Client
     {
         public int Id { get; set; }
