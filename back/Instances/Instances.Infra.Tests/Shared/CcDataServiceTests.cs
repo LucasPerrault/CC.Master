@@ -88,7 +88,9 @@ namespace Instances.Infra.Tests.Shared
                     {
                         Uri = new Uri("http://test3")
                     }
-                }
+                },
+                Scope = (int)DuplicateInstanceScope.NONE,
+                FileOptions = (int)DuplicateInstanceFileOptions.NONE,
             }, "cluster5", "callback/path/return");
 
             _mockHttpMessageHandler
@@ -113,9 +115,12 @@ namespace Instances.Infra.Tests.Shared
                 PostBufferServerRestoreScripts = new object[] { new { Uri = "http://test1", AuthorizationHeader = (string)null } },
                 PreRestoreScripts = new object[] { new { Uri = "http://test2", AuthorizationHeader = (string)null } },
                 PostRestoreScripts = new object[] { new { Uri = "http://test3", AuthorizationHeader = (string)null } },
+                Scope = (int)DuplicateInstanceScope.NONE,
+                FileOptions = (int)DuplicateInstanceFileOptions.NONE,
                 CallbackUri = "https://cc.ilucca.local/callback/path/return",
                 CallbackAuthorizationHeader =  $"Cloudcontrol application={_ccDataConfiguration.InboundToken}",
-            });
+
+        });
 
             bodyAsString.Should().Be(expectation);
         }
