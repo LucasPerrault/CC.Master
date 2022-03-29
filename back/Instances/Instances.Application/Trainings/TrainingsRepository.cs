@@ -12,17 +12,20 @@ namespace Instances.Application.Trainings
     {
         private readonly ClaimsPrincipal _principal;
         private readonly ITrainingsStore _trainingsStore;
+        private readonly ITrainingRestorationsStore _restorationsStore;
         private readonly EnvironmentRightsFilter _rightsFilter;
 
         public TrainingsRepository
         (
             ClaimsPrincipal principal,
             ITrainingsStore trainingsStore,
+            ITrainingRestorationsStore restorationsStore,
             EnvironmentRightsFilter rightsFilters
         )
         {
             _principal = principal;
             _trainingsStore = trainingsStore;
+            _restorationsStore = restorationsStore;
             _rightsFilter = rightsFilters;
         }
 
@@ -30,6 +33,17 @@ namespace Instances.Application.Trainings
         {
             var access = await _rightsFilter.GetAccessRightAsync(_principal, Operation.ReadEnvironments);
             return await _trainingsStore.GetAsync
+            (
+                pageToken,
+                filter,
+                access
+            );
+        }
+
+        public async Task<Page<TrainingRestoration>> GetTrainingRestorationsAsync(IPageToken pageToken, TrainingRestorationFilter filter)
+        {
+            var access = await _rightsFilter.GetAccessRightAsync(_principal, Operation.ReadEnvironments);
+            return await _restorationsStore.GetAsync
             (
                 pageToken,
                 filter,
