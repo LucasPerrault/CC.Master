@@ -111,6 +111,18 @@ namespace Environments.Infra.Storage.Stores
                 .CombineSafelyOr();
         }
 
+        public static IQueryable<T> FilterOnEnvironmentRights<T>
+        (
+            IQueryable<T> elements,
+            Expression<Func<T, Environment>> getEnvironment,
+            List<EnvironmentAccessRight> accessRights
+        )
+        {
+            var environmentRightsExpression = ForRightsExpression(accessRights);
+            var trainingRightsExpression = getEnvironment.Chain(environmentRightsExpression);
+            return elements.Where(trainingRightsExpression);
+        }
+
         private static Expression<Func<Environment, bool>> WithPurposes(PurposeAccessRight accessRight)
         {
             return accessRight switch
