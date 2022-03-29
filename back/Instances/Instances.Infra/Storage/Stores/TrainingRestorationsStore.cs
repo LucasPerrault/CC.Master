@@ -35,6 +35,13 @@ namespace Instances.Infra.Storage.Stores
             return Duplications.SingleOrDefaultAsync(d => d.InstanceDuplicationId == instanceDuplicationId);
         }
 
+        public Task<TrainingRestoration> GetActiveByEnvironmentIdAsync(int environmentId)
+        {
+            return _dbContext.Set<TrainingRestoration>()
+                .Where(r => r.EnvironmentId == environmentId)
+                .FirstOrDefaultAsync(r => !r.InstanceDuplication.EndedAt.HasValue);
+        }
+
         private IQueryable<TrainingRestoration> Duplications => _dbContext.Set<TrainingRestoration>()
             .Include(d => d.Environment)
             .Include(d => d.InstanceDuplication.Distributor);

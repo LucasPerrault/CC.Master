@@ -10,5 +10,6 @@ namespace Instances.Domain.Trainings
         Task<TrainingRestoration> CreateAsync(TrainingRestoration restoration);
         Task<IReadOnlyCollection<TrainingRestoration>> GetByIdsAsync(IReadOnlyCollection<int> ids);
         Task<TrainingRestoration> GetByInstanceDuplicationIdAsync(Guid instanceDuplicationId);
+        Task<TrainingRestoration> GetActiveByEnvironmentIdAsync (int environmentId);
     }
 }
