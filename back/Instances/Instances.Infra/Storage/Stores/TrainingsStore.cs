@@ -115,12 +115,7 @@ namespace Instances.Infra.Storage.Stores
             List<EnvironmentAccessRight> accessRights
         )
         {
-            var environmentRightsExpression = EnvironmentQueryableExtensions.ForRightsExpression(accessRights);
-            Expression<Func<Training, CCEnvironment>> trainingToEnvironment = t => t.Environment;
-
-            var trainingRightsExpression = trainingToEnvironment.Chain(environmentRightsExpression);
-
-            return trainings.Where(trainingRightsExpression);
+            return EnvironmentQueryableExtensions.FilterOnEnvironmentRights(trainings, r => r.Environment, accessRights);
         }
     }
 }

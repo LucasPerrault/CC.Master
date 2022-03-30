@@ -1,6 +1,7 @@
 using Instances.Application.Trainings;
 using Instances.Application.Trainings.Restoration;
 using Instances.Domain.Trainings;
+using Instances.Domain.Trainings.Filtering;
 using Instances.Web.Controllers.Dtos;
 using Lucca.Core.Api.Abstractions.Paging;
 using Lucca.Core.Api.Web.ModelBinding.Sorting;
@@ -46,6 +47,14 @@ namespace Instances.Web.Controllers
             return _restorer.CreateRestorationAsync(request);
         }
 
+        [HttpGet("restorations")]
+        [ApiSort("-" + nameof(TrainingRestoration.Id))]
+        [ForbidIfMissing(Operation.RestoreInstances)]
+        public Task<Page<TrainingRestoration>> GetRestorationsAsync([FromQuery]TrainingRestorationQuery query)
+        {
+            return _trainingsRepository.GetTrainingRestorationsAsync(query.Page, query.ToFilter());
+        }
+
         [HttpPost("restorations/{restorationId:guid}/notify")]
         [ForbidIfMissing(Operation.RestoreInstances)]
         public Task RestorationReport
@@ -56,5 +65,16 @@ namespace Instances.Web.Controllers
         {
             return _restorationCompleter.MarkRestorationAsCompletedAsync(restorationId, payload.Success);
         }
+    }
+
+    public class TrainingRestorationQuery
+    {
+        public int? EnvironmentId { get; set; }
+        public IPageToken Page { get; set; }
+
+        public TrainingRestorationFilter ToFilter() => new TrainingRestorationFilter
+        {
+            EnvironmentId = EnvironmentId,
+        };
     }
 }

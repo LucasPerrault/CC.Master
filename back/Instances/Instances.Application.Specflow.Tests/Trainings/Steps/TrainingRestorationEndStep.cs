@@ -121,7 +121,7 @@ namespace Instances.Application.Specflow.Tests.Trainings.Steps
 
         private TrainingRestorationCompleter GetCompleter()
         {
-            var trainingRestorationsStore = new TrainingRestorationsStore(_instancesDbContext);
+            var trainingRestorationsStore = new TrainingRestorationsStore(_instancesDbContext, new DummyQueryPager());
             var instanceDuplicationsStore = new InstanceDuplicationsStore(_instancesDbContext, new Mock<ITimeProvider>().Object);
             var trainingsStore = new TrainingsStore(_instancesDbContext, new DummyQueryPager());
             _remoteInstancesStoreMock = new Mock<IInstancesRemoteStore>();

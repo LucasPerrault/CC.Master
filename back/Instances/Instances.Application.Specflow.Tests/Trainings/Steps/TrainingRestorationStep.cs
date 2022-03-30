@@ -258,7 +258,7 @@ namespace Instances.Application.Specflow.Tests.Trainings.Steps
 
             var instanceManipulator = new InstancesManipulator(sqlScriptPicker, ccDataServiceMock.Object);
 
-            var trainingRestorationsStore = new TrainingRestorationsStore(_instancesDbContext);
+            var trainingRestorationsStore = new TrainingRestorationsStore(_instancesDbContext, new DummyQueryPager());
             var trainingsStore = new TrainingsStore(_instancesDbContext, new DummyQueryPager());
             var environmentsStore = new EnvironmentsStore(_environmentsDbContext, new DummyQueryPager(), new Mock<IEnvironmentsRemoteStore>().Object);
             var rightsService = _testContext.GetRightsService();

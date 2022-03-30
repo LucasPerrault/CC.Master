@@ -48,6 +48,7 @@ namespace Instances.Application.Trainings.Restoration
         public async Task<TrainingRestoration> CreateRestorationAsync(TrainingRestorationRequest request)
         {
             await ThrowIfForbiddenAsync(request);
+            await ThrowIfAlreadyPending(request);
 
             var environment = await GetTrainingEnvironmentAsync(request.EnvironmentId);
 
@@ -83,6 +84,15 @@ namespace Instances.Application.Trainings.Restoration
             );
 
             return restoration;
+        }
+
+        private async Task ThrowIfAlreadyPending(TrainingRestorationRequest request)
+        {
+            var pendingRestoration = await _trainingRestorationsStore.GetActiveByEnvironmentIdAsync(request.EnvironmentId);
+            if (pendingRestoration is not null)
+            {
+                throw new BadRequestException($"Environment {request.EnvironmentId} has another training restoration pending.");
+            }
         }
 
         private async Task<CCEnvironment> GetTrainingEnvironmentAsync(int environmentId)
