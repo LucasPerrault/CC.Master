@@ -27,6 +27,10 @@ namespace AdvancedFilters.Infra.Storage
             modelBuilder.ApplyConfiguration(new AppContactsConfiguration());
             modelBuilder.ApplyConfiguration(new ClientContactsConfiguration());
             modelBuilder.ApplyConfiguration(new SpecializedContactsConfiguration());
+
+            modelBuilder.ApplyConfiguration(new FacetsConfiguration());
+            modelBuilder.ApplyConfiguration(new EnvironmentFacetValueDaosConfiguration());
+            modelBuilder.ApplyConfiguration(new EstablishmentFacetValueDaosConfiguration());
         }
 
         public class AdvancedFiltersMigrationDefinition : CloudControlDbContextMigrationDefinition<AdvancedFiltersDbContext>

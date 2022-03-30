@@ -1,4 +1,8 @@
 using System;
+using System.Collections.Generic;
+using AdvancedFilters.Domain.Facets;
+using AdvancedFilters.Domain.Filters.Builders;
+using AdvancedFilters.Domain.Filters.Models;
 
 namespace AdvancedFilters.Domain.Instance.Models
 {
@@ -18,5 +22,15 @@ namespace AdvancedFilters.Domain.Instance.Models
 
         public LegalUnit LegalUnit { get; set; }
         public Environment Environment { get; set; }
+        public IEnumerable<IEstablishmentFacetValue> Facets { get; set; }
+    }
+
+    public class EstablishmentAdvancedCriterion : AdvancedCriterion<Establishment>
+    {
+        public EnvironmentAdvancedCriterion Environment { get; set; }
+        public LegalUnitAdvancedCriterion LegalUnit { get; set; }
+
+        public override IQueryableExpressionBuilder<Establishment> GetExpressionBuilder(IQueryableExpressionBuilderFactory factory)
+            => factory.Create(this);
     }
 }

@@ -320,6 +320,33 @@ namespace AdvancedFilters.Infra.Migrations
                     b.ToTable("Countries", "cafe");
                 });
 
+            modelBuilder.Entity("AdvancedFilters.Domain.Facets.Facet", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<string>("ApplicationId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Code")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Scope")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Type")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Facets", "cafe");
+                });
+
             modelBuilder.Entity("AdvancedFilters.Domain.Instance.Models.AppInstance", b =>
                 {
                     b.Property<int>("EnvironmentId")
@@ -514,6 +541,79 @@ namespace AdvancedFilters.Infra.Migrations
                     b.ToTable("LegalUnits", "cafe");
                 });
 
+            modelBuilder.Entity("AdvancedFilters.Infra.Storage.DAO.EnvironmentFacetValueDao", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<DateTime?>("DateTimeValue")
+                        .HasColumnType("datetime2");
+
+                    b.Property<decimal?>("DecimalValue")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int>("EnvironmentId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("FacetId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("IntValue")
+                        .HasColumnType("int");
+
+                    b.Property<string>("StringValue")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("EnvironmentId");
+
+                    b.HasIndex("FacetId");
+
+                    b.ToTable("EnvironmentFacetValues", "cafe");
+                });
+
+            modelBuilder.Entity("AdvancedFilters.Infra.Storage.DAO.EstablishmentFacetValueDao", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<DateTime?>("DateTimeValue")
+                        .HasColumnType("datetime2");
+
+                    b.Property<decimal?>("DecimalValue")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int>("EnvironmentId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("EstablishmentId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("FacetId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("IntValue")
+                        .HasColumnType("int");
+
+                    b.Property<string>("StringValue")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("FacetId");
+
+                    b.HasIndex("EnvironmentId", "EstablishmentId");
+
+                    b.ToTable("EstablishmentFacetValues", "cafe");
+                });
+
             modelBuilder.Entity("AdvancedFilters.Domain.Billing.Models.Contract", b =>
                 {
                     b.HasOne("AdvancedFilters.Domain.Billing.Models.Client", "Client")
@@ -673,6 +773,52 @@ namespace AdvancedFilters.Infra.Migrations
                     b.Navigation("Country");
 
                     b.Navigation("Environment");
+                });
+
+            modelBuilder.Entity("AdvancedFilters.Infra.Storage.DAO.EnvironmentFacetValueDao", b =>
+                {
+                    b.HasOne("AdvancedFilters.Domain.Instance.Models.Environment", "Environment")
+                        .WithMany()
+                        .HasForeignKey("EnvironmentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("AdvancedFilters.Domain.Facets.Facet", "Facet")
+                        .WithMany()
+                        .HasForeignKey("FacetId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Environment");
+
+                    b.Navigation("Facet");
+                });
+
+            modelBuilder.Entity("AdvancedFilters.Infra.Storage.DAO.EstablishmentFacetValueDao", b =>
+                {
+                    b.HasOne("AdvancedFilters.Domain.Instance.Models.Environment", "Environment")
+                        .WithMany()
+                        .HasForeignKey("EnvironmentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("AdvancedFilters.Domain.Facets.Facet", "Facet")
+                        .WithMany()
+                        .HasForeignKey("FacetId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("AdvancedFilters.Domain.Instance.Models.Establishment", "Establishment")
+                        .WithMany()
+                        .HasForeignKey("EnvironmentId", "EstablishmentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Environment");
+
+                    b.Navigation("Establishment");
+
+                    b.Navigation("Facet");
                 });
 
             modelBuilder.Entity("AdvancedFilters.Domain.Billing.Models.Client", b =>

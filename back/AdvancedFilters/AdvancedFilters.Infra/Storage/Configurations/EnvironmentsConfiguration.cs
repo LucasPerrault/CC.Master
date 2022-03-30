@@ -21,6 +21,7 @@ namespace AdvancedFilters.Infra.Storage.Configurations
             builder.Property(e => e.Cluster).HasColumnName("Cluster").IsRequired();
 
             builder.Ignore(e => e.DistributorType);
+            builder.Ignore(e => e.Facets);
 
             builder.HasIndex(e => e.Subdomain);
         }

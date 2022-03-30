@@ -136,6 +136,8 @@ namespace Tools
     {
         T Deserialize<T>(string content);
         Task<T> DeserializeAsync<T>(Stream content);
+        string Serialize(object o);
+        IReadOnlyCollection<JsonConverter> GetConverters();
     }
 
     internal class PolymorphicSerializer : IPolymorphicSerializer
@@ -156,6 +158,13 @@ namespace Tools
         {
             return Serializer.DeserializeAsync<T>(content, Serializer.Options.ForDeserialization(_converters));
         }
+
+        public string Serialize(object o)
+        {
+            return Serializer.Serialize(o, Serializer.Options.ForSerialization(_converters));
+        }
+
+        public IReadOnlyCollection<JsonConverter> GetConverters() => _converters;
     }
 
     internal class PolymorphicConverter<T, TKey> : JsonConverter<T> where TKey : Enum

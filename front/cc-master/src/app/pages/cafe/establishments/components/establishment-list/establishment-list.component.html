@@ -1,0 +1,33 @@
+<table class="table">
+  <thead class="table-head">
+  <tr class="table-head-row">
+    <th class="table-head-row-cell">
+      {{ 'cafe_establishment_list_name' | translate }}
+    </th>
+    <th class="table-head-row-cell">
+      {{ 'cafe_establishment_list_environment' | translate }}
+    </th>
+    <th class="table-head-row-cell">
+      {{ 'cafe_establishment_list_country' | translate }}
+    </th>
+  </tr>
+  </thead>
+  <tbody class="table-body">
+  <tr class="table-body-row" *ngFor="let establishment of establishments; trackBy: trackBy">
+    <td class="table-body-row-cell">
+      {{ establishment?.name }}
+    </td>
+    <td class="table-body-row-cell">
+      {{ getEnvironmentName(establishment?.environment?.subdomain, establishment?.environment?.domain) }}
+    </td>
+    <td class="table-body-row-cell">
+      {{ establishment?.legalUnit?.country?.name }}
+    </td>
+  </tr>
+  </tbody>
+</table>
+
+<section class="emptyState" *ngIf="!establishments.length">
+  <h3 class="emptyState-title">{{ 'cafe_establishment_list_emptyState_title' | translate }}</h3>
+  <p class="emptyState-description">{{ 'cafe_establishment_list_emptyState_description' | translate }}</p>
+</section>

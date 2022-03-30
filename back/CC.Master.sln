@@ -246,6 +246,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Slack.Domain", "Core\Slack\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Slack.Infra.Tests", "Core\Slack\Slack.Infra.Tests\Slack.Infra.Tests.csproj", "{191100D5-BCF6-4DA8-81F5-55579D157828}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AdvancedFilters.Application", "AdvancedFilters\AdvancedFilters.Application\AdvancedFilters.Application.csproj", "{F1842BDF-CADB-4406-9420-54606B3E89A2}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -624,6 +626,10 @@ Global
 		{191100D5-BCF6-4DA8-81F5-55579D157828}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{191100D5-BCF6-4DA8-81F5-55579D157828}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{191100D5-BCF6-4DA8-81F5-55579D157828}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F1842BDF-CADB-4406-9420-54606B3E89A2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F1842BDF-CADB-4406-9420-54606B3E89A2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F1842BDF-CADB-4406-9420-54606B3E89A2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F1842BDF-CADB-4406-9420-54606B3E89A2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -741,6 +747,7 @@ Global
 		{D9C5955F-03C2-4E5E-9D74-3AC1C18F96BD} = {9F6EA151-3097-464A-9CE9-2F9EB12B30D1}
 		{CFCE7D78-7E42-490D-B05F-F51335151626} = {9F6EA151-3097-464A-9CE9-2F9EB12B30D1}
 		{191100D5-BCF6-4DA8-81F5-55579D157828} = {9F6EA151-3097-464A-9CE9-2F9EB12B30D1}
+		{F1842BDF-CADB-4406-9420-54606B3E89A2} = {A158483A-5738-48A1-8AAE-9C959F9ABFA0}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {EBA79BF7-490F-4B8F-8162-771B77F6C73B}

@@ -12,6 +12,7 @@ namespace AdvancedFilters.Infra.Services
     public interface IExportService
     {
         FileStreamResult Export(List<Environment> environments, string filename);
+        FileStreamResult Export(List<Establishment> establishments, string filename);
         FileStreamResult Export(List<AppContact> contacts, string filename);
         FileStreamResult Export(List<ClientContact> contacts, string filename);
         FileStreamResult Export(List<SpecializedContact> contacts, string filename);
@@ -24,6 +25,13 @@ namespace AdvancedFilters.Infra.Services
             var csvEnvironments = environments.Select(e => new CsvEnvironment(e));
 
             return ExportAsync(csvEnvironments, filename);
+        }
+
+        public FileStreamResult Export(List<Establishment> establishments, string filename)
+        {
+            var csvEstablishments = establishments.Select(e => new CsvEstablishment(e));
+
+            return ExportAsync(csvEstablishments, filename);
         }
 
         public FileStreamResult Export(List<AppContact> contacts, string filename)
@@ -91,6 +99,23 @@ namespace AdvancedFilters.Infra.Services
                 AppInstances = string.Join(",", environment.AppInstances.Select(a => a.ApplicationName));
                 LuCountries = string.Join(",", environment.LegalUnits.Select(x => x.Country.Name).Distinct());
                 DistributorType = environment.DistributorType.ToString();
+            }
+        }
+
+        private class CsvEstablishment
+        {
+            public string EnvironmentName { get; set; }
+            public string LuCountry { get; set; }
+            public string Cluster { get; set; }
+
+            public System.DateTime CreatedAt { get; set; }
+
+            public CsvEstablishment(Establishment establishment)
+            {
+                CreatedAt = establishment.CreatedAt;
+                Cluster = establishment.Environment.Cluster;
+                EnvironmentName = $"{establishment.Environment.Subdomain}.{establishment.Environment.Domain}";
+                LuCountry = establishment.LegalUnit.Country.Name;
             }
         }
 

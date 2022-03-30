@@ -909,6 +909,9 @@ export const Translations = {
 		'cafe_establishment_list_country': "Country",
 		'cafe_establishment_list_emptyState_title': "Shhh, it's quiet here",
 		'cafe_establishment_list_emptyState_description': "Add filters to show a set of establishments.",
+		'cafe_establishments_count': {"one":"{{count}} establishment","other":"{{count}} establishments"},
+		'cafe_filters_establishment_country': "Establishment's country",
+		'cafe_filters_establishment_environment': "In the environment",
 	},
 	"de": {
 		'front_hello_world': "Hallo Welt!",
@@ -1820,6 +1823,9 @@ export const Translations = {
 		'cafe_establishment_list_country': "Country",
 		'cafe_establishment_list_emptyState_title': "Shhh, it's quiet here",
 		'cafe_establishment_list_emptyState_description': "Add filters to show a set of establishments.",
+		'cafe_establishments_count': {"one":"{{count}} establishment","other":"{{count}} establishments"},
+		'cafe_filters_establishment_country': "Establishment's country",
+		'cafe_filters_establishment_environment': "In the environment",
 	},
 	"fr": {
 		'front_hello_world': "Bonjour, monde !",
@@ -2731,6 +2737,9 @@ export const Translations = {
 		'cafe_establishment_list_country': "Pays",
 		'cafe_establishment_list_emptyState_title': "Shhh, c'est calme ici",
 		'cafe_establishment_list_emptyState_description': "Ajouter des filtres pour visualiser un ensemble d'établissements.",
+		'cafe_establishments_count': {"one":"{{count}} établissement","other":"{{count}} établissements"},
+		'cafe_filters_establishment_country': "Pays de l'établissement",
+		'cafe_filters_establishment_environment': "Dans l'environnement",
 	},
 	"it": {
 		'front_hello_world': "Ciao mondo!",
@@ -3642,6 +3651,9 @@ export const Translations = {
 		'cafe_establishment_list_country': "Country",
 		'cafe_establishment_list_emptyState_title': "Shhh, it's quiet here",
 		'cafe_establishment_list_emptyState_description': "Add filters to show a set of establishments.",
+		'cafe_establishments_count': {"one":"{{count}} establishment","other":"{{count}} establishments"},
+		'cafe_filters_establishment_country': "Establishment's country",
+		'cafe_filters_establishment_environment': "In the environment",
 	},
 	"nl": {
 		'front_hello_world': "Hallo, wereld!",
@@ -4553,6 +4565,9 @@ export const Translations = {
 		'cafe_establishment_list_country': "Country",
 		'cafe_establishment_list_emptyState_title': "Shhh, it's quiet here",
 		'cafe_establishment_list_emptyState_description': "Add filters to show a set of establishments.",
+		'cafe_establishments_count': {"one":"{{count}} establishment","other":"{{count}} establishments"},
+		'cafe_filters_establishment_country': "Establishment's country",
+		'cafe_filters_establishment_environment': "In the environment",
 	},
 	"nl-BE": {
 		'front_hello_world': "Hallo wereld!",
@@ -5464,6 +5479,9 @@ export const Translations = {
 		'cafe_establishment_list_country': "Country",
 		'cafe_establishment_list_emptyState_title': "Shhh, it's quiet here",
 		'cafe_establishment_list_emptyState_description': "Add filters to show a set of establishments.",
+		'cafe_establishments_count': {"one":"{{count}} establishment","other":"{{count}} establishments"},
+		'cafe_filters_establishment_country': "Establishment's country",
+		'cafe_filters_establishment_environment': "In the environment",
 	},
 	"es": {
 		'front_hello_world': "¡Hola, mundo!",
@@ -6375,6 +6393,9 @@ export const Translations = {
 		'cafe_establishment_list_country': "Country",
 		'cafe_establishment_list_emptyState_title': "Shhh, it's quiet here",
 		'cafe_establishment_list_emptyState_description': "Add filters to show a set of establishments.",
+		'cafe_establishments_count': {"one":"{{count}} establishment","other":"{{count}} establishments"},
+		'cafe_filters_establishment_country': "Establishment's country",
+		'cafe_filters_establishment_environment': "In the environment",
 	},
 	"pt": {
 		'front_hello_world': "Olá mundo!",
@@ -7286,5 +7307,8 @@ export const Translations = {
 		'cafe_establishment_list_country': "Country",
 		'cafe_establishment_list_emptyState_title': "Shhh, it's quiet here",
 		'cafe_establishment_list_emptyState_description': "Add filters to show a set of establishments.",
+		'cafe_establishments_count': {"one":"{{count}} establishment","other":"{{count}} establishments"},
+		'cafe_filters_establishment_country': "Establishment's country",
+		'cafe_filters_establishment_environment': "In the environment",
 	},
 };

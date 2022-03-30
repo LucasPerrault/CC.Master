@@ -8,6 +8,7 @@ namespace AdvancedFilters.Domain.Filters.Builders
     public interface IQueryableExpressionBuilderFactory
     {
         IQueryableExpressionBuilder<Environment> Create(EnvironmentAdvancedCriterion criterion);
+        IQueryableExpressionBuilder<Establishment> Create(EstablishmentAdvancedCriterion criterion);
         IQueryableExpressionBuilder<AppInstance> Create(AppInstanceAdvancedCriterion criterion);
         IQueryableExpressionBuilder<LegalUnit> Create(LegalUnitAdvancedCriterion criterion);
         IQueryableExpressionBuilder<Distributor> Create(DistributorAdvancedCriterion distributorAdvancedCriterion);
