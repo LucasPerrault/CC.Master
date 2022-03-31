@@ -26,19 +26,17 @@ export class EstablishmentsDataService {
       .pipe(map(response => response.data.items));
   }
 
-  public createAttachmentRange$(
+  public async createAttachmentRange$(
     contractId: number,
     establishmentIds: number[],
     start: Date,
     nbMonthFree: number,
     excludedEntities: IEstablishmentExcludedEntity[],
-  ): Observable<void> {
-    const request$ = establishmentIds.map(establishmentId => {
+  ): Promise<void> {
+    for (const establishmentId of establishmentIds) {
       const excludedEntityIdsToDelete = excludedEntities.filter(e => e.legalEntityID === establishmentId).map(e => e.id);
-      return this.createAttachment$(contractId, establishmentId, start, nbMonthFree, excludedEntityIdsToDelete);
-    });
-
-    return forkJoin(...request$);
+      await this.createAttachment$(contractId, establishmentId, start, nbMonthFree, excludedEntityIdsToDelete);
+    }
   }
 
   public createAttachment$(
@@ -47,7 +45,7 @@ export class EstablishmentsDataService {
     start: Date,
     nbMonthFree: number,
     excludedEntityIdsToDelete: number[],
-  ): Observable<void> {
+  ): Promise<void> {
     const createAttachment$ = this.httpClient.post<void>(this.attachmentsEndpoint, {
       contractId,
       start: this.apiV3DateService.toApiV3DateFormat(start),
@@ -55,9 +53,10 @@ export class EstablishmentsDataService {
       legalEntityId: establishmentId,
     });
 
-    return !!excludedEntityIdsToDelete.length
+    const observable = !!excludedEntityIdsToDelete.length
       ? this.deleteExcludedEntities$(excludedEntityIdsToDelete).pipe(switchMap(() => createAttachment$))
       : createAttachment$;
+    return observable.toPromise();
   }
 
 
