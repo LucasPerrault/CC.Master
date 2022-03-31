@@ -4,7 +4,7 @@ import { TranslatePipe } from '@cc/aspects/translate';
 import { ELuDateGranularity } from '@lucca-front/ng/core';
 import { ILuModalContent, LU_MODAL_DATA } from '@lucca-front/ng/modal';
 import { addMonths, differenceInMonths, startOfMonth } from 'date-fns';
-import { Observable, Subject } from 'rxjs';
+import { from, Observable, Subject } from 'rxjs';
 import { debounceTime, takeUntil } from 'rxjs/operators';
 
 import { IContractEstablishment } from '../../../models/contract-establishment.interface';
@@ -78,7 +78,9 @@ export class AttachmentLinkingModalComponent implements OnInit, OnDestroy, ILuMo
 
     const establishmentIds = this.modalData.establishments.map(e => e.id);
     const excludedEntities = this.getExcludedEntitiesToDelete(this.modalData.establishments);
-    return this.establishmentsDataService.createAttachmentRange$(contractId, establishmentIds, startDate, monthRebate, excludedEntities);
+    return from(this.establishmentsDataService
+      .createAttachmentRange$(contractId, establishmentIds, startDate, monthRebate, excludedEntities),
+    );
   }
 
   private getTitle(): string {
