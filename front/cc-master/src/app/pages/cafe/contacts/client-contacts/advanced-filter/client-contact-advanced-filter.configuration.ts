@@ -28,7 +28,6 @@ export class ClientContactAdvancedFilterConfiguration implements IAdvancedFilter
         { id: ComparisonOperator.Equals, name: this.translatePipe.transform('cafe_filters_operator_isAmong') },
         { id: ComparisonOperator.NotEquals, name: this.translatePipe.transform('cafe_filters_operator_isNotAmong') },
       ],
-      fields: [this.formlyConfiguration.clients],
       componentConfigs: () => [
         {
           key: ClientContactAdvancedFilterKey.Client,

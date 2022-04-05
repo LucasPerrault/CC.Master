@@ -4,7 +4,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { LuFormlyModule } from '@lucca-front/ng/formly';
 import { FormlyModule } from '@ngx-formly/core';
 
-import { CCFormlyModule } from '../../../../../forms/formly';
+import { CCFormlyModule } from '../../../../../../forms/formly';
 import { ComparisonValueSelectComponent } from './comparison-value-select.component';
 
 @NgModule({

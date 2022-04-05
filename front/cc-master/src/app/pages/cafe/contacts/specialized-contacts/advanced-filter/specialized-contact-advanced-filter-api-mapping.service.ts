@@ -3,43 +3,40 @@ import { Injectable } from '@angular/core';
 import {
   AdvancedFilter,
   AdvancedFilterFormMapping,
-  AdvancedFilterTypeMapping,
-  IAdvancedFilterAttributes,
-  IAdvancedFilterForm,
+  AdvancedFilterTypeMapping, cast, IAdvancedCriterionAttributes,
+  IAdvancedFilterForm, IComparisonCriterionAttributes,
 } from '../../../common/components/advanced-filter-form';
 import { AdvancedFilterOperatorMapping } from '../../../common/components/advanced-filter-form';
 import { EnvironmentAdvancedFilterApiMappingService } from '../../../environments/advanced-filter';
-import { SpeContactAdvancedFilterKey } from './specialized-contact-advanced-filter-key.enum';
+import { SpeContactCriterionKey } from './specialized-contact-criterion-key.enum';
 
 @Injectable()
 export class SpecializedContactAdvancedFilterApiMappingService {
-  constructor(private environmentApiMapping: EnvironmentAdvancedFilterApiMappingService) {
-  }
+  constructor(private environmentApiMapping: EnvironmentAdvancedFilterApiMappingService) {}
 
   public toAdvancedFilter(advancedFilterForm: IAdvancedFilterForm): AdvancedFilter {
     return AdvancedFilterFormMapping.toAdvancedFilter(advancedFilterForm, a => this.getAdvancedFilter(a));
   }
 
-  private getAdvancedFilter(attributes: IAdvancedFilterAttributes): AdvancedFilter {
-    switch (attributes.filterKey) {
-      case SpeContactAdvancedFilterKey.Role:
-        return this.getRoleAdvancedFilter(attributes);
-      default:
-        return this.getEnvironmentAdvancedFilter(attributes);
+  private getAdvancedFilter(attributes: IAdvancedCriterionAttributes): AdvancedFilter {
+    switch (attributes.criterionKey) {
+      case SpeContactCriterionKey.Role:
+        return this.getRoleAdvancedFilter(cast<IComparisonCriterionAttributes>(attributes.content));
+      case SpeContactCriterionKey.Environment:
+        return this.getEnvironmentAdvancedFilter(cast<IAdvancedCriterionAttributes>(attributes.content));
     }
   }
 
-  private getRoleAdvancedFilter(attributes: IAdvancedFilterAttributes): AdvancedFilter {
-    const roleCodes = attributes.value.fieldValues[attributes.filterKey];
+  private getRoleAdvancedFilter(attributes: IComparisonCriterionAttributes): AdvancedFilter {
+    const roleCodes = attributes.value[attributes.filterKey];
     const { operator, logicalOperator } = AdvancedFilterOperatorMapping.getComparisonOperatorDto(attributes.operator);
     const toFilterCriterion = c => ({ roleCode: c });
 
     return AdvancedFilterTypeMapping.toAdvancedFilter(roleCodes, operator, toFilterCriterion, logicalOperator );
   }
 
-  private getEnvironmentAdvancedFilter(attributes: IAdvancedFilterAttributes): AdvancedFilter {
+  private getEnvironmentAdvancedFilter(attributes: IAdvancedCriterionAttributes): AdvancedFilter {
     const toFilterCriterion = criterion => ({ environment: criterion });
     return this.environmentApiMapping.getAdvancedFilter(attributes, toFilterCriterion);
   }
-
 }

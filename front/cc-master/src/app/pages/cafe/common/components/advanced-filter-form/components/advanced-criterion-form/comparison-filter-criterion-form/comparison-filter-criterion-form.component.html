@@ -1,0 +1,14 @@
+<form *ngIf="criterionConfig$ | async; let criterionConfig" [formGroup]="formGroup" class="u-displayFlex u-flexWrapWrap u-alignItemsCenter u-flexGrow0 u-flexShrink1">
+  <cc-comparison-operator-select textfieldClass="palette-grey mod-outlined mod-inline"
+                                 [formControlName]="formKey.Operator"
+                                 [operators]="criterionConfig.operators"
+                                 [required]="true"
+                                 (blur)="onTouch()">
+  </cc-comparison-operator-select>
+
+  <cc-comparison-value-select [formControlName]="formKey.Values"
+                              [configuration]="componentConfig$ | async"
+                              (blur)="onTouch()">
+  </cc-comparison-value-select>
+</form>
+

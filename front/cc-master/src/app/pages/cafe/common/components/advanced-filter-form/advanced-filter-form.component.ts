@@ -13,9 +13,8 @@ import {
 import { Subject } from 'rxjs';
 import { filter, takeUntil } from 'rxjs/operators';
 
-import { IAdvancedFilterForm } from './advanced-filter-form.interface';
+import { IAdvancedCriterionForm, IAdvancedFilterForm } from './advanced-filter-form.interface';
 import { AdvancedFilterFormService } from './advanced-filter-form.service';
-import { IComparisonFilterCriterionForm } from './components/comparison-filter-criterion';
 import { getLogicalOperator } from './components/logical-operator-select/logical-operator.interface';
 import { LogicalOperator } from './enums/logical-operator.enum';
 import { IAdvancedFilterConfiguration } from './models/advanced-filter-configuration.interface';
@@ -112,7 +111,7 @@ export class AdvancedFilterFormComponent implements ControlValueAccessor, Valida
     return control;
   }
 
-  public insertAt(index: number, defaultForm?: IComparisonFilterCriterionForm): void {
+  public insertAt(index: number, defaultForm?: IAdvancedCriterionForm): void {
     this.formArray.insert(index + 1, this.getCriterionForm(defaultForm));
   }
 
@@ -134,11 +133,11 @@ export class AdvancedFilterFormComponent implements ControlValueAccessor, Valida
     this.insertAt(0);
   }
 
-  private addRange(criterionForms: IComparisonFilterCriterionForm[]): void {
+  private addRange(criterionForms: IAdvancedCriterionForm[]): void {
     criterionForms.forEach((f, index) => this.insertAt(index, f));
   }
 
-  private getCriterionForm(defaultForm?: IComparisonFilterCriterionForm): FormControl {
+  private getCriterionForm(defaultForm?: IAdvancedCriterionForm): FormControl {
     return new FormControl(defaultForm);
   }
 

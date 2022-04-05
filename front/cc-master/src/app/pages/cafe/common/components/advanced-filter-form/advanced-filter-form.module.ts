@@ -6,7 +6,7 @@ import { LuTooltipTriggerModule } from '@lucca-front/ng/tooltip';
 
 import { AdvancedFilterFormComponent } from './advanced-filter-form.component';
 import { AdvancedFilterFormService } from './advanced-filter-form.service';
-import { ComparisonFilterCriterionFormModule } from './components/comparison-filter-criterion';
+import { AdvancedCriterionFormModule } from './components/advanced-criterion-form';
 import { LogicalOperatorSelectModule } from './components/logical-operator-select';
 
 @NgModule({
@@ -16,9 +16,9 @@ import { LogicalOperatorSelectModule } from './components/logical-operator-selec
     LogicalOperatorSelectModule,
     ReactiveFormsModule,
     LuTooltipTriggerModule,
-    ComparisonFilterCriterionFormModule,
     TranslateModule,
     LogicalOperatorSelectModule,
+    AdvancedCriterionFormModule,
   ],
   exports: [AdvancedFilterFormComponent],
   providers: [AdvancedFilterFormService],

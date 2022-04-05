@@ -18,11 +18,11 @@
         </div>
       </ng-container>
 
-      <cc-comparison-filter-criterion-form [formControl]="formControl"
-                                           [configurations]="configuration.criterions"
-                                           [formlyFieldConfigs]="configuration?.criterionFormlyFieldConfigs"
-                                           [required]="true">
-      </cc-comparison-filter-criterion-form>
+      <cc-advanced-criterion-form [formControl]="formControl"
+                                  [configurations]="configuration.criterions"
+                                  [formlyFieldConfigs]="configuration?.criterionFormlyFieldConfigs"
+                                  [required]="true">
+      </cc-advanced-criterion-form>
 
       <div class="u-marginLeftAuto">
         <button type="button" class="actionIcon"

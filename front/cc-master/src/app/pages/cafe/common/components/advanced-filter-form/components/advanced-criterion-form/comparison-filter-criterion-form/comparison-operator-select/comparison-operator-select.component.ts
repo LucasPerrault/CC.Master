@@ -11,7 +11,7 @@ import {
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { ComparisonOperator } from '../../../enums/comparison-operator.enum';
+import { ComparisonOperator } from '../../../../enums/comparison-operator.enum';
 import { IComparisonOperator } from './comparison-operator.interface';
 
 @Component({

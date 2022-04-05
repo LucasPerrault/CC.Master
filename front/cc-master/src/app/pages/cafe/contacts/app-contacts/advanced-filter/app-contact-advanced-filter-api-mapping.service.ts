@@ -4,14 +4,16 @@ import {
   AdvancedFilter,
   AdvancedFilterFormMapping,
   AdvancedFilterTypeMapping,
-  IAdvancedFilterAttributes,
+  cast,
+  getComparisonBooleanValue,
+  IAdvancedCriterionAttributes,
   IAdvancedFilterForm,
+  IComparisonCriterionAttributes,
 } from '../../../common/components/advanced-filter-form';
 import { AdvancedFilterOperatorMapping } from '../../../common/components/advanced-filter-form';
 import { EnvironmentAdvancedFilterApiMappingService } from '../../../environments/advanced-filter';
 import { IAppInstance } from '../../../environments/models/app-instance.interface';
-import { CommonApiMappingStrategies } from '../../common/advanced-filter/common-api-mapping-strategies';
-import { AppContactAdvancedFilterKey } from './app-contact-advanced-filter-key.enum';
+import { AppContactCriterionKey } from './app-contact-criterion-key.enum';
 
 @Injectable()
 export class AppContactAdvancedFilterApiMappingService {
@@ -22,26 +24,34 @@ export class AppContactAdvancedFilterApiMappingService {
     return AdvancedFilterFormMapping.toAdvancedFilter(advancedFilterForm, a => this.getAdvancedFilter(a));
   }
 
-  private getAdvancedFilter(attributes: IAdvancedFilterAttributes): AdvancedFilter {
-    switch (attributes.filterKey) {
-      case AppContactAdvancedFilterKey.AppInstance:
-        return this.getAppInstanceAdvancedFilter(attributes);
-      case AppContactAdvancedFilterKey.IsConfirmed:
-        return CommonApiMappingStrategies.getIsConfirmedAdvancedFilter(attributes.operator);
-      default:
-        return this.getEnvironmentAdvancedFilter(attributes);
+  private getAdvancedFilter(attributes: IAdvancedCriterionAttributes): AdvancedFilter {
+    switch (attributes.criterionKey) {
+      case AppContactCriterionKey.AppInstance:
+        return this.getAppInstanceAdvancedFilter(cast<IComparisonCriterionAttributes>(attributes.content));
+      case AppContactCriterionKey.IsConfirmed:
+        return this.getIsConfirmedAdvancedFilter(cast<IComparisonCriterionAttributes>(attributes.content));
+      case AppContactCriterionKey.Environment:
+        return this.getEnvironmentAdvancedFilter(cast<IAdvancedCriterionAttributes>(attributes.content));
     }
   }
 
-  private getAppInstanceAdvancedFilter(attributes: IAdvancedFilterAttributes): AdvancedFilter {
-    const appInstanceIds = attributes.value.fieldValues[attributes.filterKey]?.map((a: IAppInstance) => a.id);
+  private getAppInstanceAdvancedFilter(attributes: IComparisonCriterionAttributes): AdvancedFilter {
+    const appInstanceIds = attributes.value[attributes.filterKey]?.map((a: IAppInstance) => a.id);
     const { operator, logicalOperator } = AdvancedFilterOperatorMapping.getComparisonOperatorDto(attributes.operator);
     const toFilterCriterion = c => ({ appInstance: { applicationId: c } });
 
     return AdvancedFilterTypeMapping.toAdvancedFilter(appInstanceIds, operator, toFilterCriterion, logicalOperator);
   }
 
-  private getEnvironmentAdvancedFilter(attributes: IAdvancedFilterAttributes): AdvancedFilter {
+  private getIsConfirmedAdvancedFilter(attributes: IComparisonCriterionAttributes): AdvancedFilter {
+    const isConfirmed = getComparisonBooleanValue(attributes.operator);
+    const { operator, logicalOperator } = AdvancedFilterOperatorMapping.getComparisonOperatorDto(attributes.operator);
+    const toFilterCriterion = c => ({ isConfirmed: c });
+
+    return AdvancedFilterTypeMapping.toAdvancedFilter([isConfirmed], operator, toFilterCriterion, logicalOperator);
+  }
+
+  private getEnvironmentAdvancedFilter(attributes: IAdvancedCriterionAttributes): AdvancedFilter {
     const toFilterCriterion = criterion => ({ environment: criterion });
     return this.environmentApiMapping.getAdvancedFilter(attributes, toFilterCriterion);
   }

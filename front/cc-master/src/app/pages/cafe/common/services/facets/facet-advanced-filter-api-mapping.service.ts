@@ -6,9 +6,12 @@ import {
   AdvancedFilter,
   AdvancedFilterOperatorMapping,
   AdvancedFilterTypeMapping,
+  cast,
+  ComparisonCriterion,
   ComparisonOperatorDto,
   defaultEncapsulation,
-  IAdvancedFilterAttributes,
+  IAdvancedCriterionAttributes,
+  IComparisonCriterionAttributes,
   IComparisonFilterCriterionEncapsulation,
   IFacetComparisonCriterion,
   IFilterCriterionEncapsulation,
@@ -24,78 +27,122 @@ export class FacetAdvancedFilterApiMappingService {
   constructor(private apiDateService: ApiV3DateService) {}
 
   public getAdvancedFilter(
-    attributes: IAdvancedFilterAttributes,
+    attributes: IAdvancedCriterionAttributes,
     encapsulate: IFilterCriterionEncapsulation = defaultEncapsulation,
   ): AdvancedFilter {
-    switch (attributes.filterKey) {
-      case FacetAdvancedFilterKey.DateTime:
-        return this.getFacetDateAdvancedFilter(attributes, encapsulate);
-      case FacetAdvancedFilterKey.Decimal:
-        return this.toAdvancedFilter(FacetType.Decimal, attributes, encapsulate);
-      case FacetAdvancedFilterKey.DecimalRange:
-        return this.toAdvancedFilterWithRange(FacetType.Decimal, attributes, encapsulate);
-      case FacetAdvancedFilterKey.Integer:
-        return this.toAdvancedFilter(FacetType.Integer, attributes, encapsulate);
-      case FacetAdvancedFilterKey.IntegerRange:
-        return this.toAdvancedFilterWithRange(FacetType.Integer, attributes, encapsulate);
-      case FacetAdvancedFilterKey.String:
-        return this.getFacetStringAdvancedFilter(attributes, encapsulate);
-      case FacetAdvancedFilterKey.ListString:
-        return this.getFacetListStringAdvancedFilter(attributes, encapsulate);
-      case FacetAdvancedFilterKey.Percent:
-        return this.toAdvancedFilter(FacetType.Percentage, attributes, encapsulate);
-      case FacetAdvancedFilterKey.PercentRange:
-        return this.toAdvancedFilterWithRange(FacetType.Percentage, attributes, encapsulate);
+    const facet = this.getFacet(attributes.criterion);
+    switch (facet.type) {
+      case FacetType.DateTime:
+        return this.getFacetDateAdvancedFilter(facet, cast<IComparisonCriterionAttributes>(attributes.content), encapsulate);
+      case FacetType.Decimal:
+        return this.getFacetDecimalAdvancedFilter(facet, cast<IComparisonCriterionAttributes>(attributes.content), encapsulate);
+      case FacetType.Integer:
+        return this.getFacetIntegerAdvancedFilter(facet, cast<IComparisonCriterionAttributes>(attributes.content), encapsulate);
+      case FacetType.Percentage:
+        return this.getFacetPercentageAdvancedFilter(facet, cast<IComparisonCriterionAttributes>(attributes.content), encapsulate);
+      case FacetType.String:
+        return this.getFacetStringAdvancedFilter(facet, cast<IComparisonCriterionAttributes>(attributes.content), encapsulate);
     }
   }
 
-  private getFacetListStringAdvancedFilter(
-    attributes: IAdvancedFilterAttributes,
+  private getFacetDateAdvancedFilter(
+    facet: IFacet,
+    attributes: IComparisonCriterionAttributes,
     encapsulate: IFilterCriterionEncapsulation = defaultEncapsulation,
   ): AdvancedFilter {
-    const facet = this.getFacet(attributes);
-    const { operator, logicalOperator, itemsMatched } = AdvancedFilterOperatorMapping.getListComparisonOperatorDto(attributes.operator);
-    const facetValues = attributes.value.fieldValues[attributes.filterKey] as FacetValue[];
-    const values = facetValues.map(f => f?.value);
-    const toFilterCriterion = this.toFacetCriterion(FacetType.String, facet, encapsulate, itemsMatched);
-
-    return AdvancedFilterTypeMapping.toAdvancedFilter(values, operator, toFilterCriterion, logicalOperator);
-  }
-
-  private getFacetStringAdvancedFilter(
-    attributes: IAdvancedFilterAttributes,
-    encapsulate: IFilterCriterionEncapsulation = defaultEncapsulation,
-  ): AdvancedFilter {
-    const facet = this.getFacet(attributes);
-    const { operator, logicalOperator } = AdvancedFilterOperatorMapping.getListComparisonOperatorDto(attributes.operator);
-    const facetValue = attributes.value.fieldValues[attributes.filterKey] as FacetValue;
-    const value = facetValue.value;
-    const toFilterCriterion = this.toFacetCriterion(FacetType.String, facet, encapsulate);
+    const { operator, logicalOperator } = AdvancedFilterOperatorMapping.getComparisonOperatorDto(attributes.operator);
+    const value = this.apiDateService.toApiV3DateFormat(new Date(attributes.value[attributes.filterKey]));
+    const toFilterCriterion = this.toFacetCriterion(facet, encapsulate);
 
     return AdvancedFilterTypeMapping.toAdvancedFilter([value], operator, toFilterCriterion, logicalOperator);
   }
 
-  private getFacetDateAdvancedFilter(
-    attributes: IAdvancedFilterAttributes,
+  private getFacetDecimalAdvancedFilter(
+    facet: IFacet,
+    attributes: IComparisonCriterionAttributes,
+    encapsulate: IFilterCriterionEncapsulation,
+  ) {
+    switch (attributes.filterKey) {
+      case FacetAdvancedFilterKey.Decimal:
+        return this.toAdvancedFilter(facet, attributes, encapsulate);
+      case FacetAdvancedFilterKey.DecimalRange:
+        return this.toAdvancedFilterWithRange(facet, attributes, encapsulate);
+    }
+  }
+
+  private getFacetIntegerAdvancedFilter(
+    facet: IFacet,
+    attributes: IComparisonCriterionAttributes,
+    encapsulate: IFilterCriterionEncapsulation,
+  ) {
+    switch (attributes.filterKey) {
+      case FacetAdvancedFilterKey.Integer:
+        return this.toAdvancedFilter(facet, attributes, encapsulate);
+      case FacetAdvancedFilterKey.IntegerRange:
+        return this.toAdvancedFilterWithRange(facet, attributes, encapsulate);
+    }
+  }
+
+  private getFacetPercentageAdvancedFilter(
+    facet: IFacet,
+    attributes: IComparisonCriterionAttributes,
+    encapsulate: IFilterCriterionEncapsulation,
+  ) {
+    switch (attributes.filterKey) {
+      case FacetAdvancedFilterKey.Percent:
+        return this.toAdvancedFilter(facet, attributes, encapsulate);
+      case FacetAdvancedFilterKey.PercentRange:
+        return this.toAdvancedFilterWithRange(facet, attributes, encapsulate);
+    }
+  }
+
+  private getFacetStringAdvancedFilter(
+    facet: IFacet,
+    attributes: IComparisonCriterionAttributes,
+    encapsulate: IFilterCriterionEncapsulation,
+  ) {
+    switch (attributes.filterKey) {
+      case FacetAdvancedFilterKey.String:
+        return this.getStringAdvancedFilter(facet, attributes, encapsulate);
+      case FacetAdvancedFilterKey.ListString:
+        return this.getListStringAdvancedFilter(facet, attributes, encapsulate);
+    }
+  }
+
+  private getListStringAdvancedFilter(
+    facet: IFacet,
+    attributes: IComparisonCriterionAttributes,
     encapsulate: IFilterCriterionEncapsulation = defaultEncapsulation,
   ): AdvancedFilter {
-    const facet = this.getFacet(attributes);
-    const { operator, logicalOperator } = AdvancedFilterOperatorMapping.getComparisonOperatorDto(attributes.operator);
-    const value = this.apiDateService.toApiV3DateFormat(new Date(attributes.value.fieldValues[attributes.filterKey]));
-    const toFilterCriterion = this.toFacetCriterion(FacetType.DateTime, facet, encapsulate);
+    const { operator, logicalOperator, itemsMatched } = AdvancedFilterOperatorMapping.getListComparisonOperatorDto(attributes.operator);
+    const facetValues = attributes.value[attributes.filterKey] as FacetValue[];
+    const values = facetValues.map(f => f?.value);
+    const toFilterCriterion = this.toFacetCriterion(facet, encapsulate, itemsMatched);
+
+    return AdvancedFilterTypeMapping.toAdvancedFilter(values, operator, toFilterCriterion, logicalOperator);
+  }
+
+  private getStringAdvancedFilter(
+    facet: IFacet,
+    attributes: IComparisonCriterionAttributes,
+    encapsulate: IFilterCriterionEncapsulation = defaultEncapsulation,
+  ): AdvancedFilter {
+    const { operator, logicalOperator, itemsMatched } = AdvancedFilterOperatorMapping.getListComparisonOperatorDto(attributes.operator);
+    const facetValue = attributes.value[attributes.filterKey] as FacetValue;
+    const value = facetValue.value;
+    const toFilterCriterion = this.toFacetCriterion(facet, encapsulate, itemsMatched);
 
     return AdvancedFilterTypeMapping.toAdvancedFilter([value], operator, toFilterCriterion, logicalOperator);
   }
 
   private toAdvancedFilterWithRange(
-    type: FacetType,
-    attributes: IAdvancedFilterAttributes,
+    facet: IFacet,
+    attributes: IComparisonCriterionAttributes,
     encapsulate: IFilterCriterionEncapsulation,
   ): AdvancedFilter {
-    const facet = this.getFacet(attributes);
     const logicalOperator = AdvancedFilterOperatorMapping.getComparisonOperatorDto(attributes.operator)?.logicalOperator;
-    const { min, max } = attributes.value.fieldValues[attributes.filterKey] as IRange;
-    const toFilterCriterion = this.toFacetCriterion(type, facet, encapsulate);
+    const { min, max } = attributes.value[attributes.filterKey] as IRange;
+    const toFilterCriterion = this.toFacetCriterion(facet, encapsulate);
 
     return AdvancedFilterTypeMapping.toFilterCombination(LogicalOperator.And, [
       AdvancedFilterTypeMapping.toAdvancedFilter([min], ComparisonOperatorDto.StrictlyGreaterThan, toFilterCriterion, logicalOperator),
@@ -104,34 +151,32 @@ export class FacetAdvancedFilterApiMappingService {
   }
 
   private toAdvancedFilter(
-    type: FacetType,
-    attributes: IAdvancedFilterAttributes,
+    facet: IFacet,
+    attributes: IComparisonCriterionAttributes,
     encapsulate: IFilterCriterionEncapsulation,
   ): AdvancedFilter {
-    const facet = this.getFacet(attributes);
     const { operator, logicalOperator } = AdvancedFilterOperatorMapping.getComparisonOperatorDto(attributes.operator);
-    const value = attributes.value.fieldValues[attributes.filterKey];
-    const toFilterCriterion = this.toFacetCriterion(type, facet, encapsulate);
+    const value = attributes.value[attributes.filterKey];
+    const toFilterCriterion = this.toFacetCriterion(facet, encapsulate);
 
     return AdvancedFilterTypeMapping.toAdvancedFilter([value], operator, toFilterCriterion, logicalOperator);
   }
 
   private toFacetCriterion(
-    type: FacetType,
     facet: IFacet,
     encapsulate: IFilterCriterionEncapsulation,
     itemsMatched?: ItemsMatchedDto,
   ): IComparisonFilterCriterionEncapsulation {
     return ({ operator, value }) => encapsulate({
       facets: {
-        value: { value, operator, type },
+        value: { value, operator, type: facet.type },
         identifier: { applicationId: facet?.applicationId, code: facet?.code },
         itemsMatched,
       },
     });
   }
 
-  private getFacet(attributes: IAdvancedFilterAttributes): IFacet {
-    return (attributes.criterion as IFacetComparisonCriterion).facet;
+  private getFacet(criterion: ComparisonCriterion): IFacet {
+    return (criterion as IFacetComparisonCriterion)?.facet;
   }
 }

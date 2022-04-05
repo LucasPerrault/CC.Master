@@ -11,7 +11,7 @@ import {
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { IComponentConfiguration } from '../../../models/advanced-filter-configuration.interface';
+import { IComponentConfiguration } from '../../../../models/advanced-filter-configuration.interface';
 import { IComparisonValue, IFormlyFieldValue } from './comparison-value.interface';
 
 @Component({

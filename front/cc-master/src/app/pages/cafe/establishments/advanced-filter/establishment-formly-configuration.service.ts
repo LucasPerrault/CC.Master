@@ -2,13 +2,13 @@ import { Injectable } from '@angular/core';
 import { TranslatePipe } from '@cc/aspects/translate';
 import { FormlyFieldConfig } from '@ngx-formly/core/lib/components/formly.field.config';
 
-import { EstablishmentAdvancedFilterKey } from './establishment-advanced-filter-key.enum';
+import { EstablishmentCriterionKey } from './establishment-criterion-key.enum';
 
 @Injectable()
 export class EstablishmentFormlyConfiguration {
 
   public readonly country: FormlyFieldConfig = {
-    key: EstablishmentAdvancedFilterKey.Country,
+    key: EstablishmentCriterionKey.Country,
     type: 'country',
     templateOptions: {
       multiple: true,

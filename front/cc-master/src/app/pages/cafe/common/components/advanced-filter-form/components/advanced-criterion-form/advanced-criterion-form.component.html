@@ -1,0 +1,24 @@
+<form [formGroup]="formGroup" class="u-displayFlex u-flexWrapWrap u-alignItemsCenter u-flexGrow0 u-flexShrink1">
+
+  <cc-comparison-criterion-select [formControlName]="formKey.Criterion" [fields]="formlyFieldConfigs">
+  </cc-comparison-criterion-select>
+
+  <ng-container *ngIf="criterionConfig$ | async; let configuration">
+
+    <ng-container *ngIf="hasChild(configuration); else hasNoChild">
+      <cc-advanced-criterion-form [formControlName]="formKey.Content"
+                                  [configurations]="configuration.children"
+                                  [formlyFieldConfigs]="configuration.childrenFormlyFieldConfigs">
+      </cc-advanced-criterion-form>
+    </ng-container>
+
+    <ng-template #hasNoChild>
+      <cc-comparison-filter-criterion-form [formControlName]="formKey.Content"
+                                           [configuration]="configuration"
+                                           [criterion]="formGroup.get(formKey.Criterion).value">
+      </cc-comparison-filter-criterion-form>
+    </ng-template>
+
+  </ng-container>
+
+</form>

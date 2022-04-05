@@ -5,16 +5,18 @@ import {
   AdvancedFilterFormMapping,
   AdvancedFilterOperatorMapping,
   AdvancedFilterTypeMapping,
-  ComparisonOperator,
+  cast,
   defaultEncapsulation,
-  IAdvancedFilterAttributes,
+  IAdvancedCriterionAttributes,
   IAdvancedFilterForm,
+  IComparisonCriterionAttributes,
   IFilterCriterionEncapsulation,
   ItemsMatchedDto,
 } from '../../common/components/advanced-filter-form';
 import { IEnvironment } from '../../common/models/environment.interface';
 import { FacetAdvancedFilterApiMappingService } from '../../common/services/facets/facet-advanced-filter-api-mapping.service';
 import { EnvironmentAdvancedFilterKey } from './environment-advanced-filter-key.enum';
+import { EnvironmentCriterionKey } from './environment-criterion-key.enum';
 
 @Injectable()
 export class EnvironmentAdvancedFilterApiMappingService {
@@ -26,73 +28,69 @@ export class EnvironmentAdvancedFilterApiMappingService {
   }
 
   public getAdvancedFilter(
-    attributes: IAdvancedFilterAttributes,
+    attributes: IAdvancedCriterionAttributes,
     encapsulate: IFilterCriterionEncapsulation = defaultEncapsulation,
   ): AdvancedFilter {
-    switch (attributes.filterKey) {
-      case EnvironmentAdvancedFilterKey.Subdomain:
-        return this.getSubdomainAdvancedFilter(attributes, encapsulate);
-      case EnvironmentAdvancedFilterKey.AppInstances:
-        const appInstances = attributes.value.fieldValues[attributes.filterKey];
-        return this.getAppInstancesAdvancedFilter(appInstances.map(i => i.id), attributes.operator, encapsulate);
-      case EnvironmentAdvancedFilterKey.AppInstance:
-        const appInstance = attributes.value.fieldValues[attributes.filterKey];
-        return this.getAppInstancesAdvancedFilter([appInstance.id], attributes.operator, encapsulate);
-      case EnvironmentAdvancedFilterKey.Countries:
-        const countries = attributes.value.fieldValues[attributes.filterKey];
-        return this.getCountriesAdvancedFilter(countries.map(c => c.id), attributes.operator, encapsulate);
-      case EnvironmentAdvancedFilterKey.Country:
-        const country = attributes.value.fieldValues[attributes.filterKey];
-        return this.getCountriesAdvancedFilter([country.id], attributes.operator, encapsulate);
-      case EnvironmentAdvancedFilterKey.CreatedAt:
-        return this.getCreatedAtAdvancedFilter(attributes, encapsulate);
-      case EnvironmentAdvancedFilterKey.Distributor:
-        const distributor = attributes.value.fieldValues[attributes.filterKey];
-        return this.getDistributorsAdvancedFilter([distributor.id], attributes.operator, encapsulate);
-      case EnvironmentAdvancedFilterKey.Distributors:
-        const distributors = attributes.value.fieldValues[attributes.filterKey];
-        return this.getDistributorsAdvancedFilter(distributors.map(d => d.id), attributes.operator, encapsulate);
-      case EnvironmentAdvancedFilterKey.BillingEntities:
-        return this.getBillingEntitiesAdvancedFilter(attributes, encapsulate);
-      case EnvironmentAdvancedFilterKey.Cluster:
-        return this.getClusterAdvancedFilter(attributes, encapsulate);
-      case EnvironmentAdvancedFilterKey.DistributorType:
-        return this.getDistributorTypeAdvancedFilter(attributes, encapsulate);
-      default:
-        return this.getFacetAdvancedFilter(attributes, encapsulate);
+    switch (attributes.criterionKey) {
+      case EnvironmentCriterionKey.Subdomain:
+        return this.getSubdomainAdvancedFilter(cast<IComparisonCriterionAttributes>(attributes.content), encapsulate);
+      case EnvironmentCriterionKey.AppInstances:
+        return this.getAppInstancesAdvancedFilter(cast<IComparisonCriterionAttributes>(attributes.content), encapsulate);
+      case EnvironmentCriterionKey.Countries:
+        return this.getCountriesAdvancedFilter(cast<IComparisonCriterionAttributes>(attributes.content), encapsulate);
+      case EnvironmentCriterionKey.CreatedAt:
+        return this.getCreatedAtAdvancedFilter(cast<IComparisonCriterionAttributes>(attributes.content), encapsulate);
+      case EnvironmentCriterionKey.Distributors:
+        return this.getDistributorsAdvancedFilter(cast<IComparisonCriterionAttributes>(attributes.content), encapsulate);
+      case EnvironmentCriterionKey.BillingEntity:
+        return this.getBillingEntitiesAdvancedFilter(cast<IComparisonCriterionAttributes>(attributes.content), encapsulate);
+      case EnvironmentCriterionKey.Cluster:
+        return this.getClusterAdvancedFilter(cast<IComparisonCriterionAttributes>(attributes.content), encapsulate);
+      case EnvironmentCriterionKey.DistributorType:
+        return this.getDistributorTypeAdvancedFilter(cast<IComparisonCriterionAttributes>(attributes.content), encapsulate);
+      case EnvironmentCriterionKey.Facets:
+        return this.getFacetAdvancedFilter(cast<IAdvancedCriterionAttributes>(attributes.content), encapsulate);
     }
   }
 
   private getSubdomainAdvancedFilter(
-    attributes: IAdvancedFilterAttributes,
+    attributes: IComparisonCriterionAttributes,
     encapsulate: IFilterCriterionEncapsulation,
   ): AdvancedFilter {
-    const subdomains = attributes.value.fieldValues[attributes.filterKey].map((e: IEnvironment) => e.subdomain);
+    const subdomains = attributes.value[attributes.filterKey].map((e: IEnvironment) => e.subdomain);
     const { operator, logicalOperator } = AdvancedFilterOperatorMapping.getComparisonOperatorDto(attributes.operator);
     const toFilterCriterion = c => (encapsulate({ subdomain: c }));
 
     return AdvancedFilterTypeMapping.toAdvancedFilter(subdomains, operator, toFilterCriterion, logicalOperator);
   }
 
-  private getAppInstancesAdvancedFilter(
-      applicationIds: number[],
-      op: ComparisonOperator,
-      encapsulate: IFilterCriterionEncapsulation,
-  ): AdvancedFilter {
-    const { operator, itemsMatched, logicalOperator } = AdvancedFilterOperatorMapping.getListComparisonOperatorDto(op);
+  private getAppInstancesAdvancedFilter(attributes: IComparisonCriterionAttributes, encapsulate: IFilterCriterionEncapsulation) {
+    const appInstanceIds = this.getAppInstanceIds(attributes);
+    const { operator, itemsMatched, logicalOperator } = AdvancedFilterOperatorMapping.getListComparisonOperatorDto(attributes.operator);
     const toFilterCriterion = (c) => encapsulate({
       appInstances: { applicationId: c, itemsMatched },
     });
 
-    return AdvancedFilterTypeMapping.toAdvancedFilter(applicationIds, operator, toFilterCriterion, logicalOperator);
+    return AdvancedFilterTypeMapping.toAdvancedFilter(appInstanceIds, operator, toFilterCriterion, logicalOperator);
+  }
+
+  private getAppInstanceIds(attributes: IComparisonCriterionAttributes): number[] {
+    switch (attributes.filterKey) {
+      case EnvironmentAdvancedFilterKey.AppInstances:
+        const appInstances = attributes.value[EnvironmentAdvancedFilterKey.AppInstances];
+        return appInstances?.map(a => a?.id);
+      case EnvironmentAdvancedFilterKey.AppInstance:
+        const appInstance = attributes.value[EnvironmentAdvancedFilterKey.AppInstance];
+        return [appInstance?.id];
+    }
   }
 
   private getCountriesAdvancedFilter(
-    countryIds: number[],
-    op: ComparisonOperator,
+    attributes: IComparisonCriterionAttributes,
     encapsulate: IFilterCriterionEncapsulation,
   ): AdvancedFilter {
-    const { operator, itemsMatched, logicalOperator } = AdvancedFilterOperatorMapping.getListComparisonOperatorDto(op);
+    const countryIds = this.getCountryIds(attributes);
+    const { operator, itemsMatched, logicalOperator } = AdvancedFilterOperatorMapping.getListComparisonOperatorDto(attributes.operator);
     const toFilterCriterion = c => (encapsulate({
       legalUnits: { countryId: c, itemsMatched },
     }));
@@ -100,11 +98,22 @@ export class EnvironmentAdvancedFilterApiMappingService {
     return AdvancedFilterTypeMapping.toAdvancedFilter(countryIds, operator, toFilterCriterion, logicalOperator);
   }
 
+  private getCountryIds(attributes: IComparisonCriterionAttributes): number[] {
+    switch (attributes.filterKey) {
+      case EnvironmentAdvancedFilterKey.Countries:
+        const countries = attributes.value[EnvironmentAdvancedFilterKey.Countries];
+        return countries?.map(c => c.id);
+      case EnvironmentAdvancedFilterKey.Country:
+        const country = attributes.value[EnvironmentAdvancedFilterKey.Country];
+        return [country.id];
+    }
+  }
+
   private getCreatedAtAdvancedFilter(
-    attributes: IAdvancedFilterAttributes,
+    attributes: IComparisonCriterionAttributes,
     encapsulate: IFilterCriterionEncapsulation,
   ): AdvancedFilter {
-    const createdAt = attributes.value.fieldValues[attributes.filterKey];
+    const createdAt = attributes.value[attributes.filterKey];
     const { operator, logicalOperator } = AdvancedFilterOperatorMapping.getComparisonOperatorDto(attributes.operator);
     const toFilterCriterion = c => (encapsulate({ createdAt: c }));
 
@@ -112,11 +121,11 @@ export class EnvironmentAdvancedFilterApiMappingService {
   }
 
   private getDistributorsAdvancedFilter(
-    distributorIds: number[],
-    op: ComparisonOperator,
+    attributes: IComparisonCriterionAttributes,
     encapsulate: IFilterCriterionEncapsulation,
   ): AdvancedFilter {
-    const { operator, itemsMatched, logicalOperator } = AdvancedFilterOperatorMapping.getListComparisonOperatorDto(op);
+    const distributorIds = this.getDistributorIds(attributes);
+    const { operator, itemsMatched, logicalOperator } = AdvancedFilterOperatorMapping.getListComparisonOperatorDto(attributes.operator);
     const toFilterCriterion = c => (encapsulate({
       distributors: { id: c, itemsMatched },
     }));
@@ -124,8 +133,22 @@ export class EnvironmentAdvancedFilterApiMappingService {
     return AdvancedFilterTypeMapping.toAdvancedFilter(distributorIds, operator, toFilterCriterion, logicalOperator);
   }
 
-  private getClusterAdvancedFilter(attributes: IAdvancedFilterAttributes, encapsulate: IFilterCriterionEncapsulation): AdvancedFilter {
-    const clusterIds = attributes.value.fieldValues[attributes.filterKey];
+  private getDistributorIds(attributes: IComparisonCriterionAttributes): number[] {
+    switch (attributes.filterKey) {
+      case EnvironmentAdvancedFilterKey.Distributor:
+        const distributor = attributes.value[EnvironmentAdvancedFilterKey.Distributor];
+        return [distributor?.id];
+      case EnvironmentAdvancedFilterKey.Distributors:
+        const distributors = attributes.value[EnvironmentAdvancedFilterKey.Distributors];
+        return distributors.map(d => d.id);
+    }
+  }
+
+  private getClusterAdvancedFilter(
+    attributes: IComparisonCriterionAttributes,
+    encapsulate: IFilterCriterionEncapsulation,
+  ): AdvancedFilter {
+    const clusterIds = attributes.value[attributes.filterKey];
     const { operator, logicalOperator } = AdvancedFilterOperatorMapping.getComparisonOperatorDto(attributes.operator);
     const toFilterCriterion = c => (encapsulate({
       cluster: c,
@@ -135,10 +158,10 @@ export class EnvironmentAdvancedFilterApiMappingService {
   }
 
   private getDistributorTypeAdvancedFilter(
-    attributes: IAdvancedFilterAttributes,
+    attributes: IComparisonCriterionAttributes,
     encapsulate: IFilterCriterionEncapsulation,
   ): AdvancedFilter {
-    const distributorType = attributes.value.fieldValues[attributes.filterKey];
+    const distributorType = attributes.value[attributes.filterKey];
     const { operator, logicalOperator } = AdvancedFilterOperatorMapping.getComparisonOperatorDto(attributes.operator);
     const toFilterCriterion = c => (encapsulate({ distributorType: c }));
 
@@ -146,10 +169,10 @@ export class EnvironmentAdvancedFilterApiMappingService {
   }
 
   private getBillingEntitiesAdvancedFilter(
-    attributes: IAdvancedFilterAttributes,
+    attributes: IComparisonCriterionAttributes,
     encapsulate: IFilterCriterionEncapsulation,
   ): AdvancedFilter {
-    const billingEntities = attributes.value.fieldValues[attributes.filterKey]?.map(b => b.id);
+    const billingEntities = attributes.value[attributes.filterKey]?.map(b => b.id);
     const { operator, logicalOperator } = AdvancedFilterOperatorMapping.getComparisonOperatorDto(attributes.operator);
     const toFilterCriterion = c => (encapsulate({
       contracts: {
@@ -163,7 +186,7 @@ export class EnvironmentAdvancedFilterApiMappingService {
     return AdvancedFilterTypeMapping.toAdvancedFilter(billingEntities, operator, toFilterCriterion, logicalOperator);
   }
 
-  private getFacetAdvancedFilter(attributes: IAdvancedFilterAttributes, encapsulate: IFilterCriterionEncapsulation): AdvancedFilter {
+  private getFacetAdvancedFilter(attributes: IAdvancedCriterionAttributes, encapsulate: IFilterCriterionEncapsulation): AdvancedFilter {
     return this.facetFiltersApiMapping.getAdvancedFilter(attributes, encapsulate);
   }
 }
