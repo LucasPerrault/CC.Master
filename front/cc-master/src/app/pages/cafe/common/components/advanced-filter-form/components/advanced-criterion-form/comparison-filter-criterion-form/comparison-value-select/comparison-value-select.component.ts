@@ -1,14 +1,14 @@
 import { Component, forwardRef, Input, OnDestroy,OnInit } from '@angular/core';
 import {
   AbstractControl,
-  ControlValueAccessor,
+  ControlValueAccessor, FormControl,
   FormGroup,
   NG_VALIDATORS,
   NG_VALUE_ACCESSOR,
   ValidationErrors,
   Validator,
 } from '@angular/forms';
-import { Subject } from 'rxjs';
+import { combineLatest, ReplaySubject, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
 import { IComponentConfiguration } from '../../../../models/advanced-filter-configuration.interface';
@@ -31,17 +31,18 @@ import { IComparisonValue, IFormlyFieldValue } from './comparison-value.interfac
   ],
 })
 export class ComparisonValueSelectComponent implements OnInit, OnDestroy, Validator, ControlValueAccessor {
-  @Input() public configuration: IComponentConfiguration;
+  @Input() public set configuration(c: IComponentConfiguration) { this.configuration$.next(c); };
 
   public formGroup: FormGroup = new FormGroup({});
   public model: IFormlyFieldValue = {};
+  public configuration$ = new ReplaySubject<IComponentConfiguration>(1);
 
   private destroy$: Subject<void> = new Subject<void>();
 
   public ngOnInit(): void {
-    this.formGroup.valueChanges
+    combineLatest([this.formGroup.valueChanges, this.configuration$])
       .pipe(takeUntil(this.destroy$))
-      .subscribe(fieldValue => this.onChange(this.toComparisonValue(fieldValue)));
+      .subscribe(([fieldValue, config]) => this.onChange(this.toComparisonValue(config, fieldValue)));
   }
 
   public ngOnDestroy(): void {
@@ -77,15 +78,23 @@ export class ComparisonValueSelectComponent implements OnInit, OnDestroy, Valida
   private reset(configuration: IComparisonValue): void {
     this.model = configuration?.fieldValues ?? {};
 
-    const controlKeys = Object.keys(this.formGroup.controls);
-    controlKeys.forEach(key => this.formGroup.removeControl(key));
-
-    this.formGroup.reset(configuration?.fieldValues ?? {});
-    this.formGroup.updateValueAndValidity();
+    this.clearControls();
+    this.addControls(configuration?.fieldValues);
   }
 
-  private toComparisonValue(fieldValues: IFormlyFieldValue): IComparisonValue {
+  private clearControls(): void {
+    const controlKeys = Object.keys(this.formGroup?.controls);
+    controlKeys.forEach(key => this.formGroup.removeControl(key));
+    this.formGroup.reset();
+  }
+
+  private addControls(values: IFormlyFieldValue = {}): void {
+    const addedKeys = Object.keys(values);
+    addedKeys.forEach(key => this.formGroup.addControl(key, new FormControl(values?.[key])));
+  }
+
+  private toComparisonValue(config: IComponentConfiguration, fieldValues: IFormlyFieldValue): IComparisonValue {
     const isEmptyOrNull = !fieldValues || !Object.keys(fieldValues).length;
-    return !isEmptyOrNull ? { key: this.configuration.key, fieldValues } : null;
+    return !isEmptyOrNull ? { key: config?.key, fieldValues } : null;
   }
 }

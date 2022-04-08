@@ -5,7 +5,6 @@ import {
   AdvancedFilterFormMapping,
   AdvancedFilterTypeMapping,
   cast,
-  getComparisonBooleanValue,
   IAdvancedCriterionAttributes,
   IAdvancedFilterForm,
   IComparisonCriterionAttributes,
@@ -44,7 +43,7 @@ export class AppContactAdvancedFilterApiMappingService {
   }
 
   private getIsConfirmedAdvancedFilter(attributes: IComparisonCriterionAttributes): AdvancedFilter {
-    const isConfirmed = getComparisonBooleanValue(attributes.operator);
+    const isConfirmed = attributes.value[attributes.filterKey] as boolean;
     const { operator, logicalOperator } = AdvancedFilterOperatorMapping.getComparisonOperatorDto(attributes.operator);
     const toFilterCriterion = c => ({ isConfirmed: c });
 

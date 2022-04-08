@@ -14,8 +14,8 @@
 
     <ng-template #hasNoChild>
       <cc-comparison-filter-criterion-form [formControlName]="formKey.Content"
-                                           [configuration]="configuration"
-                                           [criterion]="formGroup.get(formKey.Criterion).value">
+                                           [criterionConfig]="configuration"
+                                           [criterion]="criterion">
       </cc-comparison-filter-criterion-form>
     </ng-template>
 

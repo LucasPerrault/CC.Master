@@ -1,3 +1,6 @@
-<form [formGroup]="formGroup" *ngIf="!!configuration?.components?.length">
-  <formly-form [form]="formGroup" [fields]="configuration?.components" [model]="model" (blur)="onTouch()"></formly-form>
-</form>
+<ng-container *ngIf="configuration$ | async; let configuration">
+  <form [formGroup]="formGroup" [hidden]="!configuration?.components?.length">
+    <formly-form [form]="formGroup" [fields]="configuration?.components" [model]="model" (blur)="onTouch()"></formly-form>
+  </form>
+
+</ng-container>

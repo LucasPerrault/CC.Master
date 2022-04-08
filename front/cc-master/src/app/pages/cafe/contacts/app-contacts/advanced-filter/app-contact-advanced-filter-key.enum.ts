@@ -1,4 +1,5 @@
 export enum AppContactAdvancedFilterKey {
   AppInstance = 'appInstance',
-  IsConfirmed = 'isConfirmed',
+  IsConfirmedTrueOnly = 'isConfirmedTrueOnly',
+  IsConfirmedFalseOnly = 'isConfirmedFalseOnly',
 }

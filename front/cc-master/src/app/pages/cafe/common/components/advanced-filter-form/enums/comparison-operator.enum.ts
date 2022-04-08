@@ -12,13 +12,4 @@ export enum ComparisonOperator {
   Between = 'Between',
 }
 
-export const getComparisonBooleanValue = (operator: ComparisonOperator) => {
-  switch (operator) {
-    case ComparisonOperator.TrueOnly:
-      return true;
-    case ComparisonOperator.FalseOnly:
-      return false;
-  }
-};
-
 

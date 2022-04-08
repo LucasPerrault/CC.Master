@@ -42,6 +42,18 @@ export class AppContactAdvancedFilterConfiguration implements IAdvancedFilterCon
         { id: ComparisonOperator.TrueOnly, name: this.translatePipe.transform('cafe_filters_operator_true') },
         { id: ComparisonOperator.FalseOnly, name: this.translatePipe.transform('cafe_filters_operator_false') },
       ],
+      componentConfigs: () => [
+        {
+          key: AppContactAdvancedFilterKey.IsConfirmedTrueOnly,
+          matchingOperators: [ComparisonOperator.TrueOnly],
+          defaultValue: true,
+        },
+        {
+          key: AppContactAdvancedFilterKey.IsConfirmedFalseOnly,
+          matchingOperators: [ComparisonOperator.FalseOnly],
+          defaultValue: false,
+        },
+      ],
     },
   ];
 
