@@ -2,10 +2,10 @@ import { Injectable } from '@angular/core';
 import { TranslatePipe } from '@cc/aspects/translate';
 import { Observable } from 'rxjs';
 
+import { environmentAdditionalColumns } from '../../../../../environments/models/environment-additional-column';
 import { FacetScope } from '../../../../models';
 import { IFacetAndColumn } from '../facet-and-column.interface';
 import { FacetsAndColumnsApiSelectService } from '../facets-and-columns-api-select.service';
-import { environmentAdditionalColumns } from './environment-additional-column.enum';
 
 @Injectable()
 export class EnvironmentFacetsAndColumnsApiSelectService {

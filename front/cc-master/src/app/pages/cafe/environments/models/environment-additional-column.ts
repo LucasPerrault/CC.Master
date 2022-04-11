@@ -1,4 +1,4 @@
-import { IAdditionalColumn } from '../../../../models';
+import { IAdditionalColumn } from '../../common/models';
 
 export enum EnvironmentAdditionalColumn {
   Environment = 'environment',
@@ -43,3 +43,5 @@ export const environmentAdditionalColumns: IAdditionalColumn[] = [
 
 export const getAdditionalColumnByIds = (ids: EnvironmentAdditionalColumn[]): IAdditionalColumn[] =>
     environmentAdditionalColumns.filter(c => ids.includes(c.id as EnvironmentAdditionalColumn));
+
+export const getColumnById = (id: EnvironmentAdditionalColumn): IAdditionalColumn => getAdditionalColumnByIds([id])?.[0];

@@ -1,13 +1,13 @@
 import { Component, Input } from '@angular/core';
 import { TranslatePipe } from '@cc/aspects/translate';
 
-import { EnvironmentAdditionalColumn } from '../../../common/forms/select/facets-and-columns-api-select';
 import { FacetType, IAdditionalColumn, IFacet } from '../../../common/models';
 import { DistributorType, IEnvironment } from '../../../common/models/environment.interface';
 import { IEnvironmentFacetValue } from '../../../common/models/facet-value.interface';
 import { ILegalUnit } from '../../../common/models/legal-unit.interface';
 import { FacetPipeOptions } from '../../../common/pipes/facet.pipe';
 import { IAppInstance } from '../../models/app-instance.interface';
+import { EnvironmentAdditionalColumn } from '../../models/environment-additional-column';
 
 @Component({
   selector: 'cc-environment-list',

@@ -8,13 +8,13 @@ import { BehaviorSubject, combineLatest, Observable, ReplaySubject, Subject } fr
 import { filter, map, take, takeUntil } from 'rxjs/operators';
 
 import { AdvancedFilter } from '../common/components/advanced-filter-form';
-import {
-  EnvironmentAdditionalColumn, FacetAndColumnHelper,
-  getAdditionalColumnByIds,
-} from '../common/forms/select/facets-and-columns-api-select';
+import { FacetAndColumnHelper } from '../common/forms/select/facets-and-columns-api-select';
 import { IAdditionalColumn, IFacet, ISearchDto, toSearchDto } from '../common/models';
 import { IEnvironment } from '../common/models/environment.interface';
+import { AdvancedFilterColumnAutoSelection, ColumnAutoSelectionService } from '../common/services/column-auto-selection';
 import { EnvironmentAdvancedFilterApiMappingService, EnvironmentAdvancedFilterConfiguration } from './advanced-filter';
+import { EnvironmentAdditionalColumn, getAdditionalColumnByIds } from './models/environment-additional-column';
+import { envAutoSelectedColumnMapping } from './models/environment-auto-selected-column-mapping';
 import { EnvironmentDataService } from './services/environment-data.service';
 
 @Component({
@@ -55,6 +55,7 @@ export class CafeEnvironmentsComponent implements OnInit, OnDestroy {
   private searchDto$ = new BehaviorSubject<ISearchDto>(null);
 
   private paginatedEnvironments: PaginatedList<IEnvironment>;
+  private autoSelectionManager: AdvancedFilterColumnAutoSelection;
 
   private defaultSelectedColumns = getAdditionalColumnByIds([
     EnvironmentAdditionalColumn.Environment,
@@ -69,8 +70,11 @@ export class CafeEnvironmentsComponent implements OnInit, OnDestroy {
     private pagingService: PagingService,
     private apiMappingService: EnvironmentAdvancedFilterApiMappingService,
     private environmentsDataService: EnvironmentDataService,
+    private autoSelectionService: ColumnAutoSelectionService,
   ) {
     this.paginatedEnvironments = this.getPaginatedEnvironments$();
+    this.autoSelectionManager = this.autoSelectionService
+      .create(this.advancedFilter, this.facetsAndColumns, envAutoSelectedColumnMapping, this.destroy$);
   }
 
   public ngOnInit(): void {

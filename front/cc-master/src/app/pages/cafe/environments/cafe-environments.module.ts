@@ -8,6 +8,7 @@ import { CafePageFilterTemplateModule } from '../common/components/cafe-page-fil
 import { CafePageTemplateModule } from '../common/components/cafe-page-template/cafe-page-template.module';
 import { FacetsAndColumnsApiSelectModule } from '../common/forms/select/facets-and-columns-api-select';
 import { FacetPipeModule } from '../common/pipes/facet.pipe';
+import { ColumnAutoSelectionModule } from '../common/services/column-auto-selection';
 import {
   EnvironmentAdvancedFilterApiMappingService,
   EnvironmentAdvancedFilterConfiguration,
@@ -31,6 +32,7 @@ import { EnvironmentDataService } from './services/environment-data.service';
     CafePageFilterTemplateModule,
     FacetsAndColumnsApiSelectModule,
     FacetPipeModule,
+    ColumnAutoSelectionModule,
   ],
   exports: [
     CafeEnvironmentsComponent,
