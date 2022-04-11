@@ -78,7 +78,7 @@ export class FacetsPipe implements PipeTransform {
   constructor(private facetPipe: FacetPipe) {}
 
   public transform(facets: FacetValue[], options?: FacetPipeOptions, separator: string = ', '): string {
-    return facets.map(facet => this.facetPipe.transform(facet, options)).join(separator);
+    return !!facets?.length ? facets?.map(facet => this.facetPipe.transform(facet, options))?.join(separator) : null;
   }
 }
 
