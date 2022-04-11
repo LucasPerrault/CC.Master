@@ -67,7 +67,7 @@ export class FacetComparisonCriterionSelectComponent implements OnInit, OnDestro
   }
 
   public writeValue(criterion: IFacetComparisonCriterion): void {
-    if (criterion !== this.formControl.value) {
+    if (!!criterion && criterion !== this.formControl.value) {
       this.formControl.setValue(criterion.facet);
     }
   }

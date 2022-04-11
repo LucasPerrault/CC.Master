@@ -9,7 +9,7 @@ import {
   Validator,
 } from '@angular/forms';
 import { FormlyFieldConfig } from '@ngx-formly/core/lib/components/formly.field.config';
-import { Subject } from 'rxjs';
+import { BehaviorSubject, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
 import { AdvancedFilterKey } from '../../../../../services/criterion-formly-configuration.service';
@@ -33,8 +33,9 @@ import { ComparisonCriterion } from '../../../models/comparison-criterion.interf
   ],
 })
 export class ComparisonCriterionSelectComponent implements OnInit, OnDestroy, Validator, ControlValueAccessor {
-  @Input() public fields: FormlyFieldConfig[];
+  @Input() public set fields(fields: FormlyFieldConfig[]) { this.fields$.next(fields); }
 
+  public fields$ = new BehaviorSubject<FormlyFieldConfig[]>([]);
   public formGroup: FormGroup = new FormGroup({});
   public model: { [AdvancedFilterKey.Criterion]: ComparisonCriterion } = { [AdvancedFilterKey.Criterion]: null };
 
@@ -44,6 +45,10 @@ export class ComparisonCriterionSelectComponent implements OnInit, OnDestroy, Va
     this.formGroup.valueChanges
       .pipe(takeUntil(this.destroy$))
       .subscribe(form => this.onChange(form?.criterion));
+
+    this.fields$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(() => this.reset());
   }
 
   public ngOnDestroy(): void {
@@ -75,5 +80,10 @@ export class ComparisonCriterionSelectComponent implements OnInit, OnDestroy, Va
     if (this.formGroup.invalid) {
       return  { invalid: true };
     }
+  }
+
+  private reset(): void {
+    this.model = { [AdvancedFilterKey.Criterion]: null };
+    this.formGroup.reset({});
   }
 }

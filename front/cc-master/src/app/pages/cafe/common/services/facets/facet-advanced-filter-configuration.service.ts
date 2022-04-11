@@ -126,7 +126,7 @@ export class FacetAdvancedFilterConfigurationService {
       componentConfigs: (criterion: IFacetComparisonCriterion) => [
         {
           key: FacetAdvancedFilterKey.ListString,
-          components: [this.formlyConfiguration.facetListStringValue(facetScope, criterion.facet)],
+          components: [this.formlyConfiguration.facetListStringValue(facetScope, criterion?.facet)],
           matchingOperators: [
             ComparisonOperator.ListAreAmong,
             ComparisonOperator.ListNotContains,

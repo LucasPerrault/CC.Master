@@ -101,7 +101,7 @@ export class AdvancedCriterionFormComponent implements OnInit, OnDestroy, Contro
   }
 
   private updateConfig(criterion: ComparisonCriterion): void {
-    const config = this.configurations.find(conf => conf.key === criterion.key);
+    const config = !!criterion ? this.configurations.find(conf => conf?.key === criterion.key) : null;
     this.criterionConfig$.next(config);
     this.formGroup.get(AdvancedCriterionFormKey.Content).reset();
   }

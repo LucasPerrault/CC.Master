@@ -29,6 +29,10 @@ export class AutoSelectedColumnMappingHelper {
 
     const child = criterion?.content as IAdvancedCriterionForm;
     const facetCriterion = child?.criterion as IFacetComparisonCriterion;
+    if (!facetCriterion) {
+      return;
+    }
+
     return FacetAndColumnHelper.transformFacetToFacetAndColumn(facetCriterion.facet);
   }
 }

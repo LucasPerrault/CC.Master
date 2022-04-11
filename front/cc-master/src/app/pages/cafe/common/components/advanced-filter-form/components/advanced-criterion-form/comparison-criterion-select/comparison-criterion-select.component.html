@@ -1,1 +1,1 @@
-<formly-form [form]="formGroup" [fields]="fields" [model]="model" (blur)="onTouch()"></formly-form>
+<formly-form [form]="formGroup" [fields]="fields$ | async" [model]="model" (blur)="onTouch()"></formly-form>

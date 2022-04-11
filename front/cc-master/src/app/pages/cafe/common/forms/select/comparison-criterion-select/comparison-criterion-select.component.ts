@@ -67,8 +67,8 @@ export class ComparisonCriterionSelectComponent implements OnInit, OnDestroy, Co
   }
 
   public writeValue(criterion: IComparisonCriterion): void {
-    if (criterion !== this.formControl.value) {
-      this.formControl.setValue(criterion);
+    if (!!criterion && criterion !== this.formControl.value) {
+      this.formControl.patchValue(criterion);
     }
   }
 
