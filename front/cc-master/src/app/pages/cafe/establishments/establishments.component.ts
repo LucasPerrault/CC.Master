@@ -8,12 +8,13 @@ import { filter, map, skip, startWith, take, takeUntil } from 'rxjs/operators';
 
 import { AdvancedFilter, IAdvancedFilterForm } from '../common/components/advanced-filter-form';
 import { FacetAndColumnHelper } from '../common/forms/select/facets-and-columns-api-select';
-import { IFacet, ISearchDto, toSearchDto } from '../common/models';
+import { IAdditionalColumn, IFacet, ISearchDto, toSearchDto } from '../common/models';
 import { IEstablishment } from '../common/models/establishment.interface';
-import { EstablishmentAdvancedFilterApiMappingService, EstablishmentAdvancedFilterConfiguration } from './advanced-filter';
-import { EstablishmentsDataService } from './services/establishments-data.service';
 import { AdvancedFilterColumnAutoSelection, ColumnAutoSelectionService } from '../common/services/column-auto-selection';
+import { EstablishmentAdvancedFilterApiMappingService, EstablishmentAdvancedFilterConfiguration } from './advanced-filter';
+import { EstablishmentAdditionalColumn, getAdditionalColumnByIds } from './models/establishment-additional-column';
 import { etsAutoSelectedColumnMapping } from './models/establishment-auto-selected-column-mapping';
+import { EstablishmentsDataService } from './services/establishments-data.service';
 
 @Component({
   selector: 'cc-cafe-establishments',
@@ -39,8 +40,15 @@ export class EstablishmentsComponent implements OnInit, OnDestroy {
   public filters: FormControl = new FormControl();
 
   public facetColumns$ = new BehaviorSubject<IFacet[]>([]);
+  public selectedColumns$ = new BehaviorSubject<IAdditionalColumn[]>([]);
   public searchDto$ = new BehaviorSubject<ISearchDto>(null);
   public advancedFilter$ = new BehaviorSubject<AdvancedFilter>(null);
+
+  private defaultSelectedColumns = getAdditionalColumnByIds([
+    EstablishmentAdditionalColumn.Name,
+    EstablishmentAdditionalColumn.Environment,
+    EstablishmentAdditionalColumn.Country,
+  ]);
 
   private paginatedEts: PaginatedList<IEstablishment>;
   private columnAutoSelectionBuilder: AdvancedFilterColumnAutoSelection;
@@ -74,6 +82,8 @@ export class EstablishmentsComponent implements OnInit, OnDestroy {
     this.filters.valueChanges
       .pipe(takeUntil(this.destroy$), filter(() => !this.submitDisabled), this.toApiMapping)
       .subscribe(searchDto => this.advancedFilter$.next(searchDto));
+
+    this.facetsAndColumns.setValue(FacetAndColumnHelper.mapColumnsToFacetAndColumns(this.defaultSelectedColumns));
   }
 
   public ngOnDestroy(): void {
@@ -87,6 +97,7 @@ export class EstablishmentsComponent implements OnInit, OnDestroy {
 
   public submit(): void {
     this.facetColumns$.next(FacetAndColumnHelper.getFacets(this.facetsAndColumns.value));
+    this.selectedColumns$.next(FacetAndColumnHelper.getColumns(this.facetsAndColumns.value));
     this.paginatedEts.updateHttpParams(new HttpParams());
   }
 

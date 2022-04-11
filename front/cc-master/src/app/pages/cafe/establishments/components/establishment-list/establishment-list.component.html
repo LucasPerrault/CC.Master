@@ -1,13 +1,13 @@
 <table class="table">
   <thead class="table-head">
   <tr class="table-head-row">
-    <th class="table-head-row-cell">
+    <th class="table-head-row-cell" [ngClass]="{ 'mod-hidden': isHidden(additionalColumn.Name) }">
       {{ 'cafe_establishment_list_name' | translate }}
     </th>
-    <th class="table-head-row-cell">
+    <th class="table-head-row-cell" [ngClass]="{ 'mod-hidden': isHidden(additionalColumn.Environment) }">
       {{ 'cafe_establishment_list_environment' | translate }}
     </th>
-    <th class="table-head-row-cell">
+    <th class="table-head-row-cell" [ngClass]="{ 'mod-hidden': isHidden(additionalColumn.Country) }">
       {{ 'cafe_establishment_list_country' | translate }}
     </th>
     <th class="table-head-row-cell" *ngFor="let facet of facets">
@@ -17,13 +17,13 @@
   </thead>
   <tbody class="table-body">
   <tr class="table-body-row" *ngFor="let establishment of establishments; trackBy: trackBy">
-    <td class="table-body-row-cell">
+    <td class="table-body-row-cell" [ngClass]="{ 'mod-hidden': isHidden(additionalColumn.Name) }">
       {{ establishment?.name }}
     </td>
-    <td class="table-body-row-cell">
+    <td class="table-body-row-cell" [ngClass]="{ 'mod-hidden': isHidden(additionalColumn.Environment) }">
       {{ getEnvironmentName(establishment?.environment?.subdomain, establishment?.environment?.domain) }}
     </td>
-    <td class="table-body-row-cell">
+    <td class="table-body-row-cell" [ngClass]="{ 'mod-hidden': isHidden(additionalColumn.Country) }">
       {{ establishment?.legalUnit?.country?.name }}
     </td>
     <td class="table-body-row-cell" *ngFor="let facet of facets">

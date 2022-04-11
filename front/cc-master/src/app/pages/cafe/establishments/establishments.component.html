@@ -34,6 +34,7 @@
       <cc-establishment-list ccInfiniteScroll
                              (bottomReached)="nextPage()"
                              [establishments]="establishments$ | async"
+                             [selectedColumns]="selectedColumns$ | async"
                              [facets]="facetColumns$ | async">
       </cc-establishment-list>
 
