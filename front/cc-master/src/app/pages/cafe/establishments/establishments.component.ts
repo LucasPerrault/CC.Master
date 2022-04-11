@@ -40,15 +40,13 @@ export class EstablishmentsComponent implements OnInit, OnDestroy {
   public filters: FormControl = new FormControl();
 
   public facetColumns$ = new BehaviorSubject<IFacet[]>([]);
-  public selectedColumns$ = new BehaviorSubject<IAdditionalColumn[]>([]);
   public searchDto$ = new BehaviorSubject<ISearchDto>(null);
   public advancedFilter$ = new BehaviorSubject<AdvancedFilter>(null);
-
-  private defaultSelectedColumns = getAdditionalColumnByIds([
+  public selectedColumns$ = new BehaviorSubject<IAdditionalColumn[]>(getAdditionalColumnByIds([
     EstablishmentAdditionalColumn.Name,
     EstablishmentAdditionalColumn.Environment,
     EstablishmentAdditionalColumn.Country,
-  ]);
+  ]));
 
   private paginatedEts: PaginatedList<IEstablishment>;
   private columnAutoSelectionBuilder: AdvancedFilterColumnAutoSelection;
@@ -83,7 +81,7 @@ export class EstablishmentsComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.destroy$), filter(() => !this.submitDisabled), this.toApiMapping)
       .subscribe(searchDto => this.advancedFilter$.next(searchDto));
 
-    this.facetsAndColumns.setValue(FacetAndColumnHelper.mapColumnsToFacetAndColumns(this.defaultSelectedColumns));
+    this.facetsAndColumns.setValue(FacetAndColumnHelper.mapColumnsToFacetAndColumns(this.selectedColumns$.value));
   }
 
   public ngOnDestroy(): void {

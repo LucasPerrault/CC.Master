@@ -49,19 +49,17 @@ export class CafeEnvironmentsComponent implements OnInit, OnDestroy {
   public advancedFilter = new FormControl();
   public facetsAndColumns = new FormControl();
 
-  public selectedColumns$ = new BehaviorSubject<IAdditionalColumn[]>([]);
+  public selectedColumns$ = new BehaviorSubject<IAdditionalColumn[]>(getAdditionalColumnByIds([
+    EnvironmentAdditionalColumn.Environment,
+    EnvironmentAdditionalColumn.AppInstances,
+    EnvironmentAdditionalColumn.Distributors,
+  ]));
   public facetColumns$ = new BehaviorSubject<IFacet[]>([]);
   private advancedFilter$ = new BehaviorSubject<AdvancedFilter>(null);
   private searchDto$ = new BehaviorSubject<ISearchDto>(null);
 
   private paginatedEnvironments: PaginatedList<IEnvironment>;
   private autoSelectionManager: AdvancedFilterColumnAutoSelection;
-
-  private defaultSelectedColumns = getAdditionalColumnByIds([
-    EnvironmentAdditionalColumn.Environment,
-    EnvironmentAdditionalColumn.AppInstances,
-    EnvironmentAdditionalColumn.Distributors,
-  ]);
 
   private destroy$: Subject<void> = new Subject<void>();
 
@@ -86,7 +84,7 @@ export class CafeEnvironmentsComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.destroy$), filter(() => !this.submitDisabled), map(f => this.apiMappingService.toAdvancedFilter(f)))
       .subscribe(advancedFilter => this.advancedFilter$.next(advancedFilter));
 
-    this.facetsAndColumns.setValue(FacetAndColumnHelper.mapColumnsToFacetAndColumns(this.defaultSelectedColumns));
+    this.facetsAndColumns.setValue(FacetAndColumnHelper.mapColumnsToFacetAndColumns(this.selectedColumns$.value));
   }
 
   public ngOnDestroy(): void {
