@@ -50,7 +50,6 @@ export class AdvancedFilterColumnAutoSelection {
 
   private updateColumns(selection: IAutoSelectedCriterionForm): void {
     const referencedColumn = this.mappings.find(e => e.criterionKey === selection?.criterion?.key)?.getColumn(selection);
-    console.log(selection, this.mappings, referencedColumn);
 
     switch (selection?.state) {
       case IAutoSelectedColumnState.WasAdded:

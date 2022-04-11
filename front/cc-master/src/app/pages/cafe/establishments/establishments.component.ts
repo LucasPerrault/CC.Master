@@ -12,6 +12,8 @@ import { IFacet, ISearchDto, toSearchDto } from '../common/models';
 import { IEstablishment } from '../common/models/establishment.interface';
 import { EstablishmentAdvancedFilterApiMappingService, EstablishmentAdvancedFilterConfiguration } from './advanced-filter';
 import { EstablishmentsDataService } from './services/establishments-data.service';
+import { AdvancedFilterColumnAutoSelection, ColumnAutoSelectionService } from '../common/services/column-auto-selection';
+import { etsAutoSelectedColumnMapping } from './models/establishment-auto-selected-column-mapping';
 
 @Component({
   selector: 'cc-cafe-establishments',
@@ -41,6 +43,7 @@ export class EstablishmentsComponent implements OnInit, OnDestroy {
   public advancedFilter$ = new BehaviorSubject<AdvancedFilter>(null);
 
   private paginatedEts: PaginatedList<IEstablishment>;
+  private columnAutoSelectionBuilder: AdvancedFilterColumnAutoSelection;
   private destroy$: Subject<void> = new Subject<void>();
 
   constructor(
@@ -48,11 +51,15 @@ export class EstablishmentsComponent implements OnInit, OnDestroy {
     private apiMappingService: EstablishmentAdvancedFilterApiMappingService,
     private pagingService: PagingService,
     private dataService: EstablishmentsDataService,
+    private columnAutoSelectionService: ColumnAutoSelectionService,
   ) {
     this.paginatedEts = this.pagingService.paginate<IEstablishment>(
       (httpParams) => this.getEstablishments$(httpParams, this.searchDto$.value),
       { page: defaultPagingParams.page, limit: 50 },
     );
+
+    this.columnAutoSelectionBuilder = this.columnAutoSelectionService
+      .create(this.filters, this.facetsAndColumns, etsAutoSelectedColumnMapping, this.destroy$);
   }
 
   public ngOnInit(): void {
