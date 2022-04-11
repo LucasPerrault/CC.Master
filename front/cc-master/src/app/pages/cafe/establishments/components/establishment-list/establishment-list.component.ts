@@ -1,6 +1,6 @@
 import { Component, Input } from '@angular/core';
 
-import { FacetType, IAdditionalColumn, IFacet } from '../../../common/models';
+import { FacetType, getFacetName, IAdditionalColumn, IFacet } from '../../../common/models';
 import { IEstablishment } from '../../../common/models/establishment.interface';
 import { IEstablishmentFacetValue } from '../../../common/models/facet-value.interface';
 import { FacetPipeOptions } from '../../../common/pipes/facet.pipe';
@@ -39,5 +39,9 @@ export class EstablishmentListComponent {
       case FacetType.DateTime:
         return { format: 'shortDate' };
     }
+  }
+
+  public getFacetName(facet: IFacet): string {
+    return getFacetName(facet);
   }
 }

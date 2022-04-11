@@ -1,7 +1,7 @@
 import { Component, Input } from '@angular/core';
 import { TranslatePipe } from '@cc/aspects/translate';
 
-import { FacetType, IAdditionalColumn, IFacet } from '../../../common/models';
+import { FacetType, getFacetName, IAdditionalColumn, IFacet } from '../../../common/models';
 import { DistributorType, IEnvironment } from '../../../common/models/environment.interface';
 import { IEnvironmentFacetValue } from '../../../common/models/facet-value.interface';
 import { ILegalUnit } from '../../../common/models/legal-unit.interface';
@@ -84,5 +84,9 @@ export class EnvironmentListComponent {
       case FacetType.DateTime:
         return { format: 'shortDate' };
     }
+  }
+
+  public getFacetName(facet: IFacet): string {
+    return getFacetName(facet);
   }
 }

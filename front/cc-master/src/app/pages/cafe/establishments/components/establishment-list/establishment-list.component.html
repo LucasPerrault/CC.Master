@@ -11,7 +11,7 @@
       {{ 'cafe_establishment_list_country' | translate }}
     </th>
     <th class="table-head-row-cell" *ngFor="let facet of facets">
-      {{ facet.applicationId }} - {{ facet.code }}
+      {{ getFacetName(facet) }}
     </th>
   </tr>
   </thead>

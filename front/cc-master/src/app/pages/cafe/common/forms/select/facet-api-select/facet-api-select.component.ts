@@ -12,7 +12,7 @@ import { FormlyFieldConfig } from '@ngx-formly/core/lib/components/formly.field.
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { FacetScope, IFacet } from '../../../models';
+import { FacetScope, getFacetName, IFacet } from '../../../models';
 
 @Component({
   selector: 'cc-facet-api-select',
@@ -91,7 +91,6 @@ export class FacetApiSelectComponent implements ControlValueAccessor, Validator,
   }
 
   public getFacetName(facet: IFacet): string {
-    // TODO : Voir avec Angelin ? Construction de clé de trad en fonction de l'application et du code?
-    return `${ facet.applicationId } - ${ facet.code}`;
+    return getFacetName(facet);
   }
 }

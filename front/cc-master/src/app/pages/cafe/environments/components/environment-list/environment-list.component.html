@@ -23,7 +23,7 @@
       {{ 'cafe_environments_list_createdAt' | translate }}
     </th>
     <th class="table-head-row-cell" *ngFor="let facet of facets">
-      {{ facet.applicationId }} {{ facet.code }}
+      {{ getFacetName(facet) }}
     </th>
   </tr>
   </thead>
