@@ -12,6 +12,9 @@
           {{ "front_contractPage_column_client" | translate }}
         </button>
       </th>
+      <th class="table-head-row-cell size-small" [ngClass]="isHidden(contractHiddenColumn.BillingEntity)">
+        {{ getHiddenColumnName(contractHiddenColumn.BillingEntity) }}
+      </th>
       <th class="table-head-row-cell size-small"
           [ngClass]="isHidden(contractHiddenColumn.Distributor)"
           [attr.aria-sort]="getSortOrderClass(sortParamKey.Distributor)">
@@ -75,6 +78,9 @@
       <td class="table-body-row-cell size-big"
           [ngClass]="{ 'mod-columnFixed': (hasHorizontalScroll$ | async) }">
         {{ contract.client.name }}
+      </td>
+      <td class="table-body-row-cell size-small" [ngClass]="isHidden(contractHiddenColumn.BillingEntity)">
+        {{ getBillingEntityName(contract.client.billingEntity) }}
       </td>
       <td class="table-body-row-cell size-small" [ngClass]="isHidden(contractHiddenColumn.Distributor)">
         {{ getOnlyDistributorName(contract.distributor.name) }}

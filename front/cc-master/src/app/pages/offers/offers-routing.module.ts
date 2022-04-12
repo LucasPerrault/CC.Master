@@ -14,46 +14,53 @@ import { OfferPriceListsTabComponent } from './components/offer-edition/offer-pr
 import { OfferImportComponent } from './components/offer-import/offer-import.component';
 import { OfferImportModule } from './components/offer-import/offer-import.module';
 import { OffersComponent } from './offers.component';
+import { OffersPageComponent } from './offers-page.component';
 
 const routes: Routes = [
   {
     path: NavigationPath.Offers,
-    component: OffersComponent,
-  },
-  {
-    path: `${ NavigationPath.Offers }/create`,
-    component: OfferCreationComponent,
-    canActivate: [OperationsGuard],
-    data: { operations: [Operation.CreateCommercialOffers] },
-  },
-  {
-      path: `${ NavigationPath.Offers }/import`,
-    component: OfferImportComponent,
-    canActivate: [OperationsGuard],
-    data: { operations: [Operation.CreateCommercialOffers] },
-  },
-  {
-    path: `${ NavigationPath.Offers }/:id/${ OfferEditionNavigationPath.NotFound }`,
-    component: OfferNotFoundTabComponent,
-  },
-  {
-    path: `${ NavigationPath.Offers }/:id`,
-    component: OfferEditionComponent,
-    canActivate: [OperationsGuard],
-    data: { operations: [Operation.ReadCommercialOffers] },
+    component: OffersPageComponent,
     children: [
       {
-        path: OfferEditionNavigationPath.Edit,
-        component: OfferEditionTabComponent,
+        path: 'create',
+        component: OfferCreationComponent,
+        canActivate: [OperationsGuard],
+        data: { operations: [Operation.CreateCommercialOffers] },
       },
       {
-        path: OfferEditionNavigationPath.PriceLists,
-        component: OfferPriceListsTabComponent,
+        path: 'import',
+        component: OfferImportComponent,
+        canActivate: [OperationsGuard],
+        data: { operations: [Operation.CreateCommercialOffers] },
       },
       {
-        path: '**',
-        pathMatch: 'full',
-        redirectTo: OfferEditionNavigationPath.Edit,
+        path: `:id/${ OfferEditionNavigationPath.NotFound }`,
+        component: OfferNotFoundTabComponent,
+      },
+      {
+        path: `:id`,
+        component: OfferEditionComponent,
+        canActivate: [OperationsGuard],
+        data: { operations: [Operation.ReadCommercialOffers] },
+        children: [
+          {
+            path: OfferEditionNavigationPath.Edit,
+            component: OfferEditionTabComponent,
+          },
+          {
+            path: OfferEditionNavigationPath.PriceLists,
+            component: OfferPriceListsTabComponent,
+          },
+          {
+            path: '**',
+            pathMatch: 'full',
+            redirectTo: OfferEditionNavigationPath.Edit,
+          },
+        ],
+      },
+      {
+        path: '',
+        component: OffersComponent,
       },
     ],
   },

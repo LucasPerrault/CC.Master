@@ -15,11 +15,15 @@ namespace Instances.Infra.Storage.Configurations
             builder.Property(cs => cs.JenkinsProjectName).HasColumnName("JenkinsProjectName");
             builder.Property(cs => cs.JenkinsProjectUrl).HasColumnName("JenkinsProjectUrl");
             builder.Property(cs => cs.Type).HasColumnName("Type");
-            builder.Property(cs => cs.GithubRepo).HasColumnName("GithubRepo");
             builder.Property(cs => cs.Lifecycle).HasColumnName("Lifecycle");
             builder.HasOne(cs => cs.Config).WithOne().HasForeignKey<CodeSourceConfig>(c => c.CodeSourceId);
-            builder.HasMany(cs => cs.ProductionVersions).WithOne().HasForeignKey(pv => pv.CodeSourceId);
+            builder.HasMany(cs => cs.ProductionVersions).WithOne(c => c.CodeSource).HasForeignKey(pv => pv.CodeSourceId);
             builder.HasMany(cs => cs.CodeSourceArtifacts).WithOne().HasForeignKey(csa => csa.CodeSourceId);
+
+            builder
+                .HasOne(cs => cs.Repo)
+                .WithMany(r => r.CodeSources)
+                .HasForeignKey(cs => cs.RepoId);
 
             builder.Ignore(cs => cs.CurrentProductionVersion);
         }

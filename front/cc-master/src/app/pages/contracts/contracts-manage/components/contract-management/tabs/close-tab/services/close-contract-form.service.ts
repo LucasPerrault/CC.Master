@@ -54,8 +54,7 @@ export class CloseContractFormService {
   }
 
   public getMostRecentAttachment$(contractId: number): Observable<IContextAttachment | null> {
-    return this.getAttachments$(contractId).pipe(
-      map(as => as.reduce((mostRecent, other) => this.isMostRecent(mostRecent, other) ? mostRecent : other)));
+    return this.getAttachments$(contractId).pipe(map(as => this.getMostRecentAttachment(as)));
   }
 
   private isMostRecent(attachment: IContextAttachment, comparison: IContextAttachment): boolean {
@@ -70,10 +69,6 @@ export class CloseContractFormService {
     return isAfter(mostRecentDate, mostRecentDateToCompare);
   }
 
-  private getRealCounts$(): Observable<ICount[]> {
-    return this.contextStoreService.realCounts$;
-  }
-
   private getAttachments$(contractId: number): Observable<IContextAttachment[]> {
     const params = new HttpParams()
       .set('fields', contextAttachmentFields)
@@ -82,5 +77,11 @@ export class CloseContractFormService {
 
     return this.httpClient.get<IHttpApiV3CollectionResponse<IContextAttachment>>(this.attachmentsEndpoint, { params })
       .pipe(map(response => response.data.items));
+  }
+
+  private getMostRecentAttachment(attachments: IContextAttachment[]): IContextAttachment {
+    if (!!attachments?.length) {
+      return attachments?.reduce((mostRecent, other) => this.isMostRecent(mostRecent, other) ? mostRecent : other);
+    }
   }
 }

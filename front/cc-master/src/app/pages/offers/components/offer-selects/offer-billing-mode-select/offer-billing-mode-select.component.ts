@@ -59,7 +59,7 @@ export class OfferBillingModeSelectComponent implements OnInit, OnDestroy, Contr
     this.destroy$.complete();
   }
 
-  public onChange: (billingMode: IBillingMode) => void = () => {};
+  public onChange: (billingMode: IBillingMode | IBillingMode[]) => void = () => {};
   public onTouch: () => void = () => {};
 
   public registerOnChange(fn: () => void): void {
@@ -70,9 +70,9 @@ export class OfferBillingModeSelectComponent implements OnInit, OnDestroy, Contr
     this.onTouch = fn;
   }
 
-  public writeValue(billingMode: IBillingMode): void {
+  public writeValue(billingMode: IBillingMode | IBillingMode[]): void {
     if (!!billingMode && this.formControl.value !== billingMode) {
-      this.formControl.setValue(this.getTranslatedBillingMode(billingMode));
+      this.formControl.setValue(this.getTranslatedBillingModes(billingMode));
     }
   }
 
@@ -92,6 +92,12 @@ export class OfferBillingModeSelectComponent implements OnInit, OnDestroy, Contr
       return;
     }
     this.formControl.enable();
+  }
+
+  private getTranslatedBillingModes(mode: IBillingMode | IBillingMode[]): IBillingMode | IBillingMode[] {
+    return Array.isArray(mode)
+      ? mode.map(m => this.getTranslatedBillingMode(m))
+      : this.getTranslatedBillingMode(mode);
   }
 
   private getTranslatedBillingMode(mode: IBillingMode): IBillingMode {

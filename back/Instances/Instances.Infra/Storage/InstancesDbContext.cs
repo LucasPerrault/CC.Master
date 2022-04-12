@@ -1,4 +1,5 @@
 using Distributors.Infra.Storage.Configurations;
+using Environments.Infra.Storage.Configurations;
 using Instances.Infra.Storage.Configurations;
 using Microsoft.EntityFrameworkCore;
 using Storage.Infra.Context;
@@ -21,6 +22,9 @@ namespace Instances.Infra.Storage
             modelBuilder.ApplyConfiguration(new DemosConfiguration());
             modelBuilder.ApplyConfiguration(new DemoDuplicationsConfiguration());
 
+            modelBuilder.ApplyConfiguration(new TrainingsConfiguration());
+            modelBuilder.ApplyConfiguration(new TrainingRestorationsConfiguration());
+
             modelBuilder.ApplyConfiguration(new CodeSourcesConfiguration());
             modelBuilder.ApplyConfiguration(new CodeSourceConfigsConfiguration());
             modelBuilder.ApplyConfiguration(new CodeSourceProductionVersionsConfiguration());
@@ -28,10 +32,14 @@ namespace Instances.Infra.Storage
 
             modelBuilder.ApplyConfiguration(new GithubBranchesConfiguration());
             modelBuilder.ApplyConfiguration(new GithubPullRequestsConfiguration());
+            modelBuilder.ApplyConfiguration(new GithubReposConfiguration());
 
             // shared
             modelBuilder.ApplyConfiguration(new DistributorsConfiguration());
             modelBuilder.ApplyConfiguration(new SimpleUsersConfiguration());
+            modelBuilder.ApplyConfiguration(new EnvironmentsConfiguration());
+            modelBuilder.ApplyConfiguration(new EnvironmentAccessesConfiguration());
+            modelBuilder.ApplyConfiguration(new EnvironmentSharedAccessesConfiguration());
         }
 
         public class InstancesMigrationDefinition : CloudControlDbContextMigrationDefinition<InstancesDbContext>

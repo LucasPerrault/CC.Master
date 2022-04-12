@@ -20,6 +20,8 @@ namespace Instances.Infra.Tests.Github
 {
     public class CodeSourceFetcherServiceTests
     {
+        private readonly Uri _mockUri = new Uri("https://github.com/LuccaSA/mocked");
+
         private readonly Mock<IGithubService> _githubServiceMock;
         private readonly Mock<HttpClientHandler> _httpHandlerMock;
         private readonly CodeSourceFetcherService _codeSourceFetcherService;
@@ -42,19 +44,19 @@ namespace Instances.Infra.Tests.Github
         public async Task ShouldGetAppsFromProductionFiles()
         {
             _githubServiceMock
-                .Setup(s => s.GetFileContentAsync("mockedUrl", ".cd/production.json"))
+                .Setup(s => s.GetFileContentAsync(_mockUri, ".cd/production.json"))
                 .ReturnsAsync(() => MockedProductionFile.Empty);
 
-            await _codeSourceFetcherService.FetchAsync("mockedUrl");
+            await _codeSourceFetcherService.FetchAsync(_mockUri);
 
-            _githubServiceMock.Verify(s => s.GetFileContentAsync("mockedUrl", ".cd/production.json"), Times.Once);
+            _githubServiceMock.Verify(s => s.GetFileContentAsync(_mockUri, ".cd/production.json"), Times.Once);
         }
 
         [Fact]
         public async Task ShouldProperlyBuildCodeSourcesFromApps()
         {
             _githubServiceMock
-                .Setup(s => s.GetFileContentAsync(It.IsAny<string>(), It.IsAny<string>()))
+                .Setup(s => s.GetFileContentAsync(It.IsAny<Uri>(), It.IsAny<string>()))
                 .ReturnsAsync(() => MockedProductionFile.FromApps(new
                 {
                     Name = "appCode",
@@ -96,7 +98,7 @@ namespace Instances.Infra.Tests.Github
                 });
 
 
-            var apps = await _codeSourceFetcherService.FetchAsync("mockedUrl");
+            var apps = await _codeSourceFetcherService.FetchAsync(_mockUri);
 
             apps.Single().Name.Should().Be("My app");
             apps.Single().Code.Should().Be("appCode");

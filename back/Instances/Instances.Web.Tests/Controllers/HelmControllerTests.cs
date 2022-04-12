@@ -24,7 +24,7 @@ namespace Instances.Web.Tests.Controllers
         {
             var helmRepositoryMock = new Mock<IHelmRepository>(MockBehavior.Strict);
             helmRepositoryMock
-                .Setup(h => h.GetAllReleasesAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<bool>()))
+                .Setup(h => h.GetAllReleasesAsync(It.IsAny<HelmRequest>()))
                 .ReturnsAsync(new List<HelmRelease>());
 
             var webApplicationFactory = new MockedWebApplicationFactory();
@@ -56,7 +56,9 @@ namespace Instances.Web.Tests.Controllers
             response.StatusCode.Should().Be(HttpStatusCode.OK);
             var content = await response.Content.ReadAsStringAsync();
 
-            helmRepositoryMock.Verify(h => h.GetAllReleasesAsync(releaseName, gitRef, stable ?? true));
+            helmRepositoryMock.Verify(h => h.GetAllReleasesAsync(It.Is<HelmRequest>(val =>
+                val.ShouldBeStable == (stable ?? true)
+            )));
         }
 
 
@@ -65,7 +67,7 @@ namespace Instances.Web.Tests.Controllers
         {
             var helmRepositoryMock = new Mock<IHelmRepository>(MockBehavior.Strict);
             helmRepositoryMock
-                .Setup(h => h.GetAllReleasesAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<bool>()))
+                .Setup(h => h.GetAllReleasesAsync(It.IsAny<HelmRequest>()))
                 .ReturnsAsync(new List<HelmRelease>());
 
             var webApplicationFactory = new MockedWebApplicationFactory();
@@ -80,7 +82,7 @@ namespace Instances.Web.Tests.Controllers
             response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
             var content = await response.Content.ReadAsStringAsync();
 
-            helmRepositoryMock.Verify(h => h.GetAllReleasesAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<bool>()), Times.Never);
+            helmRepositoryMock.Verify(h => h.GetAllReleasesAsync(It.IsAny<HelmRequest>()), Times.Never);
         }
         #endregion
     }

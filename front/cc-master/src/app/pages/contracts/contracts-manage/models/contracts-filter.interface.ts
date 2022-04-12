@@ -1,5 +1,5 @@
 import { IDateRange } from '@cc/common/date';
-import { IClient } from '@cc/domain/billing/clients';
+import { IBillingEntity, IClient } from '@cc/domain/billing/clients';
 import { IDistributor } from '@cc/domain/billing/distributors';
 import { IEstablishment } from '@cc/domain/billing/establishments';
 import { IOffer, IProduct } from '@cc/domain/billing/offers';
@@ -18,6 +18,7 @@ export interface IContractsFilter {
   products: IProduct[];
   offers: IOffer[];
   environments: IEnvironment[];
+  billingEntities: IBillingEntity[];
   establishments: IEstablishment[];
   states: IContractState[];
   establishmentHealth: IContractEstablishmentHealth;

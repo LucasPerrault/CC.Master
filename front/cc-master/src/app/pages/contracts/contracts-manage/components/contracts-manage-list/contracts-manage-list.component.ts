@@ -1,8 +1,9 @@
 import { DatePipe } from '@angular/common';
-import { Component, ElementRef, EventEmitter, HostListener, Input, Output } from '@angular/core';
+import { Component, ElementRef, EventEmitter, HostListener, Inject, Input, Output } from '@angular/core';
 import { TranslatePipe } from '@cc/aspects/translate';
 import { PaginatedListState } from '@cc/common/paging';
 import { ISortParams, SortOrder, SortService } from '@cc/common/sort';
+import { BILLING_CORE_DATA, getNameByCode, IBillingCoreData } from '@cc/domain/billing/billing-core-data';
 import { IEstablishment } from '@cc/domain/billing/establishments';
 import { Subject } from 'rxjs';
 
@@ -43,6 +44,7 @@ export class ContractsManageListComponent {
   }
 
   constructor(
+    @Inject(BILLING_CORE_DATA) private billingCoreData: IBillingCoreData,
     private translatePipe: TranslatePipe,
     private datePipe: DatePipe,
     private sortService: SortService,
@@ -60,6 +62,10 @@ export class ContractsManageListComponent {
 
   public getSortOrderClass(field: string): string {
     return this.sortService.getSortOrderClass(field, this.sortParams);
+  }
+
+  public getBillingEntityName(code: string): string {
+    return getNameByCode(this.billingCoreData.billingEntities, code);
   }
 
   public getEstablishmentNames(establishments: IEstablishment[]): string {

@@ -1,4 +1,5 @@
-﻿using System;
+using System;
+using System.Text.Json.Serialization;
 
 namespace Instances.Domain.CodeSources
 {
@@ -10,6 +11,8 @@ namespace Instances.Domain.CodeSources
         public int JenkinsBuildNumber { get; set; }
         public string CommitHash { get; set; }
         public DateTime Date { get; set; }
+        [JsonIgnore]
+        public CodeSource CodeSource { get; set; }
         public int CodeSourceId { get; set; }
     }
 }

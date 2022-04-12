@@ -84,6 +84,39 @@ namespace Instances.Infra.Shared
             }
         }
 
+        public async Task CreateInstanceBackupAsync(CreateInstanceBackupRequestDto createInstanceBackupRequest, string cluster)
+        {
+            var uri = new Uri(GetCcDataBaseUri(cluster), "/api/v1/create-backup/sync");
+            try
+            {
+                var result = await _httpClient.PostAsync(uri, createInstanceBackupRequest.ToJsonPayload());
+
+                result.EnsureSuccessStatusCode();
+            }
+            catch (HttpRequestException re)
+            {
+                _logger.LogError(re, $"{re.Message}({uri.OriginalString})");
+                throw;
+            }
+        }
+
+        public async Task<bool> ResetInstanceCacheAsync(ResetInstanceCacheRequestDto resetInstanceCacheRequest, string cluster)
+        {
+            var uri = new Uri(GetCcDataBaseUri(cluster), "/api/v1/reset-instance-cache");
+            try
+            {
+                var result = await _httpClient.PostAsync(uri, resetInstanceCacheRequest.ToJsonPayload());
+
+                result.EnsureSuccessStatusCode();
+                return true;
+            }
+            catch (HttpRequestException re)
+            {
+                _logger.LogError(re, $"{re.Message}({uri.OriginalString})");
+                return false;
+            }
+        }
+
         public Task DeleteInstanceAsync(string subdomain, string cluster, string callbackPath)
         {
             return DeleteInstancesAsync(new List<string> { subdomain }, cluster, callbackPath);

@@ -1,0 +1,13 @@
+<form class="u-displayFlex u-flexWrapWrap" [formGroup]="formGroup">
+  <cc-contract-api-select [placeholder]="'front_miscTransactionsPage_contract_filter_label' | translate"
+                          [multiple]="true"
+                          textfieldClass="palette-grey mod-long mod-outlined mod-inline"
+                          [formControlName]="formKey.Contracts">
+  </cc-contract-api-select>
+
+  <label class="textfield palette-grey mod-outlined mod-inline">
+    <cc-billing-entity-select [multiple]="true" [formControlName]="formKey.BillingEntities"
+                              [placeholder]="'billingEntity_placeholder' | translate">
+    </cc-billing-entity-select>
+  </label>
+</form>

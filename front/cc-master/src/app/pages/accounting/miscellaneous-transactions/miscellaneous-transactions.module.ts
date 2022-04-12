@@ -12,8 +12,12 @@ import {
   MiscTransactionCreationModalComponent,
 } from './components/misc-transaction-creation-modal/misc-transaction-creation-modal.component';
 import { MiscTransactionsListComponent } from './components/misc-transactions-list/misc-transactions-list.component';
+import {
+  MiscellaneousTransactionsFilterModule,
+} from './components/miscellaneous-transactions-filter/miscellaneous-transactions-filter.module';
 import { MiscellaneousTransactionsComponent } from './miscellaneous-transactions.component';
 import { AccountingAmountPipe } from './pipes/accounting-amount.pipe';
+import { MiscTransactionsApiMappingService } from './services/misc-transactions-api-mapping.service';
 import { MiscellaneousTransactionsService } from './services/miscellaneous-transactions.service';
 
 
@@ -25,17 +29,21 @@ import { MiscellaneousTransactionsService } from './services/miscellaneous-trans
     AccountingAmountPipe,
     MiscTransactionCreationModalComponent,
   ],
-  imports: [
-    CommonModule,
-    LuNumberModule,
-    LuTooltipTriggerModule,
-    TranslateModule,
-    LuApiSelectInputModule,
-    FormsModule,
-    ReactiveFormsModule,
-    ContractApiSelectModule,
-    LuDateSelectInputModule,
+    imports: [
+        CommonModule,
+        LuNumberModule,
+        LuTooltipTriggerModule,
+        TranslateModule,
+        LuApiSelectInputModule,
+        FormsModule,
+        ReactiveFormsModule,
+        ContractApiSelectModule,
+        LuDateSelectInputModule,
+        MiscellaneousTransactionsFilterModule,
+    ],
+  providers: [
+    MiscellaneousTransactionsService,
+    MiscTransactionsApiMappingService,
   ],
-  providers: [MiscellaneousTransactionsService],
 })
 export class MiscellaneousTransactionsModule { }

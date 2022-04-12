@@ -1,7 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { getButtonState, toSubmissionState } from '@cc/common/forms';
-import { IContract } from '@cc/domain/billing/contracts';
 import { LuSidepanel } from '@lucca-front/ng/sidepanel';
 import { Observable, ReplaySubject, Subject } from 'rxjs';
 import { finalize, map, startWith, take, takeUntil } from 'rxjs/operators';
@@ -9,7 +8,9 @@ import { finalize, map, startWith, take, takeUntil } from 'rxjs/operators';
 import {
   MiscTransactionCreationModalComponent,
 } from './components/misc-transaction-creation-modal/misc-transaction-creation-modal.component';
+import { IMiscTransactionsFilter } from './models/misc-transactions-filter.interface';
 import { IMiscellaneousTransaction } from './models/miscellaneous-transaction.interface';
+import { MiscTransactionsApiMappingService } from './services/misc-transactions-api-mapping.service';
 import { MiscellaneousTransactionsService } from './services/miscellaneous-transactions.service';
 
 @Component({
@@ -26,7 +27,6 @@ export class MiscellaneousTransactionsComponent implements OnInit, OnDestroy {
   public billButtonState$: Subject<string> = new Subject();
 
   public formControl: FormControl = new FormControl();
-  public readonly contractsEndPoint = '/api/v3/newcontracts';
 
   public get shouldDisplayBillingAction(): boolean {
     return this.selectedTransactions.length > 0;
@@ -52,12 +52,13 @@ export class MiscellaneousTransactionsComponent implements OnInit, OnDestroy {
   constructor(
     private luSidepanel: LuSidepanel,
     private transactionsService: MiscellaneousTransactionsService,
+    private apiMappingService: MiscTransactionsApiMappingService,
   ) { }
 
   public ngOnInit(): void {
     this.formControl.valueChanges
       .pipe(takeUntil(this.destroy$), startWith([]))
-      .subscribe(contracts => this.updateTransactions(contracts));
+      .subscribe(filters => this.updateTransactions(filters));
   }
 
   public ngOnDestroy(): void {
@@ -92,19 +93,19 @@ export class MiscellaneousTransactionsComponent implements OnInit, OnDestroy {
       .subscribe(buttonState => this.billButtonState$.next(buttonState));
   }
 
-  private updateTransactions(contracts?: IContract[]): void {
+  private updateTransactions(filters: IMiscTransactionsFilter): void {
     this.resetSelectedTransactions();
 
-    this.getMiscellaneousTransactions$(contracts)
+    this.getMiscellaneousTransactions$(filters)
       .pipe(take(1))
       .subscribe(transactions => this.transactions$.next(transactions));
   }
 
-  private getMiscellaneousTransactions$(contracts: IContract[]): Observable<IMiscellaneousTransaction[]> {
+  private getMiscellaneousTransactions$(filters: IMiscTransactionsFilter): Observable<IMiscellaneousTransaction[]> {
     this.isLoading$.next(true);
 
-    const contractIds = contracts?.map(c => c.id);
-    return this.transactionsService.getMiscellaneousTransactions$(contractIds)
+    const httpParams = this.apiMappingService.toHttpParams(filters);
+    return this.transactionsService.getMiscellaneousTransactions$(httpParams)
       .pipe(finalize(() => this.isLoading$.next(false)));
   }
 

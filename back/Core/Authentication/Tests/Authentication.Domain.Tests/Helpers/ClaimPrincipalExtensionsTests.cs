@@ -1,7 +1,9 @@
 using Authentication.Domain.Helpers;
 using Distributors.Domain.Models;
-using System;
 using Users.Domain;
+using System;
+using System.Collections.Generic;
+using System.Text;
 using Xunit;
 
 namespace Authentication.Domain.Tests.Helpers
@@ -89,6 +91,45 @@ namespace Authentication.Domain.Tests.Helpers
             });
 
             Assert.Equal(userId, cp.GetAuthorId());
+        }
+        #endregion
+
+        #region GetDistributorId
+        [Fact]
+        public void GetDistributorId_ShouldReturnLuccaWhenClaimsPrincipalIsNotAUser()
+        {
+            var cp = new CloudControlApiKeyClaimsPrincipal(new ApiKey()
+            {
+                Name = "api-key",
+                Token = Guid.Empty,
+            });
+
+            Assert.Equal(Distributor.DefaultDistributorId, cp.GetDistributorId());
+        }
+
+        [Fact]
+        public void GetDistributorId_houldReturnTheDistributorIdWhenClaimsPrincipalIsAUser()
+        {
+            var distributorId = 3;
+            var cp = new CloudControlUserClaimsPrincipal(new Principal()
+            {
+                Token = Guid.Empty,
+                UserId = 2,
+                User = new User()
+                {
+                    Id = 2,
+                    Distributor = new Distributor { Id = distributorId },
+                    DepartmentId = 4,
+                    FirstName = "Jean",
+                    LastName = "Bombeur",
+                    EstablishmentId = 5,
+                    Login = "jbombeur",
+                    Mail = "jbombeur@example.org",
+                    ManagerId = 6,
+                }
+            });
+
+            Assert.Equal(distributorId, cp.GetDistributorId());
         }
         #endregion
 

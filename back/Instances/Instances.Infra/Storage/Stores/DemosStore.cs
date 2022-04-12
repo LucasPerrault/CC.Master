@@ -74,7 +74,7 @@ namespace Instances.Infra.Storage.Stores
 
         public async Task<Demo> CreateAsync(Demo demo)
         {
-            await _dbContext.Set<Demo>().AddAsync(demo);
+            _dbContext.Set<Demo>().Add(demo);
             await _dbContext.SaveChangesAsync();
             return demo;
         }

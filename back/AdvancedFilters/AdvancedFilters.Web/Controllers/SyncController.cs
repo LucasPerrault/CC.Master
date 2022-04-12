@@ -1,6 +1,10 @@
 using AdvancedFilters.Domain.DataSources;
+using AdvancedFilters.Domain.Instance.Models;
 using AdvancedFilters.Web.Controllers.Locks;
 using Lock.Web;
+using Lucca.Core.Api.Abstractions.Fields;
+using Lucca.Core.Api.Abstractions.Paging;
+using Lucca.Core.Api.Abstractions.Sorting;
 using Lucca.Core.Shared.Domain.Exceptions;
 using Microsoft.AspNetCore.Mvc;
 using Rights.Domain;
@@ -40,7 +44,7 @@ namespace AdvancedFilters.Web.Controllers
         [HttpPost("mono-tenant")]
         [OneRequestAtATime(AdvancedFiltersSyncLock.Name, AdvancedFiltersSyncLock.TimeoutInSeconds)]
         [ForbidIfMissing(Operation.SyncAllCafe)]
-        public Task MonoSyncAsync([FromQuery]SyncQuery query)
+        public Task MonoSyncAsync([FromQuery]SubdomainSyncQuery query)
         {
             if (!query.Subdomain.Any())
             {
@@ -60,10 +64,40 @@ namespace AdvancedFilters.Web.Controllers
             }
             return _syncService.SyncRandomMonoTenantDataAsync(tenantCount);
         }
+
+        [HttpPost("mono-tenant/range")]
+        [OneRequestAtATime(AdvancedFiltersSyncLock.Name, AdvancedFiltersSyncLock.TimeoutInSeconds)]
+        [ForbidIfMissing(Operation.SyncAllCafe)]
+        public Task RangeMonoSyncAsync([FromQuery]RangeSyncQuery syncQuery)
+        {
+            IPageToken pageToken = new NumberPageToken
+            (
+                SortingQuery.FromRawValue
+                (
+                    nameof(Environment.Id)
+                ),
+                syncQuery.Page,
+                syncQuery.Limit,
+                RootFields.None
+            );
+            const int maxLimit = 500;
+            if (pageToken.Limit > maxLimit)
+            {
+                throw new BadRequestException($"Max limit is {maxLimit}");
+            }
+            return _syncService.SyncRangeMonoTenantDataAsync(pageToken);
+        }
     }
 
-    public class SyncQuery
+    public class SubdomainSyncQuery
     {
         public HashSet<string> Subdomain { get; set; } = new HashSet<string>();
     }
+
+    public class RangeSyncQuery
+    {
+        public int Limit { get; set; } = 1;
+        public int Page { get; set; } = 1;
+    }
+
 }

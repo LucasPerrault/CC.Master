@@ -17,6 +17,7 @@ export enum ContractsRoutingKey {
   OfferIds = 'offerids',
   ProductIds = 'productids',
   EnvironmentIds = 'environmentids',
+  BillingEntities = 'billingEntities',
   DistributorIds = 'distributorids',
   EstablishmentIds = 'legalentityids',
   Columns = 'columns',
@@ -43,6 +44,7 @@ export class ContractsRoutingService {
       offerIds: params.get(ContractsRoutingKey.OfferIds),
       distributorIds: params.get(ContractsRoutingKey.DistributorIds),
       environmentIds: params.get(ContractsRoutingKey.EnvironmentIds),
+      billingEntityIds: params.get(ContractsRoutingKey.BillingEntities),
       establishmentIds: params.get(ContractsRoutingKey.EstablishmentIds),
       columns: params.get(ContractsRoutingKey.Columns),
     };
@@ -63,6 +65,7 @@ export class ContractsRoutingService {
       [ContractsRoutingKey.OfferIds]: params.offerIds,
       [ContractsRoutingKey.DistributorIds]: params.distributorIds,
       [ContractsRoutingKey.EnvironmentIds]: params.environmentIds,
+      [ContractsRoutingKey.BillingEntities]: params.billingEntityIds,
       [ContractsRoutingKey.EstablishmentIds]: params.establishmentIds,
       [ContractsRoutingKey.Columns]: params.columns,
     };

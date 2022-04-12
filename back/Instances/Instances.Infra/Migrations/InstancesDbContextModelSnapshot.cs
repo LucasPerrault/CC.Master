@@ -60,34 +60,117 @@ namespace Instances.Infra.Migrations
                     b.ToTable("Distributors", "shared");
                 });
 
-            modelBuilder.Entity("GithubBranchesCodeSources", b =>
+            modelBuilder.Entity("Environments.Domain.Environment", b =>
                 {
-                    b.Property<int>("codeSourceId")
-                        .HasColumnType("int");
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int>("githubBranchId")
-                        .HasColumnType("int");
+                    b.Property<string>("Cluster")
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("Cluster");
 
-                    b.HasKey("codeSourceId", "githubBranchId");
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("CreatedAt");
 
-                    b.HasIndex("githubBranchId");
+                    b.Property<int>("Domain")
+                        .HasColumnType("int")
+                        .HasColumnName("Domain");
 
-                    b.ToTable("GithubBranchesCodeSources", "instances");
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit")
+                        .HasColumnName("IsActive");
+
+                    b.Property<int>("Purpose")
+                        .HasColumnType("int")
+                        .HasColumnName("Purpose");
+
+                    b.Property<string>("Subdomain")
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("Subdomain");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Environments", "shared");
                 });
 
-            modelBuilder.Entity("GithubPullRequestsCodeSources", b =>
+            modelBuilder.Entity("Environments.Domain.EnvironmentAccess", b =>
                 {
-                    b.Property<int>("codeSourceId")
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("AuthorId")
+                        .HasColumnType("int")
+                        .HasColumnName("AuthorId");
+
+                    b.Property<string>("Comment")
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("Comment");
+
+                    b.Property<int>("DistributorId")
+                        .HasColumnType("int")
+                        .HasColumnName("DistributorId");
+
+                    b.Property<DateTime?>("EndsAt")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("EndsAt");
+
+                    b.Property<int>("EnvironmentId")
+                        .HasColumnType("int")
+                        .HasColumnName("EnvironmentId");
+
+                    b.Property<int>("Lifecycle")
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("int")
+                        .HasComputedColumnSql("Lifecycle");
+
+                    b.Property<string>("RevocationComment")
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("RevocationComment");
+
+                    b.Property<DateTime?>("RevokedAt")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("RevokedAt");
+
+                    b.Property<DateTime>("StartsAt")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("StartsAt");
+
+                    b.Property<int>("Type")
+                        .HasColumnType("int")
+                        .HasColumnName("Type");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("EnvironmentId");
+
+                    b.ToTable("EnvironmentAccesses", "shared");
+                });
+
+            modelBuilder.Entity("Environments.Domain.EnvironmentSharedAccess", b =>
+                {
+                    b.Property<int>("Id")
                         .HasColumnType("int");
 
-                    b.Property<int>("githubPullRequestId")
-                        .HasColumnType("int");
+                    b.Property<int>("ConsumerId")
+                        .HasColumnType("int")
+                        .HasColumnName("ConsumerId");
 
-                    b.HasKey("codeSourceId", "githubPullRequestId");
+                    b.Property<int>("EnvironmentId")
+                        .HasColumnType("int")
+                        .HasColumnName("EnvironmentId");
 
-                    b.HasIndex("githubPullRequestId");
+                    b.HasKey("Id");
 
-                    b.ToTable("GithubPullRequestsCodeSources", "instances");
+                    b.HasIndex("ConsumerId");
+
+                    b.HasIndex("EnvironmentId");
+
+                    b.ToTable("EnvironmentSharedAccesses", "shared");
                 });
 
             modelBuilder.Entity("Instances.Domain.CodeSources.CodeSource", b =>
@@ -101,10 +184,6 @@ namespace Instances.Infra.Migrations
                     b.Property<string>("Code")
                         .HasColumnType("nvarchar(max)")
                         .HasColumnName("Code");
-
-                    b.Property<string>("GithubRepo")
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("GithubRepo");
 
                     b.Property<string>("JenkinsProjectName")
                         .HasColumnType("nvarchar(max)")
@@ -122,11 +201,16 @@ namespace Instances.Infra.Migrations
                         .HasColumnType("nvarchar(max)")
                         .HasColumnName("Name");
 
+                    b.Property<int>("RepoId")
+                        .HasColumnType("int");
+
                     b.Property<int>("Type")
                         .HasColumnType("int")
                         .HasColumnName("Type");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("RepoId");
 
                     b.ToTable("CodeSources", "instances");
                 });
@@ -364,7 +448,12 @@ namespace Instances.Infra.Migrations
                         .HasColumnType("nvarchar(max)")
                         .HasColumnName("name");
 
+                    b.Property<int>("RepoId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("RepoId");
 
                     b.ToTable("GithubBranches", "instances");
                 });
@@ -401,6 +490,9 @@ namespace Instances.Infra.Migrations
                         .HasColumnType("int")
                         .HasColumnName("originBranchId");
 
+                    b.Property<int>("RepoId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Title")
                         .HasColumnType("nvarchar(max)")
                         .HasColumnName("title");
@@ -409,7 +501,30 @@ namespace Instances.Infra.Migrations
 
                     b.HasIndex("OriginBranchId");
 
+                    b.HasIndex("RepoId");
+
                     b.ToTable("GithubPullRequests", "instances");
+                });
+
+            modelBuilder.Entity("Instances.Domain.Github.Models.GithubRepo", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("Name");
+
+                    b.Property<string>("Url")
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("Url");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("GithubRepos", "instances");
                 });
 
             modelBuilder.Entity("Instances.Domain.Instances.InstanceDuplication", b =>
@@ -508,6 +623,104 @@ namespace Instances.Infra.Migrations
                     b.ToTable("Instances", "instances");
                 });
 
+            modelBuilder.Entity("Instances.Domain.Trainings.Training", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("ApiKeyStorableId")
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("apiKeyStorableId");
+
+                    b.Property<int>("AuthorId")
+                        .HasColumnType("int")
+                        .HasColumnName("authorId");
+
+                    b.Property<int>("EnvironmentId")
+                        .HasColumnType("int")
+                        .HasColumnName("environmentId");
+
+                    b.Property<int>("InstanceId")
+                        .HasColumnType("int")
+                        .HasColumnName("instanceId");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit")
+                        .HasColumnName("isActive");
+
+                    b.Property<DateTime>("LastRestoredAt")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("lastRestoredAt");
+
+                    b.Property<int>("TrainingRestorationId")
+                        .HasColumnType("int")
+                        .HasColumnName("trainingRestorationId");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AuthorId");
+
+                    b.HasIndex("EnvironmentId");
+
+                    b.HasIndex("InstanceId");
+
+                    b.HasIndex("TrainingRestorationId");
+
+                    b.ToTable("Trainings");
+                });
+
+            modelBuilder.Entity("Instances.Domain.Trainings.TrainingRestoration", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<bool>("Anonymize")
+                        .HasColumnType("bit")
+                        .HasColumnName("anonymize");
+
+                    b.Property<string>("ApiKeyStorableId")
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("apiKeyStorableId");
+
+                    b.Property<int>("AuthorId")
+                        .HasColumnType("int")
+                        .HasColumnName("authorId");
+
+                    b.Property<string>("Comment")
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("comment");
+
+                    b.Property<DateTime?>("CommentExpiryDate")
+                        .HasColumnType("datetime2")
+                        .HasColumnName("commentExpiryDate");
+
+                    b.Property<int>("EnvironmentId")
+                        .HasColumnType("int")
+                        .HasColumnName("environmentId");
+
+                    b.Property<Guid>("InstanceDuplicationId")
+                        .HasColumnType("uniqueidentifier")
+                        .HasColumnName("instanceDuplicationId");
+
+                    b.Property<bool>("KeepExistingTrainingPasswords")
+                        .HasColumnType("bit")
+                        .HasColumnName("keepExistingTrainingPassword");
+
+                    b.Property<bool>("RestoreFiles")
+                        .HasColumnType("bit")
+                        .HasColumnName("restoreFiles");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("InstanceDuplicationId");
+
+                    b.ToTable("TrainingRestorations");
+                });
+
             modelBuilder.Entity("Users.Domain.SimpleUser", b =>
                 {
                     b.Property<int>("Id")
@@ -544,34 +757,40 @@ namespace Instances.Infra.Migrations
                     b.ToTable("Users", "shared");
                 });
 
-            modelBuilder.Entity("GithubBranchesCodeSources", b =>
+            modelBuilder.Entity("Environments.Domain.EnvironmentSharedAccess", b =>
                 {
-                    b.HasOne("Instances.Domain.CodeSources.CodeSource", null)
+                    b.HasOne("Distributors.Domain.Models.Distributor", "Consumer")
                         .WithMany()
-                        .HasForeignKey("codeSourceId")
+                        .HasForeignKey("ConsumerId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Instances.Domain.Github.Models.GithubBranch", null)
-                        .WithMany()
-                        .HasForeignKey("githubBranchId")
+                    b.HasOne("Environments.Domain.Environment", null)
+                        .WithMany("ActiveAccesses")
+                        .HasForeignKey("EnvironmentId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.HasOne("Environments.Domain.EnvironmentAccess", "Access")
+                        .WithMany()
+                        .HasForeignKey("Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Access");
+
+                    b.Navigation("Consumer");
                 });
 
-            modelBuilder.Entity("GithubPullRequestsCodeSources", b =>
+            modelBuilder.Entity("Instances.Domain.CodeSources.CodeSource", b =>
                 {
-                    b.HasOne("Instances.Domain.CodeSources.CodeSource", null)
-                        .WithMany()
-                        .HasForeignKey("codeSourceId")
+                    b.HasOne("Instances.Domain.Github.Models.GithubRepo", "Repo")
+                        .WithMany("CodeSources")
+                        .HasForeignKey("RepoId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Instances.Domain.Github.Models.GithubPullRequest", null)
-                        .WithMany()
-                        .HasForeignKey("githubPullRequestId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.Navigation("Repo");
                 });
 
             modelBuilder.Entity("Instances.Domain.CodeSources.CodeSourceArtifacts", b =>
@@ -639,6 +858,17 @@ namespace Instances.Infra.Migrations
                     b.Navigation("InstanceDuplication");
                 });
 
+            modelBuilder.Entity("Instances.Domain.Github.Models.GithubBranch", b =>
+                {
+                    b.HasOne("Instances.Domain.Github.Models.GithubRepo", "Repo")
+                        .WithMany("GithubBranches")
+                        .HasForeignKey("RepoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Repo");
+                });
+
             modelBuilder.Entity("Instances.Domain.Github.Models.GithubPullRequest", b =>
                 {
                     b.HasOne("Instances.Domain.Github.Models.GithubBranch", "OriginBranch")
@@ -647,7 +877,15 @@ namespace Instances.Infra.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("Instances.Domain.Github.Models.GithubRepo", "Repo")
+                        .WithMany()
+                        .HasForeignKey("RepoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("OriginBranch");
+
+                    b.Navigation("Repo");
                 });
 
             modelBuilder.Entity("Instances.Domain.Instances.InstanceDuplication", b =>
@@ -661,6 +899,57 @@ namespace Instances.Infra.Migrations
                     b.Navigation("Distributor");
                 });
 
+            modelBuilder.Entity("Instances.Domain.Trainings.Training", b =>
+                {
+                    b.HasOne("Users.Domain.SimpleUser", "Author")
+                        .WithMany()
+                        .HasForeignKey("AuthorId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Environments.Domain.Environment", "Environment")
+                        .WithMany()
+                        .HasForeignKey("EnvironmentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Instances.Domain.Instances.Models.Instance", "Instance")
+                        .WithMany()
+                        .HasForeignKey("InstanceId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Instances.Domain.Trainings.TrainingRestoration", "TrainingRestoration")
+                        .WithMany()
+                        .HasForeignKey("TrainingRestorationId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Author");
+
+                    b.Navigation("Environment");
+
+                    b.Navigation("Instance");
+
+                    b.Navigation("TrainingRestoration");
+                });
+
+            modelBuilder.Entity("Instances.Domain.Trainings.TrainingRestoration", b =>
+                {
+                    b.HasOne("Instances.Domain.Instances.InstanceDuplication", "InstanceDuplication")
+                        .WithMany()
+                        .HasForeignKey("InstanceDuplicationId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("InstanceDuplication");
+                });
+
+            modelBuilder.Entity("Environments.Domain.Environment", b =>
+                {
+                    b.Navigation("ActiveAccesses");
+                });
+
             modelBuilder.Entity("Instances.Domain.CodeSources.CodeSource", b =>
                 {
                     b.Navigation("CodeSourceArtifacts");
@@ -668,6 +957,13 @@ namespace Instances.Infra.Migrations
                     b.Navigation("Config");
 
                     b.Navigation("ProductionVersions");
+                });
+
+            modelBuilder.Entity("Instances.Domain.Github.Models.GithubRepo", b =>
+                {
+                    b.Navigation("CodeSources");
+
+                    b.Navigation("GithubBranches");
                 });
 #pragma warning restore 612, 618
         }

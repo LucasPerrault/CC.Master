@@ -44,6 +44,6 @@ export class OfferCreationComponent {
   }
 
   private redirectToOffers(): void {
-    this.router.navigate([NavigationPath.Offers]);
+    this.router.navigate([NavigationPath.Offers], { queryParamsHandling: 'preserve' });
   }
 }

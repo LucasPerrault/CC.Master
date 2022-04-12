@@ -39,13 +39,13 @@ namespace Instances.Infra.Tests.Storage.Stores
             var codeSource = new CodeSource { Id = 2 };
             await _instancesDbContext.AddAsync(new CodeSource { Id = 1, Lifecycle = CodeSourceLifecycleStep.InProduction });
             await _instancesDbContext.AddAsync(new CodeSource { Id = codeSource.Id, Lifecycle = CodeSourceLifecycleStep.InProduction });
-            await _instancesDbContext.AddAsync(new CodeSourceArtifacts { ArtifactType = CodeSourceArtifactType.BackZip, ArtifactUrl = "http://blbl.local", CodeSourceId = 1 });
+            await _instancesDbContext.AddAsync(new CodeSourceArtifacts { ArtifactType = CodeSourceArtifactType.BackZip, ArtifactUrl = new System.Uri("http://blbl.local"), CodeSourceId = 1 });
             await _instancesDbContext.SaveChangesAsync();
 
             await _codeSourcesStore.ReplaceProductionArtifactsAsync(codeSource, new List<CodeSourceArtifacts>
             {
-                new CodeSourceArtifacts { ArtifactType = CodeSourceArtifactType.AnonymizationScript, FileName = "abcd", ArtifactUrl = "http://google.fr" },
-                new CodeSourceArtifacts { ArtifactType = CodeSourceArtifactType.AnonymizationScript, FileName = "cdef", ArtifactUrl = "http://google2.fr" }
+                new CodeSourceArtifacts { ArtifactType = CodeSourceArtifactType.AnonymizationScript, FileName = "abcd", ArtifactUrl = new System.Uri("http://google.fr") },
+                new CodeSourceArtifacts { ArtifactType = CodeSourceArtifactType.AnonymizationScript, FileName = "cdef", ArtifactUrl = new System.Uri("http://google2.fr") }
             });
 
             _instancesDbContext.Set<CodeSourceArtifacts>().Count().Should().Be(3);
@@ -58,14 +58,14 @@ namespace Instances.Infra.Tests.Storage.Stores
             var codeSource = new CodeSource { Id = 2 };
             await _instancesDbContext.AddAsync(new CodeSource { Id = 1, Lifecycle = CodeSourceLifecycleStep.InProduction });
             await _instancesDbContext.AddAsync(new CodeSource { Id = codeSource.Id, Lifecycle = CodeSourceLifecycleStep.InProduction });
-            await _instancesDbContext.AddAsync(new CodeSourceArtifacts { ArtifactType = CodeSourceArtifactType.BackZip, ArtifactUrl = "http://blbl.local", CodeSourceId = 1 });
-            await _instancesDbContext.AddAsync(new CodeSourceArtifacts { ArtifactType = CodeSourceArtifactType.BackZip, ArtifactUrl = "http://old.local", CodeSourceId = codeSource.Id });
+            await _instancesDbContext.AddAsync(new CodeSourceArtifacts { ArtifactType = CodeSourceArtifactType.BackZip, ArtifactUrl = new System.Uri("http://blbl.local"), CodeSourceId = 1 });
+            await _instancesDbContext.AddAsync(new CodeSourceArtifacts { ArtifactType = CodeSourceArtifactType.BackZip, ArtifactUrl = new System.Uri("http://old.local"), CodeSourceId = codeSource.Id });
             await _instancesDbContext.SaveChangesAsync();
 
             await _codeSourcesStore.ReplaceProductionArtifactsAsync(codeSource, new List<CodeSourceArtifacts>
             {
-                new CodeSourceArtifacts { ArtifactType = CodeSourceArtifactType.AnonymizationScript, FileName = "abcd", ArtifactUrl = "http://google.fr" },
-                new CodeSourceArtifacts { ArtifactType = CodeSourceArtifactType.AnonymizationScript, FileName = "cdef", ArtifactUrl = "http://google2.fr" }
+                new CodeSourceArtifacts { ArtifactType = CodeSourceArtifactType.AnonymizationScript, FileName = "abcd", ArtifactUrl = new System.Uri("http://google.fr") },
+                new CodeSourceArtifacts { ArtifactType = CodeSourceArtifactType.AnonymizationScript, FileName = "cdef", ArtifactUrl = new System.Uri("http://google2.fr") }
             });
 
             _instancesDbContext.Set<CodeSourceArtifacts>().Count().Should().Be(3);

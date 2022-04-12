@@ -62,7 +62,7 @@ export class OfferImportComponent implements OnInit {
   }
 
   private redirectToOffers(): void {
-    this.router.navigate([NavigationPath.Offers])
+    this.router.navigate([NavigationPath.Offers, { queryParamsHandling: 'preserve' }])
       .then(() => null);
   }
 

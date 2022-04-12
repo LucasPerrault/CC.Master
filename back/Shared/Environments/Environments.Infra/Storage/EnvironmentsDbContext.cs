@@ -15,6 +15,8 @@ namespace Environments.Infra.Storage
         protected override void ApplyConfiguration(ModelBuilder modelBuilder)
         {
             modelBuilder.ApplyConfiguration(new EnvironmentsConfiguration());
+            modelBuilder.ApplyConfiguration(new EnvironmentLogsConfiguration());
+            modelBuilder.ApplyConfiguration(new EnvironmentLogMessagesConfiguration());
             modelBuilder.ApplyConfiguration(new DistributorsConfiguration());
             modelBuilder.ApplyConfiguration(new EnvironmentAccessesConfiguration());
             modelBuilder.ApplyConfiguration(new EnvironmentSharedAccessesConfiguration());

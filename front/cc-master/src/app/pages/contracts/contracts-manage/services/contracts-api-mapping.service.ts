@@ -2,7 +2,7 @@ import { HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { ApiSortHelper, ApiV3DateService } from '@cc/common/queries';
 import { ISortParams } from '@cc/common/sort';
-import { IClient } from '@cc/domain/billing/clients';
+import { IBillingEntity, IClient } from '@cc/domain/billing/clients';
 import { IDistributor } from '@cc/domain/billing/distributors';
 import { IEstablishment } from '@cc/domain/billing/establishments';
 import { IOffer, IProduct } from '@cc/domain/billing/offers';
@@ -28,6 +28,7 @@ enum ContractQueryParamKey {
   ProductId = 'product.id',
   OfferId = 'offer.id',
   EnvironmentId = 'environmentId',
+  BillingEntity = 'client.billingEntity',
   EstablishmentId = 'activeLegalEntities.id',
   State = 'state',
   CreatedOn = 'createdOn',
@@ -68,6 +69,7 @@ export class ContractsApiMappingService {
     params = this.setProducts(params, filters.products);
     params = this.setOffers(params, filters.offers);
     params = this.setEnvironments(params, filters.environments);
+    params = this.setBillingEntities(params, filters.billingEntities);
     params = this.setEstablishments(params, filters.establishments);
     params = this.setContractState(params, filters.states);
     params = this.setEstablishmentState(params, filters.establishmentHealth, filters.environments);
@@ -227,5 +229,14 @@ export class ContractsApiMappingService {
 
     const apiV3EndAt = this.apiV3DateService.toApiV3DateFormat(endAt);
     return params.set(ContractQueryParamKey.CloseOn, apiV3EndAt);
+  }
+
+  private setBillingEntities(params: HttpParams, billingEntities: IBillingEntity[]) {
+    if (!billingEntities?.length) {
+      return params.delete(ContractQueryParamKey.BillingEntity);
+    }
+
+    const billingEntityIds = billingEntities.map(b => b.id);
+    return params.set(ContractQueryParamKey.BillingEntity, billingEntityIds.join(','));
   }
 }

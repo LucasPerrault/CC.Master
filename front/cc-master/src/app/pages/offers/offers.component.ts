@@ -5,22 +5,19 @@ import { defaultPagingParams, IPaginatedResult, PaginatedList, PaginatedListStat
 import { ApiStandard } from '@cc/common/queries';
 import { ISortParams, SortOrder } from '@cc/common/sort';
 import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
-import { debounceTime, map, switchMap, takeUntil } from 'rxjs/operators';
+import { debounceTime, map, switchMap, take, takeUntil } from 'rxjs/operators';
 
-import { OfferState } from './components/offer-filters/offer-state-filter';
 import { OfferSortParamKey } from './enums/offer-sort-param-key.enum';
 import { IDetailedOffer, IDetailedOfferWithoutUsage } from './models/detailed-offer.interface';
-import { OfferFilterKey } from './models/offer-filters-form.interface';
+import { IOfferFiltersForm } from './models/offer-filters-form.interface';
 import { IOfferUsage } from './models/offer-usage.interface';
 import { OfferListService } from './services/offer-list.service';
 import { OfferRestrictionsService } from './services/offer-restrictions.service';
 import { OfferUsageStoreService } from './services/offer-usage-store.service';
 import { OffersApiMappingService } from './services/offers-api-mapping.service';
 import { OffersDataService } from './services/offers-data.service';
-
-// It is defined in the offer model in the back project.
-// It is used for the default selection.
-const offerPrincipalTag = 'Catalogues';
+import { OffersFilterRoutingService } from './services/offers-filter-routing.service';
+import { OffersRoutingService } from './services/offers-routing.service';
 
 @Component({
   selector: 'cc-offers',
@@ -48,7 +45,10 @@ export class OffersComponent implements OnInit {
   }
 
   public filters: FormControl = new FormControl();
-  public sortParams$: BehaviorSubject<ISortParams> = new BehaviorSubject<ISortParams>(null);
+  public sortParams$: BehaviorSubject<ISortParams> = new BehaviorSubject<ISortParams>({
+    field: OfferSortParamKey.Name,
+    order: SortOrder.Asc,
+  });
 
   public paginatedOffers: PaginatedList<IDetailedOffer>;
 
@@ -61,6 +61,8 @@ export class OffersComponent implements OnInit {
     private usageStoreService: OfferUsageStoreService,
     private offerListService: OfferListService,
     private pagingService: PagingService,
+    private routingService: OffersRoutingService,
+    private filterRoutingService: OffersFilterRoutingService,
   ) {
   }
 
@@ -74,7 +76,14 @@ export class OffersComponent implements OnInit {
       )
       .subscribe(httpParams => this.paginatedOffers.updateHttpParams(httpParams));
 
-    this.initDefaultFiltersAndSort();
+    this.filters.valueChanges
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(filters => this.updateRoutingParamsAsync(filters));
+
+    const routingParams = this.routingService.getRoutingParams();
+    this.filterRoutingService.toFilters$(routingParams)
+      .pipe(take(1))
+      .subscribe(filters => this.filters.setValue(filters));
 
     this.paginatedOffers = this.pagingService.paginate<IDetailedOffer>(
       (httpParams) => this.getPaginatedOffers$(httpParams),
@@ -93,6 +102,11 @@ export class OffersComponent implements OnInit {
 
   public updateSort(sortParams: ISortParams) {
     this.sortParams$.next(sortParams);
+  }
+
+  private async updateRoutingParamsAsync(filters: IOfferFiltersForm): Promise<void> {
+    const routingParams = this.filterRoutingService.toRoutingParams(filters);
+    await this.routingService.updateRouterAsync(routingParams);
   }
 
   private refresh(): void {
@@ -116,13 +130,5 @@ export class OffersComponent implements OnInit {
 
   private toDetailedOffers(offers: IDetailedOfferWithoutUsage[], usages: IOfferUsage[]): IDetailedOffer[] {
     return offers.map(offer => ({ ...offer, usage: usages.find(u => u.offerId === offer.id) }));
-  }
-
-  private initDefaultFiltersAndSort(): void {
-    this.sortParams$.next({ field: OfferSortParamKey.Name, order: SortOrder.Asc });
-    this.filters.patchValue({
-      [OfferFilterKey.Tag]: offerPrincipalTag,
-      [OfferFilterKey.State]: OfferState.NoArchived,
-    });
   }
 }

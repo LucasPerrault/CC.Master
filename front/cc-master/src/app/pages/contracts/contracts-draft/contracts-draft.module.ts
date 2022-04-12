@@ -3,7 +3,13 @@ import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { TranslateModule } from '@cc/aspects/translate';
-import { ClientApiSelectModule, DistributorApiSelectModule, OfferApiSelectModule, ProductApiSelectModule } from '@cc/common/forms';
+import {
+    BillingEntitySelectModule,
+    ClientApiSelectModule,
+    DistributorApiSelectModule,
+    OfferApiSelectModule,
+    ProductApiSelectModule,
+} from '@cc/common/forms';
 import { QueriesModule } from '@cc/common/queries';
 import { ContractsService, MinimalBillingService } from '@cc/domain/billing/contracts';
 import { DistributorsService } from '@cc/domain/billing/distributors';
@@ -47,31 +53,32 @@ import { ContractsDraftListService } from './services/contracts-draft-list.servi
     ContractsDraftFormComponent,
     ContractsDraftDeletionModalComponent,
   ],
-  imports: [
-    CommonModule,
-    ProductChipModule,
-    TranslateModule,
-    DistributorFilterButtonGroupModule,
-    FormsModule,
-    LuSidepanelModule,
-    LuTooltipModule,
-    ReactiveFormsModule,
-    BillingFrequencySelectModule,
-    DistributorApiSelectModule,
-    ClientApiSelectModule,
-    ProductApiSelectModule,
-    OfferApiSelectModule,
-    PriceGridModalModule,
-    LuModalModule,
-    TheoreticalDraftCountModule,
-    TheoreticalMonthRebateModule,
-    LuDateSelectInputModule,
-    ClientRebateModule,
-    MinimalBillingPercentageModule,
-    QueriesModule,
-    RouterModule,
-    CommentModule,
-  ],
+    imports: [
+        CommonModule,
+        ProductChipModule,
+        TranslateModule,
+        DistributorFilterButtonGroupModule,
+        FormsModule,
+        LuSidepanelModule,
+        LuTooltipModule,
+        ReactiveFormsModule,
+        BillingFrequencySelectModule,
+        DistributorApiSelectModule,
+        ClientApiSelectModule,
+        ProductApiSelectModule,
+        OfferApiSelectModule,
+        PriceGridModalModule,
+        LuModalModule,
+        TheoreticalDraftCountModule,
+        TheoreticalMonthRebateModule,
+        LuDateSelectInputModule,
+        ClientRebateModule,
+        MinimalBillingPercentageModule,
+        QueriesModule,
+        RouterModule,
+        CommentModule,
+        BillingEntitySelectModule,
+    ],
   providers: [
     ContractsDraftService,
     ContractsDraftListService,

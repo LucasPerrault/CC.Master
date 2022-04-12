@@ -152,8 +152,14 @@ namespace Instances.Application.Tests.Demos
             _clusterSelectorMock.Setup(s => s.GetFillingClusterAsync("aperture-science"))
                 .ReturnsAsync("demo-cluster");
 
-            _sqlScriptPickerMock.Setup(p => p.GetForDuplication(It.IsAny<InstanceDuplication>()))
-                .Returns(new List<Uri>());
+            _sqlScriptPickerMock.Setup(p => p.GetForCleaningAsync(It.IsAny<InstanceDuplication>()))
+                .ReturnsAsync(new List<Uri>());
+            _sqlScriptPickerMock.Setup(p => p.GetExtraForDuplicationAsync(It.IsAny<InstanceDuplication>()))
+                .ReturnsAsync(new List<Uri>());
+            _sqlScriptPickerMock.Setup(p => p.GetPreRestoreScriptsAsync(It.IsAny<InstanceDuplication>(), It.IsAny<InstanceDuplicationOptions>()))
+                .ReturnsAsync(new List<Uri>());
+            _sqlScriptPickerMock.Setup(p => p.GetPostRestoreScriptsAsync(It.IsAny<InstanceDuplication>(), It.IsAny<InstanceDuplicationOptions>()))
+                .ReturnsAsync(new List<Uri>());
 
             var duplicator = new HubspotDemoDuplicator
                 (
@@ -163,7 +169,7 @@ namespace Instances.Application.Tests.Demos
                     _subdomainGeneratorMock.Object,
                     _clusterSelectorMock.Object,
                     _demoDuplicationsStore.Object,
-                    new InstancesDuplicator
+                    new InstancesManipulator
                         (
                             _sqlScriptPickerMock.Object,
                             _ccDataServiceMock.Object

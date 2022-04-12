@@ -1,9 +1,10 @@
-import { Injectable } from '@angular/core';
+import { Inject, Injectable } from '@angular/core';
 import { ApiV3DateService } from '@cc/common/queries';
-import { ClientsService, IClient } from '@cc/domain/billing/clients';
+import { BILLING_CORE_DATA, IBillingCoreData } from '@cc/domain/billing/billing-core-data';
+import { ClientsService, IBillingEntity, IClient } from '@cc/domain/billing/clients';
 import { DistributorsService, IDistributor } from '@cc/domain/billing/distributors';
 import { EstablishmentsService, IEstablishment } from '@cc/domain/billing/establishments';
-import { IOffer, OffersService, ProductsService } from '@cc/domain/billing/offers';
+import { IOffer, IProduct, OffersService, ProductsService } from '@cc/domain/billing/offers';
 import { EnvironmentsService, IEnvironment } from '@cc/domain/environments';
 import { forkJoin, Observable, of } from 'rxjs';
 import { map, take } from 'rxjs/operators';
@@ -26,6 +27,7 @@ import { IContractsRoutingParams } from '../models/contracts-routing-params.inte
 export class ContractsFilterRoutingService {
 
   constructor(
+    @Inject(BILLING_CORE_DATA) private billingCoreData: IBillingCoreData,
     private clientsService: ClientsService,
     private productsService: ProductsService,
     private offersService: OffersService,
@@ -63,6 +65,7 @@ export class ContractsFilterRoutingService {
         offers,
         distributors,
         environments,
+        billingEntities: this.getBillingEntities(routingParams.billingEntityIds),
         establishments,
         createdAt: !!routingParams.createdAt ? new Date(routingParams.createdAt) : null,
         periodOn: {
@@ -88,6 +91,7 @@ export class ContractsFilterRoutingService {
       offerIds: this.getSafeRoutingParams(filters.offers?.map(o => o.id).join(',')),
       distributorIds: this.getSafeRoutingParams(filters.distributors?.map(d => d.id).join(',')),
       environmentIds: this.getSafeRoutingParams(filters.environments?.map(e => e.id).join(',')),
+      billingEntityIds: this.getSafeRoutingParams(filters.billingEntities?.map(b => b.code).join(',')),
       establishmentIds: this.getSafeRoutingParams(filters.establishments?.map(e => e.id).join(',')),
       columns: this.getSafeRoutingParams(columns.join(',')),
     };
@@ -102,7 +106,7 @@ export class ContractsFilterRoutingService {
     return this.clientsService.getClientsById$(clientIds).pipe(take(1));
   }
 
-  private getProducts$(idsToString: string): Observable<IClient[]> {
+  private getProducts$(idsToString: string): Observable<IProduct[]> {
     const productIds = this.convertToNumbers(idsToString);
     if (!productIds.length) {
       return of([]);
@@ -187,6 +191,16 @@ export class ContractsFilterRoutingService {
     }
 
     return 'true,false';
+  }
+
+  private getBillingEntities(idsAsString: string): IBillingEntity[] {
+    const billingEntityIds = !!idsAsString ? idsAsString.split(',') : [];
+    if (!billingEntityIds.length) {
+      return [];
+    }
+
+    const ids = billingEntityIds.map(id => parseInt(id, 10));
+    return this.billingCoreData.billingEntities.filter(b => ids.includes(b.id));
   }
 
   private getSafeRoutingParams(queryParams: string): string {

@@ -111,5 +111,16 @@ export class EnvironmentFormlyConfiguration {
     },
   };
 
+  public readonly billingEntities: FormlyFieldConfig = {
+    key: EnvironmentAdvancedFilterKey.BillingEntities,
+    type: 'billing-entity',
+    templateOptions: {
+      multiple: true,
+      required: true,
+      mod: 'palette-grey mod-outlined mod-inline mod-longer',
+      placeholder: this.translatePipe.transform('billingEntity_placeholder'),
+    },
+  };
+
   constructor(private translatePipe: TranslatePipe) {}
 }

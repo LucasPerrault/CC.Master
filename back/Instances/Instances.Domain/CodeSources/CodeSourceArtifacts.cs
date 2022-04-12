@@ -1,3 +1,5 @@
+using System;
+
 namespace Instances.Domain.CodeSources
 {
     public enum CodeSourceArtifactType
@@ -7,6 +9,8 @@ namespace Instances.Domain.CodeSources
         FrontZip = 2,
         CleanScript = 3,
         AnonymizationScript = 4,
+        PreRestoreScript = 5,
+        PostRestoreScript = 6,
         Other = 99
     }
 
@@ -15,7 +19,7 @@ namespace Instances.Domain.CodeSources
         public int Id { get; set; }
         public int CodeSourceId { get; set; }
         public string FileName { get; set; }
-        public string ArtifactUrl { get; set; }
+        public Uri ArtifactUrl { get; set; }
         public CodeSourceArtifactType ArtifactType { get; set; }
     }
 }

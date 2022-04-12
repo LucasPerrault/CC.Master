@@ -55,12 +55,14 @@ namespace Instances.Application.Tests.Demos
                 .Setup(s => s.GetUserOperationHighestScopeAsync(Operation.Demo))
                 .ReturnsAsync(AccessRightScope.AllDistributors);
 
+            var instanceId = 123456;
             var demo = new Demo
             {
                 Id = 12,
                 Subdomain = "aperture-science",
                 Cluster = "c1000",
-                Instance = new Instance { Id = 123456, IsProtected = false }
+                InstanceID = instanceId,
+                Instance = new Instance { Id = instanceId, IsProtected = false }
             };
             var demos = new List<Demo> { demo };
 
@@ -70,7 +72,7 @@ namespace Instances.Application.Tests.Demos
             await demosRepo.DeleteAsync(12);
 
             _demosStoreMock.Verify(s => s.DeleteAsync(It.Is<Demo>(d => d.Id == 12)), Times.Once);
-            _instancesStoreMock.Verify(s => s.DeleteForDemoAsync(It.Is<Instance>(i => i.Id == 123456)), Times.Once);
+            _instancesStoreMock.Verify(s => s.DeleteByIdAsync(It.Is<int>(i => i == 123456)), Times.Once);
             _iCcDataServiceMock.Verify(s => s.DeleteInstanceAsync
                 (
                     It.Is<string>(s => s == "aperture-science"),

@@ -19,7 +19,6 @@
     <ProjectReference Include="..\..\Core\Email\Email.Domain\Email.Domain.csproj" />
     <ProjectReference Include="..\..\Core\Storage\Storage.Infra\Storage.Infra.csproj" />
     <ProjectReference Include="..\..\Core\TeamNotification\TeamNotification.Abstractions\TeamNotification.Abstractions.csproj" />
-    <ProjectReference Include="..\..\Shared\Environments\Environments.Domain\Environments.Domain.csproj" />
     <ProjectReference Include="..\AdvancedFilters.Domain\AdvancedFilters.Domain.csproj" />
   </ItemGroup>
 

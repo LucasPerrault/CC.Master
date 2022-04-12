@@ -3,9 +3,7 @@ using Instances.Domain.CodeSources.Filtering;
 using Instances.Domain.Github;
 using Instances.Domain.Github.Models;
 using Lucca.Core.Shared.Domain.Exceptions;
-using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace Instances.Application.Instances
@@ -13,66 +11,84 @@ namespace Instances.Application.Instances
     public class GithubBranchesRepository : IGithubBranchesRepository
     {
         private readonly IGithubBranchesStore _githubBranchesStore;
+        private readonly IGithubReposStore _githubReposStore;
         private readonly IPreviewConfigurationsRepository _previewConfigurationsRepository;
         private readonly IGithubService _githubService;
+        private readonly ICodeSourcesStore _codeSourcesStore;
 
-        public GithubBranchesRepository(
-            IGithubBranchesStore githubBranchesStore, IPreviewConfigurationsRepository previewConfigurationsRepository,
-            IGithubService githubService)
+        public GithubBranchesRepository
+        (
+            IGithubBranchesStore githubBranchesStore,
+            IGithubReposStore githubReposStore,
+            IPreviewConfigurationsRepository previewConfigurationsRepository,
+            IGithubService githubService,
+            ICodeSourcesStore codeSourcesStore
+        )
         {
             _githubBranchesStore = githubBranchesStore;
+            _githubReposStore = githubReposStore;
             _githubService = githubService;
             _previewConfigurationsRepository = previewConfigurationsRepository;
+            _codeSourcesStore = codeSourcesStore;
         }
 
-        public async Task<GithubBranch> CreateAsync(GithubBranch branch)
+        public async Task<GithubBranch> CreateAsync(int repoId, string branchName, GithubApiCommit commit)
         {
-            var createdBranch = await _githubBranchesStore.CreateAsync(branch);
-            await _previewConfigurationsRepository.CreateByBranchAsync(createdBranch);
-            return createdBranch;
-        }
-
-        public async Task<GithubBranch> CreateAsync(List<CodeSource> codeSources, string branchName, GithubApiCommit commit)
-        {
-            if (!codeSources.Any())
+            var repo = await _githubReposStore.GetByIdAsync(repoId);
+            if (repo == null)
             {
-                throw new ArgumentNullException(nameof(codeSources));
+                throw new BadRequestException($"Repo {repoId} not found");
             }
+            return await CreateAsync(repo, branchName, commit);
+        }
 
-            var repoUrl = codeSources.First().GithubRepo;
-            var existingBranch = await GetNonDeletedBranchByNameAsync(codeSources.First(), branchName);
+        public async Task<GithubBranch> CreateAsync(GithubRepo repo, string branchName, GithubApiCommit commit)
+        {
+            var existingBranch = await GetNonDeletedBranchByNameAsync(repo.Id, branchName);
             if (existingBranch != null)
             {
-                throw new BadRequestException($"Les sources de code du repo {repoUrl} contiennent déjà la branche {branchName}");
+                throw new BadRequestException($"Les sources de code du repo {repo.Id} '{repo.Name}' contiennent déjà la branche {branchName}");
             }
 
             if (commit == null)
             {
-                commit = await _githubService.GetGithubBranchHeadCommitInfoAsync(repoUrl, branchName);
+                commit = await _githubService.GetGithubBranchHeadCommitInfoAsync(repo.Url, branchName);
             }
-
 
             var branch = await CreateAsync(new GithubBranch
             {
                 Name = branchName,
-                CodeSources = codeSources,
+                RepoId = repo.Id,
                 CreatedAt = commit.CommitedOn,
                 LastPushedAt = commit.CommitedOn,
                 HeadCommitMessage = commit.Message,
                 HeadCommitHash = commit.Sha,
+                Repo = repo
             });
             return branch;
         }
 
-        public Task<GithubBranch> GetNonDeletedBranchByNameAsync(CodeSource firstCodeSource, string branchName)
+        public Task<GithubBranch> GetNonDeletedBranchByNameAsync(int repoId, string branchName)
             => _githubBranchesStore.GetFirstAsync(new GithubBranchFilter
             {
-                CodeSourceId = firstCodeSource.Id,
+                RepoIds = new HashSet<int> { repoId },
                 Name = GithubBranch.NormalizeName(branchName),
-                IsDeleted = false
+                IsDeleted = Tools.CompareBoolean.FalseOnly,
             });
 
         public Task<GithubBranch> UpdateAsync(GithubBranch existingBranch)
             => _githubBranchesStore.UpdateAsync(existingBranch);
+
+        private async Task<GithubBranch> CreateAsync(GithubBranch branch)
+        {
+            var createdBranch = await _githubBranchesStore.CreateAsync(branch);
+            var codeSources = await _codeSourcesStore.GetAsync(new CodeSourceFilter
+            {
+                RepoIds = new HashSet<int> { createdBranch.RepoId },
+                ExcludedLifecycle = new HashSet<CodeSourceLifecycleStep> { CodeSourceLifecycleStep.ToDelete, CodeSourceLifecycleStep.Deleted },
+            });
+            await _previewConfigurationsRepository.CreateByBranchAsync(new[] { createdBranch }, codeSources);
+            return createdBranch;
+        }
     }
 }
