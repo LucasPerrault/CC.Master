@@ -29,3 +29,5 @@ export interface IDemo {
 
   href: string;
 }
+
+export const demoDomain = '.ilucca-demo.net';

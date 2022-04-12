@@ -13,6 +13,7 @@ import { getInputClass, SubmissionState, toInputClass } from '@cc/common/forms';
 import { BehaviorSubject, Observable, of, pipe, ReplaySubject, Subject, UnaryFunction } from 'rxjs';
 import { catchError, filter, map, take, takeUntil } from 'rxjs/operators';
 
+import { demoDomain } from '../../../models/demo.interface';
 import { SubdomainAvailabilityDataService } from './subdomain-availability-data.service';
 import { getSubdomainAvailabilityStatus, SubdomainAvailabilityStatus } from './subdomain-availability-status.enum';
 
@@ -37,6 +38,7 @@ import { getSubdomainAvailabilityStatus, SubdomainAvailabilityStatus } from './s
 export class DemoClientSubdomainInputComponent implements ControlValueAccessor, Validator, OnInit, OnDestroy {
 
   public subdomain: FormControl = new FormControl('', Validators.required);
+  public domain = demoDomain;
 
   public hasSubdomainAvailabilityError$ = new BehaviorSubject<boolean>(false);
   public subdomainAvailabilityClass$ = new ReplaySubject<string>(1);

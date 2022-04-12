@@ -5,9 +5,9 @@ import { ILuModalContent, LU_MODAL_DATA } from '@lucca-front/ng/modal';
 import { Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
 
+import { demoDomain, IDemo } from '../../../models/demo.interface';
 import { DemosDataService } from '../../../services/demos-data.service';
 import { DemosListService } from '../../../services/demos-list.service';
-import { DemoCommentModalMode, IDemoCommentEditionModalData } from './demo-comment-modal-data.interface';
 
 @Component({
   selector: 'cc-demo-comment-modal',
@@ -16,28 +16,23 @@ import { DemoCommentModalMode, IDemoCommentEditionModalData } from './demo-comme
 export class DemoCommentModalComponent implements ILuModalContent {
   public title: string;
   public submitLabel: string;
-  public submitAction: () => Observable<void>;
 
+  public demoDomain = demoDomain;
   public comment: FormControl;
-  public mode = DemoCommentModalMode;
 
   constructor(
-    @Inject(LU_MODAL_DATA) public data: IDemoCommentEditionModalData,
+    @Inject(LU_MODAL_DATA) public demo: IDemo,
     private translatePipe: TranslatePipe,
     private dataService: DemosDataService,
     private listService: DemosListService,
   ) {
-    this.title = this.translatePipe.transform('demos_comment_modal_submit_title', { subdomain: data?.demo?.subdomain });
+    this.title = this.translatePipe.transform('demos_comment_modal_submit_title');
     this.submitLabel = this.translatePipe.transform('demos_comment_modal_submit_label');
-    this.comment = new FormControl(data?.demo?.comment ?? '');
-
-    if (data.mode === DemoCommentModalMode.Edition) {
-      this.submitAction = () => this.submit();
-    }
+    this.comment = new FormControl(demo?.comment ?? '');
   }
 
-  public submit(): Observable<void> {
-    return this.dataService.editComment$(this.data.demo.id, this.comment.value)
-      .pipe(tap(() => this.listService.resetOne(this.data.demo.id)));
+  public submitAction(): Observable<void> {
+    return this.dataService.editComment$(this.demo.id, this.comment.value)
+      .pipe(tap(() => this.listService.resetOne(this.demo.id)));
   }
 }

@@ -12,12 +12,6 @@
             <ng-template #isNotProtected>
               <span class="lucca-icon icon-unlock" [luTooltip]="'demos_card_isNotProtected' | translate"></span>
             </ng-template>
-
-            <button *ngIf="!!demo?.comment" (click)="showComment.emit(demo)"
-                    type="button" class="actionIcon" [luTooltip]="'demos_card_show_comment' | translate">
-              <span aria-hidden="true" class="lucca-icon icon-dialog"></span>
-              <span class="u-mask">{{ 'demos_card_show_comment' | translate }}</span>
-            </button>
           </h3>
 
           <div class="u-displayFlex u-flexDirectionColumn u-textSmall">
@@ -68,19 +62,20 @@
             <span class="u-mask">{{ 'demos_card_unprotect' | translate }}</span>
           </button>
 
-          <span [luTooltip]="'demos_card_delete_disable' | translate" [luTooltipDisabled]="!demo?.instance?.isProtected">
-          <button [disabled]="demo?.instance?.isProtected" type="button" class="actionIcon"
-                  [luTooltip]="'demos_card_delete' | translate" (click)="delete.emit(demo)">
-            <span aria-hidden="true" class="lucca-icon icon-trash"></span>
-            <span class="u-mask">{{ 'demos_card_delete' | translate }}</span>
-          </button>
-        </span>
-
-          <button type="button" class="actionIcon"
+          <button type="button" class="actionIcon" [ngClass]="{ 'mod-pushNotification': !!demo.comment }"
                   [luTooltip]="'demos_card_edit_comment' | translate" (click)="editComment.emit(demo)">
             <span aria-hidden="true" class="lucca-icon icon-dialog"></span>
             <span class="u-mask">{{ 'demos_card_edit_comment' | translate }}</span>
+            <span class="notification" *ngIf="!!demo?.comment"></span>
           </button>
+
+          <span [luTooltip]="'demos_card_delete_disable' | translate" [luTooltipDisabled]="!demo?.instance?.isProtected">
+            <button [disabled]="demo?.instance?.isProtected" type="button" class="actionIcon"
+                    [luTooltip]="'demos_card_delete' | translate" (click)="delete.emit(demo)">
+              <span aria-hidden="true" class="lucca-icon icon-trash"></span>
+              <span class="u-mask">{{ 'demos_card_delete' | translate }}</span>
+            </button>
+          </span>
         </div>
 
       </div>

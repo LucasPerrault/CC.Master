@@ -6,7 +6,7 @@
          [formControl]="subdomain"
          (blur)="checkSubdomainAvailability()">
   <span class="textfield-label">{{ 'demos_client_subdomain_label' | translate }}</span>
-  <span class="textfield-suffix u-marginRightStandard">.ilucca-demo.net</span>
+  <span class="textfield-suffix u-marginRightStandard">{{ domain }}</span>
 </label>
 
 <span class="textfield-messages">

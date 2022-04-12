@@ -24,7 +24,6 @@ export class DemoCardComponent implements OnInit, OnDestroy {
   @Input() public templateDemos: ITemplateDemo[];
 
   @Output() public delete: EventEmitter<IDemo> = new EventEmitter<IDemo>();
-  @Output() public showComment: EventEmitter<IDemo> = new EventEmitter<IDemo>();
   @Output() public editComment: EventEmitter<IDemo> = new EventEmitter<IDemo>();
 
   public formControl = new FormControl();

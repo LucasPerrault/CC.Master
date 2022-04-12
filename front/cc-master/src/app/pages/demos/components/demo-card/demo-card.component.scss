@@ -50,3 +50,30 @@
   margin-left: auto;
   border-radius: 0 8px 8px 0;
 }
+
+.actionIcon.mod-pushNotification {
+  cursor: pointer;
+  position: relative;
+
+  .notification {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    width: 10px;
+    min-width: 10px;
+    height: 10px;
+    border-radius: 1rem;
+    font-size: 8px;
+
+    top: .25rem;
+    right: .2rem;
+
+    background-color: _color('primary', 600);
+    color: white;
+
+    &::before {
+      margin-top: 0;
+    }
+  }
+}

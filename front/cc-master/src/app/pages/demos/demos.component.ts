@@ -10,7 +10,6 @@ import { BehaviorSubject, combineLatest, Observable, ReplaySubject, Subject } fr
 import { map, skip, take, takeUntil } from 'rxjs/operators';
 
 import { DemoCommentModalComponent } from './components/modals/demo-comment-modal/demo-comment-modal.component';
-import { DemoCommentModalMode } from './components/modals/demo-comment-modal/demo-comment-modal-data.interface';
 import { DemoDeletionModalComponent } from './components/modals/demo-deletion-modal/demo-deletion-modal.component';
 import { IDemo, ITemplateDemo } from './models/demo.interface';
 import { DemoFilterFormKey } from './models/demo-filters.interface';
@@ -110,13 +109,7 @@ export class DemosComponent implements OnInit, OnDestroy {
   }
 
   public openCommentModal(demo: IDemo): void {
-    const mode = DemoCommentModalMode.Readonly;
-    this.luModal.open(DemoCommentModalComponent, { demo, mode });
-  }
-
-  public openCommentEditionModal(demo: IDemo): void {
-    const mode = DemoCommentModalMode.Edition;
-    this.luModal.open(DemoCommentModalComponent, { demo, mode });
+    this.luModal.open(DemoCommentModalComponent, demo);
   }
 
   private getDemos$(httpParams: HttpParams): Observable<IPaginatedResult<IDemo>> {

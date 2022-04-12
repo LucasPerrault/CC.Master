@@ -1,12 +1,5 @@
-<ng-container [ngSwitch]="data.mode">
+<div class="u-marginBottomSmaller">Demo : <strong>{{ demo?.subdomain }}{{ demoDomain }}</strong></div>
 
-  <div *ngSwitchCase="mode.Readonly">{{ data?.demo.comment }}</div>
-
-  <div *ngSwitchCase="mode.Edition">
-    <label class="textfield mod-multiline palette-grey mod-block u-marginTopSmallest">
-      <textarea class="textfield-input" [formControl]="comment"></textarea>
-    </label>
-  </div>
-
-</ng-container>
-
+<label class="textfield mod-multiline palette-grey mod-block u-marginTopSmallest">
+  <textarea class="textfield-input" [formControl]="comment"></textarea>
+</label>
