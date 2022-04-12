@@ -12,7 +12,6 @@ import { map, skip, take, takeUntil } from 'rxjs/operators';
 import { DemoCommentModalComponent } from './components/modals/demo-comment-modal/demo-comment-modal.component';
 import { DemoCommentModalMode } from './components/modals/demo-comment-modal/demo-comment-modal-data.interface';
 import { DemoDeletionModalComponent } from './components/modals/demo-deletion-modal/demo-deletion-modal.component';
-import { DemoPasswordEditionModalComponent } from './components/modals/demo-password-edition-modal/demo-password-edition-modal.component';
 import { IDemo, ITemplateDemo } from './models/demo.interface';
 import { DemoFilterFormKey } from './models/demo-filters.interface';
 import { DemoDuplicationsService } from './services/demo-duplications.service';
@@ -118,10 +117,6 @@ export class DemosComponent implements OnInit, OnDestroy {
   public openCommentEditionModal(demo: IDemo): void {
     const mode = DemoCommentModalMode.Edition;
     this.luModal.open(DemoCommentModalComponent, { demo, mode });
-  }
-
-  public openPasswordEditionModal(demo: IDemo): void {
-    this.luModal.open(DemoPasswordEditionModalComponent, demo);
   }
 
   private getDemos$(httpParams: HttpParams): Observable<IPaginatedResult<IDemo>> {

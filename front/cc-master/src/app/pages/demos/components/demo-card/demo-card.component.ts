@@ -20,20 +20,18 @@ import { IDemoInstanceUser } from '../selects';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DemoCardComponent implements OnInit, OnDestroy {
-  @Input() public demo: IDemo;
+  @Input() public set demo(demo: IDemo) { this.demo$.next(demo); };
   @Input() public templateDemos: ITemplateDemo[];
 
   @Output() public delete: EventEmitter<IDemo> = new EventEmitter<IDemo>();
   @Output() public showComment: EventEmitter<IDemo> = new EventEmitter<IDemo>();
   @Output() public editComment: EventEmitter<IDemo> = new EventEmitter<IDemo>();
-  @Output() public editPassword: EventEmitter<IDemo> = new EventEmitter<IDemo>();
 
   public formControl = new FormControl();
+  public demo$ = new ReplaySubject<IDemo>(1);
 
   public protectionButtonClass$ = new ReplaySubject<string>(1);
 
-  public passwordTooltip$ = new ReplaySubject<string>(1);
-  public password$ = new ReplaySubject<string>(1);
   public get hasPassword(): boolean {
     return !this.templateDemos?.map(d => d?.subdomain)?.includes(this.demo?.subdomain);
   }
@@ -51,8 +49,6 @@ export class DemoCardComponent implements OnInit, OnDestroy {
     this.formControl.valueChanges
       .pipe(takeUntil(this.destroy$), filter(user => !!user))
       .subscribe(user => this.connectAs(user));
-
-    this.hidePassword();
   }
 
   public ngOnDestroy(): void {
@@ -77,21 +73,6 @@ export class DemoCardComponent implements OnInit, OnDestroy {
   public shouldExpire(demo: IDemo): boolean {
     const defaultDeletionDate = new Date(1, 1, 1);
     return !demo?.instance?.isProtected && isAfter(new Date(demo?.deletionScheduledOn), defaultDeletionDate);
-  }
-
-  public hidePassword(): void {
-    this.password$.next('*'.repeat(this.demo?.instance?.allUsersImposedPassword?.length));
-  }
-
-  public showPassword(): void {
-    this.password$.next(this.demo?.instance?.allUsersImposedPassword);
-    const translationKey = this.translatePipe.transform('demos_card_password_copy');
-    this.passwordTooltip$.next(translationKey);
-  }
-
-  public copyPassword(): void {
-    void navigator.clipboard.writeText(this.demo?.instance?.allUsersImposedPassword);
-    this.passwordTooltip$.next('✅');
   }
 
   public lock(demo: IDemo): void {

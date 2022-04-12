@@ -6,6 +6,7 @@ import { LuTooltipTriggerModule } from '@lucca-front/ng/tooltip';
 
 import { DemoInstanceUserApiSelectModule } from '../selects';
 import { DemoCardComponent } from './demo-card.component';
+import { DemoPasswordModule } from './demo-password/demo-password.module';
 
 @NgModule({
   declarations: [DemoCardComponent],
@@ -16,6 +17,7 @@ import { DemoCardComponent } from './demo-card.component';
     ReactiveFormsModule,
     LuTooltipTriggerModule,
     TranslateModule,
+    DemoPasswordModule,
   ],
 })
 export class DemoCardModule {}

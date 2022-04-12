@@ -1,0 +1,17 @@
+@import "theming.import";
+
+.textfield {
+
+  &.mod-compact.mod-password {
+    .textfield-label, .textfield-suffix, .textfield-input {
+      color: _color('grey', 800);
+    }
+
+    .textfield-suffix {
+      top: 1rem;
+      right: 1rem;
+    }
+  }
+}
+
+

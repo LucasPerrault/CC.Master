@@ -1,4 +1,4 @@
-@import "theming.import";
+@import "../../../../../scss/theming.import";
 
 .u-pointer { cursor: pointer; }
 .u-widthFitContent { width: fit-content; }
@@ -20,9 +20,23 @@
 }
 
 .card-content-left {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
   border-radius: 8px 0 0 8px;
-  padding: _theme('spacings.standard');
-  background-color: _color('grey', 50);
+  background-color: _color('grey', 200);
+  padding: 0;
+
+  .card-content-left-top {
+    padding: _theme('spacings.smaller') _theme('spacings.standard') _theme('spacings.smaller') _theme('spacings.standard');
+  }
+
+  .card-content-left-bottom {
+    display: flex;
+    align-items: center;
+    background-color: _color('grey', 100);
+    border-radius: 0 0 0 8px;
+  }
 }
 
 .card-content-right {

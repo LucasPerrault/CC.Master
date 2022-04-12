@@ -13,6 +13,7 @@ $noCssVar: true;
 @import './error-page';
 @import './sidepanel';
 @import './formly';
+@import './textfield';
 
 :root {
 	@include generateCSSVarsFromTheme($theme);

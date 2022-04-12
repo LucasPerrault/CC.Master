@@ -9,6 +9,7 @@ import { InstanceDuplicationsService, InstancesDuplicationsDataService } from '@
 import { LuModalModule } from '@lucca-front/ng/modal';
 
 import { DemoCardModule } from './components/demo-card/demo-card.module';
+import { DemoPasswordModule } from './components/demo-card/demo-password/demo-password.module';
 import { DemoCardPlaceholderModule } from './components/demo-card-placeholder/demo-card-placeholder.module';
 import { DemoDuplicationCardModule } from './components/demo-duplication-card/demo-duplication-card.module';
 import { DemoFiltersModule } from './components/demo-filters/demo-filters.module';
@@ -16,7 +17,6 @@ import {
   DemoCommentModalModule,
   DemoCreationModalModule,
   DemoDeletionModalModule,
-  DemoPasswordEditionModalModule,
 } from './components/modals';
 import { DemoCreationEntryModalComponent } from './components/modals/demo-creation-modal/demo-creation-modal.component';
 import { DemosComponent } from './demos.component';
@@ -45,17 +45,17 @@ const routes: Routes = [
     CommonModule,
     DemoFiltersModule,
     ReactiveFormsModule,
-    DemoCardModule,
+    DemoPasswordModule,
     LuModalModule,
     DemoDeletionModalModule,
     DemoCommentModalModule,
-    DemoPasswordEditionModalModule,
     DemoCreationModalModule,
     PagingModule,
     RouterModule.forChild(routes),
     TranslateModule,
     DemoCardPlaceholderModule,
     DemoDuplicationCardModule,
+    DemoCardModule,
   ],
   providers: [
     DemosDataService,
