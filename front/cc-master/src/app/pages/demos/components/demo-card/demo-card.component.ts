@@ -98,7 +98,7 @@ export class DemoCardComponent implements OnInit, OnDestroy {
   private toggleProtection(demo: IDemo, isProtected: boolean): void {
     this.dataService.protect$(demo?.instanceID, isProtected)
       .pipe(take(1), toSubmissionState(), map(state => getButtonState(state)),
-        finalize(() => this.listService.resetOne(demo?.id)))
+        finalize(() => this.listService.resetAll()))
       .subscribe(this.protectionButtonClass$);
   }
 }
