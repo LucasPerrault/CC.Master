@@ -2,6 +2,12 @@
 
 .textfield {
 
+  &.mod-small {
+    .textfield-input {
+      padding: _theme('spacings.smallest') _theme('spacings.smallest');
+    }
+  }
+
   &.mod-compact.mod-password {
     .textfield-label, .textfield-suffix, .textfield-input {
       color: _color('grey', 800);
@@ -9,6 +15,19 @@
 
     .textfield-suffix {
       top: 1rem;
+      right: 1rem;
+    }
+  }
+
+  &.mod-password.mod-compact.mod-small {
+    .textfield-suffix .textfield-suffix-action {
+      .icon-watch, .icon-unwatch {
+        font-size: 1rem;
+      }
+    }
+
+    .textfield-suffix {
+      top: .75rem;
       right: 1rem;
     }
   }
