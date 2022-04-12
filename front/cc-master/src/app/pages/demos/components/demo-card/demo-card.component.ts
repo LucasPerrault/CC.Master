@@ -3,11 +3,11 @@ import { FormControl } from '@angular/forms';
 import { TranslatePipe } from '@cc/aspects/translate';
 import { getButtonState, toSubmissionState } from '@cc/common/forms';
 import { isAfter } from 'date-fns';
-import { ReplaySubject, Subject } from 'rxjs';
+import { BehaviorSubject, ReplaySubject, Subject } from 'rxjs';
 import { filter, finalize, map, take, takeUntil } from 'rxjs/operators';
 
 import { getSpecificAuthor } from '../../constants/specific-author-id.enum';
-import { IDemo, IDemoAuthor, ITemplateDemo } from '../../models/demo.interface';
+import { demoDomain, IDemo, IDemoAuthor, ITemplateDemo } from '../../models/demo.interface';
 import { ConnectAsDataService } from '../../services/connect-as-data.service';
 import { DemosDataService } from '../../services/demos-data.service';
 import { DemosListService } from '../../services/demos-list.service';
@@ -27,12 +27,12 @@ export class DemoCardComponent implements OnInit, OnDestroy {
   @Output() public editComment: EventEmitter<IDemo> = new EventEmitter<IDemo>();
 
   public formControl = new FormControl();
-  public demo$ = new ReplaySubject<IDemo>(1);
+  public demo$ = new BehaviorSubject<IDemo>(null);
 
   public protectionButtonClass$ = new ReplaySubject<string>(1);
 
   public get hasPassword(): boolean {
-    return !this.templateDemos?.map(d => d?.subdomain)?.includes(this.demo?.subdomain);
+    return !this.templateDemos?.map(d => d?.subdomain)?.includes(this.demo$.value?.subdomain);
   }
 
   private destroy$ = new Subject<void>();
@@ -56,8 +56,7 @@ export class DemoCardComponent implements OnInit, OnDestroy {
   }
 
   public getTitle(subdomain: string): string {
-    const domain = 'ilucca-demo.net';
-    return `${ subdomain }.${ domain }`;
+    return `${ subdomain }${ demoDomain }`;
   }
 
   public getAuthorName(authorId: number, author: IDemoAuthor): string {
@@ -83,13 +82,15 @@ export class DemoCardComponent implements OnInit, OnDestroy {
   }
 
   public connectAsMasterKey(): void {
-    this.connectAsService.getConnectionUrlAsMasterKey$(this.demo?.instanceID)
+    const instanceId = this.demo$.value?.instanceID;
+    this.connectAsService.getConnectionUrlAsMasterKey$(instanceId)
       .pipe(take(1))
       .subscribe(url => window.open(url));
   }
 
   private connectAs(user: IDemoInstanceUser): void {
-    this.connectAsService.getConnectionUrl$(user?.id, this.demo?.instanceID)
+    const instanceId = this.demo$.value?.instanceID;
+    this.connectAsService.getConnectionUrl$(user?.id, instanceId)
       .pipe(take(1))
       .subscribe(url => window.open(url));
   }

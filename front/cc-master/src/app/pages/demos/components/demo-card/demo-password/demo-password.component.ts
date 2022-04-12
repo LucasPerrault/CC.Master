@@ -58,7 +58,7 @@ export class DemoPasswordComponent implements OnInit, OnDestroy {
   }
 
   public copyPassword(): void {
-    void navigator.clipboard.writeText(this.demo?.instance?.allUsersImposedPassword);
+    void navigator.clipboard.writeText(this.password.value);
     this.passwordTooltip$.next(this.translatePipe.transform('demos_card_password_copy_validation'));
     timer(1000).subscribe(() => this.resetPasswordTooltip());
   }

@@ -25,7 +25,7 @@
           </div>
         </div>
 
-        <div class="card-content-left-bottom">
+        <div class="card-content-left-bottom" *ngIf="hasPassword">
           <cc-demo-password [demo]="demo"></cc-demo-password>
         </div>
       </div>
