@@ -6,20 +6,21 @@
         <div class="card-content-left-top">
           <h3 class="u-displayFlex u-alignItemsCenter u-marginBottomSmallest">
             <a class="link mod-text u-marginRightSmaller" (click)="openDemo(demo?.href)">{{ getTitle(demo?.subdomain) }}</a>
-
-            <span class="lucca-icon icon-lock" [luTooltip]="'demos_card_isProtected' | translate"
-                  *ngIf="demo?.instance?.isProtected; else isNotProtected"></span>
-            <ng-template #isNotProtected>
-              <span class="lucca-icon icon-unlock" [luTooltip]="'demos_card_isNotProtected' | translate"></span>
-            </ng-template>
           </h3>
 
-          <div class="u-displayFlex u-flexDirectionColumn u-textSmall">
-            <div class="u-marginBottomSmallest">
+          <div class="u-displayFlex u-textSmall">
+            <div class="u-marginBottomSmallest u-marginRightSmaller">
               {{ 'demos_card_author_creation' | translate : { name: getAuthorName(demo?.authorId, demo?.author), date: demo?.createdAt | date : 'shortDate' } }}
             </div>
-            <div class="u-marginBottomSmallest" *ngIf="shouldExpire(demo)">
-              {{ 'demos_card_expireOn' | translate : { date : demo?.deletionScheduledOn | date : 'shortDate' } }}
+            -
+            <div class="u-marginBottomSmallest u-marginLeftSmaller">
+              <ng-container *ngIf="shouldExpire(demo); else isNotExpired">
+                {{ 'demos_card_expireOn' | translate : { date : demo?.deletionScheduledOn | date : 'shortDate' } }}
+              </ng-container>
+
+              <ng-template #isNotExpired>
+                <strong *ngIf="demo?.instance?.isProtected">{{ 'demos_card_isProtected' | translate }}</strong>
+              </ng-template>
             </div>
           </div>
         </div>
